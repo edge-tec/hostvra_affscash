@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EliteAli | Dotmail Generator</title>
+  <link rel="icon" type="x-icon" href="x-icon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --white:        #ffffff;
+      --bg2:          #f7f5ff;
+      --border:       #ede8fc;
+      --text:         #1a1535;
+      --muted:        #7c7a9e;
+      --r:            14px;
+      --pink:         #e8197a;
+      --pink-light:   #ff4da6;
+      --violet:       #7c3aed;
+      --blue:         #2563eb;
+      --cyan:         #0ea5e9;
+      --green:        #059669;
+      --grad-brand:      linear-gradient(135deg, #e8197a 0%, #7c3aed 50%, #2563eb 100%);
+      --grad-cool:       linear-gradient(135deg, #2563eb 0%, #0ea5e9 60%, #059669 100%);
+      --grad-green:      linear-gradient(135deg, #059669 0%, #0ea5e9 100%);
+      --grad-hero-bg:    linear-gradient(145deg, #fdf8ff 0%, #f5f0ff 30%, #fff0f9 65%, #f0f7ff 100%);
+      --grad-dark-footer:linear-gradient(135deg, #1a1535 0%, #2d1b69 50%, #1a0030 100%);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--grad-hero-bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: -1;
+      background:
+        radial-gradient(ellipse 50% 60% at 80% 20%, rgba(124,58,237,.1), transparent),
+        radial-gradient(ellipse 40% 45% at 10% 70%, rgba(232,25,122,.08), transparent),
+        linear-gradient(rgba(124,58,237,.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124,58,237,.02) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 44px 44px, 44px 44px;
+    }
+
+    a { color: var(--pink); text-decoration: none; transition: color .25s; }
+    a:hover { color: var(--pink-light); }
+    h1,h2,h3,h4,h5,h6 { font-family: 'Rajdhani', sans-serif; font-weight: 700; color: var(--text); line-height: 1.15; }
+    em {
+      font-style: normal;
+      background: var(--grad-brand);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    /* ─── HEADER ─── */
+    .site-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      box-shadow: 0 2px 24px rgba(124,58,237,.08);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: 1280px; margin: 0 auto; height: 68px;
+    }
+    .nav-logo { display: flex; align-items: center; }
+    .nav-logo img { height: 40px; width: auto; }
+    .nav-logo-text {
+      font-family: 'Rajdhani', sans-serif; font-size: 26px; font-weight: 700; color: var(--text); letter-spacing: 1px;
+    }
+    .nav-logo-text span { background: var(--grad-brand); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+    .nav-links a { color: var(--text); font-size: 13px; font-weight: 500; padding: 7px 11px; border-radius: 8px; transition: all .22s; }
+    .nav-links a:hover { background: rgba(232,25,122,.07); color: var(--pink); }
+    .nav-links .btn-login {
+      background: var(--grad-brand); color: #fff; padding: 8px 20px; border-radius: 8px; font-weight: 600;
+      box-shadow: 0 4px 16px rgba(232,25,122,.3); -webkit-text-fill-color: #fff;
+    }
+    .nav-links .btn-login:hover { opacity: .88; transform: translateY(-1px); color: #fff; -webkit-text-fill-color: #fff; }
+    .nav-links .btn-signup {
+      border: 2px solid transparent;
+      background: linear-gradient(white,white) padding-box, var(--grad-brand) border-box;
+      color: var(--pink); padding: 7px 18px; border-radius: 8px; font-weight: 600;
+    }
+    .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:8px; background:none; border:none; }
+    .hamburger span { display:block; width:24px; height:2px; background:var(--text); border-radius:2px; transition:all .3s; }
+    .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity:0; }
+    .hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+    .mobile-menu { display:none; flex-direction:column; background:var(--white); border-top:1px solid var(--border); padding:16px 24px 20px; }
+    .mobile-menu.open { display:flex; }
+    .mobile-menu a { color:var(--text); padding:12px 0; border-bottom:1px solid var(--border); font-size:14px; font-weight:500; }
+    .mobile-menu a:last-child { border-bottom:none; }
+
+    /* ─── GRAD DIVIDER ─── */
+    .grad-divider { height: 4px; background: var(--grad-brand); }
+
+    /* ─── PAGE WRAPPER ─── */
+    .page-wrapper {
+      padding-top: 88px;
+      min-height: calc(100vh - 88px);
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: flex-start;
+      padding-bottom: 80px;
+    }
+
+    /* ─── HERO BADGE ─── */
+    .hero-badge {
+      margin-top: 48px; margin-bottom: 10px;
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase;
+      background: var(--grad-brand); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--pink); flex-shrink: 0; animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(1.6)} }
+
+    .page-title { font-size: clamp(32px, 5vw, 52px); text-align: center; margin-bottom: 10px; }
+    .page-sub { color: var(--muted); font-size: 14px; text-align: center; max-width: 480px; margin-bottom: 36px; }
+
+    /* ─── TOOL CARD ─── */
+    .tool-card {
+      width: min(520px, calc(100vw - 32px));
+      background: var(--white);
+      border: 1.5px solid rgba(124,58,237,.14);
+      border-radius: 22px;
+      padding: 36px 32px;
+      box-shadow: 0 20px 60px rgba(124,58,237,.12), 0 4px 16px rgba(232,25,122,.06);
+      position: relative; overflow: hidden;
+    }
+    .tool-card::before {
+      content: '';
+      position: absolute; top: -60px; right: -60px;
+      width: 200px; height: 200px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(124,58,237,.07), transparent);
+      pointer-events: none;
+    }
+    .tool-card::after {
+      content: '';
+      position: absolute; bottom: -40px; left: -40px;
+      width: 150px; height: 150px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,25,122,.06), transparent);
+      pointer-events: none;
+    }
+
+    /* ─── FORM ELEMENTS ─── */
+    .form-group { margin-bottom: 20px; position: relative; z-index: 1; }
+    .form-group label {
+      display: block; font-size: 11px; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+    }
+    .input-wrap { position: relative; }
+    .input-wrap i {
+      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      color: var(--muted); font-size: 15px; pointer-events: none;
+    }
+    .form-input {
+      width: 100%; padding: 13px 16px 13px 42px;
+      background: #faf8ff; border: 1.5px solid var(--border);
+      border-radius: 10px; color: var(--text);
+      font-size: 15px; font-family: 'DM Sans', sans-serif;
+      transition: all .25s; outline: none;
+    }
+    .form-input:focus { border-color: var(--violet); box-shadow: 0 0 0 4px rgba(124,58,237,.08); background: var(--white); }
+    .form-input::placeholder { color: var(--muted); }
+
+    /* Count selector */
+    .count-row {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+      position: relative; z-index: 1;
+    }
+    .count-row label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+    .count-select {
+      flex: 1; padding: 10px 14px;
+      background: #faf8ff; border: 1.5px solid var(--border);
+      border-radius: 10px; color: var(--text);
+      font-size: 14px; font-family: 'DM Sans', sans-serif;
+      outline: none; cursor: pointer; transition: all .25s;
+    }
+    .count-select:focus { border-color: var(--violet); box-shadow: 0 0 0 4px rgba(124,58,237,.08); }
+
+    /* ─── BUTTONS ─── */
+    .btn-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; position: relative; z-index: 1; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+      padding: 12px 10px; border-radius: 10px; border: none; cursor: pointer;
+      font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700;
+      letter-spacing: .8px; text-transform: uppercase; transition: all .25s;
+    }
+    .btn-generate {
+      background: var(--grad-brand); color: #fff; -webkit-text-fill-color: #fff;
+      box-shadow: 0 4px 18px rgba(232,25,122,.3);
+    }
+    .btn-generate:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(232,25,122,.45); opacity: .93; }
+    .btn-copy {
+      background: var(--grad-cool); color: #fff; -webkit-text-fill-color: #fff;
+      box-shadow: 0 4px 16px rgba(37,99,235,.25);
+    }
+    .btn-copy:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(14,165,233,.4); opacity: .93; }
+    .btn-download {
+      background: var(--grad-green); color: #fff; -webkit-text-fill-color: #fff;
+      box-shadow: 0 4px 16px rgba(5,150,105,.25);
+    }
+    .btn-download:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(5,150,105,.4); opacity: .93; }
+    .btn:disabled { opacity: .38; cursor: not-allowed; transform: none !important; }
+
+    /* ─── STATUS BAR ─── */
+    .status-bar {
+      display: none; align-items: center; gap: 10px;
+      background: rgba(5,150,105,.06); border: 1px solid rgba(5,150,105,.2);
+      border-radius: 10px; padding: 10px 14px; margin-bottom: 14px;
+      font-size: 13px; color: var(--green); font-weight: 600;
+      position: relative; z-index: 1;
+    }
+    .status-bar.visible { display: flex; }
+    .status-bar.copied { background: rgba(37,99,235,.06); border-color: rgba(37,99,235,.2); color: var(--blue); }
+
+    /* ─── RESULT BOX ─── */
+    .result-wrap { position: relative; z-index: 1; }
+    .result-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .result-header span { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+    .result-count {
+      font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700;
+      background: var(--grad-brand); color: #fff; -webkit-text-fill-color: #fff;
+      border-radius: 20px; padding: 2px 12px;
+    }
+    #result {
+      width: 100%; height: 260px;
+      background: #faf8ff; border: 1.5px solid var(--border);
+      border-radius: 12px; padding: 14px 16px;
+      font-family: 'DM Mono', 'Fira Code', monospace; font-size: 12.5px;
+      line-height: 1.9; color: #3d3560;
+      overflow-y: auto; overflow-x: hidden;
+      white-space: pre-wrap; word-break: break-all;
+      resize: vertical;
+      transition: border-color .25s;
+    }
+    #result:hover { border-color: rgba(124,58,237,.3); }
+    #result:empty::before {
+      content: 'Generated dotmail addresses will appear here…';
+      color: var(--muted); font-style: italic;
+    }
+
+    /* Scrollbar */
+    #result::-webkit-scrollbar { width: 6px; }
+    #result::-webkit-scrollbar-track { background: transparent; }
+    #result::-webkit-scrollbar-thumb { background: rgba(124,58,237,.2); border-radius: 4px; }
+    #result::-webkit-scrollbar-thumb:hover { background: rgba(124,58,237,.4); }
+
+    /* ─── INFO PILLS ─── */
+    .info-pills {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px;
+      justify-content: center; position: relative; z-index: 1;
+    }
+    .info-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 600; color: var(--muted);
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 20px; padding: 4px 12px;
+    }
+    .info-pill i { color: var(--pink); font-size: 10px; }
+
+    /* ─── FOOTER ─── */
+    footer { background: var(--grad-dark-footer); padding: 44px 24px 36px; text-align: center; }
+    footer .footer-logo { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+    footer .footer-logo span { background: var(--grad-brand); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin: 16px 0; }
+    .footer-links a { font-size: 13px; color: rgba(255,255,255,.5); transition: color .25s; }
+    .footer-links a:hover { color: #fff; }
+    footer p { font-size: 12px; color: rgba(255,255,255,.4); }
+
+    /* ─── SCROLL TOP ─── */
+    .scroll-top {
+      position: fixed; bottom: 28px; right: 28px; z-index: 500;
+      width: 46px; height: 46px; border-radius: 50%;
+      background: var(--grad-brand); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; border: none; cursor: pointer;
+      box-shadow: 0 6px 22px rgba(232,25,122,.45);
+      opacity: 0; transform: translateY(20px); transition: all .3s;
+    }
+    .scroll-top.visible { opacity: 1; transform: translateY(0); }
+    .scroll-top:hover { transform: translateY(-3px); }
+
+    /* Fade up */
+    .fade-up { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    @media(max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .tool-card { padding: 26px 20px; }
+      .btn-row { grid-template-columns: 1fr; }
+    }
+    @media(max-width: 480px) {
+      .btn-row { grid-template-columns: 1fr 1fr; }
+      .btn-row .btn-generate { grid-column: 1 / -1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="logoo.png" alt="EliteAli" onerror="this.style.display='none';document.querySelector('.nav-logo-text').style.display='block'">
+        <span class="nav-logo-text" style="display:none">Affs<span>cash</span></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#services">Services</a></li>
+        <li><a href="index.html#offers">Offers</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+        <li><a href="https://app.eliteali.com/register" class="btn-signup" target="_blank">Sign Up</a></li>
+        <li><a href="https://app.eliteali.com" class="btn-login" target="_blank">Login</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobile-menu">
+      <a href="index.html">Home</a>
+      <a href="index.html#about">About Us</a>
+      <a href="index.html#offers">Offers</a>
+      <a href="index.html#contact">Contact</a>
+      <a href="https://app.eliteali.com/register" target="_blank">Sign Up Free</a>
+      <a href="https://app.eliteali.com" target="_blank">Login</a>
+    </div>
+  </header>
+
+  <div class="grad-divider" style="margin-top:68px"></div>
+
+  <!-- PAGE -->
+  <div class="page-wrapper">
+    <div class="hero-badge"><span class="pulse"></span> Affiliate Tools</div>
+    <h1 class="page-title">Dotmail <em>Generator</em></h1>
+    <p class="page-sub">Generate hundreds of Gmail dot-trick variations from a single email address — instantly.</p>
+
+    <div class="tool-card fade-up">
+
+      <!-- Input -->
+      <div class="form-group">
+        <label for="email"><i class="fa-solid fa-at" style="margin-right:5px;color:var(--pink)"></i> Gmail Username</label>
+        <div class="input-wrap">
+          <i class="fa-solid fa-envelope"></i>
+          <input type="text" id="email" class="form-input" placeholder="yourname  (without @gmail.com)">
+        </div>
+      </div>
+
+      <!-- Count -->
+      <div class="count-row">
+        <label for="countSelect"><i class="fa-solid fa-list-ol" style="margin-right:5px;color:var(--violet)"></i> Count:</label>
+        <select id="countSelect" class="count-select">
+          <option value="100">100 addresses</option>
+          <option value="250">250 addresses</option>
+          <option value="500">500 addresses</option>
+          <option value="1000" selected>1,000 addresses</option>
+          <option value="2000">2,000 addresses</option>
+          <option value="5000">5,000 addresses</option>
+        </select>
+      </div>
+
+      <!-- Buttons -->
+      <div class="btn-row">
+        <button class="btn btn-generate" onclick="generateDotmails()">
+          <i class="fa-solid fa-bolt"></i> Generate
+        </button>
+        <button class="btn btn-copy" id="copyBtn" onclick="copyToClipboard()" disabled>
+          <i class="fa-solid fa-copy"></i> Copy
+        </button>
+        <button class="btn btn-download" id="dlBtn" onclick="downloadCSV()" disabled>
+          <i class="fa-solid fa-download"></i> CSV
+        </button>
+      </div>
+
+      <!-- Status -->
+      <div class="status-bar" id="statusBar">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="statusText">Ready</span>
+      </div>
+
+      <!-- Result -->
+      <div class="result-wrap">
+        <div class="result-header">
+          <span><i class="fa-solid fa-list" style="margin-right:5px"></i> Results</span>
+          <span class="result-count" id="resultCount" style="display:none">0</span>
+        </div>
+        <div id="result"></div>
+      </div>
+
+      <!-- Info -->
+      <div class="info-pills">
+        <span class="info-pill"><i class="fa-solid fa-circle-info"></i> Gmail ignores dots in usernames</span>
+        <span class="info-pill"><i class="fa-solid fa-shield-halved"></i> All variations deliver to same inbox</span>
+        <span class="info-pill"><i class="fa-solid fa-bolt"></i> Client-side — no data sent</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div style="max-width:1200px;margin:0 auto">
+      <img src="logoo.png" alt="" weight="200px" height="40px" class="nav-logo">
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#services">Services</a>
+        <a href="index.html#offers">Offers</a>
+        <a href="index.html#contact">Contact</a>
+        <a href="TRC.html">Terms &amp; Conditions</a>
+        <a href="https://app.eliteali.com/register" target="_blank">Sign Up</a>
+        <a href="https://app.eliteali.com" target="_blank">Login</a>
+        <a href="https://ushort.ink" target="_blank">ushort.ink</a>
+      </div>
+      <div style="display:flex;justify-content:center;gap:18px;margin:16px 0">
+        <a href="https://t.me/eliteali" target="_blank" style="color:rgba(255,255,255,.45);font-size:22px"><i class="fa-brands fa-telegram"></i></a>
+        <a href="https://join.skype.com/invite/v8D3Qfre3w0e" target="_blank" style="color:rgba(255,255,255,.45);font-size:22px"><i class="fa-brands fa-skype"></i></a>
+      </div>
+      <p>© 2019 – 2026 EdgeSoft Ltd. All Rights Reserved. | EliteAli CPA Affiliate Network</p>
+    </div>
+  </footer>
+
+  <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <i class="fa-solid fa-chevron-up"></i>
+  </button>
+
+  <script>
+    // ─── Hamburger ───
+    var ham = document.getElementById('hamburger');
+    var mob = document.getElementById('mobile-menu');
+    if(ham && mob){
+      ham.addEventListener('click', function(){ ham.classList.toggle('open'); mob.classList.toggle('open'); });
+      mob.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ ham.classList.remove('open'); mob.classList.remove('open'); }); });
+    }
+
+    // ─── Scroll top ───
+    window.addEventListener('scroll', function(){
+      document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 300);
+    });
+
+    // ─── Fade up ───
+    var obs = new IntersectionObserver(function(entries){ entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0.08 });
+    document.querySelectorAll('.fade-up').forEach(function(el){ obs.observe(el); });
+
+    // ─── Generator logic ───
+    var generated = [];
+
+    function showStatus(msg, type) {
+      var bar = document.getElementById('statusBar');
+      var txt = document.getElementById('statusText');
+      txt.textContent = msg;
+      bar.className = 'status-bar visible' + (type === 'copy' ? ' copied' : '');
+      clearTimeout(window._statusT);
+      window._statusT = setTimeout(function(){ bar.classList.remove('visible'); }, 3000);
+    }
+
+    function generateDotmail(username) {
+      var dotCount = Math.floor(Math.random() * 3) + 1;
+      var dotIndices = [];
+      var attempts = 0;
+      while (dotIndices.length < dotCount && attempts < 200) {
+        attempts++;
+        var index = Math.floor(Math.random() * (username.length - 1)) + 1;
+        if (!dotIndices.includes(index) && !dotIndices.includes(index - 1) && !dotIndices.includes(index + 1)) {
+          dotIndices.push(index);
+        }
+      }
+      var result = '';
+      for (var i = 0; i < username.length; i++) {
+        if (dotIndices.includes(i)) result += '.';
+        result += username[i];
+      }
+      return result + '@gmail.com';
+    }
+
+    function generateDotmails() {
+      var raw = document.getElementById('email').value.trim();
+      var username = raw.replace(/@gmail\.com$/i, '').replace(/@.*$/, '').trim();
+
+      if (!username || username.length < 2) {
+        showStatus('⚠️ Please enter a valid Gmail username.', 'error');
+        return;
+      }
+
+      var count = parseInt(document.getElementById('countSelect').value);
+      generated = [];
+      var seen = new Set();
+
+      var btn = document.querySelector('.btn-generate');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating…';
+
+      setTimeout(function() {
+        var maxAttempts = count * 8;
+        var attempts = 0;
+        while (generated.length < count && attempts < maxAttempts) {
+          attempts++;
+          var dm = generateDotmail(username);
+          if (!seen.has(dm)) { seen.add(dm); generated.push(dm); }
+        }
+
+        var resultEl = document.getElementById('result');
+        resultEl.textContent = generated.join('\n');
+
+        var countBadge = document.getElementById('resultCount');
+        countBadge.textContent = generated.length + ' addresses';
+        countBadge.style.display = 'inline-block';
+
+        document.getElementById('copyBtn').disabled = false;
+        document.getElementById('dlBtn').disabled = false;
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Generate';
+
+        showStatus('✅ ' + generated.length + ' dotmail addresses generated!', 'success');
+      }, 60);
+    }
+
+    function copyToClipboard() {
+      if (!generated.length) return;
+      var text = generated.join('\n');
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(function(){
+          showStatus('📋 Copied ' + generated.length + ' addresses to clipboard!', 'copy');
+        });
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showStatus('📋 Copied ' + generated.length + ' addresses to clipboard!', 'copy');
+      }
+    }
+
+    function downloadCSV() {
+      if (!generated.length) return;
+      var csvContent = 'email\n' + generated.join('\n');
+      var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      var url = URL.createObjectURL(blob);
+      var link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'dotmails.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      showStatus('⬇️ CSV downloaded successfully!', 'success');
+    }
+
+    // Enter key trigger
+    document.getElementById('email').addEventListener('keydown', function(e){
+      if (e.key === 'Enter') generateDotmails();
+    });
+  </script>
+</body>
+</html>

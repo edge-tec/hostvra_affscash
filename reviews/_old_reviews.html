@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Affscash | Reviews &amp; Testimonials</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root{--white:#fff;--border:#ede8fc;--text:#1a1535;--muted:#7c7a9e;--r:14px;--pink:#e8197a;--pink-light:#ff4da6;--violet:#7c3aed;--blue:#2563eb;--cyan:#0ea5e9;--green:#059669;--gold:#d97706;--grad-brand:linear-gradient(135deg,#e8197a 0%,#7c3aed 50%,#2563eb 100%);--grad-gold:linear-gradient(135deg,#f59e0b 0%,#ef4444 100%);--grad-green:linear-gradient(135deg,#059669 0%,#0ea5e9 100%);--grad-hero-bg:linear-gradient(145deg,#fdf8ff 0%,#f5f0ff 30%,#fff0f9 65%,#f0f7ff 100%);--grad-dark-footer:linear-gradient(135deg,#1a1535 0%,#2d1b69 50%,#1a0030 100%);}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}body{background:#fff;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.7;overflow-x:hidden;}a{color:var(--pink);text-decoration:none;transition:color .25s;}a:hover{color:var(--pink-light);}h1,h2,h3,h4,h5,h6{font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--text);line-height:1.15;}em{font-style:normal;background:var(--grad-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}section{padding:80px 0;}
+    .site-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,.94);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);padding:0 24px;box-shadow:0 2px 24px rgba(124,58,237,.08);}.nav-inner{display:flex;align-items:center;justify-content:space-between;max-width:1280px;margin:0 auto;height:68px;}.nav-logo{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;color:var(--text);letter-spacing:1px;}.nav-logo span{background:var(--grad-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}.nav-links{display:flex;align-items:center;gap:4px;list-style:none;}.nav-links a{color:var(--text);font-size:13px;font-weight:500;padding:7px 11px;border-radius:8px;transition:all .22s;}.nav-links a:hover{background:rgba(232,25,122,.07);color:var(--pink);}.nav-links .btn-login{background:var(--grad-brand);color:#fff;padding:8px 20px;border-radius:8px;font-weight:600;box-shadow:0 4px 16px rgba(232,25,122,.3);-webkit-text-fill-color:#fff;}.nav-links .btn-login:hover{opacity:.88;-webkit-text-fill-color:#fff;}.nav-links .btn-signup{border:2px solid transparent;background:linear-gradient(white,white) padding-box,var(--grad-brand) border-box;color:var(--pink);padding:7px 18px;border-radius:8px;font-weight:600;}.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;background:none;border:none;}.hamburger span{display:block;width:24px;height:2px;background:var(--text);border-radius:2px;transition:all .3s;}.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}.hamburger.open span:nth-child(2){opacity:0;}.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}.mobile-menu{display:none;flex-direction:column;background:#fff;border-top:1px solid var(--border);padding:16px 24px 20px;}.mobile-menu.open{display:flex;}.mobile-menu a{color:var(--text);padding:12px 0;border-bottom:1px solid var(--border);font-size:14px;font-weight:500;}.mobile-menu a:last-child{border-bottom:none;}@media(max-width:991px){.nav-links{display:none;}.hamburger{display:flex;}}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;margin-bottom:12px;background:var(--grad-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}.eyebrow .pulse{width:7px;height:7px;border-radius:50%;background:var(--pink);flex-shrink:0;animation:pulse 1.5s ease-in-out infinite;}@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(1.6)}}
+    .reviews-hero{padding-top:100px;padding-bottom:64px;background:var(--grad-hero-bg);position:relative;overflow:hidden;text-align:center;}.reviews-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 55% at 20% 30%,rgba(232,25,122,.08),transparent),radial-gradient(ellipse 45% 45% at 80% 70%,rgba(124,58,237,.08),transparent);}.reviews-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(rgba(124,58,237,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.02) 1px,transparent 1px);background-size:44px 44px;}.reviews-hero .inner{position:relative;z-index:2;}
+    .score-bar{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:36px;}.score-card{background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:22px 28px;text-align:center;min-width:140px;box-shadow:0 4px 18px rgba(124,58,237,.08);transition:all .3s;}.score-card:hover{transform:translateY(-4px);box-shadow:0 14px 36px rgba(124,58,237,.16);}.score-num{font-family:'Rajdhani',sans-serif;font-size:42px;font-weight:700;line-height:1;background:var(--grad-gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}.score-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-top:4px;}.stars-row{display:flex;justify-content:center;gap:2px;margin-top:6px;}.stars-row i{color:#f59e0b;font-size:12px;}.total-pill{background:var(--grad-brand);color:#fff;border-radius:30px;font-size:13px;font-weight:700;padding:8px 24px;display:inline-block;margin-top:14px;box-shadow:0 4px 16px rgba(232,25,122,.3);-webkit-text-fill-color:#fff;}
+    .filter-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:36px;}.ftab{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:8px 18px;border-radius:30px;border:2px solid var(--border);background:#fff;color:var(--muted);cursor:pointer;transition:all .22s;}.ftab:hover{border-color:var(--pink);color:var(--pink);}.ftab.active{background:var(--grad-brand);border-color:transparent;color:#fff;-webkit-text-fill-color:#fff;box-shadow:0 4px 16px rgba(232,25,122,.3);}
+    .reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;}@media(max-width:600px){.reviews-grid{grid-template-columns:1fr;}}.review-card{background:#fff;border:1.5px solid var(--border);border-radius:20px;padding:24px;transition:all .3s;box-shadow:0 4px 18px rgba(124,58,237,.06);position:relative;overflow:hidden;}.review-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad-brand);opacity:0;transition:opacity .3s;}.review-card:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(124,58,237,.15);border-color:rgba(232,25,122,.2);}.review-card:hover::before{opacity:1;}.review-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;}.review-avatar{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;color:#fff;font-family:'Rajdhani',sans-serif;flex-shrink:0;box-shadow:0 4px 14px rgba(232,25,122,.25);}.review-meta h4{font-size:17px;margin-bottom:2px;color:var(--text);}.review-meta .date{font-size:11px;color:var(--muted);}.review-stars{display:flex;gap:3px;margin-bottom:12px;}.review-stars i{color:#f59e0b;font-size:14px;}.review-stars i.fa-regular{color:#ddd;}.review-text{font-size:13.5px;color:var(--text);line-height:1.8;margin-bottom:14px;}.review-scores{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}.rscore{display:flex;align-items:center;gap:5px;background:#f7f5ff;border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--violet);}.rscore span{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;background:var(--grad-gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}.proof-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;background:rgba(5,150,105,.1);color:var(--green);border:1px solid rgba(5,150,105,.2);border-radius:6px;padding:3px 10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;}.proof-img{width:100%;border-radius:10px;border:1px solid var(--border);max-height:180px;object-fit:cover;cursor:pointer;transition:transform .3s;display:block;}.proof-img:hover{transform:scale(1.02);}.verified-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;color:var(--green);background:rgba(5,150,105,.07);border:1px solid rgba(5,150,105,.18);border-radius:20px;padding:2px 7px;margin-left:6px;vertical-align:middle;}.source-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:600;color:var(--muted);background:#f7f5ff;border:1px solid var(--border);border-radius:20px;padding:2px 7px;margin-left:4px;vertical-align:middle;}
+    .skeleton{background:linear-gradient(90deg,#f0ecff 25%,#e8e3fa 50%,#f0ecff 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;}@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}.skeleton-card{background:#fff;border:1.5px solid var(--border);border-radius:20px;padding:24px;height:220px;}
+    .section-heading{margin-bottom:48px;text-align:center;}.section-heading h2{font-size:clamp(28px,4vw,46px);}.count-pill{display:inline-block;background:linear-gradient(135deg,rgba(232,25,122,.12),rgba(124,58,237,.12));color:var(--pink);border:1px solid rgba(232,25,122,.25);border-radius:20px;font-size:12px;font-weight:600;padding:2px 12px;margin-left:8px;vertical-align:middle;}
+    .submit-section{background:linear-gradient(160deg,#f5f0ff 0%,#fff0f9 50%,#f0f7ff 100%);position:relative;overflow:hidden;}.submit-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 40% 40% at 10% 20%,rgba(232,25,122,.06),transparent),radial-gradient(ellipse 40% 40% at 90% 80%,rgba(124,58,237,.06),transparent);}.form-card{background:#fff;border:1px solid var(--border);border-radius:24px;padding:44px;box-shadow:0 20px 60px rgba(124,58,237,.12);position:relative;z-index:1;}.form-group{margin-bottom:18px;}.form-group label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:block;}.form-control-custom{width:100%;padding:12px 16px;background:#faf8ff;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;transition:all .25s;outline:none;}.form-control-custom:focus{border-color:var(--violet);box-shadow:0 0 0 4px rgba(124,58,237,.08);background:#fff;}.form-control-custom::placeholder{color:var(--muted);}textarea.form-control-custom{resize:vertical;min-height:120px;}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}@media(max-width:560px){.form-row{grid-template-columns:1fr;}.form-card{padding:26px 18px;}}
+    .star-input{display:flex;flex-direction:row-reverse;gap:4px;justify-content:flex-start;}.star-input input{display:none;}.star-input label{font-size:32px;color:#ddd;cursor:pointer;transition:color .15s;line-height:1;}.star-input label:hover,.star-input input:checked~label{color:#f59e0b;}.star-input label:hover~label{color:#f59e0b;}
+    .cat-scores{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}@media(max-width:460px){.cat-scores{grid-template-columns:1fr;}}.cat-score-item label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px;}.mini-stars{display:flex;flex-direction:row-reverse;gap:3px;justify-content:flex-start;}.mini-stars input{display:none;}.mini-stars label{font-size:24px;color:#ddd;cursor:pointer;transition:color .15s;line-height:1;}.mini-stars label:hover,.mini-stars input:checked~label,.mini-stars label:hover~label{color:#f59e0b;}
+    .upload-zone{border:2px dashed var(--border);border-radius:14px;padding:28px;text-align:center;cursor:pointer;transition:all .25s;background:#faf8ff;position:relative;}.upload-zone:hover,.upload-zone.drag-over{border-color:var(--violet);background:#f5f0ff;}.upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}.upload-icon{font-size:36px;margin-bottom:10px;display:block;}.upload-zone p{font-size:13px;color:var(--muted);margin:0;}.preview-container{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;}.preview-item{position:relative;width:80px;height:80px;border-radius:10px;overflow:hidden;border:2px solid var(--border);}.preview-item img{width:100%;height:100%;object-fit:cover;}.preview-remove{position:absolute;top:2px;right:2px;background:rgba(220,38,38,.85);color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+    .btn-primary-custom{display:inline-flex;align-items:center;gap:9px;background:var(--grad-brand);color:#fff;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;letter-spacing:1px;text-transform:uppercase;padding:14px 32px;border-radius:10px;box-shadow:0 6px 28px rgba(232,25,122,.35);transition:all .25s;-webkit-text-fill-color:#fff;border:none;cursor:pointer;}.btn-primary-custom:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(232,25,122,.5);opacity:.95;}.btn-primary-custom:disabled{opacity:.6;cursor:not-allowed;transform:none;}.btn-load{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--border);color:var(--text);font-family:'Rajdhani',sans-serif;font-weight:600;font-size:14px;letter-spacing:1px;text-transform:uppercase;padding:12px 28px;border-radius:10px;transition:all .25s;background:#fff;cursor:pointer;}.btn-load:hover{border-color:var(--pink);color:var(--pink);}
+    .img-modal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.82);align-items:center;justify-content:center;cursor:pointer;}.img-modal.open{display:flex;}.img-modal img{max-width:90vw;max-height:88vh;border-radius:16px;box-shadow:0 30px 80px rgba(0,0,0,.5);cursor:default;}.modal-close{position:absolute;top:20px;right:20px;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:22px;cursor:pointer;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .25s;}.modal-close:hover{background:rgba(255,255,255,.3);}
+    .grad-divider{height:4px;background:var(--grad-brand);}footer{background:var(--grad-dark-footer);padding:50px 24px 40px;text-align:center;}.footer-logo{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;color:#fff;margin-bottom:14px;display:block;}.footer-logo span{background:var(--grad-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}.footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin:18px 0;}.footer-links a{font-size:13px;color:rgba(255,255,255,.5);transition:color .25s;}.footer-links a:hover{color:#fff;}.scroll-top{position:fixed;bottom:28px;right:28px;z-index:500;width:46px;height:46px;border-radius:50%;background:var(--grad-brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;border:none;cursor:pointer;box-shadow:0 6px 22px rgba(232,25,122,.45);opacity:0;transform:translateY(20px);transition:all .3s;}.scroll-top.visible{opacity:1;transform:translateY(0);}.fade-up{opacity:0;transform:translateY(28px);transition:opacity .7s,transform .7s;}.fade-up.visible{opacity:1;transform:translateY(0);}
+    #formSuccess{display:none;margin-top:14px;background:rgba(5,150,105,.08);border:1px solid rgba(5,150,105,.22);border-radius:10px;padding:14px;text-align:center;color:var(--green);font-size:14px;}#formError{display:none;margin-top:14px;background:rgba(220,38,38,.07);border:1px solid rgba(220,38,38,.22);border-radius:10px;padding:14px;text-align:center;color:#dc2626;font-size:14px;}.no-reviews{text-align:center;padding:60px 20px;color:var(--muted);}.no-reviews i{font-size:42px;display:block;margin-bottom:14px;opacity:.3;}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-inner">
+ <a href="https://affscash.net" class="nav-logo">Affs<span>cash</span></a>    <ul class="nav-links">
+      <li><a href="https://affscash.net">Home</a></li>
+      <li><a href="reviews.html" style="color:var(--pink);font-weight:700">Reviews</a></li>
+      <li><a href="https://affscash.net/blog/blog.html">Blog</a></li>
+      <li><a href="https://app.affscash.net/register" class="btn-signup" target="_blank">Sign Up</a></li>
+      <li><a href="https://app.affscash.net" class="btn-login" target="_blank">Login</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="https://affscash.net">Home</a>
+    <a href="https://affscash.net/reviews/reviews.htmll">Reviews</a>
+    <a href="https://app.affscash.net/register" target="_blank">Sign Up Free</a>
+    <a href="https://app.affscash.net" target="_blank">Login</a>
+  </div>
+</header>
+
+<section class="reviews-hero">
+  <div class="container inner">
+    <div class="eyebrow"><span class="pulse"></span> Affiliate Reviews &nbsp;&middot;&nbsp; Verified Payments</div>
+    <h1 style="font-size:clamp(34px,5vw,58px);margin-bottom:14px">What Affiliates Say About <em>Affscash</em></h1>
+    <p style="color:var(--muted);font-size:15px;max-width:600px;margin:0 auto 10px">Verified reviews from real affiliates on <a href="https://www.affpaying.com/affscashnet" target="_blank" style="color:var(--violet);font-weight:600">Affpaying.com</a> &mdash; the industry&rsquo;s most trusted review platform.</p>
+    <div class="score-bar">
+      <div class="score-card"><div class="score-num" id="scoreOffers">&#8212;</div><div class="stars-row"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div><div class="score-label">Offers</div></div>
+      <div class="score-card"><div class="score-num" id="scorePayout">&#8212;</div><div class="stars-row"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div><div class="score-label">Payout</div></div>
+      <div class="score-card"><div class="score-num" id="scoreTracking">&#8212;</div><div class="stars-row"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div><div class="score-label">Tracking</div></div>
+      <div class="score-card"><div class="score-num" id="scoreSupport">&#8212;</div><div class="stars-row"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div><div class="score-label">Support</div></div>
+    </div>
+    <div class="mt-3"><span class="total-pill" id="totalPill">&#9733; Loading reviews&hellip;</span></div>
+    <div style="max-width:440px;margin:28px auto 0;background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px 24px;box-shadow:0 4px 18px rgba(124,58,237,.08);">
+      <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;color:var(--text);margin-bottom:14px;">Rating Distribution</div>
+      <div id="distBars"></div>
+    </div>
+  </div>
+</section>
+
+<div class="grad-divider"></div>
+
+<section style="background:linear-gradient(160deg,#fdf8ff 0%,#f5f0ff 40%,#fff0f9 80%,#f0f7ff 100%);">
+  <div class="container">
+    <div class="section-heading">
+      <div class="eyebrow"><span class="pulse"></span> All Reviews</div>
+      <h2>Verified <em>Affiliate</em> Reviews <span class="count-pill" id="visibleCount">&hellip;</span></h2>
+      <p style="color:var(--muted);font-size:13px;margin-top:8px">Real reviews &middot; No paid placements &middot; Moderated for authenticity</p>
+    </div>
+    <div class="filter-row">
+      <button class="ftab active" data-filter="all">All Reviews</button>
+      <button class="ftab" data-filter="proof">With Payment Proof</button>
+    </div>
+    <div class="reviews-grid" id="reviewsGrid">
+      <div class="skeleton-card"><div class="skeleton" style="height:100%"></div></div>
+      <div class="skeleton-card"><div class="skeleton" style="height:100%"></div></div>
+      <div class="skeleton-card"><div class="skeleton" style="height:100%"></div></div>
+    </div>
+    <div style="text-align:center;margin-top:36px;display:none" id="loadMoreWrap">
+      <button class="btn-load" onclick="loadMore()"><i class="fa-solid fa-chevron-down"></i> Load More Reviews</button>
+    </div>
+    <div style="text-align:center;margin-top:20px">
+      <a href="https://www.affpaying.com/affscashnet" target="_blank" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);font-weight:500;"><i class="fa-solid fa-arrow-up-right-from-square"></i> View all reviews on Affpaying.com</a>
+    </div>
+  </div>
+</section>
+
+<section class="submit-section" id="submit-review">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
+        <div class="section-heading fade-up">
+          <div class="eyebrow"><span class="pulse"></span> Share Your Experience</div>
+          <h2>Submit Your <em>Review</em> &amp; Payment Proof</h2>
+          <p style="color:var(--muted);font-size:14px;max-width:560px;margin:10px auto 0">Worked with Affscash? Share your experience and optionally upload a payment screenshot. Your review will appear after admin approval.</p>
+        </div>
+        <div class="form-card fade-up">
+          <form id="reviewForm" onsubmit="submitReview(event)" enctype="multipart/form-data">
+            <div class="form-row">
+              <div class="form-group"><label>Your Name *</label><input type="text" class="form-control-custom" name="name" placeholder="John Doe" required></div>
+              <div class="form-group"><label>Email (not published) *</label><input type="email" class="form-control-custom" name="email" placeholder="you@example.com" required></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Website / Profile (optional)</label><input type="text" class="form-control-custom" name="website" placeholder="Affpaying username or URL"></div>
+              <div class="form-group"><label>Country</label><input type="text" class="form-control-custom" name="country" placeholder="e.g. United States"></div>
+            </div>
+            <div class="form-group">
+              <label>Overall Rating *</label>
+              <div class="star-input">
+                <input type="radio" id="s5" name="rating" value="5"><label for="s5">&#9733;</label>
+                <input type="radio" id="s4" name="rating" value="4"><label for="s4">&#9733;</label>
+                <input type="radio" id="s3" name="rating" value="3"><label for="s3">&#9733;</label>
+                <input type="radio" id="s2" name="rating" value="2"><label for="s2">&#9733;</label>
+                <input type="radio" id="s1" name="rating" value="1"><label for="s1">&#9733;</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Rate Each Category</label>
+              <div class="cat-scores">
+                <div class="cat-score-item"><label>Offers</label><div class="mini-stars"><input type="radio" id="o5" name="offers" value="5"><label for="o5">&#9733;</label><input type="radio" id="o4" name="offers" value="4"><label for="o4">&#9733;</label><input type="radio" id="o3" name="offers" value="3"><label for="o3">&#9733;</label><input type="radio" id="o2" name="offers" value="2"><label for="o2">&#9733;</label><input type="radio" id="o1" name="offers" value="1"><label for="o1">&#9733;</label></div></div>
+                <div class="cat-score-item"><label>Payout</label><div class="mini-stars"><input type="radio" id="p5" name="payout" value="5"><label for="p5">&#9733;</label><input type="radio" id="p4" name="payout" value="4"><label for="p4">&#9733;</label><input type="radio" id="p3" name="payout" value="3"><label for="p3">&#9733;</label><input type="radio" id="p2" name="payout" value="2"><label for="p2">&#9733;</label><input type="radio" id="p1" name="payout" value="1"><label for="p1">&#9733;</label></div></div>
+                <div class="cat-score-item"><label>Tracking</label><div class="mini-stars"><input type="radio" id="t5" name="tracking" value="5"><label for="t5">&#9733;</label><input type="radio" id="t4" name="tracking" value="4"><label for="t4">&#9733;</label><input type="radio" id="t3" name="tracking" value="3"><label for="t3">&#9733;</label><input type="radio" id="t2" name="tracking" value="2"><label for="t2">&#9733;</label><input type="radio" id="t1" name="tracking" value="1"><label for="t1">&#9733;</label></div></div>
+                <div class="cat-score-item"><label>Support</label><div class="mini-stars"><input type="radio" id="su5" name="support" value="5"><label for="su5">&#9733;</label><input type="radio" id="su4" name="support" value="4"><label for="su4">&#9733;</label><input type="radio" id="su3" name="support" value="3"><label for="su3">&#9733;</label><input type="radio" id="su2" name="support" value="2"><label for="su2">&#9733;</label><input type="radio" id="su1" name="support" value="1"><label for="su1">&#9733;</label></div></div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Your Review *</label>
+              <textarea class="form-control-custom" name="review" placeholder="Tell other affiliates about your experience with Affscash — payouts, offers, support, tracking..." required></textarea>
+            </div>
+            <div class="form-group">
+              <label>Payment Screenshot (optional)</label>
+              <div class="upload-zone" id="uploadZone">
+                <input type="file" id="screenshotInput" name="proof" accept="image/*" onchange="handleFiles(this.files)">
+                <span class="upload-icon">&#128247;</span>
+                <p><strong style="color:var(--violet)">Click to upload</strong> or drag &amp; drop your payment proof<br><span style="font-size:11px">PNG, JPG, WEBP &middot; Max 5MB</span></p>
+              </div>
+              <div class="preview-container" id="previewContainer"></div>
+            </div>
+            <button type="submit" class="btn-primary-custom" id="submitBtn" style="width:100%;justify-content:center;margin-top:6px"><i class="fa-solid fa-paper-plane"></i> Submit Review</button>
+            <div id="formSuccess">&#10003; Thank you! Your review has been submitted and will appear after moderation &mdash; usually within 24 hours.</div>
+            <div id="formError">&#10007; <span id="errText">Please fill in all required fields and select a rating.</span></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="grad-divider"></div>
+<footer>
+  <div class="container">
+    <span class="footer-logo">Affs<span>cash</span></span>
+    <div class="footer-links">
+      <a href="https://affscash.net">Home</a>
+      <a href="https://affscash.net/blog/blog.html">blog</a>
+      <a href="https://affscash.net/TRC.html" target="_blank">Terms</a>
+      <a href="https://app.affscash.net/register" target="_blank">Sign Up</a>
+      <a href="https://app.affscash.net" target="_blank">Login</a>
+    </div>
+    <div style="display:flex;justify-content:center;gap:18px;margin:18px 0">
+      <a href="https://t.me/affscashnet" target="_blank" style="color:rgba(255,255,255,.45);font-size:22px"><i class="fa-brands fa-telegram"></i></a>
+      <a href="https://www.linkedin.com/company/89707239/" target="_blank" style="color:rgba(255,255,255,.45);font-size:22px"><i class="fa-brands fa-linkedin"></i></a>
+      <a href="https://www.facebook.com/affscash/" target="_blank" style="color:rgba(255,255,255,.45);font-size:22px"><i class="fa-brands fa-facebook"></i></a>
+    </div>
+    <p style="font-size:12px;color:rgba(255,255,255,.4)">&copy; 2019&ndash;2026 EdgeSoft Ltd. All Rights Reserved. | Affscash CPA Affiliate Network</p>
+  </div>
+</footer>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-chevron-up"></i></button>
+
+<div class="img-modal" id="imgModal" onclick="closeModal()">
+  <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+  <img src="" id="modalImg" alt="Payment proof" onclick="event.stopPropagation()">
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ── CONFIG (install.php patches this line) ──────────────────────
+var API_BASE = '/reviews/api'; // auto-patched by install.php
+
+// ── STATE ───────────────────────────────────────────────────────
+var currentFilter = 'all';
+var currentPage   = 1;
+var isLoading     = false;
+
+// ── AVATAR COLORS ────────────────────────────────────────────────
+var AVATAR_COLORS = [
+  'linear-gradient(135deg,#e8197a,#7c3aed)',
+  'linear-gradient(135deg,#7c3aed,#2563eb)',
+  'linear-gradient(135deg,#059669,#0ea5e9)',
+  'linear-gradient(135deg,#f97316,#e8197a)',
+  'linear-gradient(135deg,#2563eb,#0ea5e9)',
+  'linear-gradient(135deg,#d97706,#e8197a)',
+  'linear-gradient(135deg,#a855f7,#ec4899)',
+  'linear-gradient(135deg,#0ea5e9,#059669)',
+];
+function avatarColor(name){ var h=0; for(var i=0;i<name.length;i++) h=(h*31+name.charCodeAt(i))&0xffff; return AVATAR_COLORS[h%AVATAR_COLORS.length]; }
+function initials(name){ return name.trim().split(/\s+/).slice(0,2).map(function(w){return w[0];}).join('').toUpperCase(); }
+function starsHtml(n){ var h=''; for(var i=0;i<5;i++) h+=(i<n?'<i class="fa-solid fa-star"></i>':'<i class="fa-regular fa-star" style="color:#ddd"></i>'); return h; }
+
+// ── ESCAPE HELPERS ───────────────────────────────────────────────
+function escHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escAttr(s){ return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+// ── FADE-UP OBSERVER ─────────────────────────────────────────────
+var observer = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.1});
+function observeCards(){ document.querySelectorAll('.review-card.fade-up:not(.visible)').forEach(function(el){ observer.observe(el); }); }
+document.querySelectorAll('.fade-up').forEach(function(el){ observer.observe(el); });
+
+// ── BUILD REVIEW CARD ────────────────────────────────────────────
+function buildCard(r){
+  var proofHtml='';
+  if(r.proof_image){
+    var safeUrl=escAttr(r.proof_image);
+    proofHtml='<div style="margin-top:10px">'
+      +'<div class="proof-badge"><i class="fa-solid fa-check-circle"></i> Payment Proof Attached</div>'
+      +'<img class="proof-img" src="'+safeUrl+'" alt="Payment proof" loading="lazy" data-msrc="'+safeUrl+'" onerror="this.parentElement.style.display=\'none\'">'
+      +'</div>';
+  }
+  var scores='';
+  if(r.offers)   scores+='<div class="rscore">Offers <span>'+r.offers+'/5</span></div>';
+  if(r.payout)   scores+='<div class="rscore">Payout <span>'+r.payout+'/5</span></div>';
+  if(r.tracking) scores+='<div class="rscore">Tracking <span>'+r.tracking+'/5</span></div>';
+  if(r.support)  scores+='<div class="rscore">Support <span>'+r.support+'/5</span></div>';
+  return '<div class="review-card fade-up">'
+    +'<div class="review-header">'
+    +'<div class="review-avatar" style="background:'+avatarColor(r.name)+'">'+initials(r.name)+'</div>'
+    +'<div class="review-meta"><h4>'+escHtml(r.name)
+    +(r.country?' <span style="font-size:11px;color:var(--muted);font-weight:400">&#128205; '+escHtml(r.country)+'</span>':'')
+    +'<span class="verified-badge"><i class="fa-solid fa-check" style="font-size:8px"></i> Verified</span></h4>'
+    +'<div class="date"><i class="fa-regular fa-calendar"></i> '+escHtml(r.date_label)+'</div>'
+    +'</div></div>'
+    +'<div class="review-stars">'+starsHtml(r.rating)+'</div>'
+    +'<p class="review-text">'+escHtml(r.review_text)+'</p>'
+    +(scores?'<div class="review-scores">'+scores+'</div>':'')
+    +proofHtml+'</div>';
+}
+
+// ── UPDATE SCORE CARDS ───────────────────────────────────────────
+// FIX 1: API returns avg_offers/avg_payout/avg_tracking/avg_support (not offers/payout/…)
+// FIX 2: use innerHTML so the '—' fallback entity renders correctly (not as literal text)
+function updateScoreCards(scores, total, dist){
+  var map={avg_offers:'scoreOffers',avg_payout:'scorePayout',avg_tracking:'scoreTracking',avg_support:'scoreSupport'};
+  Object.keys(map).forEach(function(k){
+    var el=document.getElementById(map[k]);
+    if(el) el.innerHTML = (scores && scores[k] && parseFloat(scores[k]) > 0)
+      ? parseFloat(scores[k]).toFixed(2)
+      : '&mdash;';
+  });
+  var pill=document.getElementById('totalPill');
+  if(pill) pill.textContent='\u2605 '+(total||0)+' Verified Reviews';
+  var cnt=document.getElementById('visibleCount');
+  if(cnt) cnt.textContent=(total||0);
+  if(dist) buildDistBars(dist,total);
+}
+
+// ── DISTRIBUTION BARS ────────────────────────────────────────────
+function buildDistBars(dist,total){
+  var rows=[
+    {label:'Excellent',key:5,color:'var(--green)'},
+    {label:'Very Good',key:4,color:'#0ea5e9'},
+    {label:'Average',  key:3,color:'#f59e0b'},
+    {label:'Poor',     key:2,color:'#f97316'},
+    {label:'Terrible', key:1,color:'#ef4444'},
+  ];
+  var gt=total||1;
+  document.getElementById('distBars').innerHTML=rows.map(function(d){
+    var count=(dist&&dist[d.key])?dist[d.key]:0;
+    var pct=Math.round(count/gt*100)||0;
+    return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'
+      +'<span style="font-size:11px;color:var(--muted);width:68px;text-align:right;flex-shrink:0">'+d.label+'</span>'
+      +'<div style="flex:1;height:10px;background:#f0ecff;border-radius:5px;overflow:hidden">'
+      +'<div style="height:100%;background:'+d.color+';border-radius:5px;width:'+pct+'%;transition:width 1.5s .2s ease"></div>'
+      +'</div>'
+      +'<span style="font-size:11px;font-weight:700;color:var(--text);width:22px;flex-shrink:0;text-align:right">'+count+'</span>'
+      +'</div>';
+  }).join('');
+}
+// Render immediately with static Affpaying data (overwritten by live API on load)
+buildDistBars({5:87,2:1,1:1},89);
+
+// ── LOAD REVIEWS ─────────────────────────────────────────────────
+function loadReviews(filter,page,append){
+  if(isLoading) return;
+  isLoading=true;
+  var grid=document.getElementById('reviewsGrid');
+  var lmw=document.getElementById('loadMoreWrap');
+  if(!append){
+    grid.innerHTML='<div class="skeleton-card"><div class="skeleton" style="height:100%"></div></div>'
+      +'<div class="skeleton-card"><div class="skeleton" style="height:100%"></div></div>'
+      +'<div class="skeleton-card"><div class="skeleton" style="height:100%"></div></div>';
+    lmw.style.display='none';
+  }
+  fetch(API_BASE+'/get_reviews.php?filter='+filter+'&page='+page)
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      isLoading=false;
+      if(!d.ok){ grid.innerHTML='<div class="no-reviews" style="grid-column:1/-1"><i class="fa-regular fa-face-sad-tear"></i>Could not load reviews. Please refresh.</div>'; return; }
+      if(!append){ grid.innerHTML=''; updateScoreCards(d.scores,d.total,d.dist); }
+      if(d.reviews.length===0&&!append){
+        grid.innerHTML='<div class="no-reviews" style="grid-column:1/-1"><i class="fa-regular fa-face-smile"></i>No reviews yet. Be the first to leave one!</div>';
+      } else {
+        d.reviews.forEach(function(r){ grid.innerHTML+=buildCard(r); });
+        observeCards();
+        // Wire proof image modal clicks
+        grid.querySelectorAll('.proof-img[data-msrc]').forEach(function(img){
+          img.addEventListener('click',function(){ openModal(this.getAttribute('data-msrc')); });
+        });
+      }
+      document.getElementById('visibleCount').textContent=d.total;
+      document.getElementById('totalPill').textContent='\u2605 '+d.total+' Verified Reviews';
+      lmw.style.display=d.has_more?'block':'none';
+    })
+    .catch(function(){
+      isLoading=false;
+      document.getElementById('reviewsGrid').innerHTML='<div class="no-reviews" style="grid-column:1/-1"><i class="fa-solid fa-wifi"></i>Could not connect to server.</div>';
+    });
+}
+function loadMore(){ currentPage++; loadReviews(currentFilter,currentPage,true); }
+
+// ── FILTER TABS ───────────────────────────────────────────────────
+document.querySelectorAll('.ftab').forEach(function(tab){
+  tab.addEventListener('click',function(){
+    document.querySelectorAll('.ftab').forEach(function(t){t.classList.remove('active');});
+    tab.classList.add('active');
+    currentFilter=tab.getAttribute('data-filter');
+    currentPage=1;
+    loadReviews(currentFilter,1,false);
+  });
+});
+
+// ── IMAGE MODAL ───────────────────────────────────────────────────
+function openModal(src){ document.getElementById('modalImg').src=src; document.getElementById('imgModal').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeModal(){ document.getElementById('imgModal').classList.remove('open'); document.body.style.overflow=''; }
+document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeModal(); });
+
+// ── SCROLL TOP ────────────────────────────────────────────────────
+window.addEventListener('scroll',function(){ document.getElementById('scrollTop').classList.toggle('visible',window.scrollY>400); });
+
+// ── HAMBURGER ─────────────────────────────────────────────────────
+var ham=document.getElementById('hamburger'),mob=document.getElementById('mobile-menu');
+if(ham&&mob){ ham.addEventListener('click',function(){ham.classList.toggle('open');mob.classList.toggle('open');}); }
+
+// ── FILE UPLOAD PREVIEW ───────────────────────────────────────────
+function handleFiles(files){
+  var c=document.getElementById('previewContainer'); c.innerHTML='';
+  if(files.length>0){
+    var reader=new FileReader();
+    reader.onload=function(e){
+      var d=document.createElement('div'); d.className='preview-item';
+      d.innerHTML='<img src="'+e.target.result+'" alt="preview"><button class="preview-remove" type="button" onclick="clearProof()">&times;</button>';
+      c.appendChild(d);
+    };
+    reader.readAsDataURL(files[0]);
+  }
+}
+function clearProof(){ document.getElementById('previewContainer').innerHTML=''; document.getElementById('screenshotInput').value=''; }
+var zone=document.getElementById('uploadZone');
+zone.addEventListener('dragover',function(e){e.preventDefault();zone.classList.add('drag-over');});
+zone.addEventListener('dragleave',function(){zone.classList.remove('drag-over');});
+zone.addEventListener('drop',function(e){e.preventDefault();zone.classList.remove('drag-over');if(e.dataTransfer.files.length)handleFiles(e.dataTransfer.files);});
+
+// ── SUBMIT REVIEW ─────────────────────────────────────────────────
+function submitReview(e){
+  e.preventDefault();
+  var sEl=document.getElementById('formSuccess'),erEl=document.getElementById('formError'),etEl=document.getElementById('errText');
+  sEl.style.display='none'; erEl.style.display='none';
+  var overall=document.querySelector('input[name="rating"]:checked');
+  if(!overall){ etEl.textContent='Please select an overall star rating (1-5 stars).'; erEl.style.display='block'; return; }
+  var btn=document.getElementById('submitBtn');
+  btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Submitting&hellip;';
+  fetch(API_BASE+'/submit_review.php',{method:'POST',body:new FormData(document.getElementById('reviewForm'))})
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-paper-plane"></i> Submit Review';
+      if(d.ok){
+        sEl.style.display='block'; sEl.scrollIntoView({behavior:'smooth',block:'nearest'});
+        document.getElementById('reviewForm').reset();
+        document.getElementById('previewContainer').innerHTML='';
+        setTimeout(function(){sEl.style.display='none';},10000);
+      } else {
+        etEl.textContent=d.error||'Something went wrong.'; erEl.style.display='block';
+      }
+    })
+    .catch(function(){
+      btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-paper-plane"></i> Submit Review';
+      etEl.textContent='Network error. Please try again.'; erEl.style.display='block';
+    });
+}
+
+// ── INIT ─────────────────────────────────────────────────────────
+loadReviews('all',1,false);
+</script>
+</body>
+</html>

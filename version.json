@@ -1,0 +1,7 @@
+{
+    "version": "1.5.0",
+    "build": "20260325",
+    "schema_version": 5,
+    "min_php": "7.4",
+    "release_notes": "Advanced payout management, fraud detection, tracking domain management, smartlink custom payouts, auto-migration system"
+}

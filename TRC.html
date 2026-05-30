@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EliteAli | Terms & Conditions</title>
+  <link rel="icon" type="x-icon" href="x-icon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --white:        #ffffff;
+      --bg:           #ffffff;
+      --bg2:          #f7f5ff;
+      --card:         #ffffff;
+      --border:       #ede8fc;
+      --text:         #1a1535;
+      --muted:        #7c7a9e;
+      --r:            14px;
+      --pink:         #e8197a;
+      --pink-light:   #ff4da6;
+      --violet:       #7c3aed;
+      --blue:         #2563eb;
+      --cyan:         #0ea5e9;
+      --green:        #059669;
+      --gold:         #d97706;
+      --grad-brand:      linear-gradient(135deg, #e8197a 0%, #7c3aed 50%, #2563eb 100%);
+      --grad-cool:       linear-gradient(135deg, #2563eb 0%, #0ea5e9 60%, #059669 100%);
+      --grad-hero-bg:    linear-gradient(145deg, #fdf8ff 0%, #f5f0ff 30%, #fff0f9 65%, #f0f7ff 100%);
+      --grad-dark-footer:linear-gradient(135deg, #1a1535 0%, #2d1b69 50%, #1a0030 100%);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--white);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    a { color: var(--pink); text-decoration: none; transition: color .25s; }
+    a:hover { color: var(--pink-light); }
+
+    h1,h2,h3,h4,h5,h6 {
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.15;
+    }
+
+    em {
+      font-style: normal;
+      background: var(--grad-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ─── HEADER ─── */
+    .site-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      box-shadow: 0 2px 24px rgba(124,58,237,.08);
+    }
+    .nav-inner {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      max-width: 1280px; margin: 0 auto; height: 68px;
+    }
+    .nav-logo {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 26px; font-weight: 700;
+      color: var(--text); letter-spacing: 1px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .nav-logo span {
+      background: var(--grad-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-logo img { height: 40px; width: auto; }
+    .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+    .nav-links a {
+      color: var(--text); font-size: 13px; font-weight: 500;
+      padding: 7px 11px; border-radius: 8px; transition: all .22s;
+    }
+    .nav-links a:hover { background: rgba(232,25,122,.07); color: var(--pink); }
+    .nav-links .btn-login {
+      background: var(--grad-brand); color: #fff;
+      padding: 8px 20px; border-radius: 8px; font-weight: 600;
+      box-shadow: 0 4px 16px rgba(232,25,122,.3);
+      -webkit-text-fill-color: #fff;
+    }
+    .nav-links .btn-login:hover { opacity: .88; transform: translateY(-1px); }
+    .nav-links .btn-signup {
+      border: 2px solid transparent;
+      background: linear-gradient(white,white) padding-box, var(--grad-brand) border-box;
+      color: var(--pink); padding: 7px 18px; border-radius: 8px; font-weight: 600;
+    }
+
+    .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:8px; background:none; border:none; }
+    .hamburger span { display:block; width:24px; height:2px; background:var(--text); border-radius:2px; transition:all .3s; }
+    .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity:0; }
+    .hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+    .mobile-menu {
+      display:none; flex-direction:column;
+      background:var(--white); border-top:1px solid var(--border);
+      padding:16px 24px 20px;
+    }
+    .mobile-menu.open { display:flex; }
+    .mobile-menu a { color:var(--text); padding:12px 0; border-bottom:1px solid var(--border); font-size:14px; font-weight:500; }
+    .mobile-menu a:last-child { border-bottom:none; }
+
+    /* ─── HERO BANNER ─── */
+    .trc-hero {
+      padding-top: 68px;
+      background: var(--grad-hero-bg);
+      position: relative; overflow: hidden;
+    }
+    .trc-hero::before {
+      content: '';
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 50% 60% at 80% 30%, rgba(124,58,237,.12), transparent),
+        radial-gradient(ellipse 40% 45% at 10% 70%, rgba(232,25,122,.09), transparent);
+    }
+    .trc-hero::after {
+      content: '';
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        linear-gradient(rgba(124,58,237,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124,58,237,.025) 1px, transparent 1px);
+      background-size: 44px 44px;
+    }
+    .trc-hero-inner {
+      position: relative; z-index: 2;
+      max-width: 900px; margin: 0 auto;
+      padding: 72px 24px 56px;
+      text-align: center;
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 700; letter-spacing: 4px;
+      text-transform: uppercase; margin-bottom: 16px;
+      background: var(--grad-brand);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .eyebrow .pulse {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--pink); flex-shrink: 0;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(1.6)} }
+    .trc-hero h1 {
+      font-size: clamp(36px, 5vw, 58px);
+      margin-bottom: 16px; color: var(--text);
+    }
+    .trc-hero p {
+      color: var(--muted); font-size: 15px; max-width: 620px;
+      margin: 0 auto 28px;
+    }
+    .trc-meta-pills {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      justify-content: center;
+    }
+    .trc-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; padding: 7px 16px;
+      border-radius: 30px; border: 1px solid var(--border);
+      background: rgba(255,255,255,.8); color: var(--muted);
+      backdrop-filter: blur(8px);
+    }
+    .trc-pill i { color: var(--pink); }
+
+    /* ─── GRAD DIVIDER ─── */
+    .grad-divider { height: 4px; background: var(--grad-brand); }
+
+    /* ─── TOC SIDEBAR ─── */
+    .trc-body {
+      max-width: 1200px; margin: 0 auto;
+      padding: 64px 24px 80px;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+    @media(max-width: 900px) {
+      .trc-body { grid-template-columns: 1fr; }
+      .trc-sidebar { display: none; }
+    }
+
+    .trc-sidebar {
+      position: sticky; top: 88px;
+    }
+    .sidebar-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 18px;
+      padding: 24px 20px;
+      box-shadow: 0 8px 32px rgba(124,58,237,.08);
+    }
+    .sidebar-card h4 {
+      font-size: 13px; text-transform: uppercase;
+      letter-spacing: 2px; color: var(--muted);
+      margin-bottom: 16px; padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .toc-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+    .toc-list a {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 500; color: var(--text);
+      padding: 8px 10px; border-radius: 8px;
+      transition: all .22s;
+    }
+    .toc-list a:hover { background: rgba(232,25,122,.06); color: var(--pink); }
+    .toc-list a .toc-num {
+      font-family: 'Rajdhani', sans-serif; font-size: 11px;
+      font-weight: 700; color: var(--muted);
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 5px; padding: 1px 6px; flex-shrink: 0;
+      min-width: 28px; text-align: center;
+    }
+    .toc-list a:hover .toc-num {
+      background: rgba(232,25,122,.1); border-color: rgba(232,25,122,.25); color: var(--pink);
+    }
+
+    .sidebar-cta {
+      margin-top: 16px;
+      background: var(--grad-brand);
+      border-radius: 14px; padding: 20px;
+      text-align: center;
+    }
+    .sidebar-cta p { font-size: 13px; color: rgba(255,255,255,.8); margin-bottom: 12px; }
+    .sidebar-cta a {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,.15); backdrop-filter: blur(8px);
+      color: #fff; -webkit-text-fill-color: #fff;
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 8px; padding: 9px 18px;
+      font-size: 13px; font-weight: 700;
+      font-family: 'Rajdhani', sans-serif; letter-spacing: 1px;
+      text-transform: uppercase; transition: all .22s;
+    }
+    .sidebar-cta a:hover { background: rgba(255,255,255,.28); }
+
+    /* ─── MAIN CONTENT ─── */
+    .trc-content { min-width: 0; }
+
+    /* Intro card */
+    .intro-card {
+      background: linear-gradient(135deg, rgba(232,25,122,.04), rgba(124,58,237,.04), rgba(37,99,235,.04));
+      border: 1.5px solid rgba(124,58,237,.14);
+      border-radius: 18px; padding: 28px 30px; margin-bottom: 40px;
+      position: relative; overflow: hidden;
+    }
+    .intro-card::before {
+      content: '';
+      position: absolute; top: -40px; right: -40px;
+      width: 160px; height: 160px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,25,122,.08), transparent);
+      pointer-events: none;
+    }
+    .intro-card p { color: var(--text); font-size: 14px; line-height: 1.85; }
+
+    /* Section */
+    .trc-section {
+      margin-bottom: 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 18px; overflow: hidden;
+      box-shadow: 0 4px 18px rgba(124,58,237,.05);
+      transition: box-shadow .3s;
+    }
+    .trc-section:hover {
+      box-shadow: 0 8px 32px rgba(124,58,237,.1);
+      border-color: rgba(124,58,237,.2);
+    }
+
+    .section-header {
+      display: flex; align-items: center; gap: 14px;
+      padding: 20px 24px;
+      background: var(--white);
+      cursor: pointer;
+      user-select: none;
+      transition: background .22s;
+    }
+    .section-header:hover { background: var(--bg2); }
+
+    .section-num {
+      font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700;
+      background: var(--grad-brand); color: #fff; -webkit-text-fill-color: #fff;
+      border-radius: 8px; padding: 4px 10px; flex-shrink: 0;
+      min-width: 38px; text-align: center;
+    }
+    .section-header h2 {
+      font-size: 18px; color: var(--text); flex: 1;
+      margin: 0;
+    }
+    .section-chevron {
+      font-size: 13px; color: var(--muted);
+      transition: transform .3s; flex-shrink: 0;
+    }
+    .trc-section.open .section-chevron { transform: rotate(180deg); }
+
+    .section-body {
+      padding: 0 24px;
+      max-height: 0; overflow: hidden;
+      transition: max-height .4s cubic-bezier(.4,0,.2,1), padding .3s;
+      background: #faf8ff;
+    }
+    .trc-section.open .section-body {
+      max-height: 3000px;
+      padding: 0 24px 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .section-body p {
+      font-size: 14px; color: #3d3560; line-height: 1.9;
+      margin-bottom: 14px;
+    }
+    .section-body p:last-child { margin-bottom: 0; }
+
+    .section-body ul {
+      margin: 0 0 16px 0; padding: 0;
+      list-style: none; display: flex; flex-direction: column; gap: 8px;
+    }
+    .section-body ul li {
+      font-size: 14px; color: #3d3560; line-height: 1.85;
+      padding: 10px 14px 10px 40px;
+      background: rgba(124,58,237,.03);
+      border: 1px solid rgba(124,58,237,.08);
+      border-radius: 10px;
+      position: relative;
+    }
+    .section-body ul li::before {
+      content: '';
+      position: absolute; left: 14px; top: 17px;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--grad-brand);
+      flex-shrink: 0;
+    }
+    .section-body ul li ul {
+      margin-top: 10px; padding-left: 0;
+    }
+    .section-body ul li ul li {
+      background: rgba(37,99,235,.04);
+      border-color: rgba(37,99,235,.1);
+    }
+    .section-body ul li ul li::before {
+      background: var(--grad-cool);
+    }
+
+    /* Payment info highlight */
+    .payment-highlight {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+      margin: 14px 0;
+    }
+    @media(max-width: 600px) { .payment-highlight { grid-template-columns: 1fr; } }
+    .pay-item {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 16px; text-align: center;
+      box-shadow: 0 3px 12px rgba(124,58,237,.06);
+    }
+    .pay-item .pay-icon { font-size: 22px; margin-bottom: 6px; display: block; }
+    .pay-item h5 { font-size: 14px; margin-bottom: 4px; color: var(--text); }
+    .pay-item p { font-size: 12px; color: var(--muted); margin: 0; }
+
+    /* Important notice */
+    .notice-box {
+      background: rgba(232,25,122,.04);
+      border: 1.5px solid rgba(232,25,122,.2);
+      border-radius: 12px; padding: 14px 18px;
+      margin: 14px 0;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .notice-box i { color: var(--pink); font-size: 16px; margin-top: 2px; flex-shrink: 0; }
+    .notice-box p { margin: 0; font-size: 13px; color: var(--text); }
+
+    /* ─── FOOTER ─── */
+    footer { background: var(--grad-dark-footer); padding: 50px 24px 40px; text-align: center; }
+    footer .footer-logo { font-family: 'Rajdhani', sans-serif; font-size: 30px; font-weight: 700; color: #fff; margin-bottom: 14px; }
+    footer .footer-logo span { background: var(--grad-brand); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin: 18px 0; }
+    .footer-links a { font-size: 13px; color: rgba(255,255,255,.5); transition: color .25s; }
+    .footer-links a:hover { color: #fff; }
+    footer p { font-size: 12px; color: rgba(255,255,255,.45); }
+
+    /* ─── SCROLL TOP ─── */
+    .scroll-top {
+      position: fixed; bottom: 28px; right: 28px; z-index: 500;
+      width: 46px; height: 46px; border-radius: 50%;
+      background: var(--grad-brand); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; border: none; cursor: pointer;
+      box-shadow: 0 6px 22px rgba(232,25,122,.45);
+      opacity: 0; transform: translateY(20px); transition: all .3s;
+    }
+    .scroll-top.visible { opacity: 1; transform: translateY(0); }
+    .scroll-top:hover { transform: translateY(-3px); }
+
+    /* Fade up */
+    .fade-up { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    @media(max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .trc-hero-inner { padding: 56px 16px 44px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <img src="/logoo.png" alt="EliteAli" onerror="this.style.display='none';this.nextSibling.style.display='block'">
+        <span style="display:none">Affs<span>cash</span></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/#offers">Offers</a></li>
+        <li><a href="/#about">About</a></li>
+        <li><a href="/#services">Services</a></li>
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/reviews">Reviews</a></li>
+        <li><a href="/#contact">Contact</a></li>
+        <li><a href="/register/affiliate" class="btn-signup">Sign Up</a></li>
+        <li><a href="/login" class="btn-login">Login</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobile-menu">
+      <a href="/">Home</a>
+      <a href="/#offers">Offers</a>
+      <a href="/#about">About</a>
+      <a href="/#services">Services</a>
+      <a href="/blog">Blog</a>
+      <a href="/reviews">Reviews</a>
+      <a href="/#contact">Contact</a>
+      <a href="/register/affiliate">Sign Up Free</a>
+      <a href="/login">Login</a>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <div class="trc-hero">
+    <div class="trc-hero-inner fade-up">
+      <div class="eyebrow"><span class="pulse"></span> Legal Document</div>
+      <h1>Terms &amp; <em>Conditions</em></h1>
+      <p>Please read these terms carefully before participating in the EliteAli Affiliate Program. By submitting an application, you agree to be bound by all terms below.</p>
+      <div class="trc-meta-pills">
+        <span class="trc-pill"><i class="fa-solid fa-calendar"></i> Last updated: 2026</span>
+        <span class="trc-pill"><i class="fa-solid fa-building"></i> EdgeSoft Limited</span>
+        <span class="trc-pill"><i class="fa-solid fa-location-dot"></i> London, UK</span>
+        <span class="trc-pill"><i class="fa-solid fa-shield-halved"></i> 15 Sections</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grad-divider"></div>
+
+  <!-- BODY -->
+  <div class="trc-body">
+
+    <!-- SIDEBAR TOC -->
+    <aside class="trc-sidebar fade-up">
+      <div class="sidebar-card">
+        <h4><i class="fa-solid fa-list" style="margin-right:6px;color:var(--pink)"></i> Contents</h4>
+        <ul class="toc-list">
+          <li><a href="#s1"><span class="toc-num">01</span> Sign Up as Affiliate</a></li>
+          <li><a href="#s2"><span class="toc-num">02</span> Cancellation & Termination</a></li>
+          <li><a href="#s3"><span class="toc-num">03</span> Confidentiality</a></li>
+          <li><a href="#s4"><span class="toc-num">04</span> License & IP</a></li>
+          <li><a href="#s5"><span class="toc-num">05</span> Termination</a></li>
+          <li><a href="#s6"><span class="toc-num">06</span> Amendments</a></li>
+          <li><a href="#s7"><span class="toc-num">07</span> Counter-Spam Policy</a></li>
+          <li><a href="#s8"><span class="toc-num">08</span> About Fraud</a></li>
+          <li><a href="#s9"><span class="toc-num">09</span> Representations & Warranties</a></li>
+          <li><a href="#s10"><span class="toc-num">10</span> Modifications</a></li>
+          <li><a href="#s11"><span class="toc-num">11</span> Independent Investigation</a></li>
+          <li><a href="#s12"><span class="toc-num">12</span> Mutual Indemnification</a></li>
+          <li><a href="#s13"><span class="toc-num">13</span> Disclaimers</a></li>
+          <li><a href="#s14"><span class="toc-num">14</span> Limitation of Liability</a></li>
+          <li><a href="#s15"><span class="toc-num">15</span> Governing Law</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-cta">
+        <p>Ready to start earning with EliteAli?</p>
+        <a href="https://app.eliteali.com/register" target="_blank">
+          <i class="fa-solid fa-rocket"></i> Join Now
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="trc-content">
+
+      <!-- Intro -->
+      <div class="intro-card fade-up">
+        <p>This Affiliate Program Operating Agreement (the <strong>"Agreement"</strong>) is made and entered into by and between <strong>eliteali</strong> ("eliteali" or "we"), and you ("you" or <strong>"Affiliate"</strong>) — the party submitting an application to become an EliteAli affiliate. The terms and conditions contained in this Agreement apply to your participation with <a href="https://app.eliteali.com" target="_blank">app.eliteali.com</a> ("Affiliate Program"). Each Affiliate Program offer (an "Offer") may be for any offering by eliteali or a third party (each such third party a "Client") and may link to a specific web site for that particular Offer ("Program Web Site"). By submitting an application or participating in an Offer, you expressly consent to all the terms and conditions of this Agreement.</p>
+      </div>
+
+      <!-- S1 -->
+      <div class="trc-section open fade-up" id="s1">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">01</span>
+          <h2>Sign Up as an Affiliate</h2>
+          <i class="fa-solid fa-chevron-down section-chevron"></i>
+        </div>
+        <div class="section-body">
+          <p>You must submit an Affiliate Program application from our website. You must accurately complete the application to become an affiliate (and provide us with future updates) and not use any aliases or other means to mask your true identity or contact information.</p>
+          <p>After we review your application, we will notify you of your acceptance or rejection to the Affiliate Program, generally within two (2) business days. We may accept or reject your application at our sole discretion for any reason.</p>
+        </div>
+      </div>
+
+      <!-- S2 -->
+      <div class="trc-section fade-up" id="s2">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">02</span>
+          <h2>Cancellation and Termination</h2>
+          <i class="fa-solid fa-chevron-down section-chevron"></i>
+        </div>
+        <div class="section-body">
+          <p>Subject to our acceptance of you as an affiliate and your continued compliance with the terms and conditions of this Agreement, eliteali agrees as follows:</p>
+          <ul>
+            <li>We will make available to you via the Affiliate Program graphic and textual links to the Program Web Site and/or other creative materials (collectively, the "Links") which you may display on web sites owned or controlled by you, in emails sent by you and clearly identified as coming from you and in online advertisements (collectively, "Media").</li>
+            <li>We will pay Affiliate for each Qualified Action (the "Commission"). A "Qualified Action" means an individual person who (i) accesses the Program Web Site via the Link, (ii) is not a computer generated user, (iii) is not using pre-populated fields, (iv) completes all required information within the allowed time period, and (v) is not later determined to be fraudulent, incomplete, unqualified or a duplicate.</li>
+            <li>We will pay you any Commissions earned monthly, provided that your account balance is greater than $100. Accounts with a balance less than $100 will roll over monthly until $100 is reached.</li>
+          </ul>
+
+          <div class="payment-highlight">
+            <div class="pay-item">
+              <span class="pay-icon">💰</span>
+              <h5>Min Payment</h5>
+              <p>$50 – $200</p>
+            </div>
+            <div class="pay-item">
+              <span class="pay-icon">📅</span>
+              <h5>Payment Frequency</h5>
+              <p>Net-30, Net-15, Weekly, Upon Request</p>
+            </div>
+            <div class="pay-item">
+              <span class="pay-icon">💳</span>
+              <h5>Payment Methods</h5>
+              <p>Wire, PayPal, WebMoney, Payoneer, ACH</p>
+            </div>
+          </div>
+
+          <ul>
+            <li>Payment for Commissions is dependent upon Clients providing such funds to eliteali. You hereby release eliteali from any claim for Commissions if eliteali has not received such funds from the Clients.</li>
+            <li>eliteali shall automatically generate an invoice on behalf of Affiliate for all Commissions payable under this Agreement. All tracking of Links and determinations of Qualified Actions and Commissions shall be made by eliteali in its sole discretion.</li>
+            <li>If Affiliate has an outstanding balance due to eliteali under this Agreement or any other agreement, eliteali may offset any such amounts from amounts payable to Affiliate under this Agreement.</li>
+          </ul>
+
+          <div class="notice-box">
+            <i class="fa-solid fa-circle-info"></i>
+            <p><strong>Affiliate also agrees to:</strong> Have sole responsibility for the development, operation, and maintenance of, and all content on or linked to, your Media. Ensure all materials posted are not illegal, do not infringe upon intellectual property or personal rights of any third party, and do not contain Objectionable Content.</p>
+          </div>
+
+          <p>Email Campaigns: For all email campaigns, Affiliate must download the "Suppression List" from the Offers section of eliteali. Affiliate shall filter its email list by removing any entries appearing on the Suppression List and will only send emails to the remaining addresses on its email list.</p>
+          <p>Advertising Campaigns: No Links can appear to be associated with or be positioned on chat rooms or bulletin boards unless otherwise agreed by eliteali in writing.</p>
+          <p>Affiliate Network Campaigns: For all Affiliates that maintain their own affiliate networks, Affiliate agrees to place the Links in its affiliate network for access and use by those affiliates. Affiliate agrees that it will expressly forbid any Third Party Affiliate to modify the Links in any way.</p>
+        </div>
+      </div>
+
+      <!-- S3 -->
+      <div class="trc-section fade-up" id="s3">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">03</span>
+          <h2>Consensus of Confidentiality</h2>
+          <i class="fa-solid fa-chevron-down section-chevron"></i>
+        </div>
+        <div class="section-body">
+          <p>Except as otherwise provided in this Agreement or with the consent of eliteali, you agree that all information, including, without limitation, the terms of this Agreement, business and financial information, customer and vendor lists, and pricing and sales information, concerning us or any of our affiliates provided by or on behalf of any of them shall remain strictly confidential and secret.</p>
+          <p>Affiliate shall not use any information obtained from the Affiliate Program to develop, enhance or operate a service that competes with the Affiliate Program, or assist another party to do the same.</p>
+        </div>
+      </div>
+
+      <!-- S4 -->
+      <div class="trc-section fade-up" id="s4">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">04</span>
+          <h2>Limited License &amp; Intellectual Property</h2>
+          <i class="fa-solid fa-chevron-down section-chevron"></i>
+        </div>
+        <div class="section-body">
+          <p>We grant you a nonexclusive, nontransferable, revocable right to use the Links and to access our web site through the Links solely in accordance with the terms of this Agreement, for the sole purpose of identifying your Media as a participant in the Affiliate Program and assisting in increasing sales through the Program Web Site.</p>
+          <p>You may not alter, modify, manipulate or create derivative works of the Links or any eliteali graphics, creative, copy or other materials owned by, or licensed to, eliteali in any way. We may revoke your license anytime by giving you written notice. All rights not expressly granted in this Agreement are reserved by eliteali.</p>
+        </div>
+      </div>
+
+      <!-- S5 -->
+      <div class="trc-section fade-up" id="s5">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">05</span>
+          <h2>Termination</h2>
+          <i class="fa-solid fa-chevron-down section-chevron"></i>
+        </div>
+        <div class="section-body">
+          <p>This Agreement shall commence on the date of our approval of your Affiliate Program application and shall continue thereafter until terminated as provided herein. You may terminate your participation in the Affiliate Program at any time by removing all Links from your Media and deleting all copies of the Links.</p>
+          <p>We may terminate your participation in one or more Offers or this Agreement at any time and for any reason which we deem appropriate with or without prior notice to you. Upon termination, you will immediately cease all use of and delete all Links, plus all eliteali or Client intellectual property.</p>
+        </div>
+      </div>
+
+      <!-- S6 -->
+      <div class="trc-section fade-up" id="s6">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">06</span>
+          <h2>Amendments</h2>
+          <i class="fa-solid fa-chevron-down section-chevron"></i>
+        </div>
+        <div class="section-body">
+          <p>In addition to any other rights and remedies available to us under this Agreement, eliteali reserves the right to delete any actions submitted through your Links and withhold and freeze any unpaid Commissions or charge back paid Commissions to your account if (i) eliteali determines that you have violated this Agreement, (ii) eliteali receives any complaints about your participation which eliteali reasonably believes to violate this Agreement, or (iii) any Qualified Action is later determined to have not met the requirements set forth in this Agreement.</p>
+          <div class="notice-box">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <p>In the event of a material breach of this Agreement, eliteali reserves the right to disclose your identity and contact information to appropriate law enforcement or regulatory authorities or any third party that has been directly damaged by your actions.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- S7 -->
+      <div class="trc-section fade-up" id="s7">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">07</span>
+          <h2>Counter-Spam Policy</h2>
+          <i class="fa-solid fa-chevron-down section-chevron"></i>
+        </div>
+        <div class="section-body">
+          <p>You must strictly comply with the federal CAN-SPAM Act of 2003 (the "Act"). All emails sent in connection with the Affiliate Program must include the appropriate party's opt-out link.</p>
+          <p>From time to time, we may request — prior to your sending emails containing or referencing the Affiliate Program — that you submit the final version of your email to eliteali for approval. It is solely your obligation to ensure that the email complies with the Act.</p>
+        </div>
+      </div>
+
+      <!-- S8 -->
+      <div class="trc-section fade-up" id="s8">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">08</span>
+          <h2>About Fraud</h2>
+          <i class="fa-solid fa-chevron-down section-chevron"></i>
+        </div>
+        <div class="section-body">
+          <p>You are expressly prohibited from using any persons, means, devices or arrangements to commit fraud, violate any applicable law, interfere with other affiliates or falsify information in connection with referrals through the Links or the generation of Commissions or exceed your permitted access to the Affiliate Program.</p>
+          <div class="notice-box">
+            <i class="fa-solid fa-ban"></i>
+            <p>Such acts include, but are not limited to: using automated means to increase clicks through the Links, using spyware, using stealware, cookie-stuffing and other deceptive acts or click-fraud. eliteali shall make all determinations about fraudulent activity in its sole discretion.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- S9 -->
+      <div class="trc-section fade-up" id="s9">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">09</span>
+          <h2>Representations and Warranties</h2>
+          <i class="fa-solid fa-chevron-down section-chevron"></i>
+        </div>
+        <div class="section-body">
+          <p>You hereby represent and warrant that this Agreement constitutes your legal, valid, and binding obligation, enforceable against you in accordance with its terms and that you have the authority to enter into this Agreement.</p>
+          <p>Subject to the other terms and conditions of this Agreement, eliteali represents and warrants that it shall not knowingly violate any law, rule or regulation which is applicable to eliteali's own business operations or eliteali's proprietary products or services.</p>
+        </div>
+      </div>
+
+      <!-- S10 -->
+      <div class="trc-section fade-up" id="s10">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">10</span>
+          <h2>Modifications</h2>
+          <i class="fa-solid fa-chevron-down section-chevron"></i>
+        </div>
+        <div class="section-body">
+          <p>We may modify any of the terms and conditions of this Agreement at any time by providing you with a notification by email. The changes will become effective ten (10) business days after such notice. If the modifications are unacceptable to you, you may terminate this Agreement without penalty within such ten (10) business day period.</p>
+          <p>Your continued participation in this Affiliate Program ten (10) business days after a change notice has been posted will constitute your acceptance of such change. In addition, eliteali may change, suspend or discontinue any aspect of an Offer or Link or remove, alter, or modify any tags, text, graphic or banner ad in connection with a Link.</p>
+        </div>
+      </div>
+
+      <!-- S11 -->
+      <div class="trc-section fade-up" id="s11">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">11</span>
+          <h2>Independent Investigation</h2>
+          <i class="fa-solid fa-chevron-down section-chevron"></i>
+        </div>
+        <div class="section-body">
+          <p>You acknowledge that you have read this Agreement and agree to all its terms and conditions. You have independently evaluated the desirability of participating in the Affiliate Program and each Offer and are not relying on any representation, guarantee or statement other than as set forth in this Agreement or on the Affiliate Program.</p>
+        </div>
+      </div>
+
+      <!-- S12 -->
+      <div class="trc-section fade-up" id="s12">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">12</span>
+          <h2>Mutual Indemnification</h2>
+          <i class="fa-solid fa-chevron-down section-chevron"></i>
+        </div>
+        <div class="section-body">
+          <p>Affiliate hereby agrees to indemnify, defend and hold harmless eliteali and Clients and their respective subsidiaries, affiliates, partners and licensors, directors, officers, employees, owners and agents against any and all claims, actions, demands, liabilities, losses, damages, judgments, settlements, costs, and expenses (including reasonable attorneys' fees and costs) based on (i) any failure or breach of this Agreement, (ii) any misuse by Affiliate of the Links, Offers or eliteali intellectual property, or (iii) any claim related to your Media.</p>
+          <p>eliteali hereby agrees to indemnify, defend and hold harmless Affiliate and its subsidiaries, affiliates, partners, and their respective directors, officers, employees, owners and agents against any and all claims, actions, demands, liabilities, losses, damages, judgments, settlements, costs, and expenses based on a claim that eliteali is not authorized to provide you with the Links.</p>
+        </div>
+      </div>
+
+      <!-- S13 -->
+      <div class="trc-section fade-up" id="s13">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">13</span>
+          <h2>Disclaimers</h2>
+          <i class="fa-solid fa-chevron-down section-chevron"></i>
+        </div>
+        <div class="section-body">
+          <p>THE AFFILIATE PROGRAM AND LINKS, AND THE PRODUCTS AND SERVICES PROVIDED IN CONNECTION THEREWITH, ARE PROVIDED TO AFFILIATE "AS IS". EXCEPT AS EXPRESSLY SET FORTH HEREIN, ELITEALI EXPRESSLY DISCLAIMS ALL WARRANTIES, EXPRESS, IMPLIED OR STATUTORY, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.</p>
+          <p>ELITEALI DOES NOT WARRANT THAT THE AFFILIATE PROGRAM OR LINKS WILL MEET AFFILIATE'S SPECIFIC REQUIREMENTS OR THAT THE OPERATION OF THE AFFILIATE PROGRAM OR LINKS WILL BE COMPLETELY ERROR-FREE OR UNINTERRUPTED. ELITEALI DOES NOT GUARANTEE THAT AFFILIATE WILL EARN ANY SPECIFIC AMOUNT OF COMMISSIONS.</p>
+        </div>
+      </div>
+
+      <!-- S14 -->
+      <div class="trc-section fade-up" id="s14">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">14</span>
+          <h2>Limitation of Liability</h2>
+          <i class="fa-solid fa-chevron-down section-chevron"></i>
+        </div>
+        <div class="section-body">
+          <p>IN NO EVENT SHALL ELITEALI BE LIABLE FOR ANY UNAVAILABILITY OR INOPERABILITY OF THE LINKS, PROGRAM WEB SITES, TECHNICAL MALFUNCTION, COMPUTER ERROR, CORRUPTION OR LOSS OF INFORMATION, OR OTHER INJURY, DAMAGE OR DISRUPTION OF ANY KIND BEYOND THE REASONABLE CONTROL OF ELITEALI.</p>
+          <p>ELITEALI'S CUMULATIVE LIABILITY TO AFFILIATE, FROM ALL CAUSES OF ACTION AND ALL THEORIES OF LIABILITY, WILL BE LIMITED TO AND WILL NOT EXCEED THE AMOUNTS PAID TO AFFILIATE BY ELITEALI IN COMMISSIONS DURING THE SIX (6) MONTHS IMMEDIATELY PRIOR TO SUCH CLAIM.</p>
+        </div>
+      </div>
+
+      <!-- S15 -->
+      <div class="trc-section fade-up" id="s15">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">15</span>
+          <h2>Governing Law &amp; Miscellaneous</h2>
+          <i class="fa-solid fa-chevron-down section-chevron"></i>
+        </div>
+        <div class="section-body">
+          <p>Affiliate shall be responsible for the payment of all attorneys' fees and expenses incurred by eliteali to enforce the terms of this Agreement. This Agreement contains the entire agreement between eliteali and Affiliate with respect to the subject matter hereof, and supersedes all prior and/or contemporaneous agreements or understandings, written or oral.</p>
+          <p>Affiliate may not assign all or any part of this Agreement without eliteali's prior written consent. eliteali may assign this Agreement at any time with notice to Affiliate. This Agreement will be binding on and will inure to the benefit of the legal representatives, successors and valid assigns of the parties hereto.</p>
+          <p>Each party to this Agreement is an independent contractor in relation to the other party with respect to all matters arising under this Agreement. Nothing herein shall be deemed to establish a partnership, joint venture, association or employment relationship between the parties.</p>
+          <div class="notice-box">
+            <i class="fa-solid fa-check-circle"></i>
+            <p>By submitting an application to the Affiliate Program, you affirm and acknowledge that you have read this Agreement in its entirety and agree to be bound by all of its terms and conditions. <strong>This Agreement was last revised on 2023.</strong></p>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container" style="max-width:1200px;margin:0 auto">
+      <img src="/logoo.png" alt="EliteAli" height="40" style="margin-bottom:16px;opacity:.85">
+      <div class="footer-links">
+        <a href="/">Home</a>
+        <a href="/#offers">Offers</a>
+        <a href="/#about">About</a>
+        <a href="/#services">Services</a>
+        <a href="/blog">Blog</a>
+        <a href="/reviews">Reviews</a>
+        <a href="/#contact">Contact</a>
+        <a href="/TRC.html">Terms &amp; Conditions</a>
+        <a href="/register/affiliate">Sign Up</a>
+        <a href="/login">Login</a>
+      </div>
+          <div style="display:flex;justify-content:center;gap:18px;margin:18px 0">
+        <a href="https://t.me/eliteali" target="_blank" style="color:rgba(255,255,255,.45);font-size:22px;transition:color .25s"><i class="fa-brands fa-telegram"></i></a>
+        <a href="https://join.skype.com/invite/v8D3Qfre3w0e" target="_blank" style="color:rgba(255,255,255,.45);font-size:22px;transition:color .25s"><i class="fa-brands fa-skype"></i></a>
+        <a href="https://www.linkedin.com/company/89707239/" target="_blank" style="color:rgba(255,255,255,.45);font-size:22px;transition:color .25s"><i class="fa-brands fa-linkedin"></i></a>
+        <a href="https://www.facebook.com/eliteali/" target="_blank" style="color:rgba(255,255,255,.45);font-size:22px;transition:color .25s"><i class="fa-brands fa-facebook"></i></a>
+
+      </div>
+      <p>© 2019 – 2026 EdgeSoft Ltd. All Rights Reserved. | EliteAli CPA Affiliate Network</p>
+    </div>
+  </footer>
+
+  <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <i class="fa-solid fa-chevron-up"></i>
+  </button>
+
+  <script>
+    // Hamburger
+    var ham = document.getElementById('hamburger');
+    var mob = document.getElementById('mobile-menu');
+    if(ham && mob){
+      ham.addEventListener('click', function(){ ham.classList.toggle('open'); mob.classList.toggle('open'); });
+      mob.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ ham.classList.remove('open'); mob.classList.remove('open'); }); });
+    }
+
+    // Scroll top
+    window.addEventListener('scroll', function(){
+      var btn = document.getElementById('scrollTop');
+      if(btn) btn.classList.toggle('visible', window.scrollY > 400);
+    });
+
+    // Fade up observer
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.fade-up').forEach(function(el){ observer.observe(el); });
+
+    // Accordion toggle
+    function toggleSection(header) {
+      var section = header.parentElement;
+      var isOpen = section.classList.contains('open');
+      // Close all
+      document.querySelectorAll('.trc-section').forEach(function(s){ s.classList.remove('open'); });
+      // Open clicked if it was closed
+      if(!isOpen) section.classList.add('open');
+    }
+
+    // TOC smooth scroll with offset for fixed header
+    document.querySelectorAll('.toc-list a').forEach(function(a){
+      a.addEventListener('click', function(e){
+        e.preventDefault();
+        var target = document.querySelector(this.getAttribute('href'));
+        if(target){
+          var offset = 88;
+          var top = target.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top: top, behavior: 'smooth' });
+          // Open the section
+          target.classList.add('open');
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

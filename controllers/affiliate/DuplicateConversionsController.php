@@ -1,0 +1,48 @@
+<?php
+/**
+ * Affiliate — Duplicate Conversions (read-only)
+ *
+ * Affiliate sees only their own conversions flagged as duplicate (same offer
+ * + same IP as at least one other conversion of theirs in the date range).
+ */
+Auth::check('affiliate');
+$pageTitle = 'Duplicate Conversions';
+$affId = Auth::affiliateId();
+
+$from = Helpers::get('from') ?: date('Y-m-01');
+$to   = Helpers::get('to')   ?: date('Y-m-d');
+$dateFrom = date('Y-m-d 00:00:00', strtotime($from));
+$dateTo   = date('Y-m-d 23:59:59', strtotime($to));
+
+$rows = Database::fetchAll(
+    "SELECT cv.id, cv.conversion_id, cv.offer_id,
+            cv.payout, cv.status, cv.ip_address, cv.converted_at,
+            cv.transaction_id, cv.goal_name,
+            o.name AS offer_name,
+            dup.dup_count
+     FROM conversions cv
+     JOIN (
+        SELECT offer_id, ip_address, COUNT(*) AS dup_count
+        FROM conversions
+        WHERE offer_id IS NOT NULL AND offer_id > 0
+          AND ip_address IS NOT NULL AND ip_address <> ''
+          AND affiliate_id = ?
+          AND converted_at BETWEEN ? AND ?
+        GROUP BY offer_id, ip_address
+        HAVING dup_count > 1
+     ) dup ON dup.offer_id = cv.offer_id AND dup.ip_address = cv.ip_address
+     LEFT JOIN offers o ON o.id = cv.offer_id
+     WHERE cv.affiliate_id = ?
+       AND cv.converted_at BETWEEN ? AND ?
+     ORDER BY cv.offer_id, cv.ip_address, cv.converted_at DESC",
+    [$affId, $dateFrom, $dateTo, $affId, $dateFrom, $dateTo]
+) ?: [];
+
+$groups = [];
+foreach ($rows as $r) {
+    $groups[$r['offer_id'] . '|' . $r['ip_address']][] = $r;
+}
+$totalGroups = count($groups);
+$totalRows   = count($rows);
+
+require BASE_PATH . '/views/affiliate/duplicate_conversions.php';

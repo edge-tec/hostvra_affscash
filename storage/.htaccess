@@ -1,0 +1,13 @@
+# Deny all web access to the storage directory.
+# This directory contains database backups, update staging files, and other
+# sensitive server-side data that must never be publicly downloadable.
+# PHP can still read/write here freely — .htaccess only affects HTTP access.
+
+# Apache 2.2
+Order Deny,Allow
+Deny from all
+
+# Apache 2.4+
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>

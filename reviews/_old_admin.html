@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Affscash — Reviews Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<style>
+:root{
+  --pink:#e8197a;--violet:#7c3aed;--blue:#2563eb;--green:#059669;--gold:#d97706;
+  --text:#1a1535;--muted:#7c7a9e;--border:#ede8fc;--surface:#f8f5ff;
+  --gb:linear-gradient(135deg,#e8197a,#7c3aed);
+  --shadow:0 4px 20px rgba(124,58,237,.1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:#f3eeff;color:var(--text);min-height:100vh;}
+
+/* LOGIN */
+.login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+.login-box{background:#fff;border-radius:24px;padding:48px 44px;max-width:400px;width:100%;box-shadow:0 24px 60px rgba(124,58,237,.18);text-align:center;}
+.login-logo{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;margin-bottom:28px;}
+.login-logo span{background:var(--gb);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.login-input{width:100%;padding:13px 18px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;text-align:center;letter-spacing:3px;transition:border-color .2s;}
+.login-input:focus{border-color:var(--violet);box-shadow:0 0 0 4px rgba(124,58,237,.08);}
+.login-btn{width:100%;margin-top:16px;padding:14px;background:var(--gb);color:#fff;-webkit-text-fill-color:#fff;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:16px;letter-spacing:1px;text-transform:uppercase;border:none;border-radius:12px;cursor:pointer;box-shadow:0 6px 24px rgba(232,25,122,.35);transition:all .25s;}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(232,25,122,.5);}
+.login-err{margin-top:12px;color:#dc2626;font-size:13px;display:none;}
+
+/* LAYOUT */
+.admin-layout{display:none;min-height:100vh;}
+.sidebar{width:240px;background:#1a1535;position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:100;}
+.sidebar-logo{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:#fff;padding:24px 22px 20px;border-bottom:1px solid rgba(255,255,255,.08);}
+.sidebar-logo span{background:var(--gb);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.sidebar-nav{flex:1;padding:14px 0;}
+.nav-item{display:flex;align-items:center;gap:11px;padding:11px 22px;font-size:13px;font-weight:500;color:rgba(255,255,255,.55);cursor:pointer;transition:all .2s;border-left:3px solid transparent;}
+.nav-item:hover{color:#fff;background:rgba(255,255,255,.06);}
+.nav-item.active{color:#fff;background:rgba(232,25,122,.15);border-left-color:var(--pink);}
+.nav-item .badge{margin-left:auto;background:var(--pink);color:#fff;-webkit-text-fill-color:#fff;border-radius:20px;font-size:10px;font-weight:700;padding:2px 8px;}
+.sidebar-footer{padding:16px 22px;border-top:1px solid rgba(255,255,255,.08);}
+.logout-btn{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.4);cursor:pointer;transition:color .2s;background:none;border:none;font-family:'DM Sans',sans-serif;}
+.logout-btn:hover{color:#fff;}
+
+.main-content{margin-left:240px;padding:32px;min-height:100vh;}
+
+/* TOP BAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
+.page-title{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;}
+
+/* STAT CARDS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;}
+.stat-card{background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px 22px;box-shadow:var(--shadow);}
+.stat-card .sc-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;}
+.stat-card .sc-num{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;line-height:1;}
+.stat-card .sc-sub{font-size:11px;color:var(--muted);margin-top:4px;}
+
+/* FILTER ROW */
+.tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.tab-btn{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:8px 18px;border-radius:30px;border:2px solid var(--border);background:#fff;color:var(--muted);cursor:pointer;transition:all .2s;}
+.tab-btn:hover{border-color:var(--violet);color:var(--violet);}
+.tab-btn.active{background:var(--gb);border-color:transparent;color:#fff;box-shadow:0 4px 14px rgba(232,25,122,.3);}
+
+/* TABLE */
+.table-wrap{background:#fff;border:1.5px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);}
+.review-row{display:grid;grid-template-columns:auto 1fr auto;gap:0;border-bottom:1px solid var(--border);transition:background .2s;}
+.review-row:last-child{border-bottom:none;}
+.review-row:hover{background:var(--surface);}
+.rr-num{width:50px;flex-shrink:0;text-align:center;padding:18px 0;font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:rgba(124,58,237,.25);}
+.rr-body{padding:16px 16px 16px 0;}
+.rr-top{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+.rr-name{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;}
+.rr-email{font-size:11px;color:var(--muted);}
+.rr-stars{display:flex;gap:2px;}
+.rr-stars i{font-size:12px;color:#f59e0b;}
+.rr-stars i.fa-regular{color:#ddd;}
+.status-pill{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:3px 9px;border-radius:20px;border:1px solid;}
+.status-pill.pending  {color:#d97706;background:rgba(217,119,6,.08);  border-color:rgba(217,119,6,.3);}
+.status-pill.approved {color:var(--green);background:rgba(5,150,105,.08);border-color:rgba(5,150,105,.3);}
+.status-pill.rejected {color:#dc2626;background:rgba(220,38,38,.08);border-color:rgba(220,38,38,.3);}
+.rr-text{font-size:13px;color:var(--text);line-height:1.7;margin-bottom:8px;max-width:680px;}
+.rr-meta{display:flex;align-items:center;gap:14px;font-size:11px;color:var(--muted);flex-wrap:wrap;}
+.rr-scores{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+.rs-chip{font-size:10px;font-weight:600;color:var(--violet);background:#f0ecff;border:1px solid var(--border);border-radius:6px;padding:2px 8px;}
+.proof-thumb{width:72px;height:52px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer;margin-top:6px;transition:transform .2s;}
+.proof-thumb:hover{transform:scale(1.06);}
+.rr-actions{padding:16px 18px;display:flex;flex-direction:column;gap:7px;justify-content:center;min-width:110px;}
+.act-btn{display:flex;align-items:center;justify-content:center;gap:5px;padding:8px 14px;border-radius:8px;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;border:1.5px solid;transition:all .2s;white-space:nowrap;}
+.act-btn.approve{color:var(--green);border-color:rgba(5,150,105,.3);background:rgba(5,150,105,.06);}
+.act-btn.approve:hover{background:var(--green);color:#fff;border-color:var(--green);}
+.act-btn.reject{color:var(--gold);border-color:rgba(217,119,6,.3);background:rgba(217,119,6,.06);}
+.act-btn.reject:hover{background:var(--gold);color:#fff;border-color:var(--gold);}
+.act-btn.delete{color:#dc2626;border-color:rgba(220,38,38,.3);background:rgba(220,38,38,.06);}
+.act-btn.delete:hover{background:#dc2626;color:#fff;border-color:#dc2626;}
+
+/* EMPTY */
+.empty-state{text-align:center;padding:60px 24px;color:var(--muted);}
+.empty-state i{font-size:42px;margin-bottom:14px;display:block;opacity:.3;}
+
+/* PAGINATION */
+.pg-row{display:flex;align-items:center;justify-content:center;gap:6px;padding:20px;border-top:1px solid var(--border);}
+.pg-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--border);background:#fff;color:var(--text);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;}
+.pg-btn:hover:not(:disabled){border-color:var(--violet);color:var(--violet);}
+.pg-btn.active{background:var(--gb);border-color:transparent;color:#fff;}
+.pg-btn:disabled{opacity:.35;cursor:not-allowed;}
+
+/* TOAST */
+.toast-container{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
+.toast{background:#1a1535;color:#fff;padding:12px 20px;border-radius:12px;font-size:13px;font-weight:500;box-shadow:0 8px 28px rgba(0,0,0,.25);transform:translateX(120%);transition:transform .3s;display:flex;align-items:center;gap:8px;max-width:320px;}
+.toast.show{transform:translateX(0);}
+.toast.ok  {border-left:3px solid var(--green);}
+.toast.err {border-left:3px solid #dc2626;}
+.toast.info{border-left:3px solid var(--blue);}
+
+/* IMAGE MODAL */
+.img-modal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.82);align-items:center;justify-content:center;cursor:pointer;}
+.img-modal.open{display:flex;}
+.img-modal img{max-width:90vw;max-height:88vh;border-radius:16px;}
+.modal-close{position:absolute;top:18px;right:18px;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:20px;cursor:pointer;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.modal-close:hover{background:rgba(255,255,255,.3);}
+
+/* LOADING */
+.skeleton{background:linear-gradient(90deg,#f0ecff 25%,#e8e3fa 50%,#f0ecff 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;height:90px;margin-bottom:2px;}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+@media(max-width:900px){
+  .sidebar{width:60px;}
+  .sidebar-logo,.nav-item span,.logout-btn span{display:none;}
+  .nav-item{padding:14px;justify-content:center;}
+  .nav-item .badge{display:none;}
+  .main-content{margin-left:60px;}
+  .stats-row{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:600px){
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .main-content{padding:18px;}
+  .rr-actions{flex-direction:row;min-width:auto;padding:12px;}
+  .review-row{grid-template-columns:1fr;grid-template-rows:auto auto;}
+  .rr-num{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">Affs<span>cash</span> Admin</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:22px;">Enter your admin password to manage reviews</p>
+    <input type="password" class="login-input" id="pwdInput" placeholder="••••••••••"
+      onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()"><i class="fa-solid fa-lock-open"></i> &nbsp;Access Panel</button>
+    <div class="login-err" id="loginErr">Incorrect password. Try again.</div>
+  </div>
+</div>
+
+<!-- ADMIN LAYOUT -->
+<div class="admin-layout" id="adminLayout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">Affs<span>cash</span></div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" data-tab="pending" onclick="switchTab('pending')">
+        <i class="fa-solid fa-clock"></i><span>Pending</span><span class="badge" id="badgePending">0</span>
+      </div>
+      <div class="nav-item" data-tab="approved" onclick="switchTab('approved')">
+        <i class="fa-solid fa-check-circle"></i><span>Approved</span>
+      </div>
+      <div class="nav-item" data-tab="rejected" onclick="switchTab('rejected')">
+        <i class="fa-solid fa-ban"></i><span>Rejected</span>
+      </div>
+      <div class="nav-item" data-tab="all" onclick="switchTab('all')">
+        <i class="fa-solid fa-list"></i><span>All Reviews</span>
+      </div>
+      <div class="nav-item" style="margin-top:16px;opacity:.5;font-size:11px;letter-spacing:1px;text-transform:uppercase;pointer-events:none">
+        <i class="fa-solid fa-circle-dot" style="font-size:6px"></i><span>Links</span>
+      </div>
+      <div class="nav-item" onclick="window.open('reviews.html','_blank')">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i><span>View Reviews Page</span>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="doLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main-content">
+    <div class="topbar">
+      <div class="page-title" id="pageTitle">Pending Reviews</div>
+      <div style="font-size:12px;color:var(--muted)" id="lastRefresh"></div>
+    </div>
+
+    <!-- Stats row -->
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card"><div class="sc-label">Pending</div><div class="sc-num" id="sPending" style="color:var(--gold)">—</div><div class="sc-sub">Awaiting approval</div></div>
+      <div class="stat-card"><div class="sc-label">Approved</div><div class="sc-num" id="sApproved" style="color:var(--green)">—</div><div class="sc-sub">Live on site</div></div>
+      <div class="stat-card"><div class="sc-label">Rejected</div><div class="sc-num" id="sRejected" style="color:#dc2626">—</div><div class="sc-sub">Not published</div></div>
+      <div class="stat-card"><div class="sc-label">Avg Rating</div><div class="sc-num" id="sAvgRating" style="color:var(--violet)">—</div><div class="sc-sub">Overall score</div></div>
+    </div>
+
+    <!-- Tab row -->
+    <div class="tab-row">
+      <button class="tab-btn active" data-tab="pending"  onclick="switchTab('pending')">Pending</button>
+      <button class="tab-btn"        data-tab="approved" onclick="switchTab('approved')">Approved</button>
+      <button class="tab-btn"        data-tab="rejected" onclick="switchTab('rejected')">Rejected</button>
+      <button class="tab-btn"        data-tab="all"      onclick="switchTab('all')">All</button>
+    </div>
+
+    <!-- Review list -->
+    <div class="table-wrap" id="reviewsWrap">
+      <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+    </div>
+
+    <!-- Pagination -->
+    <div id="pgWrap"></div>
+  </main>
+</div>
+
+<!-- Image Modal -->
+<div class="img-modal" id="imgModal" onclick="closeModal()">
+  <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+  <img src="" id="modalImg" onclick="event.stopPropagation()">
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────
+var ADMIN_PWD = 'Miz@n2129';
+var API_BASE  = './api';
+
+// ── STATE ─────────────────────────────────────────────────
+var pwd          = '';
+var currentTab   = 'pending';
+var currentPage  = 1;
+var isLoading    = false;
+
+// ── LOGIN ─────────────────────────────────────────────────
+function doLogin() {
+  var p = document.getElementById('pwdInput').value;
+  if (p !== ADMIN_PWD) {
+    document.getElementById('loginErr').style.display = 'block';
+    document.getElementById('pwdInput').value = '';
+    return;
+  }
+  pwd = p;
+  document.getElementById('loginScreen').style.display  = 'none';
+  document.getElementById('adminLayout').style.display  = 'flex';
+  loadStats();
+  loadReviews('pending', 1);
+}
+
+function doLogout() {
+  pwd = '';
+  document.getElementById('loginScreen').style.display  = 'flex';
+  document.getElementById('adminLayout').style.display  = 'none';
+  document.getElementById('pwdInput').value = '';
+}
+
+// ── API CALL ──────────────────────────────────────────────
+async function apiCall(body) {
+  const r = await fetch(API_BASE + '/admin_reviews.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Admin-Auth': pwd },
+    body: JSON.stringify(body)
+  });
+  return r.json();
+}
+
+// ── STATS ─────────────────────────────────────────────────
+async function loadStats() {
+  const d = await apiCall({ action: 'stats' });
+  if (!d.ok) return;
+  document.getElementById('sPending').textContent  = d.counts.pending  ?? 0;
+  document.getElementById('sApproved').textContent = d.counts.approved ?? 0;
+  document.getElementById('sRejected').textContent = d.counts.rejected ?? 0;
+  document.getElementById('sAvgRating').textContent = d.avgs.avg_rating ?? '–';
+  document.getElementById('badgePending').textContent = d.counts.pending ?? 0;
+  document.getElementById('lastRefresh').textContent = 'Updated ' + new Date().toLocaleTimeString();
+}
+
+// ── LOAD REVIEWS ──────────────────────────────────────────
+async function loadReviews(status, page) {
+  if (isLoading) return;
+  isLoading = true;
+  var wrap = document.getElementById('reviewsWrap');
+  wrap.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>';
+  document.getElementById('pgWrap').innerHTML = '';
+
+  const d = await apiCall({ action: 'list', status: status, page: page });
+  isLoading = false;
+
+  if (!d.ok) {
+    wrap.innerHTML = '<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i>Failed to load reviews. Check API.</div>';
+    return;
+  }
+
+  if (!d.reviews.length) {
+    var msgs = { pending:'No pending reviews 🎉', approved:'No approved reviews yet.', rejected:'No rejected reviews.', all:'No reviews yet.' };
+    wrap.innerHTML = '<div class="empty-state"><i class="fa-solid fa-inbox"></i>' + (msgs[status]||'Empty.') + '</div>';
+    return;
+  }
+
+  wrap.innerHTML = d.reviews.map(function(r, i) {
+    return buildRow(r, i + 1 + (page - 1) * 20);
+  }).join('');
+
+  // Pagination
+  if (d.total > 20) {
+    var totalPages = Math.ceil(d.total / 20);
+    var btns = '';
+    for (var p = 1; p <= totalPages; p++) {
+      btns += '<button class="pg-btn'+(p===page?' active':'')+'" onclick="goPage('+p+')">'+p+'</button>';
+    }
+    document.getElementById('pgWrap').innerHTML =
+      '<div class="pg-row"><span style="font-size:12px;color:var(--muted);margin-right:8px">'+d.total+' total</span>'+btns+'</div>';
+  }
+}
+
+function goPage(p) { currentPage = p; loadReviews(currentTab, p); }
+
+// ── BUILD ROW ─────────────────────────────────────────────
+function buildRow(r, num) {
+  var stars = '';
+  for (var i = 1; i <= 5; i++)
+    stars += i <= r.rating ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
+
+  var scores = '';
+  if (r.offers)   scores += '<span class="rs-chip">Offers: '+r.offers+'/5</span>';
+  if (r.payout)   scores += '<span class="rs-chip">Payout: '+r.payout+'/5</span>';
+  if (r.tracking) scores += '<span class="rs-chip">Tracking: '+r.tracking+'/5</span>';
+  if (r.support)  scores += '<span class="rs-chip">Support: '+r.support+'/5</span>';
+
+  var proofHtml = '';
+  if (r.proof_image) {
+    proofHtml = '<img class="proof-thumb" src="'+escHtml(r.proof_image)+'" alt="proof" '
+      + 'onclick="openModal(\''+escHtml(r.proof_image)+'\')" onerror="this.style.display=\'none\'">';
+  }
+
+  var actionBtns = '';
+  if (r.status !== 'approved')
+    actionBtns += '<button class="act-btn approve" onclick="doAction(\'approve\',\''+r.id+'\')"><i class="fa-solid fa-check"></i> Approve</button>';
+  if (r.status !== 'rejected' && r.status !== 'pending')
+    actionBtns += '<button class="act-btn reject" onclick="doAction(\'reject\',\''+r.id+'\')"><i class="fa-solid fa-ban"></i> Reject</button>';
+  if (r.status === 'pending')
+    actionBtns += '<button class="act-btn reject" onclick="doAction(\'reject\',\''+r.id+'\')"><i class="fa-solid fa-ban"></i> Reject</button>';
+  actionBtns += '<button class="act-btn delete" onclick="doDelete(\''+r.id+'\')"><i class="fa-solid fa-trash"></i> Delete</button>';
+
+  return '<div class="review-row" id="row-'+r.id+'">'
+    + '<div class="rr-num">'+num+'</div>'
+    + '<div class="rr-body">'
+      + '<div class="rr-top">'
+        + '<span class="rr-name">'+escHtml(r.name)+'</span>'
+        + (r.country ? '<span style="font-size:11px;color:var(--muted)">📍 '+escHtml(r.country)+'</span>' : '')
+        + '<span class="rr-stars">'+stars+'</span>'
+        + '<span class="status-pill '+r.status+'">'+r.status+'</span>'
+      + '</div>'
+      + '<div class="rr-email">'+escHtml(r.email)
+        + (r.website ? ' · <a href="'+escHtml(r.website)+'" target="_blank" style="color:var(--violet)">'+escHtml(r.website)+'</a>' : '')
+      + '</div>'
+      + '<p class="rr-text" style="margin-top:8px">'+escHtml(r.review_text)+'</p>'
+      + (scores ? '<div class="rr-scores">'+scores+'</div>' : '')
+      + '<div class="rr-meta" style="margin-top:8px">'
+        + '<span><i class="fa-regular fa-calendar"></i> '+escHtml(r.date_label)+'</span>'
+        + '<span><i class="fa-solid fa-globe"></i> '+escHtml(r.submitter_ip||'')+'</span>'
+      + '</div>'
+      + proofHtml
+    + '</div>'
+    + '<div class="rr-actions">'+actionBtns+'</div>'
+  + '</div>';
+}
+
+// ── ACTIONS ───────────────────────────────────────────────
+async function doAction(action, id) {
+  var row = document.getElementById('row-' + id);
+  if (row) row.style.opacity = '.4';
+  const d = await apiCall({ action: action, id: id });
+  if (d.ok) {
+    toast(action === 'approve' ? '✅ Review approved!' : '🚫 Review rejected.', action === 'approve' ? 'ok' : 'info');
+    if (row) row.remove();
+    loadStats();
+  } else {
+    toast('Error: ' + (d.error || 'Unknown'), 'err');
+    if (row) row.style.opacity = '1';
+  }
+}
+
+async function doDelete(id) {
+  if (!confirm('Permanently delete this review and its image?')) return;
+  var row = document.getElementById('row-' + id);
+  if (row) row.style.opacity = '.4';
+  const d = await apiCall({ action: 'delete', id: id });
+  if (d.ok) {
+    toast('🗑 Review deleted.', 'info');
+    if (row) row.remove();
+    loadStats();
+  } else {
+    toast('Delete failed: ' + (d.error || 'Unknown'), 'err');
+    if (row) row.style.opacity = '1';
+  }
+}
+
+// ── TAB SWITCH ────────────────────────────────────────────
+function switchTab(tab) {
+  currentTab  = tab;
+  currentPage = 1;
+
+  document.querySelectorAll('.tab-btn, .nav-item[data-tab]').forEach(function(el) {
+    el.classList.toggle('active', el.getAttribute('data-tab') === tab);
+  });
+
+  var titles = { pending:'Pending Reviews', approved:'Approved Reviews', rejected:'Rejected Reviews', all:'All Reviews' };
+  document.getElementById('pageTitle').textContent = titles[tab] || 'Reviews';
+
+  loadReviews(tab, 1);
+}
+
+// ── MODAL ─────────────────────────────────────────────────
+function openModal(src) { document.getElementById('modalImg').src=src; document.getElementById('imgModal').classList.add('open'); }
+function closeModal()    { document.getElementById('imgModal').classList.remove('open'); }
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
+
+// ── TOAST ─────────────────────────────────────────────────
+function toast(msg, type) {
+  var c = document.getElementById('toastContainer');
+  var el = document.createElement('div');
+  el.className = 'toast ' + (type || 'info');
+  el.textContent = msg;
+  c.appendChild(el);
+  setTimeout(function(){ el.classList.add('show'); }, 10);
+  setTimeout(function(){ el.classList.remove('show'); setTimeout(function(){ el.remove(); }, 350); }, 3200);
+}
+
+// ── UTILS ─────────────────────────────────────────────────
+function escHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// Auto-refresh stats every 60s
+setInterval(loadStats, 60000);
+</script>
+</body>
+</html>

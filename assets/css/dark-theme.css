@@ -1,0 +1,646 @@
+/* ============================================================
+   AffiliateTracker — Dark Theme (premium SaaS feel)
+   Activated by [data-theme="dark"] on <html>. Loaded after
+   app.css so these declarations win on the cascade.
+
+   Palette design notes:
+     - Background uses a deep indigo-navy (NOT pure black) for
+       reduced eye strain at low ambient light.
+     - Three surface levels (bg → sidebar/topbar → card) create
+       quiet visual hierarchy without harsh borders.
+     - Indigo (#818CF8) carries every interactive accent and is
+       reused for glow / focus rings to keep the system coherent.
+   ============================================================ */
+
+html[data-theme="dark"] {
+    /* Brand accents */
+    --primary:        #818CF8;
+    --primary-dark:   #6366F1;
+    --primary-light:  rgba(129,140,248,.16);
+    --secondary:      #34D399;
+    --warning:        #FBBF24;
+    --danger:         #F87171;
+    --info:           #60A5FA;
+
+    /* Layered surfaces — each step is ~+6% lightness over the previous */
+    --bg:             #0A0F1F;   /* page */
+    --sidebar-bg:     #0E1526;   /* chrome */
+    --card-bg:        #131B30;   /* primary surfaces */
+    --surface-2:      #1A2440;   /* hover / active fills */
+    --surface-3:      #243056;   /* raised pills / chips */
+
+    --border:         rgba(148,163,184,.10);
+    --border-strong:  rgba(148,163,184,.18);
+
+    --text:           #E5E7EB;
+    --text-muted:     #9CA3AF;
+    --text-light:     #6B7280;
+
+    /* Shadows — combined drop + inset highlight for "lifted glass" */
+    --shadow:         0 1px 2px rgba(0,0,0,.5),
+                      0 2px 6px rgba(0,0,0,.35),
+                      inset 0 1px 0 rgba(255,255,255,.04);
+    --shadow-md:      0 4px 8px rgba(0,0,0,.45),
+                      0 12px 28px rgba(0,0,0,.4),
+                      inset 0 1px 0 rgba(255,255,255,.05);
+    --glow:           0 0 0 1px rgba(129,140,248,.35),
+                      0 0 24px -6px rgba(129,140,248,.45);
+
+    color-scheme: dark;
+}
+
+/* ── Smooth, opt-in transitions on the chrome only ── */
+html[data-theme="dark"] body,
+html[data-theme="dark"] .sidebar,
+html[data-theme="dark"] .topbar,
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .stat-card,
+html[data-theme="dark"] .page-body,
+html[data-theme="dark"] .btn,
+html[data-theme="dark"] .nav-link {
+    transition: background-color .18s ease, border-color .18s ease, color .18s ease, box-shadow .18s ease, transform .15s ease;
+}
+
+/* ── Page chrome ─────────────────────────────────────────── */
+html[data-theme="dark"] body {
+    background:
+        radial-gradient(1200px 600px at 0% -10%, rgba(99,102,241,.06), transparent 60%),
+        radial-gradient(900px 500px at 100% 110%, rgba(16,185,129,.04), transparent 60%),
+        var(--bg);
+    color: var(--text);
+}
+html[data-theme="dark"] .sidebar {
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    box-shadow: 1px 0 0 rgba(255,255,255,.02) inset;
+}
+html[data-theme="dark"] .topbar  {
+    background: rgba(14,21,38,.85);
+    backdrop-filter: blur(8px) saturate(140%);
+    -webkit-backdrop-filter: blur(8px) saturate(140%);
+    border-bottom: 1px solid var(--border);
+}
+
+html[data-theme="dark"] .sidebar-section { color: var(--text-light); letter-spacing:.08em; }
+html[data-theme="dark"] .nav-link        { color: #CBD5E1; border-radius: 8px; }
+html[data-theme="dark"] .nav-link:hover  { background: var(--surface-2); color: #E0E7FF; }
+html[data-theme="dark"] .nav-link.active {
+    background: linear-gradient(135deg, rgba(99,102,241,.22), rgba(99,102,241,.10));
+    color: #C7D2FE;
+    box-shadow: inset 0 0 0 1px rgba(99,102,241,.35),
+                inset 2px 0 0 0 #818CF8;
+}
+html[data-theme="dark"] .sidebar-logo,
+html[data-theme="dark"] .sidebar-logo span { color: var(--text); }
+
+html[data-theme="dark"] .topbar-title { color: var(--text); }
+html[data-theme="dark"] .user-menu {
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    border-radius: 10px;
+}
+html[data-theme="dark"] .user-menu:hover { border-color: var(--primary); box-shadow: var(--glow); }
+html[data-theme="dark"] .notification-btn {
+    background: var(--surface-2);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+html[data-theme="dark"] .notification-btn:hover {
+    background: var(--surface-3); color: var(--primary); border-color: rgba(129,140,248,.35);
+    box-shadow: var(--glow);
+}
+
+html[data-theme="dark"] .dropdown-menu,
+html[data-theme="dark"] .menu-dropdown,
+html[data-theme="dark"] .dd-menu {
+    background: var(--card-bg);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    box-shadow: var(--shadow-md);
+    border-radius: 12px;
+    overflow: hidden;
+}
+html[data-theme="dark"] .dropdown-item       { color: var(--text); }
+html[data-theme="dark"] .dropdown-item:hover { background: var(--surface-2); }
+html[data-theme="dark"] .dropdown-divider    { background: var(--border); border-color: var(--border); }
+
+/* ── Cards / panels — soft "lifted glass" feel ──────────── */
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .stat-card,
+html[data-theme="dark"] .panel,
+html[data-theme="dark"] .box,
+html[data-theme="dark"] .widget {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text);
+    box-shadow: var(--shadow);
+    border-radius: 14px;
+}
+html[data-theme="dark"] .stat-card:hover {
+    background: var(--surface-2) !important;
+    border-color: var(--border-strong) !important;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+html[data-theme="dark"] .card-header,
+html[data-theme="dark"] .card-title { color: var(--text); border-color: var(--border); }
+html[data-theme="dark"] .stat-label { color: var(--text-muted); }
+html[data-theme="dark"] .stat-value { color: var(--text); }
+html[data-theme="dark"] .stat-sub,
+html[data-theme="dark"] .text-muted,
+html[data-theme="dark"] .text-sm.text-muted { color: var(--text-muted) !important; }
+
+/* Stat icon tint chips */
+html[data-theme="dark"] .stat-icon.blue   { background: rgba(59,130,246,.18);  color: #93C5FD; }
+html[data-theme="dark"] .stat-icon.green  { background: rgba(16,185,129,.18); color: #6EE7B7; }
+html[data-theme="dark"] .stat-icon.orange { background: rgba(234,88,12,.18);  color: #FDBA74; }
+html[data-theme="dark"] .stat-icon.purple { background: rgba(124,58,237,.18); color: #C4B5FD; }
+html[data-theme="dark"] .stat-icon.red    { background: rgba(220,38,38,.18);  color: #FCA5A5; }
+html[data-theme="dark"] .stat-icon.teal   { background: rgba(15,118,110,.18); color: #5EEAD4; }
+
+/* ── Tables — clear hierarchy without harsh lines ───────── */
+html[data-theme="dark"] table { color: var(--text); border-radius: 12px; overflow: hidden; }
+html[data-theme="dark"] thead th,
+html[data-theme="dark"] table thead th {
+    background: var(--surface-2) !important;
+    color: #E5E7EB !important;
+    border-color: var(--border) !important;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    font-size: 11.5px;
+}
+html[data-theme="dark"] tbody tr:nth-child(odd)  td { background: var(--card-bg)  !important; }
+html[data-theme="dark"] tbody tr:nth-child(even) td { background: #101729        !important; }
+html[data-theme="dark"] tbody tr:hover td           { background: rgba(99,102,241,.10) !important; }
+html[data-theme="dark"] td, html[data-theme="dark"] th { border-color: var(--border) !important; }
+html[data-theme="dark"] .tbl-secondary { color: var(--text-muted); }
+html[data-theme="dark"] .tbl-code      { background: rgba(99,102,241,.18); color: #C7D2FE; border-color: rgba(99,102,241,.30); }
+
+/* ── DataTables shell ────────────────────────────────────── */
+/* The top toolbar (length + search) and bottom bar (info + paginate)
+   carry their own background in app.css — re-tint them so neither edge
+   leaks white in dark mode. */
+html[data-theme="dark"] .dataTables_wrapper { background: transparent !important; }
+html[data-theme="dark"] .dataTables_wrapper .dataTables_length,
+html[data-theme="dark"] .dataTables_wrapper .dataTables_filter,
+html[data-theme="dark"] .dataTables_wrapper .dataTables_info,
+html[data-theme="dark"] .dataTables_wrapper .dataTables_paginate {
+    background: var(--card-bg) !important;
+    border-color: var(--border) !important;
+    color: var(--text-muted) !important;
+}
+html[data-theme="dark"] .dataTables_wrapper .dataTables_length label,
+html[data-theme="dark"] .dataTables_wrapper .dataTables_filter label { color: var(--text-muted) !important; }
+html[data-theme="dark"] .dataTables_wrapper .dataTables_filter input::placeholder { color: var(--text-light) !important; }
+html[data-theme="dark"] .dataTables_wrapper .dataTables_length select,
+html[data-theme="dark"] .dataTables_wrapper .dataTables_filter input {
+    background-color: var(--surface-2) !important; color: var(--text) !important;
+    border: 1px solid var(--border-strong) !important;
+    border-radius: 8px !important;
+    /* Strip the light-mode SVG chevron / magnifier background that bakes in #F8FAFC */
+    background-image: none !important;
+}
+html[data-theme="dark"] .dataTables_wrapper .dataTables_length select:hover,
+html[data-theme="dark"] .dataTables_wrapper .dataTables_filter input:hover {
+    background-color: var(--surface-3) !important;
+}
+html[data-theme="dark"] .dataTables_wrapper .dataTables_filter input:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(129,140,248,.20);
+}
+html[data-theme="dark"] .dataTables_wrapper .dataTables_info,
+html[data-theme="dark"] .dataTables_wrapper .dataTables_length,
+html[data-theme="dark"] .dataTables_wrapper .dataTables_filter,
+html[data-theme="dark"] .dataTables_wrapper .dataTables_paginate { color: var(--text-muted) !important; }
+html[data-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: var(--text-muted) !important;
+    background: var(--surface-2) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 8px !important;
+    margin: 0 2px !important;
+}
+html[data-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+html[data-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: var(--primary) !important; color: #fff !important; border-color: var(--primary) !important;
+    box-shadow: 0 4px 12px rgba(99,102,241,.35);
+}
+html[data-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button.disabled { opacity: .3; }
+
+/* ── Forms ───────────────────────────────────────────────── */
+html[data-theme="dark"] input[type="text"],
+html[data-theme="dark"] input[type="email"],
+html[data-theme="dark"] input[type="password"],
+html[data-theme="dark"] input[type="number"],
+html[data-theme="dark"] input[type="search"],
+html[data-theme="dark"] input[type="url"],
+html[data-theme="dark"] input[type="tel"],
+html[data-theme="dark"] input[type="date"],
+html[data-theme="dark"] input[type="datetime-local"],
+html[data-theme="dark"] input[type="time"],
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] select,
+html[data-theme="dark"] .form-control {
+    background-color: var(--surface-2) !important;
+    color: var(--text) !important;
+    border: 1px solid var(--border-strong) !important;
+    border-radius: 8px;
+}
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder { color: var(--text-light); }
+html[data-theme="dark"] input:focus,
+html[data-theme="dark"] textarea:focus,
+html[data-theme="dark"] select:focus,
+html[data-theme="dark"] .form-control:focus {
+    background-color: var(--surface-3) !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(129,140,248,.22);
+}
+html[data-theme="dark"] label,
+html[data-theme="dark"] .form-label,
+html[data-theme="dark"] .form-group > label { color: var(--text-muted); }
+
+/* Native date/time picker icons */
+html[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator,
+html[data-theme="dark"] input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+html[data-theme="dark"] input[type="time"]::-webkit-calendar-picker-indicator,
+html[data-theme="dark"] input[type="search"]::-webkit-search-cancel-button { filter: invert(.85); }
+
+/* ── Buttons — clear hover/active/disabled states ────────── */
+html[data-theme="dark"] .btn-primary {
+    background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+    border: 1px solid rgba(129,140,248,.45);
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(99,102,241,.30), inset 0 1px 0 rgba(255,255,255,.10);
+}
+html[data-theme="dark"] .btn-primary:hover {
+    background: linear-gradient(135deg, #818CF8 0%, #6366F1 100%);
+    box-shadow: 0 6px 18px rgba(99,102,241,.40), inset 0 1px 0 rgba(255,255,255,.15);
+    transform: translateY(-1px);
+}
+html[data-theme="dark"] .btn-primary:active { transform: translateY(0); box-shadow: 0 2px 6px rgba(99,102,241,.30); }
+html[data-theme="dark"] .btn-primary:disabled,
+html[data-theme="dark"] .btn-primary.disabled,
+html[data-theme="dark"] .btn:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; transform: none; }
+
+html[data-theme="dark"] .btn-secondary {
+    background: var(--surface-2); color: var(--text);
+    border: 1px solid var(--border-strong);
+}
+html[data-theme="dark"] .btn-secondary:hover { background: var(--surface-3); border-color: var(--primary); }
+
+html[data-theme="dark"] .btn-outline,
+html[data-theme="dark"] .btn-outline-primary {
+    color: #C7D2FE; border-color: rgba(129,140,248,.45); background: transparent;
+}
+html[data-theme="dark"] .btn-outline:hover { background: rgba(129,140,248,.10); }
+html[data-theme="dark"] .badge-muted { background: var(--surface-3); color: var(--text-muted); }
+
+/* ── Alerts ──────────────────────────────────────────────── */
+html[data-theme="dark"] .alert-info    { background: rgba(59,130,246,.12);  color: #BFDBFE; border: 1px solid rgba(59,130,246,.30); }
+html[data-theme="dark"] .alert-success { background: rgba(16,185,129,.12); color: #A7F3D0; border: 1px solid rgba(16,185,129,.30); }
+html[data-theme="dark"] .alert-warning { background: rgba(245,158,11,.12); color: #FDE68A; border: 1px solid rgba(245,158,11,.30); }
+html[data-theme="dark"] .alert-error,
+html[data-theme="dark"] .alert-danger  { background: rgba(239,68,68,.12);  color: #FCA5A5; border: 1px solid rgba(239,68,68,.30); }
+
+/* ── Modals ──────────────────────────────────────────────── */
+html[data-theme="dark"] .modal,
+html[data-theme="dark"] .modal-content,
+html[data-theme="dark"] .modal-dialog {
+    background: var(--card-bg) !important;
+    color: var(--text);
+    border: 1px solid var(--border-strong);
+    box-shadow: var(--shadow-md);
+    border-radius: 14px;
+}
+html[data-theme="dark"] .modal-header,
+html[data-theme="dark"] .modal-footer { border-color: var(--border); }
+html[data-theme="dark"] .modal-backdrop { background: rgba(2,6,23,.75); }
+
+/* ── Misc utility classes ────────────────────────────────── */
+html[data-theme="dark"] hr,
+html[data-theme="dark"] .divider { border-color: var(--border); background: var(--border); }
+html[data-theme="dark"] code,
+html[data-theme="dark"] pre { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; }
+html[data-theme="dark"] .page-header h1,
+html[data-theme="dark"] .page-header h2,
+html[data-theme="dark"] .page-header p,
+html[data-theme="dark"] h1, html[data-theme="dark"] h2, html[data-theme="dark"] h3,
+html[data-theme="dark"] h4, html[data-theme="dark"] h5, html[data-theme="dark"] h6 { color: var(--text); }
+html[data-theme="dark"] .text-dark { color: var(--text) !important; }
+
+/* Scrollbar polish */
+html[data-theme="dark"] ::-webkit-scrollbar         { width: 10px; height: 10px; }
+html[data-theme="dark"] ::-webkit-scrollbar-track   { background: transparent; }
+html[data-theme="dark"] ::-webkit-scrollbar-thumb   { background: var(--surface-3); border-radius: 6px; border: 2px solid var(--bg); }
+html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: #2E3B66; }
+
+/* ── Theme picker (works in all three themes) ────────────── */
+.theme-toggle {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: background-color .15s, color .15s, border-color .15s, box-shadow .15s, transform .12s;
+}
+.theme-toggle:hover { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+.theme-toggle:active { transform: scale(.96); }
+.theme-toggle svg { width: 18px; height: 18px; }
+
+/* Show only the icon matching the active theme. */
+.theme-toggle .theme-icon-light,
+.theme-toggle .theme-icon-dark { display: none; }
+.theme-toggle .theme-icon-light { display: inline-block; }
+html[data-theme="dark"]  .theme-toggle .theme-icon-light { display: none; }
+html[data-theme="dark"]  .theme-toggle .theme-icon-dark  { display: inline-block; }
+
+.theme-picker-opt { transition: background-color .15s ease; }
+.theme-picker-opt:hover { background: var(--primary-light); }
+html[data-theme="dark"]  .theme-picker-menu {
+    background: var(--card-bg);
+    border: 1px solid var(--border-strong);
+    box-shadow: var(--shadow-md);
+}
+
+/* ===========================================================
+   ── Full-coverage catch-all (Dark Mode enforcement) ──
+   The codebase has many page-level <style> blocks and inline
+   styles with hardcoded #fff / #F8FAFC / #E2E8F0 / etc. These
+   block-level selectors load AFTER dark-theme.css so we need
+   !important here to win the cascade. Light theme is untouched
+   because everything is scoped under html[data-theme="dark"].
+   =========================================================== */
+
+/* Bootstrap-style utility classes commonly used across views */
+html[data-theme="dark"] .bg-white,
+html[data-theme="dark"] .bg-light,
+html[data-theme="dark"] .bg-body,
+html[data-theme="dark"] .bg-default { background-color: var(--card-bg) !important; color: var(--text) !important; }
+html[data-theme="dark"] .text-black,
+html[data-theme="dark"] .text-body { color: var(--text) !important; }
+html[data-theme="dark"] .border,
+html[data-theme="dark"] .border-light,
+html[data-theme="dark"] .border-bottom,
+html[data-theme="dark"] .border-top { border-color: var(--border) !important; }
+
+/* Dashboard card classes used in /views/admin/dashboard.php and
+   /views/affiliate_manager/dashboard.php. Their <style> blocks
+   declare white backgrounds with light gray borders. */
+html[data-theme="dark"] .kpi-card,
+html[data-theme="dark"] .chart-card,
+html[data-theme="dark"] .metric-card,
+html[data-theme="dark"] .info-card,
+html[data-theme="dark"] .data-card,
+html[data-theme="dark"] .widget-card,
+html[data-theme="dark"] .dashboard-card,
+html[data-theme="dark"] .stats-card,
+html[data-theme="dark"] .filter-bar,
+html[data-theme="dark"] .summary-card,
+html[data-theme="dark"] .report-card {
+    background: var(--card-bg) !important;
+    border-color: var(--border) !important;
+    color: var(--text) !important;
+    box-shadow: var(--shadow) !important;
+}
+html[data-theme="dark"] .kpi-card:hover,
+html[data-theme="dark"] .chart-card:hover,
+html[data-theme="dark"] .metric-card:hover { box-shadow: var(--shadow-md) !important; }
+
+/* KPI trend pills inside dashboard cards */
+html[data-theme="dark"] .kpi-trend.flat,
+html[data-theme="dark"] .kpi-trend.neutral { background: var(--surface-2) !important; color: var(--text-muted) !important; }
+html[data-theme="dark"] .kpi-trend.up      { background: rgba(16,185,129,.18) !important; color: #6EE7B7 !important; }
+html[data-theme="dark"] .kpi-trend.down    { background: rgba(239,68,68,.18) !important; color: #FCA5A5 !important; }
+
+/* Toggle / pill button groups used to flip chart series, time
+   windows, view modes, etc. They share the same shape across
+   layouts: small pill on a light gray fill with dark border. */
+html[data-theme="dark"] .toggle-btns button,
+html[data-theme="dark"] .pill-btn,
+html[data-theme="dark"] .filter-pill,
+html[data-theme="dark"] .seg-btn {
+    background: var(--surface-2) !important;
+    color: var(--text-muted) !important;
+    border-color: var(--border-strong) !important;
+}
+html[data-theme="dark"] .toggle-btns button:hover,
+html[data-theme="dark"] .pill-btn:hover,
+html[data-theme="dark"] .filter-pill:hover,
+html[data-theme="dark"] .seg-btn:hover { background: var(--surface-3) !important; color: var(--text) !important; }
+html[data-theme="dark"] .toggle-btns button.active,
+html[data-theme="dark"] .pill-btn.active,
+html[data-theme="dark"] .filter-pill.active,
+html[data-theme="dark"] .seg-btn.active {
+    background: var(--primary) !important; color: #fff !important; border-color: var(--primary) !important;
+    box-shadow: 0 2px 8px rgba(99,102,241,.30);
+}
+
+/* Page-level analytics-table style block (admin dashboard) */
+html[data-theme="dark"] .analytics-table th {
+    background: var(--surface-2) !important;
+    color: var(--text-muted) !important;
+    border-bottom-color: var(--border) !important;
+}
+html[data-theme="dark"] .analytics-table tr:hover td,
+html[data-theme="dark"] .analytics-table td { background: transparent !important; color: var(--text); border-color: var(--border) !important; }
+html[data-theme="dark"] .analytics-table tr:hover td { background: var(--surface-2) !important; }
+
+/* Date-range picker preset chips, segment controls */
+html[data-theme="dark"] .drp-btn,
+html[data-theme="dark"] .drp-btn-active {
+    background: var(--surface-2) !important;
+    color: var(--text-muted) !important;
+    border: 1px solid var(--border) !important;
+}
+html[data-theme="dark"] .drp-btn:hover { background: var(--surface-3) !important; color: var(--text) !important; }
+html[data-theme="dark"] .drp-btn-active { background: var(--primary) !important; color: #fff !important; border-color: var(--primary) !important; }
+
+/* Inline-style fallbacks — when a view ships style="background:#fff"
+   or style="background-color:#FFFFFF" we still want a dark surface.
+   Attribute selectors target any element with that literal substring. */
+html[data-theme="dark"] [style*="background:#fff"]:not(svg):not(path):not(button.btn-primary),
+html[data-theme="dark"] [style*="background: #fff"]:not(svg):not(path):not(button.btn-primary),
+html[data-theme="dark"] [style*="background:#FFF"]:not(svg):not(path):not(button.btn-primary),
+html[data-theme="dark"] [style*="background:#FFFFFF"]:not(svg):not(path):not(button.btn-primary),
+html[data-theme="dark"] [style*="background:white"]:not(svg):not(path):not(button.btn-primary),
+html[data-theme="dark"] [style*="background-color:#fff"]:not(svg):not(path):not(button.btn-primary),
+html[data-theme="dark"] [style*="background-color:#FFF"]:not(svg):not(path):not(button.btn-primary),
+html[data-theme="dark"] [style*="background-color:#FFFFFF"]:not(svg):not(path):not(button.btn-primary),
+html[data-theme="dark"] [style*="background-color:white"]:not(svg):not(path):not(button.btn-primary) {
+    background: var(--card-bg) !important;
+    background-color: var(--card-bg) !important;
+    color: var(--text) !important;
+}
+
+/* Common light gray "soft" fills used as section headers / pill chips
+   throughout the codebase. Map them to surface-2 so they still read
+   as a separate visual layer but stay dark. */
+html[data-theme="dark"] [style*="background:#F8FAFC"],
+html[data-theme="dark"] [style*="background: #F8FAFC"],
+html[data-theme="dark"] [style*="background-color:#F8FAFC"],
+html[data-theme="dark"] [style*="background:#F1F5F9"],
+html[data-theme="dark"] [style*="background-color:#F1F5F9"],
+html[data-theme="dark"] [style*="background:#FAFBFF"],
+html[data-theme="dark"] [style*="background-color:#FAFBFF"],
+html[data-theme="dark"] [style*="background:#EEF2FF"],
+html[data-theme="dark"] [style*="background-color:#EEF2FF"],
+html[data-theme="dark"] [style*="background:#E2E8F0"],
+html[data-theme="dark"] [style*="background-color:#E2E8F0"] {
+    background: var(--surface-2) !important;
+    background-color: var(--surface-2) !important;
+    color: var(--text) !important;
+}
+
+/* Inline borders that hardcode the light-mode line color */
+html[data-theme="dark"] [style*="border:1px solid #E2E8F0"],
+html[data-theme="dark"] [style*="border: 1px solid #E2E8F0"],
+html[data-theme="dark"] [style*="border-color:#E2E8F0"],
+html[data-theme="dark"] [style*="border-top:1px solid #E2E8F0"],
+html[data-theme="dark"] [style*="border-bottom:1px solid #E2E8F0"],
+html[data-theme="dark"] [style*="border-left:1px solid #E2E8F0"],
+html[data-theme="dark"] [style*="border-right:1px solid #E2E8F0"],
+html[data-theme="dark"] [style*="border-color:#F1F5F9"] { border-color: var(--border) !important; }
+
+/* Inline text colors that hardcode mid-gray slate variants */
+html[data-theme="dark"] [style*="color:#64748B"],
+html[data-theme="dark"] [style*="color: #64748B"],
+html[data-theme="dark"] [style*="color:#94A3B8"],
+html[data-theme="dark"] [style*="color:#1E293B"],
+html[data-theme="dark"] [style*="color:#0F172A"],
+html[data-theme="dark"] [style*="color:#334155"],
+html[data-theme="dark"] [style*="color:#6B7280"],
+html[data-theme="dark"] [style*="color: #6B7280"],
+html[data-theme="dark"] [style*="color:#9CA3AF"],
+html[data-theme="dark"] [style*="color:#D1D5DB"] { color: var(--text-muted) !important; }
+html[data-theme="dark"] [style*="color:#1F2937"],
+html[data-theme="dark"] [style*="color:#111827"],
+html[data-theme="dark"] [style*="color:#374151"],
+html[data-theme="dark"] [style*="color: #374151"],
+html[data-theme="dark"] [style*="color:#0F172A;font-weight:7"] { color: var(--text) !important; }
+
+/* Page body / generic containers — kill any white fallback */
+html[data-theme="dark"] .page-body,
+html[data-theme="dark"] .container,
+html[data-theme="dark"] .container-fluid,
+html[data-theme="dark"] .content,
+html[data-theme="dark"] main { background-color: transparent !important; color: var(--text); }
+
+/* Section heading bands like "Top Profitable Offers" (admin dashboard) */
+html[data-theme="dark"] .section-band,
+html[data-theme="dark"] .section-header,
+html[data-theme="dark"] .table-section-title { background: var(--surface-2) !important; color: var(--text-muted) !important; border-color: var(--border) !important; }
+
+/* Login / register / public auth screens — these layouts don't use
+   the admin layout but the user can still toggle dark. Force the
+   shell into dark surfaces if the theme attribute is set. */
+html[data-theme="dark"] .auth-shell,
+html[data-theme="dark"] .auth-card,
+html[data-theme="dark"] .login-card,
+html[data-theme="dark"] .register-card,
+html[data-theme="dark"] .auth-form { background: var(--card-bg) !important; color: var(--text) !important; border-color: var(--border) !important; }
+
+/* Chart.js placeholder backgrounds (some pages wrap a canvas in
+   a div with a white inline style) */
+html[data-theme="dark"] canvas { background: transparent !important; }
+
+/* Force any element that was painted white by browser default
+   form widgets (autofill, datalists) to stay readable */
+html[data-theme="dark"] input:-webkit-autofill,
+html[data-theme="dark"] input:-webkit-autofill:hover,
+html[data-theme="dark"] input:-webkit-autofill:focus,
+html[data-theme="dark"] textarea:-webkit-autofill,
+html[data-theme="dark"] select:-webkit-autofill {
+    -webkit-text-fill-color: var(--text) !important;
+    -webkit-box-shadow: 0 0 0 1000px var(--surface-2) inset !important;
+    caret-color: var(--text);
+}
+
+/* Bootstrap-style table classes */
+html[data-theme="dark"] .table,
+html[data-theme="dark"] .table-striped,
+html[data-theme="dark"] .table-bordered,
+html[data-theme="dark"] .table-hover { color: var(--text) !important; background: transparent !important; }
+html[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > * { background: var(--card-bg) !important; color: var(--text) !important; }
+html[data-theme="dark"] .table > :not(caption) > * > * { background-color: transparent; color: var(--text); border-color: var(--border) !important; }
+html[data-theme="dark"] .table-hover > tbody > tr:hover > * { background: var(--surface-2) !important; }
+
+/* ── Dashboard internals (KPI labels, chart cards, mini bars) ──
+   The page <style> hardcodes slate colours for these. */
+html[data-theme="dark"] .kpi-label    { color: var(--text-muted) !important; }
+html[data-theme="dark"] .kpi-value    { color: var(--text)       !important; }
+html[data-theme="dark"] .kpi-sub      { color: var(--text-light) !important; }
+html[data-theme="dark"] .chart-card .card-header { border-bottom-color: var(--border) !important; background: transparent !important; }
+html[data-theme="dark"] .chart-card .card-title  { color: var(--text) !important; }
+html[data-theme="dark"] .analytics-table td      { color: var(--text)       !important; border-bottom-color: var(--border) !important; }
+html[data-theme="dark"] .analytics-table .green  { color: #6EE7B7 !important; }
+html[data-theme="dark"] .analytics-table .red    { color: #FCA5A5 !important; }
+html[data-theme="dark"] .cr-bar-inner { background: var(--surface-2) !important; }
+
+/* Loading overlays — many cards use rgba(255,255,255,.8) */
+html[data-theme="dark"] .loading-overlay,
+html[data-theme="dark"] [style*="background:rgba(255,255,255,.8)"],
+html[data-theme="dark"] [style*="background:rgba(255,255,255,0.8)"],
+html[data-theme="dark"] [style*="background-color:rgba(255,255,255,.8)"] {
+    background: rgba(15,23,42,.78) !important;
+    color: var(--text);
+}
+
+/* Mini bars / progress backgrounds defaulting to slate-200 */
+html[data-theme="dark"] [style*="background:#E2E8F0"][style*="height"],
+html[data-theme="dark"] [style*="background:#F1F5F9"][style*="height"] {
+    background: var(--surface-2) !important;
+}
+
+/* Affiliate-manager dashboard reuses the same dashboard classes,
+   so the same overrides automatically apply — no extra selectors
+   needed beyond what's listed above. */
+
+/* Affiliate / advertiser dashboard card classes (an-* prefix used
+   in /views/affiliate/dashboard.php and similar). */
+html[data-theme="dark"] .an-kpi-card,
+html[data-theme="dark"] .an-card,
+html[data-theme="dark"] .an-panel,
+html[data-theme="dark"] .an-widget,
+html[data-theme="dark"] .an-section,
+html[data-theme="dark"] .an-box,
+html[data-theme="dark"] .aff-card,
+html[data-theme="dark"] .aff-panel,
+html[data-theme="dark"] .adv-card,
+html[data-theme="dark"] .adv-panel,
+html[data-theme="dark"] .mgr-card,
+html[data-theme="dark"] .mgr-panel {
+    background: var(--card-bg) !important;
+    border-color: var(--border) !important;
+    color: var(--text) !important;
+    box-shadow: var(--shadow) !important;
+}
+html[data-theme="dark"] .an-kpi-card:hover,
+html[data-theme="dark"] .an-card:hover { box-shadow: var(--shadow-md) !important; }
+html[data-theme="dark"] .an-kpi-label,
+html[data-theme="dark"] .an-card-title,
+html[data-theme="dark"] .an-section-title { color: var(--text) !important; }
+html[data-theme="dark"] .an-kpi-sub,
+html[data-theme="dark"] .an-meta,
+html[data-theme="dark"] .an-hint { color: var(--text-muted) !important; }
+
+/* ── Logo: invert any colored logo to white in dark mode ─────
+   brightness(0) flattens the image to pure black, then invert(1)
+   flips it to pure white — works for any opaque colored logo
+   without needing a separate dark-mode asset.
+
+   Applies by default whenever dark theme is active; admins with
+   an already-light logo can opt out from Branding → "Dark Mode
+   Logo Color", which sets data-dark-logo="0" on <html>.
+   :not() means the filter still fires when the attribute is
+   absent (e.g. first paint before the JS guard runs, or on a
+   page that doesn't include theme_head.php). */
+html[data-theme="dark"]:not([data-dark-logo="0"]) .sidebar-logo img,
+html[data-theme="dark"]:not([data-dark-logo="0"]) .nav-logo img,
+html[data-theme="dark"]:not([data-dark-logo="0"]) .auth-header img,
+html[data-theme="dark"]:not([data-dark-logo="0"]) .footer-logo img {
+    filter: brightness(0) invert(1);
+}

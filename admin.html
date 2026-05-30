@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EliteAli Admin Panel</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<!-- SheetJS for Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- jsPDF for PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.7.0/jspdf.plugin.autotable.min.js"></script>
+<style>
+/* ── RESET & VARS ────────────────────────────────────────── */
+:root{
+  --bg:#0f0c1a; --bg2:#16122a; --bg3:#1e1838; --card:#1a1630;
+  --border:#2e2850; --text:#f0eeff; --muted:#8b87b0;
+  --pink:#e8197a; --violet:#7c3aed; --blue:#2563eb; --cyan:#0ea5e9;
+  --green:#059669; --gold:#d97706; --orange:#f97316; --red:#ef4444;
+  --grad:linear-gradient(135deg,#e8197a,#7c3aed,#2563eb);
+  --r:12px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;min-height:100vh;display:flex}
+
+/* ── LOGIN ──────────────────────────────────────────────── */
+#loginScreen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;background-image:radial-gradient(ellipse 60% 50% at 70% 40%,rgba(124,58,237,.15),transparent),radial-gradient(ellipse 40% 40% at 20% 70%,rgba(232,25,122,.1),transparent)}
+.login-box{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:52px 44px;width:380px;text-align:center;box-shadow:0 40px 100px rgba(0,0,0,.6)}
+.login-logo{font-size:46px;margin-bottom:6px}
+.login-box h2{font-size:28px;font-weight:800;margin-bottom:4px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.login-box p{color:var(--muted);font-size:13px;margin-bottom:30px}
+.login-input{width:100%;padding:13px 15px;background:var(--bg2);border:1.5px solid var(--border);border-radius:11px;color:var(--text);font-size:14px;outline:none;margin-bottom:12px;transition:border .2s}
+.login-input:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(124,58,237,.15)}
+.btn-login{width:100%;padding:14px;background:var(--grad);border:none;border-radius:11px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.5px}
+.btn-login:hover{opacity:.88;transform:translateY(-1px);box-shadow:0 8px 24px rgba(232,25,122,.4)}
+#loginError{color:#f87171;font-size:12px;margin-top:10px;display:none;padding:8px 12px;background:rgba(248,113,113,.1);border-radius:8px}
+
+/* ── SIDEBAR ─────────────────────────────────────────────── */
+.sidebar{width:224px;min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sidebar-logo{padding:22px 20px;border-bottom:1px solid var(--border)}
+.logo-text{font-size:22px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.logo-sub{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-top:2px}
+.nav-group{padding:16px 0 6px}
+.nav-label{padding:6px 20px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:2px}
+.nav-item{display:flex;align-items:center;gap:11px;padding:11px 20px;color:var(--muted);cursor:pointer;transition:all .2s;border-left:3px solid transparent;font-size:13px;font-weight:500;user-select:none}
+.nav-item:hover{color:var(--text);background:rgba(124,58,237,.08)}
+.nav-item.active{color:var(--text);background:rgba(124,58,237,.13);border-left-color:var(--violet)}
+.nav-item i{width:17px;text-align:center;font-size:13px}
+.sidebar-foot{margin-top:auto;padding:16px 20px;border-top:1px solid var(--border)}
+.sync-pill{display:flex;align-items:center;gap:7px;font-size:11px;padding:9px 13px;border-radius:9px;font-weight:600;transition:all .3s}
+.sync-pill.ok{color:var(--green);background:rgba(5,150,105,.1);border:1px solid rgba(5,150,105,.2)}
+.sync-pill.busy{color:var(--gold);background:rgba(217,119,6,.1);border:1px solid rgba(217,119,6,.2)}
+.sync-pill.err{color:#f87171;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.2)}
+.dot-pulse{width:7px;height:7px;border-radius:50%;background:currentColor;animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(1.5)}}
+
+/* ── MAIN ────────────────────────────────────────────────── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;flex-shrink:0}
+.topbar-left{display:flex;align-items:center;gap:14px}
+.topbar-left h1{font-size:20px;font-weight:700}
+.topbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.content{padding:28px;flex:1;overflow-y:auto}
+
+/* ── STAT CARDS ──────────────────────────────────────────── */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px 20px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad)}
+.stat-card .s-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.stat-card .s-num{font-size:34px;font-weight:800;line-height:1;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-card .s-sub{font-size:11px;color:var(--muted);margin-top:6px}
+
+/* ── PANELS ──────────────────────────────────────────────── */
+.panel{display:none}.panel.active{display:block}
+.panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:10px}
+.panel-header h2{font-size:19px;font-weight:700}
+
+/* ── BUTTONS ─────────────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:9px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:all .22s;white-space:nowrap}
+.btn:disabled{opacity:.45;cursor:not-allowed;pointer-events:none}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:0 4px 16px rgba(232,25,122,.28)}
+.btn-primary:hover{opacity:.88;transform:translateY(-1px);box-shadow:0 8px 28px rgba(232,25,122,.4)}
+.btn-secondary{background:var(--bg3);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{border-color:var(--violet);color:var(--violet)}
+.btn-danger{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2)}
+.btn-danger:hover{background:rgba(239,68,68,.18);border-color:#f87171}
+.btn-success{background:rgba(5,150,105,.15);color:#34d399;border:1px solid rgba(5,150,105,.3)}
+.btn-success:hover{background:rgba(5,150,105,.25);border-color:#34d399}
+.btn-gold{background:rgba(217,119,6,.15);color:#fbbf24;border:1px solid rgba(217,119,6,.3)}
+.btn-gold:hover{background:rgba(217,119,6,.25);border-color:#fbbf24}
+.btn-sm{padding:6px 12px;font-size:11px;border-radius:7px}
+.btn-xs{padding:4px 9px;font-size:10px;border-radius:6px}
+.btn-icon{width:32px;height:32px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;transition:all .2s;font-size:13px}
+.btn-icon:hover{color:var(--pink);border-color:var(--pink);background:rgba(232,25,122,.08)}
+.btn-icon.del:hover{color:#f87171;border-color:#f87171;background:rgba(239,68,68,.08)}
+
+/* ── TABLE ───────────────────────────────────────────────── */
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.table-toolbar{padding:16px 20px;display:flex;gap:10px;align-items:center;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.tbl-search{flex:1;min-width:160px;padding:9px 13px;background:var(--bg2);border:1.5px solid var(--border);border-radius:9px;color:var(--text);font-size:13px;outline:none;transition:border .2s}
+.tbl-search:focus{border-color:var(--violet)}
+.tbl-search::placeholder{color:var(--muted)}
+table{width:100%;border-collapse:collapse}
+th{padding:11px 16px;text-align:left;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);white-space:nowrap;background:rgba(0,0,0,.15)}
+td{padding:13px 16px;border-bottom:1px solid rgba(46,40,80,.4);font-size:13px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(124,58,237,.05)}
+.offer-name-cell{font-weight:600;max-width:200px}
+.offer-vertical{font-size:11px;color:var(--muted)}
+.payout-val{font-weight:700;font-size:14px;background:linear-gradient(135deg,#f59e0b,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cat-chip{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:3px 9px;border-radius:20px}
+.cat-soi{background:rgba(232,25,122,.12);color:var(--pink);border:1px solid rgba(232,25,122,.22)}
+.cat-doi{background:rgba(249,115,22,.12);color:var(--orange);border:1px solid rgba(249,115,22,.22)}
+.cat-cps{background:rgba(249,115,22,.12);color:var(--orange);border:1px solid rgba(249,115,22,.22)}
+.cat-smartlink{background:rgba(5,150,105,.12);color:var(--green);border:1px solid rgba(5,150,105,.22)}
+.cat-casino{background:rgba(217,119,6,.12);color:var(--gold);border:1px solid rgba(217,119,6,.22)}
+.cat-cam{background:rgba(168,85,247,.12);color:#a855f7;border:1px solid rgba(168,85,247,.22)}
+.cat-software{background:rgba(14,165,233,.12);color:var(--cyan);border:1px solid rgba(14,165,233,.22)}
+.cat-financial{background:rgba(37,99,235,.12);color:var(--blue);border:1px solid rgba(37,99,235,.22)}
+
+/* ── FILTER TABS ─────────────────────────────────────────── */
+.filter-tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}
+.ftab{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:6px 16px;border-radius:20px;border:1.5px solid var(--border);background:var(--bg2);color:var(--muted);cursor:pointer;transition:all .2s}
+.ftab:hover{border-color:var(--pink);color:var(--pink)}
+.ftab.active{background:var(--grad);border-color:transparent;color:#fff;box-shadow:0 4px 14px rgba(232,25,122,.3)}
+
+/* ── BADGE PILLS ─────────────────────────────────────────── */
+.badge-render{display:inline-flex;gap:4px;flex-wrap:wrap}
+.bp-top{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:8px;font-weight:800;padding:2px 8px;border-radius:20px;text-transform:uppercase}
+.bp-hot{background:linear-gradient(135deg,#ff4500,#e8197a);color:#fff;font-size:8px;font-weight:800;padding:2px 8px;border-radius:20px;text-transform:uppercase}
+.bp-new{background:linear-gradient(135deg,#059669,#0ea5e9);color:#fff;font-size:8px;font-weight:800;padding:2px 8px;border-radius:20px;text-transform:uppercase}
+
+/* ── MODAL ───────────────────────────────────────────────── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(5px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{background:var(--card);border:1px solid var(--border);border-radius:20px;width:100%;max-width:680px;max-height:90vh;overflow-y:auto;box-shadow:0 50px 120px rgba(0,0,0,.7);transform:translateY(20px);transition:transform .3s}
+.modal-overlay.open .modal-box{transform:translateY(0)}
+.modal-header{padding:24px 28px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--card);z-index:2}
+.modal-header h3{font-size:18px;font-weight:700}
+.modal-body{padding:24px 28px}
+.modal-footer{padding:18px 28px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:var(--card)}
+.form-group{margin-bottom:18px}
+.form-label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px}
+.form-input,.form-select,.form-textarea{width:100%;padding:11px 14px;background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:all .22s}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--violet);box-shadow:0 0 0 4px rgba(124,58,237,.1)}
+.form-textarea{resize:vertical;min-height:80px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-select option{background:var(--bg2);color:var(--text)}
+.badge-checks{display:flex;gap:8px;flex-wrap:wrap}
+.badge-chk{display:none}
+.badge-chk+label{display:inline-flex;align-items:center;gap:5px;padding:7px 15px;border-radius:20px;border:1.5px solid var(--border);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:all .22s}
+.badge-chk:checked+label{border-color:transparent}
+#chk-top:checked+label,#s-top:checked+label{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff}
+#chk-hot:checked+label,#s-hot:checked+label{background:linear-gradient(135deg,#ff4500,#e8197a);color:#fff}
+#chk-new:checked+label,#s-new:checked+label{background:linear-gradient(135deg,#059669,#0ea5e9);color:#fff}
+
+/* ── IMAGE UPLOAD ────────────────────────────────────────── */
+.img-zone{border:2px dashed var(--border);border-radius:11px;padding:22px;text-align:center;cursor:pointer;transition:all .22s;position:relative;overflow:hidden}
+.img-zone:hover,.img-zone.drag{border-color:var(--violet);background:rgba(124,58,237,.07)}
+.img-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.img-zone-icon{font-size:28px;margin-bottom:6px;opacity:.45}
+.img-zone p{font-size:12px;color:var(--muted)}
+.img-zone small{font-size:11px;color:var(--muted);opacity:.7}
+.img-prev-wrap{position:relative;margin-top:10px;display:none}
+.img-prev-wrap img{width:100%;height:170px;object-fit:cover;border-radius:11px;border:1px solid var(--border);display:block}
+.img-clear{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.75);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:background .2s}
+.img-clear:hover{background:rgba(239,68,68,.8)}
+
+/* ── IMPORT MODAL ────────────────────────────────────────── */
+.import-drop-zone{border:2px dashed var(--violet);border-radius:14px;padding:36px;text-align:center;cursor:pointer;transition:all .3s;position:relative;background:rgba(124,58,237,.04)}
+.import-drop-zone.drag{border-color:var(--pink);background:rgba(232,25,122,.07);transform:scale(1.01)}
+.import-drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.import-preview-table{max-height:220px;overflow-y:auto;border-radius:10px;border:1px solid var(--border);margin-top:14px}
+.import-preview-table table{font-size:11px}
+.import-preview-table td,.import-preview-table th{padding:7px 12px}
+.import-stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.import-stat{background:var(--bg2);border-radius:8px;padding:10px 16px;font-size:12px;border:1px solid var(--border)}
+.import-stat span{display:block;font-size:20px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.mode-tabs{display:flex;gap:0;margin-bottom:16px;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.mode-tab{flex:1;padding:9px;text-align:center;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;color:var(--muted)}
+.mode-tab.active{background:var(--grad);color:#fff}
+.template-info{background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.2);border-radius:10px;padding:14px;margin-bottom:16px;font-size:12px;color:var(--blue)}
+.col-map{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;font-size:11px;margin-top:8px}
+.col-tag{background:var(--bg2);border-radius:6px;padding:4px 8px;border:1px solid var(--border);font-family:monospace;color:var(--cyan)}
+
+/* ── SLIDER CARDS ────────────────────────────────────────── */
+.slider-layout{display:grid;grid-template-columns:1fr 310px;gap:22px;align-items:start}
+.slides-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.slide-card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;transition:all .3s;cursor:grab;user-select:none}
+.slide-card:hover{border-color:var(--violet);box-shadow:0 8px 28px rgba(124,58,237,.22);transform:translateY(-3px)}
+.slide-card.drag-over{border-color:var(--pink);background:rgba(232,25,122,.06)}
+.slide-card-img{width:100%;height:110px;object-fit:cover;display:block;background:var(--bg3)}
+.slide-card-body{padding:13px}
+.slide-order{font-size:10px;color:var(--muted);margin-bottom:4px}
+.slide-name{font-size:14px;font-weight:700;margin-bottom:4px}
+.slide-payout{font-size:12px;color:var(--gold);margin-bottom:8px}
+.slide-badges{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px;min-height:18px}
+.slide-actions{display:flex;gap:7px}
+.drag-hint{font-size:11px;color:var(--muted);text-align:center;padding:4px 0 2px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:5px}
+
+/* ── MINI SLIDER PREVIEW ─────────────────────────────────── */
+.preview-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;position:sticky;top:84px}
+.preview-box h4{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px}
+.mini-slider{border-radius:12px;overflow:hidden;aspect-ratio:16/9;background:var(--bg2);position:relative}
+.mini-slides-track{display:flex;height:100%;transition:transform .5s ease}
+.mini-slide{flex:0 0 100%;height:100%;position:relative}
+.mini-slide img{width:100%;height:100%;object-fit:cover;display:block}
+.mini-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.68),transparent)}
+.mini-caption{position:absolute;bottom:10px;left:12px;right:12px}
+.mini-caption h5{color:#fff;font-size:12px;margin-bottom:2px;font-weight:700}
+.mini-caption p{color:rgba(255,255,255,.65);font-size:10px}
+.mini-empty{display:flex;align-items:center;justify-content:100%;height:100%;color:var(--muted);font-size:13px;flex-direction:column;gap:8px;justify-content:center}
+.mini-dots{display:flex;gap:5px;justify-content:center;margin-top:10px;min-height:10px}
+.mini-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.2);cursor:pointer;transition:all .3s;border:none}
+.mini-dot.act{width:18px;border-radius:3px;background:var(--grad)}
+.preview-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.prev-stat{background:var(--bg2);border-radius:9px;padding:11px;text-align:center}
+.prev-stat .n{font-size:22px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.prev-stat .l{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* ── EMPTY / LOADING ─────────────────────────────────────── */
+.empty-row td,.loading-row td{text-align:center;padding:52px;color:var(--muted)}
+.spinner{display:inline-block;width:22px;height:22px;border:2.5px solid rgba(255,255,255,.15);border-top-color:#a78bfa;border-radius:50%;animation:spin .75s linear infinite}
+.spinner-sm{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .75s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty-state i{font-size:38px;margin-bottom:14px;display:block;opacity:.3}
+
+/* ── SETTINGS ────────────────────────────────────────────── */
+.settings-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:30px;max-width:500px;margin-bottom:20px}
+.settings-card h3{font-size:16px;font-weight:700;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+
+/* ── INSTALL PAGE ────────────────────────────────────────── */
+.install-steps{display:flex;flex-direction:column;gap:18px;max-width:700px}
+.install-step{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 24px}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--grad);color:#fff;font-size:13px;font-weight:800;margin-right:10px;flex-shrink:0}
+.step-header{display:flex;align-items:center;margin-bottom:12px}
+.step-title{font-size:15px;font-weight:700}
+.step-body{font-size:13px;color:var(--muted);line-height:1.7}
+.code-block{background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:14px 16px;font-family:monospace;font-size:12px;color:#a78bfa;margin:10px 0;white-space:pre-wrap;word-break:break-all}
+.file-tree{font-family:monospace;font-size:12px;line-height:2;background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:14px 18px;color:var(--cyan)}
+.check-item{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px dashed rgba(46,40,80,.4);font-size:13px}
+.check-item:last-child{border-bottom:none}
+.check-icon{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+.check-ok{background:rgba(5,150,105,.15);color:var(--green)}
+
+/* ── TOAST ───────────────────────────────────────────────── */
+#toastBox{position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:13px 18px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;box-shadow:0 10px 30px rgba(0,0,0,.5);animation:toastIn .3s ease;max-width:340px}
+.toast.ok{border-left:3px solid var(--green)}
+.toast.err{border-left:3px solid #f87171}
+.toast.info{border-left:3px solid var(--violet)}
+@keyframes toastIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes toastOut{to{opacity:0;transform:translateY(8px)}}
+
+/* ── PROGRESS BAR ────────────────────────────────────────── */
+.progress-wrap{background:var(--bg2);border-radius:20px;height:6px;overflow:hidden;margin:8px 0}
+.progress-bar{height:100%;background:var(--grad);border-radius:20px;transition:width .5s ease}
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media(max-width:960px){
+  .sidebar{width:60px}
+  .logo-text,.logo-sub,.nav-label,.nav-item span,.sidebar-foot{display:none}
+  .nav-item{justify-content:center;padding:14px}
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .slider-layout{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .form-row{grid-template-columns:1fr}
+  .content{padding:16px}
+  .topbar{padding:0 16px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══════════════════════════════════════════════════ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">🔐</div>
+    <h2>EliteAli Admin</h2>
+    <p>Enter your admin password to manage offers &amp; slider</p>
+    <input type="password" id="pwInput" class="login-input" placeholder="Password" autocomplete="current-password">
+    <button class="btn-login" id="loginBtn" onclick="doLogin()">
+      <span id="loginBtnText">Login to Dashboard</span>
+    </button>
+    <div id="loginError">❌ Wrong password. Try again.</div>
+  </div>
+</div>
+
+<!-- ══ SIDEBAR ════════════════════════════════════════════════ -->
+<nav class="sidebar" id="sidebar" style="display:none">
+  <div class="sidebar-logo">
+    <div class="logo-text">EliteAli</div>
+    <div class="logo-sub">Admin Panel</div>
+  </div>
+  <div class="nav-group">
+    <div class="nav-label">Main</div>
+    <div class="nav-item active" data-panel="dashboard"><i class="fa-solid fa-gauge-high"></i><span>Dashboard</span></div>
+    <div class="nav-item" data-panel="offers"><i class="fa-solid fa-tags"></i><span>Offers</span></div>
+    <div class="nav-item" data-panel="slider"><i class="fa-solid fa-images"></i><span>Hero Slider</span></div>
+  </div>
+  <div class="nav-group">
+    <div class="nav-label">Config</div>
+    <div class="nav-item" data-panel="install"><i class="fa-solid fa-rocket"></i><span>Installation</span></div>
+    <div class="nav-item" data-panel="settings"><i class="fa-solid fa-gear"></i><span>Settings</span></div>
+    <div class="nav-item" onclick="doLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></div>
+  </div>
+  <div class="sidebar-foot">
+    <div class="sync-pill ok" id="syncPill">
+      <span class="dot-pulse"></span>
+      <span id="syncTxt">Server OK</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ MAIN ═══════════════════════════════════════════════════ -->
+<div class="main" id="mainWrap" style="display:none">
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1 id="pageTitle">Dashboard</h1>
+    </div>
+    <div class="topbar-right">
+      <button class="btn btn-secondary btn-sm" onclick="reloadData()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+      <!-- Offers panel buttons -->
+      <button class="btn btn-success btn-sm panel-btn" data-panels="offers" onclick="openImportModal()" style="display:none"><i class="fa-solid fa-file-import"></i> Import</button>
+      <div class="panel-btn" data-panels="offers" style="display:none;position:relative">
+        <button class="btn btn-gold btn-sm" onclick="toggleExportMenu()"><i class="fa-solid fa-file-export"></i> Export <i class="fa-solid fa-chevron-down" style="font-size:10px"></i></button>
+        <div id="exportMenu" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:6px;min-width:180px;z-index:200;box-shadow:0 12px 40px rgba(0,0,0,.5)">
+          <button class="btn btn-secondary btn-sm" style="width:100%;margin-bottom:4px;justify-content:flex-start" onclick="exportJSON();closeExportMenu()"><i class="fa-solid fa-code" style="color:var(--cyan)"></i> Export as JSON</button>
+          <button class="btn btn-secondary btn-sm" style="width:100%;margin-bottom:4px;justify-content:flex-start" onclick="exportExcel();closeExportMenu()"><i class="fa-solid fa-file-excel" style="color:var(--green)"></i> Export as Excel</button>
+          <button class="btn btn-secondary btn-sm" style="width:100%;justify-content:flex-start" onclick="exportPDF();closeExportMenu()"><i class="fa-solid fa-file-pdf" style="color:#f87171"></i> Export as PDF</button>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-sm panel-btn" data-panels="offers" onclick="openOfferModal()" style="display:none"><i class="fa-solid fa-plus"></i> Add Offer</button>
+      <!-- Slider panel buttons -->
+      <button class="btn btn-primary btn-sm panel-btn" data-panels="slider" onclick="openSlideModal()" style="display:none"><i class="fa-solid fa-plus"></i> Add Slide</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD ──────────────────────────────────────────── -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="stat-grid">
+        <div class="stat-card"><div class="s-label">Total Offers</div><div class="s-num" id="st-offers">—</div><div class="s-sub">Stored on server</div></div>
+        <div class="stat-card"><div class="s-label">Slider Slides</div><div class="s-num" id="st-slides">—</div><div class="s-sub">Hero images</div></div>
+        <div class="stat-card"><div class="s-label">Hot Offers</div><div class="s-num" id="st-hot">—</div><div class="s-sub">🔥 Marked hot</div></div>
+        <div class="stat-card"><div class="s-label">Top Offers</div><div class="s-num" id="st-top">—</div><div class="s-sub">⭐ Marked top</div></div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:36px;text-align:center;margin-bottom:20px">
+        <div style="font-size:44px;margin-bottom:12px">🖥️</div>
+        <h3 style="font-size:20px;margin-bottom:10px">cPanel PHP Backend Active</h3>
+        <p style="color:var(--muted);font-size:13px;max-width:500px;margin:0 auto 20px">All offers and slider data are saved as JSON files on your cPanel server. Import from JSON or Excel, export to PDF or Excel at any time.</p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <span style="background:rgba(5,150,105,.1);color:var(--green);border:1px solid rgba(5,150,105,.2);border-radius:20px;padding:6px 16px;font-size:12px;font-weight:600">✅ Any Browser</span>
+          <span style="background:rgba(37,99,235,.1);color:var(--blue);border:1px solid rgba(37,99,235,.2);border-radius:20px;padding:6px 16px;font-size:12px;font-weight:600">✅ Any Device</span>
+          <span style="background:rgba(217,119,6,.1);color:var(--gold);border:1px solid rgba(217,119,6,.2);border-radius:20px;padding:6px 16px;font-size:12px;font-weight:600">✅ Your cPanel Server</span>
+          <span style="background:rgba(124,58,237,.1);color:#a78bfa;border:1px solid rgba(124,58,237,.2);border-radius:20px;padding:6px 16px;font-size:12px;font-weight:600">✅ JSON / Excel Import</span>
+        </div>
+      </div>
+      <!-- Quick Actions -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;text-align:center;cursor:pointer;transition:border .2s" onclick="navTo('offers')" onmouseover="this.style.borderColor='var(--violet)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="font-size:30px;margin-bottom:10px">📋</div>
+          <div style="font-weight:700;margin-bottom:4px">Manage Offers</div>
+          <div style="font-size:11px;color:var(--muted)">Add, edit, delete offers</div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;text-align:center;cursor:pointer;transition:border .2s" onclick="navTo('offers');setTimeout(openImportModal,200)" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="font-size:30px;margin-bottom:10px">📥</div>
+          <div style="font-weight:700;margin-bottom:4px">Import Offers</div>
+          <div style="font-size:11px;color:var(--muted)">From JSON or Excel file</div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;text-align:center;cursor:pointer;transition:border .2s" onclick="navTo('slider')" onmouseover="this.style.borderColor='var(--pink)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="font-size:30px;margin-bottom:10px">🎠</div>
+          <div style="font-weight:700;margin-bottom:4px">Hero Slider</div>
+          <div style="font-size:11px;color:var(--muted)">Manage slider slides</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OFFERS ─────────────────────────────────────────────── -->
+    <div class="panel" id="panel-offers">
+      <div class="panel-header">
+        <h2>All Offers <span id="offers-count-badge" style="font-size:12px;font-weight:600;background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:3px 10px;margin-left:8px;vertical-align:middle"></span></h2>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="btn btn-success btn-sm" onclick="openImportModal()"><i class="fa-solid fa-file-import"></i> Import</button>
+          <button class="btn btn-gold btn-sm" onclick="toggleExportMenu()"><i class="fa-solid fa-file-export"></i> Export ▾</button>
+          <button class="btn btn-danger btn-sm" onclick="confirmDeleteAll()"><i class="fa-solid fa-trash"></i> Clear All</button>
+          <button class="btn btn-primary" onclick="openOfferModal()"><i class="fa-solid fa-plus"></i> Add Offer</button>
+        </div>
+      </div>
+      <div class="filter-tabs" id="offerTabs">
+        <button class="ftab active" data-cat="all" onclick="filterOffers(this)">All</button>
+        <button class="ftab" data-cat="soi" onclick="filterOffers(this)">SOI</button>
+        <button class="ftab" data-cat="doi" onclick="filterOffers(this)">DOI</button>
+        <button class="ftab" data-cat="cps" onclick="filterOffers(this)">CPS</button>
+        <button class="ftab" data-cat="smartlink" onclick="filterOffers(this)">Smartlink</button>
+        <button class="ftab" data-cat="casino" onclick="filterOffers(this)">Casino</button>
+        <button class="ftab" data-cat="cam" onclick="filterOffers(this)">Cam</button>
+        <button class="ftab" data-cat="software" onclick="filterOffers(this)">Software</button>
+        <button class="ftab" data-cat="financial" onclick="filterOffers(this)">Financial</button>
+      </div>
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <input type="text" class="tbl-search" id="offerSearch" placeholder="🔍 Search by name, GEO, ID…" oninput="renderOffersTable()">
+          <button class="btn btn-secondary btn-sm" onclick="exportJSON()"><i class="fa-solid fa-code" style="color:var(--cyan)"></i> JSON</button>
+          <button class="btn btn-secondary btn-sm" onclick="exportExcel()"><i class="fa-solid fa-file-excel" style="color:var(--green)"></i> Excel</button>
+          <button class="btn btn-secondary btn-sm" onclick="exportPDF()"><i class="fa-solid fa-file-pdf" style="color:#f87171"></i> PDF</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>#ID</th><th>Name</th><th>Category</th><th>GEOs</th>
+                <th>Payout</th><th>Device</th><th>Badges</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="offersTbody">
+              <tr class="loading-row"><td colspan="8"><div class="spinner"></div> Loading from server…</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="tablePagination" style="padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);flex-wrap:wrap;gap:8px"></div>
+      </div>
+    </div>
+
+    <!-- SLIDER ─────────────────────────────────────────────── -->
+    <div class="panel" id="panel-slider">
+      <div class="panel-header">
+        <h2>Hero Slider <span style="font-size:11px;font-weight:600;background:linear-gradient(135deg,#059669,#0ea5e9);color:#fff;padding:3px 10px;border-radius:20px;margin-left:8px;vertical-align:middle">🔴 LIVE</span></h2>
+        <button class="btn btn-primary" onclick="openSlideModal()"><i class="fa-solid fa-plus"></i> Add Slide</button>
+      </div>
+      <div style="background:rgba(5,150,105,.08);border:1px solid rgba(5,150,105,.2);border-radius:10px;padding:10px 16px;font-size:12px;color:var(--green);margin-bottom:18px;display:flex;align-items:center;gap:9px">
+        <i class="fa-solid fa-satellite-dish"></i>
+        <span><strong>Live Broadcast Active:</strong> Slides update on index.html within 30 seconds automatically.</span>
+      </div>
+      <div class="slider-layout">
+        <div>
+          <div class="filter-tabs">
+            <button class="ftab active" data-badge="all" onclick="filterSlider(this)">All</button>
+            <button class="ftab" data-badge="top" onclick="filterSlider(this)">⭐ Top</button>
+            <button class="ftab" data-badge="hot" onclick="filterSlider(this)">🔥 Hot</button>
+            <button class="ftab" data-badge="new" onclick="filterSlider(this)">✨ New</button>
+          </div>
+          <p style="font-size:11px;color:var(--muted);margin-bottom:14px"><i class="fa-solid fa-arrows-up-down-left-right"></i> Drag cards to reorder slides — order saved instantly</p>
+          <div class="slides-grid" id="slidesGrid">
+            <div class="empty-state"><i class="fa-solid fa-images"></i><p>No slides yet</p></div>
+          </div>
+        </div>
+        <div class="preview-box">
+          <h4>📱 Live Preview</h4>
+          <div class="mini-slider">
+            <div class="mini-slides-track" id="miniTrack"><div class="mini-empty"><span style="font-size:26px">🖼️</span><span>No slides</span></div></div>
+          </div>
+          <div class="mini-dots" id="miniDots"></div>
+          <div class="preview-stats">
+            <div class="prev-stat"><div class="n" id="ps-total">0</div><div class="l">Slides</div></div>
+            <div class="prev-stat"><div class="n" id="ps-badged">0</div><div class="l">Badged</div></div>
+          </div>
+          <div style="margin-top:14px;padding:10px;background:var(--bg2);border-radius:9px;font-size:11px;color:var(--muted);line-height:1.6">
+            <div style="font-weight:700;color:var(--text);margin-bottom:4px">📌 How Live Slider Works</div>
+            <div>• Stored in <code style="background:var(--bg);padding:1px 5px;border-radius:4px">api/store/slider.json</code></div>
+            <div>• index.html polls every <strong style="color:var(--cyan)">30 seconds</strong></div>
+            <div>• All tabs &amp; devices update automatically</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INSTALLATION ────────────────────────────────────────── -->
+    <div class="panel" id="panel-install">
+      <div class="panel-header"><h2>🚀 Installation Guide</h2></div>
+      <div class="install-steps">
+
+        <div class="install-step">
+          <div class="step-header"><span class="step-num">1</span><span class="step-title">Download the Package</span></div>
+          <div class="step-body">
+            Download all files from this admin panel package. Your file structure should be:
+            <div class="file-tree">eliteali-admin/
+├── admin.html          ← This file (Admin Panel)
+├── index.html          ← Your public offers page
+├── api/
+│   ├── data.php        ← PHP backend API
+│   └── store/
+│       ├── offers.json    ← Auto-created
+│       └── slider.json    ← Auto-created
+└── INSTALL.txt</div>
+          </div>
+        </div>
+
+        <div class="install-step">
+          <div class="step-header"><span class="step-num">2</span><span class="step-title">Upload to cPanel via File Manager</span></div>
+          <div class="step-body">
+            <div class="check-item"><span class="check-icon check-ok">✓</span>Login to your cPanel &rarr; File Manager</div>
+            <div class="check-item"><span class="check-icon check-ok">✓</span>Navigate to <code>public_html/</code> (or a subfolder like <code>public_html/admin/</code>)</div>
+            <div class="check-item"><span class="check-icon check-ok">✓</span>Upload all files keeping the folder structure intact</div>
+            <div class="check-item"><span class="check-icon check-ok">✓</span>Make sure PHP 7.4+ is enabled on your hosting</div>
+          </div>
+        </div>
+
+        <div class="install-step">
+          <div class="step-header"><span class="step-num">3</span><span class="step-title">Set Folder Permissions</span></div>
+          <div class="step-body">
+            The <code>api/store/</code> folder must be writable by PHP. In cPanel File Manager:
+            <div class="code-block">Right-click api/store/ → Permissions → set to 755</div>
+            Or via SSH:
+            <div class="code-block">chmod 755 api/store/
+touch api/store/offers.json api/store/slider.json
+chmod 644 api/store/offers.json api/store/slider.json</div>
+          </div>
+        </div>
+
+        <div class="install-step">
+          <div class="step-header"><span class="step-num">4</span><span class="step-title">Change Your Admin Password</span></div>
+          <div class="step-body">
+            Open <code>api/data.php</code> and change the password on line 7:
+            <div class="code-block">define('ADMIN_PASSWORD', 'YOUR_SECURE_PASSWORD_HERE');</div>
+            Also change the token secret on line 8:
+            <div class="code-block">define('TOKEN_SECRET', 'any_random_long_string_here_xyz');</div>
+            ⚠️ Never use the default password on a live site!
+          </div>
+        </div>
+
+        <div class="install-step">
+          <div class="step-header"><span class="step-num">5</span><span class="step-title">Configure API URL in Settings</span></div>
+          <div class="step-body">
+            Go to <strong>Settings → API Configuration</strong> and set your API URL:
+            <div class="code-block">https://yourdomain.com/api/data.php</div>
+            Then click <strong>Test Connection</strong> to verify it works.
+            <br><br>
+            Default value <code>api/data.php</code> works if admin.html and the api/ folder are in the same directory.
+          </div>
+        </div>
+
+        <div class="install-step">
+          <div class="step-header"><span class="step-num">6</span><span class="step-title">Import Your Offers (Optional)</span></div>
+          <div class="step-body">
+            You can bulk-import offers from JSON or Excel files. Go to <strong>Offers → Import</strong>.
+            <br><br>
+            <strong>JSON format</strong> — array of offer objects:
+            <div class="code-block">[
+  {
+    "id": 100,
+    "name": "My Offer Name",
+    "cat": "soi",
+    "payout": 3.50,
+    "payoutDisplay": "$3.50",
+    "countries": "US GB AU",
+    "link": "https://yourlink.com",
+    "badges": "hot,new"
+  }
+]</div>
+            <strong>Excel format</strong> — first row must be headers: <code>id, name, cat, payout, payoutDisplay, countries, link, badges</code>
+            <br><br>
+            You can also <strong>drop a JSON or Excel file anywhere on the Offers page</strong> and it will auto-import!
+          </div>
+        </div>
+
+        <div class="install-step">
+          <div class="step-header"><span class="step-num">7</span><span class="step-title">Connect Your Public index.html</span></div>
+          <div class="step-body">
+            Your public-facing <code>index.html</code> should fetch offers from the same API:
+            <div class="code-block">// In your index.html JavaScript:
+fetch('api/data.php?resource=offers&action=list')
+  .then(r => r.json())
+  .then(json => {
+    const offers = json.data; // Array of offer objects
+    // Render your offers here…
+  });</div>
+            For the slider:
+            <div class="code-block">fetch('api/data.php?resource=slider&action=list')
+  .then(r => r.json())
+  .then(json => {
+    const slides = json.data;
+    // Render your slider here…
+  });</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SETTINGS ───────────────────────────────────────────── -->
+    <div class="panel" id="panel-settings">
+      <div class="panel-header"><h2>Settings</h2></div>
+      <div class="settings-card">
+        <h3><i class="fa-solid fa-key" style="color:var(--violet);margin-right:8px"></i>Change Admin Password</h3>
+        <div class="form-group"><label class="form-label">Current Password</label><input type="password" id="cur-pw" class="form-input" placeholder="Enter current password"></div>
+        <div class="form-group"><label class="form-label">New Password</label><input type="password" id="new-pw" class="form-input" placeholder="Min 6 characters"></div>
+        <div class="form-group"><label class="form-label">Confirm New Password</label><input type="password" id="conf-pw" class="form-input" placeholder="Repeat new password"></div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:16px">⚠️ After changing here, also update <code style="background:var(--bg2);padding:2px 6px;border-radius:4px">ADMIN_PASSWORD</code> in <code style="background:var(--bg2);padding:2px 6px;border-radius:4px">api/data.php</code>.</p>
+        <button class="btn btn-primary" onclick="changePw()"><i class="fa-solid fa-floppy-disk"></i> Save Password</button>
+      </div>
+      <div class="settings-card">
+        <h3><i class="fa-solid fa-server" style="color:var(--cyan);margin-right:8px"></i>API Configuration</h3>
+        <div class="form-group"><label class="form-label">API URL</label><input type="text" id="api-url-input" class="form-input" placeholder="https://yourdomain.com/api/data.php"></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-secondary" onclick="saveApiUrl()"><i class="fa-solid fa-floppy-disk"></i> Save URL</button>
+          <button class="btn btn-secondary" onclick="testApi()"><i class="fa-solid fa-flask"></i> Test Connection</button>
+        </div>
+        <p style="font-size:11px;color:var(--muted);margin-top:12px">Default: <code style="background:var(--bg2);padding:2px 6px;border-radius:4px">api/data.php</code> (relative, works if files are in same folder)</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ OFFER MODAL ════════════════════════════════════════════ -->
+<div class="modal-overlay" id="offerModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="offerModalTitle">Add New Offer</h3>
+      <button class="btn-icon" onclick="closeOfferModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Offer ID</label><input type="number" id="f-id" class="form-input" placeholder="e.g. 286"></div>
+        <div class="form-group"><label class="form-label">Category</label>
+          <select id="f-cat" class="form-select">
+            <option value="soi">SOI Dating</option><option value="doi">DOI Dating</option>
+            <option value="cps">CPS Dating</option><option value="smartlink">Smartlink</option>
+            <option value="casino">Casino</option><option value="cam">Cam</option>
+            <option value="software">Software</option><option value="financial">Financial</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Offer Name *</label><input type="text" id="f-name" class="form-input" placeholder="e.g. CharmDate Hot SOI"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Payout Amount</label><input type="number" step="0.01" id="f-payout" class="form-input" placeholder="e.g. 3.50"></div>
+        <div class="form-group"><label class="form-label">Payout Display Text</label><input type="text" id="f-payout-display" class="form-input" placeholder="e.g. $3.50 or 80% RevShare"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Vertical</label><input type="text" id="f-vertical" class="form-input" placeholder="e.g. Dating"></div>
+        <div class="form-group"><label class="form-label">Device</label>
+          <select id="f-device" class="form-select">
+            <option value="All">All Devices</option><option value="Mobile">Mobile Only</option>
+            <option value="Desktop">Desktop Only</option><option value="Android">Android</option><option value="iPhone">iPhone</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Countries / GEOs (space-separated)</label><input type="text" id="f-countries" class="form-input" placeholder="e.g. US GB AU CA or Worldwide"></div>
+      <div class="form-group"><label class="form-label">Offer Link URL</label><input type="url" id="f-link" class="form-input" placeholder="https://app.eliteali.com/register"></div>
+      <div class="form-group"><label class="form-label">Description (optional)</label><textarea id="f-desc" class="form-textarea" placeholder="Short offer description…"></textarea></div>
+      <div class="form-group">
+        <label class="form-label">Badges</label>
+        <div class="badge-checks">
+          <input type="checkbox" class="badge-chk" id="chk-top"><label for="chk-top">⭐ Top Offer</label>
+          <input type="checkbox" class="badge-chk" id="chk-hot"><label for="chk-hot">🔥 Hot</label>
+          <input type="checkbox" class="badge-chk" id="chk-new"><label for="chk-new">✨ New</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Offer Image</label>
+        <input type="url" id="f-img-url" class="form-input" placeholder="Paste image URL https://…" style="margin-bottom:8px" oninput="previewOfferImgUrl()">
+        <div class="img-zone" id="offerImgZone">
+          <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" onchange="handleOfferImg(event)">
+          <div class="img-zone-icon">📁</div>
+          <p>Click or drag &amp; drop image file</p>
+          <small>PNG / JPG / WEBP — max 2MB</small>
+        </div>
+        <div class="img-prev-wrap" id="offerImgPrev">
+          <img id="offerImgPreviewEl" src="" alt="">
+          <button class="img-clear" onclick="clearOfferImg()" type="button"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeOfferModal()">Cancel</button>
+      <button class="btn btn-primary" id="saveOfferBtn" onclick="saveOffer()"><i class="fa-solid fa-floppy-disk"></i> Save Offer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ IMPORT MODAL ═══════════════════════════════════════════ -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal-box" style="max-width:720px">
+    <div class="modal-header">
+      <h3>📥 Import Offers</h3>
+      <button class="btn-icon" onclick="closeImportModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Template download -->
+      <div class="template-info">
+        <strong>📋 Supported Formats:</strong> JSON array or Excel (.xlsx / .xls) file<br>
+        <strong>Required columns:</strong>
+        <div class="col-map" style="margin-top:8px">
+          <span class="col-tag">id</span><span class="col-tag">name *</span><span class="col-tag">cat</span>
+          <span class="col-tag">payout</span><span class="col-tag">payoutDisplay</span><span class="col-tag">countries</span>
+          <span class="col-tag">link</span><span class="col-tag">badges</span><span class="col-tag">device</span>
+          <span class="col-tag">vertical</span><span class="col-tag">desc</span><span class="col-tag">image</span>
+        </div>
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-secondary btn-sm" onclick="downloadJSONTemplate()"><i class="fa-solid fa-file-code" style="color:var(--cyan)"></i> Download JSON Template</button>
+          <button class="btn btn-secondary btn-sm" onclick="downloadExcelTemplate()"><i class="fa-solid fa-file-excel" style="color:var(--green)"></i> Download Excel Template</button>
+        </div>
+      </div>
+
+      <!-- Import mode -->
+      <div class="form-group">
+        <label class="form-label">Import Mode</label>
+        <div class="mode-tabs">
+          <div class="mode-tab active" id="mode-append" onclick="setImportMode('append')">➕ Append (add to existing)</div>
+          <div class="mode-tab" id="mode-replace" onclick="setImportMode('replace')">🔄 Replace All (clear &amp; import)</div>
+        </div>
+      </div>
+
+      <!-- Drop zone -->
+      <div class="import-drop-zone" id="importDropZone">
+        <input type="file" accept=".json,.xlsx,.xls" id="importFileInput" onchange="handleImportFile(event)">
+        <div style="font-size:36px;margin-bottom:10px">📂</div>
+        <div style="font-weight:700;font-size:15px;margin-bottom:6px">Drop JSON or Excel file here</div>
+        <div style="font-size:12px;color:var(--muted)">or click to browse • .json / .xlsx / .xls</div>
+      </div>
+
+      <!-- OR paste JSON -->
+      <div style="margin-top:14px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="height:1px;flex:1;background:var(--border)"></div>
+          <span style="font-size:11px;color:var(--muted);font-weight:700">OR PASTE JSON</span>
+          <div style="height:1px;flex:1;background:var(--border)"></div>
+        </div>
+        <textarea id="importJsonPaste" class="form-textarea" style="min-height:100px;font-family:monospace;font-size:11px" placeholder='[{"id":1,"name":"My Offer","cat":"soi","payout":3.50,"countries":"US GB","link":"https://..."}]' oninput="parseImportPaste()"></textarea>
+      </div>
+
+      <!-- Preview -->
+      <div id="importPreviewWrap" style="display:none">
+        <div class="import-stats" id="importStats"></div>
+        <div class="progress-wrap" id="importProgress" style="display:none"><div class="progress-bar" id="importProgressBar" style="width:0%"></div></div>
+        <div class="import-preview-table">
+          <table>
+            <thead><tr><th>#</th><th>Name</th><th>Cat</th><th>Payout</th><th>Countries</th><th>Badges</th></tr></thead>
+            <tbody id="importPreviewBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeImportModal()">Cancel</button>
+      <button class="btn btn-primary" id="doImportBtn" onclick="doImport()" disabled><i class="fa-solid fa-file-import"></i> Import Offers</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE MODAL ════════════════════════════════════════════ -->
+<div class="modal-overlay" id="slideModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="slideModalTitle">Add Slider Slide</h3>
+      <button class="btn-icon" onclick="closeSlideModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Slide Title *</label><input type="text" id="s-name" class="form-input" placeholder="e.g. Top Casino Offers"></div>
+      <div class="form-group"><label class="form-label">Subtitle / Description</label><input type="text" id="s-desc" class="form-input" placeholder="e.g. High conversion worldwide"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Category</label>
+          <select id="s-cat" class="form-select">
+            <option value="soi">SOI Dating</option><option value="doi">DOI Dating</option>
+            <option value="cps">CPS Dating</option><option value="smartlink">Smartlink</option>
+            <option value="casino">Casino</option><option value="cam">Cam</option>
+            <option value="software">Software</option><option value="financial">Financial</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Payout Display</label><input type="text" id="s-payout" class="form-input" placeholder="e.g. $25.00"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">GEOs</label><input type="text" id="s-geos" class="form-input" placeholder="e.g. WW or US GB AU"></div>
+        <div class="form-group"><label class="form-label">Link URL</label><input type="url" id="s-link" class="form-input" placeholder="https://app.eliteali.com/register"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Badges</label>
+        <div class="badge-checks">
+          <input type="checkbox" class="badge-chk" id="s-top"><label for="s-top">⭐ Top Offer</label>
+          <input type="checkbox" class="badge-chk" id="s-hot"><label for="s-hot">🔥 Hot</label>
+          <input type="checkbox" class="badge-chk" id="s-new"><label for="s-new">✨ New</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Slide Image</label>
+        <input type="url" id="s-img-url" class="form-input" placeholder="Paste image URL https://…" style="margin-bottom:8px" oninput="previewSlideImgUrl()">
+        <div class="img-zone" id="slideImgZone">
+          <input type="file" accept="image/png,image/jpeg,image/webp" onchange="handleSlideImg(event)">
+          <div class="img-zone-icon">📁</div>
+          <p>Click or drag &amp; drop slide background image</p>
+          <small>PNG / JPG / WEBP — max 2MB</small>
+        </div>
+        <div class="img-prev-wrap" id="slideImgPrev">
+          <img id="slideImgPreviewEl" src="" alt="">
+          <button class="img-clear" onclick="clearSlideImg()" type="button"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeSlideModal()">Cancel</button>
+      <button class="btn btn-primary" id="saveSlideBtn" onclick="saveSlide()"><i class="fa-solid fa-floppy-disk"></i> Save Slide</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST BOX -->
+<div id="toastBox"></div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+//  CONFIG
+// ════════════════════════════════════════════════════════════
+let API_URL = localStorage.getItem('aff_api_url') || 'api/data.php';
+let ADMIN_TOKEN = '';
+
+// ── STATE ───────────────────────────────────────────────────
+let allOffers = [], allSlides = [];
+let offerFilter = 'all', slideFilter = 'all';
+let editOfferId = null, editSlideId = null;
+let offerImgData = '', slideImgData = '';
+let miniIdx = 0, miniTimer = null;
+let importMode = 'append';
+let importData = [];
+let currentPage = 1;
+const PAGE_SIZE = 25;
+
+// ════════════════════════════════════════════════════════════
+//  API
+// ════════════════════════════════════════════════════════════
+async function api(params, method = 'GET', body = null) {
+  const url = API_URL + '?' + new URLSearchParams(params);
+  const opts = { method, headers: { 'Content-Type': 'application/json', 'X-Admin-Token': ADMIN_TOKEN } };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(url, opts);
+  const json = await res.json();
+  if (!json.success) throw new Error(json.error || 'API error');
+  return json;
+}
+
+async function loadOffers() {
+  const r = await api({ resource: 'offers', action: 'list' });
+  allOffers = r.data || [];
+}
+async function loadSlides() {
+  const r = await api({ resource: 'slider', action: 'list' });
+  allSlides = r.data || [];
+}
+
+// ════════════════════════════════════════════════════════════
+//  LOGIN
+// ════════════════════════════════════════════════════════════
+document.getElementById('pwInput').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+async function doLogin() {
+  const pw = document.getElementById('pwInput').value.trim();
+  if (!pw) return;
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true;
+  document.getElementById('loginBtnText').innerHTML = '<span class="spinner-sm"></span> Logging in…';
+  document.getElementById('loginError').style.display = 'none';
+  try {
+    const r = await api({ action: 'auth' }, 'POST', { password: pw });
+    ADMIN_TOKEN = r.token;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('sidebar').style.display    = 'flex';
+    document.getElementById('mainWrap').style.display   = 'flex';
+    await reloadData();
+  } catch(e) {
+    document.getElementById('loginError').style.display = 'block';
+    document.getElementById('loginError').textContent   = '❌ ' + (e.message === 'Unauthorized' ? 'Wrong password.' : e.message);
+  } finally {
+    btn.disabled = false;
+    document.getElementById('loginBtnText').textContent = 'Login to Dashboard';
+  }
+}
+
+function doLogout() { location.reload(); }
+
+// ════════════════════════════════════════════════════════════
+//  RELOAD
+// ════════════════════════════════════════════════════════════
+async function reloadData() {
+  setSyncStatus('busy', 'Loading…');
+  try {
+    await Promise.all([loadOffers(), loadSlides()]);
+    updateStats();
+    renderOffersTable();
+    renderSlides();
+    renderMiniSlider();
+    setSyncStatus('ok', 'Server OK');
+  } catch(e) {
+    setSyncStatus('err', 'Error!');
+    toast('Load failed: ' + e.message, 'err');
+  }
+}
+
+function setSyncStatus(type, text) {
+  const el = document.getElementById('syncPill');
+  el.className = 'sync-pill ' + type;
+  document.getElementById('syncTxt').textContent = text;
+}
+
+function updateStats() {
+  document.getElementById('st-offers').textContent = allOffers.length;
+  document.getElementById('st-slides').textContent = allSlides.length;
+  document.getElementById('st-hot').textContent    = allOffers.filter(o => (o.badges||[]).includes('hot')).length;
+  document.getElementById('st-top').textContent    = allOffers.filter(o => (o.badges||[]).includes('top')).length;
+  document.getElementById('ps-total').textContent  = allSlides.length;
+  document.getElementById('ps-badged').textContent = allSlides.filter(s => (s.badges||[]).length > 0).length;
+  document.getElementById('offers-count-badge').textContent = allOffers.length + ' offers';
+}
+
+// ════════════════════════════════════════════════════════════
+//  NAVIGATION
+// ════════════════════════════════════════════════════════════
+function navTo(panel) {
+  document.querySelector(`.nav-item[data-panel="${panel}"]`).click();
+}
+
+document.querySelectorAll('.nav-item[data-panel]').forEach(item => {
+  item.addEventListener('click', function() {
+    const pname = this.dataset.panel;
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById('panel-' + pname).classList.add('active');
+    const titles = { dashboard:'Dashboard', offers:'Offers', slider:'Hero Slider', settings:'Settings', install:'Installation' };
+    document.getElementById('pageTitle').textContent = titles[pname] || pname;
+    // Show/hide panel-specific buttons
+    document.querySelectorAll('.panel-btn').forEach(b => {
+      const panels = (b.dataset.panels || '').split(',');
+      b.style.display = panels.includes(pname) ? '' : 'none';
+    });
+    if (pname === 'settings') document.getElementById('api-url-input').value = API_URL;
+  });
+});
+
+// ════════════════════════════════════════════════════════════
+//  OFFERS TABLE
+// ════════════════════════════════════════════════════════════
+function filterOffers(el) {
+  document.querySelectorAll('#offerTabs .ftab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  offerFilter = el.dataset.cat;
+  currentPage = 1;
+  renderOffersTable();
+}
+
+function getFilteredOffers() {
+  const search = (document.getElementById('offerSearch')?.value || '').toLowerCase().trim();
+  return allOffers.filter(o => {
+    const catOk = offerFilter === 'all' || o.cat === offerFilter;
+    const srOk  = !search || (o.name||'').toLowerCase().includes(search) || String(o.id||'').includes(search) || (o.countries||'').toLowerCase().includes(search);
+    return catOk && srOk;
+  });
+}
+
+function renderOffersTable() {
+  const tbody = document.getElementById('offersTbody');
+  const list  = getFilteredOffers();
+  const total = list.length;
+  const pages = Math.ceil(total / PAGE_SIZE);
+  if (currentPage > pages) currentPage = 1;
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const page  = list.slice(start, start + PAGE_SIZE);
+
+  if (!total) {
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="8"><div class="empty-state"><i class="fa-solid fa-box-open"></i><p>No offers found</p></div></td></tr>`;
+    document.getElementById('tablePagination').innerHTML = '';
+    return;
+  }
+
+  tbody.innerHTML = page.map(o => `
+    <tr>
+      <td><span style="color:var(--muted);font-size:12px">#${o.id||'—'}</span></td>
+      <td>
+        <div style="display:flex;align-items:center;gap:9px">
+          ${o.image ? `<img src="${o.image}" style="width:36px;height:36px;border-radius:7px;object-fit:cover;border:1px solid var(--border);flex-shrink:0" onerror="this.style.display='none'">` : ''}
+          <div>
+            <div class="offer-name-cell">${esc(o.name)}</div>
+            <div class="offer-vertical">${esc(o.vertical||'')}</div>
+          </div>
+        </div>
+      </td>
+      <td><span class="cat-chip cat-${o.cat}">${(o.cat||'').toUpperCase()}</span></td>
+      <td style="font-size:11px;color:var(--muted);max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${esc(o.countries||'')}">${geoTrim(o.countries)}</td>
+      <td><span class="payout-val">${esc(o.payoutDisplay||'—')}</span></td>
+      <td style="font-size:11px;color:var(--muted)">${esc(o.device||'All')}</td>
+      <td><div class="badge-render">${badgeHtml(o.badges)}</div></td>
+      <td>
+        <div style="display:flex;gap:6px">
+          <button class="btn-icon" onclick="editOffer('${o._id}')" title="Edit"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn-icon del" onclick="deleteOffer('${o._id}','${esc(o.name)}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </td>
+    </tr>`).join('');
+
+  // Pagination
+  const pag = document.getElementById('tablePagination');
+  pag.innerHTML = `
+    <span style="font-size:12px;color:var(--muted)">Showing ${start+1}–${Math.min(start+PAGE_SIZE,total)} of <strong>${total}</strong></span>
+    <div style="display:flex;gap:6px">
+      <button class="btn btn-secondary btn-xs" ${currentPage===1?'disabled':''} onclick="currentPage=1;renderOffersTable()">«</button>
+      <button class="btn btn-secondary btn-xs" ${currentPage===1?'disabled':''} onclick="currentPage--;renderOffersTable()">‹ Prev</button>
+      <span style="padding:4px 10px;font-size:12px;color:var(--muted)">Page ${currentPage} / ${pages}</span>
+      <button class="btn btn-secondary btn-xs" ${currentPage>=pages?'disabled':''} onclick="currentPage++;renderOffersTable()">Next ›</button>
+      <button class="btn btn-secondary btn-xs" ${currentPage>=pages?'disabled':''} onclick="currentPage=${pages};renderOffersTable()">»</button>
+    </div>`;
+}
+
+function badgeHtml(badges) {
+  if (!badges||!badges.length) return '<span style="color:var(--muted);font-size:11px">—</span>';
+  return badges.map(b => {
+    if (b==='top') return '<span class="bp-top">⭐ Top</span>';
+    if (b==='hot') return '<span class="bp-hot">🔥 Hot</span>';
+    if (b==='new') return '<span class="bp-new">✨ New</span>';
+    return '';
+  }).join('');
+}
+
+function countryFlag(code) {
+  if (!code || code.length !== 2) return '';
+  const c = code.toUpperCase();
+  if (!/^[A-Z]{2}$/.test(c)) return '';
+  try {
+    return String.fromCodePoint(0x1F1E6 - 65 + c.charCodeAt(0)) +
+           String.fromCodePoint(0x1F1E6 - 65 + c.charCodeAt(1));
+  } catch(e) { return ''; }
+}
+
+function geoTrim(c) {
+  const parts = (c||'').split(' ').filter(Boolean);
+  if (!parts.length) return '—';
+  if (parts[0].toLowerCase()==='worldwide') return '🌍 Worldwide';
+  const shown = parts.slice(0, 4).map(p => {
+    const flag = countryFlag(p);
+    return flag ? `${flag}\u202F${p}` : p;
+  });
+  return shown.join('  ') + (parts.length > 4 ? `  +${parts.length - 4}` : '');
+}
+
+function geoWithFlags(c) {
+  const parts = (c||'').split(' ').filter(Boolean);
+  if (!parts.length) return '—';
+  if (parts[0].toLowerCase()==='worldwide') return '🌍 Worldwide';
+  return parts.map(p => { const f = countryFlag(p); return f ? `${f}\u202F${p}` : p; }).join('  ');
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ════════════════════════════════════════════════════════════
+//  EXPORT — JSON
+// ════════════════════════════════════════════════════════════
+function exportJSON() {
+  const list = getFilteredOffers();
+  const clean = list.map(o => ({
+    id: o.id, name: o.name, cat: o.cat, payout: o.payout,
+    payoutDisplay: o.payoutDisplay, vertical: o.vertical, device: o.device,
+    countries: o.countries, link: o.link, desc: o.desc,
+    badges: (o.badges||[]).join(','), image: o.image
+  }));
+  const blob = new Blob([JSON.stringify(clean, null, 2)], {type:'application/json'});
+  triggerDownload(blob, `eliteali-offers-${yyyymmdd()}.json`);
+  toast(`Exported ${list.length} offers as JSON ✅`, 'ok');
+}
+
+// ════════════════════════════════════════════════════════════
+//  EXPORT — EXCEL
+// ════════════════════════════════════════════════════════════
+function exportExcel() {
+  const list = getFilteredOffers();
+  const rows = [['ID','Name','Category','Payout','Payout Display','Vertical','Device','Countries/GEOs','Link','Description','Badges','Image']];
+  list.forEach(o => rows.push([
+    o.id, o.name, o.cat, o.payout, o.payoutDisplay,
+    o.vertical, o.device, o.countries, o.link, o.desc,
+    (o.badges||[]).join(','), o.image
+  ]));
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  // Column widths
+  ws['!cols'] = [8,30,10,8,15,12,10,20,40,30,15,30].map(w => ({wch:w}));
+  // Style header row
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Offers');
+  XLSX.writeFile(wb, `eliteali-offers-${yyyymmdd()}.xlsx`);
+  toast(`Exported ${list.length} offers as Excel ✅`, 'ok');
+}
+
+// ════════════════════════════════════════════════════════════
+//  EXPORT — PDF
+// ════════════════════════════════════════════════════════════
+function exportPDF() {
+  const list = getFilteredOffers();
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+  // Header
+  doc.setFillColor(15, 12, 26);
+  doc.rect(0, 0, 297, 297, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(20);
+  doc.setTextColor(232, 25, 122);
+  doc.text('EliteAli', 14, 18);
+  doc.setFontSize(11);
+  doc.setTextColor(240, 238, 255);
+  doc.text('Offer List Export', 14, 26);
+  doc.setFontSize(9);
+  doc.setTextColor(139, 135, 176);
+  doc.text(`Generated: ${new Date().toLocaleString()} | Total: ${list.length} offers`, 14, 33);
+
+  // Filter info
+  if (offerFilter !== 'all') {
+    doc.setTextColor(124, 58, 237);
+    doc.text(`Filter: ${offerFilter.toUpperCase()}`, 200, 18);
+  }
+
+  const rows = list.map((o,i) => [
+    i+1, String(o.id||''), truncate(o.name||'',28), (o.cat||'').toUpperCase(),
+    o.payoutDisplay||'—', truncate(o.countries||'Worldwide',18),
+    o.device||'All', (o.badges||[]).join(', ')||'—'
+  ]);
+
+  doc.autoTable({
+    startY: 38,
+    head: [['#','ID','Offer Name','Category','Payout','Countries','Device','Badges']],
+    body: rows,
+    theme: 'grid',
+    styles: {
+      fillColor: [26, 22, 48], textColor: [240, 238, 255],
+      lineColor: [46, 40, 80], lineWidth: 0.3, fontSize: 8, cellPadding: 3
+    },
+    headStyles: {
+      fillColor: [30, 24, 56], textColor: [139, 135, 176],
+      fontStyle: 'bold', fontSize: 8
+    },
+    alternateRowStyles: { fillColor: [22, 18, 42] },
+    columnStyles: {
+      0: {cellWidth:8}, 1:{cellWidth:12}, 2:{cellWidth:55},
+      3:{cellWidth:22}, 4:{cellWidth:22}, 5:{cellWidth:38},
+      6:{cellWidth:18}, 7:{cellWidth:30}
+    },
+    margin: { left: 14, right: 14 },
+    didDrawPage: (data) => {
+      const pg = doc.internal.getCurrentPageInfo().pageNumber;
+      doc.setFontSize(8); doc.setTextColor(139, 135, 176);
+      doc.text(`Page ${pg}`, 280, 205, {align:'right'});
+      doc.text('EliteAli Admin Export', 14, 205);
+    }
+  });
+
+  doc.save(`eliteali-offers-${yyyymmdd()}.pdf`);
+  toast(`Exported ${list.length} offers as PDF ✅`, 'ok');
+}
+
+function truncate(s, n) { return s.length > n ? s.slice(0,n)+'…' : s; }
+function yyyymmdd() { return new Date().toISOString().slice(0,10); }
+
+// ════════════════════════════════════════════════════════════
+//  EXPORT MENU
+// ════════════════════════════════════════════════════════════
+function toggleExportMenu() {
+  const m = document.getElementById('exportMenu');
+  m.style.display = m.style.display === 'none' ? 'block' : 'none';
+}
+function closeExportMenu() { document.getElementById('exportMenu').style.display = 'none'; }
+document.addEventListener('click', e => {
+  const menu = document.getElementById('exportMenu');
+  if (menu && !e.target.closest('[onclick="toggleExportMenu()"]') && !e.target.closest('#exportMenu'))
+    menu.style.display = 'none';
+});
+
+// ════════════════════════════════════════════════════════════
+//  IMPORT
+// ════════════════════════════════════════════════════════════
+function openImportModal() {
+  importData = [];
+  document.getElementById('importPreviewWrap').style.display = 'none';
+  document.getElementById('doImportBtn').disabled = true;
+  document.getElementById('importJsonPaste').value = '';
+  document.getElementById('importFileInput').value = '';
+  document.getElementById('importModal').classList.add('open');
+}
+function closeImportModal() { document.getElementById('importModal').classList.remove('open'); }
+
+function setImportMode(m) {
+  importMode = m;
+  document.getElementById('mode-append').className = 'mode-tab' + (m==='append'?' active':'');
+  document.getElementById('mode-replace').className = 'mode-tab' + (m==='replace'?' active':'');
+}
+
+function handleImportFile(e) {
+  const f = e.target.files[0];
+  if (!f) return;
+  if (f.name.endsWith('.json')) {
+    const r = new FileReader();
+    r.onload = ev => { parseImportJSON(ev.target.result); };
+    r.readAsText(f);
+  } else if (f.name.endsWith('.xlsx') || f.name.endsWith('.xls')) {
+    const r = new FileReader();
+    r.onload = ev => { parseImportExcel(ev.target.result); };
+    r.readAsArrayBuffer(f);
+  } else {
+    toast('Unsupported file. Use .json or .xlsx', 'err');
+  }
+}
+
+function parseImportJSON(text) {
+  try {
+    let data = JSON.parse(text);
+    if (!Array.isArray(data)) data = [data];
+    importData = data;
+    showImportPreview(data);
+  } catch(e) {
+    toast('Invalid JSON: ' + e.message, 'err');
+  }
+}
+
+function parseImportExcel(buf) {
+  try {
+    const wb = XLSX.read(buf, {type:'arraybuffer'});
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, {defval:''});
+    importData = rows;
+    showImportPreview(rows);
+  } catch(e) {
+    toast('Excel parse error: ' + e.message, 'err');
+  }
+}
+
+function parseImportPaste() {
+  const txt = document.getElementById('importJsonPaste').value.trim();
+  if (!txt) { importData = []; document.getElementById('importPreviewWrap').style.display='none'; document.getElementById('doImportBtn').disabled=true; return; }
+  parseImportJSON(txt);
+}
+
+function showImportPreview(data) {
+  const valid = data.filter(r => (r.name||r.Name||'').trim());
+  importData = data;
+  const wrap = document.getElementById('importPreviewWrap');
+  wrap.style.display = 'block';
+  document.getElementById('doImportBtn').disabled = valid.length === 0;
+
+  document.getElementById('importStats').innerHTML = `
+    <div class="import-stat"><span>${data.length}</span>Rows Found</div>
+    <div class="import-stat"><span>${valid.length}</span>Valid Offers</div>
+    <div class="import-stat"><span>${data.length-valid.length}</span>Skipped</div>
+    <div class="import-stat"><span style="text-transform:capitalize">${importMode}</span>Mode</div>`;
+
+  const body = document.getElementById('importPreviewBody');
+  body.innerHTML = valid.slice(0,15).map((r,i) => {
+    const name = r.name||r.Name||r.offer_name||'';
+    const cat  = r.cat||r.category||r.Category||'soi';
+    const pay  = r.payoutDisplay||r.payout_display||r.PayoutDisplay||r.payout||r.Payout||'';
+    const geo  = r.countries||r.Countries||r.geos||r.GEOs||'Worldwide';
+    const bdg  = Array.isArray(r.badges) ? r.badges.join(',') : (r.badges||r.Badges||'');
+    return `<tr><td style="color:var(--muted)">${i+1}</td><td>${esc(name)}</td><td><span class="cat-chip cat-${cat}" style="font-size:8px">${cat.toUpperCase()}</span></td><td style="color:var(--gold)">${esc(String(pay))}</td><td style="font-size:10px;color:var(--muted);white-space:nowrap">${geoWithFlags(String(geo))}</td><td style="font-size:10px">${esc(String(bdg))}</td></tr>`;
+  }).join('') + (valid.length>15 ? `<tr><td colspan="6" style="text-align:center;color:var(--muted);font-size:11px;padding:10px">… and ${valid.length-15} more</td></tr>` : '');
+}
+
+async function doImport() {
+  if (!importData.length) return;
+  const btn = document.getElementById('doImportBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-sm"></span> Importing…';
+  document.getElementById('importProgress').style.display = 'block';
+  let bar = document.getElementById('importProgressBar');
+  bar.style.width = '30%';
+  try {
+    const r = await api({ resource:'offers', action:'import' }, 'POST', { mode: importMode, offers: importData });
+    bar.style.width = '100%';
+    toast(`✅ Imported ${r.added} offers! Total: ${r.total}`, 'ok');
+    closeImportModal();
+    await loadOffers();
+    renderOffersTable();
+    updateStats();
+  } catch(e) {
+    toast('Import failed: ' + e.message, 'err');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-file-import"></i> Import Offers';
+    bar.style.width = '0%';
+    document.getElementById('importProgress').style.display = 'none';
+  }
+}
+
+// Drag-drop anywhere on offers page
+document.addEventListener('dragover', e => {
+  if (document.getElementById('panel-offers').classList.contains('active')) e.preventDefault();
+});
+document.addEventListener('drop', e => {
+  if (!document.getElementById('panel-offers').classList.contains('active')) return;
+  if (e.target.closest('.modal-overlay')) return;
+  e.preventDefault();
+  const f = e.dataTransfer.files[0];
+  if (!f) return;
+  openImportModal();
+  setTimeout(() => {
+    if (f.name.endsWith('.json')) { const r=new FileReader(); r.onload=ev=>parseImportJSON(ev.target.result); r.readAsText(f); }
+    else if (f.name.endsWith('.xlsx')||f.name.endsWith('.xls')) { const r=new FileReader(); r.onload=ev=>parseImportExcel(ev.target.result); r.readAsArrayBuffer(f); }
+  }, 300);
+});
+
+// Import drag styling
+const idz = document.getElementById('importDropZone');
+if (idz) {
+  idz.addEventListener('dragover', () => idz.classList.add('drag'));
+  idz.addEventListener('dragleave', () => idz.classList.remove('drag'));
+  idz.addEventListener('drop', () => idz.classList.remove('drag'));
+}
+
+// ── Download Templates ──────────────────────────────────────
+function downloadJSONTemplate() {
+  const tpl = [
+    { id:1, name:"Example SOI Offer", cat:"soi", payout:3.50, payoutDisplay:"$3.50", vertical:"Dating", device:"All", countries:"US GB AU", link:"https://app.eliteali.com/register", desc:"High converting SOI", badges:"hot,new", image:"" },
+    { id:2, name:"Casino Smartlink", cat:"casino", payout:25, payoutDisplay:"$25.00", vertical:"Casino", device:"Mobile", countries:"Worldwide", link:"https://app.eliteali.com/register", desc:"Top casino smartlink", badges:"top", image:"" }
+  ];
+  const blob = new Blob([JSON.stringify(tpl, null, 2)], {type:'application/json'});
+  triggerDownload(blob, 'eliteali-import-template.json');
+}
+
+function downloadExcelTemplate() {
+  const rows = [
+    ['id','name','cat','payout','payoutDisplay','vertical','device','countries','link','desc','badges','image'],
+    [1,'Example SOI Offer','soi',3.50,'$3.50','Dating','All','US GB AU','https://app.eliteali.com/register','High converting SOI','hot,new',''],
+    [2,'Casino Smartlink','casino',25,'$25.00','Casino','Mobile','Worldwide','https://app.eliteali.com/register','Top casino','top','']
+  ];
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols'] = [8,30,10,8,15,12,10,20,40,25,15,30].map(w=>({wch:w}));
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Offers');
+  XLSX.writeFile(wb, 'eliteali-import-template.xlsx');
+}
+
+function triggerDownload(blob, name) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// ════════════════════════════════════════════════════════════
+//  DELETE ALL
+// ════════════════════════════════════════════════════════════
+async function confirmDeleteAll() {
+  if (!confirm(`⚠️ Delete ALL ${allOffers.length} offers?\n\nThis CANNOT be undone!`)) return;
+  if (!confirm('Are you 100% sure? This will clear your entire offer list.')) return;
+  try {
+    await api({ resource:'offers', action:'deleteAll' }, 'DELETE');
+    toast('All offers deleted', 'info');
+    await loadOffers();
+    renderOffersTable();
+    updateStats();
+  } catch(e) { toast('Error: ' + e.message, 'err'); }
+}
+
+// ════════════════════════════════════════════════════════════
+//  OFFER MODAL
+// ════════════════════════════════════════════════════════════
+function openOfferModal(id) {
+  editOfferId = id || null;
+  offerImgData = '';
+  const o = id ? allOffers.find(x => x._id === id) : null;
+  document.getElementById('offerModalTitle').textContent = o ? 'Edit Offer' : 'Add New Offer';
+  document.getElementById('f-id').value             = o?.id || '';
+  document.getElementById('f-name').value           = o?.name || '';
+  document.getElementById('f-cat').value            = o?.cat || 'soi';
+  document.getElementById('f-payout').value         = o?.payout || '';
+  document.getElementById('f-payout-display').value = o?.payoutDisplay || '';
+  document.getElementById('f-vertical').value       = o?.vertical || '';
+  document.getElementById('f-device').value         = o?.device || 'All';
+  document.getElementById('f-countries').value      = o?.countries || '';
+  document.getElementById('f-link').value           = o?.link || '';
+  document.getElementById('f-desc').value           = o?.desc || '';
+  document.getElementById('f-img-url').value        = o?.image || '';
+  document.getElementById('chk-top').checked        = (o?.badges||[]).includes('top');
+  document.getElementById('chk-hot').checked        = (o?.badges||[]).includes('hot');
+  document.getElementById('chk-new').checked        = (o?.badges||[]).includes('new');
+  if (o?.image) {
+    offerImgData = o.image;
+    document.getElementById('offerImgPreviewEl').src    = o.image;
+    document.getElementById('offerImgPrev').style.display = 'block';
+  } else {
+    document.getElementById('offerImgPrev').style.display = 'none';
+  }
+  document.getElementById('offerModal').classList.add('open');
+}
+
+function closeOfferModal() { document.getElementById('offerModal').classList.remove('open'); }
+function editOffer(id) { openOfferModal(id); }
+
+async function saveOffer() {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) return toast('Offer name is required', 'err');
+  const badges = [];
+  if (document.getElementById('chk-top').checked) badges.push('top');
+  if (document.getElementById('chk-hot').checked) badges.push('hot');
+  if (document.getElementById('chk-new').checked) badges.push('new');
+  const imgUrl = document.getElementById('f-img-url').value.trim();
+  const image  = offerImgData || imgUrl || '';
+  const payload = {
+    id: parseInt(document.getElementById('f-id').value)||0, name,
+    cat:           document.getElementById('f-cat').value,
+    payout:        parseFloat(document.getElementById('f-payout').value)||0,
+    payoutDisplay: document.getElementById('f-payout-display').value.trim(),
+    vertical:      document.getElementById('f-vertical').value.trim()||'Dating',
+    device:        document.getElementById('f-device').value,
+    countries:     document.getElementById('f-countries').value.trim()||'Worldwide',
+    link:          document.getElementById('f-link').value.trim()||'https://app.eliteali.com/register',
+    desc:          document.getElementById('f-desc').value.trim(),
+    badges, image
+  };
+  if (editOfferId) payload._id = editOfferId;
+  const btn = document.getElementById('saveOfferBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-sm"></span> Saving…';
+  try {
+    await api({ resource:'offers', action:'save' }, 'POST', payload);
+    toast(editOfferId ? 'Offer updated ✅' : 'Offer added ✅', 'ok');
+    closeOfferModal();
+    await loadOffers();
+    renderOffersTable();
+    updateStats();
+  } catch(e) { toast('Error: ' + e.message, 'err'); }
+  finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Offer';
+  }
+}
+
+async function deleteOffer(id, name) {
+  if (!confirm(`Delete "${name}"?`)) return;
+  try {
+    await api({ resource:'offers', action:'delete', id }, 'DELETE');
+    toast('Offer deleted', 'info');
+    await loadOffers();
+    renderOffersTable();
+    updateStats();
+  } catch(e) { toast('Delete failed: ' + e.message, 'err'); }
+}
+
+function handleOfferImg(e) {
+  const f = e.target.files[0]; if (!f) return;
+  if (f.size > 2097152) return toast('Image too large (max 2MB)', 'err');
+  const r = new FileReader();
+  r.onload = ev => { offerImgData = ev.target.result; document.getElementById('offerImgPreviewEl').src = offerImgData; document.getElementById('offerImgPrev').style.display='block'; document.getElementById('f-img-url').value=''; };
+  r.readAsDataURL(f);
+}
+function previewOfferImgUrl() {
+  const u = document.getElementById('f-img-url').value.trim();
+  if (u) { offerImgData=''; document.getElementById('offerImgPreviewEl').src=u; document.getElementById('offerImgPrev').style.display='block'; }
+}
+function clearOfferImg() { offerImgData=''; document.getElementById('f-img-url').value=''; document.getElementById('offerImgPrev').style.display='none'; }
+
+// ════════════════════════════════════════════════════════════
+//  SLIDER
+// ════════════════════════════════════════════════════════════
+function filterSlider(el) {
+  document.querySelectorAll('#panel-slider .filter-tabs .ftab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  slideFilter = el.dataset.badge;
+  renderSlides();
+}
+
+function renderSlides() {
+  const grid = document.getElementById('slidesGrid');
+  let list = allSlides;
+  if (slideFilter !== 'all') list = list.filter(s => (s.badges||[]).includes(slideFilter));
+  document.getElementById('ps-total').textContent  = allSlides.length;
+  document.getElementById('ps-badged').textContent = allSlides.filter(s=>(s.badges||[]).length>0).length;
+
+  if (!list.length) {
+    grid.innerHTML = `<div class="empty-state"><i class="fa-solid fa-images"></i><p>No slides yet. Click "Add Slide"!</p></div>`;
+    return;
+  }
+  grid.innerHTML = list.map((s,i) => `
+    <div class="slide-card" draggable="true" data-id="${s._id}"
+         ondragstart="dragStart(event,'${s._id}')" ondragover="event.preventDefault();this.classList.add('drag-over')"
+         ondragleave="this.classList.remove('drag-over')" ondrop="dropSlide(event,'${s._id}')">
+      <div class="drag-hint"><i class="fa-solid fa-grip-vertical"></i> drag to reorder</div>
+      ${s.image?`<img class="slide-card-img" src="${s.image}" alt="${esc(s.name)}" onerror="this.style.display='none'">`:''}
+      <div class="slide-card-body">
+        <div class="slide-order">Slide #${i+1}</div>
+        <div class="slide-name">${esc(s.name)}</div>
+        <div class="slide-payout">${esc(s.payout||'')}</div>
+        <div class="slide-badges">${badgeHtml(s.badges)}</div>
+        <div class="slide-actions">
+          <button class="btn btn-secondary btn-sm" onclick="editSlide('${s._id}')"><i class="fa-solid fa-pen"></i> Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteSlide('${s._id}','${esc(s.name)}')"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+let dragId = null;
+function dragStart(e, id) { dragId = id; }
+async function dropSlide(e, targetId) {
+  e.preventDefault();
+  document.querySelectorAll('.slide-card').forEach(c => c.classList.remove('drag-over'));
+  if (!dragId || dragId === targetId) return;
+  const from = allSlides.findIndex(s => s._id === dragId);
+  const to   = allSlides.findIndex(s => s._id === targetId);
+  if (from < 0 || to < 0) return;
+  const arr = [...allSlides]; const [m] = arr.splice(from,1); arr.splice(to,0,m);
+  try {
+    await api({ resource:'slider', action:'reorder' }, 'POST', { order: arr.map(s=>s._id) });
+    await loadSlides(); renderSlides(); renderMiniSlider(); toast('Order saved ✅','ok');
+  } catch(e2) { toast('Reorder failed: '+e2.message,'err'); }
+}
+
+function renderMiniSlider() {
+  const track = document.getElementById('miniTrack');
+  const dotsEl= document.getElementById('miniDots');
+  clearInterval(miniTimer);
+  if (!allSlides.length) {
+    track.innerHTML = '<div class="mini-empty"><span style="font-size:26px">🖼️</span><span>No slides yet</span></div>';
+    dotsEl.innerHTML = ''; return;
+  }
+  track.innerHTML = allSlides.map(s => `
+    <div class="mini-slide">
+      ${s.image?`<img src="${s.image}" alt="${esc(s.name)}" onerror="this.style.display='none'">`:`<div style="height:100%;background:var(--bg3)"></div>`}
+      <div class="mini-overlay"></div>
+      <div class="mini-caption"><h5>${esc(s.name)}</h5><p>${esc(s.desc||'')}</p></div>
+    </div>`).join('');
+  dotsEl.innerHTML = allSlides.map((_,i) => `<button class="mini-dot ${i===0?'act':''}" onclick="goMini(${i})"></button>`).join('');
+  miniIdx = 0;
+  miniTimer = setInterval(() => { miniIdx=(miniIdx+1)%allSlides.length; goMini(miniIdx); }, 2800);
+}
+
+function goMini(idx) {
+  miniIdx = idx;
+  const t = document.getElementById('miniTrack');
+  if (t) t.style.transform = `translateX(-${idx*100}%)`;
+  document.querySelectorAll('.mini-dot').forEach((d,i) => d.classList.toggle('act', i===idx));
+}
+
+function openSlideModal(id) {
+  editSlideId = id || null; slideImgData = '';
+  const s = id ? allSlides.find(x=>x._id===id) : null;
+  document.getElementById('slideModalTitle').textContent = s ? 'Edit Slide' : 'Add Slider Slide';
+  document.getElementById('s-name').value    = s?.name  || '';
+  document.getElementById('s-desc').value    = s?.desc  || '';
+  document.getElementById('s-cat').value     = s?.cat   || 'soi';
+  document.getElementById('s-payout').value  = s?.payout|| '';
+  document.getElementById('s-geos').value    = s?.geos  || '';
+  document.getElementById('s-link').value    = s?.link  || '';
+  document.getElementById('s-img-url').value = s?.image || '';
+  document.getElementById('s-top').checked   = (s?.badges||[]).includes('top');
+  document.getElementById('s-hot').checked   = (s?.badges||[]).includes('hot');
+  document.getElementById('s-new').checked   = (s?.badges||[]).includes('new');
+  if (s?.image) { slideImgData=s.image; document.getElementById('slideImgPreviewEl').src=s.image; document.getElementById('slideImgPrev').style.display='block'; }
+  else { document.getElementById('slideImgPrev').style.display='none'; }
+  document.getElementById('slideModal').classList.add('open');
+}
+
+function editSlide(id) { openSlideModal(id); }
+function closeSlideModal() { document.getElementById('slideModal').classList.remove('open'); }
+
+async function saveSlide() {
+  const name = document.getElementById('s-name').value.trim();
+  if (!name) return toast('Slide title is required','err');
+  const badges = [];
+  if (document.getElementById('s-top').checked) badges.push('top');
+  if (document.getElementById('s-hot').checked) badges.push('hot');
+  if (document.getElementById('s-new').checked) badges.push('new');
+  const imgUrl = document.getElementById('s-img-url').value.trim();
+  const image  = slideImgData || imgUrl || '';
+  const payload = {
+    name, desc: document.getElementById('s-desc').value.trim(),
+    cat: document.getElementById('s-cat').value,
+    payout: document.getElementById('s-payout').value.trim(),
+    geos: document.getElementById('s-geos').value.trim(),
+    link: document.getElementById('s-link').value.trim()||'https://app.eliteali.com/register',
+    badges, image
+  };
+  if (editSlideId) payload._id = editSlideId;
+  const btn = document.getElementById('saveSlideBtn');
+  btn.disabled=true; btn.innerHTML='<span class="spinner-sm"></span> Saving…';
+  try {
+    await api({ resource:'slider', action:'save' }, 'POST', payload);
+    toast(editSlideId?'Slide updated ✅':'Slide added ✅','ok');
+    closeSlideModal(); await loadSlides(); renderSlides(); renderMiniSlider(); updateStats();
+  } catch(e) { toast('Error: '+e.message,'err'); }
+  finally { btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-floppy-disk"></i> Save Slide'; }
+}
+
+async function deleteSlide(id, name) {
+  if (!confirm(`Delete slide "${name}"?`)) return;
+  try {
+    await api({ resource:'slider', action:'delete', id }, 'DELETE');
+    toast('Slide deleted','info');
+    await loadSlides(); renderSlides(); renderMiniSlider(); updateStats();
+  } catch(e) { toast('Delete failed: '+e.message,'err'); }
+}
+
+function handleSlideImg(e) {
+  const f=e.target.files[0]; if(!f) return;
+  if(f.size>2097152) return toast('Image too large (max 2MB)','err');
+  const r=new FileReader();
+  r.onload=ev=>{slideImgData=ev.target.result;document.getElementById('slideImgPreviewEl').src=slideImgData;document.getElementById('slideImgPrev').style.display='block';document.getElementById('s-img-url').value='';};
+  r.readAsDataURL(f);
+}
+function previewSlideImgUrl(){const u=document.getElementById('s-img-url').value.trim();if(u){slideImgData='';document.getElementById('slideImgPreviewEl').src=u;document.getElementById('slideImgPrev').style.display='block';}}
+function clearSlideImg(){slideImgData='';document.getElementById('s-img-url').value='';document.getElementById('slideImgPrev').style.display='none';}
+
+// ════════════════════════════════════════════════════════════
+//  SETTINGS
+// ════════════════════════════════════════════════════════════
+function changePw() {
+  const cur=document.getElementById('cur-pw').value;
+  const nw=document.getElementById('new-pw').value;
+  const conf=document.getElementById('conf-pw').value;
+  if(!cur) return toast('Enter current password','err');
+  if(nw!==conf) return toast('New passwords do not match','err');
+  if(nw.length<6) return toast('Min 6 characters','err');
+  toast('✅ Update ADMIN_PASSWORD in api/data.php to: '+nw,'info');
+  document.getElementById('cur-pw').value=document.getElementById('new-pw').value=document.getElementById('conf-pw').value='';
+}
+
+function saveApiUrl() {
+  const u=document.getElementById('api-url-input').value.trim();
+  if(!u) return toast('Enter an API URL','err');
+  API_URL=u; localStorage.setItem('aff_api_url',u); toast('API URL saved ✅','ok');
+}
+
+async function testApi() {
+  const u=document.getElementById('api-url-input').value.trim()||API_URL;
+  try {
+    const res=await fetch(u+'?resource=offers&action=list');
+    const json=await res.json();
+    if(json.success!==undefined) toast('✅ API OK! Found '+(json.data||[]).length+' offers.','ok');
+    else toast('⚠️ Unexpected response','err');
+  } catch(e) { toast('❌ Cannot reach API: '+e.message,'err'); }
+}
+
+// ════════════════════════════════════════════════════════════
+//  TOAST
+// ════════════════════════════════════════════════════════════
+function toast(msg, type='info') {
+  const box=document.getElementById('toastBox');
+  const el=document.createElement('div');
+  el.className='toast '+type;
+  el.innerHTML=`<span>${{ok:'✅',err:'❌',info:'ℹ️'}[type]||'💬'}</span><span>${msg}</span>`;
+  box.appendChild(el);
+  setTimeout(()=>{el.style.animation='toastOut .3s ease forwards';setTimeout(()=>el.remove(),320);},4000);
+}
+
+// Close modals on backdrop
+['offerModal','importModal','slideModal'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');});
+});
+</script>
+</body>
+</html>
