@@ -173,7 +173,9 @@ function loadMessages(since) {
                 'Send a new message below to start a new ticket.</div>');
         }
         if (!data.messages || !data.messages.length) {
-            if (!_lastId) box.innerHTML += '<div style="text-align:center;color:var(--text-muted);padding:40px">No messages yet. Say hello! &#128075;</div>';
+            if (!_lastId && !box.querySelector('.empty-chat-msg')) {
+                box.insertAdjacentHTML('beforeend', '<div class="empty-chat-msg" style="text-align:center;color:var(--text-muted);padding:40px">No messages yet. Say hello! &#128075;</div>');
+            }
             return;
         }
         var atBottom = box.scrollHeight - box.scrollTop <= box.clientHeight + 60;
