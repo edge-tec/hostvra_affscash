@@ -112,9 +112,9 @@
     function fmtTime(s){ try{ var d=new Date((s||'').replace(' ','T')); return d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}); } catch(e){ return ''; } }
 
     function welcomeText() {
-        return 'Hello dear ' + _lcwUserName + ',\n'
-             + 'Welcome to our professional support live chat.\n'
-             + 'How can I help you today?';
+        return 'Hello ' + _lcwUserName + ',\n\n'
+             + 'Welcome to AffsCash Live Chat Support. We’re here to help you.\n'
+             + 'How can I assist you today?';
     }
 
     window.lcwTranslateText = function() {
