@@ -412,13 +412,14 @@ mk('uniqueVsTotal', { type:'bar', data:{ labels:trendLabels, datasets:[
         return;
     }
     const shortSrc = srcLabels.map(function(n){ return n.length>30?n.slice(0,28)+'…':n; });
+    document.getElementById('srcChart').parentElement.style.height = Math.max(250, srcLabels.length * 40 + 80) + 'px';
+    document.getElementById('srcChart').parentElement.style.position = 'relative';
     mk('srcChart', { type:'bar', data:{ labels:shortSrc, datasets:[{
         label:'Clicks', data:srcClicks,
         backgroundColor:srcLabels.map(function(_,i){ return alpha(COLORS[i%COLORS.length],0.78); }),
         borderColor:    srcLabels.map(function(_,i){ return COLORS[i%COLORS.length]; }),
-        borderRadius:4, borderWidth:1, maxBarThickness:22,
-    }]}, options:{ ...OPT, indexAxis:'y',
-        aspectRatio: Math.max(0.9, Math.min(2, 7/Math.max(1,srcLabels.length))),
+        borderRadius:4, borderWidth:1, maxBarThickness:24,
+    }]}, options:{ ...OPT, indexAxis:'y', maintainAspectRatio: false,
         scales:{
             y:{ grid:{color:'#F1F5F9'}, ticks:{font:{size:11}} },
             x:{ beginAtZero:true, grid:{color:'#F1F5F9'}, ticks:{font:{size:10}, callback:function(v){return Number(v).toLocaleString();}} },
@@ -461,12 +462,13 @@ mk('monthChart', { type:'bar', data:{ labels:monthLabels, datasets:[
     }
     const offerCR = offerNames.map(function(_,i){ return offerClicks[i]>0 ? Math.round(offerConv[i]/offerClicks[i]*10000)/100 : 0; });
     const shortNames = offerNames.map(function(n){ return n.length>24?n.slice(0,22)+'…':n; });
+    document.getElementById('offerChart').parentElement.style.height = Math.max(250, offerNames.length * 50 + 100) + 'px';
+    document.getElementById('offerChart').parentElement.style.position = 'relative';
     mk('offerChart', { type:'bar', data:{ labels:shortNames, datasets:[
-        { label:'Clicks',      data:offerClicks, backgroundColor:alpha(COLORS[0],0.75), borderColor:COLORS[0], borderRadius:4, xAxisID:'xClicks', order:2, maxBarThickness:22 },
-        { label:'Conversions', data:offerConv,   backgroundColor:alpha(COLORS[1],0.75), borderColor:COLORS[1], borderRadius:4, xAxisID:'xConv',   order:2, maxBarThickness:22 },
+        { label:'Clicks',      data:offerClicks, backgroundColor:alpha(COLORS[0],0.75), borderColor:COLORS[0], borderRadius:4, xAxisID:'xClicks', order:2, maxBarThickness:24 },
+        { label:'Conversions', data:offerConv,   backgroundColor:alpha(COLORS[1],0.75), borderColor:COLORS[1], borderRadius:4, xAxisID:'xConv',   order:2, maxBarThickness:24 },
         { label:'CR%', type:'line', data:offerCR, borderColor:COLORS[2], backgroundColor:'transparent', tension:.35, pointRadius:4, pointBackgroundColor:COLORS[2], borderWidth:2, xAxisID:'xCR', order:1 },
-    ]}, options:{ ...OPT, indexAxis:'y',
-        aspectRatio: Math.max(1.2, Math.min(2, 8/Math.max(1,offerNames.length))),
+    ]}, options:{ ...OPT, indexAxis:'y', maintainAspectRatio: false,
         scales:{
             y:{ grid:{color:'#F1F5F9'}, ticks:{font:{size:11}} },
             xClicks:{ type:'linear', position:'bottom', beginAtZero:true, grid:{color:'#F1F5F9'},
@@ -543,13 +545,14 @@ mk('browserChart', { type:'doughnut', data:{ labels:brLabels, datasets:[{
         return;
     }
     const shortOs = osLabels.map(function(n){ return n.length>20?n.slice(0,18)+'…':n; });
+    document.getElementById('osChart').parentElement.style.height = Math.max(250, osLabels.length * 40 + 80) + 'px';
+    document.getElementById('osChart').parentElement.style.position = 'relative';
     mk('osChart', { type:'bar', data:{ labels:shortOs, datasets:[{
         label:'Clicks', data:osClicks,
         backgroundColor:osLabels.map(function(_,i){ return alpha(COLORS[i%COLORS.length],0.8); }),
         borderColor:    osLabels.map(function(_,i){ return COLORS[i%COLORS.length]; }),
-        borderRadius:4, borderWidth:1, maxBarThickness:22,
-    }]}, options:{ ...OPT, indexAxis:'y',
-        aspectRatio: Math.max(1.0, Math.min(2, 7/Math.max(1,osLabels.length))),
+        borderRadius:4, borderWidth:1, maxBarThickness:24,
+    }]}, options:{ ...OPT, indexAxis:'y', maintainAspectRatio: false,
         scales:{
             y:{ grid:{color:'#F1F5F9'}, ticks:{font:{size:11}} },
             x:{ beginAtZero:true, grid:{color:'#F1F5F9'}, ticks:{font:{size:10}} },

@@ -465,6 +465,8 @@ mk('uniqueVsTotal', { type:'bar', data:{ labels:trendLabels, datasets:[
     }
     // Truncate long domain names so bars aren't crushed
     const shortSrc = srcLabels.map(function(n) { return n.length > 30 ? n.slice(0, 28) + '…' : n; });
+    document.getElementById('srcChart').parentElement.style.height = Math.max(250, srcLabels.length * 40 + 80) + 'px';
+    document.getElementById('srcChart').parentElement.style.position = 'relative';
     mk('srcChart', {
         type: 'bar',
         data: {
@@ -477,14 +479,13 @@ mk('uniqueVsTotal', { type:'bar', data:{ labels:trendLabels, datasets:[
                 borderColor:     srcLabels.map(function(_, i) { return COLORS[i % COLORS.length]; }),
                 borderRadius: 4,
                 borderWidth: 1,
-                maxBarThickness: 22,
+                maxBarThickness: 24,
             }]
         },
         options: {
             ...OPT,
             indexAxis: 'y',
-            // Dynamic aspect ratio: taller chart when more sources are present
-            aspectRatio: Math.max(0.9, Math.min(2, 7 / Math.max(1, srcLabels.length))),
+            maintainAspectRatio: false,
             scales: {
                 // y = category axis (source names) — must NOT have beginAtZero
                 y: {
@@ -557,6 +558,8 @@ mk('profitChart', { type:'bar', data:{ labels:trendLabels, datasets:[
     // Truncate long offer names for readability
     const shortNames = offerNames.map(function(n) { return n.length > 24 ? n.slice(0, 22) + '…' : n; });
 
+    document.getElementById('offerChart').parentElement.style.height = Math.max(250, offerNames.length * 50 + 100) + 'px';
+    document.getElementById('offerChart').parentElement.style.position = 'relative';
     mk('offerChart', {
         type: 'bar',
         data: {
@@ -570,7 +573,7 @@ mk('profitChart', { type:'bar', data:{ labels:trendLabels, datasets:[
                     borderRadius: 4,
                     xAxisID: 'xClicks',
                     order: 2,
-                    maxBarThickness: 22,
+                    maxBarThickness: 24,
                 },
                 {
                     label: 'Conversions',
@@ -580,7 +583,7 @@ mk('profitChart', { type:'bar', data:{ labels:trendLabels, datasets:[
                     borderRadius: 4,
                     xAxisID: 'xConv',
                     order: 2,
-                    maxBarThickness: 22,
+                    maxBarThickness: 24,
                 },
                 {
                     label: 'CR%',
@@ -600,7 +603,7 @@ mk('profitChart', { type:'bar', data:{ labels:trendLabels, datasets:[
         options: {
             ...OPT,
             indexAxis: 'y',
-            aspectRatio: Math.max(1.2, Math.min(2, 8 / Math.max(1, offerNames.length))),
+            maintainAspectRatio: false,
             scales: {
                 // y = category axis (offer names) — NO beginAtZero
                 y: { grid: { color: '#F1F5F9' }, ticks: { font: { size: 11 } } },
@@ -685,18 +688,20 @@ mk('browserChart', { type:'doughnut', data:{ labels:brLabels, datasets:[{
         return;
     }
     const shortOs = osLabels.map(function(n) { return n.length > 20 ? n.slice(0, 18) + '…' : n; });
+    document.getElementById('osChart').parentElement.style.height = Math.max(250, osLabels.length * 40 + 80) + 'px';
+    document.getElementById('osChart').parentElement.style.position = 'relative';
     mk('osChart', {
         type: 'bar',
         data: { labels: shortOs, datasets: [
             { label: 'Clicks', data: osClicks,
               backgroundColor: osLabels.map(function(_, i){ return alpha(COLORS[i % COLORS.length], 0.8); }),
               borderColor:     osLabels.map(function(_, i){ return COLORS[i % COLORS.length]; }),
-              borderRadius: 4, borderWidth: 1, maxBarThickness: 22 },
+              borderRadius: 4, borderWidth: 1, maxBarThickness: 24 },
         ]},
         options: {
             ...OPT,
             indexAxis: 'y',
-            aspectRatio: Math.max(1.0, Math.min(2, 7 / Math.max(1, osLabels.length))),
+            maintainAspectRatio: false,
             scales: {
                 y: { grid: { color: '#F1F5F9' }, ticks: { font: { size: 11 } } },
                 x: { beginAtZero: true, grid: { color: '#F1F5F9' }, ticks: { font: { size: 10 } } },
