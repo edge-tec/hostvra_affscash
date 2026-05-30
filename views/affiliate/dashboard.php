@@ -874,27 +874,45 @@ function renderTrendChart(d){
     destroyChart('trend');
     var ctx = document.getElementById('chart-trend');
     if (!ctx) return;
+    
+    var createGrad = function(color) {
+        var grad = ctx.getContext('2d').createLinearGradient(0, 0, 0, 300);
+        grad.addColorStop(0, color + '33');
+        grad.addColorStop(1, color + '00');
+        return grad;
+    };
+
     var datasets = [];
     if (document.getElementById('tog-clicks').checked)
-        datasets.push({label:'Clicks',data:d.clicks_data,borderColor:'#3B82F6',backgroundColor:'rgba(59,130,246,.08)',tension:.35,fill:true,pointRadius:3,pointHoverRadius:6,borderWidth:2.5});
+        datasets.push({label:'Clicks',data:d.clicks_data,borderColor:'#3B82F6',backgroundColor:createGrad('#3B82F6'),tension:.4,fill:true,pointRadius:0,pointHoverRadius:6,pointBackgroundColor:'#fff',borderWidth:2.5});
     if (document.getElementById('tog-conv').checked)
-        datasets.push({label:'Conversions',data:d.conv_data,borderColor:'#8B5CF6',backgroundColor:'rgba(139,92,246,.07)',tension:.35,fill:true,pointRadius:3,pointHoverRadius:6,borderWidth:2.5});
+        datasets.push({label:'Conversions',data:d.conv_data,borderColor:'#8B5CF6',backgroundColor:createGrad('#8B5CF6'),tension:.4,fill:true,pointRadius:0,pointHoverRadius:6,pointBackgroundColor:'#fff',borderWidth:2.5});
     if (document.getElementById('tog-rev').checked)
-        datasets.push({label:'Revenue ($)',data:d.revenue_data,borderColor:'#10B981',backgroundColor:'rgba(16,185,129,.07)',tension:.35,fill:true,pointRadius:3,pointHoverRadius:6,borderWidth:2.5,yAxisID:'y2'});
+        datasets.push({label:'Revenue ($)',data:d.revenue_data,borderColor:'#10B981',backgroundColor:createGrad('#10B981'),tension:.4,fill:true,pointRadius:0,pointHoverRadius:6,pointBackgroundColor:'#fff',borderWidth:2.5,yAxisID:'y2',isCur:true});
     var togFraud = document.getElementById('tog-fraud');
     if (togFraud && togFraud.checked && d.fraud_data)
-        datasets.push({label:'Fraud Conversions',data:d.fraud_data,borderColor:'#DC2626',backgroundColor:'rgba(220,38,38,.08)',tension:.35,fill:true,pointRadius:3,pointHoverRadius:6,borderWidth:2.5,borderDash:[5,3]});
+        datasets.push({label:'Fraud Conversions',data:d.fraud_data,borderColor:'#DC2626',backgroundColor:createGrad('#DC2626'),tension:.4,fill:true,pointRadius:0,pointHoverRadius:6,pointBackgroundColor:'#fff',borderWidth:2.5});
+    
     charts['trend'] = new Chart(ctx, {
         type:'line',
         data:{ labels: d.labels, datasets: datasets },
         options:{
             responsive:true, maintainAspectRatio:false,
             interaction:{ mode:'index', intersect:false },
-            plugins:{ legend:{ display:false }, tooltip:{ backgroundColor:'rgba(17,24,39,.9)', titleFont:{size:12}, bodyFont:{size:12}, padding:10, cornerRadius:8 } },
+            plugins:{ 
+                legend:{ display:false }, 
+                tooltip:{ 
+                    backgroundColor:'rgba(15, 23, 42, 0.95)', 
+                    titleFont:{size:13, family:'"Inter", sans-serif', weight:'600'}, 
+                    bodyFont:{size:13, family:'"Inter", sans-serif'}, 
+                    padding:12, cornerRadius:8, boxPadding: 6, displayColors: true,
+                    callbacks:{ label: function(ctx) { return ' ' + ctx.dataset.label + ': ' + (ctx.dataset.isCur ? '$'+fmt(ctx.parsed.y,2) : fmt(ctx.parsed.y)); } }
+                } 
+            },
             scales:{
-                x:{ grid:{color:'#F3F4F6'}, ticks:{font:{size:11},maxRotation:0,maxTicksLimit:12} },
-                y:{ beginAtZero:true, grid:{color:'#F3F4F6'}, ticks:{font:{size:11}}, position:'left' },
-                y2:{ beginAtZero:true, grid:{display:false}, ticks:{font:{size:11}, callback:function(v){return'$'+v;}}, position:'right', display: document.getElementById('tog-rev').checked }
+                x:{ grid:{display:true, color:'#F1F5F9', drawBorder:false, borderDash:[4,4]}, ticks:{font:{size:11, family:'"Inter", sans-serif'},maxRotation:0,maxTicksLimit:12, color:'#64748B'} },
+                y:{ beginAtZero:true, grid:{color:'#F1F5F9', drawBorder:false}, ticks:{font:{size:11, family:'"Inter", sans-serif'}, color:'#64748B'}, position:'left' },
+                y2:{ beginAtZero:true, grid:{display:false}, ticks:{font:{size:11, family:'"Inter", sans-serif'}, color:'#64748B', callback:function(v){return'$'+fmt(v);}}, position:'right', display: document.getElementById('tog-rev').checked }
             }
         }
     });

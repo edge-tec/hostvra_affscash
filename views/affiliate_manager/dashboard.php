@@ -114,10 +114,10 @@ html[data-theme="dark"] .chart-card{
 html[data-theme="dark"] .chart-card .card-header{border-bottom-color:rgba(148,163,184,.15);}
 .chart-wrap{position:relative;height:240px;}
 .chart-wrap.tall{height:300px;}
-.toggle-btns{display:flex;gap:4px;}
-.toggle-btns button{padding:4px 10px;border-radius:6px;border:1px solid var(--border);font-size:11px;font-weight:600;background:var(--bg);color:var(--text-muted);cursor:pointer;transition:all .15s;}
-.toggle-btns button:hover{background:var(--primary-light);color:var(--primary);border-color:var(--primary);}
-.toggle-btns button.active{background:#7C3AED;border-color:#7C3AED;color:#fff;}
+.toggle-btns{display:flex;gap:4px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:4px;flex-wrap:wrap;}
+.toggle-btns button{background:none;border:none;padding:6px 14px;font-size:12px;font-weight:600;color:#64748B;cursor:pointer;border-radius:6px;transition:all .2s ease;white-space:nowrap;}
+.toggle-btns button:hover{background:#F1F5F9;color:#0F172A;}
+.toggle-btns button.active{background:#7C3AED;color:#fff !important;box-shadow:0 2px 4px rgba(124,58,237,.25);}
 .analytics-table{width:100%;border-collapse:collapse;}
 .analytics-table th{padding:10px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);border-bottom:2px solid var(--border);background:var(--bg);white-space:nowrap;}
 .analytics-table td{padding:10px 14px;font-size:13px;color:var(--text);border-bottom:1px solid var(--border);}
@@ -636,11 +636,27 @@ function renderTrendChart(){
             label: m.label,
             data: m.data || [],
             borderColor: m.color,
-            backgroundColor: m.color + bgAlpha,
-            fill: showFill,
-            tension: isLine ? .35 : 0,
-            borderWidth: 2,
-            pointRadius: d.labels.length > 45 ? 0 : 3,
+            backgroundColor: function(context) {
+                const chart = context.chart;
+                const {ctx, chartArea} = chart;
+                if (!chartArea || !isLine) return m.color + (isLine ? '1A' : 'CC');
+                let gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                gradient.addColorStop(0, m.color + '33');
+                gradient.addColorStop(1, m.color + '00');
+                return gradient;
+            },
+            fill: isLine,
+            tension: isLine ? 0.4 : 0,
+            borderWidth: isLine ? 2.5 : 0,
+            borderRadius: isLine ? 0 : 4,
+            pointRadius: isLine && d.labels.length <= 45 ? 4 : 0,
+            pointBackgroundColor: '#ffffff',
+            pointBorderColor: m.color,
+            pointBorderWidth: 2,
+            pointHoverRadius: 6,
+            pointHoverBackgroundColor: m.color,
+            pointHoverBorderColor: '#ffffff',
+            pointHoverBorderWidth: 2,
             yAxisID: m.axis,
             isCur: !!m.isCur
         };
@@ -654,13 +670,38 @@ function renderTrendChart(){
             responsive:true, maintainAspectRatio:false,
             interaction:{ mode:'index', intersect:false },
             plugins:{
-                legend:{ display:true, position:'bottom', labels:{ boxWidth:10, font:{size:11}, padding:10 } },
-                tooltip:{ callbacks:{ label: ctx => ctx.dataset.label + ': ' + (ctx.dataset.isCur ? '$'+fmt(ctx.parsed.y,2) : fmt(ctx.parsed.y)) } }
+                legend:{ display:true, position:'bottom', labels:{ boxWidth:12, usePointStyle:true, padding:20, font:{size:12, family:'"Inter", sans-serif', weight:'500'}, color:'#475569' } },
+                tooltip:{ 
+                    backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                    titleFont: { size: 13, family: '"Inter", sans-serif', weight:'600' },
+                    bodyFont: { size: 13, family: '"Inter", sans-serif' },
+                    padding: 12,
+                    cornerRadius: 8,
+                    displayColors: true,
+                    boxPadding: 6,
+                    callbacks:{ label: ctx => {
+                        const dsCur = ctx.dataset.isCur;
+                        return ' ' + ctx.dataset.label + ': ' + (dsCur ? '$'+fmt(ctx.parsed.y,2) : fmt(ctx.parsed.y));
+                    }}
+                }
             },
             scales:{
-                y:  { display:hasCount, beginAtZero:true, position:'left',  grid:{ color:'#F1F5F9' }, ticks:{ callback:v=>v }, title:{ display:hasCount, text:'Count', font:{size:10}, color:'#6B7280' } },
-                y1: { display:hasCur,   beginAtZero:true, position:'right', grid:{ display:false },   ticks:{ callback:v=>'$'+v }, title:{ display:hasCur, text:'Amount ($)', font:{size:10}, color:'#6B7280' } },
-                x:  { grid:{ color:'#F1F5F9' } }
+                x: {
+                    grid:{display:true, color:'#F1F5F9', drawBorder:false, borderDash:[4,4]},
+                    ticks:{font:{size:11, family:'"Inter", sans-serif'}, color:'#64748B'}
+                },
+                y: {
+                    display:hasCount, beginAtZero:true, position:'left',
+                    grid:{color:'#F1F5F9', drawBorder:false},
+                    ticks:{font:{size:11, family:'"Inter", sans-serif'}, color:'#64748B', callback:v=>fmt(v)},
+                    title:{display:hasCount, text:'Count', font:{size:11, family:'"Inter", sans-serif', weight:'500'}, color:'#94A3B8'}
+                },
+                y1:{
+                    display:hasCur, beginAtZero:true, position:'right',
+                    grid:{display:false},
+                    ticks:{font:{size:11, family:'"Inter", sans-serif'}, color:'#64748B', callback:v=>'$'+fmt(v)},
+                    title:{display:hasCur, text:'Amount ($)', font:{size:11, family:'"Inter", sans-serif', weight:'500'}, color:'#94A3B8'}
+                }
             }
         }
     });
