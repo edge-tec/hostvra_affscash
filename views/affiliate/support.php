@@ -168,7 +168,12 @@ function loadMessages(since) {
         }
         if (!data.messages || !data.messages.length) {
             if (!_lastId && !box.querySelector('.empty-chat-msg')) {
-                box.insertAdjacentHTML('beforeend', '<div class="empty-chat-msg" style="text-align:center;color:var(--text-muted);padding:40px">No messages yet. Say hello! &#128075;</div>');
+                box.insertAdjacentHTML('beforeend', 
+                    '<div class="aff-msg-row theirs empty-chat-msg" style="margin-bottom:12px">' +
+                    '<div style="font-size:10px;color:#94A3B8;margin-bottom:3px">Support Team</div>' +
+                    '<div class="aff-msg-bubble">Hello <?= Helpers::e(Auth::currentUser()['first_name'] ?? 'Affiliate') ?>,<br><br>Welcome to AffsCash Live Chat Support. We’re here to help you.<br>How can I assist you today?</div>' +
+                    '</div>'
+                );
             }
             return;
         }
