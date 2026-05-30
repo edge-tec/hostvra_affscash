@@ -881,8 +881,6 @@ function renderTrendChart(){
             isCur: !!m.isCur
         };
     });
-    const hasCur   = active.some(k => metricMap[k].isCur);
-    const hasCount = active.some(k => !metricMap[k].isCur);
     const cfg = {
         type: trendType,
         data:{ labels: d.labels, datasets },
