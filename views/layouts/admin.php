@@ -246,12 +246,7 @@ function fmtTs(ts, opts) {
         <?php endif; } catch(\Throwable $e) {} ?>
     </a>
 
-    <?php if (Tenant::isLandingEnabled()): ?>
     <p class="sidebar-section">Landing Page</p>
-    <a href="/admin/landing/builder" class="nav-link <?= str_starts_with($_SERVER['REQUEST_URI'],'/admin/landing/builder') ? 'active' : '' ?>">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 2 12 22Z"/><path d="M12 2V12L17 17"/></svg>
-        Page Builder &amp; Appearance
-    </a>
     <a href="/admin/landing/sliders" class="nav-link <?= str_starts_with($_SERVER['REQUEST_URI'],'/admin/landing/sliders') ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
         Sliders
@@ -272,7 +267,6 @@ function fmtTs(ts, opts) {
         <span class="nav-badge" style="background:#F59E0B"><?= $pendingRevs ?></span>
         <?php endif; } catch(\Throwable $e) {} ?>
     </a>
-    <?php endif; ?>
 
     <a href="/admin/referrals" class="nav-link <?= str_starts_with($_SERVER['REQUEST_URI'],'/admin/referrals') ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/></svg>

@@ -62,6 +62,34 @@ if (Helpers::isPost() && Helpers::post('action') === 'get_server_ip') {
     exit;
 }
 
+// ── AJAX: Test SMTP Connection ───────────────────────────────────────────
+if (Helpers::isPost() && Helpers::post('action') === 'test_smtp') {
+    header('Content-Type: application/json');
+    $email = trim(Helpers::postRaw('email'));
+    if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo json_encode(['ok' => false, 'error' => 'Invalid email address provided']);
+        exit;
+    }
+    try {
+        require_once BASE_PATH . '/core/Mailer.php';
+        Mailer::sendRaw(
+            $email,
+            'Admin',
+            'Test Email from Affscash',
+            '<div style="font-family:sans-serif;padding:20px;max-width:600px;margin:0 auto;border:1px solid #eee;border-radius:8px">
+                <h2 style="color:#4F46E5">SMTP Connection Successful!</h2>
+                <p>This is a test email to verify your SMTP settings. If you received this, your email configuration is working perfectly.</p>
+                <p style="color:#6B7280;font-size:12px;margin-top:20px">Sent from your Affscash Admin Panel.</p>
+            </div>',
+            'system_test'
+        );
+        echo json_encode(['ok' => true]);
+    } catch (\Throwable $e) {
+        echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+    }
+    exit;
+}
+
 $errors  = [];
 $success = false;
 
@@ -465,7 +493,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
             $rawUrl = 'https://' . $rawUrl;
         }
         Config::set('config', 'app.mobile_app_url',           $rawUrl);
-        Config::set('config', 'app.mobile_app_name',          $rawName !== '' ? $rawName : 'EliteAli');
+        Config::set('config', 'app.mobile_app_name',          $rawName !== '' ? $rawName : 'AffsCash');
         Config::set('config', 'app.mobile_app_popup_enabled', isset($_POST['mobile_app_popup_enabled']) ? '1' : '0');
         $success = true;
     }
@@ -479,7 +507,9 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
     }
 
     elseif ($tab === 'notifications') {
-        Config::set('config', 'app.new_offer_notify', isset($_POST['new_offer_notify']) ? '1' : '0');
+        Config::set('config', 'app.new_offer_notify',    isset($_POST['new_offer_notify'])    ? '1' : '0');
+        Config::set('config', 'app.offer_status_notify', isset($_POST['offer_status_notify']) ? '1' : '0');
+        Config::set('config', 'app.offer_link_notify',   isset($_POST['offer_link_notify'])   ? '1' : '0');
         $success = true;
     }
 

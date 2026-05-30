@@ -5,12 +5,7 @@
 <div class="page-header">
     <div><h1>Reports</h1><p>Performance, clicks &amp; conversions for your managed affiliates</p></div>
     <div style="display:flex;gap:8px;align-items:center">
-        <?php if (!$hideFraudRejected): ?>
-        <!-- Real-time IPQS Fraud Score Panel Trigger -->
-        <button type="button" class="btn btn-secondary" onclick="openFraudScorePanel()" style="display:flex;align-items:center;gap:6px;border-color:#7C3AED;color:#7C3AED">
-            <span style="font-size:14px">🛡️</span> Live Fraud Score
-        </button>
-        <?php endif; ?>
+
         <a href="?<?= http_build_query(array_merge($_GET, ['export'=>'csv'])) ?>" class="btn btn-secondary">&#11123; Export CSV</a>
     </div>
 </div>
@@ -417,32 +412,7 @@ $totPayout    = array_sum(array_map(fn($r) => $r['status'] === 'approved' ? (flo
 $statusCounts = array_count_values(array_column($convRows, 'status'));
 ?>
 
-<?php if (!$hideFraudRejected): ?>
-<!-- IPQS bar for conversions -->
-<div style="background:linear-gradient(135deg,#0F172A,#1E1B4B);border-radius:10px;padding:12px 18px;margin-bottom:14px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-    <div style="display:flex;align-items:center;gap:8px">
-        <span>🛡️</span>
-        <span style="color:#A5B4FC;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em">IPQualityScore</span>
-        <span style="width:7px;height:7px;border-radius:50%;background:#22C55E;animation:pulse-dot 1.5s infinite;display:inline-block"></span>
-    </div>
-    <div style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:7px 14px">
-        <div style="color:#FCA5A5;font-size:9px;font-weight:700;text-transform:uppercase">Rejected</div>
-        <div style="color:#FEF2F2;font-size:20px;font-weight:800"><?= number_format($statusCounts['rejected'] ?? 0) ?></div>
-        <div style="color:#FCA5A5;font-size:9px">
-            <?php $rp = count($convRows) > 0 ? round(($statusCounts['rejected']??0)/count($convRows)*100,1) : 0; ?>
-            <?= $rp ?>% of total
-        </div>
-    </div>
-    <div style="background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.25);border-radius:8px;padding:7px 14px">
-        <div style="color:#C4B5FD;font-size:9px;font-weight:700;text-transform:uppercase">IPQS Avg Score</div>
-        <div style="color:#EDE9FE;font-size:20px;font-weight:800" id="conv-ipqs-avg">—</div>
-        <div style="color:#A78BFA;font-size:9px">Live scoring</div>
-    </div>
-    <button type="button" onclick="openFraudScorePanel()" style="background:#7C3AED;color:#fff;border:none;border-radius:7px;padding:7px 12px;font-size:11px;font-weight:700;cursor:pointer">
-        🔍 Run IPQS Scan
-    </button>
-</div>
-<?php endif; ?>
+
 
 <div class="stats-grid mb-3" style="grid-template-columns:repeat(<?= $hideFraudRejected ? 4 : 5 ?>,1fr)">
     <div class="stat-card"><div class="stat-label">Total</div><div class="stat-value"><?= number_format(count($convRows)) ?></div></div>

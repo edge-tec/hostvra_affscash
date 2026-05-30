@@ -149,15 +149,6 @@ if (!$offer) {
     trafficBack('Offer not found or inactive.', 404);
 }
 
-// Resolve Tenant Context & Enforce Subscription Limits
-if (!empty($offer['tenant_id'])) {
-    $tenantId = (int)$offer['tenant_id'];
-    Tenant::setTenantId($tenantId);
-    if (!Tenant::isSubscriptionActive($tenantId)) {
-        trafficBack('This tracking link has been paused.', 503);
-    }
-}
-
 // Validate affiliate
 $affiliate = Database::fetchOne(
     "SELECT af.*, u.status FROM `affiliates` af JOIN `users` u ON u.id=af.user_id WHERE af.affiliate_code=? AND u.status='active'",
@@ -683,8 +674,25 @@ if (!$isDuplicate && (($_fraudCfg['mode'] ?? 'block') !== 'score_only')) {
     }
 }
 
+// ── In-House Real-Time Risk Engine ──────────────────────────────────────
+$riskEngineResult = RiskEngine::evaluateClick([
+    'ip' => $ip,
+    'ua' => $ua,
+    'affiliate_id' => $affiliate['id'] ?? 0,
+    'offer_id' => $offerId,
+    'click_id' => $clickId
+]);
+
+$fraudReasons = [];
+if (!empty($riskEngineResult['reasons'])) {
+    $fraudReasons = $riskEngineResult['reasons'];
+}
+
 $clickStatus = 'valid';
-if ($fraudResult['action'] === 'block') {
+if ($riskEngineResult['action'] === 'block') {
+    $clickStatus = 'blocked';
+    $fraudResult['score'] = max($fraudResult['score'] ?? 0, 100);
+} elseif ($fraudResult['action'] === 'block') {
     $clickStatus = 'blocked';
 } elseif ($isDuplicate) {
     $clickStatus = 'duplicate';
@@ -854,7 +862,6 @@ Database::insert('clicks', [
     'offer_id'         => $offerId,
     'affiliate_id'     => $affiliate['id'],
     'smartlink_id'     => ($GLOBALS['_sl_id'] ?? null),
-    'tracking_domain'  => preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST'] ?? ''),
     'source'           => $source,
     'sub1'             => $sub1,
     'sub2'             => $sub2,
@@ -878,8 +885,9 @@ Database::insert('clicks', [
     'browser'          => $deviceInfo['browser'],
     'browser_version'  => $deviceInfo['browser_version'] ?? '',
     'is_unique'        => $isUnique,
-    'is_fraud'         => ($fraudResult['action'] !== 'allow') ? 1 : 0,
+    'is_fraud'         => ($fraudResult['action'] !== 'allow' || $riskEngineResult['action'] !== 'allow') ? 1 : 0,
     'fraud_score'      => $fraudResult['score'],
+    'fraud_reasons'    => !empty($fraudReasons) ? json_encode($fraudReasons) : null,
     'payout'           => $payout,
     'revenue'          => $revenue,
     'status'           => $clickStatus,
@@ -891,7 +899,7 @@ if ($clickStatus === 'valid' || $clickStatus === 'duplicate') {
         'clicks'        => 1,
         'unique_clicks' => $isUnique,  // 0 for duplicates, 1 for first click
     ]);
-} elseif ($fraudResult['action'] !== 'allow') {
+} elseif ($fraudResult['action'] !== 'allow' || $riskEngineResult['action'] !== 'allow') {
     Database::upsertStats(date('Y-m-d'), $affiliate['id'], $offerId, [
         'fraud_clicks' => 1,
     ]);

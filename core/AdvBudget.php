@@ -250,7 +250,7 @@ final class AdvBudget
 
         // Email — non-fatal if the mailer is misconfigured.
         try {
-            $siteName = Config::get('config','app.name') ?? 'EliteAli';
+            $siteName = Config::get('config','app.name') ?? 'AffsCash';
             $appUrl   = rtrim((string)(Config::get('config','app.url') ?: ''), '/');
             $name     = trim(($advRow['first_name'] ?? '') . ' ' . ($advRow['last_name'] ?? '')) ?: 'Advertiser';
             $topUpUrl = $appUrl . '/advertiser/billing/top-up';

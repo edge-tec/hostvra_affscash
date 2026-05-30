@@ -206,7 +206,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 // Flash success message and redirect to login
                 $regMsg = Config::get('config', 'app.registration_message')
-                    ?: "Registration successful! Your account is pending approval. Contact support via Telegram: @eliteali";
+                    ?: "Registration successful! Your account is pending approval. Contact support via Telegram: @affscashnet";
                 if ($emailVerify) {
                     $regMsg = "Registration successful! A verification link has been sent to $email. Please verify your email to continue.";
                 }
@@ -222,7 +222,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // ── View config ───────────────────────────────────────────────────────────────
-$appName = Config::get('config', 'app.name') ?? 'EliteAli';
+$appName = Config::get('config', 'app.name') ?? 'AffsCash';
 $appLogo = Config::get('config', 'app.logo');
 
 ?><!DOCTYPE html>

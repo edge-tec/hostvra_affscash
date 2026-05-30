@@ -10,16 +10,6 @@ if (!$slug) { http_response_code(404); exit('Not found.'); }
 $sl = Database::fetchOne("SELECT * FROM `smartlinks` WHERE slug=? AND status='active'", [$slug]);
 if (!$sl) { http_response_code(404); exit('Smartlink not found.'); }
 
-// Resolve Tenant Context & Enforce Subscription Limits
-if (!empty($sl['tenant_id'])) {
-    $tenantId = (int)$sl['tenant_id'];
-    Tenant::setTenantId($tenantId);
-    if (!Tenant::isSubscriptionActive($tenantId)) {
-        http_response_code(503);
-        exit('This smartlink has been paused.');
-    }
-}
-
 $offers = Database::fetchAll(
     "SELECT so.*,
             o.id        AS offer_id,

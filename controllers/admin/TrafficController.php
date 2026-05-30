@@ -121,7 +121,7 @@ $byAffiliate = Database::fetchAll(
      JOIN affiliates af ON af.id=c.affiliate_id
      JOIN users u ON u.id=af.user_id
      WHERE $where
-     GROUP BY c.affiliate_id ORDER BY clicks DESC LIMIT 10", $params
+     GROUP BY c.affiliate_id, af.affiliate_code, u.first_name, u.last_name ORDER BY clicks DESC LIMIT 10", $params
 );
 
 // Top ISPs
@@ -141,7 +141,8 @@ $byReferer = Database::fetchAll(
         COUNT(*) as clicks,
         SUM(is_unique) as unique_c
      FROM clicks WHERE $where
-     GROUP BY source ORDER BY clicks DESC LIMIT 10", $params
+     GROUP BY CASE WHEN referer = '' OR referer IS NULL THEN 'Direct' ELSE SUBSTRING_INDEX(REPLACE(REPLACE(referer,'https://',''),'http://',''),'/',1) END
+     ORDER BY clicks DESC LIMIT 10", $params
 );
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -191,14 +192,14 @@ $weeklyClicksRaw = Database::fetchAll(
     "SELECT YEARWEEK(clicked_at,1) as yw, MIN(DATE(clicked_at)) as week_start,
             COUNT(*) as clicks, SUM(is_unique) as uclicks
      FROM clicks WHERE clicked_at >= DATE_SUB(CURDATE(), INTERVAL 84 DAY)
-     GROUP BY yw ORDER BY yw ASC"
+     GROUP BY YEARWEEK(clicked_at,1) ORDER BY yw ASC"
 );
 $weeklyConvRaw = Database::fetchAll(
     "SELECT YEARWEEK(converted_at,1) as yw,
             COUNT(*) as conversions, SUM(payout) as payout, SUM(revenue) as revenue
      FROM conversions
      WHERE converted_at >= DATE_SUB(CURDATE(), INTERVAL 84 DAY) AND COALESCE(is_hidden,0)=0
-     GROUP BY yw ORDER BY yw ASC"
+     GROUP BY YEARWEEK(converted_at,1) ORDER BY yw ASC"
 );
 $wConvByYw = [];
 foreach ($weeklyConvRaw as $r) $wConvByYw[$r['yw']] = $r;
@@ -221,14 +222,14 @@ $monthlyClicksRaw = Database::fetchAll(
     "SELECT DATE_FORMAT(clicked_at,'%Y-%m') as month,
             COUNT(*) as clicks, SUM(is_unique) as uclicks
      FROM clicks WHERE clicked_at >= DATE_SUB(CURDATE(), INTERVAL 180 DAY)
-     GROUP BY month ORDER BY month ASC"
+     GROUP BY DATE_FORMAT(clicked_at,'%Y-%m') ORDER BY month ASC"
 );
 $monthlyConvRaw = Database::fetchAll(
     "SELECT DATE_FORMAT(converted_at,'%Y-%m') as month,
             COUNT(*) as conversions, SUM(payout) as payout, SUM(revenue) as revenue
      FROM conversions
      WHERE converted_at >= DATE_SUB(CURDATE(), INTERVAL 180 DAY) AND COALESCE(is_hidden,0)=0
-     GROUP BY month ORDER BY month ASC"
+     GROUP BY DATE_FORMAT(converted_at,'%Y-%m') ORDER BY month ASC"
 );
 $mConvByMonth = [];
 foreach ($monthlyConvRaw as $r) $mConvByMonth[$r['month']] = $r;
@@ -249,7 +250,7 @@ foreach ($monthlyClicksRaw as $r) {
 $toClicksRaw = Database::fetchAll(
     "SELECT c.offer_id, o.name, COUNT(*) as clicks, SUM(c.is_unique) as uclicks
      FROM clicks c JOIN offers o ON o.id=c.offer_id
-     WHERE $where GROUP BY c.offer_id ORDER BY clicks DESC LIMIT 10", $params
+     WHERE $where GROUP BY c.offer_id, o.name ORDER BY clicks DESC LIMIT 10", $params
 );
 $toConvRaw = Database::fetchAll(
     "SELECT offer_id, COUNT(*) as conversions,

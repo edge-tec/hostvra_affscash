@@ -20,14 +20,6 @@ if (($_GET['type'] ?? '') === 'imp') {
     $affCode = $_GET['aff_id'] ?? ($_GET['aff'] ?? '');
 
     if ($offerId && $affCode) {
-        $offer = Database::fetchOne("SELECT tenant_id FROM `offers` WHERE id=?", [$offerId]);
-        if ($offer && !empty($offer['tenant_id'])) {
-            $tenantId = (int)$offer['tenant_id'];
-            Tenant::setTenantId($tenantId);
-            if (!Tenant::isSubscriptionActive($tenantId)) {
-                exit;
-            }
-        }
         $affiliate = Database::fetchOne(
             "SELECT af.id FROM affiliates af JOIN users u ON u.id=af.user_id WHERE af.affiliate_code=? AND u.status='active'",
             [$affCode]

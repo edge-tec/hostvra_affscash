@@ -1,6 +1,6 @@
 <?php
 // ════════════════════════════════════════════════════════════════
-// db.php — EliteAli Reviews Database Config
+// db.php — Affscash Reviews Database Config
 //
 // SETUP INSTRUCTIONS:
 //   1. cPanel → MySQL Databases
@@ -15,7 +15,7 @@ define('DB_NAME', 'metmtahv_review');     // ← cPanel database name
 define('DB_USER', 'metmtahv_review');     // ← cPanel database username
 define('DB_PASS', 'metmtahv_review');     // ← cPanel database password
 
-define('SITE_URL',   'https://eliteali.com');
+define('SITE_URL',   'https://affscash.net');
 define('ADMIN_PWD',  'Miz@n2129');
 
 // ── Upload paths: must point to the  uploads/  folder next to db.php ──

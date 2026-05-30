@@ -1,5 +1,5 @@
 <?php
-$appName  = Helpers::e(Config::get('config','app.name') ?? 'EliteAli');
+$appName  = Helpers::e(Config::get('config','app.name') ?? 'Affscash');
 $appLogo  = Config::get('config','app.logo');
 $logoSrc  = $appLogo ? Helpers::e($appLogo) : '/logoo.png';
 $_isAdmin = Auth::id() && Auth::role() === 'admin';

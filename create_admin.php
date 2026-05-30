@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'password'=> $dbPass,
                     ],
                     'app' => [
-                        'name'     => 'EliteAli',
+                        'name'     => 'AffsCash',
                         'url'      => (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost'),
                         'timezone' => 'UTC',
                         'logo'     => '',
@@ -193,7 +193,7 @@ input:focus{border-color:#4F46E5;box-shadow:0 0 0 3px rgba(79,70,229,.08)}
       <div class="row">
         <div class="form-group">
           <label>Database Name <span style="color:#EF4444">*</span></label>
-          <input type="text" name="db_name" value="<?= htmlspecialchars($pre['dbname'] ?? '') ?>" required placeholder="e.g. eliteali_db">
+          <input type="text" name="db_name" value="<?= htmlspecialchars($pre['dbname'] ?? '') ?>" required placeholder="e.g. affscash_db">
         </div>
         <div class="form-group">
           <label>DB Username <span style="color:#EF4444">*</span></label>

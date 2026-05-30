@@ -62,15 +62,6 @@ class Auth {
             return ['success' => false, 'error' => 'Your account is ' . $user['status'] . '. Please contact support.'];
         }
 
-        // Subscription check for Admin / Tenant Owner
-        if (($user['role'] === 'admin' || $user['role'] === 'ADMIN_OWNER') && !empty($user['tenant_id'])) {
-            $tenantId = (int)$user['tenant_id'];
-            if (!Tenant::isSubscriptionActive($tenantId)) {
-                // Return login error but flag it so we can show a dedicated notice
-                return ['success' => false, 'error' => 'Your subscription has expired or is inactive. Please contact billing/support or renew.'];
-            }
-        }
-
         // ── Login IP Ban check ────────────────────────────────────────────────
         // Enforce for all roles except affiliate_manager. Admin is blocked too.
         if ($user['role'] !== 'affiliate_manager') {
@@ -162,15 +153,6 @@ class Auth {
         $_SESSION['user_role'] = $user['role'];
         $_SESSION['user_email'] = $user['email'];
         $_SESSION['user_name'] = trim($user['first_name'] . ' ' . $user['last_name']);
-        $_SESSION['tenant_id'] = $user['tenant_id'] ?? null;
-
-        // Force password change check
-        if (($user['role'] === 'admin' || $user['role'] === 'ADMIN_OWNER') && !empty($user['tenant_id'])) {
-            $tenantUser = Database::fetchOne("SELECT force_password_change FROM tenant_users WHERE tenant_id = ? AND user_id = ?", [(int)$user['tenant_id'], $user['id']]);
-            if ($tenantUser && $tenantUser['force_password_change']) {
-                $_SESSION['force_password_change'] = true;
-            }
-        }
 
         // Load role-specific ID
         if ($user['role'] === 'affiliate') {
@@ -209,31 +191,10 @@ class Auth {
         }
 
         if ($requiredRole !== null && $_SESSION['user_role'] !== $requiredRole) {
-            // Allow admin and super_admin to access everything
-            if ($_SESSION['user_role'] !== 'admin' && $_SESSION['user_role'] !== 'super_admin') {
+            // Allow admin to access everything
+            if ($_SESSION['user_role'] !== 'admin') {
                 header('Location: /' . $_SESSION['user_role'] . '/dashboard');
                 exit;
-            }
-        }
-
-        // Subscription Expiry redirection for admins/tenant users
-        if ($_SESSION['user_role'] === 'admin' && !empty($_SESSION['tenant_id'])) {
-            $tenantId = (int)$_SESSION['tenant_id'];
-            if (!Tenant::isSubscriptionActive($tenantId)) {
-                $uri = $_SERVER['REQUEST_URI'] ?? '';
-                if (strpos($uri, '/admin/subscription') === false && strpos($uri, '/admin/billing') === false && strpos($uri, '/logout') === false) {
-                    header('Location: /admin/subscription/renew');
-                    exit;
-                }
-            }
-
-            // Force password change redirect
-            if (!empty($_SESSION['force_password_change'])) {
-                $uri = $_SERVER['REQUEST_URI'] ?? '';
-                if (strpos($uri, '/admin/profile') === false && strpos($uri, '/logout') === false) {
-                    header('Location: /admin/profile?force_password_reset=1');
-                    exit;
-                }
             }
         }
     }
@@ -301,13 +262,6 @@ class Auth {
     public static function impersonate(int $userId): bool {
         $user = Database::fetchOne("SELECT * FROM `users` WHERE `id`=?", [$userId]);
         if (!$user) return false;
-
-        // Log impersonation audit log if original user was super_admin
-        if ($_SESSION['user_role'] === 'super_admin') {
-            try {
-                Activity::log('impersonate', 'users', $userId, 'Super Admin logged in as Admin: ' . $user['email']);
-            } catch (\Throwable $e) {}
-        }
 
         // Save original admin session
         $_SESSION['impersonating']       = true;

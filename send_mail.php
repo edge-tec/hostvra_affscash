@@ -1,6 +1,6 @@
 <?php
 // ══════════════════════════════════════════════════════
-//  send_mail.php — EliteAli Contact Form Handler
+//  send_mail.php — Affscash Contact Form Handler
 //  Place in same folder as index.html
 // ══════════════════════════════════════════════════════
 
@@ -11,9 +11,9 @@ header('Access-Control-Allow-Headers: Content-Type');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(204); exit; }
 
 // ── CONFIG ────────────────────────────────────────────
-define('TO_EMAIL',   'support@eliteali.com');   // ← Your email
-define('FROM_EMAIL', 'noreply@eliteali.com');    // ← Your domain email
-define('SITE_NAME',  'EliteAli');
+define('TO_EMAIL',   'support@affscash.net');   // ← Your email
+define('FROM_EMAIL', 'noreply@affscash.net');    // ← Your domain email
+define('SITE_NAME',  'Affscash');
 
 // ── HELPERS ───────────────────────────────────────────
 function ok($msg = 'Message sent!')  { echo json_encode(['success' => true,  'message' => $msg]); exit; }
@@ -87,7 +87,7 @@ h2{color:#e8197a}p{color:#7c7a9e;font-size:14px;line-height:1.7}
 <h2>Thanks, ' . $fname . '! 🎉</h2>
 <p>We received your message and our team will get back to you within <strong>24 hours</strong>.</p>
 <p>In the meantime, you can reach us instantly on Telegram:</p>
-<a class="btn" href="https://t.me/eliteali" target="_blank">💬 @eliteali</a>
+<a class="btn" href="https://t.me/affscashnet" target="_blank">💬 @affscashnet</a>
 <p style="margin-top:24px;font-size:12px;color:#aaa">This is an automated reply. Please do not respond to this email.</p>
 </div></body></html>';
     $replyHeaders  = "MIME-Version: 1.0\r\n";

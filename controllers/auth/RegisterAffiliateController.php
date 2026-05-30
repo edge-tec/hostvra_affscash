@@ -201,7 +201,7 @@ if (Helpers::isPost()) {
                     'affiliate_code' => $affCode,
                 ]);
 
-                $regMsg = Config::get('config','app.registration_message') ?: "Registration successful.\nYour account is currently inactive. Please contact support for activation.\nTelegram: @eliteali";
+                $regMsg = Config::get('config','app.registration_message') ?: "Registration successful.\nYour account is currently inactive. Please contact support for activation.\nTelegram: @affscashnet";
                 if ($emailVerifyEnabled) {
                     $regMsg = "Registration successful!\nA verification link has been sent to $email.\nPlease verify your email to continue.";
                 }

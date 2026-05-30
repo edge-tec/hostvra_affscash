@@ -402,6 +402,9 @@
                         <?php endif; ?>
                         <?php endif; ?>
 
+                        <button type="button" class="btn btn-secondary btn-sm" style="white-space:nowrap;border-color:#7C3AED;color:#7C3AED"
+                                onclick="openScoreModal('<?= Helpers::e($c['ip_address']) ?>')">🛡️ Score</button>
+
                     </div>
                 </td>
             </tr>
@@ -438,5 +441,7 @@ $rejectStatusField = 'conv_action';
 $rejectStatusValue = 'rejected';
 require BASE_PATH . '/views/partials/reject_reason_modal.php';
 ?>
+
+<?php require BASE_PATH . '/views/partials/ip_score_modal.php'; ?>
 
 <?php require BASE_PATH . '/views/layouts/admin_footer.php'; ?>

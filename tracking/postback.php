@@ -38,6 +38,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 
 require_once BASE_PATH . '/core/PostbackFirer.php';
 require_once BASE_PATH . '/core/ManagerCommissionService.php';
+require_once BASE_PATH . '/core/RiskEngine.php';
 
 header('Content-Type: application/json');
 
@@ -162,22 +163,37 @@ if (!$click) {
     exit;
 }
 
-// Resolve Tenant Context & Enforce Subscription Limits
-if (!empty($click['tenant_id'])) {
-    $tenantId = (int)$click['tenant_id'];
-    Tenant::setTenantId($tenantId);
-    if (!Tenant::isSubscriptionActive($tenantId)) {
-        $_advPbLog['status'] = 'blocked'; $_advPbLog['reject_reason'] = 'Tenant subscription has expired';
-        $_advPbLog['response_body'] = json_encode(['status'=>'ignored','message'=>'Tenant subscription has expired — conversion not recorded']);
-        http_response_code(200);
-        echo $_advPbLog['response_body'];
-        exit;
-    }
-}
-
 // Populate advertiser context in log now that we have the click
 $_advPbLog['advertiser_id'] = $click['advertiser_id'] ?? null;
 $_advPbLog['offer_id']      = $click['offer_id']      ?? null;
+
+// ── In-House Real-Time Risk Engine ──────────────────────────────────────
+$riskEngineResult = RiskEngine::evaluateConversion(
+    [
+        'ip' => $click['ip_address'] ?? '',
+        'affiliate_id' => $click['affiliate_id'] ?? 0,
+        'offer_id' => $click['offer_id'] ?? 0,
+        'click_id' => $clickId
+    ],
+    [
+        'ip' => $click['ip_address'] ?? '',
+        'clicked_at' => $click['clicked_at'] ?? date('Y-m-d H:i:s'),
+        'country' => $click['country'] ?? ''
+    ]
+);
+
+$riskEngineReasons = [];
+if (!empty($riskEngineResult['reasons'])) {
+    $riskEngineReasons = $riskEngineResult['reasons'];
+}
+
+if ($riskEngineResult['action'] === 'block') {
+    $_advPbLog['status'] = 'blocked'; $_advPbLog['reject_reason'] = 'Conversion blocked by Risk Engine: ' . ($riskEngineResult['block_reason'] ?? 'Rules matched');
+    $_advPbLog['response_body'] = json_encode(['status'=>'ignored','message'=>'Conversion blocked by Risk Engine']);
+    http_response_code(200);
+    echo $_advPbLog['response_body'];
+    exit;
+}
 
 // ── Block fraudulent or invalid clicks from converting ────────────────────
 if ($click['status'] === 'blocked' || $click['is_fraud']) {
@@ -429,6 +445,7 @@ try { Database::query("ALTER TABLE `conversions` MODIFY COLUMN `advertiser_id` I
 try { Database::query("ALTER TABLE `conversions` ADD COLUMN `hide_reason` VARCHAR(500) NOT NULL DEFAULT ''"); } catch (\Throwable $_e) {}
 try { Database::query("ALTER TABLE `conversions` ADD COLUMN `fraud_score`      TINYINT UNSIGNED DEFAULT NULL"); } catch (\Throwable $_e) {}
 try { Database::query("ALTER TABLE `conversions` ADD COLUMN `fraud_checked_at` DATETIME         DEFAULT NULL"); } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `fraud_reasons`    TEXT             DEFAULT NULL"); } catch (\Throwable $_e) {}
 try { Database::query("ALTER TABLE `conversions` ADD COLUMN `conv_ip`            VARCHAR(45)      DEFAULT NULL"); } catch (\Throwable $_e) {}
 try { Database::query("ALTER TABLE `conversions` ADD COLUMN `user_agent`         VARCHAR(512)     DEFAULT NULL"); } catch (\Throwable $_e) {}
 try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_risk_score`  TINYINT UNSIGNED DEFAULT NULL"); } catch (\Throwable $_e) {}
@@ -521,7 +538,6 @@ try {
         'offer_id'       => $click['offer_id'],
         'affiliate_id'   => $click['affiliate_id'],
         'advertiser_id'  => $click['advertiser_id'],
-        'tracking_domain'=> $click['tracking_domain'] ?? '',
         'payout'         => $payout,
         'revenue'        => $revenue,
         'currency'       => 'USD',
@@ -538,6 +554,7 @@ try {
         'os_version'     => $_osVer ?: null,
         'landing_page'   => $_lpUrl ?: null,
         'referrer'       => $_referrer ?: null,
+        'fraud_reasons'  => !empty($riskEngineReasons) ? json_encode($riskEngineReasons) : null,
     ]);
 
     // Only credit balance and stats when NOT hidden and NOT pending manual approval

@@ -1,0 +1,22 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Config files
+config/config.json
+
+# Installer lock
+install/install.lock
+
+# User generated files
+logs/*
+!logs/.gitkeep
+storage/*
+!storage/.gitkeep
+uploads/*
+!uploads/.gitkeep

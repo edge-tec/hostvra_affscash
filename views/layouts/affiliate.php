@@ -355,19 +355,19 @@ function fmtTs(ts, opts) {
 // IMPORTANT: NEVER show this popup to users who are already inside the
 // official Android app. We detect "app mode" two ways:
 //   1) URL parameter ?source=app|android (the app passes this on first load)
-//   2) User-Agent contains "EliteAliApp" (the app's custom UA marker)
+//   2) User-Agent contains "AffsCashApp" (the app's custom UA marker)
 // Either signal flips `$_SESSION['is_native_app']` for the rest of the session
 // so the popup, footer install promo, and any future install prompts stay off.
 if (!isset($_SESSION['is_native_app'])) $_SESSION['is_native_app'] = false;
 $_uaSrc = strtolower((string)($_GET['source'] ?? ''));
 $_ua    = (string)($_SERVER['HTTP_USER_AGENT'] ?? '');
-if ($_uaSrc === 'app' || $_uaSrc === 'android' || stripos($_ua, 'EliteAliApp') !== false) {
+if ($_uaSrc === 'app' || $_uaSrc === 'android' || stripos($_ua, 'AffsCashApp') !== false) {
     $_SESSION['is_native_app'] = true;
 }
 $_isNativeApp = !empty($_SESSION['is_native_app']);
 
 $_maUrl     = trim((string)(Config::get('config','app.mobile_app_url') ?: ''));
-$_maName    = (string)(Config::get('config','app.mobile_app_name') ?: 'EliteAli');
+$_maName    = (string)(Config::get('config','app.mobile_app_name') ?: 'AffsCash');
 $_maEnabled = (string)(Config::get('config','app.mobile_app_popup_enabled') ?: '0') === '1';
 // Native-app sessions NEVER see the install popup — clean login experience.
 $_maShow    = $_maEnabled && $_maUrl !== '' && !$_isNativeApp && empty($_SESSION['mobile_app_popup_shown']);

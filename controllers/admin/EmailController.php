@@ -128,8 +128,20 @@ elseif ($action === 'blast') {
     require BASE_PATH . '/views/admin/email/blast.php';
 }
 
-// ── Email logs ───────────────────────────────────────────────────────────────
 elseif ($action === 'logs') {
+    if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
+        $offerNew = isset($_POST['offer_new_notify']) ? '1' : '0';
+        $offerStatus = isset($_POST['offer_status_notify']) ? '1' : '0';
+        $offerLink = isset($_POST['offer_link_notify']) ? '1' : '0';
+        
+        Config::set('config', 'app.offer_new_notify', $offerNew);
+        Config::set('config', 'app.offer_status_notify', $offerStatus);
+        Config::set('config', 'app.offer_link_notify', $offerLink);
+        
+        Helpers::flash('success', 'Notification settings updated successfully.');
+        Helpers::redirect('/admin/email?action=logs');
+    }
+
     $logs = Database::fetchAll("SELECT * FROM email_logs ORDER BY sent_at DESC LIMIT 200");
     require BASE_PATH . '/views/admin/email/logs.php';
 }

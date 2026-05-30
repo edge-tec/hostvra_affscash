@@ -496,7 +496,10 @@ $convertedCount = count(array_filter($clicks, fn($r)=>(bool)$r['has_conversion']
                 <td><?= $c['has_conversion'] ? '$'.number_format((float)$c['payout'],4)  : '<span style="color:#CBD5E1">—</span>' ?></td>
                 <td><?php if ($c['has_conversion']): ?><span style="color:<?= $profit>=0?'var(--secondary)':'var(--danger)' ?>">$<?= number_format($profit,4) ?></span><?php else: ?><span style="color:#CBD5E1">—</span><?php endif; ?></td>
                 <td class="text-muted" style="white-space:nowrap"><?= date('M j, Y H:i:s',strtotime($c['clicked_at'])) ?></td>
-                <td><a href="/admin/fraud?click_id=<?= urlencode($c['click_id']) ?>" class="btn btn-secondary btn-sm">Fraud Log</a></td>
+                <td>
+                    <a href="/admin/fraud?click_id=<?= urlencode($c['click_id']) ?>" class="btn btn-secondary btn-sm">Fraud Log</a>
+                    <button type="button" class="btn btn-secondary btn-sm" style="border-color:#7C3AED;color:#7C3AED" onclick="openScoreModal('<?= Helpers::e($c['ip_address']) ?>')">🛡️ Score</button>
+                </td>
             </tr>
             <?php endforeach; endif; ?>
             </tbody>
@@ -1334,5 +1337,7 @@ $(function() {
     });
 });
 </script>
+
+<?php require BASE_PATH . '/views/partials/ip_score_modal.php'; ?>
 
 <?php require BASE_PATH . '/views/layouts/admin_footer.php'; ?>

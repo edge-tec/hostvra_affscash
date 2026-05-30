@@ -29,12 +29,4 @@ $topProfitOffers = Database::fetchAll(
      GROUP BY o.id ORDER BY profit DESC LIMIT 10"
 );
 
-// Top tracking domains (last 30 days)
-$topDomains = Database::fetchAll(
-    "SELECT tracking_domain, COUNT(*) as conversions, SUM(revenue) as revenue, SUM(payout) as payout, SUM(revenue - payout) as profit
-     FROM conversions
-     WHERE status='approved' AND is_hidden=0 AND converted_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
-     GROUP BY tracking_domain ORDER BY conversions DESC LIMIT 10"
-);
-
 require BASE_PATH . '/views/admin/dashboard.php';

@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $flashMessages = Helpers::getFlash();
 
 // ── Config values for the view ────────────────────────────────────────────────
-$appName  = Config::get('config', 'app.name') ?? 'EliteAli';
+$appName  = Config::get('config', 'app.name') ?? 'AffsCash';
 $appLogo  = Config::get('config', 'app.logo') ?: Config::get('config', 'app.login_logo');
 $logoSrc  = $appLogo ?: '/logoo.png';
 

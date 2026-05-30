@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EliteAli Admin Panel</title>
+<title>Affscash Admin Panel</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 <!-- SheetJS for Excel -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -279,7 +279,7 @@ tr:hover td{background:rgba(124,58,237,.05)}
 <div id="loginScreen">
   <div class="login-box">
     <div class="login-logo">🔐</div>
-    <h2>EliteAli Admin</h2>
+    <h2>Affscash Admin</h2>
     <p>Enter your admin password to manage offers &amp; slider</p>
     <input type="password" id="pwInput" class="login-input" placeholder="Password" autocomplete="current-password">
     <button class="btn-login" id="loginBtn" onclick="doLogin()">
@@ -292,7 +292,7 @@ tr:hover td{background:rgba(124,58,237,.05)}
 <!-- ══ SIDEBAR ════════════════════════════════════════════════ -->
 <nav class="sidebar" id="sidebar" style="display:none">
   <div class="sidebar-logo">
-    <div class="logo-text">EliteAli</div>
+    <div class="logo-text">Affscash</div>
     <div class="logo-sub">Admin Panel</div>
   </div>
   <div class="nav-group">
@@ -478,7 +478,7 @@ tr:hover td{background:rgba(124,58,237,.05)}
           <div class="step-header"><span class="step-num">1</span><span class="step-title">Download the Package</span></div>
           <div class="step-body">
             Download all files from this admin panel package. Your file structure should be:
-            <div class="file-tree">eliteali-admin/
+            <div class="file-tree">affscash-admin/
 ├── admin.html          ← This file (Admin Panel)
 ├── index.html          ← Your public offers page
 ├── api/
@@ -641,7 +641,7 @@ fetch('api/data.php?resource=offers&action=list')
         </div>
       </div>
       <div class="form-group"><label class="form-label">Countries / GEOs (space-separated)</label><input type="text" id="f-countries" class="form-input" placeholder="e.g. US GB AU CA or Worldwide"></div>
-      <div class="form-group"><label class="form-label">Offer Link URL</label><input type="url" id="f-link" class="form-input" placeholder="https://app.eliteali.com/register"></div>
+      <div class="form-group"><label class="form-label">Offer Link URL</label><input type="url" id="f-link" class="form-input" placeholder="https://app.affscash.net/register"></div>
       <div class="form-group"><label class="form-label">Description (optional)</label><textarea id="f-desc" class="form-textarea" placeholder="Short offer description…"></textarea></div>
       <div class="form-group">
         <label class="form-label">Badges</label>
@@ -768,7 +768,7 @@ fetch('api/data.php?resource=offers&action=list')
       </div>
       <div class="form-row">
         <div class="form-group"><label class="form-label">GEOs</label><input type="text" id="s-geos" class="form-input" placeholder="e.g. WW or US GB AU"></div>
-        <div class="form-group"><label class="form-label">Link URL</label><input type="url" id="s-link" class="form-input" placeholder="https://app.eliteali.com/register"></div>
+        <div class="form-group"><label class="form-label">Link URL</label><input type="url" id="s-link" class="form-input" placeholder="https://app.affscash.net/register"></div>
       </div>
       <div class="form-group">
         <label class="form-label">Badges</label>
@@ -1057,7 +1057,7 @@ function exportJSON() {
     badges: (o.badges||[]).join(','), image: o.image
   }));
   const blob = new Blob([JSON.stringify(clean, null, 2)], {type:'application/json'});
-  triggerDownload(blob, `eliteali-offers-${yyyymmdd()}.json`);
+  triggerDownload(blob, `affscash-offers-${yyyymmdd()}.json`);
   toast(`Exported ${list.length} offers as JSON ✅`, 'ok');
 }
 
@@ -1078,7 +1078,7 @@ function exportExcel() {
   // Style header row
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Offers');
-  XLSX.writeFile(wb, `eliteali-offers-${yyyymmdd()}.xlsx`);
+  XLSX.writeFile(wb, `affscash-offers-${yyyymmdd()}.xlsx`);
   toast(`Exported ${list.length} offers as Excel ✅`, 'ok');
 }
 
@@ -1096,7 +1096,7 @@ function exportPDF() {
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(20);
   doc.setTextColor(232, 25, 122);
-  doc.text('EliteAli', 14, 18);
+  doc.text('Affscash', 14, 18);
   doc.setFontSize(11);
   doc.setTextColor(240, 238, 255);
   doc.text('Offer List Export', 14, 26);
@@ -1140,11 +1140,11 @@ function exportPDF() {
       const pg = doc.internal.getCurrentPageInfo().pageNumber;
       doc.setFontSize(8); doc.setTextColor(139, 135, 176);
       doc.text(`Page ${pg}`, 280, 205, {align:'right'});
-      doc.text('EliteAli Admin Export', 14, 205);
+      doc.text('Affscash Admin Export', 14, 205);
     }
   });
 
-  doc.save(`eliteali-offers-${yyyymmdd()}.pdf`);
+  doc.save(`affscash-offers-${yyyymmdd()}.pdf`);
   toast(`Exported ${list.length} offers as PDF ✅`, 'ok');
 }
 
@@ -1307,24 +1307,24 @@ if (idz) {
 // ── Download Templates ──────────────────────────────────────
 function downloadJSONTemplate() {
   const tpl = [
-    { id:1, name:"Example SOI Offer", cat:"soi", payout:3.50, payoutDisplay:"$3.50", vertical:"Dating", device:"All", countries:"US GB AU", link:"https://app.eliteali.com/register", desc:"High converting SOI", badges:"hot,new", image:"" },
-    { id:2, name:"Casino Smartlink", cat:"casino", payout:25, payoutDisplay:"$25.00", vertical:"Casino", device:"Mobile", countries:"Worldwide", link:"https://app.eliteali.com/register", desc:"Top casino smartlink", badges:"top", image:"" }
+    { id:1, name:"Example SOI Offer", cat:"soi", payout:3.50, payoutDisplay:"$3.50", vertical:"Dating", device:"All", countries:"US GB AU", link:"https://app.affscash.net/register", desc:"High converting SOI", badges:"hot,new", image:"" },
+    { id:2, name:"Casino Smartlink", cat:"casino", payout:25, payoutDisplay:"$25.00", vertical:"Casino", device:"Mobile", countries:"Worldwide", link:"https://app.affscash.net/register", desc:"Top casino smartlink", badges:"top", image:"" }
   ];
   const blob = new Blob([JSON.stringify(tpl, null, 2)], {type:'application/json'});
-  triggerDownload(blob, 'eliteali-import-template.json');
+  triggerDownload(blob, 'affscash-import-template.json');
 }
 
 function downloadExcelTemplate() {
   const rows = [
     ['id','name','cat','payout','payoutDisplay','vertical','device','countries','link','desc','badges','image'],
-    [1,'Example SOI Offer','soi',3.50,'$3.50','Dating','All','US GB AU','https://app.eliteali.com/register','High converting SOI','hot,new',''],
-    [2,'Casino Smartlink','casino',25,'$25.00','Casino','Mobile','Worldwide','https://app.eliteali.com/register','Top casino','top','']
+    [1,'Example SOI Offer','soi',3.50,'$3.50','Dating','All','US GB AU','https://app.affscash.net/register','High converting SOI','hot,new',''],
+    [2,'Casino Smartlink','casino',25,'$25.00','Casino','Mobile','Worldwide','https://app.affscash.net/register','Top casino','top','']
   ];
   const ws = XLSX.utils.aoa_to_sheet(rows);
   ws['!cols'] = [8,30,10,8,15,12,10,20,40,25,15,30].map(w=>({wch:w}));
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Offers');
-  XLSX.writeFile(wb, 'eliteali-import-template.xlsx');
+  XLSX.writeFile(wb, 'affscash-import-template.xlsx');
 }
 
 function triggerDownload(blob, name) {
@@ -1402,7 +1402,7 @@ async function saveOffer() {
     vertical:      document.getElementById('f-vertical').value.trim()||'Dating',
     device:        document.getElementById('f-device').value,
     countries:     document.getElementById('f-countries').value.trim()||'Worldwide',
-    link:          document.getElementById('f-link').value.trim()||'https://app.eliteali.com/register',
+    link:          document.getElementById('f-link').value.trim()||'https://app.affscash.net/register',
     desc:          document.getElementById('f-desc').value.trim(),
     badges, image
   };
@@ -1566,7 +1566,7 @@ async function saveSlide() {
     cat: document.getElementById('s-cat').value,
     payout: document.getElementById('s-payout').value.trim(),
     geos: document.getElementById('s-geos').value.trim(),
-    link: document.getElementById('s-link').value.trim()||'https://app.eliteali.com/register',
+    link: document.getElementById('s-link').value.trim()||'https://app.affscash.net/register',
     badges, image
   };
   if (editSlideId) payload._id = editSlideId;

@@ -67,7 +67,11 @@ if (in_array($tab, $perfTabs)) {
         ];
         $groupMap = [
             'day'   => 'sd.stat_date',
-            'offer' => 'sd.offer_id',
+            'offer' => 'sd.offer_id, o.name',
+        ];
+        $orderMap = [
+            'day'   => 'sd.stat_date DESC, payout DESC',
+            'offer' => 'payout DESC, clicks DESC',
         ];
         $joinMap = [
             'day'   => '',
@@ -122,14 +126,14 @@ if (in_array($tab, $perfTabs)) {
                     SUM(sd.conversions)   as conv,
                     SUM(sd.approved)      as approved,
                     SUM(sd.rejected)      as rejected,
-                    COALESCE(cv_pay.approved_payout, 0) as payout,
-                    COALESCE(cv_fraud.fraud_count, 0)   as fraud
+                    COALESCE(MAX(cv_pay.approved_payout), 0) as payout,
+                    COALESCE(MAX(cv_fraud.fraud_count), 0)   as fraud
              FROM stats_daily sd
              {$joinMap[$tab]}
              $cvJoin
              WHERE $whereStr
              GROUP BY {$groupMap[$tab]}
-             ORDER BY sd.stat_date DESC, payout DESC",
+             ORDER BY {$orderMap[$tab]}",
             $sdParamsFull
         );
 

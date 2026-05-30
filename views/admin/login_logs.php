@@ -198,9 +198,9 @@
 <!-- ══ TAB: LIVE USERS ══════════════════════════════════════════════════ -->
 <div id="panel-live">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
-        <div style="font-size:13px;color:#6B7280">
-            Auto-refreshes every <strong>10 seconds</strong> ·
-            <span id="live-next-refresh" style="color:#4F46E5;font-weight:600">10s</span>
+        <div style="font-size:13px;color:#6B7280;display:flex;align-items:center;gap:6px">
+            <span style="width:8px;height:8px;border-radius:50%;background:#10B981;display:inline-block;animation:pulse-green 1.8s infinite"></span>
+            <strong>Real-time updates active</strong>
         </div>
         <div style="display:flex;align-items:center;gap:10px">
             <input type="text" id="live-search" placeholder="Search name, IP, email…" oninput="filterLiveCards(this.value)"
@@ -291,7 +291,7 @@ var COLORS = ['#3B82F6','#10B981','#F59E0B','#EF4444','#8B5CF6','#06B6D4','#F973
 var charts  = {};
 var liveData = [];
 var currentPage = 1;
-var liveTimer, liveCountdown, liveSecondsLeft = 10;
+var liveTimer, liveCountdown;
 var debounceTimer;
 
 // ── Tab switch ─────────────────────────────────────────────────────────────
@@ -598,20 +598,13 @@ function loadCountryOptions(){
     }).catch(function(){});
 }
 
-// ── Live countdown ticker ──────────────────────────────────────────────────
+// ── Live ticker ──────────────────────────────────────────────────
 function startLiveCountdown(){
-    liveSecondsLeft = 10;
     clearInterval(liveCountdown);
     liveCountdown = setInterval(function(){
-        liveSecondsLeft--;
-        var el = document.getElementById('live-next-refresh');
-        if (el) el.textContent = liveSecondsLeft+'s';
-        if (liveSecondsLeft <= 0) {
-            liveSecondsLeft = 10;
-            loadLive();
-            loadStats();
-        }
-    }, 1000);
+        loadLive();
+        loadStats();
+    }, 3000);
 }
 
 window.refreshAll = function(){

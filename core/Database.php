@@ -4,75 +4,6 @@
  */
 class Database {
     private static ?PDO $instance = null;
-    private static ?int $currentTenantId = null;
-
-    public static function setTenantId(?int $id): void {
-        self::$currentTenantId = $id;
-    }
-
-    public static function getTenantId(): ?int {
-        return self::$currentTenantId;
-    }
-
-    private static function isTenantTable(string $table): bool {
-        $table = str_replace('`', '', $table);
-        $tenantTables = [
-            'users', 'affiliates', 'affiliate_managers', 'advertisers', 'offers',
-            'affiliate_offers', 'smartlinks', 'smartlink_offers', 'clicks', 'conversions',
-            'postbacks', 'postback_logs', 'global_postbacks', 'registration_questions',
-            'notifications', 'activity_log', 'stats_daily', 'payments', 'invoices',
-            'tracking_domains', 'email_templates', 'email_logs', 'news', 'news_reads',
-            'referral_codes', 'referral_signups', 'referral_commissions', 'offer_links',
-            'vpn_blocked_log', 'aff_daily_caps', 'aff_custom_payouts', 'aff_country_payouts',
-            'aff_country_device_payouts', 'conversion_optimize_rules', 'postback_test_logs'
-        ];
-        return in_array($table, $tenantTables);
-    }
-
-    private static function injectTenantId(string $sql, int $tenantId): string {
-        if (preg_match('/^(SHOW|CREATE|ALTER|DROP|DESCRIBE|EXPLAIN)\b/i', ltrim($sql))) {
-            return $sql;
-        }
-
-        $cleanSql = str_replace('`', '', $sql);
-        
-        $tenantTables = [
-            'users', 'affiliates', 'affiliate_managers', 'advertisers', 'offers',
-            'affiliate_offers', 'smartlinks', 'smartlink_offers', 'clicks', 'conversions',
-            'postbacks', 'postback_logs', 'global_postbacks', 'registration_questions',
-            'notifications', 'activity_log', 'stats_daily', 'payments', 'invoices',
-            'tracking_domains', 'email_templates', 'email_logs', 'news', 'news_reads',
-            'referral_codes', 'referral_signups', 'referral_commissions', 'offer_links',
-            'vpn_blocked_log', 'aff_daily_caps', 'aff_custom_payouts', 'aff_country_payouts',
-            'aff_country_device_payouts', 'conversion_optimize_rules', 'postback_test_logs'
-        ];
-
-        $hasTenantTable = false;
-        foreach ($tenantTables as $tbl) {
-            if (preg_match('/\b' . preg_quote($tbl, '/') . '\b/i', $cleanSql)) {
-                $hasTenantTable = true;
-                break;
-            }
-        }
-        if (!$hasTenantTable) return $sql;
-
-        if (stripos($sql, 'tenant_id') !== false) {
-            return $sql;
-        }
-
-        $parts = preg_split('/\b(GROUP\s+BY|ORDER\s+BY|LIMIT|UNION|HAVING)\b/i', $sql, 2, PREG_SPLIT_DELIM_CAPTURE);
-        
-        $baseQuery = $parts[0];
-        $suffix = isset($parts[1]) ? $parts[1] . $parts[2] : '';
-        
-        if (stripos($baseQuery, ' WHERE ') !== false) {
-            $baseQuery .= " AND tenant_id = " . (int)$tenantId;
-        } else {
-            $baseQuery .= " WHERE tenant_id = " . (int)$tenantId;
-        }
-        
-        return $baseQuery . (empty($suffix) ? '' : ' ' . $suffix);
-    }
 
     public static function getInstance(): PDO {
         if (self::$instance === null) {
@@ -102,9 +33,6 @@ class Database {
     }
 
     public static function query(string $sql, array $params = []): PDOStatement {
-        if (self::$currentTenantId !== null) {
-            $sql = self::injectTenantId($sql, self::$currentTenantId);
-        }
         $stmt = self::getInstance()->prepare($sql);
         $stmt->execute($params);
         return $stmt;
@@ -120,9 +48,6 @@ class Database {
     }
 
     public static function insert(string $table, array $data): int {
-        if (self::isTenantTable($table) && !isset($data['tenant_id']) && self::$currentTenantId !== null) {
-            $data['tenant_id'] = self::$currentTenantId;
-        }
         $cols = implode(',', array_map(fn($c) => "`$c`", array_keys($data)));
         $placeholders = implode(',', array_fill(0, count($data), '?'));
         self::query("INSERT INTO `$table` ($cols) VALUES ($placeholders)", array_values($data));
@@ -130,28 +55,16 @@ class Database {
     }
 
     public static function update(string $table, array $data, string $where, array $whereParams = []): int {
-        if (self::isTenantTable($table) && self::$currentTenantId !== null) {
-            $where = "($where) AND tenant_id = ?";
-            $whereParams[] = self::$currentTenantId;
-        }
         $set = implode(',', array_map(fn($c) => "`$c`=?", array_keys($data)));
         $stmt = self::query("UPDATE `$table` SET $set WHERE $where", array_merge(array_values($data), $whereParams));
         return $stmt->rowCount();
     }
 
     public static function delete(string $table, string $where, array $params = []): int {
-        if (self::isTenantTable($table) && self::$currentTenantId !== null) {
-            $where = "($where) AND tenant_id = ?";
-            $params[] = self::$currentTenantId;
-        }
         return self::query("DELETE FROM `$table` WHERE $where", $params)->rowCount();
     }
 
     public static function count(string $table, string $where = '1', array $params = []): int {
-        if (self::isTenantTable($table) && self::$currentTenantId !== null) {
-            $where = "($where) AND tenant_id = ?";
-            $params[] = self::$currentTenantId;
-        }
         $row = self::fetchOne("SELECT COUNT(*) as cnt FROM `$table` WHERE $where", $params);
         return (int) ($row['cnt'] ?? 0);
     }

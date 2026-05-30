@@ -41,6 +41,98 @@ class Mailer
     }
 
     /**
+     * Test SMTP connection and authentication.
+     * Throws an exception on failure or returns true on success.
+     *
+     * @param array $smtpCfg Optional SMTP config. If empty, uses the global config.
+     */
+    public static function testConnection(array $smtpCfg = []): bool
+    {
+        if (empty($smtpCfg)) {
+            $cfg = Config::get('config') ?? [];
+            $smtpCfg = $cfg['smtp'] ?? [];
+        }
+
+        $host = $smtpCfg['host'] ?? '';
+        if (!$host) {
+            throw new \RuntimeException("No SMTP host configured.");
+        }
+        $port       = (int)($smtpCfg['port'] ?? 587);
+        $username   = $smtpCfg['username'] ?? '';
+        $password   = $smtpCfg['password'] ?? '';
+        $encryption = strtolower($smtpCfg['encryption'] ?? 'tls');
+
+        $timeout = 10;
+        $context = stream_context_create([
+            'ssl' => [
+                'verify_peer'       => false,
+                'verify_peer_name'  => false,
+                'allow_self_signed' => true
+            ]
+        ]);
+        $connStr = ($encryption === 'ssl' ? 'ssl://' : 'tcp://') . $host . ':' . $port;
+
+        $sock = @stream_socket_client($connStr, $errno, $errstr, $timeout, STREAM_CLIENT_CONNECT, $context);
+        if (!$sock) {
+            throw new \RuntimeException("SMTP connect failed: $errstr ($errno)");
+        }
+        stream_set_timeout($sock, $timeout);
+
+        $read = function() use ($sock): string {
+            $line = '';
+            while (!feof($sock)) {
+                $l = fgets($sock, 1024);
+                $line .= $l;
+                if (isset($l[3]) && $l[3] === ' ') break;
+            }
+            return $line;
+        };
+        $cmd = function(string $c) use ($sock, $read): string {
+            fwrite($sock, $c . "\r\n");
+            return $read();
+        };
+
+        $read(); // banner
+        $cmd("EHLO " . gethostname());
+
+        if ($encryption === 'tls') {
+            $cmd("STARTTLS");
+            stream_socket_enable_crypto($sock, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
+            $cmd("EHLO " . gethostname()); // re-hello after TLS
+        }
+
+        if ($username) {
+            $resp = $cmd("AUTH LOGIN");
+            if (strpos($resp, '334') === false) {
+                throw new \RuntimeException("AUTH LOGIN rejected: $resp");
+            }
+            $cmd(base64_encode($username));
+            $resp = $cmd(base64_encode($password));
+            if (strpos($resp, '235') === false) {
+                throw new \RuntimeException("SMTP AUTH failed: $resp");
+            }
+        }
+
+        $cmd("QUIT");
+        fclose($sock);
+
+        return true;
+    }
+
+    /**
+     * Send a test message to verify email delivery.
+     *
+     * @param string $toEmail
+     * @param string $toName
+     */
+    public static function testMessage(string $toEmail, string $toName = 'Test User'): bool
+    {
+        $subject = 'SMTP Connection Test';
+        $htmlBody = '<h2>Hello!</h2><p>This is a test email to verify that your SMTP connection is working correctly.</p><p>If you received this, your email configuration is successful.</p>';
+        return self::sendRaw($toEmail, $toName, $subject, $htmlBody, 'test_message');
+    }
+
+    /**
      * Send an event email with a PDF file attachment.
      *
      * @param string $attachPath  Absolute filesystem path to the PDF
@@ -139,9 +231,16 @@ class Mailer
         $password   = $smtpCfg['password'] ?? '';
         $encryption = strtolower($smtpCfg['encryption'] ?? 'tls');
         $timeout    = 15;
-        $connHost   = ($encryption === 'ssl') ? "ssl://$host" : $host;
+        $context = stream_context_create([
+            'ssl' => [
+                'verify_peer'       => false,
+                'verify_peer_name'  => false,
+                'allow_self_signed' => true
+            ]
+        ]);
+        $connStr = ($encryption === 'ssl' ? 'ssl://' : 'tcp://') . $host . ':' . $port;
 
-        $sock = @fsockopen($connHost, $port, $errno, $errstr, $timeout);
+        $sock = @stream_socket_client($connStr, $errno, $errstr, $timeout, STREAM_CLIENT_CONNECT, $context);
         if (!$sock) throw new \RuntimeException("SMTP connect failed: $errstr ($errno)");
         stream_set_timeout($sock, $timeout);
 
@@ -197,10 +296,10 @@ class Mailer
         $body .= "Content-Type: multipart/alternative; boundary=\"{$altBound}\"\r\n\r\n";
         $body .= "--{$altBound}\r\n";
         $body .= "Content-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n";
-        $body .= base64_encode(strip_tags(str_replace(['<br>', '<br/>', '</p>', '</div>'], "\n", $htmlBody))) . "\r\n";
+        $body .= chunk_split(base64_encode(strip_tags(str_replace(['<br>', '<br/>', '</p>', '</div>'], "\n", $htmlBody)))) . "\r\n";
         $body .= "--{$altBound}\r\n";
         $body .= "Content-Type: text/html; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n";
-        $body .= base64_encode($htmlBody) . "\r\n";
+        $body .= chunk_split(base64_encode($htmlBody)) . "\r\n";
         $body .= "--{$altBound}--\r\n";
         $body .= "--{$mixBound}\r\n";
         $body .= "Content-Type: application/pdf\r\nContent-Transfer-Encoding: base64\r\n";
@@ -329,9 +428,16 @@ class Mailer
         $encryption = strtolower($smtpCfg['encryption'] ?? 'tls'); // tls | ssl | none
 
         $timeout = 15;
-        $connectHost = ($encryption === 'ssl') ? "ssl://$host" : $host;
+        $context = stream_context_create([
+            'ssl' => [
+                'verify_peer'       => false,
+                'verify_peer_name'  => false,
+                'allow_self_signed' => true
+            ]
+        ]);
+        $connStr = ($encryption === 'ssl' ? 'ssl://' : 'tcp://') . $host . ':' . $port;
 
-        $sock = @fsockopen($connectHost, $port, $errno, $errstr, $timeout);
+        $sock = @stream_socket_client($connStr, $errno, $errstr, $timeout, STREAM_CLIENT_CONNECT, $context);
         if (!$sock) {
             throw new \RuntimeException("SMTP connect failed: $errstr ($errno)");
         }
@@ -394,11 +500,11 @@ class Mailer
         $body  = "--$boundary\r\n";
         $body .= "Content-Type: text/plain; charset=UTF-8\r\n";
         $body .= "Content-Transfer-Encoding: base64\r\n\r\n";
-        $body .= base64_encode(strip_tags(str_replace(['<br>','<br/>','<br />','</p>','</div>'], "\n", $htmlBody))) . "\r\n";
+        $body .= chunk_split(base64_encode(strip_tags(str_replace(['<br>','<br/>','<br />','</p>','</div>'], "\n", $htmlBody)))) . "\r\n";
         $body .= "--$boundary\r\n";
         $body .= "Content-Type: text/html; charset=UTF-8\r\n";
         $body .= "Content-Transfer-Encoding: base64\r\n\r\n";
-        $body .= $encoded . "\r\n";
+        $body .= chunk_split(base64_encode($htmlBody)) . "\r\n";
         $body .= "--$boundary--\r\n";
 
         $resp = $cmd($headers . "\r\n" . $body . "\r\n.");

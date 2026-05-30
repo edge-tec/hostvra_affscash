@@ -445,13 +445,41 @@ class Migrator
         $sql = preg_replace('#/\*.*?\*/#s', '', $sql);
         // Strip line comments
         $sql = preg_replace('/--[^\n]*/', '', $sql);
-        // Split by semicolons
-        $parts = explode(';', $sql);
+        
         $stmts = [];
-        foreach ($parts as $p) {
-            $p = trim($p);
-            if ($p !== '') $stmts[] = $p;
+        $len = strlen($sql);
+        $current = '';
+        $inQuote = false;
+        $quoteChar = '';
+        for ($i = 0; $i < $len; $i++) {
+            $c = $sql[$i];
+            if ($c === "'" || $c === '"') {
+                if (!$inQuote) {
+                    $inQuote = true;
+                    $quoteChar = $c;
+                } else if ($quoteChar === $c) {
+                    // Check if escaped
+                    $escaped = false;
+                    $j = $i - 1;
+                    while ($j >= 0 && $sql[$j] === '\\') {
+                        $escaped = !$escaped;
+                        $j--;
+                    }
+                    if (!$escaped) {
+                        $inQuote = false;
+                    }
+                }
+            }
+            if ($c === ';' && !$inQuote) {
+                $p = trim($current);
+                if ($p !== '') $stmts[] = $p;
+                $current = '';
+            } else {
+                $current .= $c;
+            }
         }
+        $p = trim($current);
+        if ($p !== '') $stmts[] = $p;
         return $stmts;
     }
 

@@ -1,0 +1,16 @@
+{
+    "enabled": false,
+    "api_key": "",
+    "api_endpoint": "https:\/\/www.fraudlabspro.com\/api\/v1\/order",
+    "timeout_seconds": 2,
+    "fail_open": true,
+    "score_threshold": 75,
+    "block_threshold": 90,
+    "checks": {
+        "vpn": true,
+        "proxy": true,
+        "tor": true,
+        "bot": true,
+        "datacenter": false
+    }
+}

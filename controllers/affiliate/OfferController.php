@@ -248,17 +248,9 @@ $filterOfferTypes = Database::fetchAll("SELECT DISTINCT offer_type FROM offers W
 $aff = Database::fetchOne("SELECT affiliate_code FROM affiliates WHERE id=?", [$affId]);
 
 // Load active tracking domains for the domain selector
-$tenantId = Tenant::getTenantId();
-if ($tenantId) {
-    $trackingDomains = Database::fetchAll(
-        "SELECT * FROM tracking_domains WHERE is_active=1 AND tenant_id=? ORDER BY is_default DESC, created_at ASC",
-        [$tenantId]
-    );
-} else {
-    $trackingDomains = Database::fetchAll(
-        "SELECT * FROM tracking_domains WHERE is_active=1 ORDER BY is_default DESC, created_at ASC"
-    );
-}
+$trackingDomains = Database::fetchAll(
+    "SELECT * FROM tracking_domains WHERE is_active=1 ORDER BY is_default DESC, created_at ASC"
+);
 // Fallback: if no domains configured, use app URL as the default domain
 if (empty($trackingDomains)) {
     $parsedAppUrl = parse_url($appUrl);

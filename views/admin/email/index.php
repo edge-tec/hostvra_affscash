@@ -25,8 +25,14 @@
     <code style="background:#DBEAFE;padding:2px 6px;border-radius:4px;margin:0 3px">{{affiliate_code}}</code>
     <code style="background:#DBEAFE;padding:2px 6px;border-radius:4px;margin:0 3px">{{invoice_number}}</code>
     <code style="background:#DBEAFE;padding:2px 6px;border-radius:4px;margin:0 3px">{{total}}</code>
-    <code style="background:#DBEAFE;padding:2px 6px;border-radius:4px;margin:0 3px">{{offer_name}}</code>
     <code style="background:#DBEAFE;padding:2px 6px;border-radius:4px;margin:0 3px">{{due_date}}</code>
+    <code style="background:#DBEAFE;padding:2px 6px;border-radius:4px;margin:0 3px">{{offer_name}}</code>
+    <code style="background:#DBEAFE;padding:2px 6px;border-radius:4px;margin:0 3px">{{category}}</code>
+    <code style="background:#DBEAFE;padding:2px 6px;border-radius:4px;margin:0 3px">{{geos}}</code>
+    <code style="background:#DBEAFE;padding:2px 6px;border-radius:4px;margin:0 3px">{{commission}}</code>
+    <code style="background:#DBEAFE;padding:2px 6px;border-radius:4px;margin:0 3px">{{status_badge}}</code>
+    <code style="background:#DBEAFE;padding:2px 6px;border-radius:4px;margin:0 3px">{{old_status}}</code>
+    <code style="background:#DBEAFE;padding:2px 6px;border-radius:4px;margin:0 3px">{{new_status}}</code>
 </div>
 
 <div class="card">

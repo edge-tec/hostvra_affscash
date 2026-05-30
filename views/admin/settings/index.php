@@ -451,7 +451,7 @@
             <div style="padding:18px 0">
                 <div style="font-weight:700;font-size:14px;color:#1E293B;margin-bottom:4px">Registration Notification Message</div>
                 <div style="font-size:13px;color:#64748B;margin-bottom:12px;line-height:1.5">Displayed on the login page after a user registers. Shown as a success notice. Supports line breaks.</div>
-                <textarea name="registration_message" class="form-control" rows="5"><?= Helpers::e($cfg['app']['registration_message'] ?? "Registration successful.\nYour account is currently inactive. Please contact support for activation.\nTelegram: @eliteali") ?></textarea>
+                <textarea name="registration_message" class="form-control" rows="5"><?= Helpers::e($cfg['app']['registration_message'] ?? "Registration successful.\nYour account is currently inactive. Please contact support for activation.\nTelegram: @affscashnet") ?></textarea>
             </div>
 
             <!-- Advertiser Registration master switch -->
@@ -1227,7 +1227,43 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <button type="submit" class="btn btn-primary">Save Email Settings</button>
+            <button type="button" class="btn btn-secondary" style="margin-left:8px" onclick="testSmtp(event)">Test Connection</button>
             <a href="/admin/email?action=templates" class="btn btn-secondary" style="margin-left:8px">Manage Templates</a>
+            
+            <script>
+            function testSmtp(e) {
+                let email = prompt("Enter an email address to send a test email to (Make sure you save your settings first!):");
+                if (!email) return;
+                
+                let btn = e.target;
+                let oldText = btn.textContent;
+                btn.disabled = true;
+                btn.textContent = "Testing...";
+
+                let token = document.querySelector('input[name="csrf_token"]')?.value || '';
+                
+                fetch('', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: 'action=test_smtp&email=' + encodeURIComponent(email) + '&csrf_token=' + encodeURIComponent(token)
+                })
+                .then(r => r.json())
+                .then(data => {
+                    btn.disabled = false;
+                    btn.textContent = oldText;
+                    if (data.ok) {
+                        alert('✅ Success! Test email sent to ' + email);
+                    } else {
+                        alert('❌ Failed to send test email:\n\n' + data.error);
+                    }
+                })
+                .catch(err => {
+                    btn.disabled = false;
+                    btn.textContent = oldText;
+                    alert('Network error or invalid response.');
+                });
+            }
+            </script>
         </form>
     </div>
 </div>
@@ -1659,16 +1695,16 @@ function hlApproval(radio) {
             <div class="form-group">
                 <label>App Name / Title</label>
                 <input type="text" name="mobile_app_name" class="form-control"
-                       value="<?= Helpers::e($cfg['app']['mobile_app_name'] ?? 'EliteAli') ?>"
-                       placeholder="EliteAli" maxlength="80">
-                <div class="form-hint">Shown inside the affiliate login popup — e.g. "Install our app <strong>EliteAli</strong> for better experience".</div>
+                       value="<?= Helpers::e($cfg['app']['mobile_app_name'] ?? 'AffsCash') ?>"
+                       placeholder="AffsCash" maxlength="80">
+                <div class="form-hint">Shown inside the affiliate login popup — e.g. "Install our app <strong>AffsCash</strong> for better experience".</div>
             </div>
 
             <div class="form-group">
                 <label>Google Play Store URL</label>
                 <input type="url" name="mobile_app_url" class="form-control"
                        value="<?= Helpers::e($cfg['app']['mobile_app_url'] ?? '') ?>"
-                       placeholder="https://play.google.com/store/apps/details?id=com.eliteali.app">
+                       placeholder="https://play.google.com/store/apps/details?id=com.affscash.app">
                 <div class="form-hint">When set, a Google Play install button appears in the landing page footer. Leave blank to hide the footer button and disable the popup.</div>
             </div>
 
@@ -1731,6 +1767,80 @@ function hlApproval(radio) {
                         border-radius:34px;transition:.3s">
                         <span style="position:absolute;height:22px;width:22px;
                             left:<?= ($cfg['app']['new_offer_notify'] ?? '1') === '1' ? '27px' : '3px' ?>;
+                            bottom:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,.2)">
+                        </span>
+                    </span>
+                </label>
+            </div>
+
+            <!-- Offer Status Change Notification -->
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:16px 0;border-bottom:1px solid #F1F5F9">
+                <div style="flex:1">
+                    <div style="font-weight:700;font-size:14px;color:#0F172A;margin-bottom:4px">
+                        🔄 Offer Status Change Notification
+                    </div>
+                    <div style="font-size:13px;color:#64748B;line-height:1.6">
+                        When enabled, all active affiliates automatically receive a styled email when an
+                        offer's status changes (e.g. from Active to Paused). Notifications are logged in
+                        <a href="/admin/email" style="color:#4F46E5">Email Logs</a>.
+                    </div>
+                    <div style="margin-top:8px">
+                        <span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;
+                            background:<?= ($cfg['app']['offer_status_notify'] ?? '0') === '1' ? '#DCFCE7' : '#F1F5F9' ?>;
+                            color:<?=    ($cfg['app']['offer_status_notify'] ?? '0') === '1' ? '#15803D' : '#64748B' ?>">
+                            <span style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block"></span>
+                            <?= ($cfg['app']['offer_status_notify'] ?? '0') === '1' ? 'Enabled' : 'Disabled' ?>
+                        </span>
+                    </div>
+                </div>
+                <!-- Toggle switch -->
+                <label style="position:relative;display:inline-block;width:52px;height:28px;flex-shrink:0;margin-top:4px" title="Toggle offer-status-change email notification">
+                    <input type="checkbox" name="offer_status_notify" value="1"
+                        <?= ($cfg['app']['offer_status_notify'] ?? '0') === '1' ? 'checked' : '' ?>
+                        style="opacity:0;width:0;height:0"
+                        onchange="this.closest('form').submit()">
+                    <span style="position:absolute;cursor:pointer;inset:0;
+                        background:<?= ($cfg['app']['offer_status_notify'] ?? '0') === '1' ? '#10B981' : '#CBD5E1' ?>;
+                        border-radius:34px;transition:.3s">
+                        <span style="position:absolute;height:22px;width:22px;
+                            left:<?= ($cfg['app']['offer_status_notify'] ?? '0') === '1' ? '27px' : '3px' ?>;
+                            bottom:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,.2)">
+                        </span>
+                    </span>
+                </label>
+            </div>
+
+            <!-- Tracking Link Change Notification -->
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:16px 0;border-bottom:1px solid #F1F5F9">
+                <div style="flex:1">
+                    <div style="font-weight:700;font-size:14px;color:#0F172A;margin-bottom:4px">
+                        🔗 Tracking Link Change Notification
+                    </div>
+                    <div style="font-size:13px;color:#64748B;line-height:1.6">
+                        When enabled, all active affiliates automatically receive a styled email when an
+                        offer's tracking URL/destination is updated. Notifications are logged in
+                        <a href="/admin/email" style="color:#4F46E5">Email Logs</a>.
+                    </div>
+                    <div style="margin-top:8px">
+                        <span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;
+                            background:<?= ($cfg['app']['offer_link_notify'] ?? '0') === '1' ? '#DCFCE7' : '#F1F5F9' ?>;
+                            color:<?=    ($cfg['app']['offer_link_notify'] ?? '0') === '1' ? '#15803D' : '#64748B' ?>">
+                            <span style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block"></span>
+                            <?= ($cfg['app']['offer_link_notify'] ?? '0') === '1' ? 'Enabled' : 'Disabled' ?>
+                        </span>
+                    </div>
+                </div>
+                <!-- Toggle switch -->
+                <label style="position:relative;display:inline-block;width:52px;height:28px;flex-shrink:0;margin-top:4px" title="Toggle tracking-link-change email notification">
+                    <input type="checkbox" name="offer_link_notify" value="1"
+                        <?= ($cfg['app']['offer_link_notify'] ?? '0') === '1' ? 'checked' : '' ?>
+                        style="opacity:0;width:0;height:0"
+                        onchange="this.closest('form').submit()">
+                    <span style="position:absolute;cursor:pointer;inset:0;
+                        background:<?= ($cfg['app']['offer_link_notify'] ?? '0') === '1' ? '#10B981' : '#CBD5E1' ?>;
+                        border-radius:34px;transition:.3s">
+                        <span style="position:absolute;height:22px;width:22px;
+                            left:<?= ($cfg['app']['offer_link_notify'] ?? '0') === '1' ? '27px' : '3px' ?>;
                             bottom:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,.2)">
                         </span>
                     </span>

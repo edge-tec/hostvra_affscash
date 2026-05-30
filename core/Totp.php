@@ -144,7 +144,7 @@ final class Totp
         $material = (string)(Config::get('config', 'app.key')
                           ?? Config::get('config', 'app.url')
                           ?? Config::get('config', 'app.name')
-                          ?? 'eliteali');
+                          ?? 'affscash');
         return hash('sha256', 'totp-v1|' . $material, true);
     }
 }

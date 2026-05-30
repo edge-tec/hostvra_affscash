@@ -170,12 +170,15 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
                 ]);
             }
             Helpers::flash('success', "Country payout for $country saved.");
+            _notifyAffiliatesOfPayoutChange($affId, "A country payout rule for $country has been updated. Payout is now $" . number_format($payout, 2));
             Helpers::redirect('/admin/payout-management?tab=country_payouts');
         }
     }
     elseif ($postAction === 'delete_country_payout') {
         $id = (int)Helpers::postRaw('rule_id');
+        $rule = Database::fetchOne("SELECT affiliate_id FROM payout_country_rules WHERE id=?", [$id]);
         Database::query("DELETE FROM payout_country_rules WHERE id=?", [$id]);
+        if ($rule) _notifyAffiliatesOfPayoutChange($rule['affiliate_id'], "A country payout rule has been removed.");
         Helpers::flash('success', 'Country payout rule deleted.');
         Helpers::redirect('/admin/payout-management?tab=country_payouts');
     }
@@ -211,12 +214,15 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
                 ]);
             }
             Helpers::flash('success', "Device payout rule saved.");
+            _notifyAffiliatesOfPayoutChange($affId, "A device payout rule for {$country} ({$device}) has been updated. Payout is now $" . number_format($payout, 2));
             Helpers::redirect('/admin/payout-management?tab=device_payouts');
         }
     }
     elseif ($postAction === 'delete_device_payout') {
         $id = (int)Helpers::postRaw('rule_id');
+        $rule = Database::fetchOne("SELECT affiliate_id FROM payout_device_rules WHERE id=?", [$id]);
         Database::query("DELETE FROM payout_device_rules WHERE id=?", [$id]);
+        if ($rule) _notifyAffiliatesOfPayoutChange($rule['affiliate_id'], "A device payout rule has been removed.");
         Helpers::flash('success', 'Device payout rule deleted.');
         Helpers::redirect('/admin/payout-management?tab=device_payouts');
     }
@@ -240,12 +246,15 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
                 Database::insert('aff_daily_caps', ['affiliate_id'=>$affId,'offer_id'=>$offerId,'daily_cap'=>$cap]);
             }
             Helpers::flash('success', 'Affiliate daily cap saved.');
+            _notifyAffiliatesOfPayoutChange($affId, "Your daily cap has been updated to {$cap}.");
             Helpers::redirect('/admin/payout-management?tab=aff_capping');
         }
     }
     elseif ($postAction === 'delete_aff_cap') {
         $id = (int)Helpers::postRaw('rule_id');
+        $rule = Database::fetchOne("SELECT affiliate_id FROM aff_daily_caps WHERE id=?", [$id]);
         Database::query("DELETE FROM aff_daily_caps WHERE id=?", [$id]);
+        if ($rule) _notifyAffiliatesOfPayoutChange($rule['affiliate_id'], "A daily cap restriction has been removed.");
         Helpers::flash('success', 'Affiliate cap removed.');
         Helpers::redirect('/admin/payout-management?tab=aff_capping');
     }
@@ -279,6 +288,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
                 );
             }
             Helpers::flash('success', 'Custom affiliate payout saved and applied.');
+            _notifyAffiliatesOfPayoutChange($affId, "Your custom payout for an offer has been updated to $" . number_format($payout, 2));
             Helpers::redirect('/admin/payout-management?tab=aff_payouts');
         }
     }
@@ -290,6 +300,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
             Database::query("UPDATE affiliate_offers SET custom_payout=NULL WHERE affiliate_id=? AND offer_id=?", [$rule['affiliate_id'], $rule['offer_id']]);
         }
         Database::query("DELETE FROM aff_custom_payouts WHERE id=?", [$id]);
+        if ($rule) _notifyAffiliatesOfPayoutChange($rule['affiliate_id'], "A custom offer payout rule has been removed.");
         Helpers::flash('success', 'Custom payout rule deleted.');
         Helpers::redirect('/admin/payout-management?tab=aff_payouts');
     }
@@ -311,12 +322,15 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
                 Database::insert('aff_country_payouts', ['affiliate_id'=>$affId,'country'=>$country,'revenue'=>$revenue,'payout'=>$payout]);
             }
             Helpers::flash('success', "Custom country payout saved.");
+            _notifyAffiliatesOfPayoutChange($affId, "Your custom country payout for {$country} has been updated to $" . number_format($payout, 2));
             Helpers::redirect('/admin/payout-management?tab=aff_country_payouts');
         }
     }
     elseif ($postAction === 'delete_aff_country_payout') {
         $id = (int)Helpers::postRaw('rule_id');
+        $rule = Database::fetchOne("SELECT affiliate_id FROM aff_country_payouts WHERE id=?", [$id]);
         Database::query("DELETE FROM aff_country_payouts WHERE id=?", [$id]);
+        if ($rule) _notifyAffiliatesOfPayoutChange($rule['affiliate_id'], "A custom country payout rule has been removed.");
         Helpers::flash('success', 'Custom country payout deleted.');
         Helpers::redirect('/admin/payout-management?tab=aff_country_payouts');
     }
@@ -340,12 +354,15 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
                 Database::insert('aff_country_device_payouts', ['affiliate_id'=>$affId,'country'=>$country,'device'=>$device,'revenue'=>$revenue,'payout'=>$payout]);
             }
             Helpers::flash('success', "Custom country/device payout saved.");
+            _notifyAffiliatesOfPayoutChange($affId, "Your custom payout for {$country} ({$device}) has been updated to $" . number_format($payout, 2));
             Helpers::redirect('/admin/payout-management?tab=aff_country_device_payouts');
         }
     }
     elseif ($postAction === 'delete_aff_country_device_payout') {
         $id = (int)Helpers::postRaw('rule_id');
+        $rule = Database::fetchOne("SELECT affiliate_id FROM aff_country_device_payouts WHERE id=?", [$id]);
         Database::query("DELETE FROM aff_country_device_payouts WHERE id=?", [$id]);
+        if ($rule) _notifyAffiliatesOfPayoutChange($rule['affiliate_id'], "A custom country/device payout rule has been removed.");
         Helpers::flash('success', 'Custom country/device payout deleted.');
         Helpers::redirect('/admin/payout-management?tab=aff_country_device_payouts');
     }
@@ -367,12 +384,15 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
                 Database::insert('aff_smartlink_payouts', ['affiliate_id'=>$affId,'smartlink_id'=>$slId,'revenue'=>$revenue,'payout'=>$payout]);
             }
             Helpers::flash('success', 'Smartlink custom payout saved.');
+            _notifyAffiliatesOfPayoutChange($affId, "Your custom payout for a smartlink has been updated to $" . number_format($payout, 2));
             Helpers::redirect('/admin/payout-management?tab=aff_payouts');
         }
     }
     elseif ($postAction === 'delete_aff_sl_payout') {
         $id = (int)Helpers::postRaw('rule_id');
+        $rule = Database::fetchOne("SELECT affiliate_id FROM aff_smartlink_payouts WHERE id=?", [$id]);
         Database::query("DELETE FROM aff_smartlink_payouts WHERE id=?", [$id]);
+        if ($rule) _notifyAffiliatesOfPayoutChange($rule['affiliate_id'], "A smartlink custom payout rule has been removed.");
         Helpers::flash('success', 'Smartlink payout rule deleted.');
         Helpers::redirect('/admin/payout-management?tab=aff_payouts');
     }
@@ -400,21 +420,26 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
                 ]);
             }
             Helpers::flash('success', 'Conversion optimize rule saved.');
+            _notifyAffiliatesOfPayoutChange($affId, "A conversion optimize rule has been updated for your account.");
             Helpers::redirect('/admin/payout-management?tab=conversion_optimize');
         }
     }
     elseif ($postAction === 'toggle_optimize_rule') {
         $id       = (int)Helpers::postRaw('rule_id');
         $current  = Database::fetchOne("SELECT is_active FROM conversion_optimize_rules WHERE id=?", [$id]);
+        $rule = Database::fetchOne("SELECT affiliate_id FROM conversion_optimize_rules WHERE id=?", [$id]);
         if ($current) {
             Database::query("UPDATE conversion_optimize_rules SET is_active=? WHERE id=?", [$current['is_active']?0:1, $id]);
+            if ($rule) _notifyAffiliatesOfPayoutChange($rule['affiliate_id'], "A conversion optimize rule status was toggled.");
         }
         Helpers::flash('success', 'Rule status updated.');
         Helpers::redirect('/admin/payout-management?tab=conversion_optimize');
     }
     elseif ($postAction === 'delete_optimize_rule') {
         $id = (int)Helpers::postRaw('rule_id');
+        $rule = Database::fetchOne("SELECT affiliate_id FROM conversion_optimize_rules WHERE id=?", [$id]);
         Database::query("DELETE FROM conversion_optimize_rules WHERE id=?", [$id]);
+        if ($rule) _notifyAffiliatesOfPayoutChange($rule['affiliate_id'], "A conversion optimize rule has been deleted.");
         Helpers::flash('success', 'Optimize rule deleted.');
         Helpers::redirect('/admin/payout-management?tab=conversion_optimize');
     }
@@ -491,3 +516,23 @@ $optimizeRules = Database::fetchAll(
 );
 
 require BASE_PATH . '/views/admin/payout_management/index.php';
+
+function _notifyAffiliatesOfPayoutChange(?int $affiliateId, string $message) {
+    if ((Config::get('config', 'app.offer_link_notify') ?? '0') !== '1') return;
+    $recipients = [];
+    if ($affiliateId) {
+        $u = Database::fetchOne("SELECT u.email, u.first_name, u.last_name FROM users u JOIN affiliates af ON af.user_id = u.id WHERE af.id = ? AND u.status='active'", [$affiliateId]);
+        if ($u) $recipients[] = $u;
+    } else {
+        $recipients = Database::fetchAll("SELECT DISTINCT u.email, u.first_name, u.last_name FROM users u JOIN affiliates af ON af.user_id = u.id WHERE u.role = 'affiliate' AND u.status = 'active' AND u.email IS NOT NULL AND u.email <> ''");
+    }
+    foreach ($recipients as $r) {
+        $name = trim(($r['first_name']??'').' '.($r['last_name']??''));
+        if ($name === '') $name = 'Affiliate';
+        $html = "<p>Hello {$name},</p><p>{$message}</p><p>Best regards,<br>" . (Config::get('config','app.name') ?? 'AffsCash') . " Team</p>";
+        try {
+            require_once BASE_PATH . '/core/Mailer.php';
+            Mailer::sendRaw($r['email'], $name, 'Payout Rule Updated', $html, 'payout_update');
+        } catch (\Throwable $e) {}
+    }
+}

@@ -1,8 +1,8 @@
 <?php
-$appName      = Helpers::e(Config::get('config','app.name')         ?? 'EliteAli');
-$appUrl       = Helpers::e(rtrim((string)(Config::get('config','app.url') ?: 'https://eliteali.com'), '/'));
-$contactEmail = Helpers::e(Config::get('config','app.contact_email') ?: 'affiliate@eliteali.com');
-$supportEmail = Helpers::e(Config::get('config','app.support_email') ?: 'support@eliteali.com');
+$appName      = Helpers::e(Config::get('config','app.name')         ?? 'AffsCash');
+$appUrl       = Helpers::e(rtrim((string)(Config::get('config','app.url') ?: 'https://affscash.net'), '/'));
+$contactEmail = Helpers::e(Config::get('config','app.contact_email') ?: 'affiliate@affscash.net');
+$supportEmail = Helpers::e(Config::get('config','app.support_email') ?: 'support@affscash.net');
 $effectiveDate = '2026';
 ?>
 <!DOCTYPE html>
@@ -371,7 +371,7 @@ body {
         <span class="hero-meta-sep">|</span>
         <div class="hero-meta-item">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            Company: EliteAli Affiliate Network
+            Company: Affscash Affiliate Network
         </div>
     </div>
 </div>
@@ -662,9 +662,9 @@ body {
             </div>
             <p>If you have questions about this Privacy Policy, contact us:</p>
             <div class="contact-grid">
-                <a class="contact-card" href="mailto:support@eliteali.com">
+                <a class="contact-card" href="mailto:support@affscash.net">
                     <div class="contact-card-label">📧 Email</div>
-                    <div class="contact-card-value">support@eliteali.com</div>
+                    <div class="contact-card-value">support@affscash.net</div>
                 </a>
                 <div class="contact-card">
                     <div class="contact-card-label">💬 Telegram / Skype</div>

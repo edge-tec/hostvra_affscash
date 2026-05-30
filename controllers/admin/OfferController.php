@@ -400,11 +400,52 @@ elseif ($action === 'edit' && isset($_GET['id'])) {
                 Database::query("DELETE FROM offer_links WHERE offer_id=?", [$offerId]);
                 _saveOfferLinks($offerId, $_POST);
 
+                $emailedCount = 0;
+                $linkChanged = false;
+                $statusChanged = false;
+
+                // Check for offer details/link changes
+                $oldOfferUrl = $offer['offer_url'] ?? '';
+                $oldLandingPages = $offer['landing_pages'] ?? null;
+                $oldName = $offer['name'] ?? '';
+                $oldPayout = (float)($offer['payout_amount'] ?? 0);
+                $oldDesc = $offer['description'] ?? '';
+                $oldDailyCap = $offer['daily_cap'] ?? 0;
+                $oldTotalCap = $offer['total_cap'] ?? 0;
+                $oldCountryPayouts = $offer['country_payouts'] ?? null;
+                $oldDevicePayouts = $offer['device_payouts'] ?? null;
+                $oldDeviceTargeting = $offer['device_targeting'] ?? null;
+                
+                if ($oldOfferUrl !== $offerUrl 
+                    || $oldLandingPages !== $landingPages
+                    || $oldName !== $name
+                    || (float)$payout !== $oldPayout
+                    || $oldDesc !== $description
+                    || (int)$oldDailyCap !== (int)$dailyCap
+                    || (int)$oldTotalCap !== (int)$totalCap
+                    || $oldCountryPayouts !== ($countryPayouts ? json_encode($countryPayouts) : null)
+                    || $oldDevicePayouts !== ($devicePayouts ? json_encode($devicePayouts) : null)
+                    || $oldDeviceTargeting !== ($devices ? json_encode($devices) : null)
+                ) {
+                    $linkChanged = true;
+                    $emailedCount += _broadcastOfferLinkChangeEmail($offerId);
+                }
+
+                // Check for status changes
+                $oldStatus = $offer['status'] ?? 'paused';
+                if ($oldStatus !== $status && $oldStatus !== 'pending' && !empty($oldStatus)) {
+                    $statusChanged = true;
+                    $emailedCount += _broadcastOfferStatusChangeEmail($offerId, $oldStatus, $status);
+                }
+
                 // If this edit flipped the offer to active for the first time,
                 // fire the new-offer broadcast now. Idempotent — won't double-send.
-                $emailedCount = _maybeBroadcastNewOfferEmail($offerId);
+                $emailedCount += _maybeBroadcastNewOfferEmail($offerId);
+                
                 $msg = 'Offer updated successfully.';
-                if ($emailedCount > 0) $msg .= ' Notification email sent to ' . $emailedCount . ' affiliate(s).';
+                if ($emailedCount > 0) {
+                    $msg .= ' Notification emails sent (' . $emailedCount . ').';
+                }
                 Helpers::flash('success', $msg);
                 Helpers::redirect('/admin/offers');
             }
@@ -434,11 +475,21 @@ elseif ($action === 'edit' && isset($_GET['id'])) {
             // Legacy: status-only toggle (e.g. from index quick-action)
             $newStatus = Helpers::post('status');
             if (in_array($newStatus, ['active','paused','expired','pending'])) {
+                $oldStatus = $offer['status'] ?? 'paused';
                 Database::update('offers', ['status' => $newStatus], 'id=?', [$offerId]);
+                
+                $emailedCount = 0;
+                if ($oldStatus !== $newStatus && $oldStatus !== 'pending' && !empty($oldStatus)) {
+                    $emailedCount += _broadcastOfferStatusChangeEmail($offerId, $oldStatus, $newStatus);
+                }
+                
                 // First-time activation? Fire the broadcast.
-                $emailedCount = _maybeBroadcastNewOfferEmail($offerId);
+                $emailedCount += _maybeBroadcastNewOfferEmail($offerId);
+                
                 $msg = 'Offer status updated.';
-                if ($emailedCount > 0) $msg .= ' Notification email sent to ' . $emailedCount . ' affiliate(s).';
+                if ($emailedCount > 0) {
+                    $msg .= ' Notification emails sent (' . $emailedCount . ').';
+                }
                 Helpers::flash('success', $msg);
                 Helpers::redirect('/admin/offers');
             }
@@ -555,7 +606,7 @@ function _broadcastNewOfferEmail(int $offerId): int {
     );
     if (!$offer) return 0;
 
-    $siteName = Config::get('config','app.name') ?? 'EliteAli';
+    $siteName = Config::get('config','app.name') ?? 'AffsCash';
     $appUrl   = rtrim((string)(Config::get('config','app.url') ?: ''), '/');
 
     // Build "commission information" text — payout type (CPA/CPL/RevShare),
@@ -577,45 +628,6 @@ function _broadcastNewOfferEmail(int $offerId): int {
     $category    = htmlspecialchars((string)($offer['category'] ?? ''), ENT_QUOTES, 'UTF-8');
     $offersUrl   = $appUrl . '/affiliate/offers';
 
-    $subject = '🎯 New Offer Live: ' . $offerName . ' — ' . $siteName;
-
-    $bodyTpl = '<!DOCTYPE html><html><body style="margin:0;padding:0;background:#F8FAFC;font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#0F172A">
-    <div style="max-width:600px;margin:0 auto;padding:24px">
-        <div style="background:#fff;border-radius:14px;overflow:hidden;border:1px solid #E2E8F0">
-            <div style="background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;padding:24px 28px">
-                <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.8">New Offer</div>
-                <h1 style="margin:6px 0 0;font-size:22px;line-height:1.3">' . htmlspecialchars($offerName, ENT_QUOTES, 'UTF-8') . '</h1>
-                <div style="margin-top:6px;font-size:13px;opacity:.85">' . htmlspecialchars((string)$offer['advertiser_name'], ENT_QUOTES, 'UTF-8') . '</div>
-            </div>
-            <div style="padding:22px 28px">
-                <p style="margin:0 0 14px;font-size:14px;color:#334155">Hi {NAME},</p>
-                <p style="margin:0 0 18px;font-size:14px;color:#334155">A new offer just went live on ' . htmlspecialchars($siteName, ENT_QUOTES, 'UTF-8') . ' and is ready for you to promote.</p>
-
-                <table cellspacing="0" cellpadding="0" style="width:100%;border-collapse:collapse;margin:0 0 18px;font-size:13.5px">
-                    <tr><td style="padding:10px 0;color:#64748B;width:36%">Offer Name</td><td style="padding:10px 0;font-weight:700">' . htmlspecialchars($offerName, ENT_QUOTES, 'UTF-8') . '</td></tr>
-                    ' . ($category !== '' ? '<tr><td style="padding:10px 0;color:#64748B;border-top:1px solid #F1F5F9">Category</td><td style="padding:10px 0;border-top:1px solid #F1F5F9">' . $category . '</td></tr>' : '') . '
-                    ' . ($geos !== '' ? '<tr><td style="padding:10px 0;color:#64748B;border-top:1px solid #F1F5F9">GEO Targeting</td><td style="padding:10px 0;border-top:1px solid #F1F5F9">' . htmlspecialchars($geos, ENT_QUOTES, 'UTF-8') . '</td></tr>' : '') . '
-                    <tr><td style="padding:10px 0;color:#64748B;border-top:1px solid #F1F5F9">Commission</td><td style="padding:10px 0;font-weight:700;color:#059669;border-top:1px solid #F1F5F9">' . $commission . '</td></tr>
-                    <tr><td style="padding:10px 0;color:#64748B;border-top:1px solid #F1F5F9">Status</td><td style="padding:10px 0;border-top:1px solid #F1F5F9"><span style="display:inline-block;padding:3px 10px;background:#DCFCE7;color:#166534;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase">' . $statusBadge . '</span></td></tr>
-                </table>
-
-                <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:14px 16px;margin:0 0 22px">
-                    <div style="font-size:11px;color:#64748B;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px">Offer Details</div>
-                    <div style="font-size:13.5px;color:#334155">' . $offerDescH . '</div>
-                </div>
-
-                <div style="text-align:center;margin:24px 0 4px">
-                    <a href="' . htmlspecialchars($offersUrl, ENT_QUOTES, 'UTF-8') . '" style="display:inline-block;background:#4F46E5;color:#fff;padding:13px 30px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px">View Offer in Dashboard &rarr;</a>
-                </div>
-            </div>
-            <div style="padding:16px 28px;background:#F8FAFC;border-top:1px solid #E2E8F0;text-align:center;font-size:11px;color:#94A3B8">
-                You\'re receiving this because you\'re an active affiliate on ' . htmlspecialchars($siteName, ENT_QUOTES, 'UTF-8') . '.<br>
-                <a href="' . htmlspecialchars($appUrl, ENT_QUOTES, 'UTF-8') . '/privacy-policy" style="color:#94A3B8">Privacy Policy</a>
-            </div>
-        </div>
-    </div>
-    </body></html>';
-
     // Fetch all active affiliates — must have a verified-active user account.
     try {
         $recipients = Database::fetchAll(
@@ -633,13 +645,29 @@ function _broadcastNewOfferEmail(int $offerId): int {
     foreach ($recipients as $r) {
         $name = trim((string)($r['first_name'] ?? '') . ' ' . (string)($r['last_name'] ?? ''));
         if ($name === '') $name = 'Affiliate';
-        $personal = str_replace('{NAME}', htmlspecialchars($name, ENT_QUOTES, 'UTF-8'), $bodyTpl);
+        
+        $vars = [
+            'name'            => htmlspecialchars($name, ENT_QUOTES, 'UTF-8'),
+            'offer_name'      => htmlspecialchars($offerName, ENT_QUOTES, 'UTF-8'),
+            'site_name'       => htmlspecialchars($siteName, ENT_QUOTES, 'UTF-8'),
+            'advertiser_name' => htmlspecialchars((string)$offer['advertiser_name'], ENT_QUOTES, 'UTF-8'),
+            'category'        => $category, // already escaped
+            'is_category'     => $category !== '',
+            'geos'            => htmlspecialchars($geos, ENT_QUOTES, 'UTF-8'),
+            'is_geos'         => $geos !== '',
+            'commission'      => $commission, // contains HTML
+            'status_badge'    => $statusBadge, // contains HTML
+            'offer_desc_html' => $offerDescH, // contains HTML
+            'offers_url'      => htmlspecialchars($offersUrl, ENT_QUOTES, 'UTF-8'),
+            'app_url'         => htmlspecialchars($appUrl, ENT_QUOTES, 'UTF-8')
+        ];
+
         try {
-            if (Mailer::sendRaw($r['email'], $name, $subject, $personal, 'offer_new')) {
+            if (Mailer::sendEvent($r['email'], $name, 'offer_new', $vars)) {
                 $sent++;
             } else {
                 $failed++;
-                error_log('[OfferController] new-offer email NOT sent to ' . $r['email'] . ' — Mailer::sendRaw returned false (check SMTP config in Settings → Email/SMTP)');
+                error_log('[OfferController] new-offer email NOT sent to ' . $r['email'] . ' — Mailer::sendEvent returned false (check SMTP config in Settings → Email/SMTP)');
             }
         } catch (\Throwable $e) {
             $failed++;
@@ -647,5 +675,96 @@ function _broadcastNewOfferEmail(int $offerId): int {
         }
     }
     error_log('[OfferController] new-offer broadcast for offer ' . $offerId . ': ' . $sent . ' sent, ' . $failed . ' failed, ' . count($recipients) . ' recipients');
+    return $sent;
+}
+
+function _broadcastOfferStatusChangeEmail(int $offerId, string $oldStatus, string $newStatus): int {
+    if ((Config::get('config', 'app.offer_status_notify') ?? '0') !== '1') return 0;
+    if ($oldStatus === $newStatus) return 0;
+
+    $offer = Database::fetchOne(
+        "SELECT o.id, o.name, o.category, COALESCE(au.company, CONCAT(au.first_name,' ',au.last_name)) AS advertiser_name
+         FROM offers o
+         LEFT JOIN advertisers adv ON adv.id = o.advertiser_id
+         LEFT JOIN users au ON au.id = adv.user_id
+         WHERE o.id = ? LIMIT 1",
+        [$offerId]
+    );
+    if (!$offer) return 0;
+
+    $siteName = Config::get('config','app.name') ?? 'AffsCash';
+    $appUrl   = rtrim((string)(Config::get('config','app.url') ?: ''), '/');
+    $offersUrl= $appUrl . '/affiliate/offers';
+    $offerName= (string)$offer['name'];
+
+    try {
+        $recipients = Database::fetchAll(
+            "SELECT DISTINCT u.email, u.first_name, u.last_name
+             FROM users u
+             INNER JOIN affiliates af ON af.user_id = u.id
+             WHERE u.role = 'affiliate' AND u.status = 'active' AND u.email IS NOT NULL AND u.email <> ''"
+        );
+    } catch (\Throwable $e) { return 0; }
+
+    $sent = 0;
+    foreach ($recipients as $r) {
+        $name = trim((string)($r['first_name'] ?? '') . ' ' . (string)($r['last_name'] ?? ''));
+        if ($name === '') $name = 'Affiliate';
+        
+        $vars = [
+            'name'       => htmlspecialchars($name, ENT_QUOTES, 'UTF-8'),
+            'offer_name' => htmlspecialchars($offerName, ENT_QUOTES, 'UTF-8'),
+            'site_name'  => htmlspecialchars($siteName, ENT_QUOTES, 'UTF-8'),
+            'old_status' => htmlspecialchars(ucfirst($oldStatus), ENT_QUOTES, 'UTF-8'),
+            'new_status' => htmlspecialchars(ucfirst($newStatus), ENT_QUOTES, 'UTF-8'),
+            'offers_url' => htmlspecialchars($offersUrl, ENT_QUOTES, 'UTF-8'),
+            'app_url'    => htmlspecialchars($appUrl, ENT_QUOTES, 'UTF-8')
+        ];
+
+        try { if (Mailer::sendEvent($r['email'], $name, 'offer_status', $vars)) $sent++; } catch (\Throwable $e) {}
+    }
+    return $sent;
+}
+
+function _broadcastOfferLinkChangeEmail(int $offerId): int {
+    if ((Config::get('config', 'app.offer_link_notify') ?? '0') !== '1') return 0;
+
+    $offer = Database::fetchOne(
+        "SELECT o.id, o.name, o.category
+         FROM offers o
+         WHERE o.id = ? LIMIT 1",
+        [$offerId]
+    );
+    if (!$offer) return 0;
+
+    $siteName = Config::get('config','app.name') ?? 'AffsCash';
+    $appUrl   = rtrim((string)(Config::get('config','app.url') ?: ''), '/');
+    $offersUrl= $appUrl . '/affiliate/offers';
+    $offerName= (string)$offer['name'];
+
+    try {
+        $recipients = Database::fetchAll(
+            "SELECT DISTINCT u.email, u.first_name, u.last_name
+             FROM users u
+             INNER JOIN affiliates af ON af.user_id = u.id
+             WHERE u.role = 'affiliate' AND u.status = 'active' AND u.email IS NOT NULL AND u.email <> ''"
+        );
+    } catch (\Throwable $e) { return 0; }
+
+    $sent = 0;
+    foreach ($recipients as $r) {
+        $name = trim((string)($r['first_name'] ?? '') . ' ' . (string)($r['last_name'] ?? ''));
+        if ($name === '') $name = 'Affiliate';
+        
+        $vars = [
+            'name'       => htmlspecialchars($name, ENT_QUOTES, 'UTF-8'),
+            'offer_name' => htmlspecialchars($offerName, ENT_QUOTES, 'UTF-8'),
+            'site_name'  => htmlspecialchars($siteName, ENT_QUOTES, 'UTF-8'),
+            'offers_url' => htmlspecialchars($offersUrl, ENT_QUOTES, 'UTF-8'),
+            'app_url'    => htmlspecialchars($appUrl, ENT_QUOTES, 'UTF-8')
+        ];
+
+        try { if (Mailer::sendEvent($r['email'], $name, 'offer_link', $vars)) $sent++; } catch (\Throwable $e) {}
+    }
     return $sent;
 }

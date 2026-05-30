@@ -288,28 +288,4 @@ class Activity {
             return (int)($r['cnt'] ?? 0);
         } catch (Exception $e) { return 0; }
     }
-
-    /**
-     * Log general admin or system activity to central audit log table
-     */
-    public static function log(string $action, string $entityType, ?int $entityId, string $note = '', ?array $oldData = null, ?array $newData = null): void {
-        try {
-            $userId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
-            $tenantId = Tenant::getTenantId();
-            Database::insert('activity_log', [
-                'user_id' => $userId,
-                'action' => $action,
-                'entity_type' => $entityType,
-                'entity_id' => $entityId,
-                'old_data' => $oldData ? json_encode($oldData) : null,
-                'new_data' => $newData ? json_encode($newData) : ($note ? json_encode(['note' => $note]) : null),
-                'ip_address' => self::clientIp(),
-                'tenant_id' => $tenantId,
-                'created_at' => date('Y-m-d H:i:s')
-            ]);
-        } catch (\Throwable $e) {
-            // fail-safe
-        }
-    }
 }
-

@@ -47,8 +47,8 @@ if (Helpers::isPost() && Helpers::postRaw('toggle_status') && $action === 'index
 if ($action === 'index') {
     $smartlinks = Database::fetchAll(
         "SELECT sl.*, COUNT(DISTINCT so.id) as offer_count,
-                COALESCE(cl_stats.total_clicks, 0)  as total_clicks,
-                COALESCE(cv_stats.total_convs,  0)  as total_convs
+                COALESCE(MAX(cl_stats.total_clicks), 0)  as total_clicks,
+                COALESCE(MAX(cv_stats.total_convs),  0)  as total_convs
          FROM smartlinks sl
          LEFT JOIN smartlink_offers so ON so.smartlink_id = sl.id
          LEFT JOIN (

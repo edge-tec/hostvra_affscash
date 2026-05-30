@@ -446,7 +446,7 @@ if (($_GET['action'] ?? '') === 'run_test') {
     ]);
 
     // Detect self-loop — compare root domains (last 2 parts) so subdomains are also caught.
-    // e.g. click.eliteali.com and tracker.eliteali.com share root "eliteali.com"
+    // e.g. click.affscash.net and tracker.affscash.net share root "affscash.net"
     $pbHost  = strtolower(parse_url($firedUrl, PHP_URL_HOST) ?? '');
     function _rootDomain(string $host): string {
         $parts = explode('.', trim($host, '.'));

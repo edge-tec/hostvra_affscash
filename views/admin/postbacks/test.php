@@ -431,7 +431,7 @@ function buildResults(d) {
         html += 'This is the <strong>Advertiser Postback URL</strong> — it is meant for advertisers to send conversions <em>to you</em>. ';
         html += 'It should <strong>not</strong> be used as the affiliate\'s outgoing postback URL.<br><br>';
         html += '<strong>How to fix:</strong><br>';
-        html += '1. The affiliate must set their postback URL to <strong>their tracker\'s postback endpoint</strong> (e.g. EliteAli, Binom, Voluum, Keitaro).<br>';
+        html += '1. The affiliate must set their postback URL to <strong>their tracker\'s postback endpoint</strong> (e.g. AffsCash, Binom, Voluum, Keitaro).<br>';
         html += '2. Go to <a href="/admin/postbacks" style="color:#991B1B;font-weight:700">Manage Postbacks</a> and delete the incorrect URL.<br>';
         html += '3. Ask the affiliate for the correct postback URL from their tracker dashboard and add it there.<br><br>';
         html += '<strong>Correct setup:</strong><br>';

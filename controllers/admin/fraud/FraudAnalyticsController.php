@@ -15,13 +15,21 @@ $offerList     = Database::fetchAll("SELECT id, name FROM offers ORDER BY name")
 
 // Daily click vs conversion trend
 $dailyTrend = Database::fetchAll(
-    "SELECT DATE(c.clicked_at) AS day,
-            COUNT(*) AS clicks,
-            COALESCE((SELECT COUNT(*) FROM conversions cv WHERE DATE(cv.converted_at)=DATE(c.clicked_at)),0) AS convs
-     FROM clicks c
-     WHERE c.clicked_at BETWEEN ? AND ?
-     GROUP BY day ORDER BY day ASC",
-    [$_df, $_dt]
+    "SELECT c.day, c.clicks, COALESCE(cv.convs, 0) AS convs
+     FROM (
+         SELECT DATE(clicked_at) AS day, COUNT(*) AS clicks
+         FROM clicks
+         WHERE clicked_at BETWEEN ? AND ?
+         GROUP BY DATE(clicked_at)
+     ) c
+     LEFT JOIN (
+         SELECT DATE(converted_at) AS day, COUNT(*) AS convs
+         FROM conversions
+         WHERE converted_at BETWEEN ? AND ?
+         GROUP BY DATE(converted_at)
+     ) cv ON cv.day = c.day
+     ORDER BY c.day ASC",
+    [$_df, $_dt, $_df, $_dt]
 ) ?: [];
 
 // Affiliate risk ranking (suspicious score composite)
@@ -44,7 +52,7 @@ $affRisk = Database::fetchAll(
      LEFT JOIN conversions cv ON cv.affiliate_id=a.id AND cv.converted_at BETWEEN ? AND ?{$_offerJoinCv}
      LEFT JOIN fraud_cases fc ON fc.affiliate_id=a.id AND fc.status NOT IN ('resolved','dismissed')
      WHERE $affRiskWhere
-     GROUP BY a.id
+     GROUP BY a.id, a.affiliate_code, u.first_name, u.last_name
      HAVING total_clicks > 0
      ORDER BY open_cases DESC, fast_convs DESC, total_clicks DESC LIMIT 30",
     array_merge([$_df, $_dt, $_df, $_dt], $affRiskParams)

@@ -52,7 +52,7 @@ if (Helpers::isPost() && in_array(Helpers::post('action'), ['approve', 'reject']
 
             // Email confirmation (best-effort)
             try {
-                $siteName = Config::get('config','app.name') ?? 'EliteAli';
+                $siteName = Config::get('config','app.name') ?? 'AffsCash';
                 $name = trim(($req['first_name'] ?? '') . ' ' . ($req['last_name'] ?? '')) ?: 'Advertiser';
                 $body = '<div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:20px"><h2 style="color:#059669">Top-Up Approved</h2>
                     <p>Hi ' . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . ',</p>

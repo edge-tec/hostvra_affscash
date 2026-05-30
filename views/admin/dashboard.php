@@ -689,29 +689,6 @@ html[data-theme="dark"] .loading-overlay{background:rgba(15,23,42,.55);}
             </div>
         </div>
         <?php endif; ?>
-        <?php if (!empty($topDomains)): ?>
-        <div>
-            <div style="padding:12px 20px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);border-top:1px solid var(--border);background:var(--bg)">Top Tracking Domains</div>
-            <div class="table-wrap">
-                <table class="analytics-table">
-                    <thead><tr><th>Domain</th><th class="num">Conv.</th><th class="num">Revenue</th><th class="num">Payout</th><th class="num">Profit</th></tr></thead>
-                    <tbody>
-                    <?php foreach ($topDomains as $td): 
-                        $profitVal = (float)$td['profit'];
-                    ?>
-                    <tr>
-                        <td class="fw-bold"><?= empty($td['tracking_domain']) ? '<span class="text-muted">Default App Domain</span>' : htmlspecialchars($td['tracking_domain']) ?></td>
-                        <td class="num"><?= number_format((int)$td['conversions']) ?></td>
-                        <td class="num">$<?= number_format((float)$td['revenue'], 2) ?></td>
-                        <td class="num">$<?= number_format((float)$td['payout'], 2) ?></td>
-                        <td class="num" style="color:<?= $profitVal >= 0 ? '#059669' : 'var(--danger)' ?>;font-weight:700">$<?= number_format($profitVal, 2) ?></td>
-                    </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <?php endif; ?>
     </div>
 </div>
 

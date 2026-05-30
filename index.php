@@ -29,7 +29,6 @@ unset($_installLock);
 // Load core classes
 require BASE_PATH . '/core/Config.php';
 require BASE_PATH . '/core/Database.php';
-require BASE_PATH . '/core/Tenant.php';
 require BASE_PATH . '/core/Activity.php';
 require BASE_PATH . '/core/Auth.php';
 require BASE_PATH . '/core/Helpers.php';
@@ -58,14 +57,11 @@ require BASE_PATH . '/core/RewardsService.php';
 require BASE_PATH . '/core/PopupService.php';
 require BASE_PATH . '/core/RegistrationSecurity.php';
 require BASE_PATH . '/core/RegistrationVpnGuard.php';
-
+require BASE_PATH . '/core/RiskEngine.php';
 
 
 // Initialize config
 Config::init(CONFIG_PATH);
-
-// Resolve Tenant Context
-Tenant::resolve();
 
 // ── Auto-migrate ─────────────────────────────────────────────────────────────
 // Checks a lock file first (O(1) — no DB query when up to date).
@@ -159,45 +155,30 @@ Router::get('/google{code}.html', function($code) {
 
 // Root — Landing Page
 Router::get('/', function() {
-    if (!Tenant::isLandingEnabled()) {
-        Helpers::redirect('/login');
-    }
-    if (Tenant::getTenantId() === null) {
-        require BASE_PATH . '/controllers/marketing/SaasLandingController.php';
-        return;
+    // If this request comes from the configured landing domain, always show landing page
+    $landingDomain = Config::get('config', 'app.landing_domain');
+    if ($landingDomain) {
+        $currentHost = preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST'] ?? '');
+        if ($currentHost === $landingDomain) {
+            require BASE_PATH . '/views/landing.php';
+            return;
+        }
     }
     if (Auth::id()) {
         $role = Auth::role();
         Helpers::redirect("/$role/dashboard");
     }
-    require BASE_PATH . '/controllers/marketing/TenantLandingController.php';
-});
-
-// Marketing Sub-pages
-Router::any('/pricing', function() {
-    if (!Tenant::isLandingEnabled()) { Helpers::redirect('/login'); }
-    require BASE_PATH . '/controllers/marketing/PricingController.php';
-});
-Router::any('/features', function() {
-    if (!Tenant::isLandingEnabled()) { Helpers::redirect('/login'); }
-    require BASE_PATH . '/controllers/marketing/FeaturesController.php';
-});
-Router::any('/docs', function() {
-    if (!Tenant::isLandingEnabled()) { Helpers::redirect('/login'); }
-    require BASE_PATH . '/controllers/marketing/DocsController.php';
+    require BASE_PATH . '/views/landing.php';
 });
 
 // Public pages — Reviews & Blog
 Router::get('/reviews', function() {
-    if (!Tenant::isLandingEnabled()) { Helpers::redirect('/login'); }
     require BASE_PATH . '/views/public/reviews.php';
 });
 Router::get('/blog', function() {
-    if (!Tenant::isLandingEnabled()) { Helpers::redirect('/login'); }
     require BASE_PATH . '/views/public/blog.php';
 });
 Router::get('/blog/{slug}', function($slug) {
-    if (!Tenant::isLandingEnabled()) { Helpers::redirect('/login'); }
     $_GET['slug'] = $slug;
     require BASE_PATH . '/views/public/blog_post.php';
 });
@@ -217,28 +198,12 @@ Router::any('/logout', function() {
     Auth::logout();
 });
 Router::get('/register', function() {
-    if (Tenant::getTenantId() === null) {
-        Helpers::redirect('/signup');
-    }
-    if (!Tenant::isLandingEnabled()) { Helpers::redirect('/login'); }
     Helpers::redirect('/register/affiliate');
 });
-Router::any('/signup', function() {
-    if (Tenant::getTenantId() === null) {
-        require BASE_PATH . '/controllers/auth/RegisterController.php';
-    } else {
-        Helpers::redirect('/register/affiliate');
-    }
-});
-Router::any('/register/admin', function() {
-    require BASE_PATH . '/controllers/auth/RegisterController.php';
-});
 Router::any('/register/affiliate', function() {
-    if (!Tenant::isLandingEnabled()) { Helpers::redirect('/login'); }
     require BASE_PATH . '/controllers/auth/RegisterAffiliateController.php';
 });
 Router::any('/register/advertiser', function() {
-    if (!Tenant::isLandingEnabled()) { Helpers::redirect('/login'); }
     require BASE_PATH . '/controllers/auth/RegisterAdvertiserController.php';
 });
 Router::any('/login/2fa', function() {
@@ -369,28 +334,6 @@ Router::any('/admin/support', function() { require BASE_PATH . '/controllers/adm
 Router::any('/admin/login-logs', function() { require BASE_PATH . '/controllers/admin/LoginLogsController.php'; });
 Router::any('/admin/ip-bans', function() { require BASE_PATH . '/controllers/admin/IpBanController.php'; });
 
-// ── Admin Subscription & Renewals ──────────────────────────────────────────
-Router::any('/admin/subscription', function() { Helpers::redirect('/admin/subscription/renew'); });
-Router::any('/admin/subscription/renew', function() { require BASE_PATH . '/controllers/admin/subscription/RenewController.php'; });
-Router::any('/admin/subscription/checkout', function() { require BASE_PATH . '/controllers/admin/subscription/CheckoutController.php'; });
-Router::any('/admin/subscription/success', function() { require BASE_PATH . '/controllers/admin/subscription/SuccessController.php'; });
-Router::any('/admin/landing/builder', function() { require BASE_PATH . '/controllers/admin/landing/BuilderController.php'; });
-
-// ── Super Admin Routes ──────────────────────────────────────────────────────
-Router::any('/super_admin', function() { Helpers::redirect('/super_admin/dashboard'); });
-Router::any('/super_admin/dashboard', function() { require BASE_PATH . '/controllers/super_admin/DashboardController.php'; });
-Router::any('/super_admin/tenants', function() { require BASE_PATH . '/controllers/super_admin/TenantController.php'; });
-Router::any('/super_admin/tenants/create', function() { $_GET['action'] = 'create'; require BASE_PATH . '/controllers/super_admin/TenantController.php'; });
-Router::any('/super_admin/tenants/impersonate/{id}', function($id) { $_GET['action'] = 'impersonate'; $_GET['id'] = $id; require BASE_PATH . '/controllers/super_admin/TenantController.php'; });
-Router::any('/super_admin/plans', function() { require BASE_PATH . '/controllers/super_admin/PlanController.php'; });
-Router::any('/super_admin/plans/create', function() { $_GET['action'] = 'create'; require BASE_PATH . '/controllers/super_admin/PlanController.php'; });
-Router::any('/super_admin/plans/{id}', function($id) { $_GET['id'] = $id; require BASE_PATH . '/controllers/super_admin/PlanController.php'; });
-Router::any('/super_admin/billing', function() { require BASE_PATH . '/controllers/super_admin/BillingController.php'; });
-Router::any('/super_admin/billing-settings', function() { require BASE_PATH . '/controllers/super_admin/BillingSettingsController.php'; });
-Router::any('/super_admin/domains', function() { require BASE_PATH . '/controllers/super_admin/DomainHealthController.php'; });
-Router::any('/super_admin/security', function() { require BASE_PATH . '/controllers/super_admin/SecurityController.php'; });
-Router::any('/super_admin/landing_control', function() { require BASE_PATH . '/controllers/super_admin/LandingControlController.php'; });
-
 // ── In-House Fraud Detection System (read-only analysis module) ──────────────
 Router::any('/admin/fraud-center/live-monitor',       function() { require BASE_PATH . '/controllers/admin/fraud/LiveMonitorController.php'; });
 Router::any('/admin/fraud-center/click-intelligence', function() { require BASE_PATH . '/controllers/admin/fraud/ClickIntelligenceController.php'; });
@@ -403,6 +346,7 @@ Router::any('/admin/fraud-center/auto-rules',         function() { require BASE_
 Router::any('/admin/fraud-center/blocklist',          function() { require BASE_PATH . '/controllers/admin/fraud/BlocklistController.php'; });
 Router::any('/admin/fraud-center/analytics',          function() { require BASE_PATH . '/controllers/admin/fraud/FraudAnalyticsController.php'; });
 Router::any('/admin/fraud-center/fraud-reports',      function() { require BASE_PATH . '/controllers/admin/fraud/FraudReportsController.php'; });
+Router::any('/admin/ip-score-check',                   function() { require BASE_PATH . '/controllers/admin/fraud/IpScoreProxyController.php'; });
 
 // Admin — Affiliate Managers
 Router::any('/admin/affiliate-managers', function() { require BASE_PATH . '/controllers/admin/AffiliateManagerController.php'; });
@@ -505,7 +449,6 @@ Router::any('/api/affiliate-analytics', function() { require BASE_PATH . '/contr
 Router::any('/api/admin-analytics', function() { require BASE_PATH . '/controllers/api/AdminAnalyticsController.php'; });
 Router::any('/api/activity', function() { require BASE_PATH . '/controllers/api/ActivityController.php'; });
 Router::any('/api/theme',    function() { require BASE_PATH . '/controllers/api/ThemeController.php'; });
-Router::any('/api/webhooks/payment', function() { require BASE_PATH . '/controllers/api/WebhooksController.php'; });
 
 // Tracking (public - no auth)
 // In-House Offer Tracking: /offer/{id}?aff_id={code}&click_id={ext}&sub_id={sub}

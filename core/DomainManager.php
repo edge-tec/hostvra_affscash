@@ -208,49 +208,6 @@ class DomainManager {
         return defined('BASE_PATH') ? BASE_PATH . '/public' : dirname(__DIR__) . '/public';
     }
 
-    public static function getCertDir(): string {
-        $dir = defined('BASE_PATH') ? BASE_PATH . '/storage/certs' : dirname(__DIR__) . '/storage/certs';
-        if (!is_dir($dir)) {
-            @mkdir($dir, 0755, true);
-        }
-        return $dir;
-    }
-
-    // ── Apply Custom SSL ──────────────────────────────────────────────────
-
-    public static function applyCustomSsl(string $domain, string $cert, string $key, string $ca): array {
-        if (!openssl_x509_check_private_key($cert, $key)) {
-            return ['ok' => false, 'message' => 'Certificate does not match the provided Private Key.'];
-        }
-
-        $certDir = self::getCertDir();
-        $safeSlug = preg_replace('/[^a-z0-9\-\.]/', '', $domain);
-        
-        $certContent = trim($cert);
-        if (!empty(trim($ca))) {
-            $certContent .= "\n" . trim($ca);
-        }
-
-        $certPath = "{$certDir}/{$safeSlug}.crt";
-        $keyPath  = "{$certDir}/{$safeSlug}.key";
-
-        if (@file_put_contents($certPath, $certContent) === false || @file_put_contents($keyPath, trim($key)) === false) {
-            return ['ok' => false, 'message' => 'Failed to save certificate files to storage/certs. Check directory permissions.'];
-        }
-
-        // Apply updated config
-        $res = self::autoConfigure($domain);
-        if (!$res['ok']) {
-            return ['ok' => false, 'message' => 'Certificates saved, but server auto-configuration failed: ' . $res['message']];
-        }
-
-        try {
-            Database::query("UPDATE tracking_domains SET ssl_status='active' WHERE domain=?", [$domain]);
-        } catch (\Throwable $e) {}
-
-        return ['ok' => true, 'message' => "SSL configured successfully for {$domain}."];
-    }
-
     // ── Apache VirtualHost auto-configure ────────────────────────────────
 
     public static function configureApache(string $domain): array {
@@ -274,40 +231,7 @@ class DomainManager {
             return ['ok' => false, 'message' => 'Apache config directory not found. Please configure manually.'];
         }
 
-        $certDir = self::getCertDir();
-        $certFile = "{$certDir}/{$safeSlug}.crt";
-        $keyFile  = "{$certDir}/{$safeSlug}.key";
-        $hasSsl = is_file($certFile) && is_file($keyFile);
-
-        if ($hasSsl) {
-            $vhost = <<<VHOST
-<VirtualHost *:80>
-    ServerName {$domain}
-    RewriteEngine On
-    RewriteCond %{HTTPS} off
-    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-</VirtualHost>
-
-<VirtualHost *:443>
-    ServerName {$domain}
-    DocumentRoot {$docRoot}
-    DirectoryIndex index.php
-
-    SSLEngine on
-    SSLCertificateFile {$certFile}
-    SSLCertificateKeyFile {$keyFile}
-
-    <Directory {$docRoot}>
-        AllowOverride All
-        Require all granted
-    </Directory>
-
-    ErrorLog  /var/log/apache2/{$domain}-error.log
-    CustomLog /var/log/apache2/{$domain}-access.log combined
-</VirtualHost>
-VHOST;
-        } else {
-            $vhost = <<<VHOST
+        $vhost = <<<VHOST
 <VirtualHost *:80>
     ServerName {$domain}
     DocumentRoot {$docRoot}
@@ -322,7 +246,6 @@ VHOST;
     CustomLog /var/log/apache2/{$domain}-access.log combined
 </VirtualHost>
 VHOST;
-        }
 
         if (@file_put_contents($confFile, $vhost) === false) {
             return ['ok' => false, 'message' => "Cannot write {$confFile}. Check file permissions."];
@@ -355,42 +278,7 @@ VHOST;
         $safeSlug = preg_replace('/[^a-z0-9\-\.]/', '', $domain);
         $confFile = "/etc/nginx/sites-available/{$safeSlug}";
 
-        $certDir = self::getCertDir();
-        $certFile = "{$certDir}/{$safeSlug}.crt";
-        $keyFile  = "{$certDir}/{$safeSlug}.key";
-        $hasSsl = is_file($certFile) && is_file($keyFile);
-
-        if ($hasSsl) {
-            $block = <<<NGINX
-server {
-    listen 80;
-    server_name {$domain};
-    return 301 https://\$host\$request_uri;
-}
-
-server {
-    listen 443 ssl;
-    server_name {$domain};
-    root {$docRoot};
-    index index.php;
-
-    ssl_certificate {$certFile};
-    ssl_certificate_key {$keyFile};
-
-    location / {
-        try_files \$uri \$uri/ /index.php?\$query_string;
-    }
-
-    location ~ \\.php\$ {
-        include snippets/fastcgi-php.conf;
-        fastcgi_pass unix:/run/php/php-fpm.sock;
-        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-        include fastcgi_params;
-    }
-}
-NGINX;
-        } else {
-            $block = <<<NGINX
+        $block = <<<NGINX
 server {
     listen 80;
     server_name {$domain};
@@ -409,7 +297,6 @@ server {
     }
 }
 NGINX;
-        }
 
         if (@file_put_contents($confFile, $block) === false) {
             return ['ok' => false, 'message' => "Cannot write {$confFile}. Check permissions."];

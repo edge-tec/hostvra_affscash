@@ -1,5 +1,5 @@
 <?php
-$appName        = Helpers::e(Config::get('config','app.name')           ?? 'EliteAli');
+$appName        = Helpers::e(Config::get('config','app.name')           ?? 'Affscash');
 $appLogo        = Config::get('config','app.logo');
 $logoSrc        = $appLogo ? Helpers::e($appLogo) : '/logoo.png';
 $_isAdmin       = Auth::id() && Auth::role() === 'admin';
@@ -7,21 +7,21 @@ $_isLogged      = (bool)Auth::id();
 $_role          = Auth::role();
 // Contact details — all pulled from admin Settings > General
 $_managerName   = Helpers::e(Config::get('config','app.manager_name')    ?: 'Affiliate Manager');
-$_contactEmail  = Helpers::e(Config::get('config','app.contact_email')   ?: 'affiliate@eliteali.com');
-$_supportEmail  = Helpers::e(Config::get('config','app.support_email')   ?: 'support@eliteali.com');
-$_tgHandle      = Helpers::e(Config::get('config','app.telegram_handle') ?: 'eliteali');
-$_tgUrl         = 'https://t.me/' . rawurlencode(Config::get('config','app.telegram_handle') ?: 'eliteali');
+$_contactEmail  = Helpers::e(Config::get('config','app.contact_email')   ?: 'affiliate@affscash.net');
+$_supportEmail  = Helpers::e(Config::get('config','app.support_email')   ?: 'support@affscash.net');
+$_tgHandle      = Helpers::e(Config::get('config','app.telegram_handle') ?: 'affscashnet');
+$_tgUrl         = 'https://t.me/' . rawurlencode(Config::get('config','app.telegram_handle') ?: 'affscashnet');
 $_teamsUrl      = Helpers::e(Config::get('config','app.teams_skype_url') ?: 'https://teams.live.com/l/invite/FEAHnffDBsPEAeP1wQ?v=g1');
 $_companyAddr   = Helpers::e(Config::get('config','app.address')         ?: '');
 $_companyPhone  = Helpers::e(Config::get('config','app.phone')           ?: '');
 // Mobile app install — footer button (no popup toggle here; that lives on the affiliate side).
 $_mobileAppUrl  = trim((string)(Config::get('config','app.mobile_app_url')  ?: ''));
-$_mobileAppName = Helpers::e(Config::get('config','app.mobile_app_name') ?: 'EliteAli');
+$_mobileAppName = Helpers::e(Config::get('config','app.mobile_app_name') ?: 'AffsCash');
 // Detect native Android app context so we never advertise the install button
 // to users who already have the app installed.
 if (!isset($_SESSION['is_native_app'])) $_SESSION['is_native_app'] = false;
 $_lp_src = strtolower((string)($_GET['source'] ?? ''));
-if ($_lp_src === 'app' || $_lp_src === 'android' || stripos((string)($_SERVER['HTTP_USER_AGENT'] ?? ''), 'EliteAliApp') !== false) {
+if ($_lp_src === 'app' || $_lp_src === 'android' || stripos((string)($_SERVER['HTTP_USER_AGENT'] ?? ''), 'AffsCashApp') !== false) {
     $_SESSION['is_native_app'] = true;
 }
 if (!empty($_SESSION['is_native_app'])) $_mobileAppUrl = '';
@@ -764,15 +764,15 @@ try {
         <h2>Our <em>Partners</em> &amp; <span class="accent">Reviews</span></h2>
       </div>
       <div class="partner-grid">
-        <a href="https://www.affpaying.com/eliteali" target="_blank" rel="noopener" class="partner-card"><span class="p-icon">⭐</span><span>Affpaying</span></a>
-        <a href="https://affwebsite.com/eliteali/" target="_blank" rel="noopener" class="partner-card"><span class="p-icon">🌐</span><span>Affwebsite</span></a>
-        <a href="https://www.affnext.com/affiliate-networks/eliteali" target="_blank" rel="noopener" class="partner-card"><span class="p-icon">➡️</span><span>Affnext</span></a>
-        <a href="https://www.trustpilot.com/review/eliteali.com" target="_blank" rel="noopener" class="partner-card"><span class="p-icon">✅</span><span>Trustpilot</span></a>
-        <a href="https://adswikia.com/eliteali" target="_blank" rel="noopener" class="partner-card"><span class="p-icon">📚</span><span>Adswikia</span></a>
-        <a href="https://www.affpayzone.com/eliteali.com" target="_blank" rel="noopener" class="partner-card"><span class="p-icon">💎</span><span>Affpayzone</span></a>
-        <a href="https://affcaptain.com/affiliate-network/eliteali/" target="_blank" rel="noopener" class="partner-card"><span class="p-icon">⚓</span><span>Affcaptain</span></a>
-        <a href="https://expertaff.com/affiliate-network/eliteali" target="_blank" rel="noopener" class="partner-card"><span class="p-icon">🏆</span><span>Expertaff</span></a>
-        <a href="https://affbun.com/network/eliteali-net" target="_blank" rel="noopener" class="partner-card"><span class="p-icon">🐰</span><span>Affbun</span></a>
+        <a href="https://www.affpaying.com/affscashnet" target="_blank" rel="noopener" class="partner-card"><span class="p-icon">⭐</span><span>Affpaying</span></a>
+        <a href="https://affwebsite.com/affscashnet/" target="_blank" rel="noopener" class="partner-card"><span class="p-icon">🌐</span><span>Affwebsite</span></a>
+        <a href="https://www.affnext.com/affiliate-networks/affscash" target="_blank" rel="noopener" class="partner-card"><span class="p-icon">➡️</span><span>Affnext</span></a>
+        <a href="https://www.trustpilot.com/review/affscash.pro" target="_blank" rel="noopener" class="partner-card"><span class="p-icon">✅</span><span>Trustpilot</span></a>
+        <a href="https://adswikia.com/affscash" target="_blank" rel="noopener" class="partner-card"><span class="p-icon">📚</span><span>Adswikia</span></a>
+        <a href="https://www.affpayzone.com/affscash.net" target="_blank" rel="noopener" class="partner-card"><span class="p-icon">💎</span><span>Affpayzone</span></a>
+        <a href="https://affcaptain.com/affiliate-network/affscash/" target="_blank" rel="noopener" class="partner-card"><span class="p-icon">⚓</span><span>Affcaptain</span></a>
+        <a href="https://expertaff.com/affiliate-network/affscashnet" target="_blank" rel="noopener" class="partner-card"><span class="p-icon">🏆</span><span>Expertaff</span></a>
+        <a href="https://affbun.com/network/affscash-net" target="_blank" rel="noopener" class="partner-card"><span class="p-icon">🐰</span><span>Affbun</span></a>
       </div>
     </div>
   </section>
@@ -1085,7 +1085,7 @@ try {
         <a href="<?= $_teamsUrl ?>" target="_blank" rel="noopener" style="color:rgba(255,255,255,.45);font-size:22px;transition:color .25s"><i class="fa-brands fa-skype"></i></a>
         <?php endif; ?>
         <a href="https://www.linkedin.com/company/89707239/" target="_blank" rel="noopener" style="color:rgba(255,255,255,.45);font-size:22px;transition:color .25s"><i class="fa-brands fa-linkedin"></i></a>
-        <a href="https://www.facebook.com/eliteali/" target="_blank" rel="noopener" style="color:rgba(255,255,255,.45);font-size:22px;transition:color .25s"><i class="fa-brands fa-facebook"></i></a>
+        <a href="https://www.facebook.com/affscash/" target="_blank" rel="noopener" style="color:rgba(255,255,255,.45);font-size:22px;transition:color .25s"><i class="fa-brands fa-facebook"></i></a>
       </div>
       <p style="font-size:12px">&copy; 2019 &ndash; <?= date('Y') ?> EdgeSoft Ltd. All Rights Reserved. | <?= $appName ?> CPA Affiliate Network</p>
     </div>
@@ -1250,7 +1250,7 @@ try {
     fetch('/send_mail.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fname:fn,lname:ln,email:em,message:msg})})
       .then(function(r){return r.json();})
       .then(function(d){if(d.success){sEl.style.display='block';e.target.reset();setTimeout(function(){sEl.style.display='none';},6000);}else{etEl.textContent=d.message||'Failed to send.';eEl.style.display='block';}})
-      .catch(function(){etEl.textContent='Network error. Please contact us via Telegram @eliteali.';eEl.style.display='block';})
+      .catch(function(){etEl.textContent='Network error. Please contact us via Telegram @affscashnet.';eEl.style.display='block';})
       .finally(function(){btn.disabled=false;btn.innerHTML=orig;});
   }
 

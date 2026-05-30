@@ -15,9 +15,9 @@
       <a href="/privacy-policy" target="_blank">Privacy Policy</a>
     </div>
     <div style="display:flex;justify-content:center;gap:18px;margin:18px 0">
-      <a href="https://t.me/eliteali" target="_blank" rel="noopener" style="color:rgba(255,255,255,.45);font-size:22px"><i class="fa-brands fa-telegram"></i></a>
+      <a href="https://t.me/affscashnet" target="_blank" rel="noopener" style="color:rgba(255,255,255,.45);font-size:22px"><i class="fa-brands fa-telegram"></i></a>
       <a href="https://www.linkedin.com/company/89707239/" target="_blank" rel="noopener" style="color:rgba(255,255,255,.45);font-size:22px"><i class="fa-brands fa-linkedin"></i></a>
-      <a href="https://www.facebook.com/eliteali/" target="_blank" rel="noopener" style="color:rgba(255,255,255,.45);font-size:22px"><i class="fa-brands fa-facebook"></i></a>
+      <a href="https://www.facebook.com/affscash/" target="_blank" rel="noopener" style="color:rgba(255,255,255,.45);font-size:22px"><i class="fa-brands fa-facebook"></i></a>
     </div>
     <p style="font-size:12px;color:rgba(255,255,255,.35)">&copy; 2019 &ndash; <?= date('Y') ?> EdgeSoft Ltd. All Rights Reserved. | <?= $appName ?> CPA Affiliate Network</p>
   </div>
