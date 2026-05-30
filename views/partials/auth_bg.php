@@ -154,18 +154,13 @@ html[data-theme="dark"] body::after {
 </style>
 <?php else: ?>
 <style>
-/* Static image only — keep the previous tinted-gradient behaviour so
-   text on top of the auth card stays readable on any photo. */
+/* Static image only — with glassmorphism we no longer need the body tint */
 html body {
-    background:
-        linear-gradient(135deg, rgba(238,242,255,.72) 0%, rgba(240,253,244,.72) 100%),
-        url("<?= $imgUrl ?>") center center / cover no-repeat fixed !important;
+    background: url("<?= $imgUrl ?>") center center / cover no-repeat fixed !important;
     background-color:#EEF2FF;
 }
 html[data-theme="dark"] body {
-    background:
-        linear-gradient(135deg, rgba(10,15,31,.78) 0%, rgba(20,28,52,.72) 100%),
-        url("<?= $imgUrl ?>") center center / cover no-repeat fixed !important;
+    background: url("<?= $imgUrl ?>") center center / cover no-repeat fixed !important;
     background-color:#0A0F1F;
 }
 @media (hover: none), (pointer: coarse), (max-width: 768px){
@@ -240,14 +235,14 @@ html[data-theme="dark"] body {
 <style>
 /* Glassmorphism for the auth box when a background is active */
 .auth-box {
-    background: rgba(255, 255, 255, 0.85) !important;
+    background: rgba(255, 255, 255, 0.65) !important;
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.5) !important;
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15) !important;
 }
 html[data-theme="dark"] .auth-box {
-    background: rgba(15, 23, 42, 0.70) !important;
+    background: rgba(15, 23, 42, 0.60) !important;
     border: 1px solid rgba(255, 255, 255, 0.12) !important;
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35) !important;
 }
