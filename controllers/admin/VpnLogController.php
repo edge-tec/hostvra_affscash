@@ -51,6 +51,42 @@ $logs = Database::fetchAll(
     $params
 );
 
+if (Helpers::get('export') === '1') {
+    $exportLogs = Database::fetchAll(
+        "SELECT v.*,
+                CONCAT(u.first_name, ' ', u.last_name) as aff_name,
+                af.affiliate_code
+         FROM vpn_blocked_log v
+         LEFT JOIN affiliates af ON af.id = v.affiliate_id
+         LEFT JOIN users u ON u.id = af.user_id
+         WHERE $whereStr
+         ORDER BY v.blocked_at DESC
+         LIMIT 50000",
+        $params
+    );
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename=vpn_blocked_log_' . date('Y-m-d') . '.csv');
+    $output = fopen('php://output', 'w');
+    fputcsv($output, ['ID', 'Date & Time', 'Affiliate ID', 'Affiliate Name', 'Offer ID', 'Offer Name', 'IP Address', 'Country', 'Detection Type', 'User Agent']);
+    foreach ($exportLogs as $log) {
+        fputcsv($output, [
+            $log['id'],
+            $log['blocked_at'],
+            $log['affiliate_id'] ?? '',
+            $log['aff_name'] ?? '',
+            $log['offer_id'] ?? '',
+            $log['offer_name'] ?? '',
+            $log['ip_address'],
+            $log['country'],
+            $log['detection_type'],
+            $log['user_agent'] ?? ''
+        ]);
+    }
+    fclose($output);
+    exit;
+}
+
+
 // Summary stats
 $totalBlocked = Database::fetchOne(
     "SELECT COUNT(*) as cnt FROM vpn_blocked_log WHERE blocked_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)"

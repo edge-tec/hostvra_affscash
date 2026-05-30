@@ -83,6 +83,7 @@
             <?php if ($qIp || $qAff || $qType || $dateFrom || $dateTo): ?>
             <a href="/admin/vpn-log" class="btn btn-secondary btn-sm">Clear</a>
             <?php endif; ?>
+            <button type="submit" name="export" value="1" class="btn btn-secondary btn-sm" style="margin-left:auto">&#128190; Export CSV</button>
         </form>
     </div>
 </div>
