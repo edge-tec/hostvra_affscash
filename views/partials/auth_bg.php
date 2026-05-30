@@ -235,3 +235,46 @@ html[data-theme="dark"] body {
     <div class="auth-bg-over" style="background:<?= htmlspecialchars($ovRgba, ENT_QUOTES) ?>;"></div>
 </div>
 <?php endif; ?>
+
+<?php if ($imgOk || $vidOk || $animOn): ?>
+<style>
+/* Glassmorphism for the auth box when a background is active */
+.auth-box {
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15) !important;
+}
+html[data-theme="dark"] .auth-box {
+    background: rgba(15, 23, 42, 0.70) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35) !important;
+}
+.auth-footer {
+    background: rgba(255, 255, 255, 0.35) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.4) !important;
+}
+html[data-theme="dark"] .auth-footer {
+    background: rgba(15, 23, 42, 0.4) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+/* Inputs should also have slight transparency to match the glass look */
+.auth-body input[type="text"], 
+.auth-body input[type="email"], 
+.auth-body input[type="password"] {
+    background: rgba(255, 255, 255, 0.6) !important;
+}
+html[data-theme="dark"] .auth-body input[type="text"], 
+html[data-theme="dark"] .auth-body input[type="email"], 
+html[data-theme="dark"] .auth-body input[type="password"] {
+    background: rgba(15, 23, 42, 0.6) !important;
+}
+.auth-body input:focus {
+    background: #fff !important;
+}
+html[data-theme="dark"] .auth-body input:focus {
+    background: rgba(30, 41, 59, 0.9) !important;
+}
+</style>
+<?php endif; ?>
