@@ -415,7 +415,7 @@ mk('convPie', { type:'doughnut', data:{ labels:convStatus, datasets:[{
     data:convStatusCnt,
     backgroundColor:convStatus.map(s=>s==='approved'?COLORS[1]:s==='pending'?COLORS[2]:s==='rejected'?COLORS[3]:COLORS[5]),
     borderWidth:2, borderColor:'#fff',
-}]}, options:{...OPT, cutout:'60%'} });
+}]}, options:{...OPT, cutout:'60%', aspectRatio:1, maintainAspectRatio:false} });
 
 mk('crTrend', { type:'line', data:{ labels:crLabels, datasets:[
     { label:'CR%', data:crValues, borderColor:COLORS[2], backgroundColor:alpha(COLORS[2],0.15), fill:true, tension:.35, pointRadius:2 },
@@ -471,11 +471,11 @@ mk('geoChart', { type:'bar', data:{ labels:geoLabels, datasets:[
 
 mk('deviceChart', { type:'doughnut', data:{ labels:devLabels, datasets:[{
     data:devClicks, backgroundColor:COLORS.slice(0,devLabels.length), borderWidth:2, borderColor:'#fff',
-}]}, options:{...OPT, cutout:'55%'} });
+}]}, options:{...OPT, cutout:'55%', aspectRatio:1, maintainAspectRatio:false} });
 
 mk('browserChart', { type:'doughnut', data:{ labels:brLabels, datasets:[{
     data:brClicks, backgroundColor:COLORS.slice(0,brLabels.length), borderWidth:2, borderColor:'#fff',
-}]}, options:{...OPT, cutout:'55%'} });
+}]}, options:{...OPT, cutout:'55%', aspectRatio:1, maintainAspectRatio:false} });
 
 (function(){
     if (!osLabels.length) return;
