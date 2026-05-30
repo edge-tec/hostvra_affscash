@@ -32,17 +32,11 @@
 
 <div class="card" style="display:flex;flex-direction:column;height:calc(100vh - 220px);min-height:400px;max-height:700px">
     <!-- Chat Header -->
-    <div id="chat-header" style="display:none;padding:14px 20px;border-bottom:1px solid var(--border);align-items:center;gap:12px;background:#F8FAFC;flex-wrap:wrap">
-        <div id="chat-avatar" style="width:40px;height:40px;background:linear-gradient(135deg,#0EA5E9,#3B82F6);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:16px;flex-shrink:0"></div>
-        <div style="flex:1;min-width:120px">
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-                <div id="chat-name" style="font-weight:700;font-size:14px;color:#111827"></div>
-                <span id="chat-status-badge" class="aff-status-badge open" style="display:none">Open</span>
-            </div>
-        </div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
-            <div style="display:flex;align-items:center;background:#fff;border:1px solid #CBD5E1;border-radius:6px;overflow:hidden;height:28px;margin-right:8px">
-                <select id="chat-read-translate-lang" style="background:none;border:none;outline:none;font-size:11px;padding:0 4px;color:#475569;font-weight:600;cursor:pointer">
+    <div id="chat-header" style="display:flex;justify-content:flex-end;padding:10px 20px;border-bottom:1px solid var(--border);background:#F8FAFC">
+        <div style="display:flex;gap:8px;align-items:center">
+            <span style="font-size:11px;color:#64748B;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Translate Chat:</span>
+            <div style="display:flex;align-items:center;background:#fff;border:1px solid #CBD5E1;border-radius:6px;overflow:hidden;height:30px">
+                <select id="chat-read-translate-lang" style="background:none;border:none;outline:none;font-size:12px;padding:0 6px;color:#475569;font-weight:600;cursor:pointer">
                     <option value="en">EN</option>
                     <option value="bn">BN</option>
                     <option value="hi">HI</option>
@@ -52,7 +46,7 @@
                     <option value="ar">AR</option>
                     <option value="ru">RU</option>
                 </select>
-                <button type="button" id="chat-read-translate-btn" onclick="translateAllMessages()" style="background:#F1F5F9;border:none;border-left:1px solid #CBD5E1;height:100%;padding:0 8px;font-size:11px;color:#0F172A;cursor:pointer;font-weight:600" title="Translate all messages">Translate</button>
+                <button type="button" id="chat-read-translate-btn" onclick="translateAllMessages()" style="background:#F1F5F9;border:none;border-left:1px solid #CBD5E1;height:100%;padding:0 12px;font-size:12px;color:#0F172A;cursor:pointer;font-weight:600" title="Translate all messages">Translate</button>
             </div>
         </div>
     </div>
