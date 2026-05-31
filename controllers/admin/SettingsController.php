@@ -330,7 +330,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         }
 
         $trendStyle = Helpers::post('trend_chart_style');
-        if (in_array($trendStyle, ['default', 'straight', 'stepped', 'high_tech'])) {
+        if (in_array($trendStyle, ['default', 'straight', 'stepped', 'high_tech', 'gradient_fill', 'neon_glow', 'minimal_dots', 'area_stacked', 'thin_sharp', 'bold_rounded'])) {
             Config::set('config', 'app.trend_chart_style', $trendStyle);
         }
 
