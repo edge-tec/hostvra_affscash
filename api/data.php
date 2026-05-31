@@ -298,7 +298,7 @@ if (empty($offers)) {
 // Final hardcoded fallback
 if (empty($offers)) {
     $offers = [
-        ['id'=>286,'name'=>'CharmDate Hot',      'cat'=>'soi',      'sub'=>'Dating · Tier-1',       'geos'=>['US','GB','CH','DK','FI'],'payout'=>'5.50', 'payoutDisplay'=>'$5.50', 'payStyle'=>'--grad-gold', 'hot'=>true,'top'=>true,'img'=>'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400&q=70'],
+        ['id'=>286,'name'=>'CharmDate Hot',      'cat'=>'soi',      'sub'=>'Dating · Tier-1',       'geos'=>['US','GB','CH','DK','FI'],'payout'=>'9.00', 'payoutDisplay'=>'$9.00', 'payStyle'=>'--grad-gold', 'hot'=>true,'top'=>true,'img'=>'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400&q=70'],
         ['id'=>62, 'name'=>'Super Smartlink',    'cat'=>'smartlink','sub'=>'Dating · Global',       'geos'=>['WW'],                   'payout'=>'2.00', 'payoutDisplay'=>'80% Rev','payStyle'=>'--grad-green','hot'=>true,'top'=>true,'img'=>'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&q=70'],
         ['id'=>289,'name'=>'uMobix.org',         'cat'=>'software', 'sub'=>'Monitoring App · CPS',  'geos'=>['AU','CA','GB','US'],     'payout'=>'42.00','payoutDisplay'=>'$42.00','payStyle'=>'--grad-cool', 'hot'=>true,'top'=>true,'img'=>'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&q=70'],
         ['id'=>296,'name'=>'Ckwin Casino',       'cat'=>'casino',   'sub'=>'Casino · Per Sale',     'geos'=>['WW'],                   'payout'=>'25.00','payoutDisplay'=>'$25.00','payStyle'=>'--grad-gold', 'hot'=>true,'top'=>true,'img'=>'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=400&q=70'],
