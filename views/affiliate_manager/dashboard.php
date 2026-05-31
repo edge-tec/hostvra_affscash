@@ -756,6 +756,31 @@ function renderTrendChart(){
                 bWidth = 4.5;
                 fillOpacity1 = 'AA'; fillOpacity2 = '44'; fillOpacity3 = '05';
                 pointRad = d.labels.length <= 45 ? 0 : 0;
+            } else if (trendChartStyle === 'gradient_fill') {
+                bWidth = 3;
+                tension = 0.5;
+                fillOpacity1 = 'CC'; fillOpacity2 = '55'; fillOpacity3 = '08';
+            } else if (trendChartStyle === 'neon_glow') {
+                bWidth = 3;
+                tension = 0.4;
+                fillOpacity1 = '88'; fillOpacity2 = '22'; fillOpacity3 = '00';
+            } else if (trendChartStyle === 'minimal_dots') {
+                bWidth = 2;
+                tension = 0.3;
+                fillOpacity1 = '00'; fillOpacity2 = '00'; fillOpacity3 = '00';
+                pointRad = 4;
+            } else if (trendChartStyle === 'area_stacked') {
+                bWidth = 2.5;
+                tension = 0.4;
+                fillOpacity1 = '99'; fillOpacity2 = '44'; fillOpacity3 = '11';
+            } else if (trendChartStyle === 'thin_sharp') {
+                bWidth = 1.5;
+                tension = 0;
+                fillOpacity1 = '15'; fillOpacity2 = '05'; fillOpacity3 = '00';
+            } else if (trendChartStyle === 'bold_rounded') {
+                bWidth = 5;
+                tension = 0.5;
+                fillOpacity1 = '55'; fillOpacity2 = '22'; fillOpacity3 = '00';
             }
         }
 

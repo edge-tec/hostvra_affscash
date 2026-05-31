@@ -1020,6 +1020,12 @@ function renderTrendChart(d){
             if (trendChartStyle === 'straight') { opacity1 = '33'; opacity2 = '05'; }
             else if (trendChartStyle === 'stepped') { opacity1 = '00'; opacity2 = '00'; opacity3 = '00'; }
             else if (trendChartStyle === 'high_tech') { opacity1 = 'AA'; opacity2 = '44'; opacity3 = '05'; }
+            else if (trendChartStyle === 'gradient_fill') { opacity1 = 'CC'; opacity2 = '55'; opacity3 = '08'; }
+            else if (trendChartStyle === 'neon_glow') { opacity1 = '88'; opacity2 = '22'; opacity3 = '00'; }
+            else if (trendChartStyle === 'minimal_dots') { opacity1 = '00'; opacity2 = '00'; opacity3 = '00'; }
+            else if (trendChartStyle === 'area_stacked') { opacity1 = '99'; opacity2 = '44'; opacity3 = '11'; }
+            else if (trendChartStyle === 'thin_sharp') { opacity1 = '15'; opacity2 = '05'; opacity3 = '00'; }
+            else if (trendChartStyle === 'bold_rounded') { opacity1 = '55'; opacity2 = '22'; opacity3 = '00'; }
         }
         grad.addColorStop(0, color + opacity1);
         grad.addColorStop(0.6, color + opacity2);
@@ -1034,9 +1040,16 @@ function renderTrendChart(d){
         if (trendChartStyle === 'straight') { _tension = 0; }
         else if (trendChartStyle === 'stepped') { _tension = 0; _stepped = true; _bWidth = 2.5; }
         else if (trendChartStyle === 'high_tech') { _bWidth = 4.5; }
+        else if (trendChartStyle === 'gradient_fill') { _tension = 0.5; _bWidth = 3; }
+        else if (trendChartStyle === 'neon_glow') { _tension = 0.4; _bWidth = 3; }
+        else if (trendChartStyle === 'minimal_dots') { _tension = 0.3; _bWidth = 2; }
+        else if (trendChartStyle === 'area_stacked') { _tension = 0.4; _bWidth = 2.5; }
+        else if (trendChartStyle === 'thin_sharp') { _tension = 0; _bWidth = 1.5; }
+        else if (trendChartStyle === 'bold_rounded') { _tension = 0.5; _bWidth = 5; }
     }
 
-    var baseDs = {tension:_tension, stepped:_stepped, fill:!_stepped, pointRadius:0, pointHoverRadius:7, pointBorderColor:'#fff', pointHoverBorderWidth:3, borderWidth:_bWidth};
+    var _pointRad = (trendChartStyle === 'minimal_dots') ? 4 : 0;
+    var baseDs = {tension:_tension, stepped:_stepped, fill:!_stepped, pointRadius:_pointRad, pointHoverRadius:7, pointBorderColor:'#fff', pointHoverBorderWidth:3, borderWidth:_bWidth};
     var datasets = [];
     if (document.getElementById('tog-clicks').checked)
         datasets.push(Object.assign({label:'Clicks',data:d.clicks_data,borderColor:'#3B82F6',backgroundColor:createGrad('#3B82F6'),pointBackgroundColor:'#3B82F6'}, baseDs));

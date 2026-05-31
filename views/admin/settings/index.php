@@ -342,6 +342,12 @@
                     <option value="straight" <?= $trendStyle === 'straight' ? 'selected' : '' ?>>Straight Lines (Sharp)</option>
                     <option value="stepped" <?= $trendStyle === 'stepped' ? 'selected' : '' ?>>Stepped Lines</option>
                     <option value="high_tech" <?= $trendStyle === 'high_tech' ? 'selected' : '' ?>>High-Tech (Heavy Glow)</option>
+                    <option value="gradient_fill" <?= $trendStyle === 'gradient_fill' ? 'selected' : '' ?>>Gradient Fill (Deep)</option>
+                    <option value="neon_glow" <?= $trendStyle === 'neon_glow' ? 'selected' : '' ?>>Neon Glow (Dark)</option>
+                    <option value="minimal_dots" <?= $trendStyle === 'minimal_dots' ? 'selected' : '' ?>>Minimal Dots</option>
+                    <option value="area_stacked" <?= $trendStyle === 'area_stacked' ? 'selected' : '' ?>>Stacked Area</option>
+                    <option value="thin_sharp" <?= $trendStyle === 'thin_sharp' ? 'selected' : '' ?>>Thin Sharp</option>
+                    <option value="bold_rounded" <?= $trendStyle === 'bold_rounded' ? 'selected' : '' ?>>Bold Rounded</option>
                 </select>
             </div>
             
