@@ -73,13 +73,18 @@ $_affTzOptions = [
         'Pacific/Guam'        =>'Guam (ChST, UTC+10)',
     ],
 ];
-?>
+<?php $isTransBg = (Config::get('config', 'app.transparent_dashboard') ?? '0') === '1'; ?>
 <style>
 /* ── Analytics Dashboard Styles ─────────────────────────────── */
 .an-header {
+    <?php if ($isTransBg): ?>
+    background: transparent;
+    padding: 10px 0;
+    <?php else: ?>
     background: linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#4C1D95 100%);
     border-radius: 14px;
     padding: 22px 26px;
+    <?php endif; ?>
     margin-bottom: 22px;
     display: flex;
     align-items: center;
@@ -89,6 +94,16 @@ $_affTzOptions = [
     position: relative;
     overflow: hidden;
 }
+<?php if ($isTransBg): ?>
+.an-header::before, .an-header::after { display: none !important; }
+.an-title { color: var(--text) !important; }
+.an-title-label { color: var(--text-muted) !important; }
+.an-filter-input { background: var(--card-bg) !important; color: var(--text) !important; border: 1px solid var(--border) !important; }
+.an-filter-input option { background: var(--card-bg) !important; color: var(--text) !important; }
+.an-filter-input::placeholder { color: var(--text-light) !important; }
+.an-btn-filter { box-shadow: none !important; }
+#an-last-updated { color: var(--text-light) !important; }
+<?php else: ?>
 .an-header::before {
     content: '';
     position: absolute;
@@ -105,6 +120,7 @@ $_affTzOptions = [
     background: rgba(255,255,255,.03);
     border-radius: 50%;
 }
+<?php endif; ?>
 .an-title-label { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.55); margin-bottom: 4px; }
 .an-title       { font-size: 24px; font-weight: 800; color: #fff; line-height: 1.1; }
 .an-filters     { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; position: relative; z-index: 1; }

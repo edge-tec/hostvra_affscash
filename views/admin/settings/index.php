@@ -306,6 +306,17 @@
                 <?php endif; ?>
             </div>
 
+            <!-- Transparent Dashboard Banner Toggle -->
+            <?php $transparentDashboard = !empty($cfg['app']['transparent_dashboard']); ?>
+            <div class="form-group">
+                <label>Transparent Dashboard Banner</label>
+                <div class="form-hint" style="margin-bottom:10px">Enable to make the top purple gradient banner on all dashboards (Admin, Manager, Affiliate) fully transparent.</div>
+                <label style="display:inline-flex;align-items:center;gap:10px;cursor:pointer;background:#F8FAFC;border:1px solid var(--border);border-radius:8px;padding:12px 16px">
+                    <input type="checkbox" name="transparent_dashboard" value="1" <?= $transparentDashboard ? 'checked' : '' ?> style="width:18px;height:18px;accent-color:#4F46E5">
+                    <span style="font-size:13px;font-weight:600;color:var(--text)">Make dashboard banner fully transparent</span>
+                </label>
+            </div>
+
             <!-- ─── Auth-page Backgrounds ──────────────────────────────── -->
             <div style="margin-top:24px;padding:18px;background:linear-gradient(135deg,#F8FAFC,#EEF2FF);border:1px solid #E2E8F0;border-radius:10px">
                 <div style="font-weight:700;font-size:14px;color:#1E293B;margin-bottom:4px">Auth Page Backgrounds</div>

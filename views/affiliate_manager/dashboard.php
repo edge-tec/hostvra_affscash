@@ -1,10 +1,34 @@
 <?php require BASE_PATH . '/views/layouts/affiliate_manager.php'; ?>
 
 <style>
+<?php $isTransBg = (Config::get('config', 'app.transparent_dashboard') ?? '0') === '1'; ?>
 /* ── Dashboard Header + Filter ───────────────────────────────────────── */
-.dash-header{background:linear-gradient(135deg,#1E1B4B 0%,#2D1B69 50%,#4C1D95 100%);border-radius:14px;padding:22px 26px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;position:relative;overflow:hidden;}
+.dash-header{
+    <?php if ($isTransBg): ?>
+    background:transparent;
+    padding:10px 0;
+    <?php else: ?>
+    background:linear-gradient(135deg,#1E1B4B 0%,#2D1B69 50%,#4C1D95 100%);
+    border-radius:14px;padding:22px 26px;
+    <?php endif; ?>
+    margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;position:relative;overflow:hidden;
+}
+<?php if ($isTransBg): ?>
+.dash-header::before, .dash-header::after { display: none !important; }
+.dash-hdr-title { color: var(--text) !important; }
+.dash-hdr-label { color: var(--text-muted) !important; }
+.dash-hdr-updated { color: var(--text-light) !important; }
+.dash-f-input { background: var(--card-bg) !important; color: var(--text) !important; border: 1px solid var(--border) !important; }
+.dash-f-input option { background: var(--card-bg) !important; color: var(--text) !important; }
+.dash-period-tabs { background: var(--card-bg) !important; border: 1px solid var(--border) !important; }
+.dash-period-tab { color: var(--text-muted) !important; }
+.dash-period-tab.active { background: var(--bg) !important; color: var(--text) !important; }
+.dash-btn-apply { box-shadow: none !important; }
+.dash-btn-reset { border-color: var(--border) !important; color: var(--text) !important; }
+<?php else: ?>
 .dash-header::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:rgba(255,255,255,.04);border-radius:50%;}
 .dash-header::after{content:'';position:absolute;bottom:-60px;left:30%;width:280px;height:280px;background:rgba(255,255,255,.03);border-radius:50%;}
+<?php endif; ?>
 .dash-hdr-left{position:relative;z-index:1;}
 .dash-hdr-label{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:4px;}
 .dash-hdr-title{font-size:24px;font-weight:800;color:#fff;line-height:1.1;}
