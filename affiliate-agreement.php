@@ -20,6 +20,9 @@ if (file_exists(__DIR__ . '/config.php')) {
     $landingTheme = 'dark';
 }
 $navLogo = $loginLogoPath ?: $logoPath;
+if (!$navLogo) {
+    $navLogo = '/logoo.png';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en" data-theme="<?= htmlspecialchars($landingTheme) ?>">
@@ -272,14 +275,16 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
 
   <!-- Terms Content -->
   
+
 <main class="tos-content">
 
 <div class="notice-block">
-      This Affiliate Program Operating Agreement (the "Agreement") is made and entered into by and between Affscash ("Affscash" or "we"), and you ("you" or "Affiliate") — the party submitting an application to become an Affscash affiliate.
-    </div>
 
-    <!-- Section 1 -->
-    <section class="tos-section is-open" id="section-1">
+      This Affiliate Program Operating Agreement (the "Agreement") is made and entered into by and between Affscash ("Affscash" or "we"), and you ("you" or "Affiliate") — the party submitting an application to become an Affscash affiliate.
+    
+</div>
+
+<section class="tos-section is-open" id="section-1">
       <div class="accordion-header">
         <span class="section-number">01</span>
         <h2>Parties</h2>
@@ -290,8 +295,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
     </section>
 
-    <!-- Section 2 -->
-    <section class="tos-section" id="section-2">
+<section class="tos-section" id="section-2">
       <div class="accordion-header">
         <span class="section-number">02</span>
         <h2>Enrollment</h2>
@@ -302,8 +306,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
     </section>
 
-    <!-- Section 3 -->
-    <section class="tos-section" id="section-3">
+<section class="tos-section" id="section-3">
       <div class="accordion-header">
         <span class="section-number">03</span>
         <h2>Promotion Rights</h2>
@@ -314,8 +317,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
     </section>
 
-    <!-- Section 4 -->
-    <section class="tos-section" id="section-4">
+<section class="tos-section" id="section-4">
       <div class="accordion-header">
         <span class="section-number">04</span>
         <h2>Commissions</h2>
@@ -330,8 +332,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
     </section>
 
-    <!-- Section 5 -->
-    <section class="tos-section" id="section-5">
+<section class="tos-section" id="section-5">
       <div class="accordion-header">
         <span class="section-number">05</span>
         <h2>Payment Terms</h2>
@@ -346,8 +347,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
     </section>
 
-    <!-- Section 6 -->
-    <section class="tos-section" id="section-6">
+<section class="tos-section" id="section-6">
       <div class="accordion-header">
         <span class="section-number">06</span>
         <h2>Prohibited Activities</h2>
@@ -363,8 +363,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
     </section>
 
-    <!-- Section 7 -->
-    <section class="tos-section" id="section-7">
+<section class="tos-section" id="section-7">
       <div class="accordion-header">
         <span class="section-number">07</span>
         <h2>Termination</h2>
@@ -375,8 +374,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
     </section>
 
-    <!-- Section 8 -->
-    <section class="tos-section" id="section-8">
+<section class="tos-section" id="section-8">
       <div class="accordion-header">
         <span class="section-number">08</span>
         <h2>Liability</h2>
@@ -402,7 +400,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       <li><a href="/anti-fraud-policy">Anti-Fraud Policy</a></li>
       <li><a href="/gdpr-compliance-policy">GDPR Compliance</a></li>
       <li><a href="/refund-payment-policy">Refund Policy</a></li>
-      <li><a href="/cookie-policy" >Cookie Policy</a></li>
+      <li><a href="/cookie-policy"  >Cookie Policy</a></li>
       <li><a href="/login">Login</a></li>
     </ul>
   </div>

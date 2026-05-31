@@ -20,6 +20,9 @@ if (file_exists(__DIR__ . '/config.php')) {
     $landingTheme = 'dark';
 }
 $navLogo = $loginLogoPath ?: $logoPath;
+if (!$navLogo) {
+    $navLogo = '/logoo.png';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en" data-theme="<?= htmlspecialchars($landingTheme) ?>">
@@ -270,14 +273,17 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
 
   <!-- Terms Content -->
   
+
 <main class="tos-content">
 
 <div class="notice-block">
+
 
       This Cookie Policy ("Policy") explains how <strong><?= htmlspecialchars($siteName) ?> Limited</strong> ("<?= htmlspecialchars($siteName) ?>," "Company," "we," "our," or "us") uses cookies and similar tracking technologies on <?= htmlspecialchars($siteName) ?>.net and related services.<br><br>
       This Policy should be read together with our <a href="/privacy-policy" style="color:var(--cyan)">Privacy Policy</a> and <a href="/gdpr-compliance-policy" style="color:var(--cyan)">GDPR Compliance Policy</a>.<br><br>
       By accessing or using our website, you consent to the use of cookies as described in this Policy, unless you disable them through your browser settings or cookie preferences.
     
+
 </div>
 
 <section class="tos-section is-open" id="section-1">
@@ -371,7 +377,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       <li><a href="/anti-fraud-policy">Anti-Fraud Policy</a></li>
       <li><a href="/gdpr-compliance-policy">GDPR Compliance</a></li>
       <li><a href="/refund-payment-policy" class="active-link">Refund Policy</a></li>
-      <li><a href="/cookie-policy" >Cookie Policy</a></li>
+      <li><a href="/cookie-policy"  >Cookie Policy</a></li>
       <li><a href="/login">Login</a></li>
     </ul>
   </div>
