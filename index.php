@@ -190,6 +190,22 @@ Router::get('/privacy-policy', function() {
 // Convenience aliases.
 Router::get('/privacy', function() { Helpers::redirect('/privacy-policy'); });
 
+Router::get('/affiliate-agreement', function() {
+    require BASE_PATH . '/affiliate-agreement.php';
+});
+Router::get('/anti-fraud-policy', function() {
+    require BASE_PATH . '/anti-fraud-policy.php';
+});
+Router::get('/gdpr-compliance-policy', function() {
+    require BASE_PATH . '/gdpr-compliance-policy.php';
+});
+Router::get('/refund-payment-policy', function() {
+    require BASE_PATH . '/refund-payment-policy.php';
+});
+Router::get('/cookie-policy', function() {
+    require BASE_PATH . '/cookie-policy.php';
+});
+
 // Auth
 Router::any('/login', function() {
     require BASE_PATH . '/controllers/auth/LoginController.php';
