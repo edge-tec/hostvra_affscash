@@ -205,6 +205,9 @@ Router::get('/refund-payment-policy', function() {
 Router::get('/cookie-policy', function() {
     require BASE_PATH . '/cookie-policy.php';
 });
+Router::get('/dashboard-disclaimers', function() {
+    require BASE_PATH . '/dashboard-disclaimers.php';
+});
 
 // Auth
 Router::any('/login', function() {
