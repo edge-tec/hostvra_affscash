@@ -91,10 +91,15 @@ body { display:flex; align-items:center; justify-content:center; min-height:100v
         <?php if ((Config::get('config','app.advertiser_registration_enabled') ?? '1') === '1'): ?>
         &nbsp;|&nbsp; Advertiser? <a href="/register/advertiser">Register here</a>
         <?php endif; ?>
-        <div style="margin-top:10px;font-size:12px">
-            <a href="/privacy-policy" target="_blank" style="color:var(--text-muted)">Privacy Policy</a>
-            &nbsp;&middot;&nbsp;
-            <a href="/TRC.html" target="_blank" style="color:var(--text-muted)">Terms &amp; Conditions</a>
+        <div style="margin-top:12px;font-size:11.5px;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 12px;opacity:0.85">
+            <a href="/affiliate-agreement" target="_blank" style="color:var(--text-muted);text-decoration:none">Affiliate Agreement</a>
+            <a href="/anti-fraud-policy" target="_blank" style="color:var(--text-muted);text-decoration:none">Anti-Fraud Policy</a>
+            <a href="/gdpr-compliance-policy" target="_blank" style="color:var(--text-muted);text-decoration:none">GDPR Compliance</a>
+            <a href="/refund-payment-policy" target="_blank" style="color:var(--text-muted);text-decoration:none">Refund Policy</a>
+            <a href="/cookie-policy" target="_blank" style="color:var(--text-muted);text-decoration:none">Cookie Policy</a>
+            <a href="/dashboard-disclaimers" target="_blank" style="color:var(--text-muted);text-decoration:none">Dashboard Disclaimers</a>
+            <a href="/privacy-policy" target="_blank" style="color:var(--text-muted);text-decoration:none">Privacy Policy</a>
+            <a href="/TRC.html" target="_blank" style="color:var(--text-muted);text-decoration:none">Terms &amp; Conditions</a>
         </div>
         <div style="margin-top:10px"><a href="/" style="color:var(--text-muted);font-size:12px">&#8592; Back to Home</a></div>
     </div>
