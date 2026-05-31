@@ -339,8 +339,13 @@ body {
 <!-- ── Top Nav ─────────────────────────────────────────────────────────── -->
 <nav class="topnav">
     <a class="topnav-brand" href="/">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        <?= $appName ?>
+        <?php 
+          $logoPath = Config::get('config', 'app.logo');
+          if (!$logoPath) {
+              $logoPath = '/logoo.png';
+          }
+        ?>
+        <img src="<?= htmlspecialchars($logoPath) ?>" alt="<?= htmlspecialchars($appName) ?> Logo" style="height:40px; width:auto; object-fit:contain;">
     </a>
     <div class="topnav-links">
         <a href="/">Home</a>
