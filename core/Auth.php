@@ -19,9 +19,13 @@ class Auth {
             session_name('AFFILIATETRACKSID');
             session_start();
         }
+
+        if (empty($_SESSION['user_id']) && !empty($_COOKIE['remember_token'])) {
+            self::autoLoginFromCookie($_COOKIE['remember_token']);
+        }
     }
 
-    public static function login(string $email, string $password): array {
+    public static function login(string $email, string $password, bool $remember = false): array {
         $clientIp = Helpers::getIp();
 
         // Database-backed IP rate limiting to prevent session bypass brute-force
@@ -113,6 +117,7 @@ class Auth {
             $_SESSION['2fa_pending_role']    = $user['role'];
             $_SESSION['2fa_pending_email']   = $user['email'];
             $_SESSION['2fa_pending_name']    = trim($user['first_name'] . ' ' . $user['last_name']);
+            $_SESSION['2fa_pending_remember'] = $remember;
             $_SESSION['2fa_method']          = 'totp';
             $_SESSION['2fa_expires']         = time() + 600;
             $_SESSION['2fa_attempts']        = 0;
@@ -127,6 +132,7 @@ class Auth {
             $_SESSION['2fa_pending_role']    = $user['role'];
             $_SESSION['2fa_pending_email']   = $user['email'];
             $_SESSION['2fa_pending_name']    = trim($user['first_name'] . ' ' . $user['last_name']);
+            $_SESSION['2fa_pending_remember'] = $remember;
             $_SESSION['2fa_method']          = 'email';
             $_SESSION['2fa_code']            = password_hash($otp, PASSWORD_BCRYPT);
             $_SESSION['2fa_expires']         = time() + 600;
@@ -171,6 +177,10 @@ class Auth {
             $userName = trim(($user['first_name']??'').' '.($user['last_name']??''));
             Activity::logLogin($user['id'], $user['role'], session_id(), $userName);
         } catch (Exception $e) {}
+
+        if ($remember) {
+            self::setRememberCookie($user['id']);
+        }
 
         return ['success' => true, 'role' => $user['role']];
     }
@@ -225,7 +235,9 @@ class Auth {
         try {
             if (!empty($_SESSION['user_id'])) {
                 Activity::logLogout((int)$_SESSION['user_id'], session_id());
+                try { Database::query("UPDATE `users` SET `remember_token`=NULL WHERE `id`=?", [$_SESSION['user_id']]); } catch (\Exception $e) {}
             }
+            setcookie('remember_token', '', time() - 3600, '/');
         } catch (Exception $e) {}
         session_destroy();
         header('Location: /login');
@@ -403,6 +415,44 @@ class Auth {
             [self::id()]
         );
         return array_column($rows, 'id');
+    }
+
+
+    public static function setRememberCookie(int $userId): void {
+        try { Database::query("ALTER TABLE `users` ADD COLUMN `remember_token` VARCHAR(64) DEFAULT NULL"); } catch (\Throwable $_e) {}
+        $token = bin2hex(random_bytes(32));
+        try { Database::query("UPDATE `users` SET `remember_token`=? WHERE `id`=?", [$token, $userId]); } catch (\Throwable $e) {}
+        // 30 days
+        setcookie('remember_token', $token, time() + 2592000, '/', '', false, true); 
+    }
+
+    private static function autoLoginFromCookie(string $token): void {
+        try { Database::query("ALTER TABLE `users` ADD COLUMN `remember_token` VARCHAR(64) DEFAULT NULL"); } catch (\Throwable $_e) {}
+        try {
+            $user = Database::fetchOne("SELECT * FROM `users` WHERE `remember_token`=?", [$token]);
+            if ($user && $user['status'] === 'active') {
+                session_regenerate_id(true);
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user_role'] = $user['role'];
+                $_SESSION['user_email'] = $user['email'];
+                $_SESSION['user_name'] = trim($user['first_name'] . ' ' . $user['last_name']);
+                
+                if ($user['role'] === 'affiliate') {
+                    $aff = Database::fetchOne("SELECT `id` FROM `affiliates` WHERE `user_id` = ?", [$user['id']]);
+                    $_SESSION['affiliate_id'] = $aff['id'] ?? null;
+                } elseif ($user['role'] === 'advertiser') {
+                    $adv = Database::fetchOne("SELECT `id` FROM `advertisers` WHERE `user_id` = ?", [$user['id']]);
+                    $_SESSION['advertiser_id'] = $adv['id'] ?? null;
+                }
+                
+                Database::query("UPDATE `users` SET `last_login`=NOW() WHERE `id`=?", [$user['id']]);
+                try { Activity::logLogin($user['id'], $user['role'], session_id(), $_SESSION['user_name']); } catch (\Exception $e) {}
+            } else {
+                setcookie('remember_token', '', time() - 3600, '/');
+            }
+        } catch (\Throwable $e) {
+            setcookie('remember_token', '', time() - 3600, '/');
+        }
     }
 
     public static function generateCsrf(): string {

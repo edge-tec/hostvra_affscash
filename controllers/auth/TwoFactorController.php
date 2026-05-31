@@ -11,7 +11,7 @@ if (empty($_SESSION['2fa_pending_user_id'])) {
 if (time() > ($_SESSION['2fa_expires'] ?? 0)) {
     unset($_SESSION['2fa_pending_user_id'], $_SESSION['2fa_pending_role'],
           $_SESSION['2fa_pending_email'], $_SESSION['2fa_pending_name'],
-          $_SESSION['2fa_code'], $_SESSION['2fa_expires']);
+          $_SESSION['2fa_code'], $_SESSION['2fa_expires'], $_SESSION['2fa_pending_remember']);
     Helpers::flash('error', 'Verification code expired. Please sign in again.');
     Helpers::redirect('/login');
 }
@@ -30,7 +30,7 @@ if (Helpers::isPost()) {
             unset($_SESSION['2fa_pending_user_id'], $_SESSION['2fa_pending_role'],
                   $_SESSION['2fa_pending_email'], $_SESSION['2fa_pending_name'],
                   $_SESSION['2fa_code'], $_SESSION['2fa_method'],
-                  $_SESSION['2fa_expires'], $_SESSION['2fa_attempts']);
+                  $_SESSION['2fa_expires'], $_SESSION['2fa_attempts'], $_SESSION['2fa_pending_remember']);
             Helpers::flash('error', 'Too many invalid codes. Please sign in again.');
             Helpers::redirect('/login');
         }
@@ -55,10 +55,13 @@ if (Helpers::isPost()) {
             $role   = $_SESSION['2fa_pending_role'];
 
             // Clear 2FA pending state
+            if (!empty($_SESSION['2fa_pending_remember'])) {
+                Auth::setRememberCookie($userId);
+            }
             unset($_SESSION['2fa_pending_user_id'], $_SESSION['2fa_pending_role'],
                   $_SESSION['2fa_pending_email'], $_SESSION['2fa_pending_name'],
                   $_SESSION['2fa_code'], $_SESSION['2fa_expires'],
-                  $_SESSION['2fa_method'], $_SESSION['2fa_attempts']);
+                  $_SESSION['2fa_method'], $_SESSION['2fa_attempts'], $_SESSION['2fa_pending_remember']);
 
             session_regenerate_id(true);
             $_SESSION['login_attempts'] = 0;

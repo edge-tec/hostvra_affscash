@@ -62,6 +62,10 @@ body { display:flex; align-items:center; justify-content:center; min-height:100v
                 </div>
                 <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
             </div>
+            <div class="form-group" style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+                <input type="checkbox" id="remember" name="remember" value="1" <?= (isset($_POST['remember']) && $_POST['remember'] === '1') ? 'checked' : '' ?>>
+                <label for="remember" style="margin:0;font-size:13px;font-weight:500;">Remember Me for 30 days</label>
+            </div>
             <?php if (Turnstile::isEnabled()): ?>
             <!-- Cloudflare Turnstile widget -->
             <div style="margin-top:16px;display:flex;justify-content:center">

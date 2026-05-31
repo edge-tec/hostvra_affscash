@@ -18,7 +18,8 @@ if (Helpers::isPost()) {
     if (!$error) {
         $email    = Helpers::postRaw('email');
         $password = Helpers::postRaw('password');
-        $result   = Auth::login($email, $password);
+        $remember = (Helpers::postRaw('remember') === '1');
+        $result   = Auth::login($email, $password, $remember);
         if ($result['success']) {
             if (!empty($result['2fa_required'])) {
                 Helpers::redirect('/login/2fa');
