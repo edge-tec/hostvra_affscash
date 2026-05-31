@@ -1054,6 +1054,12 @@ try {
         <a href="/reviews">Reviews</a>
         <a href="/TRC.html" target="_blank">Terms &amp; Conditions</a>
         <a href="/privacy-policy" target="_blank">Privacy Policy</a>
+        <a href="/affiliate-agreement">Affiliate Agreement</a>
+        <a href="/anti-fraud-policy">Anti-Fraud Policy</a>
+        <a href="/gdpr-compliance-policy">GDPR Compliance</a>
+        <a href="/refund-payment-policy">Refund Policy</a>
+        <a href="/cookie-policy">Cookie Policy</a>
+        <a href="/dashboard-disclaimers">Dashboard Disclaimers</a>
         <a href="/register/affiliate">Sign Up</a>
         <a href="/login">Login</a>
         <a href="/affiliate/smartlinks">Short Link</a>
