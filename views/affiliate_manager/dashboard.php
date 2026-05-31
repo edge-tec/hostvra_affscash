@@ -46,6 +46,9 @@ html[data-theme="dark"] .dash-header {
 .dash-period-tab.active { background: var(--bg) !important; color: var(--text) !important; }
 .dash-btn-apply { box-shadow: none !important; }
 .dash-btn-reset { border-color: var(--border) !important; color: var(--text) !important; }
+<?php elseif ($bannerStyle === 'glass_purple'): ?>
+.dash-header::before{content:'';position:absolute;top:-60px;right:-40px;width:300px;height:300px;background:radial-gradient(circle, rgba(168,85,247,0.4) 0%, rgba(168,85,247,0) 70%);border-radius:50%;filter:blur(15px);z-index:0;}
+.dash-header::after{content:'';position:absolute;bottom:-80px;left:20%;width:400px;height:400px;background:radial-gradient(circle, rgba(56,189,248,0.3) 0%, rgba(56,189,248,0) 70%);border-radius:50%;filter:blur(20px);z-index:0;}
 <?php else: ?>
 .dash-header::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:rgba(255,255,255,.04);border-radius:50%;}
 .dash-header::after{content:'';position:absolute;bottom:-60px;left:30%;width:280px;height:280px;background:rgba(255,255,255,.03);border-radius:50%;}

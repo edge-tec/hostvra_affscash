@@ -127,6 +127,9 @@ html[data-theme="dark"] .an-header {
 .an-filter-input::placeholder { color: var(--text-light) !important; }
 .an-btn-filter { box-shadow: none !important; }
 #an-last-updated { color: var(--text-light) !important; }
+<?php elseif ($bannerStyle === 'glass_purple'): ?>
+.an-header::before{content:'';position:absolute;top:-60px;right:-40px;width:300px;height:300px;background:radial-gradient(circle, rgba(168,85,247,0.4) 0%, rgba(168,85,247,0) 70%);border-radius:50%;filter:blur(15px);z-index:0;}
+.an-header::after{content:'';position:absolute;bottom:-80px;left:20%;width:400px;height:400px;background:radial-gradient(circle, rgba(56,189,248,0.3) 0%, rgba(56,189,248,0) 70%);border-radius:50%;filter:blur(20px);z-index:0;}
 <?php else: ?>
 .an-header::before {
     content: '';
