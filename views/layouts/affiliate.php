@@ -919,6 +919,15 @@ document.addEventListener('visibilitychange', function(){
     }, {passive:true});
 })();
 
-
+// ── Preserve Sidebar Scroll Position ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+    var sb = document.querySelector('.sidebar');
+    if (!sb) return;
+    var savedPos = sessionStorage.getItem('aff_sidebar_scroll');
+    if (savedPos) sb.scrollTop = parseInt(savedPos, 10);
+    
+    var saveScroll = function() { sessionStorage.setItem('aff_sidebar_scroll', sb.scrollTop); };
+    sb.addEventListener('scroll', saveScroll, {passive: true});
+    window.addEventListener('beforeunload', saveScroll);
+});
 </script>
-

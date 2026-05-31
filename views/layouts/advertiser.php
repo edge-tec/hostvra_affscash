@@ -199,6 +199,18 @@ document.addEventListener('click', function(e){
     setInterval(poll, 30000);
     document.addEventListener('visibilitychange', function(){ if (!document.hidden) poll(); });
 })();
+
+// ── Preserve Sidebar Scroll Position ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+    var sb = document.querySelector('.sidebar');
+    if (!sb) return;
+    var savedPos = sessionStorage.getItem('adv_sidebar_scroll');
+    if (savedPos) sb.scrollTop = parseInt(savedPos, 10);
+    
+    var saveScroll = function() { sessionStorage.setItem('adv_sidebar_scroll', sb.scrollTop); };
+    sb.addEventListener('scroll', saveScroll, {passive: true});
+    window.addEventListener('beforeunload', saveScroll);
+});
 </script>
 <main class="page-body">
 <?php foreach(Helpers::getFlash() as $f): ?>
