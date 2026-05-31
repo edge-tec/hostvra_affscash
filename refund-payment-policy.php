@@ -2,7 +2,7 @@
 if (file_exists(__DIR__ . '/config.php')) {
     require_once __DIR__ . '/config.php';
     require_once __DIR__ . '/core/functions.php';
-    $siteName      = setting('site_name', 'EdgeCash');
+    $siteName      = setting('site_name', 'AffsCash');
     $siteUrl       = defined('SITE_URL') ? SITE_URL : '';
     $logoPath      = setting('logo_path', '');
     $loginLogoPath = setting('login_logo_path', '');
@@ -13,7 +13,7 @@ if (file_exists(__DIR__ . '/config.php')) {
     $landingGlobalDefault = in_array(setting('default_theme','dark'), ['dark','light']) ? setting('default_theme','dark') : 'dark';
     $landingTheme = $landingCookieTheme ?? $landingGlobalDefault;
 } else {
-    $siteName = 'EdgeCash'; $siteUrl = ''; $logoPath = ''; $loginLogoPath = '';
+    $siteName = 'AffsCash'; $siteUrl = ''; $logoPath = ''; $loginLogoPath = '';
     $faviconPath = '';
     $footerCopyright = 'All rights reserved. Built for performance marketers worldwide.';
     $footerPoweredBy = 'Powered by EdgeSoft Ltd';
@@ -260,7 +260,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
     </nav>
     <div class="sidebar-promo">
-      <p>Ready to start earning with Edgecash?</p>
+      <p>Ready to start earning with Affscash?</p>
       <a href="/register" class="sidebar-promo-btn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
         Join Now
