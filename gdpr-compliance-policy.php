@@ -247,12 +247,22 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
       <div class="toc-scroll">
         <ul class="toc-list">
-          <li><a href="#section-1"><span class="toc-num">01</span><span class="toc-text">What Are Cookies</span></a></li>
-          <li><a href="#section-2"><span class="toc-num">02</span><span class="toc-text">How We Use Cookies</span></a></li>
-          <li><a href="#section-3"><span class="toc-num">03</span><span class="toc-text">Types Of Cookies</span></a></li>
-          <li><a href="#section-4"><span class="toc-num">04</span><span class="toc-text">Third-Party Cookies</span></a></li>
-          <li><a href="#section-5"><span class="toc-num">05</span><span class="toc-text">User Consent</span></a></li>
-          <li><a href="#section-6"><span class="toc-num">06</span><span class="toc-text">Managing Cookies</span></a></li>
+          <li><a href="#section-1"><span class="toc-num">01</span> <span class="toc-text">Introduction</span></a></li>
+          <li><a href="#section-2"><span class="toc-num">02</span> <span class="toc-text">Data Controller</span></a></li>
+          <li><a href="#section-3"><span class="toc-num">03</span> <span class="toc-text">Personal Data We Collect</span></a></li>
+          <li><a href="#section-4"><span class="toc-num">04</span> <span class="toc-text">Purpose of Data Collection</span></a></li>
+          <li><a href="#section-5"><span class="toc-num">05</span> <span class="toc-text">Legal Basis for Processing</span></a></li>
+          <li><a href="#section-6"><span class="toc-num">06</span> <span class="toc-text">Data Sharing</span></a></li>
+          <li><a href="#section-7"><span class="toc-num">07</span> <span class="toc-text">Cookies & Tracking Technologies</span></a></li>
+          <li><a href="#section-8"><span class="toc-num">08</span> <span class="toc-text">Data Retention</span></a></li>
+          <li><a href="#section-9"><span class="toc-num">09</span> <span class="toc-text">Data Security</span></a></li>
+          <li><a href="#section-10"><span class="toc-num">10</span> <span class="toc-text">International Data Transfers</span></a></li>
+          <li><a href="#section-11"><span class="toc-num">11</span> <span class="toc-text">Data Subject Rights (GDPR Rights)</span></a></li>
+          <li><a href="#section-12"><span class="toc-num">12</span> <span class="toc-text">Automated Decision-Making</span></a></li>
+          <li><a href="#section-13"><span class="toc-num">13</span> <span class="toc-text">Fraud Prevention & Monitoring</span></a></li>
+          <li><a href="#section-14"><span class="toc-num">14</span> <span class="toc-text">Data Requests & Contact</span></a></li>
+          <li><a href="#section-15"><span class="toc-num">15</span> <span class="toc-text">Policy Updates</span></a></li>
+          <li><a href="#section-16"><span class="toc-num">16</span> <span class="toc-text">Acceptance</span></a></li>
         </ul>
       </div>
       <div class="toc-footer">
@@ -277,88 +287,313 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
 <main class="tos-content">
 
 <div class="notice-block">
+      <strong>Last Updated: June 1, 2026</strong><br>Applies To: AffsCash.net (“Company,” “we,” “us,” “our”) and all users, affiliates, and visitors within the European Economic Area (EEA), UK, and other applicable regions.
+    </div>
 
-
-      This Cookie Policy ("Policy") explains how <strong><?= htmlspecialchars($siteName) ?> Limited</strong> ("<?= htmlspecialchars($siteName) ?>," "Company," "we," "our," or "us") uses cookies and similar tracking technologies on <?= htmlspecialchars($siteName) ?>.net and related services.<br><br>
-      This Policy should be read together with our <a href="/privacy-policy" style="color:var(--cyan)">Privacy Policy</a> and <a href="/gdpr-compliance-policy" style="color:var(--cyan)">GDPR Compliance Policy</a>.<br><br>
-      By accessing or using our website, you consent to the use of cookies as described in this Policy, unless you disable them through your browser settings or cookie preferences.
-    
-
-</div>
-
-<section class="tos-section is-open" id="section-1">
+    <!-- Section 1 -->
+    <section class="tos-section is-open" id="section-1">
       <div class="accordion-header">
         <span class="section-number">01</span>
-        <h2>What Are Cookies</h2>
+        <h2>Introduction</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>Cookies are small files stored on a user’s device to track activity and improve performance.</p>
+        <p>AffsCash.net is committed to protecting the privacy and personal data of all users. This GDPR Compliance Policy explains how we collect, use, store, and protect personal data in accordance with the General Data Protection Regulation (EU) 2016/679 (GDPR) and applicable UK data protection laws.</p>
       </div>
     </section>
 
-<section class="tos-section" id="section-2">
+    <!-- Section 2 -->
+    <section class="tos-section" id="section-2">
       <div class="accordion-header">
         <span class="section-number">02</span>
-        <h2>How We Use Cookies</h2>
+        <h2>Data Controller</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>We use cookies for:</p>
-        <ul class="tos-list">
-          <li>Tracking affiliate referrals</li>
-          <li>Measuring conversions</li>
-          <li>Preventing fraud</li>
-          <li>Improving platform performance</li>
-        </ul>
+        <p>For the purposes of GDPR, AffsCash.net acts as the Data Controller for personal data collected through our platform.</p>
+<p>We are responsible for determining the purposes and means of processing personal data.</p>
       </div>
     </section>
 
-<section class="tos-section" id="section-3">
+    <!-- Section 3 -->
+    <section class="tos-section" id="section-3">
       <div class="accordion-header">
         <span class="section-number">03</span>
-        <h2>Types Of Cookies</h2>
+        <h2>Personal Data We Collect</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <ul class="tos-list">
-          <li>Essential cookies (site functionality)</li>
-          <li>Tracking cookies (affiliate attribution)</li>
-          <li>Analytics cookies (performance optimization)</li>
-        </ul>
+        <p>We may collect and process the following categories of personal data:</p>
+
+<p><strong>3.1 Account Information</strong></p>
+<ul class="tos-list">
+  <li>Full name</li>
+  <li>Email address</li>
+  <li>Username</li>
+  <li>Password (encrypted)</li>
+  <li>Payment details</li>
+</ul>
+
+<p><strong>3.2 Technical Data</strong></p>
+<ul class="tos-list">
+  <li>IP address</li>
+  <li>Device type and browser</li>
+  <li>Operating system</li>
+  <li>Language settings</li>
+</ul>
+
+<p><strong>3.3 Usage & Tracking Data</strong></p>
+<ul class="tos-list">
+  <li>Click activity</li>
+  <li>Conversion data</li>
+  <li>Traffic sources</li>
+  <li>Dashboard interactions</li>
+</ul>
+
+<p><strong>3.4 Communication Data</strong></p>
+<ul class="tos-list">
+  <li>Support messages</li>
+  <li>Email correspondence</li>
+  <li>Live chat interactions</li>
+</ul>
       </div>
     </section>
 
-<section class="tos-section" id="section-4">
+    <!-- Section 4 -->
+    <section class="tos-section" id="section-4">
       <div class="accordion-header">
         <span class="section-number">04</span>
-        <h2>Third-Party Cookies</h2>
+        <h2>Purpose of Data Collection</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>Advertisers may place cookies to track conversions and user behavior.</p>
+        <p>We process personal data for the following purposes:</p>
+<ul class="tos-list">
+  <li>Affiliate tracking and attribution</li>
+  <li>Fraud prevention and detection</li>
+  <li>Payment processing</li>
+  <li>Account management</li>
+  <li>Platform performance analysis</li>
+  <li>Legal and compliance obligations</li>
+  <li>Customer support</li>
+</ul>
       </div>
     </section>
 
-<section class="tos-section" id="section-5">
+    <!-- Section 5 -->
+    <section class="tos-section" id="section-5">
       <div class="accordion-header">
         <span class="section-number">05</span>
-        <h2>User Consent</h2>
+        <h2>Legal Basis for Processing</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>By using AffsCash services, users agree to cookie usage as described in this policy.</p>
+        <p>We process personal data under the following lawful bases:</p>
+<ul class="tos-list">
+  <li>Contractual necessity (affiliate program participation)</li>
+  <li>Legitimate interests (fraud prevention, analytics, platform security)</li>
+  <li>Legal obligations (tax, accounting, compliance)</li>
+  <li>Consent (where required for cookies or marketing communication)</li>
+</ul>
       </div>
     </section>
 
-<section class="tos-section" id="section-6">
+    <!-- Section 6 -->
+    <section class="tos-section" id="section-6">
       <div class="accordion-header">
         <span class="section-number">06</span>
-        <h2>Managing Cookies</h2>
+        <h2>Data Sharing</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>Users can disable cookies in browser settings, but this may affect tracking accuracy.</p>
+        <p>We may share personal data with:</p>
+<ul class="tos-list">
+  <li>Advertisers (for conversion validation)</li>
+  <li>Payment processors (for affiliate payouts)</li>
+  <li>Fraud detection service providers</li>
+  <li>Hosting and cloud infrastructure providers</li>
+  <li>Legal or regulatory authorities (when required by law)</li>
+</ul>
+<p>We do not sell personal data to third parties.</p>
+      </div>
+    </section>
+
+    <!-- Section 7 -->
+    <section class="tos-section" id="section-7">
+      <div class="accordion-header">
+        <span class="section-number">07</span>
+        <h2>Cookies & Tracking Technologies</h2>
+        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="accordion-content">
+        <p>AffsCash uses cookies, pixels, and tracking technologies to:</p>
+<ul class="tos-list">
+  <li>Track affiliate referrals</li>
+  <li>Measure conversions</li>
+  <li>Prevent fraud</li>
+  <li>Improve platform performance</li>
+</ul>
+<p>Users may manage cookie preferences through their browser settings.</p>
+      </div>
+    </section>
+
+    <!-- Section 8 -->
+    <section class="tos-section" id="section-8">
+      <div class="accordion-header">
+        <span class="section-number">08</span>
+        <h2>Data Retention</h2>
+        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="accordion-content">
+        <p>We retain personal data only as long as necessary for:</p>
+<ul class="tos-list">
+  <li>Providing affiliate services</li>
+  <li>Legal compliance</li>
+  <li>Fraud prevention</li>
+  <li>Financial record-keeping</li>
+</ul>
+<p>After this period, data is securely deleted or anonymized.</p>
+      </div>
+    </section>
+
+    <!-- Section 9 -->
+    <section class="tos-section" id="section-9">
+      <div class="accordion-header">
+        <span class="section-number">09</span>
+        <h2>Data Security</h2>
+        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="accordion-content">
+        <p>We implement strong technical and organizational measures, including:</p>
+<ul class="tos-list">
+  <li>Encrypted data storage</li>
+  <li>Secure servers and firewalls</li>
+  <li>Access control restrictions</li>
+  <li>Regular security monitoring</li>
+</ul>
+<p>However, no system is 100% secure, and we cannot guarantee absolute protection.</p>
+      </div>
+    </section>
+
+    <!-- Section 10 -->
+    <section class="tos-section" id="section-10">
+      <div class="accordion-header">
+        <span class="section-number">10</span>
+        <h2>International Data Transfers</h2>
+        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="accordion-content">
+        <p>As a global affiliate network, data may be transferred outside the EEA/UK.</p>
+<p>When this occurs, we ensure appropriate safeguards such as:</p>
+<ul class="tos-list">
+  <li>Standard Contractual Clauses (SCCs)</li>
+  <li>Secure hosting providers</li>
+  <li>Compliance with applicable data protection laws</li>
+</ul>
+      </div>
+    </section>
+
+    <!-- Section 11 -->
+    <section class="tos-section" id="section-11">
+      <div class="accordion-header">
+        <span class="section-number">11</span>
+        <h2>Data Subject Rights (GDPR Rights)</h2>
+        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="accordion-content">
+        <p>If you are located in the EEA or UK, you have the right to:</p>
+<ul class="tos-list">
+  <li>Access your personal data</li>
+  <li>Request correction of inaccurate data</li>
+  <li>Request deletion (“right to be forgotten”)</li>
+  <li>Restrict or object to processing</li>
+  <li>Request data portability</li>
+  <li>Withdraw consent (where applicable)</li>
+</ul>
+<p>Requests can be submitted to our support team.</p>
+      </div>
+    </section>
+
+    <!-- Section 12 -->
+    <section class="tos-section" id="section-12">
+      <div class="accordion-header">
+        <span class="section-number">12</span>
+        <h2>Automated Decision-Making</h2>
+        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="accordion-content">
+        <p>AffsCash may use automated systems for:</p>
+<ul class="tos-list">
+  <li>Fraud detection</li>
+  <li>Traffic quality analysis</li>
+  <li>Risk scoring</li>
+</ul>
+<p>These systems may affect earnings or account status, but final decisions may involve human review where required.</p>
+      </div>
+    </section>
+
+    <!-- Section 13 -->
+    <section class="tos-section" id="section-13">
+      <div class="accordion-header">
+        <span class="section-number">13</span>
+        <h2>Fraud Prevention & Monitoring</h2>
+        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="accordion-content">
+        <p>To protect the integrity of our platform, we may process data for:</p>
+<ul class="tos-list">
+  <li>Detecting fraudulent traffic</li>
+  <li>Identifying suspicious activity</li>
+  <li>Preventing abuse of affiliate system</li>
+</ul>
+<p>This processing is necessary for legitimate business interests.</p>
+      </div>
+    </section>
+
+    <!-- Section 14 -->
+    <section class="tos-section" id="section-14">
+      <div class="accordion-header">
+        <span class="section-number">14</span>
+        <h2>Data Requests & Contact</h2>
+        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="accordion-content">
+        <p>Users may exercise their GDPR rights by contacting us:</p>
+<ul class="tos-list">
+  <li>Support Email: contact@affscash.net</li>
+  <li>Website: AffsCash.net</li>
+</ul>
+<p>We will respond to valid requests within the legally required timeframe (typically 30 days).</p>
+      </div>
+    </section>
+
+    <!-- Section 15 -->
+    <section class="tos-section" id="section-15">
+      <div class="accordion-header">
+        <span class="section-number">15</span>
+        <h2>Policy Updates</h2>
+        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="accordion-content">
+        <p>We may update this GDPR Policy from time to time. Updates will be posted on this page with a revised effective date.</p>
+<p>Continued use of AffsCash.net indicates acceptance of the updated policy.</p>
+      </div>
+    </section>
+
+    <!-- Section 16 -->
+    <section class="tos-section" id="section-16">
+      <div class="accordion-header">
+        <span class="section-number">16</span>
+        <h2>Acceptance</h2>
+        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="accordion-content">
+        <p>By using AffsCash.net, you acknowledge that:</p>
+<ul class="tos-list">
+  <li>You have read this GDPR Compliance Policy</li>
+  <li>You understand how your data is processed</li>
+  <li>You agree to the described data practices</li>
+</ul>
       </div>
     </section>
 
