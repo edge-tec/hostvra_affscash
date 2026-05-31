@@ -351,6 +351,11 @@ class GoogleSearchConsole
             'Content-Type: ' . $contentType,
             'Accept: application/json',
         ];
+
+        if ($body === null && in_array($method, ['POST', 'PUT'])) {
+            $headers[] = 'Content-Length: 0';
+        }
+
         $ch = curl_init($url);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
