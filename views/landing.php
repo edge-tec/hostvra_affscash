@@ -575,7 +575,8 @@ try {
         <div class="col-lg-5 hero-content">
           <h6>Welcome to <?= $appName ?></h6>
           <h1>Global <em>Performance</em> &amp; <span class="accent">Affiliate</span> Network</h1>
-          <p>Global coverage, guaranteed high payouts, direct offers, dedicated AMs and our custom tracking platform make us the leaders on the CPA market!</p>
+          <p class="d-block d-lg-none">Global coverage, guaranteed high payouts, direct offers, dedicated AMs and our custom tracking platform make us the leaders on the CPA market!</p>
+          <p class="d-none d-lg-block">Global reach, industry-leading payouts, exclusive direct advertiser partnerships, dedicated account managers, and our proprietary performance tracking technology empower affiliates to maximize revenue and scale campaigns with confidence. Join a network built for performance, transparency, and long-term success.</p>
           <div class="hero-btns">
             <a href="/register/affiliate" class="btn-primary-custom"><i class="fa-solid fa-rocket"></i> Join <?= $appName ?></a>
             <a href="/login" class="btn-outline-custom"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
