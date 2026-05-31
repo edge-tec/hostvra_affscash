@@ -247,12 +247,18 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
       <div class="toc-scroll">
         <ul class="toc-list">
-          <li><a href="#section-1"><span class="toc-num">01</span><span class="toc-text">What Are Cookies</span></a></li>
-          <li><a href="#section-2"><span class="toc-num">02</span><span class="toc-text">How We Use Cookies</span></a></li>
-          <li><a href="#section-3"><span class="toc-num">03</span><span class="toc-text">Types Of Cookies</span></a></li>
-          <li><a href="#section-4"><span class="toc-num">04</span><span class="toc-text">Third-Party Cookies</span></a></li>
-          <li><a href="#section-5"><span class="toc-num">05</span><span class="toc-text">User Consent</span></a></li>
-          <li><a href="#section-6"><span class="toc-num">06</span><span class="toc-text">Managing Cookies</span></a></li>
+          <li><a href="#section-1"><span class="toc-num">01</span> <span class="toc-text">Introduction</span></a></li>
+          <li><a href="#section-2"><span class="toc-num">02</span> <span class="toc-text">What Are Cookies?</span></a></li>
+          <li><a href="#section-3"><span class="toc-num">03</span> <span class="toc-text">Why We Use Cookies</span></a></li>
+          <li><a href="#section-4"><span class="toc-num">04</span> <span class="toc-text">Third-Party Cookies</span></a></li>
+          <li><a href="#section-5"><span class="toc-num">05</span> <span class="toc-text">Cookie Retention Period</span></a></li>
+          <li><a href="#section-6"><span class="toc-num">06</span> <span class="toc-text">How We Use Tracking Technologies</span></a></li>
+          <li><a href="#section-7"><span class="toc-num">07</span> <span class="toc-text">Managing Cookies</span></a></li>
+          <li><a href="#section-8"><span class="toc-num">08</span> <span class="toc-text">Cookie Consent</span></a></li>
+          <li><a href="#section-9"><span class="toc-num">09</span> <span class="toc-text">Data Protection</span></a></li>
+          <li><a href="#section-10"><span class="toc-num">10</span> <span class="toc-text">International Use</span></a></li>
+          <li><a href="#section-11"><span class="toc-num">11</span> <span class="toc-text">Updates to This Policy</span></a></li>
+          <li><a href="#section-12"><span class="toc-num">12</span> <span class="toc-text">Acceptance</span></a></li>
         </ul>
       </div>
       <div class="toc-footer">
@@ -277,88 +283,251 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
 <main class="tos-content">
 
 <div class="notice-block">
+      <strong>Last Updated: June 1, 2026</strong><br>Applies To: AffsCash.net (“Company,” “we,” “us,” “our”)
+    </div>
 
-
-      This Cookie Policy ("Policy") explains how <strong><?= htmlspecialchars($siteName) ?> Limited</strong> ("<?= htmlspecialchars($siteName) ?>," "Company," "we," "our," or "us") uses cookies and similar tracking technologies on <?= htmlspecialchars($siteName) ?>.net and related services.<br><br>
-      This Policy should be read together with our <a href="/privacy-policy" style="color:var(--cyan)">Privacy Policy</a> and <a href="/gdpr-compliance-policy" style="color:var(--cyan)">GDPR Compliance Policy</a>.<br><br>
-      By accessing or using our website, you consent to the use of cookies as described in this Policy, unless you disable them through your browser settings or cookie preferences.
-    
-
-</div>
-
-<section class="tos-section is-open" id="section-1">
+    <!-- Section 1 -->
+    <section class="tos-section is-open" id="section-1">
       <div class="accordion-header">
         <span class="section-number">01</span>
-        <h2>What Are Cookies</h2>
+        <h2>Introduction</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>Cookies are small files stored on a user’s device to track activity and improve performance.</p>
+        <p>This Cookie Policy explains how AffsCash.net uses cookies and similar tracking technologies when you visit our website, use our affiliate dashboard, or interact with our services.</p>
+<p>By using our platform, you agree to the use of cookies as described in this policy.</p>
       </div>
     </section>
 
-<section class="tos-section" id="section-2">
+    <!-- Section 2 -->
+    <section class="tos-section" id="section-2">
       <div class="accordion-header">
         <span class="section-number">02</span>
-        <h2>How We Use Cookies</h2>
+        <h2>What Are Cookies?</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>We use cookies for:</p>
-        <ul class="tos-list">
-          <li>Tracking affiliate referrals</li>
-          <li>Measuring conversions</li>
-          <li>Preventing fraud</li>
-          <li>Improving platform performance</li>
-        </ul>
+        <p>Cookies are small text files stored on your device (computer, mobile, or tablet) when you visit a website. They help websites function properly and improve user experience.</p>
+<p>Cookies may store:</p>
+<ul class="tos-list">
+  <li>Login sessions</li>
+  <li>User preferences</li>
+  <li>Tracking identifiers</li>
+  <li>Analytics data</li>
+</ul>
       </div>
     </section>
 
-<section class="tos-section" id="section-3">
+    <!-- Section 3 -->
+    <section class="tos-section" id="section-3">
       <div class="accordion-header">
         <span class="section-number">03</span>
-        <h2>Types Of Cookies</h2>
+        <h2>Why We Use Cookies</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <ul class="tos-list">
-          <li>Essential cookies (site functionality)</li>
-          <li>Tracking cookies (affiliate attribution)</li>
-          <li>Analytics cookies (performance optimization)</li>
-        </ul>
+        <p>AffsCash uses cookies for the following purposes:</p>
+
+<p><strong>3.1 Essential Cookies</strong></p>
+<p>These are required for platform functionality:</p>
+<ul class="tos-list">
+  <li>User authentication</li>
+  <li>Dashboard access</li>
+  <li>Security and session management</li>
+</ul>
+<p>Without these cookies, the platform cannot function properly.</p>
+
+<p><strong>3.2 Affiliate Tracking Cookies</strong></p>
+<p>These cookies are used to:</p>
+<ul class="tos-list">
+  <li>Track affiliate referrals</li>
+  <li>Attribute conversions correctly</li>
+  <li>Ensure accurate commission calculation</li>
+  <li>Prevent duplicate tracking</li>
+</ul>
+
+<p><strong>3.3 Performance & Analytics Cookies</strong></p>
+<p>We use analytics cookies to:</p>
+<ul class="tos-list">
+  <li>Understand user behavior</li>
+  <li>Improve dashboard performance</li>
+  <li>Monitor system usage</li>
+  <li>Detect technical issues</li>
+</ul>
+
+<p><strong>3.4 Fraud Prevention Cookies</strong></p>
+<p>Cookies also help us:</p>
+<ul class="tos-list">
+  <li>Detect suspicious activity</li>
+  <li>Prevent bot traffic</li>
+  <li>Identify invalid clicks or conversions</li>
+  <li>Protect advertisers and affiliates</li>
+</ul>
+
+<p><strong>3.5 Functionality Cookies</strong></p>
+<p>These cookies allow:</p>
+<ul class="tos-list">
+  <li>Language preferences</li>
+  <li>Dashboard customization</li>
+  <li>Improved user experience</li>
+</ul>
       </div>
     </section>
 
-<section class="tos-section" id="section-4">
+    <!-- Section 4 -->
+    <section class="tos-section" id="section-4">
       <div class="accordion-header">
         <span class="section-number">04</span>
         <h2>Third-Party Cookies</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>Advertisers may place cookies to track conversions and user behavior.</p>
+        <p>Some cookies may be placed by third parties such as:</p>
+<ul class="tos-list">
+  <li>Advertisers (for conversion tracking)</li>
+  <li>Payment processors</li>
+  <li>Analytics providers</li>
+  <li>Fraud detection services</li>
+</ul>
+<p>These third parties may collect data according to their own privacy policies.</p>
       </div>
     </section>
 
-<section class="tos-section" id="section-5">
+    <!-- Section 5 -->
+    <section class="tos-section" id="section-5">
       <div class="accordion-header">
         <span class="section-number">05</span>
-        <h2>User Consent</h2>
+        <h2>Cookie Retention Period</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>By using AffsCash services, users agree to cookie usage as described in this policy.</p>
+        <p>Cookies may be stored for different durations:</p>
+<ul class="tos-list">
+  <li>Session cookies: Deleted when you close your browser</li>
+  <li>Persistent cookies: Stored until they expire or are manually deleted</li>
+</ul>
+<p>Tracking cookies may last from a few days to several months depending on purpose.</p>
       </div>
     </section>
 
-<section class="tos-section" id="section-6">
+    <!-- Section 6 -->
+    <section class="tos-section" id="section-6">
       <div class="accordion-header">
         <span class="section-number">06</span>
+        <h2>How We Use Tracking Technologies</h2>
+        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="accordion-content">
+        <p>In addition to cookies, we may use:</p>
+<ul class="tos-list">
+  <li>Pixel tags</li>
+  <li>Web beacons</li>
+  <li>Device identifiers</li>
+  <li>Server-side tracking</li>
+</ul>
+<p>These technologies help ensure accurate affiliate attribution and fraud prevention.</p>
+      </div>
+    </section>
+
+    <!-- Section 7 -->
+    <section class="tos-section" id="section-7">
+      <div class="accordion-header">
+        <span class="section-number">07</span>
         <h2>Managing Cookies</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>Users can disable cookies in browser settings, but this may affect tracking accuracy.</p>
+        <p>You can control or disable cookies through your browser settings.</p>
+<p>However, please note:</p>
+<ul class="tos-list">
+  <li>Disabling cookies may affect dashboard functionality</li>
+  <li>Tracking accuracy may be reduced</li>
+  <li>Some features may not work properly</li>
+</ul>
+      </div>
+    </section>
+
+    <!-- Section 8 -->
+    <section class="tos-section" id="section-8">
+      <div class="accordion-header">
+        <span class="section-number">08</span>
+        <h2>Cookie Consent</h2>
+        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="accordion-content">
+        <p>Where required by law (EU/UK users), we obtain consent before placing non-essential cookies.</p>
+<p>By continuing to use AffsCash.net, you consent to:</p>
+<ul class="tos-list">
+  <li>Essential cookies</li>
+  <li>Tracking cookies required for affiliate attribution</li>
+  <li>Analytics and fraud prevention cookies</li>
+</ul>
+      </div>
+    </section>
+
+    <!-- Section 9 -->
+    <section class="tos-section" id="section-9">
+      <div class="accordion-header">
+        <span class="section-number">09</span>
+        <h2>Data Protection</h2>
+        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="accordion-content">
+        <p>All cookie-related data is processed in accordance with our:</p>
+<ul class="tos-list">
+  <li>GDPR Compliance Policy</li>
+  <li>Privacy Policy</li>
+  <li>Security standards</li>
+</ul>
+<p>We do not sell cookie data to third parties.</p>
+      </div>
+    </section>
+
+    <!-- Section 10 -->
+    <section class="tos-section" id="section-10">
+      <div class="accordion-header">
+        <span class="section-number">10</span>
+        <h2>International Use</h2>
+        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="accordion-content">
+        <p>AffsCash operates globally. Cookie usage may vary depending on your location and applicable laws.</p>
+<p>Users in the EEA/UK are provided with additional rights under GDPR.</p>
+      </div>
+    </section>
+
+    <!-- Section 11 -->
+    <section class="tos-section" id="section-11">
+      <div class="accordion-header">
+        <span class="section-number">11</span>
+        <h2>Updates to This Policy</h2>
+        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="accordion-content">
+        <p>We may update this Cookie Policy at any time to reflect:</p>
+<ul class="tos-list">
+  <li>Legal requirements</li>
+  <li>Technical changes</li>
+  <li>Platform improvements</li>
+</ul>
+<p>Updates will be posted on this page with a revised date.</p>
+      </div>
+    </section>
+
+    <!-- Section 12 -->
+    <section class="tos-section" id="section-12">
+      <div class="accordion-header">
+        <span class="section-number">12</span>
+        <h2>Acceptance</h2>
+        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="accordion-content">
+        <p>By using AffsCash.net, you acknowledge and agree that:</p>
+<ul class="tos-list">
+  <li>Cookies are used as described in this policy</li>
+  <li>You understand how tracking technologies work</li>
+  <li>You accept responsibility for managing cookie settings in your browser</li>
+</ul>
       </div>
     </section>
 
