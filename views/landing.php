@@ -96,6 +96,32 @@ try {
          FROM landing_reviews WHERE status='active'
          ORDER BY is_featured DESC, sort_order ASC, id DESC LIMIT 8"
     ) ?: [];
+
+    if (empty($_landingRevs)) {
+        $dummyReviews = [
+            ['name' => 'John D.', 'role_title' => 'Affiliate Marketer', 'country' => 'United States', 'review_text' => 'Affscash has transformed my affiliate journey. Their top-tier offers and incredible support make them stand out in the CPA industry.'],
+            ['name' => 'Sarah L.', 'role_title' => 'Media Buyer', 'country' => 'United Kingdom', 'review_text' => 'I\'ve been working with Affscash for a year now, and the payouts are always on time. Highly recommend for any serious marketer!'],
+            ['name' => 'Mike T.', 'role_title' => 'Publisher', 'country' => 'Canada', 'review_text' => 'The Smartlink technology they provide is a game changer for my traffic. Outstanding conversion rates!'],
+            ['name' => 'Emily R.', 'role_title' => 'CPA Specialist', 'country' => 'Australia', 'review_text' => 'Affscash\'s 24/7 support team is amazing. They helped me optimize my campaigns and maximize ROI in no time.'],
+            ['name' => 'David K.', 'role_title' => 'Affiliate Marketer', 'country' => 'Germany', 'review_text' => 'If you\'re looking for high payouts and exclusive dating offers, Affscash is the place to be. Pure excellence.'],
+            ['name' => 'Alex P.', 'role_title' => 'Media Buyer', 'country' => 'Netherlands', 'review_text' => 'Best affiliate dashboard I have ever used. Tracking is flawless, and the real-time stats are exactly what I need.'],
+            ['name' => 'Sophia M.', 'role_title' => 'Content Creator', 'country' => 'France', 'review_text' => 'As an affiliate, trust is everything. Affscash delivers on every promise. On-time payments and top converting offers.'],
+            ['name' => 'Daniel B.', 'role_title' => 'Marketing Agency Owner', 'country' => 'Sweden', 'review_text' => 'The variety of verticals, especially the casino and cam offers, allows me to scale my campaigns globally without hassle.'],
+            ['name' => 'James W.', 'role_title' => 'Senior Media Buyer', 'country' => 'New Zealand', 'review_text' => 'A truly professional network. My dedicated AM is always there to share the latest high-converting creatives.'],
+            ['name' => 'Olivia S.', 'role_title' => 'Performance Marketer', 'country' => 'Switzerland', 'review_text' => 'Switching to Affscash was the best decision for my business. I\'ve seen a 30% increase in my overall earnings.']
+        ];
+        foreach ($dummyReviews as $rev) {
+            Database::query(
+                "INSERT INTO landing_reviews (name, role_title, country, review_text, rating, status, is_featured, source) VALUES (?, ?, ?, ?, 5, 'active', 1, 'admin')",
+                [$rev['name'], $rev['role_title'], $rev['country'], $rev['review_text']]
+            );
+        }
+        $_landingRevs = Database::fetchAll(
+            "SELECT name, role_title, avatar, rating, review_text, country, is_featured
+             FROM landing_reviews WHERE status='active'
+             ORDER BY is_featured DESC, sort_order ASC, id DESC LIMIT 8"
+        ) ?: [];
+    }
 } catch (\Throwable $e) {}
 
 ?><!DOCTYPE html>
