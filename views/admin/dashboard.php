@@ -88,6 +88,7 @@ $_tzOptions = [
 
 <style>
 <?php $bannerStyle = Config::get('config', 'app.dashboard_banner_style') ?? (Config::get('config', 'app.transparent_dashboard') === '1' ? 'transparent' : 'default'); ?>
+<?php $cardStyle = Config::get('config', 'app.dashboard_card_style') ?? 'default'; ?>
 /* ── Dashboard Header + Filter ───────────────────────────────────────── */
 .dash-header{
     <?php if ($bannerStyle === 'transparent'): ?>
@@ -254,6 +255,136 @@ select.dash-f-input{
     .kpi-value{font-size:18px;}
 }
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   KPI CARD STYLES — 4 selectable designs via dashboard_card_style
+   ═══════════════════════════════════════════════════════════════════════ */
+
+<?php if ($cardStyle === 'gradient_glow'): ?>
+/* ── STYLE: Gradient Glow ─────────────────────────────────────────────
+   Left gradient border, soft colored glow background, floating effect */
+@keyframes kpi-shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+.kpi-card{
+    background:var(--card-bg);border:none;border-radius:16px;padding:22px 22px 22px 26px;
+    position:relative;overflow:hidden;
+    transition:box-shadow .3s,transform .3s;
+    border-left:4px solid transparent;
+}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px;border-radius:16px 0 0 16px;}
+.kpi-card::after{
+    content:'';position:absolute;top:-50%;right:-30%;width:120px;height:200%;
+    border-radius:50%;opacity:.06;filter:blur(40px);transition:opacity .3s;pointer-events:none;
+}
+.kpi-card:hover{transform:translateY(-4px);box-shadow:0 20px 40px rgba(0,0,0,.08);}
+.kpi-card:hover::after{opacity:.12;}
+.kpi-card.blue::before{background:linear-gradient(180deg,#3B82F6,#1D4ED8);}
+.kpi-card.blue::after{background:#3B82F6;}
+.kpi-card.green::before{background:linear-gradient(180deg,#10B981,#059669);}
+.kpi-card.green::after{background:#10B981;}
+.kpi-card.purple::before{background:linear-gradient(180deg,#8B5CF6,#6D28D9);}
+.kpi-card.purple::after{background:#8B5CF6;}
+.kpi-card.orange::before{background:linear-gradient(180deg,#F59E0B,#D97706);}
+.kpi-card.orange::after{background:#F59E0B;}
+.kpi-card.teal::before{background:linear-gradient(180deg,#06B6D4,#0891B2);}
+.kpi-card.teal::after{background:#06B6D4;}
+.kpi-card.red::before{background:linear-gradient(180deg,#EF4444,#DC2626);}
+.kpi-card.red::after{background:#EF4444;}
+.kpi-card.indigo::before{background:linear-gradient(180deg,#4F46E5,#3730A3);}
+.kpi-card.indigo::after{background:#4F46E5;}
+.kpi-card.emerald::before{background:linear-gradient(180deg,#059669,#047857);}
+.kpi-card.emerald::after{background:#059669;}
+html[data-theme="dark"] .kpi-card{background:rgba(30,41,59,.85);border:1px solid rgba(148,163,184,.12);border-left:4px solid transparent;}
+html[data-theme="dark"] .kpi-card:hover{box-shadow:0 20px 40px rgba(0,0,0,.25);}
+
+<?php elseif ($cardStyle === 'neon_glass'): ?>
+/* ── STYLE: Neon Glass ────────────────────────────────────────────────
+   Glassmorphic with neon-colored bottom glow line and frosted effect */
+@keyframes neon-pulse { 0%,100%{opacity:.7} 50%{opacity:1} }
+.kpi-card{
+    background:rgba(255,255,255,.65);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
+            backdrop-filter:blur(20px) saturate(180%);
+    border:1px solid rgba(255,255,255,.5);
+    border-radius:18px;padding:22px;
+    position:relative;overflow:hidden;
+    transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s;
+    box-shadow:0 4px 24px rgba(0,0,0,.04);
+}
+.kpi-card::before{content:'';position:absolute;bottom:0;left:10%;right:10%;height:3px;border-radius:0 0 18px 18px;filter:blur(1px);animation:neon-pulse 3s ease-in-out infinite;}
+.kpi-card::after{
+    content:'';position:absolute;top:12px;right:14px;width:38px;height:38px;
+    border-radius:12px;opacity:.10;
+}
+.kpi-card:hover{transform:translateY(-6px) scale(1.01);box-shadow:0 24px 48px rgba(0,0,0,.10);}
+.kpi-card.blue::before{background:linear-gradient(90deg,transparent,#3B82F6,transparent);}
+.kpi-card.blue::after{background:#3B82F6;}
+.kpi-card.green::before{background:linear-gradient(90deg,transparent,#10B981,transparent);}
+.kpi-card.green::after{background:#10B981;}
+.kpi-card.purple::before{background:linear-gradient(90deg,transparent,#8B5CF6,transparent);}
+.kpi-card.purple::after{background:#8B5CF6;}
+.kpi-card.orange::before{background:linear-gradient(90deg,transparent,#F59E0B,transparent);}
+.kpi-card.orange::after{background:#F59E0B;}
+.kpi-card.teal::before{background:linear-gradient(90deg,transparent,#06B6D4,transparent);}
+.kpi-card.teal::after{background:#06B6D4;}
+.kpi-card.red::before{background:linear-gradient(90deg,transparent,#EF4444,transparent);}
+.kpi-card.red::after{background:#EF4444;}
+.kpi-card.indigo::before{background:linear-gradient(90deg,transparent,#4F46E5,transparent);}
+.kpi-card.indigo::after{background:#4F46E5;}
+.kpi-card.emerald::before{background:linear-gradient(90deg,transparent,#059669,transparent);}
+.kpi-card.emerald::after{background:#059669;}
+html[data-theme="dark"] .kpi-card{
+    background:rgba(15,23,42,.65);
+    border-color:rgba(148,163,184,.15);
+    box-shadow:0 4px 24px rgba(0,0,0,.2);
+}
+html[data-theme="dark"] .kpi-card:hover{box-shadow:0 24px 48px rgba(0,0,0,.35);}
+
+<?php elseif ($cardStyle === 'aurora'): ?>
+/* ── STYLE: Aurora Premium ────────────────────────────────────────────
+   Dark premium gradient cards with aurora shimmer and icon circle */
+@keyframes aurora-shift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+.kpi-card{
+    border:none;border-radius:18px;padding:24px;
+    position:relative;overflow:hidden;
+    transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s;
+    color:#fff;
+}
+.kpi-card::before{
+    content:'';position:absolute;inset:0;border-radius:18px;opacity:.08;
+    background:linear-gradient(135deg,#fff 0%,transparent 50%);pointer-events:none;
+}
+.kpi-card::after{
+    content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:.15;filter:blur(20px);
+}
+.kpi-card:hover{transform:translateY(-5px) scale(1.015);box-shadow:0 30px 60px rgba(0,0,0,.2);}
+.kpi-card.blue{background:linear-gradient(135deg,#1E3A5F,#2563EB);box-shadow:0 8px 24px rgba(37,99,235,.2);}
+.kpi-card.blue::after{background:#60A5FA;}
+.kpi-card.green{background:linear-gradient(135deg,#064E3B,#059669);box-shadow:0 8px 24px rgba(5,150,105,.2);}
+.kpi-card.green::after{background:#34D399;}
+.kpi-card.purple{background:linear-gradient(135deg,#2E1065,#7C3AED);box-shadow:0 8px 24px rgba(124,58,237,.2);}
+.kpi-card.purple::after{background:#A78BFA;}
+.kpi-card.orange{background:linear-gradient(135deg,#78350F,#D97706);box-shadow:0 8px 24px rgba(217,119,6,.2);}
+.kpi-card.orange::after{background:#FCD34D;}
+.kpi-card.teal{background:linear-gradient(135deg,#134E4A,#0891B2);box-shadow:0 8px 24px rgba(8,145,178,.2);}
+.kpi-card.teal::after{background:#22D3EE;}
+.kpi-card.red{background:linear-gradient(135deg,#7F1D1D,#DC2626);box-shadow:0 8px 24px rgba(220,38,38,.2);}
+.kpi-card.red::after{background:#FCA5A5;}
+.kpi-card.indigo{background:linear-gradient(135deg,#1E1B4B,#4F46E5);box-shadow:0 8px 24px rgba(79,70,229,.2);}
+.kpi-card.indigo::after{background:#818CF8;}
+.kpi-card.emerald{background:linear-gradient(135deg,#064E3B,#047857);box-shadow:0 8px 24px rgba(4,120,87,.2);}
+.kpi-card.emerald::after{background:#6EE7B7;}
+/* Aurora cards override text colors to white */
+.kpi-card .kpi-label{color:rgba(255,255,255,.7) !important;}
+.kpi-card .kpi-value{color:#fff !important;}
+.kpi-card .kpi-sub{color:rgba(255,255,255,.55) !important;}
+.kpi-card .kpi-sub a{color:rgba(255,255,255,.6) !important;}
+.kpi-card .kpi-trend.up{background:rgba(255,255,255,.18) !important;color:#6EE7B7 !important;}
+.kpi-card .kpi-trend.down{background:rgba(255,255,255,.18) !important;color:#FCA5A5 !important;}
+.kpi-card .kpi-trend.flat{background:rgba(255,255,255,.12) !important;color:rgba(255,255,255,.7) !important;}
+
+<?php else: ?>
+/* ── STYLE: Default ───────────────────────────────────────────────────
+   Classic clean cards with colored top border */
 .kpi-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:20px;position:relative;overflow:hidden;transition:box-shadow .2s,transform .2s,background-color .2s,border-color .2s;}
 .kpi-card:hover{box-shadow:var(--shadow-md);}
 .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0;}
@@ -265,6 +396,8 @@ select.dash-f-input{
 .kpi-card.red::before{background:#EF4444;}
 .kpi-card.indigo::before{background:#4F46E5;}
 .kpi-card.emerald::before{background:#059669;}
+<?php endif; ?>
+
 .kpi-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;}
 .kpi-value{font-size:26px;font-weight:800;color:var(--text);line-height:1;}
 .kpi-sub{font-size:12px;color:var(--text-light);margin-top:4px;}

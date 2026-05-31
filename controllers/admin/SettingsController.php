@@ -324,6 +324,11 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
             Config::set('config', 'app.transparent_dashboard', $bannerStyle === 'transparent' ? '1' : '0');
         }
 
+        $cardStyle = Helpers::post('dashboard_card_style');
+        if (in_array($cardStyle, ['default', 'gradient_glow', 'neon_glass', 'aurora'])) {
+            Config::set('config', 'app.dashboard_card_style', $cardStyle);
+        }
+
         // ── Auth-page backgrounds (login / affiliate register / advertiser register)
         // Each page has: uploaded image path + an enable toggle. Existing config
         // is preserved when no new file is uploaded so admins can flip the toggle

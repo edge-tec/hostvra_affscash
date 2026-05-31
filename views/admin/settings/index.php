@@ -319,6 +319,70 @@
                 </select>
             </div>
 
+            <!-- Dashboard Card Style -->
+            <?php $cardStyle = $cfg['app']['dashboard_card_style'] ?? 'default'; ?>
+            <div class="form-group">
+                <label>Dashboard Card Design</label>
+                <div class="form-hint" style="margin-bottom:10px">Choose the KPI stat card design for all dashboards. Changes apply to Admin, Manager, and Affiliate dashboards.</div>
+                <select name="dashboard_card_style" class="form-control" id="cardStyleSelect" style="max-width:300px" onchange="updateCardPreview(this.value)">
+                    <option value="default" <?= $cardStyle === 'default' ? 'selected' : '' ?>>Default (Clean Border)</option>
+                    <option value="gradient_glow" <?= $cardStyle === 'gradient_glow' ? 'selected' : '' ?>>Gradient Glow</option>
+                    <option value="neon_glass" <?= $cardStyle === 'neon_glass' ? 'selected' : '' ?>>Neon Glass</option>
+                    <option value="aurora" <?= $cardStyle === 'aurora' ? 'selected' : '' ?>>Aurora Premium</option>
+                </select>
+                <div id="cardStylePreview" style="margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;max-width:700px">
+                </div>
+            </div>
+            <script>
+            function updateCardPreview(style) {
+                var wrap = document.getElementById('cardStylePreview');
+                var cards = [
+                    {label:'CLICKS', value:'1,234', color:'blue', accent:'#3B82F6'},
+                    {label:'CONVERSIONS', value:'89', color:'green', accent:'#10B981'},
+                    {label:'REVENUE', value:'$2,566', color:'purple', accent:'#8B5CF6'},
+                    {label:'PROFIT', value:'$359', color:'emerald', accent:'#059669'},
+                ];
+                var html = '';
+                cards.forEach(function(c) {
+                    if (style === 'gradient_glow') {
+                        html += '<div style="background:#fff;border:none;border-radius:16px;padding:16px 16px 16px 20px;position:relative;overflow:hidden;border-left:4px solid transparent;box-shadow:0 4px 16px rgba(0,0,0,.04)">' +
+                            '<div style="position:absolute;top:0;left:0;bottom:0;width:4px;border-radius:16px 0 0 16px;background:linear-gradient(180deg,' + c.accent + ',' + c.accent + '99)"></div>' +
+                            '<div style="position:absolute;top:-30%;right:-20%;width:80px;height:160%;border-radius:50%;opacity:.06;filter:blur(30px);background:' + c.accent + '"></div>' +
+                            '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#94A3B8;margin-bottom:4px">' + c.label + '</div>' +
+                            '<div style="font-size:20px;font-weight:800;color:#0F172A">' + c.value + '</div>' +
+                            '<div style="margin-top:5px;display:inline-flex;align-items:center;gap:2px;font-size:9px;font-weight:700;padding:2px 6px;border-radius:20px;background:rgba(16,185,129,.12);color:#059669">▲ 12.5%</div>' +
+                            '</div>';
+                    } else if (style === 'neon_glass') {
+                        html += '<div style="background:rgba(255,255,255,.7);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.4);border-radius:18px;padding:16px;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.04)">' +
+                            '<div style="position:absolute;bottom:0;left:15%;right:15%;height:3px;border-radius:0 0 18px 18px;filter:blur(1px);background:linear-gradient(90deg,transparent,' + c.accent + ',transparent)"></div>' +
+                            '<div style="position:absolute;top:10px;right:12px;width:30px;height:30px;border-radius:10px;opacity:.10;background:' + c.accent + '"></div>' +
+                            '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#94A3B8;margin-bottom:4px">' + c.label + '</div>' +
+                            '<div style="font-size:20px;font-weight:800;color:#0F172A">' + c.value + '</div>' +
+                            '<div style="margin-top:5px;display:inline-flex;align-items:center;gap:2px;font-size:9px;font-weight:700;padding:2px 6px;border-radius:20px;background:rgba(16,185,129,.12);color:#059669">▲ 12.5%</div>' +
+                            '</div>';
+                    } else if (style === 'aurora') {
+                        var gradients = {blue:'linear-gradient(135deg,#1E3A5F,#2563EB)',green:'linear-gradient(135deg,#064E3B,#059669)',purple:'linear-gradient(135deg,#2E1065,#7C3AED)',emerald:'linear-gradient(135deg,#064E3B,#047857)'};
+                        html += '<div style="background:' + gradients[c.color] + ';border:none;border-radius:18px;padding:16px;position:relative;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.15)">' +
+                            '<div style="position:absolute;inset:0;border-radius:18px;opacity:.08;background:linear-gradient(135deg,#fff 0%,transparent 50%);pointer-events:none"></div>' +
+                            '<div style="position:absolute;top:-15px;right:-15px;width:60px;height:60px;border-radius:50%;opacity:.15;filter:blur(15px);background:' + c.accent + '"></div>' +
+                            '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:rgba(255,255,255,.7);margin-bottom:4px">' + c.label + '</div>' +
+                            '<div style="font-size:20px;font-weight:800;color:#fff">' + c.value + '</div>' +
+                            '<div style="margin-top:5px;display:inline-flex;align-items:center;gap:2px;font-size:9px;font-weight:700;padding:2px 6px;border-radius:20px;background:rgba(255,255,255,.18);color:#6EE7B7">▲ 12.5%</div>' +
+                            '</div>';
+                    } else {
+                        html += '<div style="background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:16px;position:relative;overflow:hidden">' +
+                            '<div style="position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0;background:' + c.accent + '"></div>' +
+                            '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#94A3B8;margin-bottom:4px">' + c.label + '</div>' +
+                            '<div style="font-size:20px;font-weight:800;color:#0F172A">' + c.value + '</div>' +
+                            '<div style="margin-top:5px;display:inline-flex;align-items:center;gap:2px;font-size:9px;font-weight:700;padding:2px 6px;border-radius:20px;background:rgba(16,185,129,.12);color:#059669">▲ 12.5%</div>' +
+                            '</div>';
+                    }
+                });
+                wrap.innerHTML = html;
+            }
+            updateCardPreview(document.getElementById('cardStyleSelect').value);
+            </script>
+
             <!-- ─── Auth-page Backgrounds ──────────────────────────────── -->
             <div style="margin-top:24px;padding:18px;background:linear-gradient(135deg,#F8FAFC,#EEF2FF);border:1px solid #E2E8F0;border-radius:10px">
                 <div style="font-weight:700;font-size:14px;color:#1E293B;margin-bottom:4px">Auth Page Backgrounds</div>
