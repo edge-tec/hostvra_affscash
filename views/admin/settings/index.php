@@ -1691,7 +1691,33 @@ function hlApproval(radio) {
                 <textarea name="pm_capitalist" class="form-control" rows="2" placeholder="U1234567890 or capitalist.net/u/yourwallet"><?= Helpers::e($pm['capitalist'] ?? '') ?></textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary">Save Budget Settings</button>
+            <hr style="margin:22px 0;border-color:#E2E8F0">
+            <div style="font-size:13px;font-weight:700;color:#4F46E5;margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em">
+                Stripe Payment Gateway
+            </div>
+            <p style="font-size:12px;color:#64748B;margin:0 0 14px">Allow advertisers to top-up their balance automatically using Stripe (Credit Card).</p>
+
+            <div class="form-group" style="padding:12px 14px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px">
+                <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin:0">
+                    <input type="checkbox" name="stripe_enabled" value="1"
+                           <?= (($cfg['app']['stripe_enabled'] ?? '') === '1') ? 'checked' : '' ?>
+                           style="margin-top:3px;accent-color:#4F46E5;width:16px;height:16px;flex-shrink:0">
+                    <div style="font-weight:600;font-size:14px;color:#1E293B">Enable Stripe Top-Ups</div>
+                </label>
+            </div>
+            
+            <div class="form-row cols-2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                <div class="form-group">
+                    <label>Stripe Publishable Key</label>
+                    <input type="text" name="stripe_pk" class="form-control" value="<?= Helpers::e($cfg['app']['stripe_pk'] ?? '') ?>" placeholder="pk_live_...">
+                </div>
+                <div class="form-group">
+                    <label>Stripe Secret Key</label>
+                    <input type="text" name="stripe_sk" class="form-control" value="<?= Helpers::e($cfg['app']['stripe_sk'] ?? '') ?>" placeholder="sk_live_...">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="margin-top:10px">Save Budget Settings</button>
         </form>
     </div>
 </div>

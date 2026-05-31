@@ -488,6 +488,9 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
             'capitalist'    => trim(Helpers::postRaw('pm_capitalist') ?? ''),
         ];
         Config::set('config', 'app.payment_methods', $methods);
+        Config::set('config', 'app.stripe_enabled', isset($_POST['stripe_enabled']) ? '1' : '0');
+        Config::set('config', 'app.stripe_pk', trim(Helpers::postRaw('stripe_pk') ?? ''));
+        Config::set('config', 'app.stripe_sk', trim(Helpers::postRaw('stripe_sk') ?? ''));
         $success = true;
     }
 

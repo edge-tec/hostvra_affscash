@@ -113,6 +113,7 @@ final class AdvBudget
             'crypto'        => !empty($cryptoEnabled) ? 'enabled' : '',
             'crypto_wallets'=> $wallets,
             'capitalist'    => $cfg['capitalist'] ?? '',
+            'stripe'        => (Config::get('config', 'app.stripe_enabled') === '1') ? 'enabled' : '',
         ];
     }
 

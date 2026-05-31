@@ -41,7 +41,7 @@ $selectedCoin = strtolower($_POST['crypto_type'] ?? '');
             <div class="form-group">
                 <label style="font-weight:700">Payment Method *</label>
                 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:8px">
-                    <?php foreach (['bank' => ['Bank', '🏦'], 'crypto' => ['Crypto', '🪙'], 'capitalist' => ['Capitalist', '💳']] as $key => $meta):
+                    <?php foreach (['bank' => ['Bank', '🏦'], 'crypto' => ['Crypto', '🪙'], 'capitalist' => ['Capitalist', '💳'], 'stripe' => ['Stripe (Card)', '💳']] as $key => $meta):
                         $available = !empty($methods[$key]);
                         $checked   = ($_POST['method'] ?? '') === $key;
                     ?>
@@ -128,21 +128,25 @@ $selectedCoin = strtolower($_POST['crypto_type'] ?? '');
                     <input type="number" step="0.01" min="1" name="amount" class="form-control" required
                            value="<?= Helpers::e($_POST['amount'] ?? '') ?>" placeholder="100.00">
                 </div>
-                <div class="form-group">
+                <div class="form-group manual-only">
                     <label>Transaction ID / Reference *</label>
-                    <input type="text" name="txn_id" class="form-control" required
+                    <input type="text" name="txn_id" class="form-control"
                            value="<?= Helpers::e($_POST['txn_id'] ?? '') ?>" placeholder="TX1234567890">
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group manual-only">
                 <label>Payment Screenshot <span style="color:#94A3B8;font-weight:400">(JPG/PNG/WEBP/PDF, max 6 MB)</span></label>
                 <input type="file" name="screenshot" class="form-control" accept="image/jpeg,image/png,image/webp,application/pdf">
                 <div class="form-hint">Attach a receipt or transaction screenshot so we can verify your payment faster.</div>
             </div>
 
-            <div class="alert alert-info" style="font-size:13px">
+            <div class="alert alert-info manual-only" style="font-size:13px">
                 <strong>How it works:</strong> Send the amount using the selected method, fill in the transaction details above, and submit. An admin will verify the payment and credit your balance — typically within a few hours.
+            </div>
+            
+            <div class="alert alert-info stripe-only" style="font-size:13px; display:none;">
+                <strong>Instant Top-Up:</strong> You will be securely redirected to Stripe to complete your payment. Once paid, your balance will be credited instantly.
             </div>
 
             <div style="display:flex;gap:10px">
@@ -202,8 +206,26 @@ $selectedCoin = strtolower($_POST['crypto_type'] ?? '');
             this.closest('label').style.borderColor = '#0F766E';
             this.closest('label').style.background  = '#ECFEFF';
             if (this.value !== 'crypto') resetCryptoPanel();
+
+            // Toggle stripe vs manual fields
+            var isStripe = (this.value === 'stripe');
+            document.querySelectorAll('.manual-only').forEach(function (el) { el.style.display = isStripe ? 'none' : 'block'; });
+            document.querySelectorAll('.stripe-only').forEach(function (el) { el.style.display = isStripe ? 'block' : 'none'; });
+            
+            // Adjust required attributes
+            var txnInput = document.querySelector('input[name="txn_id"]');
+            if (txnInput) txnInput.required = !isStripe;
+            
+            var submitBtn = document.getElementById('submit-btn');
+            if (submitBtn) submitBtn.textContent = isStripe ? 'Pay with Stripe' : 'Submit Top-Up Request';
         });
     });
+
+    // Run once on load to set correct visibility if re-rendering a POST with stripe selected
+    var initRadio = document.querySelector('input[name="method"]:checked');
+    if (initRadio) {
+        initRadio.dispatchEvent(new Event('change'));
+    }
 
     // ── Crypto coin dropdown ───────────────────────────────────────────────
     var sel      = document.getElementById('crypto-select');
