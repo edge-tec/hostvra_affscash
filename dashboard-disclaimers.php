@@ -29,7 +29,7 @@ if (!$navLogo) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Affiliate Dashboard Disclaimers — Affscash</title>
+<title>Dashboard Disclaimers — Affscash</title>
 <?php if ($faviconPath): ?>
 <link rel="icon" href="<?= htmlspecialchars($faviconPath) ?>">
 <?php else: ?>
@@ -220,7 +220,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
 <div class="page-hero">
   <div class="page-hero-inner">
     <div class="page-hero-eyebrow">Legal</div>
-    <h1>Affiliate Dashboard Disclaimers</h1>
+    <h1>Dashboard Disclaimers</h1>
     <div class="page-hero-meta">
       <div class="page-hero-meta-item"><strong>Effective Date</strong>May 31, 2026</div>
       <div class="page-hero-meta-item"><strong>Last Updated</strong>May 31, 2026</div>
@@ -247,12 +247,18 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
       <div class="toc-scroll">
         <ul class="toc-list">
-          <li><a href="#section-1"><span class="toc-num">01</span><span class="toc-text">What Are Cookies</span></a></li>
-          <li><a href="#section-2"><span class="toc-num">02</span><span class="toc-text">How We Use Cookies</span></a></li>
-          <li><a href="#section-3"><span class="toc-num">03</span><span class="toc-text">Types Of Cookies</span></a></li>
-          <li><a href="#section-4"><span class="toc-num">04</span><span class="toc-text">Third-Party Cookies</span></a></li>
-          <li><a href="#section-5"><span class="toc-num">05</span><span class="toc-text">User Consent</span></a></li>
-          <li><a href="#section-6"><span class="toc-num">06</span><span class="toc-text">Managing Cookies</span></a></li>
+          <li><a href="#section-1"><span class="toc-num">01</span> <span class="toc-text">General Dashboard Disclaimer</span></a></li>
+          <li><a href="#section-2"><span class="toc-num">02</span> <span class="toc-text">Earnings Disclaimer</span></a></li>
+          <li><a href="#section-3"><span class="toc-num">03</span> <span class="toc-text">Data Accuracy Disclaimer</span></a></li>
+          <li><a href="#section-4"><span class="toc-num">04</span> <span class="toc-text">Pending Conversions Disclaimer</span></a></li>
+          <li><a href="#section-5"><span class="toc-num">05</span> <span class="toc-text">Fraud & Invalid Activity Disclaimer</span></a></li>
+          <li><a href="#section-6"><span class="toc-num">06</span> <span class="toc-text">Payment Disclaimer</span></a></li>
+          <li><a href="#section-7"><span class="toc-num">07</span> <span class="toc-text">Performance Metrics Disclaimer</span></a></li>
+          <li><a href="#section-8"><span class="toc-num">08</span> <span class="toc-text">Security Disclaimer</span></a></li>
+          <li><a href="#section-9"><span class="toc-num">09</span> <span class="toc-text">No Financial Guarantee</span></a></li>
+          <li><a href="#section-10"><span class="toc-num">10</span> <span class="toc-text">Platform Rights Disclaimer</span></a></li>
+          <li><a href="#section-11"><span class="toc-num">11</span> <span class="toc-text">Service Availability Disclaimer</span></a></li>
+          <li><a href="#section-12"><span class="toc-num">12</span> <span class="toc-text">Acceptance of Disclaimers</span></a></li>
         </ul>
       </div>
       <div class="toc-footer">
@@ -277,88 +283,239 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
 <main class="tos-content">
 
 <div class="notice-block">
+      <strong>Last Updated: June 1, 2026</strong><br>Applies To: All users of the AffsCash Affiliate Dashboard.
+    </div>
 
-
-      This Cookie Policy ("Policy") explains how <strong><?= htmlspecialchars($siteName) ?> Limited</strong> ("<?= htmlspecialchars($siteName) ?>," "Company," "we," "our," or "us") uses cookies and similar tracking technologies on <?= htmlspecialchars($siteName) ?>.net and related services.<br><br>
-      This Policy should be read together with our <a href="/privacy-policy" style="color:var(--cyan)">Privacy Policy</a> and <a href="/gdpr-compliance-policy" style="color:var(--cyan)">GDPR Compliance Policy</a>.<br><br>
-      By accessing or using our website, you consent to the use of cookies as described in this Policy, unless you disable them through your browser settings or cookie preferences.
-    
-
-</div>
-
-<section class="tos-section is-open" id="section-1">
+    <!-- Section 1 -->
+    <section class="tos-section is-open" id="section-1">
       <div class="accordion-header">
         <span class="section-number">01</span>
-        <h2>What Are Cookies</h2>
+        <h2>General Dashboard Disclaimer</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>Cookies are small files stored on a user’s device to track activity and improve performance.</p>
+        <p>All information displayed in the AffsCash dashboard is provided for informational and tracking purposes only.</p>
+<p>The dashboard may include:</p>
+<ul class="tos-list">
+  <li>Estimated earnings</li>
+  <li>Click and conversion data</li>
+  <li>Pending and approved statistics</li>
+  <li>Performance analytics</li>
+</ul>
+<p>This data is not final until confirmed by advertiser validation and compliance review.</p>
       </div>
     </section>
 
-<section class="tos-section" id="section-2">
+    <!-- Section 2 -->
+    <section class="tos-section" id="section-2">
       <div class="accordion-header">
         <span class="section-number">02</span>
-        <h2>How We Use Cookies</h2>
+        <h2>Earnings Disclaimer</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>We use cookies for:</p>
-        <ul class="tos-list">
-          <li>Tracking affiliate referrals</li>
-          <li>Measuring conversions</li>
-          <li>Preventing fraud</li>
-          <li>Improving platform performance</li>
-        </ul>
+        <p>Earnings shown in the dashboard are estimated and not guaranteed income.</p>
+<p>Final payouts may vary due to:</p>
+<ul class="tos-list">
+  <li>Advertiser approval or rejection</li>
+  <li>Fraud detection results</li>
+  <li>Chargebacks or reversals</li>
+  <li>Tracking adjustments or corrections</li>
+</ul>
+<p>AffsCash is not responsible for differences between estimated and final earnings.</p>
       </div>
     </section>
 
-<section class="tos-section" id="section-3">
+    <!-- Section 3 -->
+    <section class="tos-section" id="section-3">
       <div class="accordion-header">
         <span class="section-number">03</span>
-        <h2>Types Of Cookies</h2>
+        <h2>Data Accuracy Disclaimer</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <ul class="tos-list">
-          <li>Essential cookies (site functionality)</li>
-          <li>Tracking cookies (affiliate attribution)</li>
-          <li>Analytics cookies (performance optimization)</li>
-        </ul>
+        <p>While we use advanced tracking systems, we do not guarantee:</p>
+<ul class="tos-list">
+  <li>100% accurate tracking</li>
+  <li>Real-time synchronization of all conversions</li>
+  <li>Absence of reporting delays or technical errors</li>
+</ul>
+<p>Some data may be:</p>
+<ul class="tos-list">
+  <li>Delayed</li>
+  <li>Updated after validation</li>
+  <li>Adjusted during compliance review</li>
+</ul>
       </div>
     </section>
 
-<section class="tos-section" id="section-4">
+    <!-- Section 4 -->
+    <section class="tos-section" id="section-4">
       <div class="accordion-header">
         <span class="section-number">04</span>
-        <h2>Third-Party Cookies</h2>
+        <h2>Pending Conversions Disclaimer</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>Advertisers may place cookies to track conversions and user behavior.</p>
+        <p>All pending conversions are:</p>
+<ul class="tos-list">
+  <li>Not confirmed earnings</li>
+  <li>Subject to advertiser approval</li>
+  <li>May be approved, rejected, or reversed at any time</li>
+</ul>
+<p>Pending status does not guarantee payment.</p>
       </div>
     </section>
 
-<section class="tos-section" id="section-5">
+    <!-- Section 5 -->
+    <section class="tos-section" id="section-5">
       <div class="accordion-header">
         <span class="section-number">05</span>
-        <h2>User Consent</h2>
+        <h2>Fraud & Invalid Activity Disclaimer</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>By using AffsCash services, users agree to cookie usage as described in this policy.</p>
+        <p>Any traffic identified as fraudulent or invalid may result in:</p>
+<ul class="tos-list">
+  <li>Removal of earnings</li>
+  <li>Reversal of conversions</li>
+  <li>Account suspension or termination</li>
+</ul>
+<p>This includes:</p>
+<ul class="tos-list">
+  <li>Bot traffic</li>
+  <li>VPN/proxy abuse</li>
+  <li>Self-conversions</li>
+  <li>Incentivized or misleading traffic (without approval)</li>
+</ul>
       </div>
     </section>
 
-<section class="tos-section" id="section-6">
+    <!-- Section 6 -->
+    <section class="tos-section" id="section-6">
       <div class="accordion-header">
         <span class="section-number">06</span>
-        <h2>Managing Cookies</h2>
+        <h2>Payment Disclaimer</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>Users can disable cookies in browser settings, but this may affect tracking accuracy.</p>
+        <p>Payment data shown in the dashboard is indicative only.</p>
+<p>Actual payments depend on:</p>
+<ul class="tos-list">
+  <li>Minimum payout thresholds</li>
+  <li>Fraud clearance</li>
+  <li>Advertiser settlement cycles</li>
+  <li>Compliance verification</li>
+</ul>
+<p>AffsCash reserves the right to delay or withhold payments when necessary.</p>
+      </div>
+    </section>
+
+    <!-- Section 7 -->
+    <section class="tos-section" id="section-7">
+      <div class="accordion-header">
+        <span class="section-number">07</span>
+        <h2>Performance Metrics Disclaimer</h2>
+        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="accordion-content">
+        <p>All performance statistics (CTR, EPC, CR, etc.) are:</p>
+<ul class="tos-list">
+  <li>Estimates only</li>
+  <li>For analytical use</li>
+  <li>Not guarantees of future performance</li>
+</ul>
+<p>Performance may change due to traffic quality and advertiser conditions.</p>
+      </div>
+    </section>
+
+    <!-- Section 8 -->
+    <section class="tos-section" id="section-8">
+      <div class="accordion-header">
+        <span class="section-number">08</span>
+        <h2>Security Disclaimer</h2>
+        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="accordion-content">
+        <p>We implement strong security measures; however:</p>
+<ul class="tos-list">
+  <li>No system is fully secure</li>
+  <li>Users are responsible for protecting their login credentials</li>
+</ul>
+<p>AffsCash is not liable for unauthorized access due to user negligence.</p>
+      </div>
+    </section>
+
+    <!-- Section 9 -->
+    <section class="tos-section" id="section-9">
+      <div class="accordion-header">
+        <span class="section-number">09</span>
+        <h2>No Financial Guarantee</h2>
+        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="accordion-content">
+        <p>AffsCash does not guarantee:</p>
+<ul class="tos-list">
+  <li>Earnings</li>
+  <li>Conversion rates</li>
+  <li>Traffic performance</li>
+  <li>Advertiser acceptance</li>
+</ul>
+<p>Affiliate marketing results vary based on multiple external factors.</p>
+      </div>
+    </section>
+
+    <!-- Section 10 -->
+    <section class="tos-section" id="section-10">
+      <div class="accordion-header">
+        <span class="section-number">10</span>
+        <h2>Platform Rights Disclaimer</h2>
+        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="accordion-content">
+        <p>AffsCash reserves the right to:</p>
+<ul class="tos-list">
+  <li>Modify dashboard data</li>
+  <li>Adjust or reverse earnings</li>
+  <li>Suspend or restrict accounts</li>
+  <li>Update tracking systems without notice</li>
+</ul>
+<p>All decisions made by the compliance team are final.</p>
+      </div>
+    </section>
+
+    <!-- Section 11 -->
+    <section class="tos-section" id="section-11">
+      <div class="accordion-header">
+        <span class="section-number">11</span>
+        <h2>Service Availability Disclaimer</h2>
+        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="accordion-content">
+        <p>We do not guarantee:</p>
+<ul class="tos-list">
+  <li>Continuous dashboard access</li>
+  <li>Error-free performance</li>
+  <li>Uninterrupted tracking services</li>
+</ul>
+<p>Temporary downtime or delays may occur.</p>
+      </div>
+    </section>
+
+    <!-- Section 12 -->
+    <section class="tos-section" id="section-12">
+      <div class="accordion-header">
+        <span class="section-number">12</span>
+        <h2>Acceptance of Disclaimers</h2>
+        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="accordion-content">
+        <p>By using the AffsCash Dashboard, you agree that:</p>
+<ul class="tos-list">
+  <li>You understand these disclaimers</li>
+  <li>You accept all risks related to affiliate marketing</li>
+  <li>You acknowledge that all earnings are performance-based and subject to validation</li>
+</ul>
       </div>
     </section>
 
