@@ -318,7 +318,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         Config::set('config', 'app.dark_logo_white',  Helpers::post('dark_logo_white')  === '1' ? '1' : '0');
         
         $bannerStyle = Helpers::post('dashboard_banner_style');
-        if (in_array($bannerStyle, ['default', 'transparent', 'glass'])) {
+        if (in_array($bannerStyle, ['default', 'transparent', 'glass', 'glass_purple'])) {
             Config::set('config', 'app.dashboard_banner_style', $bannerStyle);
             // Backward compatibility
             Config::set('config', 'app.transparent_dashboard', $bannerStyle === 'transparent' ? '1' : '0');

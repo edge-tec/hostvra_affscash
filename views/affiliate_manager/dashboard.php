@@ -14,6 +14,13 @@
     border:1px solid rgba(255,255,255,.65);
     border-radius:14px;padding:22px 26px;
     box-shadow:0 8px 32px rgba(31,38,135,.15);
+    <?php elseif ($bannerStyle === 'glass_purple'): ?>
+    background:linear-gradient(135deg, rgba(30,27,75,0.85) 0%, rgba(49,46,129,0.85) 50%, rgba(76,29,149,0.85) 100%);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
+            backdrop-filter:blur(20px) saturate(180%);
+    border:1px solid rgba(255,255,255,0.15);
+    border-radius:14px;padding:22px 26px;
+    box-shadow:0 8px 32px rgba(31,38,135,0.25);
     <?php else: ?>
     background:linear-gradient(135deg,#1E1B4B 0%,#2D1B69 50%,#4C1D95 100%);
     border-radius:14px;padding:22px 26px;

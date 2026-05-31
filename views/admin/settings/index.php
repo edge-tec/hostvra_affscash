@@ -312,9 +312,10 @@
                 <label>Dashboard Banner Style</label>
                 <div class="form-hint" style="margin-bottom:10px">Choose the style for the top banner on all dashboards (Admin, Manager, Affiliate).</div>
                 <select name="dashboard_banner_style" class="form-control" style="max-width:300px">
-                    <option value="default" <?= $bannerStyle === 'default' ? 'selected' : '' ?>>Default (Purple Gradient)</option>
+                    <option value="default" <?= $bannerStyle === 'default' ? 'selected' : '' ?>>Default (Solid Purple)</option>
                     <option value="transparent" <?= $bannerStyle === 'transparent' ? 'selected' : '' ?>>Fully Transparent</option>
                     <option value="glass" <?= $bannerStyle === 'glass' ? 'selected' : '' ?>>Transparent Glass</option>
+                    <option value="glass_purple" <?= $bannerStyle === 'glass_purple' ? 'selected' : '' ?>>Purple Glass</option>
                 </select>
             </div>
 
