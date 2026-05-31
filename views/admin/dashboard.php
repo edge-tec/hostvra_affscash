@@ -909,22 +909,23 @@ function renderTrendChart(){
                 const {ctx, chartArea} = chart;
                 if (!chartArea || !isLine) return m.color + (isLine ? '1A' : 'CC');
                 let gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-                gradient.addColorStop(0, m.color + '33');
+                gradient.addColorStop(0, m.color + '66');
+                gradient.addColorStop(0.6, m.color + '15');
                 gradient.addColorStop(1, m.color + '00');
                 return gradient;
             },
             fill: isLine,
-            tension: isLine ? 0.4 : 0,
-            borderWidth: isLine ? 2.5 : 0,
+            tension: isLine ? 0.45 : 0,
+            borderWidth: isLine ? 3.5 : 0,
             borderRadius: isLine ? 0 : 4,
-            pointRadius: isLine && d.labels.length <= 45 ? 4 : 0,
-            pointBackgroundColor: '#ffffff',
-            pointBorderColor: m.color,
+            pointRadius: isLine && d.labels.length <= 45 ? 0 : 0, // hide points by default for cleaner look
+            pointBackgroundColor: m.color,
+            pointBorderColor: '#ffffff',
             pointBorderWidth: 2,
-            pointHoverRadius: 6,
+            pointHoverRadius: 7,
             pointHoverBackgroundColor: m.color,
             pointHoverBorderColor: '#ffffff',
-            pointHoverBorderWidth: 2,
+            pointHoverBorderWidth: 3,
             yAxisID: m.axis,
             isCur: !!m.isCur
         };
@@ -936,15 +937,17 @@ function renderTrendChart(){
             responsive:true, maintainAspectRatio:false,
             interaction:{ mode:'index', intersect:false },
             plugins:{
-                legend:{ display:true, position:'bottom', labels:{ boxWidth:12, usePointStyle:true, padding:20, font:{size:12, family:'"Inter", sans-serif', weight:'500'}, color:'#475569' } },
+                legend:{ display:true, position:'bottom', labels:{ boxWidth:12, usePointStyle:true, padding:20, font:{size:13, family:'"Inter", sans-serif', weight:'600'}, color:'#475569' } },
                 tooltip:{ 
                     backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                    titleFont: { size: 13, family: '"Inter", sans-serif', weight:'600' },
-                    bodyFont: { size: 13, family: '"Inter", sans-serif' },
-                    padding: 12,
-                    cornerRadius: 8,
+                    borderColor: 'rgba(255,255,255,0.1)',
+                    borderWidth: 1,
+                    titleFont: { size: 14, family: '"Inter", sans-serif', weight:'700' },
+                    bodyFont: { size: 13, family: '"Inter", sans-serif', weight:'500' },
+                    padding: 14,
+                    cornerRadius: 10,
                     displayColors: true,
-                    boxPadding: 6,
+                    boxPadding: 8,
                     callbacks:{ label: ctx => {
                         const dsCur = ctx.dataset.isCur;
                         return ' ' + ctx.dataset.label + ': ' + (dsCur ? '$'+fmt(ctx.parsed.y,2) : fmt(ctx.parsed.y));

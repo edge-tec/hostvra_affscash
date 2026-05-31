@@ -919,22 +919,24 @@ function renderTrendChart(d){
     if (!ctx) return;
     
     var createGrad = function(color) {
-        var grad = ctx.getContext('2d').createLinearGradient(0, 0, 0, 300);
-        grad.addColorStop(0, color + '33');
+        var grad = ctx.getContext('2d').createLinearGradient(0, 0, 0, 350);
+        grad.addColorStop(0, color + '66');
+        grad.addColorStop(0.6, color + '15');
         grad.addColorStop(1, color + '00');
         return grad;
     };
 
+    var baseDs = {tension:0.45, fill:true, pointRadius:0, pointHoverRadius:7, pointBorderColor:'#fff', pointHoverBorderWidth:3, borderWidth:3.5};
     var datasets = [];
     if (document.getElementById('tog-clicks').checked)
-        datasets.push({label:'Clicks',data:d.clicks_data,borderColor:'#3B82F6',backgroundColor:createGrad('#3B82F6'),tension:.4,fill:true,pointRadius:0,pointHoverRadius:6,pointBackgroundColor:'#fff',borderWidth:2.5});
+        datasets.push(Object.assign({label:'Clicks',data:d.clicks_data,borderColor:'#3B82F6',backgroundColor:createGrad('#3B82F6'),pointBackgroundColor:'#3B82F6'}, baseDs));
     if (document.getElementById('tog-conv').checked)
-        datasets.push({label:'Conversions',data:d.conv_data,borderColor:'#8B5CF6',backgroundColor:createGrad('#8B5CF6'),tension:.4,fill:true,pointRadius:0,pointHoverRadius:6,pointBackgroundColor:'#fff',borderWidth:2.5});
+        datasets.push(Object.assign({label:'Conversions',data:d.conv_data,borderColor:'#8B5CF6',backgroundColor:createGrad('#8B5CF6'),pointBackgroundColor:'#8B5CF6'}, baseDs));
     if (document.getElementById('tog-rev').checked)
-        datasets.push({label:'Revenue ($)',data:d.revenue_data,borderColor:'#10B981',backgroundColor:createGrad('#10B981'),tension:.4,fill:true,pointRadius:0,pointHoverRadius:6,pointBackgroundColor:'#fff',borderWidth:2.5,yAxisID:'y2',isCur:true});
+        datasets.push(Object.assign({label:'Revenue ($)',data:d.revenue_data,borderColor:'#10B981',backgroundColor:createGrad('#10B981'),pointBackgroundColor:'#10B981',yAxisID:'y2',isCur:true}, baseDs));
     var togFraud = document.getElementById('tog-fraud');
     if (togFraud && togFraud.checked && d.fraud_data)
-        datasets.push({label:'Fraud Conversions',data:d.fraud_data,borderColor:'#DC2626',backgroundColor:createGrad('#DC2626'),tension:.4,fill:true,pointRadius:0,pointHoverRadius:6,pointBackgroundColor:'#fff',borderWidth:2.5});
+        datasets.push(Object.assign({label:'Fraud Conversions',data:d.fraud_data,borderColor:'#DC2626',backgroundColor:createGrad('#DC2626'),pointBackgroundColor:'#DC2626'}, baseDs));
     
     charts['trend'] = new Chart(ctx, {
         type:'line',
@@ -945,10 +947,12 @@ function renderTrendChart(d){
             plugins:{ 
                 legend:{ display:false }, 
                 tooltip:{ 
-                    backgroundColor:'rgba(15, 23, 42, 0.95)', 
-                    titleFont:{size:13, family:'"Inter", sans-serif', weight:'600'}, 
-                    bodyFont:{size:13, family:'"Inter", sans-serif'}, 
-                    padding:12, cornerRadius:8, boxPadding: 6, displayColors: true,
+                    backgroundColor:'rgba(15, 23, 42, 0.95)',
+                    borderColor: 'rgba(255,255,255,0.1)',
+                    borderWidth: 1,
+                    titleFont:{size:14, family:'"Inter", sans-serif', weight:'700'}, 
+                    bodyFont:{size:13, family:'"Inter", sans-serif', weight:'500'}, 
+                    padding:14, cornerRadius:10, boxPadding: 8, displayColors: true,
                     callbacks:{ label: function(ctx) { return ' ' + ctx.dataset.label + ': ' + (ctx.dataset.isCur ? '$'+fmt(ctx.parsed.y,2) : fmt(ctx.parsed.y)); } }
                 } 
             },
