@@ -902,6 +902,7 @@ let trendMetrics = new Set(['clicks','conv','revenue','payout','fraud']);
 let trendType    = 'line';
 let trendData   = {};
 const SERVER_TZ = '<?= addslashes($_serverTz) ?>';
+const trendChartStyle = '<?= Config::get('config', 'app.trend_chart_style') ?? 'default' ?>';
 
 function fmt(n, dec){ return Number(n||0).toLocaleString(undefined,{minimumFractionDigits:dec||0,maximumFractionDigits:dec||0}); }
 function fmtCur(n){ return '$'+fmt(n,2); }
@@ -1033,6 +1034,31 @@ function renderTrendChart(){
     
     const datasets = active.map(k => {
         const m = metricMap[k];
+
+        let tension = 0.45;
+        let stepped = false;
+        let fillOpacity1 = '66';
+        let fillOpacity2 = '15';
+        let fillOpacity3 = '00';
+        let bWidth = 3.5;
+        let pointRad = d.labels.length <= 45 ? 0 : 0;
+        
+        if (typeof trendChartStyle !== 'undefined') {
+            if (trendChartStyle === 'straight') {
+                tension = 0;
+                fillOpacity1 = '33'; fillOpacity2 = '05';
+            } else if (trendChartStyle === 'stepped') {
+                tension = 0;
+                stepped = true;
+                fillOpacity1 = '00'; fillOpacity2 = '00'; fillOpacity3 = '00'; // no fill
+                bWidth = 2.5;
+            } else if (trendChartStyle === 'high_tech') {
+                bWidth = 4.5;
+                fillOpacity1 = 'AA'; fillOpacity2 = '44'; fillOpacity3 = '05';
+                pointRad = d.labels.length <= 45 ? 0 : 0; // Maybe show points? Keep 0 for cleaner glow
+            }
+        }
+
         return {
             label: m.label,
             data: m.data||[],
@@ -1041,17 +1067,19 @@ function renderTrendChart(){
                 const chart = context.chart;
                 const {ctx, chartArea} = chart;
                 if (!chartArea || !isLine) return m.color + (isLine ? '1A' : 'CC');
+                if (stepped && isLine) return 'transparent';
                 let gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-                gradient.addColorStop(0, m.color + '66');
-                gradient.addColorStop(0.6, m.color + '15');
-                gradient.addColorStop(1, m.color + '00');
+                gradient.addColorStop(0, m.color + fillOpacity1);
+                gradient.addColorStop(0.6, m.color + fillOpacity2);
+                gradient.addColorStop(1, m.color + fillOpacity3);
                 return gradient;
             },
             fill: isLine,
-            tension: isLine ? 0.45 : 0,
-            borderWidth: isLine ? 3.5 : 0,
+            tension: isLine ? tension : 0,
+            stepped: isLine ? stepped : false,
+            borderWidth: isLine ? bWidth : 0,
             borderRadius: isLine ? 0 : 4,
-            pointRadius: isLine && d.labels.length <= 45 ? 0 : 0, // hide points by default for cleaner look
+            pointRadius: isLine ? pointRad : 0, // hide points by default for cleaner look
             pointBackgroundColor: m.color,
             pointBorderColor: '#ffffff',
             pointBorderWidth: 2,

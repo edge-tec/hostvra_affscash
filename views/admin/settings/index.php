@@ -333,6 +333,18 @@
                 <div id="cardStylePreview" style="margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;max-width:700px">
                 </div>
             </div>
+            <?php $trendStyle = $cfg['app']['trend_chart_style'] ?? 'default'; ?>
+            <div class="form-group" style="margin-top:24px">
+                <label>Performance Trend Style</label>
+                <div class="form-hint" style="margin-bottom:10px">Choose the design for the main Performance Trend chart.</div>
+                <select name="trend_chart_style" class="form-control" style="max-width:300px">
+                    <option value="default" <?= $trendStyle === 'default' ? 'selected' : '' ?>>Default (Smooth Curve)</option>
+                    <option value="straight" <?= $trendStyle === 'straight' ? 'selected' : '' ?>>Straight Lines (Sharp)</option>
+                    <option value="stepped" <?= $trendStyle === 'stepped' ? 'selected' : '' ?>>Stepped Lines</option>
+                    <option value="high_tech" <?= $trendStyle === 'high_tech' ? 'selected' : '' ?>>High-Tech (Heavy Glow)</option>
+                </select>
+            </div>
+            
             <script>
             function updateCardPreview(style) {
                 var wrap = document.getElementById('cardStylePreview');

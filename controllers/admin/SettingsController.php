@@ -329,6 +329,11 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
             Config::set('config', 'app.dashboard_card_style', $cardStyle);
         }
 
+        $trendStyle = Helpers::post('trend_chart_style');
+        if (in_array($trendStyle, ['default', 'straight', 'stepped', 'high_tech'])) {
+            Config::set('config', 'app.trend_chart_style', $trendStyle);
+        }
+
         // ── Auth-page backgrounds (login / affiliate register / advertiser register)
         // Each page has: uploaded image path + an enable toggle. Existing config
         // is preserved when no new file is uploaded so admins can flip the toggle

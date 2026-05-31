@@ -867,6 +867,7 @@ var charts = {};
 var _trendData = {};
 var _convData  = {};
 var _statsData = {};
+var trendChartStyle = '<?= Config::get('config', 'app.trend_chart_style') ?? 'default' ?>';
 
 // ── Timezone helpers ────────────────────────────────────────────────────────
 var SERVER_TZ = '<?= addslashes($_serverTz) ?>';
@@ -1014,13 +1015,28 @@ function renderTrendChart(d){
     
     var createGrad = function(color) {
         var grad = ctx.getContext('2d').createLinearGradient(0, 0, 0, 350);
-        grad.addColorStop(0, color + '66');
-        grad.addColorStop(0.6, color + '15');
-        grad.addColorStop(1, color + '00');
+        var opacity1 = '66', opacity2 = '15', opacity3 = '00';
+        if (typeof trendChartStyle !== 'undefined') {
+            if (trendChartStyle === 'straight') { opacity1 = '33'; opacity2 = '05'; }
+            else if (trendChartStyle === 'stepped') { opacity1 = '00'; opacity2 = '00'; opacity3 = '00'; }
+            else if (trendChartStyle === 'high_tech') { opacity1 = 'AA'; opacity2 = '44'; opacity3 = '05'; }
+        }
+        grad.addColorStop(0, color + opacity1);
+        grad.addColorStop(0.6, color + opacity2);
+        grad.addColorStop(1, color + opacity3);
         return grad;
     };
 
-    var baseDs = {tension:0.45, fill:true, pointRadius:0, pointHoverRadius:7, pointBorderColor:'#fff', pointHoverBorderWidth:3, borderWidth:3.5};
+    var _tension = 0.45;
+    var _stepped = false;
+    var _bWidth = 3.5;
+    if (typeof trendChartStyle !== 'undefined') {
+        if (trendChartStyle === 'straight') { _tension = 0; }
+        else if (trendChartStyle === 'stepped') { _tension = 0; _stepped = true; _bWidth = 2.5; }
+        else if (trendChartStyle === 'high_tech') { _bWidth = 4.5; }
+    }
+
+    var baseDs = {tension:_tension, stepped:_stepped, fill:!_stepped, pointRadius:0, pointHoverRadius:7, pointBorderColor:'#fff', pointHoverBorderWidth:3, borderWidth:_bWidth};
     var datasets = [];
     if (document.getElementById('tog-clicks').checked)
         datasets.push(Object.assign({label:'Clicks',data:d.clicks_data,borderColor:'#3B82F6',backgroundColor:createGrad('#3B82F6'),pointBackgroundColor:'#3B82F6'}, baseDs));
