@@ -57,7 +57,12 @@
     overflow: hidden;
     transition: max-height .3s ease, opacity .2s ease;
     opacity: 0;
-    background: #1E1B4B;
+    background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.01) 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: none;
+    box-shadow: inset 0 0 15px rgba(255,255,255,0.02);
     border-radius: 0 0 8px 8px;
     margin-bottom: 2px;
 }
