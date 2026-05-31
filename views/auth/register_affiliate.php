@@ -375,6 +375,18 @@ body { background:linear-gradient(135deg,#EEF2FF 0%,#F0FDF4 100%); padding:40px 
                            style="margin-top:3px;accent-color:#4F46E5;width:16px;height:16px;flex-shrink:0">
                     <span>I agree to the <a href="/TRC.html" target="_blank" style="color:#4F46E5;font-weight:600">Terms &amp; Conditions</a>. <span style="color:#DC2626">*</span></span>
                 </label>
+                <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:#334155;margin-top:10px">
+                    <input type="checkbox" name="agree_affiliate" value="1" required
+                           <?= !empty($_POST['agree_affiliate']) ? 'checked' : '' ?>
+                           style="margin-top:3px;accent-color:#4F46E5;width:16px;height:16px;flex-shrink:0">
+                    <span>I agree to the <a href="/affiliate-agreement" target="_blank" style="color:#4F46E5;font-weight:600">Affiliate Agreement</a>. <span style="color:#DC2626">*</span></span>
+                </label>
+                <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:#334155;margin-top:10px">
+                    <input type="checkbox" name="agree_fraud" value="1" required
+                           <?= !empty($_POST['agree_fraud']) ? 'checked' : '' ?>
+                           style="margin-top:3px;accent-color:#4F46E5;width:16px;height:16px;flex-shrink:0">
+                    <span>I agree to the <a href="/anti-fraud-policy" target="_blank" style="color:#4F46E5;font-weight:600">Anti-Fraud Policy</a>. <span style="color:#DC2626">*</span></span>
+                </label>
             </div>
 
             <?php if (Turnstile::isEnabled()): ?>

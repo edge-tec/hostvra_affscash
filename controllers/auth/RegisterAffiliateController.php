@@ -66,10 +66,15 @@ if (Helpers::isPost()) {
         $confirm  = Helpers::postRaw('confirm_password');
 
         // Mandatory consent — Privacy Policy AND Terms & Conditions both required.
-        $agreePrivacy = isset($_POST['agree_privacy'])   && $_POST['agree_privacy']   === '1';
-        $agreeTerms   = isset($_POST['agree_terms'])     && $_POST['agree_terms']     === '1';
-        if (!$agreePrivacy) $errors[] = 'You must accept the Privacy Policy to register.';
-        if (!$agreeTerms)   $errors[] = 'You must accept the Terms & Conditions to register.';
+        $agreePrivacy   = isset($_POST['agree_privacy'])   && $_POST['agree_privacy']   === '1';
+        $agreeTerms     = isset($_POST['agree_terms'])     && $_POST['agree_terms']     === '1';
+        $agreeAffiliate = isset($_POST['agree_affiliate']) && $_POST['agree_affiliate'] === '1';
+        $agreeFraud     = isset($_POST['agree_fraud'])     && $_POST['agree_fraud']     === '1';
+        
+        if (!$agreePrivacy)   $errors[] = 'You must accept the Privacy Policy to register.';
+        if (!$agreeTerms)     $errors[] = 'You must accept the Terms & Conditions to register.';
+        if (!$agreeAffiliate) $errors[] = 'You must accept the Affiliate Agreement to register.';
+        if (!$agreeFraud)     $errors[] = 'You must accept the Anti-Fraud Policy to register.';
 
         if (!$fname || !$lname)   $errors[] = 'First and last name are required.';
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
