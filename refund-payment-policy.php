@@ -26,7 +26,7 @@ $navLogo = $loginLogoPath ?: $logoPath;
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Refund & Payment Policy — Affscash</title>
+<title>Cookie Policy — Affscash</title>
 <?php if ($faviconPath): ?>
 <link rel="icon" href="<?= htmlspecialchars($faviconPath) ?>">
 <?php else: ?>
@@ -341,10 +341,10 @@ html[data-theme="light"],
 <div class="page-hero">
   <div class="page-hero-inner">
     <div class="page-hero-eyebrow">Legal</div>
-    <h1>Affscash <span class="grad">Refund & Payment Policy</span></h1>
+    <h1>Refund & Payment Policy</h1>
     <div class="page-hero-meta">
-      <div class="page-hero-meta-item"><strong>Effective Date</strong>June 1, 2026</div>
-      <div class="page-hero-meta-item"><strong>Last Updated</strong>June 1, 2026</div>
+      <div class="page-hero-meta-item"><strong>Effective Date</strong>May 31, 2026</div>
+      <div class="page-hero-meta-item"><strong>Last Updated</strong>May 31, 2026</div>
       <div class="page-hero-meta-item"><strong>Platform</strong><?= htmlspecialchars($siteName) ?> — Global Performance Affiliate Network</div>
     </div>
   </div>
@@ -368,19 +368,12 @@ html[data-theme="light"],
       </div>
       <div class="toc-scroll">
         <ul class="toc-list">
-          <li><a href="#section-1"><span class="toc-num">01</span><span class="toc-text">📌 General Policy</span></a></li>
-          <li><a href="#section-2"><span class="toc-num">02</span><span class="toc-text">🚫 No Refund on Affiliate Earnings</span></a></li>
-          <li><a href="#section-3"><span class="toc-num">03</span><span class="toc-text">🔄 Reversal of Earnings (Advertiser Chargebacks)</span></a></li>
-          <li><a href="#section-4"><span class="toc-num">04</span><span class="toc-text">⏳ Pending Earnings Status</span></a></li>
-          <li><a href="#section-5"><span class="toc-num">05</span><span class="toc-text">💰 Payment Adjustments</span></a></li>
-          <li><a href="#section-6"><span class="toc-num">06</span><span class="toc-text">🚫 Affiliate Refund Requests</span></a></li>
-          <li><a href="#section-7"><span class="toc-num">07</span><span class="toc-text">🛡️ Advertiser Refunds</span></a></li>
-          <li><a href="#section-8"><span class="toc-num">08</span><span class="toc-text">⚠️ Fraud-Related Adjustments</span></a></li>
-          <li><a href="#section-9"><span class="toc-num">09</span><span class="toc-text">📊 Payment Eligibility</span></a></li>
-          <li><a href="#section-10"><span class="toc-num">10</span><span class="toc-text">🔐 Chargeback Policy</span></a></li>
-          <li><a href="#section-11"><span class="toc-num">11</span><span class="toc-text">🌍 International Considerations</span></a></li>
-          <li><a href="#section-12"><span class="toc-num">12</span><span class="toc-text">⚖️ Final Authority</span></a></li>
-          <li><a href="#section-13"><span class="toc-num">13</span><span class="toc-text">📌 Acceptance of Policy</span></a></li>
+          <li><a href="#section-1"><span class="toc-num">01</span><span class="toc-text">What Are Cookies</span></a></li>
+          <li><a href="#section-2"><span class="toc-num">02</span><span class="toc-text">How We Use Cookies</span></a></li>
+          <li><a href="#section-3"><span class="toc-num">03</span><span class="toc-text">Types Of Cookies</span></a></li>
+          <li><a href="#section-4"><span class="toc-num">04</span><span class="toc-text">Third-Party Cookies</span></a></li>
+          <li><a href="#section-5"><span class="toc-num">05</span><span class="toc-text">User Consent</span></a></li>
+          <li><a href="#section-6"><span class="toc-num">06</span><span class="toc-text">Managing Cookies</span></a></li>
         </ul>
       </div>
       <div class="toc-footer">
@@ -403,23 +396,20 @@ html[data-theme="light"],
   <main class="tos-content">
 
     <div class="notice-block">
-      This <strong>Refund & Payment Policy</strong> outlines the terms and conditions regarding affiliate earnings, adjustments, and payouts on AffsCash.net.
+      This Cookie Policy ("Policy") explains how <strong><?= htmlspecialchars($siteName) ?> Limited</strong> ("<?= htmlspecialchars($siteName) ?>," "Company," "we," "our," or "us") uses cookies and similar tracking technologies on <?= htmlspecialchars($siteName) ?>.net and related services.<br><br>
+      This Policy should be read together with our <a href="/privacy-policy" style="color:var(--cyan)">Privacy Policy</a> and <a href="/gdpr-compliance-policy" style="color:var(--cyan)">GDPR Compliance Policy</a>.<br><br>
+      By accessing or using our website, you consent to the use of cookies as described in this Policy, unless you disable them through your browser settings or cookie preferences.
     </div>
 
-            <!-- Section 1 -->
+        <!-- Section 1 -->
     <section class="tos-section is-open" id="section-1">
       <div class="accordion-header">
         <span class="section-number">01</span>
-        <h2>📌 General Policy</h2>
+        <h2>What Are Cookies</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>AffsCash.net operates as an affiliate marketing (CPA/CPI/CPR) network. All earnings are based on performance and advertiser validation.</p>
-        <p>Because of the nature of performance-based marketing:</p>
-        <ul class="tos-list">
-          <li>Refunds to affiliates are not applicable</li>
-          <li>Earnings are subject to verification before payout approval</li>
-        </ul>
+        <p>Cookies are small files stored on a user’s device to track activity and improve performance.</p>
       </div>
     </section>
 
@@ -427,20 +417,16 @@ html[data-theme="light"],
     <section class="tos-section" id="section-2">
       <div class="accordion-header">
         <span class="section-number">02</span>
-        <h2>🚫 No Refund on Affiliate Earnings</h2>
+        <h2>How We Use Cookies</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>All affiliate commissions are:</p>
+        <p>We use cookies for:</p>
         <ul class="tos-list">
-          <li>Performance-based</li>
-          <li>Subject to advertiser approval</li>
-          <li>Final only after validation</li>
-        </ul>
-        <p>Therefore:</p>
-        <p>Once earnings are confirmed and paid, they are considered final and non-refundable</p>
-        <ul class="tos-list">
-          <li>Pending or unapproved earnings may be adjusted or removed before payment</li>
+          <li>Tracking affiliate referrals</li>
+          <li>Measuring conversions</li>
+          <li>Preventing fraud</li>
+          <li>Improving platform performance</li>
         </ul>
       </div>
     </section>
@@ -449,18 +435,15 @@ html[data-theme="light"],
     <section class="tos-section" id="section-3">
       <div class="accordion-header">
         <span class="section-number">03</span>
-        <h2>🔄 Reversal of Earnings (Advertiser Chargebacks)</h2>
+        <h2>Types Of Cookies</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>AffsCash reserves the right to reverse or adjust earnings if:</p>
         <ul class="tos-list">
-          <li>Advertiser reports invalid leads or conversions</li>
-          <li>Traffic is identified as fraudulent or non-compliant</li>
-          <li>Duplicate, bot, or incentivized traffic is detected</li>
-          <li>Conversion is rejected during post-back validation</li>
+          <li>Essential cookies (site functionality)</li>
+          <li>Tracking cookies (affiliate attribution)</li>
+          <li>Analytics cookies (performance optimization)</li>
         </ul>
-        <p>Such reversals are not considered refunds but earnings adjustments.</p>
       </div>
     </section>
 
@@ -468,17 +451,11 @@ html[data-theme="light"],
     <section class="tos-section" id="section-4">
       <div class="accordion-header">
         <span class="section-number">04</span>
-        <h2>⏳ Pending Earnings Status</h2>
+        <h2>Third-Party Cookies</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>All pending earnings are:</p>
-        <ul class="tos-list">
-          <li>Not guaranteed payments</li>
-          <li>Subject to verification</li>
-          <li>May be approved, rejected, or reversed</li>
-        </ul>
-        <p>AffsCash is not liable for pending conversion outcomes.</p>
+        <p>Advertisers may place cookies to track conversions and user behavior.</p>
       </div>
     </section>
 
@@ -486,19 +463,11 @@ html[data-theme="light"],
     <section class="tos-section" id="section-5">
       <div class="accordion-header">
         <span class="section-number">05</span>
-        <h2>💰 Payment Adjustments</h2>
+        <h2>User Consent</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>AffsCash may adjust payments in cases of:</p>
-        <ul class="tos-list">
-          <li>Fraud detection</li>
-          <li>Tracking discrepancies</li>
-          <li>Advertiser disputes</li>
-          <li>Policy violations</li>
-          <li>Technical reporting errors</li>
-        </ul>
-        <p>Any adjustment will reflect in the affiliate dashboard balance.</p>
+        <p>By using AffsCash services, users agree to cookie usage as described in this policy.</p>
       </div>
     </section>
 
@@ -506,142 +475,11 @@ html[data-theme="light"],
     <section class="tos-section" id="section-6">
       <div class="accordion-header">
         <span class="section-number">06</span>
-        <h2>🚫 Affiliate Refund Requests</h2>
+        <h2>Managing Cookies</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>Affiliates are not entitled to request refunds for:</p>
-        <ul class="tos-list">
-          <li>Account suspension</li>
-          <li>Rejected traffic</li>
-          <li>Removed conversions</li>
-          <li>Reversed commissions</li>
-          <li>Policy violations</li>
-        </ul>
-        <p>All decisions made under compliance review are final.</p>
-      </div>
-    </section>
-
-    <!-- Section 7 -->
-    <section class="tos-section" id="section-7">
-      <div class="accordion-header">
-        <span class="section-number">07</span>
-        <h2>🛡️ Advertiser Refunds</h2>
-        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      </div>
-      <div class="accordion-content">
-        <p>In cases where advertisers request refunds or dispute conversions:</p>
-        <ul class="tos-list">
-          <li>The corresponding affiliate earnings may be deducted</li>
-          <li>Adjustments will be reflected in account balance</li>
-          <li>Affiliates will not be charged directly; only earnings are adjusted</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Section 8 -->
-    <section class="tos-section" id="section-8">
-      <div class="accordion-header">
-        <span class="section-number">08</span>
-        <h2>⚠️ Fraud-Related Adjustments</h2>
-        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      </div>
-      <div class="accordion-content">
-        <p>If fraudulent activity is detected:</p>
-        <ul class="tos-list">
-          <li>Earnings will be voided immediately</li>
-          <li>Payments may be withheld or reversed</li>
-          <li>Accounts may be suspended or terminated</li>
-        </ul>
-        <p>No refunds or compensation will be issued for fraudulent activity.</p>
-      </div>
-    </section>
-
-    <!-- Section 9 -->
-    <section class="tos-section" id="section-9">
-      <div class="accordion-header">
-        <span class="section-number">09</span>
-        <h2>📊 Payment Eligibility</h2>
-        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      </div>
-      <div class="accordion-content">
-        <p>To receive payment, affiliates must:</p>
-        <ul class="tos-list">
-          <li>Meet minimum payout threshold</li>
-          <li>Pass fraud and compliance checks</li>
-          <li>Provide valid payment details</li>
-          <li>Follow all platform policies</li>
-        </ul>
-        <p>Failure to meet requirements may delay or cancel payments.</p>
-      </div>
-    </section>
-
-    <!-- Section 10 -->
-    <section class="tos-section" id="section-10">
-      <div class="accordion-header">
-        <span class="section-number">10</span>
-        <h2>🔐 Chargeback Policy</h2>
-        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      </div>
-      <div class="accordion-content">
-        <p>If a conversion is reversed due to advertiser chargeback:</p>
-        <ul class="tos-list">
-          <li>The amount will be deducted from affiliate balance</li>
-          <li>Future earnings may be adjusted to cover losses</li>
-          <li>This is standard industry practice in CPA marketing</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Section 11 -->
-    <section class="tos-section" id="section-11">
-      <div class="accordion-header">
-        <span class="section-number">11</span>
-        <h2>🌍 International Considerations</h2>
-        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      </div>
-      <div class="accordion-content">
-        <p>AffsCash operates globally. Refund and payment rules apply uniformly regardless of:</p>
-        <ul class="tos-list">
-          <li>Country</li>
-          <li>Currency</li>
-          <li>Payment method</li>
-        </ul>
-        <p>Local laws may apply where required.</p>
-      </div>
-    </section>
-
-    <!-- Section 12 -->
-    <section class="tos-section" id="section-12">
-      <div class="accordion-header">
-        <span class="section-number">12</span>
-        <h2>⚖️ Final Authority</h2>
-        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      </div>
-      <div class="accordion-content">
-        <p>AffsCash reserves the right to:</p>
-        <ul class="tos-list">
-          <li>Modify this policy at any time</li>
-          <li>Make final decisions on all disputes</li>
-          <li>Adjust balances based on compliance findings</li>
-        </ul>
-        <p>All decisions are final and binding.</p>
-      </div>
-    </section>
-
-    <!-- Section 13 -->
-    <section class="tos-section" id="section-13">
-      <div class="accordion-header">
-        <span class="section-number">13</span>
-        <h2>📌 Acceptance of Policy</h2>
-        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      </div>
-      <div class="accordion-content">
-        <p>By using AffsCash.net, you agree that:</p>
-        <ul class="tos-list">
-          <li>You understand this Refund & Payment Policy</li>
-          <li>You accept performance-based earning conditions</li>
-        </ul>
+        <p>Users can disable cookies in browser settings, but this may affect tracking accuracy.</p>
       </div>
     </section>
 
@@ -659,8 +497,8 @@ html[data-theme="light"],
       <li><a href="/affiliate-agreement">Affiliate Agreement</a></li>
       <li><a href="/anti-fraud-policy">Anti-Fraud Policy</a></li>
       <li><a href="/gdpr-compliance-policy">GDPR Compliance</a></li>
-      <li><a href="/refund-payment-policy">Refund Policy</a></li>
-      <li><a href="/cookie-policy" class="active-link">Cookie Policy</a></li>
+      <li><a href="/refund-payment-policy" class="active-link">Refund Policy</a></li>
+      <li><a href="/cookie-policy">Cookie Policy</a></li>
       <li><a href="/login">Login</a></li>
     </ul>
   </div>

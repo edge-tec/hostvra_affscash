@@ -26,7 +26,7 @@ $navLogo = $loginLogoPath ?: $logoPath;
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GDPR Compliance Policy — Affscash</title>
+<title>Cookie Policy — Affscash</title>
 <?php if ($faviconPath): ?>
 <link rel="icon" href="<?= htmlspecialchars($faviconPath) ?>">
 <?php else: ?>
@@ -215,7 +215,7 @@ html:not([data-theme="light"]) .landing-logo-img { filter: brightness(0) invert(
 footer{padding:40px 6% 28px;border-top:1px solid var(--border)}
 .footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
 .footer-bottom p{font-size:13px;color:var(--muted)}
-.footer-links-row{display:flex;gap:20px;list-style:none}
+.footer-links-row{display:flex;gap:20px;list-style:none;flex-wrap:wrap;justify-content:center}
 .footer-links-row a{font-size:13px;color:var(--muted);transition:.2s}
 .footer-links-row a:hover{color:var(--pl)}
 .footer-links-row a.active-link{color:var(--pl)}
@@ -341,7 +341,7 @@ html[data-theme="light"],
 <div class="page-hero">
   <div class="page-hero-inner">
     <div class="page-hero-eyebrow">Legal</div>
-    <h1>Affscash <span class="grad">GDPR Compliance Policy</span></h1>
+    <h1>GDPR Compliance Policy</h1>
     <div class="page-hero-meta">
       <div class="page-hero-meta-item"><strong>Effective Date</strong>May 31, 2026</div>
       <div class="page-hero-meta-item"><strong>Last Updated</strong>May 31, 2026</div>
@@ -368,13 +368,12 @@ html[data-theme="light"],
       </div>
       <div class="toc-scroll">
         <ul class="toc-list">
-          <li><a href="#section-1"><span class="toc-num">01</span><span class="toc-text">Data Controller</span></a></li>
-          <li><a href="#section-2"><span class="toc-num">02</span><span class="toc-text">Data We Collect</span></a></li>
-          <li><a href="#section-3"><span class="toc-num">03</span><span class="toc-text">Legal Basis</span></a></li>
-          <li><a href="#section-4"><span class="toc-num">04</span><span class="toc-text">User Rights (Eu/Eea Users)</span></a></li>
-          <li><a href="#section-5"><span class="toc-num">05</span><span class="toc-text">Data Security</span></a></li>
-          <li><a href="#section-6"><span class="toc-num">06</span><span class="toc-text">Data Retention</span></a></li>
-          <li><a href="#section-7"><span class="toc-num">07</span><span class="toc-text">Third Parties</span></a></li>
+          <li><a href="#section-1"><span class="toc-num">01</span><span class="toc-text">What Are Cookies</span></a></li>
+          <li><a href="#section-2"><span class="toc-num">02</span><span class="toc-text">How We Use Cookies</span></a></li>
+          <li><a href="#section-3"><span class="toc-num">03</span><span class="toc-text">Types Of Cookies</span></a></li>
+          <li><a href="#section-4"><span class="toc-num">04</span><span class="toc-text">Third-Party Cookies</span></a></li>
+          <li><a href="#section-5"><span class="toc-num">05</span><span class="toc-text">User Consent</span></a></li>
+          <li><a href="#section-6"><span class="toc-num">06</span><span class="toc-text">Managing Cookies</span></a></li>
         </ul>
       </div>
       <div class="toc-footer">
@@ -397,19 +396,20 @@ html[data-theme="light"],
   <main class="tos-content">
 
     <div class="notice-block">
-      This GDPR Compliance Policy ("Policy") explains how <strong><?= htmlspecialchars($siteName) ?> Limited</strong> ("<?= htmlspecialchars($siteName) ?>," "Company," "we," "our," or "us") collects, processes, stores, protects, and transfers personal data in accordance with the <strong>UK General Data Protection Regulation (UK GDPR)</strong>, the <strong>EU General Data Protection Regulation (EU GDPR)</strong>, the <strong>Data Protection Act 2018</strong>, and other applicable privacy laws.<br><br>
-      This Policy applies to all visitors, affiliates, advertisers, publishers, customers, business partners, and users of the <?= htmlspecialchars($siteName) ?> platform and services.
+      This Cookie Policy ("Policy") explains how <strong><?= htmlspecialchars($siteName) ?> Limited</strong> ("<?= htmlspecialchars($siteName) ?>," "Company," "we," "our," or "us") uses cookies and similar tracking technologies on <?= htmlspecialchars($siteName) ?>.net and related services.<br><br>
+      This Policy should be read together with our <a href="/privacy-policy" style="color:var(--cyan)">Privacy Policy</a> and <a href="/gdpr-compliance-policy" style="color:var(--cyan)">GDPR Compliance Policy</a>.<br><br>
+      By accessing or using our website, you consent to the use of cookies as described in this Policy, unless you disable them through your browser settings or cookie preferences.
     </div>
 
         <!-- Section 1 -->
     <section class="tos-section is-open" id="section-1">
       <div class="accordion-header">
         <span class="section-number">01</span>
-        <h2>Data Controller</h2>
+        <h2>What Are Cookies</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>AffsCash acts as a data controller for affiliate registration and tracking data.</p>
+        <p>Cookies are small files stored on a user’s device to track activity and improve performance.</p>
       </div>
     </section>
 
@@ -417,16 +417,16 @@ html[data-theme="light"],
     <section class="tos-section" id="section-2">
       <div class="accordion-header">
         <span class="section-number">02</span>
-        <h2>Data We Collect</h2>
+        <h2>How We Use Cookies</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>We may collect:</p>
+        <p>We use cookies for:</p>
         <ul class="tos-list">
-          <li>Name, email, payment details</li>
-          <li>IP address and device information</li>
-          <li>Tracking and conversion data</li>
-          <li>Communication logs</li>
+          <li>Tracking affiliate referrals</li>
+          <li>Measuring conversions</li>
+          <li>Preventing fraud</li>
+          <li>Improving platform performance</li>
         </ul>
       </div>
     </section>
@@ -435,15 +435,14 @@ html[data-theme="light"],
     <section class="tos-section" id="section-3">
       <div class="accordion-header">
         <span class="section-number">03</span>
-        <h2>Legal Basis</h2>
+        <h2>Types Of Cookies</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>We process data based on:</p>
         <ul class="tos-list">
-          <li>Contract performance</li>
-          <li>Legitimate business interest</li>
-          <li>Legal obligations</li>
+          <li>Essential cookies (site functionality)</li>
+          <li>Tracking cookies (affiliate attribution)</li>
+          <li>Analytics cookies (performance optimization)</li>
         </ul>
       </div>
     </section>
@@ -452,18 +451,11 @@ html[data-theme="light"],
     <section class="tos-section" id="section-4">
       <div class="accordion-header">
         <span class="section-number">04</span>
-        <h2>User Rights (Eu/Eea Users)</h2>
+        <h2>Third-Party Cookies</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>You have the right to:</p>
-        <ul class="tos-list">
-          <li>Access your data</li>
-          <li>Request correction</li>
-          <li>Request deletion (“right to be forgotten”)</li>
-          <li>Restrict processing</li>
-          <li>Data portability</li>
-        </ul>
+        <p>Advertisers may place cookies to track conversions and user behavior.</p>
       </div>
     </section>
 
@@ -471,16 +463,11 @@ html[data-theme="light"],
     <section class="tos-section" id="section-5">
       <div class="accordion-header">
         <span class="section-number">05</span>
-        <h2>Data Security</h2>
+        <h2>User Consent</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>We implement:</p>
-        <ul class="tos-list">
-          <li>Encrypted tracking systems</li>
-          <li>Secure servers</li>
-          <li>Access control policies</li>
-        </ul>
+        <p>By using AffsCash services, users agree to cookie usage as described in this policy.</p>
       </div>
     </section>
 
@@ -488,23 +475,11 @@ html[data-theme="light"],
     <section class="tos-section" id="section-6">
       <div class="accordion-header">
         <span class="section-number">06</span>
-        <h2>Data Retention</h2>
+        <h2>Managing Cookies</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>Data is stored only as long as required for business, legal, or compliance purposes.</p>
-      </div>
-    </section>
-
-    <!-- Section 7 -->
-    <section class="tos-section" id="section-7">
-      <div class="accordion-header">
-        <span class="section-number">07</span>
-        <h2>Third Parties</h2>
-        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      </div>
-      <div class="accordion-content">
-        <p>Data may be shared with advertisers and payment processors only for tracking and payout purposes.</p>
+        <p>Users can disable cookies in browser settings, but this may affect tracking accuracy.</p>
       </div>
     </section>
 

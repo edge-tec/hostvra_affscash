@@ -341,7 +341,7 @@ html[data-theme="light"],
 <div class="page-hero">
   <div class="page-hero-inner">
     <div class="page-hero-eyebrow">Legal</div>
-    <h1>Affscash <span class="grad">Cookie Policy</span></h1>
+    <h1>Cookie Policy</h1>
     <div class="page-hero-meta">
       <div class="page-hero-meta-item"><strong>Effective Date</strong>May 31, 2026</div>
       <div class="page-hero-meta-item"><strong>Last Updated</strong>May 31, 2026</div>

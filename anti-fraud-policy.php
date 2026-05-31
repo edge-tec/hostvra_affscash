@@ -26,7 +26,7 @@ $navLogo = $loginLogoPath ?: $logoPath;
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Anti-Fraud Policy — Affscash</title>
+<title>Cookie Policy — Affscash</title>
 <?php if ($faviconPath): ?>
 <link rel="icon" href="<?= htmlspecialchars($faviconPath) ?>">
 <?php else: ?>
@@ -341,10 +341,10 @@ html[data-theme="light"],
 <div class="page-hero">
   <div class="page-hero-inner">
     <div class="page-hero-eyebrow">Legal</div>
-    <h1>Affscash <span class="grad">Anti-Fraud Policy</span></h1>
+    <h1>Anti-Fraud Policy</h1>
     <div class="page-hero-meta">
-      <div class="page-hero-meta-item"><strong>Effective Date</strong>June 1, 2026</div>
-      <div class="page-hero-meta-item"><strong>Last Updated</strong>June 1, 2026</div>
+      <div class="page-hero-meta-item"><strong>Effective Date</strong>May 31, 2026</div>
+      <div class="page-hero-meta-item"><strong>Last Updated</strong>May 31, 2026</div>
       <div class="page-hero-meta-item"><strong>Platform</strong><?= htmlspecialchars($siteName) ?> — Global Performance Affiliate Network</div>
     </div>
   </div>
@@ -368,18 +368,12 @@ html[data-theme="light"],
       </div>
       <div class="toc-scroll">
         <ul class="toc-list">
-          <li><a href="#section-1"><span class="toc-num">01</span><span class="toc-text">🎯 Purpose</span></a></li>
-          <li><a href="#section-2"><span class="toc-num">02</span><span class="toc-text">🚫 Definition of Fraudulent Activity</span></a></li>
-          <li><a href="#section-3"><span class="toc-num">03</span><span class="toc-text">🔍 Fraud Detection Methods</span></a></li>
-          <li><a href="#section-4"><span class="toc-num">04</span><span class="toc-text">⚖️ Investigation & Review Process</span></a></li>
-          <li><a href="#section-5"><span class="toc-num">05</span><span class="toc-text">❌ Enforcement Actions</span></a></li>
-          <li><a href="#section-6"><span class="toc-num">06</span><span class="toc-text">💰 Earnings Forfeiture</span></a></li>
-          <li><a href="#section-7"><span class="toc-num">07</span><span class="toc-text">⏳ Pending Conversions Disclaimer</span></a></li>
-          <li><a href="#section-8"><span class="toc-num">08</span><span class="toc-text">🚨 Zero Tolerance Policy</span></a></li>
-          <li><a href="#section-9"><span class="toc-num">09</span><span class="toc-text">🔐 Data & Monitoring Consent</span></a></li>
-          <li><a href="#section-10"><span class="toc-num">10</span><span class="toc-text">🧾 Affiliate Responsibility</span></a></li>
-          <li><a href="#section-11"><span class="toc-num">11</span><span class="toc-text">⚖️ Legal Rights</span></a></li>
-          <li><a href="#section-12"><span class="toc-num">12</span><span class="toc-text">📌 Acceptance of Policy</span></a></li>
+          <li><a href="#section-1"><span class="toc-num">01</span><span class="toc-text">What Are Cookies</span></a></li>
+          <li><a href="#section-2"><span class="toc-num">02</span><span class="toc-text">How We Use Cookies</span></a></li>
+          <li><a href="#section-3"><span class="toc-num">03</span><span class="toc-text">Types Of Cookies</span></a></li>
+          <li><a href="#section-4"><span class="toc-num">04</span><span class="toc-text">Third-Party Cookies</span></a></li>
+          <li><a href="#section-5"><span class="toc-num">05</span><span class="toc-text">User Consent</span></a></li>
+          <li><a href="#section-6"><span class="toc-num">06</span><span class="toc-text">Managing Cookies</span></a></li>
         </ul>
       </div>
       <div class="toc-footer">
@@ -402,19 +396,20 @@ html[data-theme="light"],
   <main class="tos-content">
 
     <div class="notice-block">
-      <strong>Applies To:</strong> All Affiliates, Publishers, and Partners of AffsCash.net ("Company," "we," "us").
+      This Cookie Policy ("Policy") explains how <strong><?= htmlspecialchars($siteName) ?> Limited</strong> ("<?= htmlspecialchars($siteName) ?>," "Company," "we," "our," or "us") uses cookies and similar tracking technologies on <?= htmlspecialchars($siteName) ?>.net and related services.<br><br>
+      This Policy should be read together with our <a href="/privacy-policy" style="color:var(--cyan)">Privacy Policy</a> and <a href="/gdpr-compliance-policy" style="color:var(--cyan)">GDPR Compliance Policy</a>.<br><br>
+      By accessing or using our website, you consent to the use of cookies as described in this Policy, unless you disable them through your browser settings or cookie preferences.
     </div>
 
-            <!-- Section 1 -->
+        <!-- Section 1 -->
     <section class="tos-section is-open" id="section-1">
       <div class="accordion-header">
         <span class="section-number">01</span>
-        <h2>🎯 Purpose</h2>
+        <h2>What Are Cookies</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>This Anti-Fraud Policy defines prohibited activities and enforcement measures designed to maintain a fair, transparent, and high-quality affiliate ecosystem.</p>
-        <p>AffsCash maintains a zero-tolerance stance on fraud.</p>
+        <p>Cookies are small files stored on a user’s device to track activity and improve performance.</p>
       </div>
     </section>
 
@@ -422,43 +417,16 @@ html[data-theme="light"],
     <section class="tos-section" id="section-2">
       <div class="accordion-header">
         <span class="section-number">02</span>
-        <h2>🚫 Definition of Fraudulent Activity</h2>
+        <h2>How We Use Cookies</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>Fraudulent activity includes, but is not limited to:</p>
-        <h3>Traffic Fraud</h3>
+        <p>We use cookies for:</p>
         <ul class="tos-list">
-          <li>Bot-generated traffic</li>
-          <li>Automated scripts or crawlers</li>
-          <li>Fake clicks, impressions, or installs</li>
-          <li>Click farms or incentivized networks (without approval)</li>
-        </ul>
-        <h3>Conversion Fraud</h3>
-        <ul class="tos-list">
-          <li>Fake leads or registrations</li>
-          <li>Self-generated conversions</li>
-          <li>Duplicate submissions</li>
-          <li>Misrepresentation of user intent</li>
-        </ul>
-        <h3>Technical Manipulation</h3>
-        <ul class="tos-list">
-          <li>Cookie stuffing</li>
-          <li>Pixel stuffing</li>
-          <li>Tracking injection or tampering</li>
-          <li>Hidden redirects or forced clicks</li>
-        </ul>
-        <h3>GEO & IP Abuse</h3>
-        <ul class="tos-list">
-          <li>VPN or proxy traffic manipulation</li>
-          <li>Fake location targeting</li>
-          <li>Datacenter or non-human IP usage</li>
-        </ul>
-        <h3>Misleading Advertising</h3>
-        <ul class="tos-list">
-          <li>Brand impersonation</li>
-          <li>False claims or deceptive promotions</li>
-          <li>Unauthorized use of advertiser trademarks</li>
+          <li>Tracking affiliate referrals</li>
+          <li>Measuring conversions</li>
+          <li>Preventing fraud</li>
+          <li>Improving platform performance</li>
         </ul>
       </div>
     </section>
@@ -467,21 +435,15 @@ html[data-theme="light"],
     <section class="tos-section" id="section-3">
       <div class="accordion-header">
         <span class="section-number">03</span>
-        <h2>🔍 Fraud Detection Methods</h2>
+        <h2>Types Of Cookies</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>AffsCash uses a combination of automated and manual systems, including:</p>
         <ul class="tos-list">
-          <li>Real-time traffic monitoring</li>
-          <li>Device fingerprinting technology</li>
-          <li>IP reputation analysis</li>
-          <li>Conversion behavior analysis</li>
-          <li>GEO-location verification</li>
-          <li>Machine learning anomaly detection</li>
-          <li>Manual compliance review</li>
+          <li>Essential cookies (site functionality)</li>
+          <li>Tracking cookies (affiliate attribution)</li>
+          <li>Analytics cookies (performance optimization)</li>
         </ul>
-        <p>These systems operate continuously to ensure traffic quality.</p>
       </div>
     </section>
 
@@ -489,18 +451,11 @@ html[data-theme="light"],
     <section class="tos-section" id="section-4">
       <div class="accordion-header">
         <span class="section-number">04</span>
-        <h2>⚖️ Investigation & Review Process</h2>
+        <h2>Third-Party Cookies</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>When suspicious activity is detected:</p>
-        <ul class="tos-list">
-          <li>Traffic is flagged for review</li>
-          <li>Earnings may be temporarily frozen</li>
-          <li>Compliance team performs detailed analysis</li>
-          <li>Final decision is made (approval, rejection, or reversal)</li>
-        </ul>
-        <p>AffsCash is not obligated to disclose internal fraud detection methods.</p>
+        <p>Advertisers may place cookies to track conversions and user behavior.</p>
       </div>
     </section>
 
@@ -508,19 +463,11 @@ html[data-theme="light"],
     <section class="tos-section" id="section-5">
       <div class="accordion-header">
         <span class="section-number">05</span>
-        <h2>❌ Enforcement Actions</h2>
+        <h2>User Consent</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>If fraud or policy violations are confirmed, AffsCash reserves the right to:</p>
-        <ul class="tos-list">
-          <li>Reverse or void commissions</li>
-          <li>Withhold pending payments</li>
-          <li>Suspend or permanently terminate accounts</li>
-          <li>Restrict access to the platform</li>
-          <li>Block future participation</li>
-          <li>Report severe fraud cases to advertisers or legal authorities</li>
-        </ul>
+        <p>By using AffsCash services, users agree to cookie usage as described in this policy.</p>
       </div>
     </section>
 
@@ -528,127 +475,11 @@ html[data-theme="light"],
     <section class="tos-section" id="section-6">
       <div class="accordion-header">
         <span class="section-number">06</span>
-        <h2>💰 Earnings Forfeiture</h2>
+        <h2>Managing Cookies</h2>
         <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </div>
       <div class="accordion-content">
-        <p>Any earnings generated from fraudulent or invalid traffic will be:</p>
-        <ul class="tos-list">
-          <li>Marked as invalid</li>
-          <li>Removed from account balance</li>
-          <li>Not eligible for payout</li>
-        </ul>
-        <p>AffsCash is not responsible for losses resulting from enforcement actions.</p>
-      </div>
-    </section>
-
-    <!-- Section 7 -->
-    <section class="tos-section" id="section-7">
-      <div class="accordion-header">
-        <span class="section-number">07</span>
-        <h2>⏳ Pending Conversions Disclaimer</h2>
-        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      </div>
-      <div class="accordion-content">
-        <p>All pending conversions are subject to:</p>
-        <ul class="tos-list">
-          <li>Advertiser validation</li>
-          <li>Fraud screening</li>
-          <li>Compliance review</li>
-        </ul>
-        <p>Pending status does not guarantee payment approval.</p>
-      </div>
-    </section>
-
-    <!-- Section 8 -->
-    <section class="tos-section" id="section-8">
-      <div class="accordion-header">
-        <span class="section-number">08</span>
-        <h2>🚨 Zero Tolerance Policy</h2>
-        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      </div>
-      <div class="accordion-content">
-        <p>The following actions result in immediate enforcement:</p>
-        <ul class="tos-list">
-          <li>Intentional fraud attempts</li>
-          <li>Repeated policy violations</li>
-          <li>Large-scale invalid traffic generation</li>
-          <li>Abuse of tracking systems</li>
-        </ul>
-        <p>Such accounts may be permanently banned without prior warning.</p>
-      </div>
-    </section>
-
-    <!-- Section 9 -->
-    <section class="tos-section" id="section-9">
-      <div class="accordion-header">
-        <span class="section-number">09</span>
-        <h2>🔐 Data & Monitoring Consent</h2>
-        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      </div>
-      <div class="accordion-content">
-        <p>By using AffsCash, you agree that we may:</p>
-        <ul class="tos-list">
-          <li>Track user activity for fraud prevention</li>
-          <li>Collect IP, device, and behavioral data</li>
-          <li>Analyze traffic sources and conversions</li>
-          <li>Store data for compliance and auditing purposes</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Section 10 -->
-    <section class="tos-section" id="section-10">
-      <div class="accordion-header">
-        <span class="section-number">10</span>
-        <h2>🧾 Affiliate Responsibility</h2>
-        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      </div>
-      <div class="accordion-content">
-        <p>Affiliates are fully responsible for:</p>
-        <ul class="tos-list">
-          <li>Traffic sources used</li>
-          <li>Advertising methods</li>
-          <li>Compliance with this policy</li>
-          <li>Ensuring legality of all promotional activities</li>
-        </ul>
-        <p>Ignorance of this policy is not accepted as a defense.</p>
-      </div>
-    </section>
-
-    <!-- Section 11 -->
-    <section class="tos-section" id="section-11">
-      <div class="accordion-header">
-        <span class="section-number">11</span>
-        <h2>⚖️ Legal Rights</h2>
-        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      </div>
-      <div class="accordion-content">
-        <p>AffsCash reserves the right to:</p>
-        <ul class="tos-list">
-          <li>Modify this policy at any time</li>
-          <li>Investigate any account without notice</li>
-          <li>Take legal action in cases of severe fraud or abuse</li>
-        </ul>
-        <p>All compliance decisions are final and binding.</p>
-      </div>
-    </section>
-
-    <!-- Section 12 -->
-    <section class="tos-section" id="section-12">
-      <div class="accordion-header">
-        <span class="section-number">12</span>
-        <h2>📌 Acceptance of Policy</h2>
-        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      </div>
-      <div class="accordion-content">
-        <p>By using AffsCash.net services, you confirm that you:</p>
-        <ul class="tos-list">
-          <li>Understand this Anti-Fraud Policy</li>
-          <li>Agree to comply with all terms</li>
-          <li>Accept monitoring and enforcement actions</li>
-          <li>Acknowledge that fraud results in penalties</li>
-        </ul>
+        <p>Users can disable cookies in browser settings, but this may affect tracking accuracy.</p>
       </div>
     </section>
 
@@ -664,10 +495,10 @@ html[data-theme="light"],
       <li><a href="/terms-of-service">Terms of Service</a></li>
       <li><a href="/privacy-policy">Privacy Policy</a></li>
       <li><a href="/affiliate-agreement">Affiliate Agreement</a></li>
-      <li><a href="/anti-fraud-policy">Anti-Fraud Policy</a></li>
+      <li><a href="/anti-fraud-policy" class="active-link">Anti-Fraud Policy</a></li>
       <li><a href="/gdpr-compliance-policy">GDPR Compliance</a></li>
       <li><a href="/refund-payment-policy">Refund Policy</a></li>
-      <li><a href="/cookie-policy" class="active-link">Cookie Policy</a></li>
+      <li><a href="/cookie-policy">Cookie Policy</a></li>
       <li><a href="/login">Login</a></li>
     </ul>
   </div>
