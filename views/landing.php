@@ -97,25 +97,49 @@ try {
          ORDER BY is_featured DESC, sort_order ASC, id DESC LIMIT 8"
     ) ?: [];
 
-    if (empty($_landingRevs)) {
-        $dummyReviews = [
-            ['name' => 'John D.', 'role_title' => 'Affiliate Marketer', 'country' => 'United States', 'review_text' => 'Affscash has transformed my affiliate journey. Their top-tier offers and incredible support make them stand out in the CPA industry.'],
-            ['name' => 'Sarah L.', 'role_title' => 'Media Buyer', 'country' => 'United Kingdom', 'review_text' => 'I\'ve been working with Affscash for a year now, and the payouts are always on time. Highly recommend for any serious marketer!'],
-            ['name' => 'Mike T.', 'role_title' => 'Publisher', 'country' => 'Canada', 'review_text' => 'The Smartlink technology they provide is a game changer for my traffic. Outstanding conversion rates!'],
-            ['name' => 'Emily R.', 'role_title' => 'CPA Specialist', 'country' => 'Australia', 'review_text' => 'Affscash\'s 24/7 support team is amazing. They helped me optimize my campaigns and maximize ROI in no time.'],
-            ['name' => 'David K.', 'role_title' => 'Affiliate Marketer', 'country' => 'Germany', 'review_text' => 'If you\'re looking for high payouts and exclusive dating offers, Affscash is the place to be. Pure excellence.'],
-            ['name' => 'Alex P.', 'role_title' => 'Media Buyer', 'country' => 'Netherlands', 'review_text' => 'Best affiliate dashboard I have ever used. Tracking is flawless, and the real-time stats are exactly what I need.'],
-            ['name' => 'Sophia M.', 'role_title' => 'Content Creator', 'country' => 'France', 'review_text' => 'As an affiliate, trust is everything. Affscash delivers on every promise. On-time payments and top converting offers.'],
-            ['name' => 'Daniel B.', 'role_title' => 'Marketing Agency Owner', 'country' => 'Sweden', 'review_text' => 'The variety of verticals, especially the casino and cam offers, allows me to scale my campaigns globally without hassle.'],
-            ['name' => 'James W.', 'role_title' => 'Senior Media Buyer', 'country' => 'New Zealand', 'review_text' => 'A truly professional network. My dedicated AM is always there to share the latest high-converting creatives.'],
-            ['name' => 'Olivia S.', 'role_title' => 'Performance Marketer', 'country' => 'Switzerland', 'review_text' => 'Switching to Affscash was the best decision for my business. I\'ve seen a 30% increase in my overall earnings.']
+    $cRow = Database::fetchOne("SELECT COUNT(*) as c FROM landing_reviews WHERE status='active'");
+    if ($cRow && (int)$cRow['c'] < 200) {
+        $firsts = ['John','Sarah','Mike','Emily','David','Alex','Sophia','Daniel','James','Olivia','Lucas','Emma','Liam','Ava','Noah','Isabella','Ethan','Mia','Mason','Harper'];
+        $lasts  = ['D.','L.','T.','R.','K.','P.','M.','B.','W.','S.','C.','H.','G.','N.','F.','A.','V.','O.','E.','J.'];
+        $roles  = ['Affiliate Marketer','Media Buyer','Publisher','CPA Specialist','Content Creator','Marketing Agency Owner','Senior Media Buyer','Performance Marketer'];
+        $countries = ['United States','United Kingdom','Canada','Australia','Germany','Netherlands','France','Sweden','New Zealand','Switzerland','Spain','Italy','Brazil','Singapore','Japan'];
+        $templates = [
+            'Affscash has transformed my affiliate journey. Their top-tier offers and incredible support make them stand out in the CPA industry.',
+            'I\'ve been working with Affscash for a while now, and the payouts are always on time. Highly recommend for any serious marketer!',
+            'The Smartlink technology they provide is a game changer for my traffic. Outstanding conversion rates!',
+            'Affscash\'s 24/7 support team is amazing. They helped me optimize my campaigns and maximize ROI in no time.',
+            'If you\'re looking for high payouts and exclusive offers, Affscash is the place to be. Pure excellence.',
+            'Best affiliate dashboard I have ever used. Tracking is flawless, and the real-time stats are exactly what I need.',
+            'As an affiliate, trust is everything. Affscash delivers on every promise. On-time payments and top converting offers.',
+            'The variety of verticals allows me to scale my campaigns globally without hassle.',
+            'A truly professional network. My dedicated AM is always there to share the latest high-converting creatives.',
+            'Switching to Affscash was the best decision for my business. I\'ve seen a massive increase in my overall earnings.',
+            'Superb network! Fast payments, responsive AMs, and brilliant tracking.',
+            'I appreciate the transparency and the high CR. It is rare to find such a reliable network these days.',
+            'Excellent platform. I can always count on Affscash for top exclusive deals and great EPC.',
+            'The team at Affscash goes above and beyond. I feel valued as a partner and my profits reflect their great offers.',
+            'Consistent high performance across all GEOS. Affscash is my main network now.',
+            'Amazing conversion rates on dating offers. Nothing but praise for Affscash!',
+            'The most reliable CPA network I\'ve partnered with in the past 5 years. Highly recommended.',
+            'Fast approvals, great payouts, and incredible communication. A+ affiliate network.',
+            'I ran a split test on their smartlink and the results blew my mind. Excellent monetization.',
+            'I love the intuitive design of their affiliate panel and the real-time reporting is lightning fast.'
         ];
-        foreach ($dummyReviews as $rev) {
+        
+        $needed = 200 - (int)$cRow['c'];
+        for ($i=0; $i<$needed; $i++) {
+            $name = $firsts[array_rand($firsts)] . ' ' . $lasts[array_rand($lasts)];
+            $role = $roles[array_rand($roles)];
+            $country = $countries[array_rand($countries)];
+            $review = $templates[array_rand($templates)];
+            // Make some of them randomly featured (10% chance)
+            $isFeatured = (rand(1, 100) <= 10) ? 1 : 0;
             Database::query(
-                "INSERT INTO landing_reviews (name, role_title, country, review_text, rating, status, is_featured, source) VALUES (?, ?, ?, ?, 5, 'active', 1, 'admin')",
-                [$rev['name'], $rev['role_title'], $rev['country'], $rev['review_text']]
+                "INSERT INTO landing_reviews (name, role_title, country, review_text, rating, status, is_featured, source) VALUES (?, ?, ?, ?, 5, 'active', ?, 'admin')",
+                [$name, $role, $country, $review, $isFeatured]
             );
         }
+        
         $_landingRevs = Database::fetchAll(
             "SELECT name, role_title, avatar, rating, review_text, country, is_featured
              FROM landing_reviews WHERE status='active'
