@@ -109,7 +109,14 @@
                         <div><?= Helpers::e($r['affiliate_name'] ?: '—') ?></div>
                         <div class="text-muted" style="font-size:10px"><?= Helpers::e($r['affiliate_code'] ?? '') ?></div>
                     </td>
-                    <td><span class="badge badge-<?= $statusBadgeMap[$st] ?? 'muted' ?>"><?= Helpers::e(ucfirst($st)) ?></span></td>
+                    <td>
+                        <span class="badge badge-<?= $statusBadgeMap[$st] ?? 'muted' ?>"><?= Helpers::e(ucfirst($st)) ?></span>
+                        <?php if ($st === 'rejected' && !empty($r['rejection_reason'])): ?>
+                            <div title="<?= Helpers::e($r['rejection_reason']) ?>" style="margin-top:4px;font-size:10px;color:#DC2626;line-height:1.3;max-width:180px;white-space:normal">
+                                <strong>Reason:</strong> <?= Helpers::e(strlen($r['rejection_reason'])>40 ? substr($r['rejection_reason'],0,40).'…' : $r['rejection_reason']) ?>
+                            </div>
+                        <?php endif; ?>
+                    </td>
                     <td class="fw-bold">$<?= number_format((float)$r['payout'], 2) ?></td>
                     <td><?= Helpers::e($r['transaction_id'] ?: '—') ?></td>
                     <td><?= Helpers::e($r['goal_name'] ?: '—') ?></td>
@@ -121,7 +128,7 @@
                             <?= Helpers::csrf() ?>
                             <input type="hidden" name="conversion_id"   value="<?= Helpers::e($r['conversion_id']) ?>">
                             <input type="hidden" name="status"          value="rejected">
-                            <input type="hidden" name="rejection_reason" value="Duplicate conversion (same offer + same IP)">
+                            <input type="hidden" name="rejection_reason" value="Removed for duplicate conversion">
                             <input type="hidden" name="redirect_back"   value="/admin/reports/duplicate-conversions?<?= Helpers::e(http_build_query(['from'=>$from,'to'=>$to,'status'=>$status])) ?>">
                             <button class="btn btn-danger btn-sm" type="submit" style="font-size:11px;padding:4px 10px">Reject</button>
                         </form>
