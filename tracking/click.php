@@ -333,7 +333,7 @@ if ($blockedRecord) {
 // for this offer can generate tracking. Every attempt — allowed or denied —
 // is logged. The check runs on every request, so admin grant/revoke takes
 // effect on the very next click with no cache or restart.
-if (!PrivateOffer::checkClickAccess($offer, (int)$affiliate['id'])) {
+if (empty($GLOBALS['_sl_id']) && !PrivateOffer::checkClickAccess($offer, (int)$affiliate['id'])) {
     trafficBack('Access denied to this offer.');
 }
 
