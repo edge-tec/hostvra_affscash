@@ -387,6 +387,48 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token')) && Helpers
     Helpers::redirect('/admin/fraud-score-report');
 }
 
+// Bulk Reject conversions
+if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token')) && Helpers::post('action') === 'bulk_reject_fraud') {
+    $convIds      = Helpers::postRaw('conversion_ids');
+    $rejectReason = trim((string)Helpers::postRaw('rejection_reason')) ?: 'Bulk Fraud Rejection';
+    $count        = 0;
+
+    if (is_array($convIds)) {
+        foreach ($convIds as $convId) {
+            $convId = trim((string)$convId);
+            if ($convId === '') continue;
+
+            $conv = Database::fetchOne("SELECT * FROM conversions WHERE conversion_id=?", [$convId]);
+            if ($conv && $conv['status'] !== 'rejected') {
+                $oldStatus = $conv['status'];
+                $payload   = RejectionHelper::buildUpdatePayload('rejected', $rejectReason, (int)(Auth::id() ?? 0));
+                Database::update('conversions', $payload, 'conversion_id=?', [$convId]);
+
+                if ($oldStatus !== 'rejected') {
+                    try { RejectionNotifier::afterReject((string)$convId); } catch (\Throwable $_rn) {}
+                }
+                if ($oldStatus === 'approved') {
+                    Database::query("UPDATE affiliates SET balance = balance - ? WHERE id = ?", [$conv['payout'], $conv['affiliate_id']]);
+                    try {
+                        require_once BASE_PATH . '/core/ManagerCommissionService.php';
+                        ManagerCommissionService::reverseForConversion((int)$conv['id']);
+                    } catch (\Throwable $_mce) {}
+                }
+                $count++;
+            }
+        }
+    }
+
+    if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+        header('Content-Type: application/json');
+        echo json_encode(['status' => 'ok', 'rejected_count' => $count]);
+        exit;
+    }
+
+    Helpers::flash('success', "Successfully rejected $count conversion(s).");
+    Helpers::redirect('/admin/fraud-score-report');
+}
+
 // Filters
 $filterStatus    = Helpers::get('status') ?: 'all';
 $filterAffiliate = (int)Helpers::get('affiliate_id');

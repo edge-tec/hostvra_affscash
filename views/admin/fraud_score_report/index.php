@@ -165,11 +165,18 @@
 <div class="card">
     <div class="card-header" style="display:flex;align-items:center;justify-content:space-between">
         <span class="card-title">Conversions (<?= number_format(count($conversions)) ?> shown)</span>
+        <div style="display:flex;gap:8px;align-items:center">
+            <?= Helpers::csrf() ?>
+            <button id="fsr-bulk-reject-btn" class="btn btn-danger btn-sm" style="display:none;align-items:center;gap:6px" onclick="bulkRejectSelected()">
+                &#10007; Reject Selected
+            </button>
+        </div>
     </div>
     <div class="table-wrap">
         <table>
             <thead>
                 <tr>
+                    <th style="width:40px"><input type="checkbox" id="fsr-select-all" onclick="fsrToggleAll(this)"></th>
                     <th>Conv ID</th>
                     <th>Affiliate</th>
                     <th>Offer</th>
@@ -207,6 +214,11 @@
                 }
             ?>
             <tr data-conv="<?= Helpers::e($cv['conversion_id']) ?>">
+                <td>
+                    <?php if ($cv['status'] !== 'rejected'): ?>
+                    <input type="checkbox" class="fsr-conv-cb" value="<?= Helpers::e($cv['conversion_id']) ?>" onchange="fsrCheckSelection()">
+                    <?php endif; ?>
+                </td>
                 <td>
                     <span class="text-muted" style="font-size:11px;font-family:monospace"><?= Helpers::e(substr($cv['conversion_id'],0,16)) ?>…</span>
                 </td>
@@ -500,6 +512,64 @@
     // Boot the loop. First call fires immediately so the admin sees data
     // updating the moment the page renders.
     tick();
+
+    // ── Bulk Reject Logic ──
+    window.fsrToggleAll = function(el) {
+        var cbs = document.querySelectorAll('.fsr-conv-cb');
+        for (var i = 0; i < cbs.length; i++) cbs[i].checked = el.checked;
+        fsrCheckSelection();
+    };
+    window.fsrCheckSelection = function() {
+        var btn = document.getElementById('fsr-bulk-reject-btn');
+        var checkedCount = document.querySelectorAll('.fsr-conv-cb:checked').length;
+        if (checkedCount > 0) {
+            btn.style.display = 'flex';
+            btn.innerHTML = '&#10007; Reject Selected (' + checkedCount + ')';
+        } else {
+            btn.style.display = 'none';
+        }
+    };
+    window.bulkRejectSelected = function() {
+        var cbs = document.querySelectorAll('.fsr-conv-cb:checked');
+        if (cbs.length === 0) return;
+        var reason = prompt("Enter rejection reason (optional):", "Bulk Fraud Rejection");
+        if (reason === null) return; // user cancelled
+
+        var formData = new URLSearchParams();
+        var tokenInput = document.querySelector('input[name="_token"]');
+        formData.append('_token', tokenInput ? tokenInput.value : '');
+        formData.append('action', 'bulk_reject_fraud');
+        formData.append('rejection_reason', reason);
+        for (var i = 0; i < cbs.length; i++) {
+            formData.append('conversion_ids[]', cbs[i].value);
+        }
+
+        var btn = document.getElementById('fsr-bulk-reject-btn');
+        var oldHtml = btn.innerHTML;
+        btn.innerHTML = 'Working...';
+        btn.disabled = true;
+
+        fetch('/admin/fraud-score-report', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'XMLHttpRequest' },
+            body: formData.toString()
+        })
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+            if (d.status === 'ok') {
+                window.location.reload();
+            } else {
+                alert("Error rejecting conversions.");
+                btn.innerHTML = oldHtml;
+                btn.disabled = false;
+            }
+        })
+        .catch(function(){
+            alert("Network error.");
+            btn.innerHTML = oldHtml;
+            btn.disabled = false;
+        });
+    };
 })();
 </script>
 
