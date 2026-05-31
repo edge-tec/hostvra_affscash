@@ -316,7 +316,13 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         // White logo toggle — checkbox: present = 1, absent = 0
         Config::set('config', 'app.login_logo_white', Helpers::post('login_logo_white') === '1' ? '1' : '');
         Config::set('config', 'app.dark_logo_white',  Helpers::post('dark_logo_white')  === '1' ? '1' : '0');
-        Config::set('config', 'app.transparent_dashboard', Helpers::post('transparent_dashboard') === '1' ? '1' : '0');
+        
+        $bannerStyle = Helpers::post('dashboard_banner_style');
+        if (in_array($bannerStyle, ['default', 'transparent', 'glass'])) {
+            Config::set('config', 'app.dashboard_banner_style', $bannerStyle);
+            // Backward compatibility
+            Config::set('config', 'app.transparent_dashboard', $bannerStyle === 'transparent' ? '1' : '0');
+        }
 
         // ── Auth-page backgrounds (login / affiliate register / advertiser register)
         // Each page has: uploaded image path + an enable toggle. Existing config

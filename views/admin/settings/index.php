@@ -306,15 +306,16 @@
                 <?php endif; ?>
             </div>
 
-            <!-- Transparent Dashboard Banner Toggle -->
-            <?php $transparentDashboard = !empty($cfg['app']['transparent_dashboard']); ?>
+            <!-- Dashboard Banner Style -->
+            <?php $bannerStyle = $cfg['app']['dashboard_banner_style'] ?? (empty($cfg['app']['transparent_dashboard']) ? 'default' : 'transparent'); ?>
             <div class="form-group">
-                <label>Transparent Dashboard Banner</label>
-                <div class="form-hint" style="margin-bottom:10px">Enable to make the top purple gradient banner on all dashboards (Admin, Manager, Affiliate) fully transparent.</div>
-                <label style="display:inline-flex;align-items:center;gap:10px;cursor:pointer;background:#F8FAFC;border:1px solid var(--border);border-radius:8px;padding:12px 16px">
-                    <input type="checkbox" name="transparent_dashboard" value="1" <?= $transparentDashboard ? 'checked' : '' ?> style="width:18px;height:18px;accent-color:#4F46E5">
-                    <span style="font-size:13px;font-weight:600;color:var(--text)">Make dashboard banner fully transparent</span>
-                </label>
+                <label>Dashboard Banner Style</label>
+                <div class="form-hint" style="margin-bottom:10px">Choose the style for the top banner on all dashboards (Admin, Manager, Affiliate).</div>
+                <select name="dashboard_banner_style" class="form-control" style="max-width:300px">
+                    <option value="default" <?= $bannerStyle === 'default' ? 'selected' : '' ?>>Default (Purple Gradient)</option>
+                    <option value="transparent" <?= $bannerStyle === 'transparent' ? 'selected' : '' ?>>Fully Transparent</option>
+                    <option value="glass" <?= $bannerStyle === 'glass' ? 'selected' : '' ?>>Transparent Glass</option>
+                </select>
             </div>
 
             <!-- ─── Auth-page Backgrounds ──────────────────────────────── -->

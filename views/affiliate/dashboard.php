@@ -73,14 +73,22 @@ $_affTzOptions = [
         'Pacific/Guam'        =>'Guam (ChST, UTC+10)',
     ],
 ];
-$isTransBg = (Config::get('config', 'app.transparent_dashboard') ?? '0') === '1';
+$bannerStyle = Config::get('config', 'app.dashboard_banner_style') ?? (Config::get('config', 'app.transparent_dashboard') === '1' ? 'transparent' : 'default');
 ?>
 <style>
 /* ── Analytics Dashboard Styles ─────────────────────────────── */
 .an-header {
-    <?php if ($isTransBg): ?>
+    <?php if ($bannerStyle === 'transparent'): ?>
     background: transparent;
     padding: 10px 0;
+    <?php elseif ($bannerStyle === 'glass'): ?>
+    background: rgba(255,255,255,.55);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+            backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255,255,255,.65);
+    border-radius: 14px;
+    padding: 22px 26px;
+    box-shadow: 0 8px 32px rgba(31,38,135,.15);
     <?php else: ?>
     background: linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#4C1D95 100%);
     border-radius: 14px;
@@ -95,7 +103,14 @@ $isTransBg = (Config::get('config', 'app.transparent_dashboard') ?? '0') === '1'
     position: relative;
     overflow: hidden;
 }
-<?php if ($isTransBg): ?>
+html[data-theme="dark"] .an-header {
+    <?php if ($bannerStyle === 'glass'): ?>
+    background: rgba(20,24,48,.55);
+    border-color: rgba(148,163,184,.22);
+    box-shadow: 0 8px 32px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);
+    <?php endif; ?>
+}
+<?php if ($bannerStyle === 'transparent' || $bannerStyle === 'glass'): ?>
 .an-header::before, .an-header::after { display: none !important; }
 .an-title { color: var(--text) !important; }
 .an-title-label { color: var(--text-muted) !important; }
