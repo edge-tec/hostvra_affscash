@@ -73,7 +73,8 @@ $_affTzOptions = [
         'Pacific/Guam'        =>'Guam (ChST, UTC+10)',
     ],
 ];
-<?php $isTransBg = (Config::get('config', 'app.transparent_dashboard') ?? '0') === '1'; ?>
+$isTransBg = (Config::get('config', 'app.transparent_dashboard') ?? '0') === '1';
+?>
 <style>
 /* ── Analytics Dashboard Styles ─────────────────────────────── */
 .an-header {
