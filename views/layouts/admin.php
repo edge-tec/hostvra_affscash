@@ -62,22 +62,22 @@
     margin-bottom: 2px;
 }
 .fds-submenu.open { max-height: 600px; opacity: 1; }
-.fds-link {
+.fds-submenu .fds-link {
     display: flex;
     align-items: center;
     gap: 8px;
     padding: 7px 14px 7px 18px;
     font-size: 12px;
     font-weight: 500;
-    color: #A5B4FC;
+    color: #ffffff;
     text-decoration: none;
     transition: all .15s;
     border-left: 2px solid transparent;
     position: relative;
 }
-.fds-link svg { flex-shrink:0; width:14px; height:14px; }
-.fds-link:hover { color: #fff; background: rgba(99,102,241,.15); border-left-color: #6366F1; text-decoration: none; }
-.fds-link.active { color: #fff; background: rgba(99,102,241,.25); border-left-color: #A5B4FC; font-weight: 700; }
+.fds-submenu .fds-link svg { flex-shrink:0; width:14px; height:14px; }
+.fds-submenu .fds-link:hover { color: #fff; background: rgba(99,102,241,.15); border-left-color: #6366F1; text-decoration: none; }
+.fds-submenu .fds-link.active { color: #fff; background: rgba(99,102,241,.25); border-left-color: #A5B4FC; font-weight: 700; }
 .fds-pulse-dot {
     width: 7px; height: 7px;
     background: #10B981;
