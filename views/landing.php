@@ -234,7 +234,7 @@ try {
     .hero p{color:var(--muted);font-size:15px;margin-bottom:14px}
     .hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
     .hero-visual{display:flex;align-items:center;justify-content:center;position:relative;z-index:2}
-    .hero-graphic{width:100%;max-width:680px;position:relative;margin:0 auto}
+    .hero-graphic{width:100%;position:relative;margin:0 auto}
     .hero-card-stack{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
     .hero-stat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:16px 14px;text-align:center;transition:transform .3s,box-shadow .3s;box-shadow:0 4px 20px rgba(124,58,237,.07)}
     .hero-stat-card:hover{transform:translateY(-4px);box-shadow:0 14px 36px rgba(124,58,237,.15)}
@@ -572,7 +572,7 @@ try {
   <section class="hero" id="top">
     <div class="container">
       <div class="row align-items-center">
-        <div class="col-lg-6 hero-content">
+        <div class="col-lg-5 hero-content">
           <h6>Welcome to <?= $appName ?></h6>
           <h1>Global <em>Performance</em> &amp; <span class="accent">Affiliate</span> Network</h1>
           <p>Global coverage, guaranteed high payouts, direct offers, dedicated AMs and our custom tracking platform make us the leaders on the CPA market!</p>
@@ -584,7 +584,7 @@ try {
             <?php endif; ?>
           </div>
         </div>
-        <div class="col-lg-6 hero-visual fade-up">
+        <div class="col-lg-7 hero-visual fade-up">
           <div class="hero-graphic">
             <div class="hero-slider-wrap" id="heroSliderWrap">
               <div class="hero-slider-skeleton" id="heroSliderSkeleton">
