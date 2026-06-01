@@ -1975,6 +1975,80 @@ function hlApproval(radio) {
     </div>
 </div>
 
+<!-- ─── FRAUD REPORTS ──────────────────────────────────── -->
+<?php elseif ($activeTab === 'fraud_reports'): ?>
+<div class="card" style="max-width:680px">
+    <div class="card-header"><span class="card-title">Automated Fraud Reports</span></div>
+    <div class="card-body">
+        <form method="POST">
+            <?= Helpers::csrf() ?>
+            <input type="hidden" name="tab" value="fraud_reports">
+
+            <!-- Enable/Disable Switch -->
+            <?php $fraudRepEnabled = ($cfg['fraud_reports']['enabled'] ?? '0') === '1'; ?>
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:18px 0;border-bottom:1px solid #F1F5F9;gap:20px">
+                <div style="flex:1">
+                    <div style="font-weight:700;font-size:14px;color:#1E293B;margin-bottom:4px">Enable Automated Reports</div>
+                    <div style="font-size:13px;color:#64748B;line-height:1.5">When enabled, the system will automatically aggregate fraud data (blocked clicks and conversions) and email personalized reports to each affiliate on the schedule configured below.</div>
+                </div>
+                <label style="position:relative;display:inline-block;width:52px;height:28px;flex-shrink:0;margin-top:4px">
+                    <input type="checkbox" name="fraud_reports_enabled" value="1" <?= $fraudRepEnabled ? 'checked' : '' ?> style="opacity:0;width:0;height:0" id="fraudRepToggle">
+                    <span id="fraudRepTrack" style="position:absolute;cursor:pointer;inset:0;background:<?= $fraudRepEnabled ? '#10B981' : '#CBD5E1' ?>;border-radius:34px;transition:.3s">
+                        <span id="fraudRepKnob" style="position:absolute;height:22px;width:22px;left:<?= $fraudRepEnabled ? '27px' : '3px' ?>;bottom:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,.2)"></span>
+                    </span>
+                </label>
+            </div>
+            <script>
+            (function(){
+                var cb = document.getElementById('fraudRepToggle'); if(!cb) return;
+                var t  = document.getElementById('fraudRepTrack');
+                var k  = document.getElementById('fraudRepKnob');
+                cb.addEventListener('change', function(){
+                    t.style.background = cb.checked ? '#10B981' : '#CBD5E1';
+                    k.style.left       = cb.checked ? '27px'    : '3px';
+                });
+            })();
+            </script>
+
+            <div class="form-group" style="margin-top:16px">
+                <label>Report Frequency</label>
+                <select name="fraud_reports_interval" class="form-control">
+                    <?php $interval = $cfg['fraud_reports']['interval_days'] ?? '7'; ?>
+                    <option value="1" <?= $interval == '1' ? 'selected' : '' ?>>Daily (Every 1 Day)</option>
+                    <option value="3" <?= $interval == '3' ? 'selected' : '' ?>>Bi-weekly (Every 3 Days)</option>
+                    <option value="7" <?= $interval == '7' ? 'selected' : '' ?>>Weekly (Every 7 Days)</option>
+                    <option value="14" <?= $interval == '14' ? 'selected' : '' ?>>Fortnightly (Every 14 Days)</option>
+                    <option value="30" <?= $interval == '30' ? 'selected' : '' ?>>Monthly (Every 30 Days)</option>
+                </select>
+                <div class="form-hint">How often should the system send the automated fraud report? (Default is Weekly)</div>
+            </div>
+
+            <div class="form-group">
+                <label>Execution Time</label>
+                <select name="fraud_reports_hour" class="form-control">
+                    <?php $hour = $cfg['fraud_reports']['run_hour'] ?? '8'; ?>
+                    <?php for($i=0; $i<=23; $i++): ?>
+                    <option value="<?= $i ?>" <?= $hour == (string)$i ? 'selected' : '' ?>>
+                        <?= str_pad($i, 2, '0', STR_PAD_LEFT) ?>:00 (<?= $i < 12 ? 'AM' : 'PM' ?>)
+                    </option>
+                    <?php endfor; ?>
+                </select>
+                <div class="form-hint">The hour of the day (in your platform timezone: <?= Helpers::e($cfg['app']['timezone'] ?? 'UTC') ?>) when reports should be generated and sent.</div>
+            </div>
+
+            <div style="background:#EEF2FF;border-left:3px solid #4F46E5;padding:12px 16px;border-radius:4px;margin-bottom:20px">
+                <div style="font-size:13px;color:#1E293B;font-weight:600;margin-bottom:4px">Cron Job Requirement</div>
+                <div style="font-size:12px;color:#475569;line-height:1.5">
+                    For the reports to be generated automatically, you must add the following cron job to your server (runs every hour):<br>
+                    <code style="display:block;margin-top:8px;background:#fff;padding:8px;border:1px solid #CBD5E1;border-radius:4px">0 * * * * php <?= BASE_PATH ?>/cron/affiliate_fraud_report.php >/dev/null 2>&1</code>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Fraud Report Settings</button>
+        </form>
+    </div>
+</div>
+
 <?php endif; ?>
 <script>
 document.querySelectorAll('[name=refer_commission_type]').forEach(function(r) {
