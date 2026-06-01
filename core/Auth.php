@@ -194,8 +194,16 @@ class Auth {
         // Strict verification against active sessions (handles Force Logout)
         if (session_id()) {
             try {
-                if (!Database::fetchOne("SELECT id FROM user_active_sessions WHERE session_id=?", [session_id()])) {
+                $active = Database::fetchOne("SELECT id FROM user_active_sessions WHERE session_id=?", [session_id()]);
+                if (!$active) {
                     self::logout();
+                } else {
+                    // Update last_active on normal page navigation to prevent unexpected logouts
+                    // if JS heartbeat fails or is blocked by adblockers.
+                    Database::query("UPDATE user_active_sessions SET last_active=NOW(), current_page=? WHERE session_id=?", [
+                        mb_substr($_SERVER['REQUEST_URI'] ?? '/', 0, 300), 
+                        session_id()
+                    ]);
                 }
             } catch (\Throwable $e) {}
         }
@@ -218,8 +226,15 @@ class Auth {
         // Strict verification against active sessions (handles Force Logout)
         if (session_id()) {
             try {
-                if (!Database::fetchOne("SELECT id FROM user_active_sessions WHERE session_id=?", [session_id()])) {
+                $active = Database::fetchOne("SELECT id FROM user_active_sessions WHERE session_id=?", [session_id()]);
+                if (!$active) {
                     self::logout();
+                } else {
+                    // Update last_active on normal page navigation to prevent unexpected logouts
+                    Database::query("UPDATE user_active_sessions SET last_active=NOW(), current_page=? WHERE session_id=?", [
+                        mb_substr($_SERVER['REQUEST_URI'] ?? '/', 0, 300), 
+                        session_id()
+                    ]);
                 }
             } catch (\Throwable $e) {}
         }
