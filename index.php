@@ -366,6 +366,7 @@ Router::any('/admin/fraud-center/auto-rules',         function() { require BASE_
 Router::any('/admin/fraud-center/blocklist',          function() { require BASE_PATH . '/controllers/admin/fraud/BlocklistController.php'; });
 Router::any('/admin/fraud-center/analytics',          function() { require BASE_PATH . '/controllers/admin/fraud/FraudAnalyticsController.php'; });
 Router::any('/admin/fraud-center/fraud-reports',      function() { require BASE_PATH . '/controllers/admin/fraud/FraudReportsController.php'; });
+Router::any('/admin/fraud-center/report-logs',        function() { require BASE_PATH . '/controllers/admin/fraud/FraudReportLogsController.php'; });
 Router::any('/admin/ip-score-check',                   function() { require BASE_PATH . '/controllers/admin/fraud/IpScoreProxyController.php'; });
 
 // Admin — Affiliate Managers
@@ -414,7 +415,8 @@ Router::any('/affiliate/smartlinks', function() { require BASE_PATH . '/controll
 Router::any('/affiliate/postbacks', function() { require BASE_PATH . '/controllers/affiliate/PostbackController.php'; });
 Router::any('/affiliate/reports', function() { require BASE_PATH . '/controllers/affiliate/ReportController.php'; });
 Router::any('/affiliate/duplicate-conversions', function() { require BASE_PATH . '/controllers/affiliate/DuplicateConversionsController.php'; });
-Router::any('/affiliate/fraud-report', function() { require BASE_PATH . '/controllers/affiliate/FraudReportController.php'; });
+Router::any('/affiliate/fraud-report',  function() { require BASE_PATH . '/controllers/affiliate/FraudReportController.php'; });
+Router::any('/affiliate/fraud-reports', function() { require BASE_PATH . '/controllers/affiliate/FraudReportsController.php'; });
 Router::any('/affiliate/balance', function() { require BASE_PATH . '/controllers/affiliate/BalanceController.php'; });
 Router::any('/affiliate/invoices', function() { require BASE_PATH . '/controllers/affiliate/InvoiceController.php'; });
 Router::any('/affiliate/invoices/{id}', function($id) { $_GET['id']=$id; require BASE_PATH . '/controllers/affiliate/InvoiceController.php'; });
@@ -464,7 +466,8 @@ Router::any('/cron/affiliate-inactivity', function() { require BASE_PATH . '/con
 
 // Web shell for the fraud-scan cron (IPQS + multi-provider). Same token-
 // gated pattern; admin can paste the URL into cPanel → Cron Jobs.
-Router::any('/cron/fraud-scan', function() { require BASE_PATH . '/controllers/cron/FraudScanController.php'; });
+Router::any('/cron/fraud-scan',    function() { require BASE_PATH . '/controllers/cron/FraudScanController.php'; });
+Router::any('/cron/fraud-reports', function() { require BASE_PATH . '/controllers/cron/FraudReportsCronController.php'; });
 Router::any('/api/affiliate-analytics', function() { require BASE_PATH . '/controllers/api/AffiliateAnalyticsController.php'; });
 Router::any('/api/admin-analytics', function() { require BASE_PATH . '/controllers/api/AdminAnalyticsController.php'; });
 Router::any('/api/activity', function() { require BASE_PATH . '/controllers/api/ActivityController.php'; });

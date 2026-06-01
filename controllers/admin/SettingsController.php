@@ -535,14 +535,19 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
 
     elseif ($tab === 'fraud_reports') {
         Config::set('config', 'fraud_reports.enabled', isset($_POST['fraud_reports_enabled']) ? '1' : '0');
-        
-        $interval = (int)Helpers::postRaw('fraud_reports_interval');
-        if (!in_array($interval, [1, 3, 7, 14, 30])) $interval = 7;
-        Config::set('config', 'fraud_reports.interval_days', (string)$interval);
-        
-        $runHour = (int)Helpers::postRaw('fraud_reports_hour');
-        if ($runHour < 0 || $runHour > 23) $runHour = 8;
-        Config::set('config', 'fraud_reports.run_hour', (string)$runHour);
+        Config::set('config', 'fraud_reports.send_email', isset($_POST['fraud_reports_send_email']) ? '1' : '0');
+
+        $intervalHours = (int)Helpers::postRaw('fraud_reports_interval_hours');
+        if (!in_array($intervalHours, [1, 6, 12, 24])) $intervalHours = 24;
+        Config::set('config', 'fraud_reports.interval_hours', (string)$intervalHours);
+
+        // Token: keep existing or generate new one
+        $existingToken = trim((string)Config::get('config', 'fraud_reports.cron_token'));
+        $resetToken    = isset($_POST['fraud_reports_reset_token']);
+        if ($existingToken === '' || $resetToken) {
+            try { $existingToken = bin2hex(random_bytes(20)); } catch (\Throwable $_) { $existingToken = md5(uniqid('', true)); }
+        }
+        Config::set('config', 'fraud_reports.cron_token', $existingToken);
 
         $success = true;
     }

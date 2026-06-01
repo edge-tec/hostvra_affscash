@@ -1976,20 +1976,36 @@ function hlApproval(radio) {
 </div>
 
 <!-- ─── FRAUD REPORTS ──────────────────────────────────── -->
-<?php elseif ($activeTab === 'fraud_reports'): ?>
-<div class="card" style="max-width:680px">
-    <div class="card-header"><span class="card-title">Automated Fraud Reports</span></div>
+<?php elseif ($activeTab === 'fraud_reports'):
+    $fraudRepEnabled  = ($cfg['fraud_reports']['enabled']        ?? '0') === '1';
+    $fraudRepEmail    = ($cfg['fraud_reports']['send_email']     ?? '1') === '1';
+    $fraudRepInterval = (int)($cfg['fraud_reports']['interval_hours'] ?? 24);
+    if (!in_array($fraudRepInterval, [1,6,12,24])) $fraudRepInterval = 24;
+
+    // Auto-provision token if missing
+    $cronToken = trim((string)($cfg['fraud_reports']['cron_token'] ?? ''));
+    if ($cronToken === '') {
+        try { $cronToken = bin2hex(random_bytes(20)); } catch (\Throwable $_) { $cronToken = md5(uniqid('fr',true)); }
+        Config::set('config', 'fraud_reports.cron_token', $cronToken);
+    }
+    $appUrlBase = rtrim($cfg['app']['url'] ?? ('https://' . ($_SERVER['HTTP_HOST'] ?? 'yourdomain.com')), '/');
+    $cronUrl    = $appUrlBase . '/cron/fraud-reports?token=' . urlencode($cronToken);
+?>
+<div class="card" style="max-width:760px">
+    <div class="card-header" style="display:flex;align-items:center;justify-content:space-between">
+        <span class="card-title">⚡ Automated Affiliate Fraud Reports</span>
+        <a href="/admin/fraud-center/report-logs" style="font-size:12px;color:#4F46E5;font-weight:600;text-decoration:none">View Report Logs →</a>
+    </div>
     <div class="card-body">
         <form method="POST">
             <?= Helpers::csrf() ?>
             <input type="hidden" name="tab" value="fraud_reports">
 
-            <!-- Enable/Disable Switch -->
-            <?php $fraudRepEnabled = ($cfg['fraud_reports']['enabled'] ?? '0') === '1'; ?>
-            <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:18px 0;border-bottom:1px solid #F1F5F9;gap:20px">
+            <!-- Enable / Disable -->
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:16px 0;border-bottom:1px solid #F1F5F9;gap:20px">
                 <div style="flex:1">
                     <div style="font-weight:700;font-size:14px;color:#1E293B;margin-bottom:4px">Enable Automated Reports</div>
-                    <div style="font-size:13px;color:#64748B;line-height:1.5">When enabled, the system will automatically aggregate fraud data (blocked clicks and conversions) and email personalized reports to each affiliate on the schedule configured below.</div>
+                    <div style="font-size:13px;color:#64748B;line-height:1.5">Generates a <strong>separate</strong> Fraud Click Report and Fraud Conversion Report for every affiliate on the configured schedule. Reports are stored in the database and optionally emailed.</div>
                 </div>
                 <label style="position:relative;display:inline-block;width:52px;height:28px;flex-shrink:0;margin-top:4px">
                     <input type="checkbox" name="fraud_reports_enabled" value="1" <?= $fraudRepEnabled ? 'checked' : '' ?> style="opacity:0;width:0;height:0" id="fraudRepToggle">
@@ -1998,49 +2014,81 @@ function hlApproval(radio) {
                     </span>
                 </label>
             </div>
-            <script>
-            (function(){
-                var cb = document.getElementById('fraudRepToggle'); if(!cb) return;
-                var t  = document.getElementById('fraudRepTrack');
-                var k  = document.getElementById('fraudRepKnob');
-                cb.addEventListener('change', function(){
-                    t.style.background = cb.checked ? '#10B981' : '#CBD5E1';
-                    k.style.left       = cb.checked ? '27px'    : '3px';
-                });
-            })();
-            </script>
 
-            <div class="form-group" style="margin-top:16px">
-                <label>Report Frequency</label>
-                <select name="fraud_reports_interval" class="form-control">
-                    <?php $interval = $cfg['fraud_reports']['interval_days'] ?? '7'; ?>
-                    <option value="1" <?= $interval == '1' ? 'selected' : '' ?>>Daily (Every 1 Day)</option>
-                    <option value="3" <?= $interval == '3' ? 'selected' : '' ?>>Bi-weekly (Every 3 Days)</option>
-                    <option value="7" <?= $interval == '7' ? 'selected' : '' ?>>Weekly (Every 7 Days)</option>
-                    <option value="14" <?= $interval == '14' ? 'selected' : '' ?>>Fortnightly (Every 14 Days)</option>
-                    <option value="30" <?= $interval == '30' ? 'selected' : '' ?>>Monthly (Every 30 Days)</option>
-                </select>
-                <div class="form-hint">How often should the system send the automated fraud report? (Default is Weekly)</div>
+            <!-- Send Email Toggle -->
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:16px 0;border-bottom:1px solid #F1F5F9;gap:20px">
+                <div style="flex:1">
+                    <div style="font-weight:700;font-size:14px;color:#1E293B;margin-bottom:4px">Send Email to Affiliates</div>
+                    <div style="font-size:13px;color:#64748B;line-height:1.5">When enabled, each affiliate receives their own Fraud Click Report and Fraud Conversion Report as two separate emails. Reports are always saved to the database regardless of this setting.</div>
+                </div>
+                <label style="position:relative;display:inline-block;width:52px;height:28px;flex-shrink:0;margin-top:4px">
+                    <input type="checkbox" name="fraud_reports_send_email" value="1" <?= $fraudRepEmail ? 'checked' : '' ?> style="opacity:0;width:0;height:0" id="fraudEmailToggle">
+                    <span id="fraudEmailTrack" style="position:absolute;cursor:pointer;inset:0;background:<?= $fraudRepEmail ? '#10B981' : '#CBD5E1' ?>;border-radius:34px;transition:.3s">
+                        <span id="fraudEmailKnob" style="position:absolute;height:22px;width:22px;left:<?= $fraudRepEmail ? '27px' : '3px' ?>;bottom:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,.2)"></span>
+                    </span>
+                </label>
             </div>
 
+            <!-- Interval Hours -->
+            <div class="form-group" style="margin-top:18px">
+                <label>Execution Frequency</label>
+                <select name="fraud_reports_interval_hours" class="form-control">
+                    <option value="1"  <?= $fraudRepInterval === 1  ? 'selected' : '' ?>>Every 1 Hour</option>
+                    <option value="6"  <?= $fraudRepInterval === 6  ? 'selected' : '' ?>>Every 6 Hours</option>
+                    <option value="12" <?= $fraudRepInterval === 12 ? 'selected' : '' ?>>Every 12 Hours</option>
+                    <option value="24" <?= $fraudRepInterval === 24 ? 'selected' : '' ?>>Every 24 Hours (Daily)</option>
+                </select>
+                <div class="form-hint">How often the cron runs. Your cron job must be set to run at least as frequently as this setting (e.g. every hour). Reports for affiliates with zero fraud activity are still saved but emails are skipped.</div>
+            </div>
+
+            <!-- Cron Token -->
             <div class="form-group">
-                <label>Execution Time</label>
-                <select name="fraud_reports_hour" class="form-control">
-                    <?php $hour = $cfg['fraud_reports']['run_hour'] ?? '8'; ?>
-                    <?php for($i=0; $i<=23; $i++): ?>
-                    <option value="<?= $i ?>" <?= $hour == (string)$i ? 'selected' : '' ?>>
-                        <?= str_pad($i, 2, '0', STR_PAD_LEFT) ?>:00 (<?= $i < 12 ? 'AM' : 'PM' ?>)
-                    </option>
-                    <?php endfor; ?>
-                </select>
-                <div class="form-hint">The hour of the day (in your platform timezone: <?= Helpers::e($cfg['app']['timezone'] ?? 'UTC') ?>) when reports should be generated and sent.</div>
+                <label>Cron Security Token</label>
+                <div style="display:flex;gap:8px;align-items:center">
+                    <input type="text" value="<?= Helpers::e($cronToken) ?>" id="fraudCronToken" class="form-control" readonly style="font-family:monospace;font-size:12px;background:#F8FAFC;color:#334155">
+                    <button type="submit" name="fraud_reports_reset_token" value="1" class="btn btn-sm" style="background:#FEF2F2;color:#EF4444;border:1px solid #FECACA;white-space:nowrap" onclick="return confirm('Regenerate token? The old Cron URL will stop working immediately.')">
+                        🔄 New Token
+                    </button>
+                </div>
+                <div class="form-hint">This token secures your cron URL. Keep it private.</div>
             </div>
 
-            <div style="background:#EEF2FF;border-left:3px solid #4F46E5;padding:12px 16px;border-radius:4px;margin-bottom:20px">
-                <div style="font-size:13px;color:#1E293B;font-weight:600;margin-bottom:4px">Cron Job Requirement</div>
-                <div style="font-size:12px;color:#475569;line-height:1.5">
-                    For the reports to be generated automatically, you must add the following cron job to your server (runs every hour):<br>
-                    <code style="display:block;margin-top:8px;background:#fff;padding:8px;border:1px solid #CBD5E1;border-radius:4px">0 * * * * php <?= BASE_PATH ?>/cron/affiliate_fraud_report.php >/dev/null 2>&1</code>
+            <!-- Cron URL -->
+            <div style="background:#EEF2FF;border:1px solid #C7D2FE;border-radius:8px;padding:16px;margin-bottom:20px">
+                <div style="font-size:13px;color:#3730A3;font-weight:700;margin-bottom:8px">🔗 Cron URL (copy this into aaPanel → Cron Jobs)</div>
+                <div style="display:flex;gap:8px;align-items:center">
+                    <code id="fraudCronUrl" style="display:block;flex:1;background:#fff;padding:10px 14px;border:1px solid #C7D2FE;border-radius:6px;font-size:11px;color:#1E293B;word-break:break-all;line-height:1.6"><?= Helpers::e($cronUrl) ?></code>
+                    <button type="button" onclick="frCopyUrl()" class="btn btn-sm" style="background:#4F46E5;color:#fff;border:none;white-space:nowrap;flex-shrink:0">📋 Copy URL</button>
+                </div>
+                <div style="margin-top:10px;font-size:12px;color:#6366F1;line-height:1.5">
+                    <b>aaPanel setup:</b> Go to <strong>Cron Jobs</strong> → Add Cron Job → Type: <strong>URL</strong> → paste URL above → Frequency: every hour (or match your frequency setting above).
+                </div>
+            </div>
+
+            <!-- Report Sections Info -->
+            <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:14px 16px;margin-bottom:20px">
+                <div style="font-size:13px;color:#166534;font-weight:700;margin-bottom:8px">📊 Two Separate Reports Per Affiliate</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px;color:#15803D">
+                    <div>
+                        <div style="font-weight:700;margin-bottom:4px">🖱 Fraud Click Report includes:</div>
+                        <ul style="margin:0;padding-left:16px;line-height:1.8">
+                            <li>Fraud Clicks &amp; Blocked Clicks</li>
+                            <li>Proxy Traffic Detection</li>
+                            <li>VPN Traffic Detection</li>
+                            <li>Bot Traffic Detection</li>
+                            <li>Datacenter Traffic Detection</li>
+                            <li>Click Quality Score</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div style="font-weight:700;margin-bottom:4px">💰 Fraud Conversion Report includes:</div>
+                        <ul style="margin:0;padding-left:16px;line-height:1.8">
+                            <li>Fraud Conversions &amp; Fraud Rate</li>
+                            <li>Invalid Leads</li>
+                            <li>Suspicious Conversion Activity (&lt;30s)</li>
+                            <li>Conversion Quality Score</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
@@ -2048,8 +2096,34 @@ function hlApproval(radio) {
         </form>
     </div>
 </div>
+<script>
+(function(){
+    function mkToggle(cbId, trackId, knobId) {
+        var cb = document.getElementById(cbId);
+        var t  = document.getElementById(trackId);
+        var k  = document.getElementById(knobId);
+        if (!cb) return;
+        cb.addEventListener('change', function(){
+            t.style.background = cb.checked ? '#10B981' : '#CBD5E1';
+            k.style.left       = cb.checked ? '27px'    : '3px';
+        });
+    }
+    mkToggle('fraudRepToggle',   'fraudRepTrack',   'fraudRepKnob');
+    mkToggle('fraudEmailToggle', 'fraudEmailTrack', 'fraudEmailKnob');
+})();
+function frCopyUrl() {
+    var el = document.getElementById('fraudCronUrl');
+    if (!el) return;
+    navigator.clipboard.writeText(el.textContent.trim()).then(function() {
+        var btn = event.target; var orig = btn.textContent;
+        btn.textContent = '✅ Copied!'; btn.style.background = '#10B981';
+        setTimeout(function(){ btn.textContent = orig; btn.style.background = '#4F46E5'; }, 2000);
+    });
+}
+</script>
 
 <?php endif; ?>
+
 <script>
 document.querySelectorAll('[name=refer_commission_type]').forEach(function(r) {
     r.addEventListener('change', function() {
