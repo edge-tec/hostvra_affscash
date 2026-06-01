@@ -95,9 +95,9 @@ include BASE_PATH . '/views/partials/fraud_filter_bar.php';
                     <?php if ($isClick): ?>
                         Total: <b><?= number_format($data['total_clicks'] ?? 0) ?></b>
                         &nbsp;|&nbsp; Fraud: <b style="color:#EF4444"><?= number_format($data['fraud_clicks'] ?? 0) ?></b><br>
-                        VPN: <?= number_format($data['vpn_clicks'] ?? 0) ?>
-                        &nbsp;|&nbsp; Bot: <?= number_format($data['bot_clicks'] ?? 0) ?>
-                        &nbsp;|&nbsp; Proxy: <?= number_format($data['proxy_clicks'] ?? 0) ?>
+                        Bot: <?= number_format($data['bot_clicks'] ?? 0) ?>
+                        &nbsp;|&nbsp; High Risk: <?= number_format($data['high_risk_clicks'] ?? 0) ?>
+                        &nbsp;|&nbsp; Med Risk: <?= number_format($data['medium_risk_clicks'] ?? 0) ?>
                     <?php else: ?>
                         Total: <b><?= number_format($data['total_conversions'] ?? 0) ?></b>
                         &nbsp;|&nbsp; Fraud: <b style="color:#EF4444"><?= number_format($data['fraud_conversions'] ?? 0) ?></b><br>

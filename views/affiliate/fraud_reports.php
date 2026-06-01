@@ -45,12 +45,11 @@ if ($activeTab === 'clicks'):
     // Aggregate for the summary card (last 30 days)
     $agg = Database::fetchOne(
         "SELECT COUNT(*) AS total_reports,
-                COALESCE(SUM(JSON_EXTRACT(data_json,'$.total_clicks')),0)    AS total_clicks,
-                COALESCE(SUM(JSON_EXTRACT(data_json,'$.fraud_clicks')),0)    AS fraud_clicks,
-                COALESCE(SUM(JSON_EXTRACT(data_json,'$.vpn_clicks')),0)      AS vpn_clicks,
-                COALESCE(SUM(JSON_EXTRACT(data_json,'$.proxy_clicks')),0)    AS proxy_clicks,
-                COALESCE(SUM(JSON_EXTRACT(data_json,'$.bot_clicks')),0)      AS bot_clicks,
-                COALESCE(SUM(JSON_EXTRACT(data_json,'$.datacenter_clicks')),0) AS datacenter_clicks
+                COALESCE(SUM(JSON_EXTRACT(data_json,'$.total_clicks')),0)      AS total_clicks,
+                COALESCE(SUM(JSON_EXTRACT(data_json,'$.fraud_clicks')),0)      AS fraud_clicks,
+                COALESCE(SUM(JSON_EXTRACT(data_json,'$.bot_clicks')),0)        AS bot_clicks,
+                COALESCE(SUM(JSON_EXTRACT(data_json,'$.high_risk_clicks')),0)  AS high_risk_clicks,
+                COALESCE(SUM(JSON_EXTRACT(data_json,'$.medium_risk_clicks')),0) AS medium_risk_clicks
          FROM fraud_report_logs
          WHERE affiliate_id=? AND report_type='click' AND created_at >= NOW() - INTERVAL 30 DAY",
         [$affId]
@@ -61,12 +60,11 @@ if ($activeTab === 'clicks'):
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px">
     <?php
     $cards = [
-        ['Total Clicks',     number_format($agg['total_clicks'] ?? 0),       '#4F46E5', '#EEF2FF'],
-        ['Fraud Clicks',     number_format($agg['fraud_clicks'] ?? 0),        '#EF4444', '#FEF2F2'],
-        ['VPN Traffic',      number_format($agg['vpn_clicks'] ?? 0),          '#F59E0B', '#FFF7ED'],
-        ['Proxy Traffic',    number_format($agg['proxy_clicks'] ?? 0),        '#F59E0B', '#FFF7ED'],
-        ['Bot Traffic',      number_format($agg['bot_clicks'] ?? 0),          '#DC2626', '#FEF2F2'],
-        ['Datacenter',       number_format($agg['datacenter_clicks'] ?? 0),   '#6366F1', '#EEF2FF'],
+        ['Total Clicks',       number_format($agg['total_clicks'] ?? 0),        '#4F46E5', '#EEF2FF'],
+        ['Fraud Clicks',       number_format($agg['fraud_clicks'] ?? 0),         '#EF4444', '#FEF2F2'],
+        ['Bot Traffic',        number_format($agg['bot_clicks'] ?? 0),           '#DC2626', '#FEF2F2'],
+        ['High Risk Clicks',   number_format($agg['high_risk_clicks'] ?? 0),     '#F59E0B', '#FFF7ED'],
+        ['Medium Risk Clicks', number_format($agg['medium_risk_clicks'] ?? 0),   '#6366F1', '#EEF2FF'],
     ];
     foreach ($cards as [$label, $val, $color, $bg]):
     ?>
@@ -108,13 +106,12 @@ if ($activeTab === 'clicks'):
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0;padding:0">
         <?php
         $metrics = [
-            ['Total Clicks',   $d['total_clicks'] ?? 0,     '#1E293B'],
-            ['Fraud Clicks',   $d['fraud_clicks'] ?? 0,     '#EF4444'],
-            ['Blocked Clicks', $d['blocked_clicks'] ?? 0,   '#EF4444'],
-            ['VPN Traffic',    $d['vpn_clicks'] ?? 0,       '#F59E0B'],
-            ['Proxy Traffic',  $d['proxy_clicks'] ?? 0,     '#F59E0B'],
-            ['Bot Traffic',    $d['bot_clicks'] ?? 0,       '#DC2626'],
-            ['Datacenter',     $d['datacenter_clicks'] ?? 0,'#6366F1'],
+            ['Total Clicks',       $d['total_clicks'] ?? 0,        '#1E293B'],
+            ['Fraud Clicks',       $d['fraud_clicks'] ?? 0,        '#EF4444'],
+            ['Blocked Clicks',     $d['blocked_clicks'] ?? 0,      '#EF4444'],
+            ['Bot Traffic',        $d['bot_clicks'] ?? 0,          '#DC2626'],
+            ['High Risk Clicks',   $d['high_risk_clicks'] ?? 0,    '#F59E0B'],
+            ['Medium Risk Clicks', $d['medium_risk_clicks'] ?? 0,  '#6366F1'],
         ];
         foreach ($metrics as [$label, $val, $color]):
         ?>

@@ -186,27 +186,36 @@ function _fr_build_click_report(int $affId, string $from, string $to): array {
     $base = "FROM clicks c WHERE c.affiliate_id = ? AND c.clicked_at BETWEEN ? AND ?";
     $p    = [$affId, $from, $to];
 
-    $total        = (int)(Database::fetchOne("SELECT COUNT(*) AS c {$base}", $p)['c'] ?? 0);
-    $fraudClicks  = (int)(Database::fetchOne("SELECT COUNT(*) AS c {$base} AND (c.is_fraud=1 OR c.fraud_score>=50)", $p)['c'] ?? 0);
+    $total         = (int)(Database::fetchOne("SELECT COUNT(*) AS c {$base}", $p)['c'] ?? 0);
+    $fraudClicks   = (int)(Database::fetchOne("SELECT COUNT(*) AS c {$base} AND (c.is_fraud=1 OR c.fraud_score>=50)", $p)['c'] ?? 0);
     $blockedClicks = (int)(Database::fetchOne("SELECT COUNT(*) AS c {$base} AND c.status='blocked'", $p)['c'] ?? 0);
 
-    // VPN / Proxy / Bot / Datacenter detection via is_vpn, is_proxy columns or fraud metadata
-    $vpn        = (int)(Database::fetchOne("SELECT COUNT(*) AS c {$base} AND c.is_vpn=1",   $p)['c'] ?? 0);
-    $proxy      = (int)(Database::fetchOne("SELECT COUNT(*) AS c {$base} AND c.is_proxy=1", $p)['c'] ?? 0);
-    $bot        = (int)(Database::fetchOne("SELECT COUNT(*) AS c {$base} AND (c.is_bot=1 OR c.user_agent REGEXP 'bot|crawl|spider|slurp|curl|wget|python|go-http|java/')", $p)['c'] ?? 0);
-    $datacenter = (int)(Database::fetchOne("SELECT COUNT(*) AS c {$base} AND c.is_datacenter=1", $p)['c'] ?? 0);
+    // Bot detection via user_agent (same patterns as BotDetectionController)
+    $botPatterns = ['bot','crawler','spider','scraper','curl','wget','python','libwww','scrapy',
+                    'Go-http','Java/','okhttp','HeadlessChrome','PhantomJS','Selenium','WebDriver'];
+    $uaLikes  = implode(' OR ', array_fill(0, count($botPatterns), 'c.user_agent LIKE ?'));
+    $uaParams = array_map(fn($pat) => "%{$pat}%", $botPatterns);
+
+    $botClicks = (int)(Database::fetchOne(
+        "SELECT COUNT(*) AS c {$base} AND ({$uaLikes})",
+        array_merge($p, $uaParams)
+    )['c'] ?? 0);
+
+    // High fraud-score clicks as proxy/VPN/datacenter proxy measure
+    // (The actual is_vpn / is_proxy columns do not exist in this schema — use fraud_score tiers)
+    $highFraud  = (int)(Database::fetchOne("SELECT COUNT(*) AS c {$base} AND c.fraud_score >= 75", $p)['c'] ?? 0);
+    $medFraud   = (int)(Database::fetchOne("SELECT COUNT(*) AS c {$base} AND c.fraud_score >= 50 AND c.fraud_score < 75", $p)['c'] ?? 0);
 
     $quality = $total > 0 ? round((($total - $fraudClicks) / $total) * 100, 1) : 100.0;
 
     return [
-        'total_clicks'    => $total,
-        'fraud_clicks'    => $fraudClicks,
-        'blocked_clicks'  => $blockedClicks,
-        'vpn_clicks'      => $vpn,
-        'proxy_clicks'    => $proxy,
-        'bot_clicks'      => $bot,
-        'datacenter_clicks' => $datacenter,
-        'click_quality'   => $quality,
+        'total_clicks'      => $total,
+        'fraud_clicks'      => $fraudClicks,
+        'blocked_clicks'    => $blockedClicks,
+        'bot_clicks'        => $botClicks,
+        'high_risk_clicks'  => $highFraud,
+        'medium_risk_clicks'=> $medFraud,
+        'click_quality'     => $quality,
     ];
 }
 
@@ -262,13 +271,12 @@ function _fr_click_email(array $aff, array $d, string $from, string $to, int $ho
     $qColor  = $quality >= 80 ? '#10B981' : ($quality >= 50 ? '#F59E0B' : '#EF4444');
 
     $rows = [
-        ['Total Clicks',           number_format($d['total_clicks']),    '#1E293B'],
-        ['🚫 Fraud Clicks',         number_format($d['fraud_clicks']),    '#EF4444'],
-        ['🔒 Blocked Clicks',       number_format($d['blocked_clicks']),  '#EF4444'],
-        ['🕵️ Proxy Traffic',        number_format($d['proxy_clicks']),    '#F59E0B'],
-        ['🌐 VPN Traffic',          number_format($d['vpn_clicks']),      '#F59E0B'],
-        ['🤖 Bot Traffic',          number_format($d['bot_clicks']),      '#DC2626'],
-        ['🏢 Datacenter Traffic',   number_format($d['datacenter_clicks']), '#F59E0B'],
+        ['Total Clicks',          number_format($d['total_clicks']),        '#1E293B'],
+        ['🚫 Fraud Clicks',        number_format($d['fraud_clicks']),        '#EF4444'],
+        ['🔒 Blocked Clicks',      number_format($d['blocked_clicks']),      '#EF4444'],
+        ['🤖 Bot Traffic',         number_format($d['bot_clicks']),          '#DC2626'],
+        ['⚠️ High Risk Clicks',   number_format($d['high_risk_clicks']),    '#F59E0B'],
+        ['🟡 Medium Risk Clicks',  number_format($d['medium_risk_clicks']),  '#F59E0B'],
     ];
 
     $tableRows = '';
