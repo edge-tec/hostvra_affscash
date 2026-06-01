@@ -77,6 +77,7 @@ $periodTo    = date('Y-m-d H:i:s', $now);
 $sendEmail   = ($cfg['fraud_reports']['send_email'] ?? '1') === '1';
 $appName     = $cfg['app']['name'] ?? 'Affiliate Network';
 $appUrl      = rtrim($cfg['app']['url'] ?? '', '/');
+$appLogo     = $cfg['app']['logo'] ?? '';
 
 _fr_log("=== Fraud Reports Cron Started ===");
 _fr_log("Period: {$periodFrom} → {$periodTo}");
@@ -119,7 +120,7 @@ foreach ($affiliates as $aff) {
 
         if ($sendEmail && ($clickData['total_clicks'] > 0 || $clickData['fraud_clicks'] > 0)) {
             $subject = "[{$appName}] Fraud Click Report — " . date('M d, Y', $now);
-            $html    = _fr_click_email($aff, $clickData, $periodFrom, $periodTo, $intervalHours, $appName, $appUrl);
+            $html    = _fr_click_email($aff, $clickData, $periodFrom, $periodTo, $intervalHours, $appName, $appUrl, $appLogo);
             try {
                 if (Mailer::sendRaw($email, $name, $subject, $html, 'fraud_report_click')) {
                     $sentClicks++;
@@ -141,7 +142,7 @@ foreach ($affiliates as $aff) {
 
         if ($sendEmail && ($convData['total_conversions'] > 0 || $convData['fraud_conversions'] > 0)) {
             $subject = "[{$appName}] Fraud Conversion Report — " . date('M d, Y', $now);
-            $html    = _fr_conv_email($aff, $convData, $periodFrom, $periodTo, $intervalHours, $appName, $appUrl);
+            $html    = _fr_conv_email($aff, $convData, $periodFrom, $periodTo, $intervalHours, $appName, $appUrl, $appLogo);
             try {
                 if (Mailer::sendRaw($email, $name, $subject, $html, 'fraud_report_conv')) {
                     $sentConvs++;
@@ -263,7 +264,7 @@ function _fr_save_report(int $affId, string $type, string $from, string $to, arr
     }
 }
 
-function _fr_click_email(array $aff, array $d, string $from, string $to, int $hours, string $app, string $url): string {
+function _fr_click_email(array $aff, array $d, string $from, string $to, int $hours, string $appName, string $appUrl, string $appLogo): string {
     $name    = htmlspecialchars(trim($aff['first_name'] . ' ' . $aff['last_name']), ENT_QUOTES);
     $code    = htmlspecialchars($aff['affiliate_code'], ENT_QUOTES);
     $period  = date('M d, H:i', strtotime($from)) . ' – ' . date('M d, Y H:i', strtotime($to));
@@ -296,11 +297,11 @@ function _fr_click_email(array $aff, array $d, string $from, string $to, int $ho
   <div style="font-size:12px;color:#64748B;margin-top:4px">Higher is better. Score below 70% requires attention.</div>
 </div>
 <p style="color:#475569;font-size:13px;line-height:1.6">Please ensure your traffic sources comply with our network guidelines. If you believe this report is incorrect, contact your affiliate manager.</p>
-<a href="{$url}/affiliate/fraud-reports?tab=clicks" style="display:inline-block;background:#4F46E5;color:#fff;text-decoration:none;padding:10px 22px;border-radius:6px;font-weight:600;font-size:14px;margin-top:8px">View Full Click Report →</a>
-HTML, $app);
+<a href="{$appUrl}/affiliate/fraud-reports?tab=clicks" style="display:inline-block;background:#4F46E5;color:#fff;text-decoration:none;padding:10px 22px;border-radius:6px;font-weight:600;font-size:14px;margin-top:8px">View Full Click Report →</a>
+HTML, $appName, $appLogo);
 }
 
-function _fr_conv_email(array $aff, array $d, string $from, string $to, int $hours, string $app, string $url): string {
+function _fr_conv_email(array $aff, array $d, string $from, string $to, int $hours, string $appName, string $appUrl, string $appLogo): string {
     $name    = htmlspecialchars(trim($aff['first_name'] . ' ' . $aff['last_name']), ENT_QUOTES);
     $code    = htmlspecialchars($aff['affiliate_code'], ENT_QUOTES);
     $period  = date('M d, H:i', strtotime($from)) . ' – ' . date('M d, Y H:i', strtotime($to));
@@ -332,16 +333,26 @@ function _fr_conv_email(array $aff, array $d, string $from, string $to, int $hou
   <div style="font-size:12px;color:#64748B;margin-top:4px">Higher is better. Score below 70% may result in account review.</div>
 </div>
 <p style="color:#475569;font-size:13px;line-height:1.6">Continued fraudulent conversion activity may result in payout deductions or account suspension. Contact your affiliate manager if you have questions.</p>
-<a href="{$url}/affiliate/fraud-reports?tab=conversions" style="display:inline-block;background:#DC2626;color:#fff;text-decoration:none;padding:10px 22px;border-radius:6px;font-weight:600;font-size:14px;margin-top:8px">View Full Conversion Report →</a>
-HTML, $app);
+<a href="{$appUrl}/affiliate/fraud-reports?tab=conversions" style="display:inline-block;background:#DC2626;color:#fff;text-decoration:none;padding:10px 22px;border-radius:6px;font-weight:600;font-size:14px;margin-top:8px">View Full Conversion Report →</a>
+HTML, $appName, $appLogo);
 }
 
-function _fr_email_wrap(string $app, string $title, string $body, string $appName): string {
+function _fr_email_wrap(string $appUrl, string $title, string $body, string $appName, string $appLogo): string {
     $appEsc = htmlspecialchars($appName, ENT_QUOTES);
+    
+    $headerBranding = '';
+    if (!empty($appLogo)) {
+        $logoUrl = filter_var($appLogo, FILTER_VALIDATE_URL) ? $appLogo : rtrim($appUrl, '/') . '/' . ltrim($appLogo, '/');
+        $logoEsc = htmlspecialchars($logoUrl, ENT_QUOTES);
+        $headerBranding = "<img src=\"{$logoEsc}\" alt=\"{$appEsc}\" style=\"max-height:40px;max-width:200px;object-fit:contain\">";
+    } else {
+        $headerBranding = "<div style=\"font-size:20px;font-weight:800;color:#fff;letter-spacing:.02em\">{$appEsc}</div>";
+    }
+
     return <<<HTML
 <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;max-width:620px;margin:0 auto;background:#F8FAFC;padding:0;border-radius:12px;overflow:hidden">
   <div style="background:linear-gradient(135deg,#1E1B4B 0%,#4F46E5 100%);padding:28px 32px;text-align:center">
-    <div style="font-size:20px;font-weight:800;color:#fff;letter-spacing:.02em">{$appEsc}</div>
+    {$headerBranding}
     <div style="font-size:13px;color:#C7D2FE;margin-top:4px">{$title}</div>
   </div>
   <div style="padding:28px 32px;background:#fff">
