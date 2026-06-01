@@ -28,6 +28,7 @@ class Mailer
 
         $subject = self::replacePlaceholders($tpl['subject'],  $vars);
         $body    = self::replacePlaceholders($tpl['html_body'], $vars);
+        $body    = self::applyTheme($body, $subject);
 
         return self::send($toEmail, $toName, $subject, $body, $eventType);
     }
@@ -158,6 +159,7 @@ class Mailer
             $subject  = self::replacePlaceholders($tpl['subject'],   $vars);
             $htmlBody = self::replacePlaceholders($tpl['html_body'], $vars);
         }
+        $htmlBody = self::applyTheme($htmlBody, $subject);
         return self::sendWithPdf($toEmail, $toName, $subject, $htmlBody, $eventType, $attachPath, $attachName);
     }
 
@@ -325,6 +327,48 @@ class Mailer
      *
      * "Truthy" means: not '', not null, not false, not '0', not 'false'.
      */
+    /**
+     * Wrap raw HTML in a beautiful branded email template with the site logo.
+     */
+    public static function applyTheme(string $body, string $title = ''): string
+    {
+        // Don't double-wrap if it already looks like a full layout
+        if (stripos($body, 'max-width:620px') !== false || stripos($body, 'max-width:600px') !== false) {
+            return $body;
+        }
+
+        $cfg     = Config::get('config') ?? [];
+        $appName = $cfg['app']['name'] ?? 'Affiliate Network';
+        $appUrl  = rtrim($cfg['app']['url'] ?? '', '/');
+        $appLogo = $cfg['app']['logo'] ?? '';
+        
+        $appEsc = htmlspecialchars($appName, ENT_QUOTES);
+        
+        $headerBranding = '';
+        if (!empty($appLogo)) {
+            $logoUrl = filter_var($appLogo, FILTER_VALIDATE_URL) ? $appLogo : $appUrl . '/' . ltrim($appLogo, '/');
+            $logoEsc = htmlspecialchars($logoUrl, ENT_QUOTES);
+            $headerBranding = "<img src=\"{$logoEsc}\" alt=\"{$appEsc}\" style=\"max-height:40px;max-width:200px;object-fit:contain\">";
+        } else {
+            $headerBranding = "<div style=\"font-size:20px;font-weight:800;color:#fff;letter-spacing:.02em\">{$appEsc}</div>";
+        }
+
+        return <<<HTML
+<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;max-width:620px;margin:0 auto;background:#F8FAFC;padding:0;border-radius:12px;overflow:hidden">
+  <div style="background:linear-gradient(135deg,#1E1B4B 0%,#4F46E5 100%);padding:28px 32px;text-align:center">
+    {$headerBranding}
+    <div style="font-size:13px;color:#C7D2FE;margin-top:4px">{$title}</div>
+  </div>
+  <div style="padding:28px 32px;background:#fff;color:#475569;font-size:15px;line-height:1.6">
+    {$body}
+  </div>
+  <div style="padding:16px 32px;background:#F8FAFC;text-align:center;border-top:1px solid #E2E8F0">
+    <p style="color:#94A3B8;font-size:11px;margin:0">{$appEsc} &bull; This is an automated message.</p>
+  </div>
+</div>
+HTML;
+    }
+
     private static function replacePlaceholders(string $text, array $vars): string
     {
         $isTruthy = function ($key) use ($vars): bool {
