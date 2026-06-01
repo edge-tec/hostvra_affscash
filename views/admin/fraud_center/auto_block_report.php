@@ -39,7 +39,7 @@ include BASE_PATH . '/views/partials/fraud_filter_bar.php';
         </div>
         <div class="fds-table-wrap">
             <table class="fds-table">
-                <thead><tr><th>Time</th><th>IP</th><th>Offer</th><th>Affiliate</th><th>Score</th></tr></thead>
+                <thead><tr><th>Time</th><th>IP</th><th>Offer</th><th>Affiliate Code</th><th>Affiliate Name</th><th>Score</th></tr></thead>
                 <tbody>
                 <?php foreach ($recentBlockedClicks as $cl): ?>
                 <tr>
@@ -47,10 +47,11 @@ include BASE_PATH . '/views/partials/fraud_filter_bar.php';
                     <td><a href="/admin/fraud-center/ip-intelligence?ip=<?= urlencode($cl['ip_address'] ?? '') ?>" class="fds-link"><?= Helpers::e($cl['ip_address'] ?? '—') ?></a></td>
                     <td class="fds-text-sm"><?= Helpers::e($cl['offer_name'] ?? '—') ?></td>
                     <td class="fds-text-sm"><?= Helpers::e($cl['affiliate_code'] ?? '—') ?></td>
+                    <td class="fds-text-sm"><?= Helpers::e($cl['affiliate_name'] ?? '—') ?></td>
                     <td class="fds-text-sm"><span class="fds-badge fds-badge-critical"><?= $cl['fraud_score'] ?: 'N/A' ?></span></td>
                 </tr>
                 <?php endforeach; ?>
-                <?php if (empty($recentBlockedClicks)): ?><tr><td colspan="5" class="fds-empty">No blocked clicks found</td></tr><?php endif; ?>
+                <?php if (empty($recentBlockedClicks)): ?><tr><td colspan="6" class="fds-empty">No blocked clicks found</td></tr><?php endif; ?>
                 </tbody>
             </table>
         </div>
@@ -63,17 +64,18 @@ include BASE_PATH . '/views/partials/fraud_filter_bar.php';
         </div>
         <div class="fds-table-wrap">
             <table class="fds-table">
-                <thead><tr><th>Offer</th><th>Affiliate</th><th>Payout</th><th>Reason</th></tr></thead>
+                <thead><tr><th>Offer</th><th>Affiliate Code</th><th>Affiliate Name</th><th>Payout</th><th>Reason</th></tr></thead>
                 <tbody>
                 <?php foreach ($recentBlockedConversions as $cv): ?>
                 <tr>
                     <td class="fds-text-sm"><?= Helpers::e($cv['offer_name'] ?? '—') ?></td>
                     <td class="fds-text-sm"><?= Helpers::e($cv['affiliate_code'] ?? '—') ?></td>
+                    <td class="fds-text-sm"><?= Helpers::e($cv['affiliate_name'] ?? '—') ?></td>
                     <td>$<?= number_format($cv['payout'], 2) ?></td>
                     <td><span class="fds-badge fds-badge-critical" title="<?= Helpers::e($cv['hide_reason']) ?>"><?= Helpers::e(str_replace('_blocked', '', $cv['hide_reason'])) ?></span></td>
                 </tr>
                 <?php endforeach; ?>
-                <?php if (empty($recentBlockedConversions)): ?><tr><td colspan="4" class="fds-empty">No blocked conversions found</td></tr><?php endif; ?>
+                <?php if (empty($recentBlockedConversions)): ?><tr><td colspan="5" class="fds-empty">No blocked conversions found</td></tr><?php endif; ?>
                 </tbody>
             </table>
         </div>
