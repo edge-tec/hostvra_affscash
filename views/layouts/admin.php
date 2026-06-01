@@ -542,6 +542,11 @@ function fmtTs(ts, opts) {
                 Live Threat Monitor
                 <span class="fds-pulse-dot"></span>
             </a>
+            <a href="/admin/fraud-center/auto-block-report"
+               class="fds-link <?= str_starts_with($_SERVER['REQUEST_URI'],'/admin/fraud-center/auto-block-report') ? 'active' : '' ?>">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                Auto Block Report
+            </a>
             <a href="/admin/fraud-center/click-intelligence"
                class="fds-link <?= str_starts_with($_SERVER['REQUEST_URI'],'/admin/fraud-center/click-intelligence') ? 'active' : '' ?>">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V9z"/><polyline points="15 3 15 9 21 9"/></svg>

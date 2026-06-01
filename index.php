@@ -355,6 +355,7 @@ Router::any('/admin/ip-bans', function() { require BASE_PATH . '/controllers/adm
 
 // ── In-House Fraud Detection System (read-only analysis module) ──────────────
 Router::any('/admin/fraud-center/live-monitor',       function() { require BASE_PATH . '/controllers/admin/fraud/LiveMonitorController.php'; });
+Router::any('/admin/fraud-center/auto-block-report',  function() { require BASE_PATH . '/controllers/admin/fraud/AutoBlockReportController.php'; });
 Router::any('/admin/fraud-center/click-intelligence', function() { require BASE_PATH . '/controllers/admin/fraud/ClickIntelligenceController.php'; });
 Router::any('/admin/fraud-center/bot-detection',      function() { require BASE_PATH . '/controllers/admin/fraud/BotDetectionController.php'; });
 Router::any('/admin/fraud-center/conversion-scanner', function() { require BASE_PATH . '/controllers/admin/fraud/ConversionScannerController.php'; });
