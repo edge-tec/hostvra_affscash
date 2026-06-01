@@ -9,6 +9,7 @@ $offerId = (int)($_GET['offer_id'] ?? 0);
 // Date range — defaults to last 30 days so the analytics dashboard works out of the box.
 $dr = fraud_date_range(date('Y-m-d', strtotime('-30 days')), date('Y-m-d'));
 $_df = $dr['date_from']; $_dt = $dr['date_to'];
+$range = max(1, (int)round((strtotime($dr['to']) - strtotime($dr['from'])) / 86400));
 
 $affiliateList = Database::fetchAll("SELECT a.id, a.affiliate_code, CONCAT(u.first_name,' ',u.last_name) as name FROM affiliates a LEFT JOIN users u ON u.id=a.user_id ORDER BY a.affiliate_code") ?: [];
 $offerList     = Database::fetchAll("SELECT id, name FROM offers ORDER BY name") ?: [];
