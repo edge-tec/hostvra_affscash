@@ -56,26 +56,20 @@ if (Helpers::isPost()) {
                     $toName    = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? '')) ?: 'User';
 
                     $body = '
-<div style="font-family:Arial,sans-serif;max-width:520px;margin:0 auto;color:#1E293B">
-  <div style="background:linear-gradient(135deg,#4F46E5,#7C3AED);padding:28px 32px;border-radius:12px 12px 0 0;text-align:center">
-    <h1 style="color:#fff;margin:0;font-size:20px;font-weight:800">Password Reset Request</h1>
-  </div>
-  <div style="background:#fff;padding:32px;border:1px solid #E2E8F0;border-top:none;border-radius:0 0 12px 12px">
-    <p>Hello <strong>' . htmlspecialchars($toName) . '</strong>,</p>
-    <p>We received a request to reset your password for your <strong>' . htmlspecialchars($siteName) . '</strong> account.</p>
-    <div style="text-align:center;margin:28px 0">
-      <a href="' . htmlspecialchars($resetLink) . '"
-         style="background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;display:inline-block">
-        Reset My Password
-      </a>
-    </div>
-    <p style="color:#64748B;font-size:13px">This link expires in <strong>1 hour</strong>. If you did not request a password reset, you can safely ignore this email — your password will not change.</p>
-    <hr style="border:none;border-top:1px solid #E2E8F0;margin:20px 0">
-    <p style="color:#94A3B8;font-size:12px">If the button above does not work, copy and paste this URL into your browser:<br>
-      <a href="' . htmlspecialchars($resetLink) . '" style="color:#4F46E5;word-break:break-all;font-size:11px">' . htmlspecialchars($resetLink) . '</a>
-    </p>
-  </div>
-</div>';
+<p>Hello <strong>' . htmlspecialchars($toName) . '</strong>,</p>
+<p>We received a request to reset your password for your <strong>' . htmlspecialchars($siteName) . '</strong> account.</p>
+<div style="text-align:center;margin:28px 0">
+  <a href="' . htmlspecialchars($resetLink) . '"
+     style="background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;display:inline-block">
+    Reset My Password
+  </a>
+</div>
+<p style="color:#64748B;font-size:13px">This link expires in <strong>1 hour</strong>. If you did not request a password reset, you can safely ignore this email — your password will not change.</p>
+<hr style="border:none;border-top:1px solid #E2E8F0;margin:20px 0">
+<p style="color:#94A3B8;font-size:12px">If the button above does not work, copy and paste this URL into your browser:<br>
+  <a href="' . htmlspecialchars($resetLink) . '" style="color:#4F46E5;word-break:break-all;font-size:11px">' . htmlspecialchars($resetLink) . '</a>
+</p>';
+                    $body = Mailer::applyTheme($body, 'Password Reset Request');
 
                     try {
                         Mailer::sendRaw($user['email'], $toName, "[$siteName] Reset your password", $body, 'password_reset');
