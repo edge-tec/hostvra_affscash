@@ -63,7 +63,7 @@
 <!-- Desktop: scrollable tab bar -->
 <div class="settings-tabs">
     <?php
-    $tabs = ['general'=>'General','branding'=>'Branding','security'=>'Security','inactivity'=>'Affiliate Inactivity','traffic'=>'Traffic','vpn_detection'=>'VPN & Proxy','commission'=>'Commission','conversions'=>'Conversions','budget_system'=>'Budget System','domains'=>'Tracking Domains','email'=>'Email / SMTP','shortener'=>'Link Shortener','mobile_app'=>'Mobile App','notifications'=>'Notifications'];
+    $tabs = ['general'=>'General','branding'=>'Branding','security'=>'Security','inactivity'=>'Affiliate Inactivity','traffic'=>'Traffic','vpn_detection'=>'VPN & Proxy','commission'=>'Commission','conversions'=>'Conversions','budget_system'=>'Budget System','domains'=>'Tracking Domains','email'=>'Email / SMTP','shortener'=>'Link Shortener','mobile_app'=>'Mobile App','notifications'=>'Notifications','fraud_reports'=>'Fraud Reports'];
     foreach ($tabs as $key => $label):
     ?>
     <a href="/admin/settings?tab=<?= $key ?>"

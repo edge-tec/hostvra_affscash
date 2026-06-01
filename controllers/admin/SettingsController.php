@@ -533,6 +533,20 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         $success = true;
     }
 
+    elseif ($tab === 'fraud_reports') {
+        Config::set('config', 'fraud_reports.enabled', isset($_POST['fraud_reports_enabled']) ? '1' : '0');
+        
+        $interval = (int)Helpers::postRaw('fraud_reports_interval');
+        if (!in_array($interval, [1, 3, 7, 14, 30])) $interval = 7;
+        Config::set('config', 'fraud_reports.interval_days', (string)$interval);
+        
+        $runHour = (int)Helpers::postRaw('fraud_reports_hour');
+        if ($runHour < 0 || $runHour > 23) $runHour = 8;
+        Config::set('config', 'fraud_reports.run_hour', (string)$runHour);
+
+        $success = true;
+    }
+
     elseif ($tab === 'email') {
         Config::set('config', 'smtp.host',       trim(Helpers::post('smtp_host')));
         Config::set('config', 'smtp.port',       (int)(Helpers::post('smtp_port') ?: 587));
