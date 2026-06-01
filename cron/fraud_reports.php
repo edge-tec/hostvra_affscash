@@ -349,17 +349,19 @@ function _fr_email_wrap(string $appUrl, string $title, string $body, string $app
         $headerBranding = "<div style=\"font-size:20px;font-weight:800;color:#fff;letter-spacing:.02em\">{$appEsc}</div>";
     }
 
-    return <<<HTML
-<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;max-width:620px;margin:0 auto;background:#F8FAFC;padding:0;border-radius:12px;overflow:hidden">
-  <div style="background:linear-gradient(135deg,#1E1B4B 0%,#4F46E5 100%);padding:28px 32px;text-align:center">
-    {$headerBranding}
-    <div style="font-size:13px;color:#C7D2FE;margin-top:4px">{$title}</div>
-  </div>
-  <div style="padding:28px 32px;background:#fff">
-    {$body}
-  </div>
-  <div style="padding:16px 32px;background:#F8FAFC;text-align:center;border-top:1px solid #E2E8F0">
-    <p style="color:#94A3B8;font-size:11px;margin:0">{$appEsc} Fraud Detection System &bull; This is an automated report. Do not reply.</p>
+        return <<<HTML
+<div style="background:linear-gradient(135deg,#0F172A 0%,#1E1B4B 50%,#4F46E5 100%);padding:40px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;">
+  <div style="max-width:620px;margin:0 auto;background:rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,0.4);border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.2);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);">
+    <div style="padding:32px;text-align:center;background:rgba(255,255,255,0.5);border-bottom:1px solid rgba(255,255,255,0.6);">
+      {$headerBranding}
+      <div style="font-size:14px;color:#4F46E5;margin-top:8px;font-weight:600;letter-spacing:0.5px">{$title}</div>
+    </div>
+    <div style="padding:32px;background:rgba(255,255,255,0.7);color:#334155;font-size:15px;line-height:1.7;">
+      {$body}
+    </div>
+    <div style="padding:20px 32px;background:rgba(248,250,252,0.8);text-align:center;border-top:1px solid rgba(255,255,255,0.6);">
+      <p style="color:#64748B;font-size:12px;margin:0">{$appEsc} Fraud Detection System &bull; This is an automated report.</p>
+    </div>
   </div>
 </div>
 HTML;
