@@ -140,9 +140,9 @@ foreach ($offers as $o) {
     extract($d, EXTR_PREFIX_ALL, 'g');
 ?>
 <div class="card" style="display:flex;flex-direction:column;min-width:0">
-    <?php if (!empty($o['offer_image'])): ?>
+    <?php if (!empty(trim($o['offer_image'] ?? ''))): ?>
     <div style="height:120px;background:linear-gradient(135deg,#4F46E5,#7C3AED);border-radius:8px 8px 0 0;overflow:hidden">
-        <img src="<?= Helpers::e($o['offer_image']) ?>" alt="" style="width:100%;height:100%;object-fit:cover;opacity:.9">
+        <img src="<?= Helpers::e($o['offer_image']) ?>" alt="" style="width:100%;height:100%;object-fit:cover;opacity:.9" onerror="this.parentElement.style.display='none'">
     </div>
     <?php endif; ?>
     <div style="padding:20px;flex:1">
