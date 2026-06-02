@@ -11,6 +11,7 @@ $effectiveDate = '2026';
 <meta charset="UTF-8">
 <title>Privacy Policy &mdash; <?= $appName ?></title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<?php if ($fav = Config::get('config','app.favicon')): ?><link rel="icon" href="<?= Helpers::e($fav) ?>"><?php endif; ?>
 <meta name="description" content="Privacy Policy for <?= $appName ?> — how we collect, use and protect your personal data as an affiliate or advertiser on our network.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

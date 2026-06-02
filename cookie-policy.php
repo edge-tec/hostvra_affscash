@@ -30,7 +30,9 @@ if (!$navLogo) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cookie Policy — Affscash</title>
-<?php if ($faviconPath): ?>
+<?php if (class_exists('Config') && $fav = Config::get('config','app.favicon')): ?>
+<link rel="icon" href="<?= Helpers::e($fav) ?>">
+<?php elseif ($faviconPath): ?>
 <link rel="icon" href="<?= htmlspecialchars($faviconPath) ?>">
 <?php else: ?>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%237c3aed' width='32' height='32' rx='6'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='18' font-weight='800'>E</text></svg>">
