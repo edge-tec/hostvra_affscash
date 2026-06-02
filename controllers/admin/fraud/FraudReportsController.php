@@ -69,6 +69,7 @@ $affId       = (int)($_GET['aff_id']    ?? 0);
 $offerId     = (int)($_GET['offer_id']  ?? 0);
 $statusFilter = $_GET['status']   ?? '';              // all | pending | approved | rejected
 $fraudOnly   = (int)($_GET['fraud_only'] ?? 0);       // 1 = fraud flagged only
+$riskLevel   = $_GET['risk_level'] ?? '';             // low | medium | high
 // Accept the standard `from`/`to` params (used by the shared date-range picker)
 // while keeping the legacy `date_from`/`date_to` aliases working for old links.
 $dr = fraud_date_range(
@@ -127,6 +128,9 @@ if ($tab === 'conversions') {
     if ($statusFilter !== '' && $statusFilter !== 'all') {
                             $where .= " AND cv.status=?";                $params[] = $statusFilter; }
     if ($fraudOnly)       { $where .= " AND (cv.is_fraud=1 OR cv.fraud_score>=50)"; }
+    if ($riskLevel === 'low')    { $where .= " AND cv.fraud_score < 20"; }
+    if ($riskLevel === 'medium') { $where .= " AND cv.fraud_score >= 20 AND cv.fraud_score < 50"; }
+    if ($riskLevel === 'high')   { $where .= " AND cv.fraud_score >= 50"; }
     if ($search !== '')   { $where .= " AND (cv.conversion_id LIKE ? OR cv.ip_address LIKE ? OR a.affiliate_code LIKE ?)";
                             $s = "%$search%"; $params[] = $s; $params[] = $s; $params[] = $s; }
 
@@ -193,6 +197,9 @@ if ($tab === 'clicks') {
 
     if ($affId)   { $where .= " AND c.affiliate_id=?"; $params[] = $affId; }
     if ($offerId) { $where .= " AND c.offer_id=?";     $params[] = $offerId; }
+    if ($riskLevel === 'low')    { $where .= " AND c.fraud_score < 20"; }
+    if ($riskLevel === 'medium') { $where .= " AND c.fraud_score >= 20 AND c.fraud_score < 50"; }
+    if ($riskLevel === 'high')   { $where .= " AND c.fraud_score >= 50"; }
     if ($search !== '') {
         $where .= " AND (c.ip_address LIKE ? OR a.affiliate_code LIKE ?)";
         $s = "%$search%"; $params[] = $s; $params[] = $s;

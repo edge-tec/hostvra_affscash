@@ -116,6 +116,15 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                 </div>
                 <?php endif; ?>
                 <div>
+                    <label>Risk Level</label>
+                    <select name="risk_level" onchange="this.form.submit()">
+                        <option value="">All</option>
+                        <option value="low" <?= (isset($riskLevel) && $riskLevel==='low')?'selected':'' ?>>Low Risk (&lt;20)</option>
+                        <option value="medium" <?= (isset($riskLevel) && $riskLevel==='medium')?'selected':'' ?>>Medium Risk (20-49)</option>
+                        <option value="high" <?= (isset($riskLevel) && $riskLevel==='high')?'selected':'' ?>>High Risk (50+)</option>
+                    </select>
+                </div>
+                <div>
                     <label>Search</label>
                     <input type="text" name="q" value="<?= Helpers::e($search) ?>" placeholder="Conv ID, IP, affiliate..." style="min-width:200px">
                 </div>
