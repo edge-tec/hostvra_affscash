@@ -4,10 +4,10 @@
     <div><h1>Conversions</h1><p>Review and manage conversion records</p></div>
     <div class="d-flex gap-2">
         <?php foreach(['all','pending','approved','rejected'] as $s): ?>
-        <a href="/admin/conversions?<?= http_build_query(['status'=>$s,'from'=>$from,'to'=>$to]) ?>" class="btn btn-sm <?= $status===$s?'btn-primary':'btn-secondary' ?>"><?= ucfirst($s) ?></a>
+        <a href="/admin/conversions?<?= http_build_query(['status'=>$s,'from'=>$from,'to'=>$to,'click_id'=>$clickId??null]) ?>" class="btn btn-sm <?= $status===$s?'btn-primary':'btn-secondary' ?>"><?= ucfirst($s) ?></a>
         <?php endforeach; ?>
         <?php
-        $exportBaseGet = ['status' => $status, 'from' => $from, 'to' => $to];
+        $exportBaseGet = ['status' => $status, 'from' => $from, 'to' => $to, 'click_id' => $clickId ?? null];
         require BASE_PATH . '/views/partials/export_buttons.php';
         ?>
     </div>
@@ -30,6 +30,10 @@
             <div class="form-group mb-0">
                 <label style="font-size:12px">To</label>
                 <input type="date" id="conv-to" name="to" class="form-control" value="<?= Helpers::e($to) ?>" style="font-size:13px">
+            </div>
+            <div class="form-group mb-0">
+                <label style="font-size:12px">Click ID</label>
+                <input type="text" name="click_id" class="form-control" placeholder="Search by Click ID..." value="<?= Helpers::e($clickId ?? '') ?>" style="font-size:13px; min-width:180px;">
             </div>
             <div style="display:flex;gap:8px;padding-bottom:1px">
                 <button type="submit" class="btn btn-primary btn-sm">Apply</button>

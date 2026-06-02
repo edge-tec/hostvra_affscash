@@ -4,8 +4,24 @@
     <div><h1>Conversions</h1><p>Conversion records for your affiliates</p></div>
     <div class="d-flex gap-2">
         <?php foreach(['all','pending','approved','rejected'] as $s): ?>
-        <a href="/affiliate_manager/conversions?status=<?= $s ?>" class="btn btn-sm <?= $status===$s?'btn-primary':'btn-secondary' ?>"><?= ucfirst($s) ?></a>
+        <a href="/affiliate_manager/conversions?status=<?= $s ?>&click_id=<?= urlencode($clickId ?? '') ?>" class="btn btn-sm <?= $status===$s?'btn-primary':'btn-secondary' ?>"><?= ucfirst($s) ?></a>
         <?php endforeach; ?>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body" style="padding:16px 20px">
+        <form method="GET" style="display:flex;gap:12px;align-items:flex-end">
+            <input type="hidden" name="status" value="<?= Helpers::e($status) ?>">
+            <div class="form-group mb-0">
+                <label style="font-size:12px">Click ID</label>
+                <input type="text" name="click_id" class="form-control" placeholder="Search by Click ID..." value="<?= Helpers::e($clickId ?? '') ?>" style="font-size:13px; min-width:180px;">
+            </div>
+            <div style="display:flex;gap:8px;padding-bottom:1px">
+                <button type="submit" class="btn btn-primary btn-sm">Apply</button>
+                <a href="/affiliate_manager/conversions?status=<?= Helpers::e($status) ?>" class="btn btn-secondary btn-sm">Reset</a>
+            </div>
+        </form>
     </div>
 </div>
 

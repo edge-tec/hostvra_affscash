@@ -375,6 +375,7 @@ try { Database::query("ALTER TABLE `conversions` ADD COLUMN `fraud_checked_at` D
 RejectionHelper::ensureSchema();
 
 $status = Helpers::get('status') ?: 'all';
+$clickId = Helpers::get('click_id');
 
 // Date-range filter (defaults to current month, matching /admin/reports).
 $from = Helpers::get('from') ?: date('Y-m-01');
@@ -387,6 +388,10 @@ $whereParams = [$dateFrom, $dateTo];
 if ($status !== 'all') {
     $whereParts[]  = 'c.status = ?';
     $whereParams[] = $status;
+}
+if (!empty($clickId)) {
+    $whereParts[] = 'c.click_id = ?';
+    $whereParams[] = trim($clickId);
 }
 $where = implode(' AND ', $whereParts);
 

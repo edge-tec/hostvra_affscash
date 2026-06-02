@@ -8,6 +8,7 @@ $pageTitle = 'Conversions';
 
 $affIds = Auth::managerAffiliateIds();
 $status = Helpers::get('status') ?: 'all';
+$clickId = Helpers::get('click_id');
 
 if (empty($affIds)) {
     $conversions = [];
@@ -16,8 +17,12 @@ if (empty($affIds)) {
     $params = $affIds;
     $statusSql = '';
     if ($status !== 'all') {
-        $statusSql = " AND c.status=?";
+        $statusSql .= " AND c.status=?";
         $params[] = $status;
+    }
+    if (!empty($clickId)) {
+        $statusSql .= " AND c.click_id=?";
+        $params[] = trim($clickId);
     }
     // Join the click row AND the latest fraud_log row (IPQS) so we can
     // derive a per-conversion Fraud Score AND display the real-time IPQS

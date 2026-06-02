@@ -438,6 +438,7 @@ if ($_affCode !== '' && $filterAffiliate === 0) {
     if ($_affRow) $filterAffiliate = (int)$_affRow['id'];
 }
 $filterOffer     = (int)Helpers::get('offer_id');
+$filterClickId   = trim(Helpers::get('click_id') ?? '');
 $filterScoreMin  = Helpers::get('score_min') !== null && Helpers::get('score_min') !== '' ? (int)Helpers::get('score_min') : 0;
 $filterScoreMax  = Helpers::get('score_max') !== null && Helpers::get('score_max') !== '' ? (int)Helpers::get('score_max') : 100;
 $sortBy          = in_array(Helpers::get('sort'), ['fraud_score','converted_at']) ? Helpers::get('sort') : 'converted_at';
@@ -463,6 +464,10 @@ if ($filterAffiliate) {
 if ($filterOffer) {
     $where[]  = 'cv.offer_id = ?';
     $params[] = $filterOffer;
+}
+if ($filterClickId !== '') {
+    $where[]  = 'cv.click_id = ?';
+    $params[] = $filterClickId;
 }
 if ($filterScoreMin > 0) {
     $where[]  = 'COALESCE(cv.fraud_score, 0) >= ?';

@@ -89,6 +89,10 @@
                 <label style="font-size:12px">To</label>
                 <input type="date" id="fsr-to" name="to" class="form-control" value="<?= Helpers::e($to) ?>" style="font-size:13px">
             </div>
+            <div class="form-group mb-0" style="min-width:130px">
+                <label style="font-size:12px">Click ID</label>
+                <input type="text" name="click_id" class="form-control" placeholder="Search Click ID..." value="<?= Helpers::e($filterClickId ?? '') ?>" style="font-size:13px">
+            </div>
             <div class="form-group mb-0" style="min-width:140px">
                 <label style="font-size:12px">Status</label>
                 <select name="status" class="form-control" style="font-size:13px">

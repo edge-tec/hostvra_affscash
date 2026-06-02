@@ -88,6 +88,10 @@ $tabs = [
 
             <?php if (in_array($tab, ['click','conversion','sl_report'])): ?>
             <div class="form-group mb-0">
+                <label>Click ID</label>
+                <input type="text" name="click_id" class="form-control" value="<?= Helpers::e($clickId ?? '') ?>" placeholder="Search Click ID..." style="width:130px">
+            </div>
+            <div class="form-group mb-0">
                 <label>Limit</label>
                 <select name="limit" class="form-control">
                     <?php foreach ([200,500,1000,2000,5000] as $l): ?>

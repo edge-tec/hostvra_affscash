@@ -13,6 +13,7 @@ $to          = Helpers::get('to')   ?: date('Y-m-d');
 $offerId     = (int)(Helpers::get('offer_id') ?: 0);
 $country     = trim(Helpers::get('country') ?: '');
 $sub1        = trim(Helpers::get('sub1') ?: '');
+$clickId     = trim(Helpers::get('click_id') ?: '');
 $limit       = min((int)(Helpers::get('limit') ?: 500), 5000);
 $clickFilter = Helpers::get('click_filter') ?: 'all';
 if (!in_array($clickFilter, ['all','converted','approved'])) $clickFilter = 'all';
@@ -211,6 +212,7 @@ if ($tab === 'click') {
     if ($offerId > 0)    { $clkWhere[] = 'c.offer_id=?';  $clkParams[] = $offerId; }
     if ($country !== '') { $clkWhere[] = 'c.country=?';   $clkParams[] = strtoupper($country); }
     if ($sub1 !== '')    { $clkWhere[] = 'c.sub1 LIKE ?'; $clkParams[] = '%'.$sub1.'%'; }
+    if ($clickId !== '') { $clkWhere[] = 'c.click_id=?';  $clkParams[] = $clickId; }
     if ($clickFilter === 'converted') {
         $clkWhere[] = 'EXISTS (SELECT 1 FROM conversions _cv WHERE _cv.click_id = c.click_id AND _cv.is_hidden = 0)';
     } elseif ($clickFilter === 'approved') {
@@ -283,6 +285,10 @@ if ($tab === 'conversion') {
     if ($sub1 !== '') {
         $cvWhere[] = 'EXISTS(SELECT 1 FROM clicks ck WHERE ck.click_id=cv.click_id AND ck.sub1 LIKE ?)';
         $cvParams[] = '%'.$sub1.'%';
+    }
+    if ($clickId !== '') {
+        $cvWhere[] = 'cv.click_id=?';
+        $cvParams[] = $clickId;
     }
     $whereStr = implode(' AND ', $cvWhere);
 
