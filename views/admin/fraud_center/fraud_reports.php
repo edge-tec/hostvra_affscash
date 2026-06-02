@@ -229,7 +229,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
             ?>
             <tr class="<?= $isFraud ? 'fraud-row' : '' ?>">
                 <?php if ($canAction): ?><td><input type="checkbox" class="fr-conv-cb" value="<?= Helpers::e($cv['conversion_id']) ?>" style="accent-color:#6366F1"></td><?php endif; ?>
-                <td class="fds-text-sm" style="font-family:monospace"><?= Helpers::e(substr($cv['conversion_id'],0,12)) ?>…</td>
+                <td class="fds-text-sm" style="font-family:monospace; word-break: break-all;"><?= Helpers::e($cv['conversion_id']) ?></td>
                 <td>
                     <strong><?= Helpers::e($cv['affiliate_code'] ?? '—') ?></strong><br>
                     <span class="fds-text-sm fds-text-muted"><?= Helpers::e(($cv['first_name']??'').' '.($cv['last_name']??'')) ?></span>
