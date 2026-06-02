@@ -13,11 +13,15 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
 .fr-header-tab.active { color: #4F46E5; border-bottom-color: #4F46E5; }
 .fr-filter-section { padding: 20px; }
 .fr-filter-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
-.fr-filter-grid { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; }
-.fr-filter-grid > div { display: flex; flex-direction: column; gap: 6px; }
-.fr-filter-grid label { font-size: 11px; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.05em; }
-.fr-filter-grid select, .fr-filter-grid input[type=text], .fr-filter-grid input[type=date] { font-size: 13px; padding: 8px 12px; border: 1px solid #CBD5E1; border-radius: 8px; background: #fff; color: #1E293B; outline: none; transition: border-color 0.15s, box-shadow 0.15s; min-width: 140px; }
-.fr-filter-grid select:focus, .fr-filter-grid input:focus { border-color: #6366F1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+.fr-filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px 20px; align-items: start; }
+.fr-filter-grid > div { display: flex; flex-direction: column; gap: 0; }
+.fr-filter-grid label { display: block; margin-bottom: 8px; font-size: 11px; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.05em; }
+.fr-filter-grid select, .fr-filter-grid input[type=text], .fr-filter-grid input[type=date] { font-size: 13px; padding: 10px 14px; border: 1px solid #CBD5E1; border-radius: 8px; background: #F8FAFC; color: #1E293B; outline: none; transition: all 0.2s; width: 100%; box-sizing: border-box; }
+.fr-filter-grid select:hover, .fr-filter-grid input:hover { border-color: #94A3B8; }
+.fr-filter-grid select:focus, .fr-filter-grid input:focus { background: #fff; border-color: #6366F1; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
+.fr-filter-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; padding-top: 16px; border-top: 1px dashed #E2E8F0; }
+.fr-filter-actions-right { display: flex; gap: 12px; }
+.fr-filter-actions-left { display: flex; align-items: center; gap: 12px; }
 .fr-export-wrapper { margin-left: auto; }
 .risk-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; white-space: nowrap; }
 .risk-badge.high { background-color: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
@@ -78,7 +82,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
             <div class="fr-filter-grid">
                 <div>
                     <label>Affiliate</label>
-                    <select name="aff_id" style="min-width:180px" onchange="this.form.submit()">
+                    <select name="aff_id" onchange="this.form.submit()">
                         <option value="0">All Affiliates</option>
                         <?php foreach ($affiliateList as $aff): ?>
                         <option value="<?= $aff['id'] ?>" <?= $affId==$aff['id']?'selected':'' ?>>
@@ -89,7 +93,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                 </div>
                 <div>
                     <label>Offer</label>
-                    <select name="offer_id" style="min-width:160px" onchange="this.form.submit()">
+                    <select name="offer_id" onchange="this.form.submit()">
                         <option value="0">All Offers</option>
                         <?php foreach ($offerList as $off): ?>
                         <option value="<?= $off['id'] ?>" <?= $offerId==$off['id']?'selected':'' ?>><?= Helpers::e($off['name']) ?></option>
@@ -108,33 +112,40 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                 <div>
                     <label>Status</label>
                     <select name="status" onchange="this.form.submit()">
-                        <option value="">All</option>
+                        <option value="">All Statuses</option>
                         <option value="pending"  <?= $statusFilter==='pending'  ?'selected':'' ?>>Pending</option>
                         <option value="approved" <?= $statusFilter==='approved' ?'selected':'' ?>>Approved</option>
                         <option value="rejected" <?= $statusFilter==='rejected' ?'selected':'' ?>>Rejected / Blocked</option>
                     </select>
                 </div>
-                <div style="display:flex;align-items:center;gap:6px;padding-bottom:10px">
-                    <input type="checkbox" name="fraud_only" value="1" id="fraudOnly" <?= $fraudOnly?'checked':'' ?> onchange="this.form.submit()" style="width:16px;height:16px;accent-color:#6366F1">
-                    <label for="fraudOnly" style="font-size:13px;font-weight:600;color:#4F46E5;cursor:pointer;text-transform:none;letter-spacing:0;margin:0">Fraud flagged only</label>
-                </div>
                 <?php endif; ?>
                 <div>
                     <label>Risk Level</label>
                     <select name="risk_level" onchange="this.form.submit()">
-                        <option value="">All</option>
+                        <option value="">All Risk Levels</option>
                         <option value="low" <?= (isset($riskLevel) && $riskLevel==='low')?'selected':'' ?>>Low Risk (&lt;20)</option>
                         <option value="medium" <?= (isset($riskLevel) && $riskLevel==='medium')?'selected':'' ?>>Medium Risk (20-49)</option>
                         <option value="high" <?= (isset($riskLevel) && $riskLevel==='high')?'selected':'' ?>>High Risk (50+)</option>
                     </select>
                 </div>
-                <div>
+                <div style="grid-column: 1 / -1; max-width: 420px;">
                     <label>Search</label>
-                    <input type="text" name="q" value="<?= Helpers::e($search) ?>" placeholder="Conv ID, IP, affiliate..." style="min-width:200px">
+                    <input type="text" name="q" value="<?= Helpers::e($search) ?>" placeholder="Search by Conv ID, IP, or affiliate code...">
                 </div>
-                <div style="display:flex;gap:8px;padding-bottom:1px">
-                    <button type="submit" class="fds-btn fds-btn-primary">Filter</button>
-                    <a href="?tab=<?= $tab ?>" class="fds-btn fds-btn-outline">Clear</a>
+            </div>
+
+            <div class="fr-filter-actions">
+                <div class="fr-filter-actions-left">
+                    <?php if ($tab === 'conversions'): ?>
+                    <label for="fraudOnly" style="display:flex;align-items:center;gap:8px;cursor:pointer;background:#EEF2FF;padding:8px 14px;border-radius:8px;border:1px solid #C7D2FE;transition:all 0.2s">
+                        <input type="checkbox" name="fraud_only" value="1" id="fraudOnly" <?= $fraudOnly?'checked':'' ?> onchange="this.form.submit()" style="width:16px;height:16px;accent-color:#4F46E5;margin:0">
+                        <span style="font-size:13px;font-weight:700;color:#4F46E5;line-height:1">Show Fraud Flagged Only</span>
+                    </label>
+                    <?php endif; ?>
+                </div>
+                <div class="fr-filter-actions-right">
+                    <a href="?tab=<?= $tab ?>" class="fds-btn fds-btn-outline" style="padding:10px 20px;font-weight:600">Clear Filters</a>
+                    <button type="submit" class="fds-btn fds-btn-primary" style="padding:10px 24px;font-weight:600;background:#4F46E5;border:none">Apply Filters</button>
                 </div>
             </div>
         </form>
