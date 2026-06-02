@@ -115,6 +115,19 @@ function trafficBack(string $message, int $code = 403): never {
             ]);
         }
 
+        // Log the traffic back event
+        try {
+            global $affiliate, $offer, $ip, $geo;
+            $logAffId = isset($affiliate['id']) ? (int)$affiliate['id'] : null;
+            $logOffId = isset($offer['id']) ? (int)$offer['id'] : (is_numeric($offerId) && $offerId > 0 ? (int)$offerId : null);
+            $logIp = $ip ?? Helpers::getIp();
+            $logCountry = (isset($geo) && is_array($geo) && isset($geo['country_code'])) ? $geo['country_code'] : '';
+            Database::execute(
+                "INSERT INTO traffic_back_logs (click_id, affiliate_id, offer_id, reason, redirect_url, ip_address, country) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                [$clickId ?: null, $logAffId, $logOffId, $message, $finalUrl, $logIp, $logCountry]
+            );
+        } catch (\Throwable $e) {}
+
         if (!headers_sent()) {
             @header_remove('Location');
             @header_remove('Refresh');

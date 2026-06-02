@@ -323,6 +323,8 @@ Router::any('/admin/notifications', function() { require BASE_PATH . '/controlle
 Router::any('/admin/registration-questions', function() { require BASE_PATH . '/controllers/admin/RegistrationQuestionsController.php'; });
 Router::any('/admin/reports', function() { require BASE_PATH . '/controllers/admin/ReportController.php'; });
 Router::any('/admin/reports/clicks', function() { require BASE_PATH . '/controllers/admin/ClickReportController.php'; });
+Router::any('/admin/reports/traffic-back', function() { require BASE_PATH . '/controllers/admin/TrafficBackReportController.php'; });
+
 Router::any('/admin/reports/affiliates', function() { require BASE_PATH . '/controllers/admin/AffiliateReportController.php'; });
 Router::any('/admin/reports/duplicate-conversions', function() { require BASE_PATH . '/controllers/admin/DuplicateConversionsController.php'; });
 Router::any('/admin/conversions', function() { require BASE_PATH . '/controllers/admin/ConversionController.php'; });
