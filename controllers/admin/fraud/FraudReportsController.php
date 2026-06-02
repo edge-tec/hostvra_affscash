@@ -82,6 +82,10 @@ $page        = max(1, (int)($_GET['page'] ?? 1));
 $perPage     = 50;
 $search      = trim($_GET['q'] ?? '');
 
+$clickIdFlt  = trim($_GET['click_id'] ?? '');
+$uaFlt       = trim($_GET['ua'] ?? '');
+$subFlt      = trim($_GET['sub'] ?? '');
+
 // ── Dropdown data ─────────────────────────────────────────────────────────────
 if ($isManager) {
     if (empty($managerAffIds)) {
@@ -134,9 +138,22 @@ if ($tab === 'conversions') {
     if ($search !== '')   { $where .= " AND (cv.conversion_id LIKE ? OR cv.ip_address LIKE ? OR a.affiliate_code LIKE ?)";
                             $s = "%$search%"; $params[] = $s; $params[] = $s; $params[] = $s; }
 
+    if ($clickIdFlt !== '') { $where .= " AND cv.click_id=?"; $params[] = $clickIdFlt; }
+    
+    $joinClicks = "";
+    if ($uaFlt !== '' || $subFlt !== '') {
+        $joinClicks = " LEFT JOIN clicks c ON c.click_id = cv.click_id ";
+        if ($uaFlt !== '') { $where .= " AND c.user_agent LIKE ?"; $params[] = "%$uaFlt%"; }
+        if ($subFlt !== '') {
+            $where .= " AND (c.sub2 LIKE ? OR c.sub3 LIKE ? OR c.sub4 LIKE ? OR c.sub5 LIKE ? OR c.sub6 LIKE ?)";
+            $s = "%$subFlt%"; array_push($params, $s, $s, $s, $s, $s);
+        }
+    }
+
     $totalRow = Database::fetchOne(
         "SELECT COUNT(*) AS c FROM conversions cv
          LEFT JOIN affiliates a ON a.id=cv.affiliate_id
+         $joinClicks
          WHERE $where", $params
     );
     $convTotal = $totalRow['c'] ?? 0;
@@ -156,6 +173,7 @@ if ($tab === 'conversions') {
          LEFT JOIN offers o ON o.id = cv.offer_id
          LEFT JOIN affiliates a ON a.id = cv.affiliate_id
          LEFT JOIN users u ON u.id = a.user_id
+         $joinClicks
          WHERE $where
          ORDER BY cv.converted_at DESC
          LIMIT $perPage OFFSET {$convPag['offset']}",
@@ -173,6 +191,7 @@ if ($tab === 'conversions') {
                 SUM(CASE WHEN cv.is_fraud=1 OR cv.fraud_score>=50 THEN 1 ELSE 0 END) AS flagged
          FROM conversions cv
          LEFT JOIN affiliates a ON a.id=cv.affiliate_id
+         $joinClicks
          WHERE $where", $params
     ) ?: [];
 }
@@ -203,6 +222,12 @@ if ($tab === 'clicks') {
     if ($search !== '') {
         $where .= " AND (c.ip_address LIKE ? OR a.affiliate_code LIKE ?)";
         $s = "%$search%"; $params[] = $s; $params[] = $s;
+    }
+    if ($clickIdFlt !== '') { $where .= " AND c.click_id=?"; $params[] = $clickIdFlt; }
+    if ($uaFlt !== '') { $where .= " AND c.user_agent LIKE ?"; $params[] = "%$uaFlt%"; }
+    if ($subFlt !== '') {
+        $where .= " AND (c.sub2 LIKE ? OR c.sub3 LIKE ? OR c.sub4 LIKE ? OR c.sub5 LIKE ? OR c.sub6 LIKE ?)";
+        $s = "%$subFlt%"; array_push($params, $s, $s, $s, $s, $s);
     }
 
     $totalRow  = Database::fetchOne(

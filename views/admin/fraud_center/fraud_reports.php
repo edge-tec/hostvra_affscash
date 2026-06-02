@@ -128,6 +128,18 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                         <option value="high" <?= (isset($riskLevel) && $riskLevel==='high')?'selected':'' ?>>High Risk (50+)</option>
                     </select>
                 </div>
+                <div>
+                    <label>Click ID</label>
+                    <input type="text" name="click_id" value="<?= Helpers::e($clickIdFlt ?? '') ?>" placeholder="Exact Click ID...">
+                </div>
+                <div>
+                    <label>User Agent</label>
+                    <input type="text" name="ua" value="<?= Helpers::e($uaFlt ?? '') ?>" placeholder="Search User Agent...">
+                </div>
+                <div>
+                    <label>Aff Sub</label>
+                    <input type="text" name="sub" value="<?= Helpers::e($subFlt ?? '') ?>" placeholder="Sub 1-5...">
+                </div>
                 <div style="grid-column: 1 / -1; max-width: 420px;">
                     <label>Search</label>
                     <input type="text" name="q" value="<?= Helpers::e($search) ?>" placeholder="Search by Conv ID, IP, or affiliate code...">
