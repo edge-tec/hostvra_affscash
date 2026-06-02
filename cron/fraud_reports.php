@@ -285,7 +285,7 @@ function _fr_click_email(array $aff, array $d, string $from, string $to, int $ho
         $tableRows .= "<tr><td style=\"padding:12px 16px;border-bottom:1px solid #F1F5F9;color:#64748B;font-weight:600\">{$label}</td><td style=\"padding:12px 16px;border-bottom:1px solid #F1F5F9;text-align:right;font-weight:700;color:{$color}\">{$val}</td></tr>";
     }
 
-    return _fr_email_wrap($app, "Fraud Click Report", <<<HTML
+    return _fr_email_wrap($appUrl, "Fraud Click Report", <<<HTML
 <p style="color:#475569;font-size:15px">Hello <b>{$name}</b>,</p>
 <p style="color:#475569;font-size:14px;line-height:1.6">This is your automated <b>Fraud Click Report</b> for affiliate account <b>{$code}</b>.<br>Period covered: <b>{$period}</b> ({$hours}h window).</p>
 <div style="background:#fff;border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;margin:20px 0">
@@ -321,7 +321,7 @@ function _fr_conv_email(array $aff, array $d, string $from, string $to, int $hou
         $tableRows .= "<tr><td style=\"padding:12px 16px;border-bottom:1px solid #F1F5F9;color:#64748B;font-weight:600\">{$label}</td><td style=\"padding:12px 16px;border-bottom:1px solid #F1F5F9;text-align:right;font-weight:700;color:{$color}\">{$val}</td></tr>";
     }
 
-    return _fr_email_wrap($app, "Fraud Conversion Report", <<<HTML
+    return _fr_email_wrap($appUrl, "Fraud Conversion Report", <<<HTML
 <p style="color:#475569;font-size:15px">Hello <b>{$name}</b>,</p>
 <p style="color:#475569;font-size:14px;line-height:1.6">This is your automated <b>Fraud Conversion Report</b> for affiliate account <b>{$code}</b>.<br>Period covered: <b>{$period}</b> ({$hours}h window).</p>
 <div style="background:#fff;border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;margin:20px 0">
