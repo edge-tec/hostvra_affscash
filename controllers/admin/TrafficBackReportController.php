@@ -1,6 +1,6 @@
 <?php
 
-Auth::requireRole('admin');
+Auth::check('admin');
 
 $from = Helpers::get('from') ?: date('Y-m-d');
 $to   = Helpers::get('to')   ?: date('Y-m-d');
