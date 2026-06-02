@@ -167,6 +167,7 @@ if ($tab === 'conversions') {
                 a.affiliate_code, a.id AS affiliate_id,
                 u.first_name, u.last_name,
                 COALESCE(cv.user_agent, c.user_agent) AS user_agent, c.sub2, c.sub3, c.sub4, c.sub5, c.sub6,
+                cv.device_brand, cv.device_model, cv.os_version, c.device_type, c.country, c.source,
                 TIMESTAMPDIFF(SECOND,
                     c.clicked_at,
                     cv.converted_at) AS click_to_conv_secs
@@ -239,7 +240,7 @@ if ($tab === 'clicks') {
 
     $clicks = Database::fetchAll(
         "SELECT c.id, c.click_id, c.ip_address, c.user_agent, c.country, c.device_type,
-                c.sub2, c.sub3, c.sub4, c.sub5, c.sub6,
+                c.sub2, c.sub3, c.sub4, c.sub5, c.sub6, c.source,
                 c.is_fraud, c.fraud_score, c.clicked_at, c.status,
                 o.name AS offer_name, a.affiliate_code,
                 u.first_name, u.last_name,

@@ -212,7 +212,9 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                     <th>Offer</th>
                     <th>IP</th>
                     <th>Click ID & Sub</th>
+                    <th>Device & OS</th>
                     <th>User Agent</th>
+                    <th>Source</th>
                     <th>Payout</th>
                     <th>Goal</th>
                     <th>Speed</th>
@@ -246,10 +248,20 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                     ?>
                 </td>
                 <td class="fds-text-sm">
+                    <strong><?= Helpers::e(!empty($cv['device_type']) ? ucfirst($cv['device_type']) : 'Unknown') ?></strong>
+                    <?php if (!empty($cv['device_brand']) || !empty($cv['device_model'])): ?>
+                        <br><span class="fds-text-muted" style="font-size:11px"><?= Helpers::e(trim(($cv['device_brand'] ?? '') . ' ' . ($cv['device_model'] ?? ''))) ?></span>
+                    <?php endif; ?>
+                    <?php if (!empty($cv['os_version'])): ?>
+                        <br><span class="fds-text-muted" style="font-size:11px"><?= Helpers::e($cv['os_version']) ?></span>
+                    <?php endif; ?>
+                </td>
+                <td class="fds-text-sm">
                     <div style="word-break: break-word; min-width: 150px;">
                         <?= Helpers::e(!empty($cv['user_agent']) ? $cv['user_agent'] : '(Unknown)') ?>
                     </div>
                 </td>
+                <td class="fds-text-sm"><?= Helpers::e(!empty($cv['source']) ? $cv['source'] : '—') ?></td>
                 <td><strong>$<?= number_format($cv['payout'],2) ?></strong></td>
                 <td class="fds-text-sm fds-text-muted"><?= Helpers::e($cv['goal_name']??'—') ?></td>
                 <td>
@@ -295,7 +307,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
             </tr>
             <?php endforeach; ?>
             <?php if (empty($conversions)): ?>
-            <tr><td colspan="<?= $canAction ? 14 : 12 ?>" class="fds-empty">No conversions match the current filters</td></tr>
+            <tr><td colspan="<?= $canAction ? 16 : 14 ?>" class="fds-empty">No conversions match the current filters</td></tr>
             <?php endif; ?>
             </tbody>
         </table>
@@ -343,6 +355,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                     <th>Click ID & Sub</th>
                     <th>Affiliate</th>
                     <th>Offer</th>
+                    <th>Source</th>
                     <th>IP</th>
                     <th>User Agent</th>
                     <th>Country</th>
@@ -370,6 +383,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                     <span class="fds-text-sm fds-text-muted"><?= Helpers::e(($cl['first_name']??'').' '.($cl['last_name']??'')) ?></span>
                 </td>
                 <td class="fds-text-sm"><?= Helpers::e($cl['offer_name'] ?? '—') ?></td>
+                <td class="fds-text-sm"><?= Helpers::e(!empty($cl['source']) ? $cl['source'] : '—') ?></td>
                 <td>
                     <a href="/admin/fraud-center/ip-intelligence?ip=<?= urlencode($cl['ip_address']??'') ?>" class="fds-link"><?= Helpers::e($cl['ip_address']??'—') ?></a>
                 </td>
@@ -405,7 +419,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
             </tr>
             <?php endforeach; ?>
             <?php if (empty($clicks)): ?>
-            <tr><td colspan="<?= $canAction ? 11 : 10 ?>" class="fds-empty">No clicks match the current filters</td></tr>
+            <tr><td colspan="<?= $canAction ? 12 : 11 ?>" class="fds-empty">No clicks match the current filters</td></tr>
             <?php endif; ?>
             </tbody>
         </table>
