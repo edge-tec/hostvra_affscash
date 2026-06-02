@@ -3,25 +3,27 @@ $title = "Traffic Back Report";
 require BASE_PATH . '/views/layouts/admin.php';
 ?>
 
-<div class="mb-4">
-    <h2>Traffic Back URL Logs</h2>
-    <p class="text-muted">Clicks that were blocked or capped and redirected to the configured Traffic Back URL.</p>
+<div class="page-header">
+    <div>
+        <h1>Traffic Back URL Logs</h1>
+        <p class="text-muted">Clicks that were blocked or capped and redirected to the configured Traffic Back URL.</p>
+    </div>
 </div>
 
-<div class="card mb-4">
+<div class="card mb-3">
     <div class="card-body">
-        <form method="GET" action="/admin/reports/traffic-back" class="row g-3 align-items-end">
-            <div class="col-md-3">
-                <label class="form-label">Date From</label>
+        <form method="GET" action="/admin/reports/traffic-back" class="d-flex gap-3 align-items-center" style="flex-wrap:wrap">
+            <div class="form-group mb-0">
+                <label>Date From</label>
                 <input type="date" name="from" class="form-control" value="<?= Helpers::e($from) ?>">
             </div>
-            <div class="col-md-3">
-                <label class="form-label">Date To</label>
+            <div class="form-group mb-0">
+                <label>Date To</label>
                 <input type="date" name="to" class="form-control" value="<?= Helpers::e($to) ?>">
             </div>
-            <div class="col-md-3">
-                <label class="form-label">Offer</label>
-                <select name="offer_id" class="form-select">
+            <div class="form-group mb-0">
+                <label>Offer</label>
+                <select name="offer_id" class="form-control">
                     <option value="">-- All Offers --</option>
                     <?php foreach ($offerList as $o): ?>
                         <option value="<?= $o['id'] ?>" <?= $offerId==$o['id'] ? 'selected' : '' ?>>
@@ -30,9 +32,9 @@ require BASE_PATH . '/views/layouts/admin.php';
                     <?php endforeach; ?>
                 </select>
             </div>
-            <div class="col-md-3">
-                <label class="form-label">Affiliate</label>
-                <select name="affiliate_id" class="form-select">
+            <div class="form-group mb-0">
+                <label>Affiliate</label>
+                <select name="affiliate_id" class="form-control">
                     <option value="">-- All Affiliates --</option>
                     <?php foreach ($affList as $a): ?>
                         <option value="<?= $a['id'] ?>" <?= $affId==$a['id'] ? 'selected' : '' ?>>
@@ -41,21 +43,18 @@ require BASE_PATH . '/views/layouts/admin.php';
                     <?php endforeach; ?>
                 </select>
             </div>
-            
-            <div class="col-md-3">
-                <label class="form-label">Limit</label>
-                <select name="limit" class="form-select">
+            <div class="form-group mb-0">
+                <label>Limit</label>
+                <select name="limit" class="form-control">
                     <option value="100"  <?= $limit===100 ? 'selected':'' ?>>100</option>
                     <option value="500"  <?= $limit===500 ? 'selected':'' ?>>500</option>
                     <option value="1000" <?= $limit===1000 ? 'selected':'' ?>>1000</option>
                     <option value="5000" <?= $limit===5000 ? 'selected':'' ?>>5000</option>
                 </select>
             </div>
-            <div class="col-md-3">
-                <button type="submit" class="btn btn-primary w-100">Filter</button>
-            </div>
-            <div class="col-md-3">
-                <a href="/admin/reports/traffic-back" class="btn btn-secondary w-100">Reset</a>
+            <div style="align-self:flex-end" class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Filter</button>
+                <a href="/admin/reports/traffic-back" class="btn btn-secondary">Reset</a>
             </div>
         </form>
     </div>
