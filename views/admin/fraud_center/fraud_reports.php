@@ -204,7 +204,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
         <span class="fds-card-title">Conversions</span>
         <span class="fds-text-muted fds-text-sm"><?= number_format($convPag['total']) ?> total &mdash; page <?= $convPag['page'] ?> of <?= $convPag['pages'] ?></span>
     </div>
-    <div class="fds-table-wrap">
+    <div class="fds-table-wrap" style="overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%;">
         <table class="fds-table" id="frConvTable">
             <thead>
                 <tr>
@@ -352,8 +352,8 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
         <span class="fds-card-title">Click Log</span>
         <span class="fds-text-muted fds-text-sm"><?= number_format($clickPag['total']) ?> total &mdash; page <?= $clickPag['page'] ?> of <?= $clickPag['pages'] ?></span>
     </div>
-    <div class="fds-table-wrap">
-        <table class="fds-table">
+    <div class="fds-table-wrap" style="overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%;">
+        <table class="fds-table" id="frClickTable">
             <thead>
                 <tr>
                     <th>Click ID & Sub</th>
