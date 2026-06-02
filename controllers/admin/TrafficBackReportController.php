@@ -10,7 +10,7 @@ $limit = min((int)(Helpers::get('limit') ?: 500), 5000);
 
 // Auto-heal table if migrator failed to run
 try {
-    Database::execute("
+    Database::query("
         CREATE TABLE IF NOT EXISTS `traffic_back_logs` (
             `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             `click_id` VARCHAR(255) NOT NULL DEFAULT '',
@@ -28,7 +28,7 @@ try {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ");
     // Ensure click_id is large enough (in case it was created as CHAR(36) previously)
-    Database::execute("ALTER TABLE `traffic_back_logs` MODIFY COLUMN `click_id` VARCHAR(255) NOT NULL DEFAULT ''");
+    Database::query("ALTER TABLE `traffic_back_logs` MODIFY COLUMN `click_id` VARCHAR(255) NOT NULL DEFAULT ''");
 } catch (\Throwable $e) {}
 
 $params = [date('Y-m-d 00:00:00', strtotime($from)), date('Y-m-d 23:59:59', strtotime($to))];

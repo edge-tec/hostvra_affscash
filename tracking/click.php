@@ -117,7 +117,7 @@ function trafficBack(string $message, int $code = 403): never {
         $logOffId = isset($offer['id']) ? (int)$offer['id'] : (is_numeric($offerId) && $offerId > 0 ? (int)$offerId : null);
         $logIp = substr($ip ?? Helpers::getIp(), 0, 45);
         $logCountry = substr((isset($geo) && is_array($geo) && isset($geo['country_code'])) ? $geo['country_code'] : '', 0, 2);
-        Database::execute(
+        Database::query(
             "INSERT INTO traffic_back_logs (click_id, affiliate_id, offer_id, reason, redirect_url, ip_address, country) VALUES (?, ?, ?, ?, ?, ?, ?)",
             [substr($platformClickId, 0, 255), $logAffId, $logOffId, substr($message, 0, 255), $finalUrl, $logIp, $logCountry]
         );
