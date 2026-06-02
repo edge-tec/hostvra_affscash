@@ -1,5 +1,7 @@
 <?php 
 $layoutStr = Auth::role() === 'affiliate_manager' ? 'affiliate_manager' : 'admin';
+$isManager = $layoutStr === 'affiliate_manager';
+$canAction = !$isManager || ManagerPermissions::can(ManagerPermissions::currentManagerId(), 'reject_fraud_conv');
 require BASE_PATH . "/views/layouts/{$layoutStr}.php"; 
 ?>
 
@@ -125,6 +127,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
 <?php endif; ?>
 
 <!-- Bulk action bar -->
+<?php if ($canAction): ?>
 <div class="fr-bulk-bar" id="frBulkBar">
     <span id="frBulkCount">0</span> conversions selected &mdash;
     <form method="post" id="frBulkForm" style="display:inline;display:flex;gap:6px;align-items:center">
@@ -136,6 +139,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
     </form>
     <button onclick="clearSelection()" class="fds-btn fds-btn-sm fds-btn-outline">Clear</button>
 </div>
+<?php endif; ?>
 
 <div class="fds-card">
     <div class="fds-card-header">
@@ -146,7 +150,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
         <table class="fds-table" id="frConvTable">
             <thead>
                 <tr>
-                    <th><input type="checkbox" id="frSelectAll" style="accent-color:#6366F1" title="Select all"></th>
+                    <?php if ($canAction): ?><th><input type="checkbox" id="frSelectAll" style="accent-color:#6366F1" title="Select all"></th><?php endif; ?>
                     <th>Conv ID</th>
                     <th>Affiliate</th>
                     <th>Offer</th>
@@ -157,7 +161,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                     <th>Fraud</th>
                     <th>Status</th>
                     <th>Date</th>
-                    <th>Actions</th>
+                    <?php if ($canAction): ?><th>Actions</th><?php endif; ?>
                 </tr>
             </thead>
             <tbody>
@@ -166,7 +170,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                 $speedSecs = (int)($cv['click_to_conv_secs'] ?? -1);
             ?>
             <tr class="<?= $isFraud ? 'fraud-row' : '' ?>">
-                <td><input type="checkbox" class="fr-conv-cb" value="<?= Helpers::e($cv['conversion_id']) ?>" style="accent-color:#6366F1"></td>
+                <?php if ($canAction): ?><td><input type="checkbox" class="fr-conv-cb" value="<?= Helpers::e($cv['conversion_id']) ?>" style="accent-color:#6366F1"></td><?php endif; ?>
                 <td class="fds-text-sm" style="font-family:monospace"><?= Helpers::e(substr($cv['conversion_id'],0,12)) ?>…</td>
                 <td>
                     <strong><?= Helpers::e($cv['affiliate_code'] ?? '—') ?></strong><br>
@@ -193,6 +197,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                     </span>
                 </td>
                 <td class="fds-text-sm fds-text-muted"><?= date('M j, H:i', strtotime($cv['converted_at'])) ?></td>
+                <?php if ($canAction): ?>
                 <td style="white-space:nowrap">
                     <?php if ($cv['status'] !== 'approved'): ?>
                     <form method="post" style="display:inline">
@@ -208,10 +213,11 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                     <?php endif; ?>
                     <a href="/admin/fraud-center/ip-intelligence?ip=<?= urlencode($cv['ip_address']??'') ?>" class="fds-btn fds-btn-sm fds-btn-outline" style="padding:4px 8px" title="IP Info">&#127760;</a>
                 </td>
+                <?php endif; ?>
             </tr>
             <?php endforeach; ?>
             <?php if (empty($conversions)): ?>
-            <tr><td colspan="12" class="fds-empty">No conversions match the current filters</td></tr>
+            <tr><td colspan="<?= $canAction ? 12 : 10 ?>" class="fds-empty">No conversions match the current filters</td></tr>
             <?php endif; ?>
             </tbody>
         </table>
@@ -265,7 +271,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                     <th>Fraud Score</th>
                     <th>Converted</th>
                     <th>Date</th>
-                    <th>Actions</th>
+                    <?php if ($canAction): ?><th>Actions</th><?php endif; ?>
                 </tr>
             </thead>
             <tbody>
@@ -293,14 +299,16 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                     <?php endif; ?>
                 </td>
                 <td class="fds-text-sm fds-text-muted"><?= date('M j, H:i', strtotime($cl['clicked_at'])) ?></td>
+                <?php if ($canAction): ?>
                 <td>
                     <a href="/admin/fraud-center/ip-intelligence?ip=<?= urlencode($cl['ip_address']??'') ?>" class="fds-btn fds-btn-sm fds-btn-outline">IP Info</a>
                     <a href="/admin/fraud-center/fraud-reports?tab=conversions&q=<?= urlencode($cl['click_id']??'') ?>&date_from=<?= urlencode($dateFrom) ?>&date_to=<?= urlencode($dateTo) ?>" class="fds-btn fds-btn-sm fds-btn-outline">Conv</a>
                 </td>
+                <?php endif; ?>
             </tr>
             <?php endforeach; ?>
             <?php if (empty($clicks)): ?>
-            <tr><td colspan="10" class="fds-empty">No clicks match the current filters</td></tr>
+            <tr><td colspan="<?= $canAction ? 10 : 9 ?>" class="fds-empty">No clicks match the current filters</td></tr>
             <?php endif; ?>
             </tbody>
         </table>
