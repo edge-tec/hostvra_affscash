@@ -152,13 +152,43 @@ function fraud_paginate(int $total, int $perPage, int $page): array {
 function fds_pagination(array $pag, string $baseUrl, array $extra = []): string {
     if ($pag['pages'] <= 1) return '';
     $qs = $extra;
-    $html = '<div class="fds-pagination">';
-    for ($i = 1; $i <= $pag['pages']; $i++) {
-        $qs['page'] = $i;
+    $html = '<div class="fds-pagination" style="display:flex; gap:4px; flex-wrap:wrap; align-items:center; font-size:13px;">';
+    
+    $cur = (int)$pag['page'];
+    $max = (int)$pag['pages'];
+    
+    $btn = function($p, $label, $active=false, $disabled=false) use ($baseUrl, $qs) {
+        if ($disabled) {
+            return '<span class="fds-page-btn" style="opacity:0.5; cursor:not-allowed; padding:4px 8px; border:1px solid transparent; color:var(--text-muted);">'.$label.'</span>';
+        }
+        $qs['page'] = $p;
         $url = $baseUrl . '?' . http_build_query($qs);
-        $active = $i === $pag['page'] ? ' active' : '';
-        $html .= '<a href="'.htmlspecialchars($url, ENT_QUOTES).'" class="fds-page-btn'.$active.'">'.$i.'</a>';
+        $cls = 'fds-page-btn' . ($active ? ' active' : '');
+        $style = 'padding:4px 8px; border:1px solid ' . ($active ? 'var(--primary)' : 'var(--border)') . '; border-radius:4px; text-decoration:none; color:' . ($active ? '#fff' : 'var(--text)') . '; background:' . ($active ? 'var(--primary)' : '#fff') . ';';
+        return '<a href="'.htmlspecialchars($url, ENT_QUOTES).'" class="'.$cls.'" style="'.$style.'">'.$label.'</a>';
+    };
+
+    $html .= $btn(1, 'First', false, $cur <= 1);
+    $html .= $btn($cur - 1, 'Prev', false, $cur <= 1);
+
+    $start = max(1, $cur - 2);
+    $end = min($max, $cur + 2);
+
+    if ($start > 1) {
+        $html .= '<span style="color:var(--text-muted); padding:0 4px;">...</span>';
     }
+
+    for ($i = $start; $i <= $end; $i++) {
+        $html .= $btn($i, (string)$i, $i === $cur);
+    }
+
+    if ($end < $max) {
+        $html .= '<span style="color:var(--text-muted); padding:0 4px;">...</span>';
+    }
+
+    $html .= $btn($cur + 1, 'Next', false, $cur >= $max);
+    $html .= $btn($max, 'Last', false, $cur >= $max);
+
     $html .= '</div>';
     return $html;
 }
