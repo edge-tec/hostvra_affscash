@@ -19,6 +19,10 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
 .fr-filter-grid select, .fr-filter-grid input[type=text], .fr-filter-grid input[type=date] { font-size: 13px; padding: 8px 12px; border: 1px solid #CBD5E1; border-radius: 8px; background: #fff; color: #1E293B; outline: none; transition: border-color 0.15s, box-shadow 0.15s; min-width: 140px; }
 .fr-filter-grid select:focus, .fr-filter-grid input:focus { border-color: #6366F1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
 .fr-export-wrapper { margin-left: auto; }
+.risk-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; white-space: nowrap; }
+.risk-badge.high { background-color: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
+.risk-badge.medium { background-color: #FFFBEB; color: #D97706; border: 1px solid #FDE68A; }
+.risk-badge.low { background-color: #F0FDF4; color: #16A34A; border: 1px solid #BBF7D0; }
 .fr-summary-bar { display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:16px; }
 .fr-sum-box { background:#fff;border:1px solid #E5E7EB;border-radius:10px;padding:12px 16px;text-align:center; }
 .fr-sum-box .val { font-size:22px;font-weight:800;color:#111827;line-height:1.1; }
@@ -223,9 +227,9 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                     <?php 
                         $score = $cv['fraud_score'] ?? 0;
                         $riskLabel = $score >= 50 ? 'High' : ($score >= 20 ? 'Medium' : 'Low');
-                        $badgeColor = $score >= 50 ? 'fds-badge-critical' : ($score >= 20 ? 'fds-badge-medium' : 'fds-badge-low');
+                        $badgeColor = $score >= 50 ? 'high' : ($score >= 20 ? 'medium' : 'low');
                     ?>
-                    <span class="fds-badge <?= $badgeColor ?>"><?= $riskLabel ?> (<?= $score ?>)</span>
+                    <span class="risk-badge <?= $badgeColor ?>"><?= $riskLabel ?> (<?= $score ?>)</span>
                     <?= $isFraud ? ' <span class="fds-badge fds-badge-critical" style="font-size:10px">&#9888;</span>' : '' ?>
                 </td>
                 <td>
@@ -331,9 +335,9 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                     <?php 
                         $score = $cl['fraud_score'] ?? 0;
                         $riskLabel = $score >= 50 ? 'High' : ($score >= 20 ? 'Medium' : 'Low');
-                        $badgeColor = $score >= 50 ? 'fds-badge-critical' : ($score >= 20 ? 'fds-badge-medium' : 'fds-badge-low');
+                        $badgeColor = $score >= 50 ? 'high' : ($score >= 20 ? 'medium' : 'low');
                     ?>
-                    <span class="fds-badge <?= $badgeColor ?>"><?= $riskLabel ?> (<?= $score ?>)</span>
+                    <span class="risk-badge <?= $badgeColor ?>"><?= $riskLabel ?> (<?= $score ?>)</span>
                 </td>
                 <td>
                     <?php if ($cl['has_conv'] > 0): ?>
