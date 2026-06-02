@@ -187,7 +187,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                     <th>Payout</th>
                     <th>Goal</th>
                     <th>Speed</th>
-                    <th>Fraud</th>
+                    <th>Risk Level</th>
                     <th>Status</th>
                     <th>Date</th>
                     <?php if ($canAction): ?><th>Actions</th><?php endif; ?>
@@ -219,7 +219,15 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                         <span class="fds-text-muted fds-text-sm">—</span>
                     <?php endif; ?>
                 </td>
-                <td><?= fraud_score_badge($cv['fraud_score'] ?? 0) ?><?= $isFraud ? ' <span class="fds-badge fds-badge-critical" style="font-size:10px">&#9888;</span>' : '' ?></td>
+                <td>
+                    <?php 
+                        $score = $cv['fraud_score'] ?? 0;
+                        $riskLabel = $score >= 50 ? 'High' : ($score >= 20 ? 'Medium' : 'Low');
+                        $badgeColor = $score >= 50 ? 'fds-badge-critical' : ($score >= 20 ? 'fds-badge-medium' : 'fds-badge-low');
+                    ?>
+                    <span class="fds-badge <?= $badgeColor ?>"><?= $riskLabel ?> (<?= $score ?>)</span>
+                    <?= $isFraud ? ' <span class="fds-badge fds-badge-critical" style="font-size:10px">&#9888;</span>' : '' ?>
+                </td>
                 <td>
                     <span class="badge badge-<?= ['approved'=>'success','pending'=>'warning','rejected'=>'danger'][$cv['status']]??'muted' ?>">
                         <?= $cv['status'] ?>
@@ -297,7 +305,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                     <th>IP</th>
                     <th>Country</th>
                     <th>Device</th>
-                    <th>Fraud Score</th>
+                    <th>Risk Level</th>
                     <th>Converted</th>
                     <th>Date</th>
                     <?php if ($canAction): ?><th>Actions</th><?php endif; ?>
@@ -319,7 +327,14 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                 </td>
                 <td class="fds-text-sm"><?= Helpers::e($cl['country']??'—') ?></td>
                 <td class="fds-text-sm"><?= Helpers::e($cl['device_type']??'—') ?></td>
-                <td><?= fraud_score_badge($cl['fraud_score'] ?? 0) ?></td>
+                <td>
+                    <?php 
+                        $score = $cl['fraud_score'] ?? 0;
+                        $riskLabel = $score >= 50 ? 'High' : ($score >= 20 ? 'Medium' : 'Low');
+                        $badgeColor = $score >= 50 ? 'fds-badge-critical' : ($score >= 20 ? 'fds-badge-medium' : 'fds-badge-low');
+                    ?>
+                    <span class="fds-badge <?= $badgeColor ?>"><?= $riskLabel ?> (<?= $score ?>)</span>
+                </td>
                 <td>
                     <?php if ($cl['has_conv'] > 0): ?>
                     <span class="fds-badge fds-badge-low">&#10003; Yes</span>
