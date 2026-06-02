@@ -40,7 +40,7 @@
 </div>
 
 <div class="card">
-    <div class="table-wrap">
+    <div class="table-wrap" style="overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%;">
         <table id="tbl-conversions">
             <thead><tr><th>Conversion ID</th><th>Affiliate</th><th>Offer</th><th>Payout</th><?php if (Auth::role() === "admin"): ?><th>Revenue</th><?php endif; ?><th>Transaction</th><th>Status</th><th>Device</th><th>OS Version</th><th>Landing Page</th><th>Visit Info</th><th>Fraud Scores</th><th>Date</th><th>Actions</th></tr></thead>
             <tbody>
