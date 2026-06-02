@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Two-Step Verification — <?= Helpers::e(Config::get('config','app.name') ?? 'AffiliateTracker') ?></title>
 <link rel="stylesheet" href="/assets/css/app.css">
+<?php if ($fav = Config::get('config','app.favicon')): ?><link rel="icon" href="<?= Helpers::e($fav) ?>"><?php endif; ?>
 <style>
 body { display:flex; align-items:center; justify-content:center; min-height:100vh; background:linear-gradient(135deg,#EEF2FF 0%,#F0FDF4 100%); }
 .auth-box { background:#fff; border:1px solid var(--border); border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,.08); width:100%; max-width:420px; overflow:hidden; }
