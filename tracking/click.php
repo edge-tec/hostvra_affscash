@@ -72,27 +72,20 @@ $lpForce = Helpers::get('lp');
 // Any Location/Refresh headers queued earlier in the request are cleared
 // so no downstream proxy or buffer can leak a redirect to the visitor.
 function trafficBack(string $message, int $code = 403): never {
-    // When admin has configured a Traffic Back URL, redirect blocked/capped
-    // traffic there with identifying query params so the destination can
-    // re-monetize the visitor and (via postback) credit the original click.
-    // Supported placeholders / auto-appended params:
-    //   {click_id}  — affiliate's tracker click_id from the incoming URL
-    //   {aff_id}    — affiliate code from the incoming URL
-    //   {offer_id}  — offer id from the incoming URL
-    //   {reason}    — short reason text (URL-encoded)
     $tbUrl = '';
     try { $tbUrl = trim((string)(Config::get('config', 'app.traffic_back_url') ?? '')); } catch (\Throwable $_) {}
 
-    if ($tbUrl !== '' && preg_match('#^https?://#i', $tbUrl)) {
-        $clickId = (string)($_GET['click_id'] ?? $_GET['sub1'] ?? '');
-        $affId   = (string)($_GET['aff_id']   ?? $_GET['affiliate_id'] ?? $_GET['aff'] ?? '');
-        $offerId = (string)($_GET['offer_id'] ?? '');
-        // /click/{offer_id} routes drop offer_id into $_GET via the router;
-        // fall back to scanning the path so direct /click/123 URLs still work.
-        if ($offerId === '' && preg_match('#/click/(\d+)#', $_SERVER['REQUEST_URI'] ?? '', $m)) {
-            $offerId = $m[1];
-        }
+    $clickId = (string)($_GET['click_id'] ?? $_GET['sub1'] ?? '');
+    $affId   = (string)($_GET['aff_id']   ?? $_GET['affiliate_id'] ?? $_GET['aff'] ?? '');
+    $offerId = (string)($_GET['offer_id'] ?? '');
+    // /click/{offer_id} routes drop offer_id into $_GET via the router;
+    // fall back to scanning the path so direct /click/123 URLs still work.
+    if ($offerId === '' && preg_match('#/click/(\d+)#', $_SERVER['REQUEST_URI'] ?? '', $m)) {
+        $offerId = $m[1];
+    }
 
+    $finalUrl = '';
+    if ($tbUrl !== '' && preg_match('#^https?://#i', $tbUrl)) {
         $tokens = [
             '{click_id}' => rawurlencode($clickId),
             '{aff_id}'   => rawurlencode($affId),
@@ -104,8 +97,6 @@ function trafficBack(string $message, int $code = 403): never {
         if ($hasPlaceholders) {
             $finalUrl = strtr($tbUrl, $tokens);
         } else {
-            // No placeholders → auto-append as query string, preserving any
-            // existing query the admin already put in the URL.
             $sep = (strpos($tbUrl, '?') === false) ? '?' : '&';
             $finalUrl = $tbUrl . $sep . http_build_query([
                 'click_id' => $clickId,
@@ -114,20 +105,22 @@ function trafficBack(string $message, int $code = 403): never {
                 'reason'   => $message,
             ]);
         }
+    }
 
-        // Log the traffic back event
-        try {
-            global $affiliate, $offer, $ip, $geo;
-            $logAffId = isset($affiliate['id']) ? (int)$affiliate['id'] : null;
-            $logOffId = isset($offer['id']) ? (int)$offer['id'] : (is_numeric($offerId) && $offerId > 0 ? (int)$offerId : null);
-            $logIp = $ip ?? Helpers::getIp();
-            $logCountry = (isset($geo) && is_array($geo) && isset($geo['country_code'])) ? $geo['country_code'] : '';
-            Database::execute(
-                "INSERT INTO traffic_back_logs (click_id, affiliate_id, offer_id, reason, redirect_url, ip_address, country) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                [$clickId ?: null, $logAffId, $logOffId, $message, $finalUrl, $logIp, $logCountry]
-            );
-        } catch (\Throwable $e) {}
+    // Log the traffic back event
+    try {
+        global $affiliate, $offer, $ip, $geo;
+        $logAffId = isset($affiliate['id']) ? (int)$affiliate['id'] : null;
+        $logOffId = isset($offer['id']) ? (int)$offer['id'] : (is_numeric($offerId) && $offerId > 0 ? (int)$offerId : null);
+        $logIp = $ip ?? Helpers::getIp();
+        $logCountry = (isset($geo) && is_array($geo) && isset($geo['country_code'])) ? $geo['country_code'] : '';
+        Database::execute(
+            "INSERT INTO traffic_back_logs (click_id, affiliate_id, offer_id, reason, redirect_url, ip_address, country) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            [$clickId ?: '', $logAffId, $logOffId, $message, $finalUrl, $logIp, $logCountry]
+        );
+    } catch (\Throwable $e) {}
 
+    if ($finalUrl !== '') {
         if (!headers_sent()) {
             @header_remove('Location');
             @header_remove('Refresh');
