@@ -212,7 +212,9 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                     <th>Offer</th>
                     <th>IP</th>
                     <th>Click ID & Sub</th>
-                    <th>Device & OS</th>
+                    <th>Device Type</th>
+                    <th>Brand & Model</th>
+                    <th>OS Version</th>
                     <th>User Agent</th>
                     <th>Source</th>
                     <th>Payout</th>
@@ -249,12 +251,12 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                 </td>
                 <td class="fds-text-sm">
                     <strong><?= Helpers::e(!empty($cv['device_type']) ? ucfirst($cv['device_type']) : 'Unknown') ?></strong>
-                    <?php if (!empty($cv['device_brand']) || !empty($cv['device_model'])): ?>
-                        <br><span class="fds-text-muted" style="font-size:11px"><?= Helpers::e(trim(($cv['device_brand'] ?? '') . ' ' . ($cv['device_model'] ?? ''))) ?></span>
-                    <?php endif; ?>
-                    <?php if (!empty($cv['os_version'])): ?>
-                        <br><span class="fds-text-muted" style="font-size:11px"><?= Helpers::e($cv['os_version']) ?></span>
-                    <?php endif; ?>
+                </td>
+                <td class="fds-text-sm">
+                    <?= Helpers::e(trim(($cv['device_brand'] ?? '') . ' ' . ($cv['device_model'] ?? '')) ?: '—') ?>
+                </td>
+                <td class="fds-text-sm">
+                    <?= Helpers::e($cv['os_version'] ?: '—') ?>
                 </td>
                 <td class="fds-text-sm">
                     <div style="word-break: break-word; min-width: 150px;">
@@ -307,7 +309,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
             </tr>
             <?php endforeach; ?>
             <?php if (empty($conversions)): ?>
-            <tr><td colspan="<?= $canAction ? 16 : 14 ?>" class="fds-empty">No conversions match the current filters</td></tr>
+            <tr><td colspan="<?= $canAction ? 18 : 16 ?>" class="fds-empty">No conversions match the current filters</td></tr>
             <?php endif; ?>
             </tbody>
         </table>
