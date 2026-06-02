@@ -1,0 +1,1 @@
+ALTER TABLE `traffic_back_logs` MODIFY COLUMN `click_id` VARCHAR(255) NOT NULL DEFAULT '';

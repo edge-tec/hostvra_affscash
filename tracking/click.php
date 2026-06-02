@@ -83,11 +83,14 @@ function trafficBack(string $message, int $code = 403): never {
     if ($offerId === '' && preg_match('#/click/(\d+)#', $_SERVER['REQUEST_URI'] ?? '', $m)) {
         $offerId = $m[1];
     }
+    $affSub1 = $clickId;
+    $platformClickId = Helpers::uuid();
 
     $finalUrl = '';
     if ($tbUrl !== '' && preg_match('#^https?://#i', $tbUrl)) {
         $tokens = [
-            '{click_id}' => rawurlencode($clickId),
+            '{click_id}' => rawurlencode($platformClickId),
+            '{sub1}'     => rawurlencode($affSub1),
             '{aff_id}'   => rawurlencode($affId),
             '{offer_id}' => rawurlencode($offerId),
             '{reason}'   => rawurlencode($message),
@@ -112,13 +115,15 @@ function trafficBack(string $message, int $code = 403): never {
         global $affiliate, $offer, $ip, $geo;
         $logAffId = isset($affiliate['id']) ? (int)$affiliate['id'] : null;
         $logOffId = isset($offer['id']) ? (int)$offer['id'] : (is_numeric($offerId) && $offerId > 0 ? (int)$offerId : null);
-        $logIp = $ip ?? Helpers::getIp();
-        $logCountry = (isset($geo) && is_array($geo) && isset($geo['country_code'])) ? $geo['country_code'] : '';
+        $logIp = substr($ip ?? Helpers::getIp(), 0, 45);
+        $logCountry = substr((isset($geo) && is_array($geo) && isset($geo['country_code'])) ? $geo['country_code'] : '', 0, 2);
         Database::execute(
             "INSERT INTO traffic_back_logs (click_id, affiliate_id, offer_id, reason, redirect_url, ip_address, country) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            [$clickId ?: '', $logAffId, $logOffId, $message, $finalUrl, $logIp, $logCountry]
+            [substr($platformClickId, 0, 255), $logAffId, $logOffId, substr($message, 0, 255), $finalUrl, $logIp, $logCountry]
         );
-    } catch (\Throwable $e) {}
+    } catch (\Throwable $e) {
+        @file_put_contents(BASE_PATH . '/storage/logs/traffic_back_err.txt', date('Y-m-d H:i:s') . ' - ' . $e->getMessage() . PHP_EOL, FILE_APPEND);
+    }
 
     if ($finalUrl !== '') {
         if (!headers_sent()) {

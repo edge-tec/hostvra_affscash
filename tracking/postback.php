@@ -156,6 +156,58 @@ $click = Database::fetchOne(
 );
 
 if (!$click) {
+    // Fallback: check if this was a Traffic Back click
+    $tbClick = Database::fetchOne(
+        "SELECT t.*, o.payout_amount, o.revenue_amount, o.payout_type,
+                o.advertiser_id, COALESCE(o.is_inhouse, 0) as is_inhouse,
+                o.landing_pages, o.daily_cap
+         FROM `traffic_back_logs` t
+         JOIN `offers` o ON o.id = t.offer_id
+         WHERE t.click_id = ?",
+        [$clickId]
+    );
+    
+    if ($tbClick) {
+        $click = [
+            'id'               => 0,
+            'click_id'         => $tbClick['click_id'],
+            'offer_id'         => $tbClick['offer_id'],
+            'affiliate_id'     => $tbClick['affiliate_id'],
+            'smartlink_id'     => null,
+            'sub1'             => '',
+            'sub2'             => '',
+            'sub3'             => '',
+            'sub4'             => '',
+            'sub5'             => '',
+            'sub6'             => '',
+            'source'           => 'traffic_back',
+            'landing_page_idx' => null,
+            'ip_address'       => $tbClick['ip_address'],
+            'user_agent'       => 'Traffic Back Conversion',
+            'referer'          => '',
+            'country'          => $tbClick['country'],
+            'region'           => '',
+            'city'             => '',
+            'isp'              => '',
+            'device_type'      => 'unknown',
+            'os'               => '',
+            'browser'          => '',
+            'is_unique'        => 0,
+            'is_fraud'         => 0,
+            'fraud_score'      => 0,
+            'clicked_at'       => $tbClick['created_at'],
+            'payout_amount'    => $tbClick['payout_amount'],
+            'revenue_amount'   => $tbClick['revenue_amount'],
+            'payout_type'      => $tbClick['payout_type'],
+            'advertiser_id'    => $tbClick['advertiser_id'],
+            'is_inhouse'       => $tbClick['is_inhouse'],
+            'landing_pages'    => $tbClick['landing_pages'],
+            'daily_cap'        => $tbClick['daily_cap'],
+        ];
+    }
+}
+
+if (!$click) {
     $_advPbLog['status'] = 'invalid_click'; $_advPbLog['reject_reason'] = 'Click ID not found';
     $_advPbLog['response_body'] = json_encode(['status'=>'error','message'=>'Click ID not found']);
     http_response_code(404);
