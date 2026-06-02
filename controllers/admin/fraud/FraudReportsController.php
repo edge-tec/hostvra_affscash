@@ -1,5 +1,11 @@
 <?php
-Auth::check('admin');
+Auth::checkAny(['admin', 'affiliate_manager']);
+if (Auth::role() === 'affiliate_manager') {
+    ManagerPermissions::requirePermission('view_fraud_reports');
+}
+$isManager = Auth::role() === 'affiliate_manager';
+$managerAffIds = $isManager ? Auth::managerAffiliateIds() : [];
+
 require_once BASE_PATH . '/controllers/admin/fraud/_helper.php';
 fraud_ensure_tables();
 
@@ -8,6 +14,7 @@ $error   = '';
 
 // ── Bulk / single conversion action ─────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if ($isManager) ManagerPermissions::requirePermission('reject_fraud_conv');
     Auth::verifyCsrf(Helpers::postRaw('_token'));
 
     $action     = $_POST['action'] ?? '';
@@ -29,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                      WHERE cv.conversion_id = ?", [$cid]
                 );
                 if (!$conv) continue;
+                if ($isManager && !in_array($conv['affiliate_id'], $managerAffIds)) continue;
                 $oldStatus = $conv['status'];
 
                 $payload = RejectionHelper::buildUpdatePayload($newStatus, $rejectReason, $adminId);
@@ -74,11 +82,25 @@ $perPage     = 50;
 $search      = trim($_GET['q'] ?? '');
 
 // ── Dropdown data ─────────────────────────────────────────────────────────────
-$affiliateList = Database::fetchAll(
-    "SELECT a.id, a.affiliate_code, u.first_name, u.last_name
-     FROM affiliates a LEFT JOIN users u ON u.id=a.user_id
-     ORDER BY a.affiliate_code ASC"
-) ?: [];
+if ($isManager) {
+    if (empty($managerAffIds)) {
+        $affiliateList = [];
+    } else {
+        $placeholders = implode(',', array_fill(0, count($managerAffIds), '?'));
+        $affiliateList = Database::fetchAll(
+            "SELECT a.id, a.affiliate_code, u.first_name, u.last_name
+             FROM affiliates a LEFT JOIN users u ON u.id=a.user_id
+             WHERE a.id IN ($placeholders)
+             ORDER BY a.affiliate_code ASC", $managerAffIds
+        ) ?: [];
+    }
+} else {
+    $affiliateList = Database::fetchAll(
+        "SELECT a.id, a.affiliate_code, u.first_name, u.last_name
+         FROM affiliates a LEFT JOIN users u ON u.id=a.user_id
+         ORDER BY a.affiliate_code ASC"
+    ) ?: [];
+}
 
 $offerList = Database::fetchAll("SELECT id, name FROM offers ORDER BY name ASC") ?: [];
 
@@ -90,6 +112,15 @@ $convSummary = [];
 if ($tab === 'conversions') {
     $where  = "cv.converted_at BETWEEN ? AND ?";
     $params = [$dateFrom . ' 00:00:00', $dateTo . ' 23:59:59'];
+
+    if ($isManager) {
+        if (empty($managerAffIds)) { $where .= " AND 1=0"; }
+        else {
+            $placeholders = implode(',', array_fill(0, count($managerAffIds), '?'));
+            $where .= " AND cv.affiliate_id IN ($placeholders)";
+            $params = array_merge($params, $managerAffIds);
+        }
+    }
 
     if ($affId)           { $where .= " AND cv.affiliate_id=?";          $params[] = $affId; }
     if ($offerId)         { $where .= " AND cv.offer_id=?";              $params[] = $offerId; }
@@ -150,6 +181,15 @@ $clickSummary = [];
 if ($tab === 'clicks') {
     $where  = "c.clicked_at BETWEEN ? AND ?";
     $params = [$dateFrom . ' 00:00:00', $dateTo . ' 23:59:59'];
+
+    if ($isManager) {
+        if (empty($managerAffIds)) { $where .= " AND 1=0"; }
+        else {
+            $placeholders = implode(',', array_fill(0, count($managerAffIds), '?'));
+            $where .= " AND c.affiliate_id IN ($placeholders)";
+            $params = array_merge($params, $managerAffIds);
+        }
+    }
 
     if ($affId)   { $where .= " AND c.affiliate_id=?"; $params[] = $affId; }
     if ($offerId) { $where .= " AND c.offer_id=?";     $params[] = $offerId; }

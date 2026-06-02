@@ -389,7 +389,7 @@ Router::any('/affiliate_manager/affiliates', function() { require BASE_PATH . '/
 Router::any('/affiliate_manager/conversions', function() { require BASE_PATH . '/controllers/affiliate_manager/ConversionsController.php'; });
 Router::any('/affiliate_manager/reports', function() { require BASE_PATH . '/controllers/affiliate_manager/ReportsController.php'; });
 Router::any('/affiliate_manager/duplicate-conversions', function() { require BASE_PATH . '/controllers/affiliate_manager/DuplicateConversionsController.php'; });
-Router::any('/affiliate_manager/fraud-report', function() { require BASE_PATH . '/controllers/affiliate_manager/FraudReportController.php'; });
+Router::any('/affiliate_manager/fraud-report', function() { require BASE_PATH . '/controllers/admin/fraud/FraudReportsController.php'; });
 Router::any('/affiliate_manager/offers/{id}', function($id) { $_GET['id']=$id; require BASE_PATH . '/controllers/affiliate_manager/OfferOverviewController.php'; });
 Router::any('/affiliate_manager/analytics', function() { require BASE_PATH . '/controllers/affiliate_manager/AnalyticsController.php'; });
 Router::any('/affiliate_manager/click_report', function() { require BASE_PATH . '/controllers/affiliate_manager/ClickReportController.php'; });

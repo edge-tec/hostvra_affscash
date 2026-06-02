@@ -1,4 +1,7 @@
-<?php require BASE_PATH . '/views/layouts/admin.php'; ?>
+<?php 
+$layoutStr = Auth::role() === 'affiliate_manager' ? 'affiliate_manager' : 'admin';
+require BASE_PATH . "/views/layouts/{$layoutStr}.php"; 
+?>
 
 <style>
 .fr-filter-bar { background:#fff;border:1px solid #E5E7EB;border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end; }
@@ -403,4 +406,7 @@ $rejectStatusValue = 'block';
 require BASE_PATH . '/views/partials/reject_reason_modal.php';
 ?>
 
-<?php require BASE_PATH . '/views/layouts/admin_footer.php'; ?>
+<?php 
+$footerStr = Auth::role() === 'affiliate_manager' ? 'affiliate_manager_footer' : 'admin_footer';
+require BASE_PATH . "/views/layouts/{$footerStr}.php"; 
+?>

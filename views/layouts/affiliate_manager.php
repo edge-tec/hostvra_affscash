@@ -123,10 +123,12 @@ function fmtTs(ts, opts) {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
         Duplicate Conversions
     </a>
+    <?php if (ManagerPermissions::can(ManagerPermissions::currentManagerId(), 'view_fraud_reports')): ?>
     <a href="/affiliate_manager/fraud-report" class="nav-link <?= str_starts_with($_SERVER['REQUEST_URI'],'/affiliate_manager/fraud-report')?'active':'' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         Fraud Report
     </a>
+    <?php endif; ?>
     <?php endif; ?>
 
     <a href="/affiliate_manager/analytics" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/affiliate_manager/analytics')?'active':'' ?>">
