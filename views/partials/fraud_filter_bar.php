@@ -49,7 +49,7 @@ $_fToId   = $_fFormId . '-to';
 
     <div>
         <label>Affiliate</label>
-        <select name="affiliate_id" style="min-width:170px" onchange="this.form.submit()">
+        <select name="affiliate_id" style="min-width:170px">
             <option value="0">All Affiliates</option>
             <?php foreach ($affiliateList as $a): ?>
             <option value="<?= $a['id'] ?>" <?= ($affId??0)==$a['id']?'selected':'' ?>>
@@ -61,7 +61,7 @@ $_fToId   = $_fFormId . '-to';
 
     <div>
         <label>Offer</label>
-        <select name="offer_id" style="min-width:150px" onchange="this.form.submit()">
+        <select name="offer_id" style="min-width:150px">
             <option value="0">All Offers</option>
             <?php foreach ($offerList as $o): ?>
             <option value="<?= $o['id'] ?>" <?= ($offerId??0)==$o['id']?'selected':'' ?>><?= Helpers::e($o['name']) ?></option>

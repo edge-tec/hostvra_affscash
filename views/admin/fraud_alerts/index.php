@@ -29,7 +29,7 @@
         <form method="GET" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
             <div class="form-group mb-0">
                 <label style="font-size:11px">Status</label>
-                <select name="status" class="form-control" onchange="this.form.submit()" style="font-size:13px;min-width:130px">
+                <select name="status" class="form-control" style="font-size:13px;min-width:130px">
                     <?php foreach (['open'=>'Open','resolved'=>'Resolved','all'=>'All'] as $k=>$lbl): ?>
                     <option value="<?= $k ?>" <?= ($status===$k?'selected':'') ?>><?= $lbl ?></option>
                     <?php endforeach; ?>
@@ -37,7 +37,7 @@
             </div>
             <div class="form-group mb-0">
                 <label style="font-size:11px">Risk</label>
-                <select name="risk" class="form-control" onchange="this.form.submit()" style="font-size:13px;min-width:130px">
+                <select name="risk" class="form-control" style="font-size:13px;min-width:130px">
                     <?php foreach (['all'=>'All Risk','high'=>'High Only','medium'=>'Medium Only'] as $k=>$lbl): ?>
                     <option value="<?= $k ?>" <?= ($risk===$k?'selected':'') ?>><?= $lbl ?></option>
                     <?php endforeach; ?>

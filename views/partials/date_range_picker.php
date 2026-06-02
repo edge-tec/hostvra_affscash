@@ -111,10 +111,10 @@ $_drpFormId = $drpFormId   ?? null;
         }
 
         // Auto-submit form if provided
-        if (formId) {
-            var form = document.getElementById(formId);
-            if (form) form.submit();
-        }
+        // if (formId) {
+        //     var form = document.getElementById(formId);
+        //     if (form) form.submit();
+        // }
     };
 })();
 </script>

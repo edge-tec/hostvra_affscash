@@ -82,7 +82,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
             <div class="fr-filter-grid">
                 <div>
                     <label>Affiliate</label>
-                    <select name="aff_id" onchange="this.form.submit()">
+                    <select name="aff_id">
                         <option value="0">All Affiliates</option>
                         <?php foreach ($affiliateList as $aff): ?>
                         <option value="<?= $aff['id'] ?>" <?= $affId==$aff['id']?'selected':'' ?>>
@@ -93,7 +93,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                 </div>
                 <div>
                     <label>Offer</label>
-                    <select name="offer_id" onchange="this.form.submit()">
+                    <select name="offer_id">
                         <option value="0">All Offers</option>
                         <?php foreach ($offerList as $off): ?>
                         <option value="<?= $off['id'] ?>" <?= $offerId==$off['id']?'selected':'' ?>><?= Helpers::e($off['name']) ?></option>
@@ -111,7 +111,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                 <?php if ($tab === 'conversions'): ?>
                 <div>
                     <label>Status</label>
-                    <select name="status" onchange="this.form.submit()">
+                    <select name="status">
                         <option value="">All Statuses</option>
                         <option value="pending"  <?= $statusFilter==='pending'  ?'selected':'' ?>>Pending</option>
                         <option value="approved" <?= $statusFilter==='approved' ?'selected':'' ?>>Approved</option>
@@ -121,7 +121,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                 <?php endif; ?>
                 <div>
                     <label>Risk Level</label>
-                    <select name="risk_level" onchange="this.form.submit()">
+                    <select name="risk_level">
                         <option value="">All Risk Levels</option>
                         <option value="low" <?= (isset($riskLevel) && $riskLevel==='low')?'selected':'' ?>>Low Risk (&lt;20)</option>
                         <option value="medium" <?= (isset($riskLevel) && $riskLevel==='medium')?'selected':'' ?>>Medium Risk (20-49)</option>
@@ -150,7 +150,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                 <div class="fr-filter-actions-left">
                     <?php if ($tab === 'conversions'): ?>
                     <label for="fraudOnly" style="display:flex;align-items:center;gap:8px;cursor:pointer;background:#EEF2FF;padding:8px 14px;border-radius:8px;border:1px solid #C7D2FE;transition:all 0.2s">
-                        <input type="checkbox" name="fraud_only" value="1" id="fraudOnly" <?= $fraudOnly?'checked':'' ?> onchange="this.form.submit()" style="width:16px;height:16px;accent-color:#4F46E5;margin:0">
+                        <input type="checkbox" name="fraud_only" value="1" id="fraudOnly" <?= $fraudOnly?'checked':'' ?> style="width:16px;height:16px;accent-color:#4F46E5;margin:0">
                         <span style="font-size:13px;font-weight:700;color:#4F46E5;line-height:1">Show Fraud Flagged Only</span>
                     </label>
                     <?php endif; ?>
