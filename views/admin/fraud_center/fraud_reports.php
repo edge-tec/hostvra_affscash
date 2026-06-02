@@ -6,10 +6,19 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
 ?>
 
 <style>
-.fr-filter-bar { background:#fff;border:1px solid #E5E7EB;border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end; }
-.fr-filter-bar label { font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:4px; }
-.fr-filter-bar select, .fr-filter-bar input[type=text], .fr-filter-bar input[type=date] { font-size:13px;padding:7px 10px;border:1px solid #D1D5DB;border-radius:7px;background:#fff;color:#111827;outline:none; }
-.fr-filter-bar select:focus, .fr-filter-bar input:focus { border-color:#6366F1; }
+.fr-header-card { background: #ffffff; border: 1px solid #E2E8F0; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); margin-bottom: 24px; overflow: hidden; }
+.fr-header-tabs { display: flex; background: #F8FAFC; border-bottom: 1px solid #E2E8F0; padding: 0 16px; }
+.fr-header-tab { padding: 14px 20px; font-size: 14px; font-weight: 600; color: #64748B; text-decoration: none; border-bottom: 2px solid transparent; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+.fr-header-tab:hover { color: #334155; border-bottom-color: #CBD5E1; }
+.fr-header-tab.active { color: #4F46E5; border-bottom-color: #4F46E5; }
+.fr-filter-section { padding: 20px; }
+.fr-filter-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
+.fr-filter-grid { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; }
+.fr-filter-grid > div { display: flex; flex-direction: column; gap: 6px; }
+.fr-filter-grid label { font-size: 11px; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.05em; }
+.fr-filter-grid select, .fr-filter-grid input[type=text], .fr-filter-grid input[type=date] { font-size: 13px; padding: 8px 12px; border: 1px solid #CBD5E1; border-radius: 8px; background: #fff; color: #1E293B; outline: none; transition: border-color 0.15s, box-shadow 0.15s; min-width: 140px; }
+.fr-filter-grid select:focus, .fr-filter-grid input:focus { border-color: #6366F1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+.fr-export-wrapper { margin-left: auto; }
 .fr-summary-bar { display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:16px; }
 .fr-sum-box { background:#fff;border:1px solid #E5E7EB;border-radius:10px;padding:12px 16px;text-align:center; }
 .fr-sum-box .val { font-size:22px;font-weight:800;color:#111827;line-height:1.1; }
@@ -36,77 +45,88 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
 <?php if ($message): ?><div class="alert alert-success mb-3"><?= Helpers::e($message) ?></div><?php endif; ?>
 <?php if ($error):   ?><div class="alert alert-danger mb-3"><?= Helpers::e($error) ?></div><?php endif; ?>
 
-<!-- Tabs -->
-<div class="fds-tabs mb-0" style="margin-bottom:0">
-    <a href="?tab=conversions&aff_id=<?= $affId ?>&offer_id=<?= $offerId ?>&date_from=<?= urlencode($dateFrom) ?>&date_to=<?= urlencode($dateTo) ?>&status=<?= urlencode($statusFilter) ?>&fraud_only=<?= $fraudOnly ?>"
-       class="fds-tab <?= $tab==='conversions'?'active':'' ?>">&#9989; Conversions</a>
-    <a href="?tab=clicks&aff_id=<?= $affId ?>&offer_id=<?= $offerId ?>&date_from=<?= urlencode($dateFrom) ?>&date_to=<?= urlencode($dateTo) ?>"
-       class="fds-tab <?= $tab==='clicks'?'active':'' ?>">&#128432; Clicks</a>
-</div>
+<!-- ── HEADER CARD (Tabs + Filters) ─────────────────────────────────────────────────────────── -->
+<div class="fr-header-card">
+    <div class="fr-header-tabs">
+        <a href="?tab=conversions&aff_id=<?= $affId ?>&offer_id=<?= $offerId ?>&date_from=<?= urlencode($dateFrom) ?>&date_to=<?= urlencode($dateTo) ?>&status=<?= urlencode($statusFilter) ?>&fraud_only=<?= $fraudOnly ?>"
+           class="fr-header-tab <?= $tab==='conversions'?'active':'' ?>">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Conversions
+        </a>
+        <a href="?tab=clicks&aff_id=<?= $affId ?>&offer_id=<?= $offerId ?>&date_from=<?= urlencode($dateFrom) ?>&date_to=<?= urlencode($dateTo) ?>"
+           class="fr-header-tab <?= $tab==='clicks'?'active':'' ?>">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+            Clicks
+        </a>
+    </div>
 
-<!-- ── FILTER BAR ─────────────────────────────────────────────────────────── -->
-<form method="get" id="frFilterForm">
-    <input type="hidden" name="tab" value="<?= Helpers::e($tab) ?>">
-    <div style="margin-bottom:8px">
-        <?php $drpFromId='fr-from'; $drpToId='fr-to'; $drpFormId='frFilterForm'; include BASE_PATH.'/views/partials/date_range_picker.php'; ?>
+    <div class="fr-filter-section">
+        <form method="get" id="frFilterForm">
+            <input type="hidden" name="tab" value="<?= Helpers::e($tab) ?>">
+            
+            <div class="fr-filter-top">
+                <?php $drpFromId='fr-from'; $drpToId='fr-to'; $drpFormId='frFilterForm'; include BASE_PATH.'/views/partials/date_range_picker.php'; ?>
+                <div class="fr-export-wrapper">
+                    <?php require BASE_PATH . '/views/partials/export_buttons.php'; ?>
+                </div>
+            </div>
+
+            <div class="fr-filter-grid">
+                <div>
+                    <label>Affiliate</label>
+                    <select name="aff_id" style="min-width:180px" onchange="this.form.submit()">
+                        <option value="0">All Affiliates</option>
+                        <?php foreach ($affiliateList as $aff): ?>
+                        <option value="<?= $aff['id'] ?>" <?= $affId==$aff['id']?'selected':'' ?>>
+                            <?= Helpers::e($aff['affiliate_code'].' — '.($aff['first_name']??'').(' '.($aff['last_name']??''))) ?>
+                        </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div>
+                    <label>Offer</label>
+                    <select name="offer_id" style="min-width:160px" onchange="this.form.submit()">
+                        <option value="0">All Offers</option>
+                        <?php foreach ($offerList as $off): ?>
+                        <option value="<?= $off['id'] ?>" <?= $offerId==$off['id']?'selected':'' ?>><?= Helpers::e($off['name']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div>
+                    <label>Date From</label>
+                    <input type="date" id="fr-from" name="date_from" value="<?= Helpers::e($dateFrom) ?>">
+                </div>
+                <div>
+                    <label>Date To</label>
+                    <input type="date" id="fr-to" name="date_to" value="<?= Helpers::e($dateTo) ?>">
+                </div>
+                <?php if ($tab === 'conversions'): ?>
+                <div>
+                    <label>Status</label>
+                    <select name="status" onchange="this.form.submit()">
+                        <option value="">All</option>
+                        <option value="pending"  <?= $statusFilter==='pending'  ?'selected':'' ?>>Pending</option>
+                        <option value="approved" <?= $statusFilter==='approved' ?'selected':'' ?>>Approved</option>
+                        <option value="rejected" <?= $statusFilter==='rejected' ?'selected':'' ?>>Rejected / Blocked</option>
+                    </select>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;padding-bottom:10px">
+                    <input type="checkbox" name="fraud_only" value="1" id="fraudOnly" <?= $fraudOnly?'checked':'' ?> onchange="this.form.submit()" style="width:16px;height:16px;accent-color:#6366F1">
+                    <label for="fraudOnly" style="font-size:13px;font-weight:600;color:#4F46E5;cursor:pointer;text-transform:none;letter-spacing:0;margin:0">Fraud flagged only</label>
+                </div>
+                <?php endif; ?>
+                <div>
+                    <label>Search</label>
+                    <input type="text" name="q" value="<?= Helpers::e($search) ?>" placeholder="Conv ID, IP, affiliate..." style="min-width:200px">
+                </div>
+                <div style="display:flex;gap:8px;padding-bottom:1px">
+                    <button type="submit" class="fds-btn fds-btn-primary">Filter</button>
+                    <a href="?tab=<?= $tab ?>" class="fds-btn fds-btn-outline">Clear</a>
+                </div>
+            </div>
+        </form>
     </div>
-    <div class="fr-filter-bar">
-        <div>
-            <label>Affiliate</label>
-            <select name="aff_id" style="min-width:180px" onchange="this.form.submit()">
-                <option value="0">All Affiliates</option>
-                <?php foreach ($affiliateList as $aff): ?>
-                <option value="<?= $aff['id'] ?>" <?= $affId==$aff['id']?'selected':'' ?>>
-                    <?= Helpers::e($aff['affiliate_code'].' — '.($aff['first_name']??'').(' '.($aff['last_name']??''))) ?>
-                </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <div>
-            <label>Offer</label>
-            <select name="offer_id" style="min-width:160px" onchange="this.form.submit()">
-                <option value="0">All Offers</option>
-                <?php foreach ($offerList as $off): ?>
-                <option value="<?= $off['id'] ?>" <?= $offerId==$off['id']?'selected':'' ?>><?= Helpers::e($off['name']) ?></option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <div>
-            <label>Date From</label>
-            <input type="date" id="fr-from" name="date_from" value="<?= Helpers::e($dateFrom) ?>">
-        </div>
-        <div>
-            <label>Date To</label>
-            <input type="date" id="fr-to" name="date_to" value="<?= Helpers::e($dateTo) ?>">
-        </div>
-        <?php if ($tab === 'conversions'): ?>
-        <div>
-            <label>Status</label>
-            <select name="status" onchange="this.form.submit()">
-                <option value="">All</option>
-                <option value="pending"  <?= $statusFilter==='pending'  ?'selected':'' ?>>Pending</option>
-                <option value="approved" <?= $statusFilter==='approved' ?'selected':'' ?>>Approved</option>
-                <option value="rejected" <?= $statusFilter==='rejected' ?'selected':'' ?>>Rejected / Blocked</option>
-            </select>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;padding-bottom:2px">
-            <input type="checkbox" name="fraud_only" value="1" id="fraudOnly" <?= $fraudOnly?'checked':'' ?> onchange="this.form.submit()" style="width:16px;height:16px;accent-color:#6366F1">
-            <label for="fraudOnly" style="font-size:13px;font-weight:600;color:#4F46E5;cursor:pointer;text-transform:none;letter-spacing:0">Fraud flagged only</label>
-        </div>
-        <?php endif; ?>
-        <div>
-            <label>Search</label>
-            <input type="text" name="q" value="<?= Helpers::e($search) ?>" placeholder="Conv ID, IP, affiliate..." style="min-width:200px">
-        </div>
-        <div style="padding-bottom:1px;display:flex;gap:6px">
-            <button type="submit" class="fds-btn fds-btn-primary">Filter</button>
-            <a href="?tab=<?= $tab ?>" class="fds-btn fds-btn-outline">Clear</a>
-        </div>
-        <div style="padding-bottom:1px;margin-left:auto">
-            <?php require BASE_PATH . '/views/partials/export_buttons.php'; ?>
-        </div>
-    </div>
-</form>
+</div>
 
 <?php if ($tab === 'conversions'): ?>
 <!-- ════════════════════════════════════════════════════════════════════════════
