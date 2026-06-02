@@ -239,7 +239,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                     <a href="/admin/fraud-center/ip-intelligence?ip=<?= urlencode($cv['ip_address']??'') ?>" class="fds-link"><?= Helpers::e($cv['ip_address']??'—') ?></a>
                 </td>
                 <td class="fds-text-sm">
-                    <strong style="word-break: break-all;"><?= Helpers::e($cv['click_id'] ?? '—') ?></strong>
+                    <strong style="word-break: break-all;"><?= Helpers::e(!empty($cv['click_id']) ? $cv['click_id'] : '(Unknown)') ?></strong>
                     <?php 
                         $subs = array_filter([$cv['sub2']??'', $cv['sub3']??'', $cv['sub4']??'', $cv['sub5']??'', $cv['sub6']??'']);
                         if (!empty($subs)) echo '<br><span class="fds-text-muted" style="font-size:11px">'.Helpers::e(implode(' / ', $subs)).'</span>';
@@ -247,7 +247,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                 </td>
                 <td class="fds-text-sm">
                     <div style="word-break: break-word; min-width: 150px;">
-                        <?= Helpers::e($cv['user_agent']??'—') ?>
+                        <?= Helpers::e(!empty($cv['user_agent']) ? $cv['user_agent'] : '(Unknown)') ?>
                     </div>
                 </td>
                 <td><strong>$<?= number_format($cv['payout'],2) ?></strong></td>
@@ -359,7 +359,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
             ?>
             <tr class="<?= $isFraud ? 'fraud-row' : '' ?>">
                 <td class="fds-text-sm">
-                    <strong style="word-break: break-all;"><?= Helpers::e($cl['click_id'] ?? '—') ?></strong>
+                    <strong style="word-break: break-all;"><?= Helpers::e(!empty($cl['click_id']) ? $cl['click_id'] : '(Unknown)') ?></strong>
                     <?php 
                         $subs = array_filter([$cl['sub2']??'', $cl['sub3']??'', $cl['sub4']??'', $cl['sub5']??'', $cl['sub6']??'']);
                         if (!empty($subs)) echo '<br><span class="fds-text-muted" style="font-size:11px">'.Helpers::e(implode(' / ', $subs)).'</span>';
@@ -375,7 +375,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                 </td>
                 <td class="fds-text-sm">
                     <div style="word-break: break-word; min-width: 150px;">
-                        <?= Helpers::e($cl['user_agent']??'—') ?>
+                        <?= Helpers::e(!empty($cl['user_agent']) ? $cl['user_agent'] : '(Unknown)') ?>
                     </div>
                 </td>
                 <td class="fds-text-sm"><?= Helpers::e($cl['country']??'—') ?></td>

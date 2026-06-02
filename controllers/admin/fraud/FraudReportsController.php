@@ -166,14 +166,15 @@ if ($tab === 'conversions') {
                 o.name AS offer_name, o.id AS offer_id,
                 a.affiliate_code, a.id AS affiliate_id,
                 u.first_name, u.last_name,
+                COALESCE(cv.user_agent, c.user_agent) AS user_agent, c.sub2, c.sub3, c.sub4, c.sub5, c.sub6,
                 TIMESTAMPDIFF(SECOND,
-                    (SELECT ck.clicked_at FROM clicks ck WHERE ck.click_id=cv.click_id LIMIT 1),
+                    c.clicked_at,
                     cv.converted_at) AS click_to_conv_secs
          FROM conversions cv
          LEFT JOIN offers o ON o.id = cv.offer_id
          LEFT JOIN affiliates a ON a.id = cv.affiliate_id
          LEFT JOIN users u ON u.id = a.user_id
-         $joinClicks
+         LEFT JOIN clicks c ON c.click_id = cv.click_id
          WHERE $where
          ORDER BY cv.converted_at DESC
          LIMIT $perPage OFFSET {$convPag['offset']}",
@@ -238,6 +239,7 @@ if ($tab === 'clicks') {
 
     $clicks = Database::fetchAll(
         "SELECT c.id, c.click_id, c.ip_address, c.user_agent, c.country, c.device_type,
+                c.sub2, c.sub3, c.sub4, c.sub5, c.sub6,
                 c.is_fraud, c.fraud_score, c.clicked_at, c.status,
                 o.name AS offer_name, a.affiliate_code,
                 u.first_name, u.last_name,
