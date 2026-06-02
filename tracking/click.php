@@ -112,9 +112,15 @@ function trafficBack(string $message, int $code = 403): never {
 
     // Log the traffic back event
     try {
-        global $affiliate, $offer, $ip, $geo;
-        $logAffId = isset($affiliate['id']) ? (int)$affiliate['id'] : null;
-        $logOffId = isset($offer['id']) ? (int)$offer['id'] : (is_numeric($offerId) && $offerId > 0 ? (int)$offerId : null);
+        global $ip, $geo;
+        
+        $logAffId = null;
+        if ($affId !== '') {
+            $affRecord = Database::fetchOne("SELECT id FROM affiliates WHERE affiliate_code=?", [$affId]);
+            if ($affRecord) $logAffId = (int)$affRecord['id'];
+        }
+        
+        $logOffId = (is_numeric($offerId) && $offerId > 0) ? (int)$offerId : null;
         $logIp = substr($ip ?? Helpers::getIp(), 0, 45);
         $logCountry = substr((isset($geo) && is_array($geo) && isset($geo['country_code'])) ? $geo['country_code'] : '', 0, 2);
         Database::query(
