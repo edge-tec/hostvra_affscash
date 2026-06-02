@@ -239,14 +239,14 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                     <a href="/admin/fraud-center/ip-intelligence?ip=<?= urlencode($cv['ip_address']??'') ?>" class="fds-link"><?= Helpers::e($cv['ip_address']??'—') ?></a>
                 </td>
                 <td class="fds-text-sm">
-                    <strong><?= Helpers::e(substr($cv['click_id'] ?? '', 0, 8)) ?>…</strong>
+                    <strong style="word-break: break-all;"><?= Helpers::e($cv['click_id'] ?? '—') ?></strong>
                     <?php 
                         $subs = array_filter([$cv['sub2']??'', $cv['sub3']??'', $cv['sub4']??'', $cv['sub5']??'', $cv['sub6']??'']);
                         if (!empty($subs)) echo '<br><span class="fds-text-muted" style="font-size:11px">'.Helpers::e(implode(' / ', $subs)).'</span>';
                     ?>
                 </td>
                 <td class="fds-text-sm">
-                    <div style="max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="<?= Helpers::e($cv['user_agent']??'') ?>">
+                    <div style="word-break: break-word; min-width: 150px;">
                         <?= Helpers::e($cv['user_agent']??'—') ?>
                     </div>
                 </td>
@@ -359,7 +359,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
             ?>
             <tr class="<?= $isFraud ? 'fraud-row' : '' ?>">
                 <td class="fds-text-sm">
-                    <strong title="<?= Helpers::e($cl['click_id']) ?>"><?= Helpers::e(substr($cl['click_id'], 0, 8)) ?>…</strong>
+                    <strong style="word-break: break-all;"><?= Helpers::e($cl['click_id'] ?? '—') ?></strong>
                     <?php 
                         $subs = array_filter([$cl['sub2']??'', $cl['sub3']??'', $cl['sub4']??'', $cl['sub5']??'', $cl['sub6']??'']);
                         if (!empty($subs)) echo '<br><span class="fds-text-muted" style="font-size:11px">'.Helpers::e(implode(' / ', $subs)).'</span>';
@@ -374,7 +374,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                     <a href="/admin/fraud-center/ip-intelligence?ip=<?= urlencode($cl['ip_address']??'') ?>" class="fds-link"><?= Helpers::e($cl['ip_address']??'—') ?></a>
                 </td>
                 <td class="fds-text-sm">
-                    <div style="max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="<?= Helpers::e($cl['user_agent']??'') ?>">
+                    <div style="word-break: break-word; min-width: 150px;">
                         <?= Helpers::e($cl['user_agent']??'—') ?>
                     </div>
                 </td>
