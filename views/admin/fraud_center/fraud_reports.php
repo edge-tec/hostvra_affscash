@@ -211,6 +211,8 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                     <th>Affiliate</th>
                     <th>Offer</th>
                     <th>IP</th>
+                    <th>Click ID & Sub</th>
+                    <th>User Agent</th>
                     <th>Payout</th>
                     <th>Goal</th>
                     <th>Speed</th>
@@ -235,6 +237,18 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                 <td class="fds-text-sm"><?= Helpers::e($cv['offer_name'] ?? '—') ?></td>
                 <td>
                     <a href="/admin/fraud-center/ip-intelligence?ip=<?= urlencode($cv['ip_address']??'') ?>" class="fds-link"><?= Helpers::e($cv['ip_address']??'—') ?></a>
+                </td>
+                <td class="fds-text-sm">
+                    <strong><?= Helpers::e(substr($cv['click_id'] ?? '', 0, 8)) ?>…</strong>
+                    <?php 
+                        $subs = array_filter([$cv['sub2']??'', $cv['sub3']??'', $cv['sub4']??'', $cv['sub5']??'', $cv['sub6']??'']);
+                        if (!empty($subs)) echo '<br><span class="fds-text-muted" style="font-size:11px">'.Helpers::e(implode(' / ', $subs)).'</span>';
+                    ?>
+                </td>
+                <td class="fds-text-sm">
+                    <div style="max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="<?= Helpers::e($cv['user_agent']??'') ?>">
+                        <?= Helpers::e($cv['user_agent']??'—') ?>
+                    </div>
                 </td>
                 <td><strong>$<?= number_format($cv['payout'],2) ?></strong></td>
                 <td class="fds-text-sm fds-text-muted"><?= Helpers::e($cv['goal_name']??'—') ?></td>
@@ -281,7 +295,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
             </tr>
             <?php endforeach; ?>
             <?php if (empty($conversions)): ?>
-            <tr><td colspan="<?= $canAction ? 12 : 10 ?>" class="fds-empty">No conversions match the current filters</td></tr>
+            <tr><td colspan="<?= $canAction ? 14 : 12 ?>" class="fds-empty">No conversions match the current filters</td></tr>
             <?php endif; ?>
             </tbody>
         </table>
@@ -326,10 +340,11 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
         <table class="fds-table">
             <thead>
                 <tr>
-                    <th>#</th>
+                    <th>Click ID & Sub</th>
                     <th>Affiliate</th>
                     <th>Offer</th>
                     <th>IP</th>
+                    <th>User Agent</th>
                     <th>Country</th>
                     <th>Device</th>
                     <th>Risk Level</th>
@@ -343,7 +358,13 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                 $isFraud = ($cl['is_fraud'] ?? 0) || ($cl['fraud_score'] ?? 0) >= 50;
             ?>
             <tr class="<?= $isFraud ? 'fraud-row' : '' ?>">
-                <td class="fds-text-sm fds-text-muted"><?= $cl['id'] ?></td>
+                <td class="fds-text-sm">
+                    <strong title="<?= Helpers::e($cl['click_id']) ?>"><?= Helpers::e(substr($cl['click_id'], 0, 8)) ?>…</strong>
+                    <?php 
+                        $subs = array_filter([$cl['sub2']??'', $cl['sub3']??'', $cl['sub4']??'', $cl['sub5']??'', $cl['sub6']??'']);
+                        if (!empty($subs)) echo '<br><span class="fds-text-muted" style="font-size:11px">'.Helpers::e(implode(' / ', $subs)).'</span>';
+                    ?>
+                </td>
                 <td>
                     <strong><?= Helpers::e($cl['affiliate_code'] ?? '—') ?></strong><br>
                     <span class="fds-text-sm fds-text-muted"><?= Helpers::e(($cl['first_name']??'').' '.($cl['last_name']??'')) ?></span>
@@ -351,6 +372,11 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                 <td class="fds-text-sm"><?= Helpers::e($cl['offer_name'] ?? '—') ?></td>
                 <td>
                     <a href="/admin/fraud-center/ip-intelligence?ip=<?= urlencode($cl['ip_address']??'') ?>" class="fds-link"><?= Helpers::e($cl['ip_address']??'—') ?></a>
+                </td>
+                <td class="fds-text-sm">
+                    <div style="max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="<?= Helpers::e($cl['user_agent']??'') ?>">
+                        <?= Helpers::e($cl['user_agent']??'—') ?>
+                    </div>
                 </td>
                 <td class="fds-text-sm"><?= Helpers::e($cl['country']??'—') ?></td>
                 <td class="fds-text-sm"><?= Helpers::e($cl['device_type']??'—') ?></td>
@@ -379,7 +405,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
             </tr>
             <?php endforeach; ?>
             <?php if (empty($clicks)): ?>
-            <tr><td colspan="<?= $canAction ? 10 : 9 ?>" class="fds-empty">No clicks match the current filters</td></tr>
+            <tr><td colspan="<?= $canAction ? 11 : 10 ?>" class="fds-empty">No clicks match the current filters</td></tr>
             <?php endif; ?>
             </tbody>
         </table>
