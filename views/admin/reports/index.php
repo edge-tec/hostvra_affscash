@@ -175,7 +175,7 @@ $tabIcons = [
     <div class="stat-card"><div class="stat-label">Rejected</div><div class="stat-value" style="color:var(--danger)"><?= number_format($totals['rejected']) ?></div></div>
     <div class="stat-card"><div class="stat-label">Fraud Clicks</div><div class="stat-value" style="color:var(--danger)"><?= number_format($totals['fraud_clicks']) ?></div></div>
     <div class="stat-card"><div class="stat-label">Payout</div><div class="stat-value">$<?= number_format($totals['payout'],2) ?></div></div>
-    <div class="stat-card"><div class="stat-label">Revenue</div><div class="stat-value">$<?= number_format($totals['revenue'],2) ?></div></div>
+    <?php if (Auth::role() === "admin"): ?><div class="stat-card"><div class="stat-label">Revenue</div><div class="stat-value">$<?= number_format($totals['revenue'],2) ?></div></div><?php endif; ?>
     <div class="stat-card"><div class="stat-label">Profit</div><div class="stat-value" style="color:<?= $totals['profit']>=0?'var(--secondary)':'var(--danger)' ?>">$<?= number_format($totals['profit'],2) ?></div></div>
 </div>
 
@@ -192,7 +192,7 @@ $tabIcons = [
                     <th>Clicks</th><th>Unique</th><th>Conv.</th><th>Approved</th>
                     <th>Rejected</th>
                     <th>Fraud</th>
-                    <th>CR%</th><th>EPC</th><th>Payout</th><th>Revenue</th><th>Profit</th>
+                    <th>CR%</th><th>EPC</th><th>Payout</th><?php if (Auth::role() === "admin"): ?><th>Revenue</th><th>Profit</th><?php endif; ?>
                     <th title="Conversions with IPQualityScore fraud_score ≥ 60">Fraud Conv.</th>
                     <th title="Total conversions checked by IPQS · Rejected among checked">Rejected Conv. (IPQS)</th>
                 </tr>
@@ -492,7 +492,7 @@ $convertedCount = count(array_filter($clicks, fn($r)=>(bool)$r['has_conversion']
                     <span class="badge badge-muted" style="font-size:10px;background:#F1F5F9;color:#94A3B8">No conv</span>
                     <?php endif; ?>
                 </td>
-                <td><?= $c['has_conversion'] ? '$'.number_format((float)$c['revenue'],4) : '<span style="color:#CBD5E1">—</span>' ?></td>
+                <?php if (Auth::role() === "admin"): ?><td><?= $c['has_conversion'] ? '$'.number_format((float)$c['revenue'],4) : '<span style="color:#CBD5E1">—</span>' ?></td><?php endif; ?>
                 <td><?= $c['has_conversion'] ? '$'.number_format((float)$c['payout'],4)  : '<span style="color:#CBD5E1">—</span>' ?></td>
                 <td><?php if ($c['has_conversion']): ?><span style="color:<?= $profit>=0?'var(--secondary)':'var(--danger)' ?>">$<?= number_format($profit,4) ?></span><?php else: ?><span style="color:#CBD5E1">—</span><?php endif; ?></td>
                 <td class="text-muted" style="white-space:nowrap"><?= date('M j, Y H:i:s',strtotime($c['clicked_at'])) ?></td>
@@ -629,7 +629,7 @@ if ($notSent > 0 && in_array($tab, ['conversions','pending'])):
                     <?php endif; ?>
                 </td>
                 <td>$<?= number_format((float)$r['payout'],4) ?></td>
-                <td>$<?= number_format((float)$r['revenue'],4) ?></td>
+                <?php if (Auth::role() === "admin"): ?><td>$<?= number_format((float)$r['revenue'],4) ?></td><?php endif; ?>
                 <td style="color:<?= $profit>=0?'var(--secondary)':'var(--danger)' ?>">$<?= number_format($profit,4) ?></td>
                 <td><?= Helpers::e($r['goal_name']?:'—') ?></td>
                 <td class="text-sm text-muted"><?= Helpers::e($r['transaction_id']?:'—') ?></td>
@@ -789,7 +789,7 @@ $orProfit = (float)$orTotals['revenue'] - (float)$orTotals['payout'];
     <div class="stat-card"><div class="stat-label">Rejected</div><div class="stat-value" style="color:var(--danger)"><?= number_format($orTotals['rejected']) ?></div></div>
     <div class="stat-card" title="Conversions with IPQualityScore (IPQS) fraud_score ≥ 60. Visibility overlay only — never modifies payout / revenue."><div class="stat-label">Fraud Conv. (IPQS)</div><div class="stat-value" style="color:#DC2626"><?= number_format($orTotals['fraud_conv'] ?? 0) ?></div><div class="stat-sub">Real-time</div></div>
     <div class="stat-card"><div class="stat-label">Payout</div><div class="stat-value">$<?= number_format($orTotals['payout'],2) ?></div></div>
-    <div class="stat-card"><div class="stat-label">Revenue</div><div class="stat-value">$<?= number_format($orTotals['revenue'],2) ?></div></div>
+    <?php if (Auth::role() === "admin"): ?><div class="stat-card"><div class="stat-label">Revenue</div><div class="stat-value">$<?= number_format($orTotals['revenue'],2) ?></div></div><?php endif; ?>
     <div class="stat-card"><div class="stat-label">Profit</div><div class="stat-value" style="color:<?= $orProfit>=0?'var(--secondary)':'var(--danger)' ?>">$<?= number_format($orProfit,2) ?></div></div>
 </div>
 
@@ -857,7 +857,7 @@ $orProfit = (float)$orTotals['revenue'] - (float)$orTotals['payout'];
                 <td style="white-space:nowrap">
                     <span style="color:var(--secondary);font-weight:700">$<?= number_format((float)$r['payout_amount'],2) ?></span>
                     <?php if ((float)$r['revenue_amount'] > 0): ?>
-                    <span style="font-size:10px;color:#94A3B8"> / $<?= number_format((float)$r['revenue_amount'],2) ?></span>
+                    <?php if (Auth::role() === "admin"): ?><span style="font-size:10px;color:#94A3B8"> / $<?= number_format((float)$r['revenue_amount'],2) ?></span><?php endif; ?>
                     <?php endif; ?>
                 </td>
                 <td style="text-align:center">
@@ -1084,7 +1084,7 @@ $_slTotPayout      = array_sum(array_column($slClicks ?? [], 'payout'));
                     <span class="badge badge-muted" style="font-size:10px;background:#F1F5F9;color:#94A3B8">No conv</span>
                     <?php endif; ?>
                 </td>
-                <td><?= $c['has_conversion'] ? '$'.number_format((float)$c['revenue'],4) : '<span style="color:#CBD5E1">—</span>' ?></td>
+                <?php if (Auth::role() === "admin"): ?><td><?= $c['has_conversion'] ? '$'.number_format((float)$c['revenue'],4) : '<span style="color:#CBD5E1">—</span>' ?></td><?php endif; ?>
                 <td><?= $c['has_conversion'] ? '$'.number_format((float)$c['payout'],4)  : '<span style="color:#CBD5E1">—</span>' ?></td>
                 <td class="text-muted" style="white-space:nowrap"><?= date('M j, Y H:i',strtotime($c['clicked_at'])) ?></td>
             </tr>
@@ -1149,7 +1149,7 @@ $_slcPostbacks  = count(array_filter($slConversions ?? [], fn($r) => $r['postbac
                 <td><?= Helpers::e($r['sub2']?:'—') ?></td>
                 <td><span class="badge badge-<?= $bm[$r['status']]??'muted' ?>"><?= $r['status'] ?></span></td>
                 <td>$<?= number_format((float)$r['payout'],4) ?></td>
-                <td>$<?= number_format((float)$r['revenue'],4) ?></td>
+                <?php if (Auth::role() === "admin"): ?><td>$<?= number_format((float)$r['revenue'],4) ?></td><?php endif; ?>
                 <td style="color:<?= $profit>=0?'var(--secondary)':'var(--danger)' ?>">$<?= number_format($profit,4) ?></td>
                 <td><?= Helpers::e($r['goal_name']?:'—') ?></td>
                 <td class="text-muted" style="font-size:11px"><?= Helpers::e($r['transaction_id']?:'—') ?></td>

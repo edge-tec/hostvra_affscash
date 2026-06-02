@@ -178,7 +178,9 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
     <div class="fr-sum-box danger"><div class="val"><?= number_format($convSummary['rejected']??0) ?></div><div class="lbl">Blocked</div></div>
     <div class="fr-sum-box danger"><div class="val"><?= number_format($convSummary['flagged']??0) ?></div><div class="lbl">Fraud Flagged</div></div>
     <div class="fr-sum-box"><div class="val">$<?= number_format($convSummary['total_payout']??0,2) ?></div><div class="lbl">Payout</div></div>
+    <?php if (Auth::role() === "admin"): ?>
     <div class="fr-sum-box"><div class="val">$<?= number_format($convSummary['total_revenue']??0,2) ?></div><div class="lbl">Revenue</div></div>
+    <?php endif; ?>
 </div>
 <?php endif; ?>
 

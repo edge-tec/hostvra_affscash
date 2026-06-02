@@ -318,9 +318,9 @@
                 </td>
                 <td>
                     <?php if (!empty($c['conversion_id']) && !empty($c['conv_revenue'])): ?>
-                    <span style="color:var(--secondary);font-weight:600">$<?= number_format((float)$c['conv_revenue'], 4) ?></span>
+                    <?php if (Auth::role() === "admin"): ?><span style="color:var(--secondary);font-weight:600">$<?= number_format((float)$c['conv_revenue'], 4) ?></span><?php endif; ?>
                     <?php elseif (!empty($c['conversion_id'])): ?>
-                    <span style="color:var(--secondary);font-weight:600">$<?= number_format((float)$c['revenue'], 4) ?></span>
+                    <?php if (Auth::role() === "admin"): ?><span style="color:var(--secondary);font-weight:600">$<?= number_format((float)$c['revenue'], 4) ?></span><?php endif; ?>
                     <?php else: ?>
                     <span class="text-muted">—</span>
                     <?php endif; ?>

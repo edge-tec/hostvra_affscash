@@ -143,7 +143,7 @@
                     <th>ID</th><th>Name</th><th>Email</th><th>Status</th>
                     <th>Clicks</th><th>Unique</th><th>Fraud</th><th>Blocked</th>
                     <th>Conversions</th><th>Approved</th><th>Pending</th><th>Rejected</th>
-                    <th>CR %</th><th>EPC</th><th>Payout</th><th>Revenue</th><th>Profit</th>
+                    <th>CR %</th><th>EPC</th><th>Payout</th><?php if (Auth::role() === "admin"): ?><th>Revenue</th><th>Profit</th><?php endif; ?>
                     <th>Traffic Quality</th><th>IPQS Fraud</th><th>Last Activity</th><th>Registered</th><th>Action</th>
                 </tr>
             </thead>
@@ -310,7 +310,7 @@
                     <th>Sub 1</th><th>Sub 2</th><th>Sub 3</th>
                     <th>IP Address</th><th>Country</th><th>City</th><th>Region</th>
                     <th>Device</th><th>OS</th><th>Browser</th><th>User Agent</th>
-                    <th>Click Status</th><th>Fraud</th><th>Conv Status</th><th>Payout</th><th>Revenue</th><th>Clicked At</th>
+                    <th>Click Status</th><th>Fraud</th><th>Conv Status</th><th>Payout</th><?php if (Auth::role() === "admin"): ?><th>Revenue</th><?php endif; ?><th>Clicked At</th>
                 </tr>
             </thead>
             <tbody>

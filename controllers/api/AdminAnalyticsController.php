@@ -1,10 +1,30 @@
 <?php
+
+function _safe_json_encode($data) {
+    if (\Auth::role() !== 'admin') {
+        if (is_array($data)) {
+            if (isset($data['revenue'])) $data['revenue'] = 0;
+            if (isset($data['profit'])) $data['profit'] = 0;
+            if (isset($data['revenue_data'])) $data['revenue_data'] = array_fill(0, count($data['revenue_data']??[]), 0);
+            if (isset($data['trend']['revenue'])) $data['trend']['revenue'] = 0;
+            
+            if (isset($data['rows']) && is_array($data['rows'])) {
+                foreach ($data['rows'] as &$r) {
+                    if (isset($r['revenue'])) $r['revenue'] = 0;
+                    if (isset($r['profit'])) $r['profit'] = 0;
+                }
+            }
+        }
+    }
+    return json_encode($data);
+}
+
 header('Content-Type: application/json');
-if (!Auth::id()) { echo json_encode(['error'=>'Unauthorized']); exit; }
+if (!Auth::id()) { echo _safe_json_encode(['error'=>'Unauthorized']); exit; }
 
 $role = Auth::role();
 if (!in_array($role, ['admin', 'affiliate_manager'])) {
-    echo json_encode(['error'=>'Forbidden']); exit;
+    echo _safe_json_encode(['error'=>'Forbidden']); exit;
 }
 
 // ── Schema guards: ensure columns used in this controller exist ────────────
@@ -43,7 +63,7 @@ $managerAffIds = [];
 if ($role === 'affiliate_manager') {
     $managerAffIds = Auth::managerAffiliateIds();
     if (empty($managerAffIds)) {
-        echo json_encode(['rows'=>[], 'labels'=>[], 'data'=>[], 'count'=>0,
+        echo _safe_json_encode(['rows'=>[], 'labels'=>[], 'data'=>[], 'count'=>0,
                           'clicks'=>0,'conversions'=>0,'revenue'=>0,'payout'=>0,'cr'=>0,
                           'trend'=>['clicks'=>0,'conv'=>0,'revenue'=>0,'payout'=>0]]);
         exit;
@@ -165,7 +185,7 @@ if ($action === 'stats') {
     $fraudConvPctPrev  = $totalConvPrevForPct > 0 ? round($fraudConvPrev / $totalConvPrevForPct * 100, 2) : 0;
     $fraudConvPctTrend = round($fraudConvPct - $fraudConvPctPrev, 1); // delta in percentage points
 
-    echo json_encode([
+    echo _safe_json_encode([
         'clicks'         => $clicks,
         'unique'         => $unique,
         'conv'           => $conv,
@@ -243,7 +263,7 @@ if ($action === 'trend') {
             $payout_data[]  = round((float)($cvr['p'] ?? 0), 2);
             $fraud_data[]   = (int)($cvr['fraud_cv'] ?? 0);
         }
-        echo json_encode(compact('labels','clicks_data','unique_data','conv_data','revenue_data','payout_data','fraud_data'));
+        echo _safe_json_encode(compact('labels','clicks_data','unique_data','conv_data','revenue_data','payout_data','fraud_data'));
         exit;
     }
 
@@ -285,7 +305,7 @@ if ($action === 'trend') {
         $fraud_data[]   = (int)($fraudByDay[$d] ?? 0);
         $cur += 86400;
     }
-    echo json_encode(compact('labels','clicks_data','unique_data','conv_data','revenue_data','payout_data','fraud_data'));
+    echo _safe_json_encode(compact('labels','clicks_data','unique_data','conv_data','revenue_data','payout_data','fraud_data'));
     exit;
 }
 
@@ -309,7 +329,7 @@ if ($action === 'hourly') {
     $hourly = array_fill(0, 24, 0);
     foreach ($rows as $r) $hourly[(int)$r['h']] = (int)$r['cnt'];
     $labels = array_map(fn($h) => sprintf('%02d:00', $h), range(0, 23));
-    echo json_encode(['labels' => $labels, 'data' => array_values($hourly)]);
+    echo _safe_json_encode(['labels' => $labels, 'data' => array_values($hourly)]);
     exit;
 }
 
@@ -345,7 +365,7 @@ if ($action === 'countries') {
             'conv'    => $cvMap[$r['country']] ?? 0,
         ];
     }
-    echo json_encode(['rows' => $out]);
+    echo _safe_json_encode(['rows' => $out]);
     exit;
 }
 
@@ -358,7 +378,7 @@ if ($action === 'devices') {
          FROM clicks WHERE $clickW GROUP BY device_type ORDER BY cnt DESC",
         $clickP
     );
-    echo json_encode([
+    echo _safe_json_encode([
         'labels' => array_column($rows, 'label'),
         'data'   => array_map('intval', array_column($rows, 'cnt')),
     ]);
@@ -374,7 +394,7 @@ if ($action === 'browsers') {
          FROM clicks WHERE $clickW GROUP BY browser ORDER BY cnt DESC LIMIT 8",
         $clickP
     );
-    echo json_encode([
+    echo _safe_json_encode([
         'labels' => array_column($rows, 'label'),
         'data'   => array_map('intval', array_column($rows, 'cnt')),
     ]);
@@ -434,7 +454,7 @@ if ($action === 'offers') {
             'fraud_conv_pct' => $fraudPct,
         ];
     }
-    echo json_encode(['rows' => $out]);
+    echo _safe_json_encode(['rows' => $out]);
     exit;
 }
 
@@ -467,7 +487,7 @@ if ($action === 'affiliates') {
             'cr'      => $cl > 0 ? round($cv / $cl * 100, 2) : 0,
         ];
     }
-    echo json_encode(['rows' => $out]);
+    echo _safe_json_encode(['rows' => $out]);
     exit;
 }
 
@@ -496,7 +516,7 @@ if ($action === 'conv_status') {
         $data[]   = (int)$r['cnt'];
         $colors[] = $pieColors[$r['status']] ?? '#64748B';
     }
-    echo json_encode(compact('labels', 'data', 'colors'));
+    echo _safe_json_encode(compact('labels', 'data', 'colors'));
     exit;
 }
 
@@ -537,7 +557,7 @@ if ($action === 'conversions') {
     } catch (Exception $e) {
         $rows = [];
     }
-    echo json_encode(['rows' => $rows ?: []]);
+    echo _safe_json_encode(['rows' => $rows ?: []]);
     exit;
 }
 
@@ -574,7 +594,7 @@ if ($action === 'filters') {
         $countriesQ = Database::fetchAll("SELECT DISTINCT country FROM clicks WHERE country != '' ORDER BY country");
     }
 
-    echo json_encode([
+    echo _safe_json_encode([
         'offers'    => $offersQ,
         'affiliates'=> $affsQ,
         'countries' => array_column($countriesQ, 'country'),
@@ -592,14 +612,14 @@ if ($action === 'summary_cards') {
         $pendAff = Database::fetchOne("SELECT COUNT(*) as cnt FROM affiliates a JOIN users u ON u.id=a.user_id WHERE u.status='pending'");
         $totOff  = Database::fetchOne("SELECT COUNT(*) as cnt FROM offers WHERE status='active'");
         $totAdv  = Database::fetchOne("SELECT COUNT(*) as cnt FROM advertisers a JOIN users u ON u.id=a.user_id WHERE u.status='active'");
-        echo json_encode([
+        echo _safe_json_encode([
             'affiliates'         => (int)($totAff['cnt']  ?? 0),
             'pending_affiliates' => (int)($pendAff['cnt'] ?? 0),
             'offers'             => (int)($totOff['cnt']  ?? 0),
             'advertisers'        => (int)($totAdv['cnt']  ?? 0),
         ]);
     } else {
-        echo json_encode([
+        echo _safe_json_encode([
             'affiliates'         => count($managerAffIds),
             'pending_affiliates' => 0,
             'offers'             => 0,
@@ -609,4 +629,4 @@ if ($action === 'summary_cards') {
     exit;
 }
 
-echo json_encode(['error' => 'Unknown action']);
+echo _safe_json_encode(['error' => 'Unknown action']);

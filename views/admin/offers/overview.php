@@ -391,7 +391,7 @@ function copyAffLink(){
         </div>
         <div class="table-wrap">
             <table>
-                <thead><tr><th>Country</th><th>Clicks</th><th>Unique</th><th>Payout</th><th>Revenue</th></tr></thead>
+                <thead><tr><th>Country</th><th>Clicks</th><th>Unique</th><th>Payout</th><?php if (Auth::role() === "admin"): ?><th>Revenue</th><?php endif; ?></tr></thead>
                 <tbody>
                 <?php if (empty($topCountries)): ?>
                 <tr><td colspan="5" class="text-center text-muted" style="padding:24px">No data yet</td></tr>
@@ -422,7 +422,7 @@ function copyAffLink(){
     </div>
     <div class="table-wrap">
         <table id="tbl-top-aff">
-            <thead><tr><th>Affiliate</th><th>Code</th><th>Clicks</th><th>Conv.</th><th>Approved</th><th>CR%</th><th>EPC</th><th>Payout</th><th>Revenue</th><th>Profit</th></tr></thead>
+            <thead><tr><th>Affiliate</th><th>Code</th><th>Clicks</th><th>Conv.</th><th>Approved</th><th>CR%</th><th>EPC</th><th>Payout</th><?php if (Auth::role() === "admin"): ?><th>Revenue</th><?php endif; ?><th>Profit</th></tr></thead>
             <tbody>
             <?php if (empty($topAffiliates)): ?>
             <tr><td colspan="10" class="text-center text-muted" style="padding:24px">No affiliate data yet</td></tr>
@@ -457,7 +457,7 @@ function copyAffLink(){
     </div>
     <div class="table-wrap">
         <table id="tbl-conv">
-            <thead><tr><th>Affiliate</th><th>Payout</th><th>Revenue</th><th>Status</th><th>Goal</th><th>Time</th></tr></thead>
+            <thead><tr><th>Affiliate</th><th>Payout</th><?php if (Auth::role() === "admin"): ?><th>Revenue</th><?php endif; ?><th>Status</th><th>Goal</th><th>Time</th></tr></thead>
             <tbody>
             <?php if (empty($recentConversions)): ?>
             <tr><td colspan="6" class="text-center text-muted" style="padding:24px">No conversions yet</td></tr>

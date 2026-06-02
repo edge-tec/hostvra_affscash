@@ -42,7 +42,7 @@
 <div class="card">
     <div class="table-wrap">
         <table id="tbl-conversions">
-            <thead><tr><th>Conversion ID</th><th>Affiliate</th><th>Offer</th><th>Payout</th><th>Revenue</th><th>Transaction</th><th>Status</th><th>Device</th><th>OS Version</th><th>Landing Page</th><th>Visit Info</th><th>Fraud Scores</th><th>Date</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Conversion ID</th><th>Affiliate</th><th>Offer</th><th>Payout</th><?php if (Auth::role() === "admin"): ?><th>Revenue</th><?php endif; ?><th>Transaction</th><th>Status</th><th>Device</th><th>OS Version</th><th>Landing Page</th><th>Visit Info</th><th>Fraud Scores</th><th>Date</th><th>Actions</th></tr></thead>
             <tbody>
             <?php foreach($conversions as $c):
                 $fraudChecked = !empty($c['fraud_checked_at']);

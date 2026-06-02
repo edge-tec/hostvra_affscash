@@ -195,9 +195,9 @@ $tabs = [
                     <th>Affiliate</th>
                     <th>Offer</th>
                     <th>Country</th>
-                    <th>Revenue</th>
+                    <?php if (Auth::role() === "admin"): ?><th>Revenue</th><?php endif; ?>
                     <th>Payout</th>
-                    <th>Margin</th>
+                    <?php if (Auth::role() === "admin"): ?><th>Margin</th><?php endif; ?>
                     <th>Added</th>
                     <th>Action</th>
                 </tr>
@@ -226,7 +226,7 @@ $tabs = [
                 <td>
                     <code style="background:#F1F5F9;padding:3px 8px;border-radius:5px;font-size:13px;font-weight:700"><?= Helpers::flag($r['country']) ?> <?= Helpers::e($r['country']) ?></code>
                 </td>
-                <td><strong>$<?= number_format($r['revenue'],4) ?></strong></td>
+                <?php if (Auth::role() === "admin"): ?><td><strong>$<?= number_format($r['revenue'],4) ?></strong></td><?php endif; ?>
                 <td><strong style="color:var(--secondary)">$<?= number_format($r['payout'],4) ?></strong></td>
                 <td>
                     <span class="badge <?= $margin >= 30 ? 'badge-success' : ($margin >= 10 ? 'badge-warning' : 'badge-danger') ?> no-dot">
@@ -338,7 +338,7 @@ $tabs = [
     <div class="table-wrap">
         <table id="tbl-dp">
             <thead>
-                <tr><th>Affiliate</th><th>Offer</th><th>Country</th><th>Device</th><th>Revenue</th><th>Payout</th><th>Margin</th><th>Added</th><th>Action</th></tr>
+                <tr><th>Affiliate</th><th>Offer</th><th>Country</th><th>Device</th><?php if (Auth::role() === "admin"): ?><th>Revenue</th><?php endif; ?><th>Payout</th><?php if (Auth::role() === "admin"): ?><th>Margin</th><?php endif; ?><th>Added</th><th>Action</th></tr>
             </thead>
             <tbody>
             <?php if (!empty($devicePayouts)): ?>
@@ -368,7 +368,7 @@ $tabs = [
                     </code>
                 </td>
                 <td><span class="device-badge <?= $r['device'] ?>"><?= $devIcons[$r['device']] ?? $r['device'] ?></span></td>
-                <td><strong>$<?= number_format($r['revenue'],4) ?></strong></td>
+                <?php if (Auth::role() === "admin"): ?><td><strong>$<?= number_format($r['revenue'],4) ?></strong></td><?php endif; ?>
                 <td><strong style="color:var(--secondary)">$<?= number_format($r['payout'],4) ?></strong></td>
                 <td>
                     <span class="badge <?= $margin >= 30 ? 'badge-success' : ($margin >= 10 ? 'badge-warning' : 'badge-danger') ?> no-dot">
@@ -587,9 +587,9 @@ $tabs = [
                 <tr>
                     <th>Affiliate</th>
                     <th>Offer</th>
-                    <th>Revenue</th>
+                    <?php if (Auth::role() === "admin"): ?><th>Revenue</th><?php endif; ?>
                     <th>Payout</th>
-                    <th>Margin</th>
+                    <?php if (Auth::role() === "admin"): ?><th>Margin</th><?php endif; ?>
                     <th>Added</th>
                     <th>Action</th>
                 </tr>
@@ -608,7 +608,7 @@ $tabs = [
                     <div class="fw-bold"><?= Helpers::e($r['offer_name'] ?: '— Offer deleted —') ?></div>
                     <div class="text-muted text-sm">ID #<?= (int)$r['offer_id'] ?></div>
                 </td>
-                <td><strong>$<?= number_format($r['revenue'],4) ?></strong></td>
+                <?php if (Auth::role() === "admin"): ?><td><strong>$<?= number_format($r['revenue'],4) ?></strong></td><?php endif; ?>
                 <td><strong style="color:var(--secondary)">$<?= number_format($r['payout'],4) ?></strong></td>
                 <td>
                     <span class="badge <?= $margin >= 30 ? 'badge-success' : ($margin >= 10 ? 'badge-warning' : 'badge-danger') ?> no-dot">
@@ -688,9 +688,9 @@ $tabs = [
                 <tr>
                     <th>Affiliate</th>
                     <th>Smartlink</th>
-                    <th>Revenue</th>
+                    <?php if (Auth::role() === "admin"): ?><th>Revenue</th><?php endif; ?>
                     <th>Payout</th>
-                    <th>Margin</th>
+                    <?php if (Auth::role() === "admin"): ?><th>Margin</th><?php endif; ?>
                     <th>Added</th>
                     <th>Action</th>
                 </tr>
@@ -709,7 +709,7 @@ $tabs = [
                     <div class="fw-bold"><?= Helpers::e($r['sl_name'] ?: '— Smartlink deleted —') ?></div>
                     <div class="text-muted text-sm">ID #<?= (int)$r['smartlink_id'] ?></div>
                 </td>
-                <td><strong>$<?= number_format($r['revenue'],4) ?></strong></td>
+                <?php if (Auth::role() === "admin"): ?><td><strong>$<?= number_format($r['revenue'],4) ?></strong></td><?php endif; ?>
                 <td><strong style="color:var(--secondary)">$<?= number_format($r['payout'],4) ?></strong></td>
                 <td>
                     <span class="badge <?= $margin >= 30 ? 'badge-success' : ($margin >= 10 ? 'badge-warning' : 'badge-danger') ?> no-dot">

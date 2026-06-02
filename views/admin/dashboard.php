@@ -606,18 +606,22 @@ html[data-theme="dark"] .loading-overlay{background:rgba(15,23,42,.55);}
         <div class="kpi-sub">CR: <span id="k-cr">—</span>%</div>
         <div id="k-conv-trend" class="kpi-trend flat">—</div>
     </div>
+    <?php if (Auth::role() === "admin"): ?>
     <div class="kpi-card purple">
         <div class="kpi-label">Revenue</div>
         <div class="kpi-value">$<span id="k-revenue">—</span></div>
         <div class="kpi-sub">Payout: $<span id="k-payout">—</span></div>
         <div id="k-revenue-trend" class="kpi-trend flat">—</div>
     </div>
+    <?php endif; ?>
+    <?php if (Auth::role() === "admin"): ?>
     <div class="kpi-card emerald">
         <div class="kpi-label">Net Profit</div>
         <div class="kpi-value" id="k-profit">—</div>
         <div class="kpi-sub">Revenue minus payout</div>
         <div id="k-payout-trend" class="kpi-trend flat">—</div>
     </div>
+    <?php endif; ?>
     <div class="kpi-card teal">
         <div class="kpi-label">Active Affiliates</div>
         <div class="kpi-value" id="k-affiliates"><?= number_format($totalAffiliates) ?></div>
@@ -664,7 +668,7 @@ html[data-theme="dark"] .loading-overlay{background:rgba(15,23,42,.55);}
             <div class="toggle-btns" id="trend-metric-btns" title="Click to toggle each metric on/off">
                 <button class="active" data-metric="clicks">Clicks</button>
                 <button class="active" data-metric="conv">Conversions</button>
-                <button class="active" data-metric="revenue">Revenue</button>
+                <?php if (Auth::role() === "admin"): ?><button class="active" data-metric="revenue">Revenue</button><?php endif; ?>
                 <button class="active" data-metric="payout">Payout</button>
                 <button class="active" data-metric="fraud" style="color:#DC2626" title="Fraud conversions are conversions with fraud score between 60–100.">Fraud</button>
             </div>
@@ -777,7 +781,7 @@ html[data-theme="dark"] .loading-overlay{background:rgba(15,23,42,.55);}
             <div id="offers-table-view" style="display:none">
                 <div style="overflow-y:auto;max-height:240px">
                     <table class="analytics-table">
-                        <thead><tr><th>Offer</th><th class="num">Clicks</th><th class="num">Conv</th><th class="num">CR%</th><th class="num">Payout</th><th class="num">Revenue</th><th class="num" title="Fraud conversions are conversions with fraud score between 60–100." style="color:#DC2626">Fraud</th></tr></thead>
+                        <thead><tr><th>Offer</th><th class="num">Clicks</th><th class="num">Conv</th><th class="num">CR%</th><th class="num">Payout</th><?php if (Auth::role() === "admin"): ?><th class="num">Revenue</th><?php endif; ?><th class="num" title="Fraud conversions are conversions with fraud score between 60–100." style="color:#DC2626">Fraud</th></tr></thead>
                         <tbody id="offers-tbody"></tbody>
                     </table>
                 </div>
@@ -819,18 +823,21 @@ html[data-theme="dark"] .loading-overlay{background:rgba(15,23,42,.55);}
     </div>
     <div class="card-body" style="padding:0">
         <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin:0;gap:0;border-radius:0">
+            <?php if (Auth::role() === "admin"): ?>
             <div class="stat-card" style="border-radius:0;border-right:1px solid #E2E8F0">
                 <div class="stat-icon green">&#128200;</div>
                 <div class="stat-label">Total Revenue</div>
                 <div class="stat-value">$<?= number_format($profitSummary['total_revenue'] ?? 0, 2) ?></div>
                 <div class="stat-sub">Approved conversions</div>
             </div>
+            <?php endif; ?>
             <div class="stat-card" style="border-radius:0;border-right:1px solid #E2E8F0">
                 <div class="stat-icon purple">&#128176;</div>
                 <div class="stat-label">Total Payout</div>
                 <div class="stat-value">$<?= number_format($profitSummary['total_payout'] ?? 0, 2) ?></div>
                 <div class="stat-sub">Paid to affiliates</div>
             </div>
+            <?php if (Auth::role() === "admin"): ?>
             <div class="stat-card" style="border-radius:0">
                 <div class="stat-icon teal">&#9733;</div>
                 <div class="stat-label">Net Profit</div>
@@ -838,13 +845,14 @@ html[data-theme="dark"] .loading-overlay{background:rgba(15,23,42,.55);}
                 <div class="stat-value" style="color:<?= $netProfit >= 0 ? '#059669' : 'var(--danger)' ?>">$<?= number_format($netProfit, 2) ?></div>
                 <div class="stat-sub">Revenue minus payout</div>
             </div>
+            <?php endif; ?>
         </div>
         <?php if (!empty($topProfitOffers)): ?>
         <div>
             <div style="padding:12px 20px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);border-top:1px solid var(--border);background:var(--bg)">Top Profitable Offers</div>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>Offer</th><th>Revenue</th><th>Payout</th><th>Profit</th><th>Conv.</th><th>Margin</th></tr></thead>
+                    <thead><tr><th>Offer</th><?php if (Auth::role() === "admin"): ?><th>Revenue</th><?php endif; ?><th>Payout</th><?php if (Auth::role() === "admin"): ?><th>Profit</th><?php endif; ?><th>Conv.</th><th>Margin</th></tr></thead>
                     <tbody>
                     <?php foreach ($topProfitOffers as $po):
                         $margin   = (float)$po['revenue'] > 0 ? round(((float)$po['profit'] / (float)$po['revenue']) * 100, 1) : 0;
@@ -884,7 +892,7 @@ html[data-theme="dark"] .loading-overlay{background:rgba(15,23,42,.55);}
         <div class="loading-overlay" id="conv-loading"><div class="spinner"></div></div>
         <div class="table-wrap" style="overflow-x:auto">
             <table class="analytics-table">
-                <thead><tr><th>Affiliate</th><th>Offer</th><th class="num">Payout</th><th class="num">Revenue</th><th>Status</th><th>Country</th><th>Device</th><th>Date</th></tr></thead>
+                <thead><tr><th>Affiliate</th><th>Offer</th><th class="num">Payout</th><?php if (Auth::role() === "admin"): ?><th class="num">Revenue</th><?php endif; ?><th>Status</th><th>Country</th><th>Device</th><th>Date</th></tr></thead>
                 <tbody id="conv-tbody">
                     <tr><td colspan="8" class="text-center text-muted" style="padding:24px">Loading…</td></tr>
                 </tbody>
