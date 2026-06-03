@@ -77,12 +77,12 @@
             ];
             foreach ($groups as $groupKey => $clusterRows):
                 $first = $clusterRows[0];
-                $clusterSize = count($clusterRows);
+                $clusterSize = (int)$first['dup_count'];
             ?>
                 <tr style="background:#FEF2F2;font-weight:600">
                     <td colspan="9" style="padding:8px 12px;color:#991B1B;border-top:2px solid #FECACA">
                         <span style="display:inline-block;background:#DC2626;color:#fff;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700;margin-right:8px">
-                            <?= (int)$clusterSize ?> DUPLICATES
+                            <?= $clusterSize ?> DUPLICATES
                         </span>
                         Offer <strong><?= Helpers::e($first['offer_name'] ?: '#'.(int)$first['offer_id']) ?></strong>
                         · IP <code style="background:#fff;padding:1px 6px;border-radius:3px;font-size:11px;color:#991B1B"><?= Helpers::e($first['ip_address']) ?></code>

@@ -393,13 +393,48 @@ $convId     = Helpers::uuid();
 // automatically mark this new one as a duplicate so it appears in the Duplicate Conversions report.
 $rejectionReason = '';
 if (!empty($click['ip_address']) && $click['ip_address'] !== '0.0.0.0') {
-    $existingIpConv = Database::fetchOne(
-        "SELECT id FROM conversions WHERE offer_id = ? AND ip_address = ?",
+    // Find all existing approved/pending conversions for this IP/Offer
+    $existingConvs = Database::fetchAll(
+        "SELECT id, conversion_id, affiliate_id, payout, status FROM conversions WHERE offer_id = ? AND ip_address = ? AND status IN ('approved', 'pending')",
         [(int)$click['offer_id'], $click['ip_address']]
     );
+    
+    // Also check if there's ANY conversion to trigger the duplicate logic
+    $existingIpConv = count($existingConvs) > 0 ? true : Database::fetchOne(
+        "SELECT id FROM conversions WHERE offer_id = ? AND ip_address = ? LIMIT 1",
+        [(int)$click['offer_id'], $click['ip_address']]
+    );
+
     if ($existingIpConv) {
         $convStatus = 'rejected';
         $rejectionReason = 'Duplicate IP on same offer';
+        
+        // Auto-reject any prior approved/pending conversions in the cluster
+        if ($existingConvs) {
+            foreach ($existingConvs as $ec) {
+                // Update status to rejected
+                Database::update('conversions', [
+                    'status'           => 'rejected',
+                    'rejection_reason' => 'Removed for duplicate conversion',
+                    'rejected_at'      => date('Y-m-d H:i:s')
+                ], 'id=?', [$ec['id']]);
+                
+                // If it was already approved, we must reverse the affiliate balance
+                if ($ec['status'] === 'approved') {
+                    Database::query(
+                        "UPDATE affiliates SET balance = balance - ? WHERE id = ?",
+                        [$ec['payout'], $ec['affiliate_id']]
+                    );
+                }
+                
+                // Attempt to notify the affiliate of the rejection (if class exists/loaded)
+                try {
+                    if (class_exists('RejectionNotifier')) {
+                        RejectionNotifier::afterReject((string)$ec['conversion_id']);
+                    }
+                } catch (\Throwable $_rn) {}
+            }
+        }
     }
 }
 
