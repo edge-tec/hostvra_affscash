@@ -205,8 +205,8 @@ class ShopService
         self::ensureSchema();
         $where = '1';
         $params = [];
-        if ($affiliateId !== null) { $where .= ' AND affiliate_id = ?'; $params[] = $affiliateId; }
-        if ($status   !== null && $status !== '') { $where .= ' AND status = ?'; $params[] = $status; }
+        if ($affiliateId !== null) { $where .= ' AND so.affiliate_id = ?'; $params[] = $affiliateId; }
+        if ($status   !== null && $status !== '') { $where .= ' AND so.status = ?'; $params[] = $status; }
         return Database::fetchAll(
             "SELECT so.*, CONCAT(u.first_name,' ',u.last_name) AS aff_name, u.email AS aff_email
              FROM shop_orders so
