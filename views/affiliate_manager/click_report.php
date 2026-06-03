@@ -61,7 +61,7 @@
 </div>
 
 <!-- Summary cards -->
-<div class="stats-grid mb-3" style="grid-template-columns:repeat(5,1fr)">
+<div class="stats-grid mb-3" style="grid-template-columns:repeat(3,1fr)">
     <div class="stat-card">
         <div class="stat-label">Total Clicks</div>
         <div class="stat-value"><?= number_format($totalClicks) ?></div>
@@ -72,18 +72,9 @@
         <div class="stat-sub"><?= $totalClicks > 0 ? round($fraudCount/$totalClicks*100,1) : 0 ?>% fraud rate</div>
     </div>
     <div class="stat-card">
-        <div class="stat-label">Total Revenue</div>
-        <div class="stat-value">$<?= number_format($totalRevenue, 2) ?></div>
-        <div class="stat-sub" style="font-size:10px">converted only</div>
-    </div>
-    <div class="stat-card">
         <div class="stat-label">Total Payout</div>
         <div class="stat-value">$<?= number_format($totalPayout, 2) ?></div>
         <div class="stat-sub" style="font-size:10px">converted only</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-label">Profit</div>
-        <div class="stat-value" style="color:<?= $totalProfit >= 0 ? 'var(--secondary)' : 'var(--danger)' ?>">$<?= number_format($totalProfit, 2) ?></div>
     </div>
 </div>
 
@@ -108,18 +99,15 @@
                     <th>IP ADDRESS</th>
                     <th>COUNTRY</th>
                     <th>CITY</th>
-                    <th>REVENUE</th>
                     <th>PAYOUT</th>
-                    <th>PROFIT</th>
                     <th>CLICK TIME</th>
                 </tr>
             </thead>
             <tbody>
             <?php if (empty($clicks)): ?>
-            <tr><td colspan="15" class="text-center text-muted" style="padding:32px">No clicks found for the selected filters</td></tr>
+            <tr><td colspan="13" class="text-center text-muted" style="padding:32px">No clicks found for the selected filters</td></tr>
             <?php else: ?>
             <?php foreach ($clicks as $c):
-                $profit  = (float)$c['revenue'] - (float)$c['payout'];
                 $isFraud = (bool)$c['is_fraud'];
             ?>
             <tr style="<?= $isFraud ? 'background:#FFF5F5' : '' ?>">
@@ -152,9 +140,7 @@
                     <?php else: ?>—<?php endif; ?>
                 </td>
                 <td><?= Helpers::e($c['city'] ?: '—') ?></td>
-                <td><?= $c['has_conversion'] ? '$'.number_format((float)$c['revenue'],4) : '<span style="color:#CBD5E1">—</span>' ?></td>
                 <td><?= $c['has_conversion'] ? '$'.number_format((float)$c['payout'],4)  : '<span style="color:#CBD5E1">—</span>' ?></td>
-                <td><?php if ($c['has_conversion']): ?><span style="color:<?= $profit>=0?'var(--secondary)':'var(--danger)' ?>">$<?= number_format($profit,4) ?></span><?php else: ?><span style="color:#CBD5E1">—</span><?php endif; ?></td>
                 <td class="text-muted" style="white-space:nowrap"><?= date('M j, Y H:i:s', strtotime($c['clicked_at'])) ?></td>
             </tr>
             <?php endforeach; ?>
@@ -170,7 +156,7 @@ $(function() {
     $('#tbl-mgr-clicks').DataTable({
         destroy: true,
         pageLength: 50,
-        order: [[14, 'desc']],
+        order: [[12, 'desc']],
         scrollX: true,
         language: { search: 'Search:', lengthMenu: 'Show _MENU_ entries' }
     });

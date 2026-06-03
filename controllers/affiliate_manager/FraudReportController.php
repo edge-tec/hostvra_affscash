@@ -106,7 +106,7 @@ if (!empty($affIds)) {
 
     try {
         $conversions = Database::fetchAll(
-            "SELECT cv.conversion_id, cv.click_id, cv.status, cv.payout, cv.revenue,
+            "SELECT cv.conversion_id, cv.click_id, cv.status, cv.payout,
                     cv.converted_at, cv.ip_address, cv.country,
                     COALESCE(cv.rejection_reason, '') AS rejection_reason,
                     cv.rejected_at,

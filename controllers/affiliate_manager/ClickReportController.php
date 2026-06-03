@@ -13,7 +13,7 @@ $clickFilter = Helpers::get('click_filter') ?: 'all';
 if (!in_array($clickFilter, ['all','converted','approved'])) $clickFilter = 'all';
 
 if (empty($affIds)) {
-    $clicks = []; $totalClicks = $fraudCount = $totalRevenue = $totalPayout = $totalProfit = 0;
+    $clicks = []; $totalClicks = $fraudCount = $totalPayout = 0;
     $offerList = $affList = [];
     require BASE_PATH . '/views/affiliate_manager/click_report.php';
     return;
@@ -41,8 +41,6 @@ if (Helpers::get('export') === 'csv') {
                 c.is_fraud, c.fraud_score, c.os, c.browser, c.device_type,
                 c.ip_address, c.country, c.city,
                 COALESCE(cv.payout,  0) as payout,
-                COALESCE(cv.revenue, 0) as revenue,
-                (COALESCE(cv.revenue, 0) - COALESCE(cv.payout, 0)) as profit,
                 (cv.conversion_id IS NOT NULL) as has_conversion,
                 c.clicked_at, c.status,
                 o.name as offer_name,
@@ -62,7 +60,7 @@ if (Helpers::get('export') === 'csv') {
     header('Content-Type: text/csv');
     header('Content-Disposition: attachment; filename="click-report-' . date('Y-m-d') . '.csv"');
     $f = fopen('php://output', 'w');
-    fputcsv($f, ['OFFER','AFFILIATE','AFF CODE','CLICK ID','SUB1','SUB2','SUB3','SUB4','REFERER','FRAUD','OS','BROWSER','DEVICE','IP ADDRESS','COUNTRY','CITY','REVENUE','PAYOUT','PROFIT','CLICK TIME']);
+    fputcsv($f, ['OFFER','AFFILIATE','AFF CODE','CLICK ID','SUB1','SUB2','SUB3','SUB4','REFERER','FRAUD','OS','BROWSER','DEVICE','IP ADDRESS','COUNTRY','CITY','PAYOUT','CLICK TIME']);
     foreach ($rows as $r) {
         fputcsv($f, [
             $r['offer_name'], $r['aff_name'], $r['affiliate_code'],
@@ -70,7 +68,7 @@ if (Helpers::get('export') === 'csv') {
             $r['referer'], $r['is_fraud'] ? 'Yes' : 'No',
             $r['os'], $r['browser'], $r['device_type'],
             $r['ip_address'], $r['country'], $r['city'],
-            number_format($r['revenue'], 4), number_format($r['payout'], 4), number_format($r['profit'], 4),
+            number_format($r['payout'], 4),
             $r['clicked_at'],
         ]);
     }
@@ -83,8 +81,6 @@ $clicks = Database::fetchAll(
             c.is_fraud, c.fraud_score, c.os, c.browser, c.device_type,
             c.ip_address, c.country, c.city,
             COALESCE(cv.payout,  0) as payout,
-            COALESCE(cv.revenue, 0) as revenue,
-            (COALESCE(cv.revenue, 0) - COALESCE(cv.payout, 0)) as profit,
             (cv.conversion_id IS NOT NULL) as has_conversion,
             c.clicked_at, c.status,
             o.name as offer_name,
@@ -104,9 +100,7 @@ $clicks = Database::fetchAll(
 
 $totalClicks  = count($clicks);
 $fraudCount   = count(array_filter($clicks, fn($r) => $r['is_fraud']));
-$totalRevenue = array_sum(array_column($clicks, 'revenue'));
 $totalPayout  = array_sum(array_column($clicks, 'payout'));
-$totalProfit  = $totalRevenue - $totalPayout;
 
 $offerList = Database::fetchAll("SELECT DISTINCT o.id, o.name FROM offers o JOIN clicks c ON c.offer_id=o.id WHERE c.affiliate_id IN ($inSql) ORDER BY o.name", $affIds);
 $affList   = empty($affIds) ? [] : Database::fetchAll(

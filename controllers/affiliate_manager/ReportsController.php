@@ -139,7 +139,7 @@ if (in_array($tab, $perfTabs) && $hasAffiliates) {
             "SELECT {$selectMap[$tab]},
                     SUM(sd.clicks) as clicks, SUM(sd.unique_clicks) as uclicks,
                     SUM(sd.conversions) as conversions, SUM(sd.approved) as approved,
-                    SUM(sd.rejected) as rejected, SUM(sd.payout) as payout, SUM(sd.revenue) as revenue,
+                    SUM(sd.rejected) as rejected, SUM(sd.payout) as payout,
                     SUM(sd.fraud_clicks) as fraud_clicks
              FROM stats_daily sd {$joinMap[$tab]}
              WHERE $whereStr
@@ -169,8 +169,7 @@ if (in_array($tab, $perfTabs) && $hasAffiliates) {
                     COUNT(cv.id) as conversions,
                     SUM(CASE WHEN cv.status='approved' THEN 1 ELSE 0 END) as approved,
                     SUM(CASE WHEN cv.status='rejected' THEN 1 ELSE 0 END) as rejected,
-                    COALESCE(SUM(CASE WHEN cv.status='approved' AND cv.is_hidden=0 THEN cv.payout ELSE 0 END), 0) as payout,
-                    COALESCE(SUM(CASE WHEN cv.status='approved' AND cv.is_hidden=0 THEN cv.revenue ELSE 0 END), 0) as revenue
+                    COALESCE(SUM(CASE WHEN cv.status='approved' AND cv.is_hidden=0 THEN cv.payout ELSE 0 END), 0) as payout
              FROM clicks c
              LEFT JOIN conversions cv ON cv.click_id = c.click_id AND cv.is_hidden = 0
              WHERE $whereStr
@@ -186,8 +185,7 @@ if (in_array($tab, $perfTabs) && $hasAffiliates) {
         'approved'    => array_sum(array_column($rows,'approved')),
         'rejected'    => array_sum(array_column($rows,'rejected')),
         'fraud_clicks'=> array_sum(array_column($rows,'fraud_clicks')),
-        'payout'      => array_sum(array_column($rows,'payout')),
-        'revenue'     => array_sum(array_column($rows,'revenue') ?? []),
+        'payout'      => array_sum(array_column($rows,'payout'))
     ];
 
     if ($isExport) {
@@ -246,7 +244,7 @@ if (in_array($tab, $perfTabs) && $hasAffiliates) {
 
 } elseif (in_array($tab, $perfTabs) && !$hasAffiliates) {
     $rows   = [];
-    $totals = ['clicks'=>0,'uclicks'=>0,'conversions'=>0,'approved'=>0,'rejected'=>0,'fraud_clicks'=>0,'payout'=>0,'revenue'=>0];
+    $totals = ['clicks'=>0,'uclicks'=>0,'conversions'=>0,'approved'=>0,'rejected'=>0,'fraud_clicks'=>0,'payout'=>0];
     $perfIpqsStats = [];
 }
 
@@ -302,7 +300,7 @@ if ($tab === 'conversion') {
         $whereStr = implode(' AND ', $cvWhere);
 
         $convRows = Database::fetchAll(
-            "SELECT cv.conversion_id, cv.click_id, cv.status, cv.payout, cv.revenue,
+            "SELECT cv.conversion_id, cv.click_id, cv.status, cv.payout,
                     cv.is_fraud, cv.transaction_id, cv.goal_name, cv.converted_at,
                     o.name as offer_name,
                     CONCAT(u.first_name,' ',u.last_name) as aff_name, af.affiliate_code,
@@ -352,8 +350,7 @@ if ($tab === 'sl_report' && $hasAffiliates) {
                     SUM(c.is_fraud)      as fraud_clicks,
                     COUNT(cv.id)         as conversions,
                     SUM(CASE WHEN cv.status='approved' THEN 1 ELSE 0 END) as approved,
-                    COALESCE(SUM(CASE WHEN cv.status='approved' THEN cv.payout   ELSE 0 END),0) as payout,
-                    COALESCE(SUM(CASE WHEN cv.status='approved' THEN cv.revenue  ELSE 0 END),0) as revenue
+                    COALESCE(SUM(CASE WHEN cv.status='approved' THEN cv.payout   ELSE 0 END),0) as payout
              FROM clicks c
              JOIN affiliates af ON af.id = c.affiliate_id
              JOIN users u ON u.id = af.user_id

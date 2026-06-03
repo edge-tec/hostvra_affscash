@@ -551,7 +551,6 @@ $_slvRows   = $slConversions ?? [];
 $_slaTotClk = array_sum(array_column($_slaRows,'clicks'));
 $_slaTotCv  = array_sum(array_column($_slaRows,'conversions'));
 $_slaPay    = array_sum(array_column($_slaRows,'payout'));
-$_slaRev    = array_sum(array_column($_slaRows,'revenue'));
 ?>
 <div class="stats-grid mb-3" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr))">
     <div class="stat-card"><div class="stat-label">SL Clicks</div><div class="stat-value"><?= number_format($_slaTotClk) ?></div></div>
