@@ -234,6 +234,12 @@ class ShopService
                 'shop_order',
                 (string)$orderId
             );
+            
+            // Restore stock if it's a limited stock product
+            Database::query(
+                "UPDATE shop_products SET stock = stock + 1 WHERE id = ? AND stock != -1",
+                [$existing['product_id']]
+            );
         }
         $upd = ['status' => $status];
         if ($trackingCode !== null) $upd['tracking_code'] = $trackingCode;
