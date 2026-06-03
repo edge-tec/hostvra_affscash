@@ -26,7 +26,6 @@ $rows = Database::fetchAll(
         FROM conversions
         WHERE offer_id IS NOT NULL AND offer_id > 0
           AND ip_address IS NOT NULL AND ip_address <> ''
-          AND affiliate_id = ?
           AND converted_at BETWEEN ? AND ?
         GROUP BY offer_id, ip_address
         HAVING dup_count > 1
@@ -35,7 +34,7 @@ $rows = Database::fetchAll(
      WHERE cv.affiliate_id = ?
        AND cv.converted_at BETWEEN ? AND ?
      ORDER BY cv.offer_id, cv.ip_address, cv.converted_at DESC",
-    [$affId, $dateFrom, $dateTo, $affId, $dateFrom, $dateTo]
+    [$dateFrom, $dateTo, $affId, $dateFrom, $dateTo]
 ) ?: [];
 
 $groups = [];

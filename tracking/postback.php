@@ -388,6 +388,21 @@ $isPending  = ($_approvalMode === 'manual');
 $convStatus = $isPending ? 'pending' : 'approved';
 $convId     = Helpers::uuid();
 
+// ── Cross-Affiliate Duplicate IP Check ────────────────────────────────────
+// If another conversion already exists for this offer and IP (even from another affiliate),
+// automatically mark this new one as a duplicate so it appears in the Duplicate Conversions report.
+$rejectionReason = '';
+if (!empty($click['ip_address']) && $click['ip_address'] !== '0.0.0.0') {
+    $existingIpConv = Database::fetchOne(
+        "SELECT id FROM conversions WHERE offer_id = ? AND ip_address = ?",
+        [(int)$click['offer_id'], $click['ip_address']]
+    );
+    if ($existingIpConv) {
+        $convStatus = 'rejected';
+        $rejectionReason = 'Duplicate IP on same offer';
+    }
+}
+
 // ── Auto-hide rule check ──────────────────────────────────────────────────
 $isAutoHidden = false;
 $hideReason   = '';
@@ -599,6 +614,7 @@ try {
         'ip_address'     => $click['ip_address'],
         'is_hidden'      => $isAutoHidden ? 1 : 0,
         'hide_reason'    => $isAutoHidden ? $hideReason : '',
+        'rejection_reason'=> !empty($rejectionReason) ? $rejectionReason : null,
         'postback_sent'  => 0,   // explicitly initialised so UPDATE later can reliably set to 1
         'user_agent'     => $_ua ?: null,
         'device_brand'   => $_devBrand ?: null,
@@ -609,8 +625,8 @@ try {
         'fraud_reasons'  => !empty($riskEngineReasons) ? json_encode($riskEngineReasons) : null,
     ]);
 
-    // Only credit balance and stats when NOT hidden and NOT pending manual approval
-    if (!$isAutoHidden && !$isPending) {
+    // Only credit balance and stats when NOT hidden, NOT pending manual approval, and NOT rejected
+    if (!$isAutoHidden && !$isPending && $convStatus === 'approved') {
         // Credit affiliate balance
         Database::query(
             "UPDATE `affiliates` SET `balance` = `balance` + ? WHERE `id` = ?",

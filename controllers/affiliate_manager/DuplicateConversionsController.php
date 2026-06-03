@@ -37,7 +37,6 @@ if ($hasAffiliates) {
             FROM conversions
             WHERE offer_id IS NOT NULL AND offer_id > 0
               AND ip_address IS NOT NULL AND ip_address <> ''
-              AND affiliate_id IN ($inSql)
               AND converted_at BETWEEN ? AND ?
             GROUP BY offer_id, ip_address
             HAVING dup_count > 1
@@ -48,7 +47,7 @@ if ($hasAffiliates) {
          WHERE cv.affiliate_id IN ($inSql)
            AND cv.converted_at BETWEEN ? AND ?
          ORDER BY cv.offer_id, cv.ip_address, cv.converted_at DESC",
-        array_merge($affIds, [$dateFrom, $dateTo], $affIds, [$dateFrom, $dateTo])
+        array_merge([$dateFrom, $dateTo], $affIds, [$dateFrom, $dateTo])
     ) ?: [];
 }
 
