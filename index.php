@@ -331,6 +331,7 @@ Router::any('/admin/conversions', function() { require BASE_PATH . '/controllers
 Router::any('/admin/rejection-reasons', function() { require BASE_PATH . '/controllers/admin/RejectionReasonsController.php'; });
 Router::any('/admin/vpn-proxy-skip', function() { require BASE_PATH . '/controllers/admin/VpnProxySkipController.php'; });
 Router::any('/admin/settings', function() { require BASE_PATH . '/controllers/admin/SettingsController.php'; });
+Router::any('/admin/system-update', function() { require BASE_PATH . '/controllers/admin/UpdateController.php'; });
 
 // ── Points / Shop / Rewards / Popup admin (non-invasive add-on modules) ──
 Router::any('/admin/points',          function() { require BASE_PATH . '/controllers/admin/PointsController.php'; });
