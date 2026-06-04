@@ -37,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 );
                 if (!$conv) continue;
                 if ($isManager && !in_array($conv['affiliate_id'], $managerAffIds)) continue;
+                if ($isManager && $conv['is_hidden'] == 1) continue;
                 $oldStatus = $conv['status'];
 
                 $payload = RejectionHelper::buildUpdatePayload($newStatus, $rejectReason, $adminId);
@@ -119,6 +120,7 @@ if ($tab === 'conversions') {
     $params = [$dateFrom . ' 00:00:00', $dateTo . ' 23:59:59'];
 
     if ($isManager) {
+        $where .= " AND cv.is_hidden = 0";
         if (empty($managerAffIds)) { $where .= " AND 1=0"; }
         else {
             $placeholders = implode(',', array_fill(0, count($managerAffIds), '?'));
