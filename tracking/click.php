@@ -71,9 +71,11 @@ $lpForce = Helpers::get('lp');
 // rejected traffic must terminate immediately at the validation layer.
 // Any Location/Refresh headers queued earlier in the request are cleared
 // so no downstream proxy or buffer can leak a redirect to the visitor.
-function trafficBack(string $message, int $code = 403): never {
+function trafficBack(string $message, int $code = 403, bool $disableTb = false): never {
     $tbUrl = '';
-    try { $tbUrl = trim((string)(Config::get('config', 'app.traffic_back_url') ?? '')); } catch (\Throwable $_) {}
+    if (!$disableTb) {
+        try { $tbUrl = trim((string)(Config::get('config', 'app.traffic_back_url') ?? '')); } catch (\Throwable $_) {}
+    }
 
     $clickId = (string)($_GET['click_id'] ?? $_GET['sub1'] ?? '');
     $affId   = (string)($_GET['aff_id']   ?? $_GET['affiliate_id'] ?? $_GET['aff'] ?? '');
@@ -154,7 +156,7 @@ function trafficBack(string $message, int $code = 403): never {
 }
 
 if (!$offerId || !$affCode) {
-    trafficBack('Invalid tracking link.', 400);
+    trafficBack('Invalid tracking link.', 400, true);
 }
 
 // Validate offer
@@ -163,7 +165,7 @@ $offer = Database::fetchOne(
     [$offerId]
 );
 if (!$offer) {
-    trafficBack('Offer not found or inactive.', 404);
+    trafficBack('Offer not found or inactive.', 404, true);
 }
 
 // Validate affiliate
@@ -172,7 +174,7 @@ $affiliate = Database::fetchOne(
     [$affCode]
 );
 if (!$affiliate) {
-    trafficBack('Invalid affiliate.');
+    trafficBack('Invalid affiliate.', 403, true);
 }
 
 // ── Fraud Blocklist: affiliate-level block ────────────────────────────────
@@ -342,7 +344,7 @@ $blockedRecord = Database::fetchOne(
     [$affiliate['id'], $offerId]
 );
 if ($blockedRecord) {
-    trafficBack('Access denied to this offer.');
+    trafficBack('Access denied to this offer.', 403, true);
 }
 
 // ── Private offer enforcement ─────────────────────────────────────────────
@@ -351,7 +353,7 @@ if ($blockedRecord) {
 // is logged. The check runs on every request, so admin grant/revoke takes
 // effect on the very next click with no cache or restart.
 if (empty($GLOBALS['_sl_id']) && !PrivateOffer::checkClickAccess($offer, (int)$affiliate['id'])) {
-    trafficBack('Access denied to this offer.');
+    trafficBack('Access denied to this offer.', 403, true);
 }
 
 // Resolve actual payout — priority: most specific rule wins
@@ -519,7 +521,7 @@ function resolvePayout(array $offer, ?array $access, string $country, string $de
 // (smartlink_requests) so enforcing offer-level approval here would block all
 // affiliates who are only approved for the smartlink but not the individual offer.
 if ($offer['require_approval'] && !$access && empty($GLOBALS['_sl_id'])) {
-    trafficBack('Access denied to this offer.');
+    trafficBack('Access denied to this offer.', 403, true);
 }
 
 // Check daily conversion cap (offer-level)
