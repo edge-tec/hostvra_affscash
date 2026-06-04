@@ -233,6 +233,7 @@ if (in_array($tab, $perfTabs) && $hasAffiliates) {
                  WHERE cv.affiliate_id IN ($affInSql)
                    AND cv.converted_at BETWEEN ? AND ?
                    AND cv.fraud_score IS NOT NULL
+                   AND cv.is_hidden = 0
                  GROUP BY {$groupCol}",
                 array_merge($activeAffIds, [$dateFrom, $dateTo])
             ) ?: [];

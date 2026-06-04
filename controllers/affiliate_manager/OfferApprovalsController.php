@@ -154,7 +154,7 @@ $requests = Database::fetchAll(
         u.country,
         af.traffic_sources,
         (SELECT COUNT(*) FROM clicks cl WHERE cl.affiliate_id=ao.affiliate_id AND cl.status='valid') as total_clicks,
-        (SELECT COUNT(*) FROM conversions cv WHERE cv.affiliate_id=ao.affiliate_id AND cv.status='approved') as total_conversions
+        (SELECT COUNT(*) FROM conversions cv WHERE cv.affiliate_id=ao.affiliate_id AND cv.status='approved' AND cv.is_hidden=0) as total_conversions
      FROM affiliate_offers ao
      JOIN offers o ON o.id = ao.offer_id
      JOIN affiliates af ON af.id = ao.affiliate_id
