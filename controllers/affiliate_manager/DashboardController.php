@@ -33,6 +33,7 @@ if (!empty($affIds)) {
              JOIN fraud_logs fl ON fl.click_id = cv.click_id
              WHERE cv.affiliate_id IN ($in30)
                AND cv.converted_at >= ?
+               AND cv.is_hidden = 0
                AND fl.fraud_score IS NOT NULL",
             array_merge($affIds, [$since30])
         );

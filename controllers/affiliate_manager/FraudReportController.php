@@ -87,6 +87,7 @@ if (!empty($affIds)) {
                  JOIN users u ON u.id = af.user_id
                  LEFT JOIN offers o ON o.id = cv.offer_id
                  WHERE cv.affiliate_id IN ($in)
+                   AND cv.is_hidden = 0
                    AND $riskSql
                  ORDER BY cv.converted_at DESC LIMIT 5000",
                 $affIds
@@ -127,6 +128,7 @@ if (!empty($affIds)) {
              LEFT JOIN offers o ON o.id = cv.offer_id
              LEFT JOIN fraud_logs fl ON fl.click_id = cv.click_id
              WHERE cv.affiliate_id IN ($in)
+               AND cv.is_hidden = 0
                AND $riskSql
              ORDER BY cv.converted_at DESC LIMIT 1000",
             $affIds
@@ -135,6 +137,7 @@ if (!empty($affIds)) {
         $count30 = (int)(Database::fetchOne(
             "SELECT COUNT(*) AS c FROM conversions cv
              WHERE cv.affiliate_id IN ($in)
+               AND cv.is_hidden = 0
                AND $riskSql
                AND cv.converted_at >= NOW() - INTERVAL 30 DAY",
             $affIds

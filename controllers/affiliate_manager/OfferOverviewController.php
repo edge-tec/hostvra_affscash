@@ -101,11 +101,11 @@ $recentConversions = Database::fetchAll(
 // ── Cap usage (conversions, matching click.php enforcement with CURDATE()) ─
 $todayCapUsed = (int)(Database::fetchOne(
     "SELECT COUNT(*) AS c FROM conversions
-     WHERE offer_id=? AND DATE(converted_at)=CURDATE() AND status IN ('pending','approved')",
+     WHERE offer_id=? AND DATE(converted_at)=CURDATE() AND status IN ('pending','approved') AND is_hidden=0",
     [$offerId]
 )['c'] ?? 0);
 $totalCapUsed = (int)(Database::fetchOne(
-    "SELECT COUNT(*) AS c FROM conversions WHERE offer_id=? AND status IN ('pending','approved')",
+    "SELECT COUNT(*) AS c FROM conversions WHERE offer_id=? AND status IN ('pending','approved') AND is_hidden=0",
     [$offerId]
 )['c'] ?? 0);
 $todayClicks = (int)($todayStats['clicks'] ?? 0);
