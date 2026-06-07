@@ -166,6 +166,15 @@ function fmtTs(ts, opts) {
     <button id="sidebarToggle" type="button" aria-label="Toggle menu" onclick="window.toggleSidebar&&window.toggleSidebar(event)">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" pointer-events="none"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
+    <?php $tbLogo = Config::get('config','app.logo'); ?>
+    <a href="/affiliate/dashboard" class="mobile-topbar-logo" style="display:flex;align-items:center;margin-left:8px;text-decoration:none;">
+        <?php if ($tbLogo): ?>
+        <img src="<?= Helpers::e($tbLogo) ?>" alt="Logo" style="max-height:28px; max-width:120px; object-fit:contain;">
+        <?php else: ?>
+        <span style="font-weight:bold; color:var(--text-main); font-size:16px;"><?= Helpers::e(Config::get('config','app.name') ?? 'AffTracker') ?></span>
+        <?php endif; ?>
+    </a>
+    <style>@media (min-width: 769px) { .mobile-topbar-logo { display: none !important; } }</style>
     <span class="topbar-title"><?= Helpers::e($pageTitle ?? 'Dashboard') ?></span>
     <div style="display:flex;align-items:center;gap:8px;margin-right:8px">
         <!-- Affiliate Balance Dropdown -->
