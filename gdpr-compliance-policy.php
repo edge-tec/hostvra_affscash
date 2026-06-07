@@ -35,7 +35,7 @@ if (!$navLogo) {
 <?php elseif ($faviconPath): ?>
 <link rel="icon" href="<?= htmlspecialchars($faviconPath) ?>">
 <?php else: ?>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%237c3aed' width='32' height='32' rx='6'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='18' font-weight='800'>E</text></svg>">
+<link rel="icon" href="/x-icon.png" type="image/png">
 <?php endif; ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -191,6 +191,10 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
   .accordion-content{padding:0 20px 20px 20px}
 }
 @media(max-width:640px){
+  nav{padding:0 4%;gap:10px;justify-content:space-between}
+  .nav-logo img{max-height:28px!important}
+  .btn{padding:8px 12px;font-size:12px}
+  .nav-spacer{display:none}
   .page-hero{padding:100px 5% 32px}
   .page-hero h1{font-size:28px}
   .page-hero-meta{flex-direction:column;gap:12px}
@@ -206,7 +210,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
 <nav id="mainNav">
   <a href="/" class="nav-logo">
     <?php if ($navLogo): ?>
-    <img src="<?= htmlspecialchars($navLogo) ?>" alt="<?= htmlspecialchars($siteName) ?>" style="max-height:38px;width:auto;display:block" class="landing-logo-img">
+    <img src="<?= htmlspecialchars($navLogo) ?>" alt="<?= htmlspecialchars($siteName) ?>" style="max-height:38px;width:auto;display:block" class="landing-logo-img" onerror="this.src='/logoo.png'">
     <?php else: ?>
     <?= htmlspecialchars($siteName) ?>
     <?php endif; ?>
@@ -286,14 +290,16 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
   <!-- Terms Content -->
   
 
+
 <main class="tos-content">
 
 <div class="notice-block">
-      <strong>Last Updated: June 1, 2026</strong><br>Applies To: AffsCash.net (“Company,” “we,” “us,” “our”) and all users, affiliates, and visitors within the European Economic Area (EEA), UK, and other applicable regions.
-    </div>
 
-    <!-- Section 1 -->
-    <section class="tos-section is-open" id="section-1">
+      <strong>Last Updated: June 1, 2026</strong><br>Applies To: AffsCash.net (“Company,” “we,” “us,” “our”) and all users, affiliates, and visitors within the European Economic Area (EEA), UK, and other applicable regions.
+    
+</div>
+
+<section class="tos-section is-open" id="section-1">
       <div class="accordion-header">
         <span class="section-number">01</span>
         <h2>Introduction</h2>
@@ -304,8 +310,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
     </section>
 
-    <!-- Section 2 -->
-    <section class="tos-section" id="section-2">
+<section class="tos-section" id="section-2">
       <div class="accordion-header">
         <span class="section-number">02</span>
         <h2>Data Controller</h2>
@@ -317,8 +322,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
     </section>
 
-    <!-- Section 3 -->
-    <section class="tos-section" id="section-3">
+<section class="tos-section" id="section-3">
       <div class="accordion-header">
         <span class="section-number">03</span>
         <h2>Personal Data We Collect</h2>
@@ -361,8 +365,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
     </section>
 
-    <!-- Section 4 -->
-    <section class="tos-section" id="section-4">
+<section class="tos-section" id="section-4">
       <div class="accordion-header">
         <span class="section-number">04</span>
         <h2>Purpose of Data Collection</h2>
@@ -382,8 +385,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
     </section>
 
-    <!-- Section 5 -->
-    <section class="tos-section" id="section-5">
+<section class="tos-section" id="section-5">
       <div class="accordion-header">
         <span class="section-number">05</span>
         <h2>Legal Basis for Processing</h2>
@@ -400,8 +402,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
     </section>
 
-    <!-- Section 6 -->
-    <section class="tos-section" id="section-6">
+<section class="tos-section" id="section-6">
       <div class="accordion-header">
         <span class="section-number">06</span>
         <h2>Data Sharing</h2>
@@ -420,8 +421,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
     </section>
 
-    <!-- Section 7 -->
-    <section class="tos-section" id="section-7">
+<section class="tos-section" id="section-7">
       <div class="accordion-header">
         <span class="section-number">07</span>
         <h2>Cookies & Tracking Technologies</h2>
@@ -439,8 +439,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
     </section>
 
-    <!-- Section 8 -->
-    <section class="tos-section" id="section-8">
+<section class="tos-section" id="section-8">
       <div class="accordion-header">
         <span class="section-number">08</span>
         <h2>Data Retention</h2>
@@ -458,8 +457,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
     </section>
 
-    <!-- Section 9 -->
-    <section class="tos-section" id="section-9">
+<section class="tos-section" id="section-9">
       <div class="accordion-header">
         <span class="section-number">09</span>
         <h2>Data Security</h2>
@@ -477,8 +475,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
     </section>
 
-    <!-- Section 10 -->
-    <section class="tos-section" id="section-10">
+<section class="tos-section" id="section-10">
       <div class="accordion-header">
         <span class="section-number">10</span>
         <h2>International Data Transfers</h2>
@@ -495,8 +492,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
     </section>
 
-    <!-- Section 11 -->
-    <section class="tos-section" id="section-11">
+<section class="tos-section" id="section-11">
       <div class="accordion-header">
         <span class="section-number">11</span>
         <h2>Data Subject Rights (GDPR Rights)</h2>
@@ -516,8 +512,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
     </section>
 
-    <!-- Section 12 -->
-    <section class="tos-section" id="section-12">
+<section class="tos-section" id="section-12">
       <div class="accordion-header">
         <span class="section-number">12</span>
         <h2>Automated Decision-Making</h2>
@@ -534,8 +529,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
     </section>
 
-    <!-- Section 13 -->
-    <section class="tos-section" id="section-13">
+<section class="tos-section" id="section-13">
       <div class="accordion-header">
         <span class="section-number">13</span>
         <h2>Fraud Prevention & Monitoring</h2>
@@ -552,8 +546,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
     </section>
 
-    <!-- Section 14 -->
-    <section class="tos-section" id="section-14">
+<section class="tos-section" id="section-14">
       <div class="accordion-header">
         <span class="section-number">14</span>
         <h2>Data Requests & Contact</h2>
@@ -569,8 +562,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
     </section>
 
-    <!-- Section 15 -->
-    <section class="tos-section" id="section-15">
+<section class="tos-section" id="section-15">
       <div class="accordion-header">
         <span class="section-number">15</span>
         <h2>Policy Updates</h2>
@@ -582,8 +574,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       </div>
     </section>
 
-    <!-- Section 16 -->
-    <section class="tos-section" id="section-16">
+<section class="tos-section" id="section-16">
       <div class="accordion-header">
         <span class="section-number">16</span>
         <h2>Acceptance</h2>
@@ -614,7 +605,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       <li><a href="/anti-fraud-policy">Anti-Fraud Policy</a></li>
       <li><a href="/gdpr-compliance-policy" class="active-link">GDPR Compliance</a></li>
       <li><a href="/refund-payment-policy">Refund Policy</a></li>
-      <li><a href="/cookie-policy"  >Cookie Policy</a></li>
+      <li><a href="/cookie-policy"   >Cookie Policy</a></li>
       <li><a href="/login">Login</a></li>
     </ul>
   </div>

@@ -35,7 +35,7 @@ if (!$navLogo) {
 <?php elseif ($faviconPath): ?>
 <link rel="icon" href="<?= htmlspecialchars($faviconPath) ?>">
 <?php else: ?>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%237c3aed' width='32' height='32' rx='6'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='18' font-weight='800'>E</text></svg>">
+<link rel="icon" href="/x-icon.png" type="image/png">
 <?php endif; ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -191,6 +191,10 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
   .accordion-content{padding:0 20px 20px 20px}
 }
 @media(max-width:640px){
+  nav{padding:0 4%;gap:10px;justify-content:space-between}
+  .nav-logo img{max-height:28px!important}
+  .btn{padding:8px 12px;font-size:12px}
+  .nav-spacer{display:none}
   .page-hero{padding:100px 5% 32px}
   .page-hero h1{font-size:28px}
   .page-hero-meta{flex-direction:column;gap:12px}
@@ -206,7 +210,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
 <nav id="mainNav">
   <a href="/" class="nav-logo">
     <?php if ($navLogo): ?>
-    <img src="<?= htmlspecialchars($navLogo) ?>" alt="<?= htmlspecialchars($siteName) ?>" style="max-height:38px;width:auto;display:block" class="landing-logo-img">
+    <img src="<?= htmlspecialchars($navLogo) ?>" alt="<?= htmlspecialchars($siteName) ?>" style="max-height:38px;width:auto;display:block" class="landing-logo-img" onerror="this.src='/logoo.png'">
     <?php else: ?>
     <?= htmlspecialchars($siteName) ?>
     <?php endif; ?>
@@ -278,12 +282,15 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
   <!-- Terms Content -->
   
 
+
 <main class="tos-content">
 
 <div class="notice-block">
 
+
       This Affiliate Program Operating Agreement (the "Agreement") is made and entered into by and between Affscash ("Affscash" or "we"), and you ("you" or "Affiliate") — the party submitting an application to become an Affscash affiliate.
     
+
 </div>
 
 <section class="tos-section is-open" id="section-1">
@@ -402,7 +409,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       <li><a href="/anti-fraud-policy">Anti-Fraud Policy</a></li>
       <li><a href="/gdpr-compliance-policy">GDPR Compliance</a></li>
       <li><a href="/refund-payment-policy">Refund Policy</a></li>
-      <li><a href="/cookie-policy"  >Cookie Policy</a></li>
+      <li><a href="/cookie-policy"   >Cookie Policy</a></li>
       <li><a href="/login">Login</a></li>
     </ul>
   </div>

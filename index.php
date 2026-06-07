@@ -190,6 +190,9 @@ Router::get('/privacy-policy', function() {
 // Convenience aliases.
 Router::get('/privacy', function() { Helpers::redirect('/privacy-policy'); });
 
+Router::get('/terms-of-service', function() {
+    require BASE_PATH . '/TRC.html';
+});
 Router::get('/affiliate-agreement', function() {
     require BASE_PATH . '/affiliate-agreement.php';
 });

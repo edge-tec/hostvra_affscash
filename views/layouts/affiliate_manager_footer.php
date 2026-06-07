@@ -22,14 +22,14 @@ $iconHtml = $favIcon ? '<img src="'.Helpers::e($favIcon).'" style="width:12px;he
         <?php endif; ?>
     </div>
     <div style="display:flex; justify-content:center; flex-wrap:wrap; gap:16px; margin-bottom:12px;">
-        <a href="/policy/terms-conditions" class="footer-link"><?= $iconHtml ?>Terms & Conditions</a>
-        <a href="/policy/privacy-policy" class="footer-link"><?= $iconHtml ?>Privacy Policy</a>
-        <a href="/policy/affiliate-agreement" class="footer-link"><?= $iconHtml ?>Affiliate Agreement</a>
-        <a href="/policy/anti-fraud-policy" class="footer-link"><?= $iconHtml ?>Anti-Fraud Policy</a>
-        <a href="/policy/gdpr-compliance" class="footer-link"><?= $iconHtml ?>GDPR Compliance</a>
-        <a href="/policy/refund-policy" class="footer-link"><?= $iconHtml ?>Refund Policy</a>
-        <a href="/policy/cookie-policy" class="footer-link"><?= $iconHtml ?>Cookie Policy</a>
-        <a href="/policy/dashboard-disclaimers" class="footer-link"><?= $iconHtml ?>Dashboard Disclaimers</a>
+        <a href="/terms-of-service" target="_blank" class="footer-link"><?= $iconHtml ?>Terms & Conditions</a>
+        <a href="/privacy-policy" target="_blank" class="footer-link"><?= $iconHtml ?>Privacy Policy</a>
+        <a href="/affiliate-agreement" target="_blank" class="footer-link"><?= $iconHtml ?>Affiliate Agreement</a>
+        <a href="/anti-fraud-policy" target="_blank" class="footer-link"><?= $iconHtml ?>Anti-Fraud Policy</a>
+        <a href="/gdpr-compliance-policy" target="_blank" class="footer-link"><?= $iconHtml ?>GDPR Compliance</a>
+        <a href="/refund-payment-policy" target="_blank" class="footer-link"><?= $iconHtml ?>Refund Policy</a>
+        <a href="/cookie-policy" target="_blank" class="footer-link"><?= $iconHtml ?>Cookie Policy</a>
+        <a href="/dashboard-disclaimers" target="_blank" class="footer-link"><?= $iconHtml ?>Dashboard Disclaimers</a>
     </div>
     <?php if ($copyright): ?>
     <div><?= Helpers::e($copyright) ?></div>
