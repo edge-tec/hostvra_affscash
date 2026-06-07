@@ -106,6 +106,22 @@ elseif ($action === 'index') {
     try { Database::query("ALTER TABLE users ADD COLUMN inactivity_warned_at      DATETIME NULL"); } catch (\Throwable $_) {}
     try { Database::query("ALTER TABLE users ADD COLUMN inactivity_deactivated_at DATETIME NULL"); } catch (\Throwable $_) {}
 
+    // --- REALTIME INACTIVITY SWEEP ---
+    $inactivityEnabled = (Config::get('config', 'app.inactivity_enabled') ?? '0') === '1';
+    if ($inactivityEnabled) {
+        $inactivityDays = (int)(Config::get('config', 'app.inactivity_days') ?? 30);
+        if ($inactivityDays > 0) {
+            Database::query("
+                UPDATE users 
+                SET status='suspended', inactivity_deactivated_at=NOW()
+                WHERE role='affiliate' 
+                  AND status='active'
+                  AND last_login IS NOT NULL
+                  AND DATEDIFF(NOW(), last_login) >= ?
+            ", [$inactivityDays]);
+        }
+    }
+
     $affiliates = Database::fetchAll(
         "SELECT u.id as user_id,u.email,u.first_name,u.last_name,u.company,u.phone,u.country,u.status,u.created_at,
                 u.last_login, u.inactivity_deactivated_at,

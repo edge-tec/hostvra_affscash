@@ -139,6 +139,12 @@ body { background:linear-gradient(135deg,#EEF2FF 0%,#F0FDF4 100%); padding:40px 
 <div class="auth-theme-picker"><?php require BASE_PATH . '/views/partials/theme_toggle.php'; ?></div>
 <div class="auth-box">
     <div class="auth-header">
+        <?php
+        $loginLogo      = Config::get('config','app.login_logo') ?: Config::get('config','app.logo');
+        $loginLogoWhite = !empty(Config::get('config','app.login_logo_white'));
+        if ($loginLogo): ?>
+        <img src="<?= Helpers::e($loginLogo) ?>" alt="Logo" style="max-height:40px;max-width:200px;object-fit:contain;margin-bottom:14px;display:block<?= $loginLogoWhite ? ';filter:brightness(0) invert(1)' : '' ?>">
+        <?php endif; ?>
         <h1>&#128200; Advertiser Registration</h1>
         <p>Start running offers on our network. Post your CPA campaigns today.</p>
     </div>

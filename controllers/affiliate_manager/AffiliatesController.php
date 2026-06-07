@@ -149,6 +149,21 @@ elseif ($action === 'edit') {
 
 // ── Index: list all affiliates ─────────────────────────────────────────────
 else {
+    // --- REALTIME INACTIVITY SWEEP ---
+    $inactivityEnabled = (Config::get('config', 'app.inactivity_enabled') ?? '0') === '1';
+    if ($inactivityEnabled) {
+        $inactivityDays = (int)(Config::get('config', 'app.inactivity_days') ?? 30);
+        if ($inactivityDays > 0) {
+            Database::query("
+                UPDATE users 
+                SET status='suspended', inactivity_deactivated_at=NOW()
+                WHERE role='affiliate' 
+                  AND status='active'
+                  AND last_login IS NOT NULL
+                  AND DATEDIFF(NOW(), last_login) >= ?
+            ", [$inactivityDays]);
+        }
+    }
     // fraud_score computed live from each affiliate's checked conversions
     // (same source as the Affiliate Conversion Fraud Report).
     $affiliates = empty($affIds) ? [] : Database::fetchAll(

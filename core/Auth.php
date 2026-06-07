@@ -66,6 +66,21 @@ class Auth {
             return ['success' => false, 'error' => 'Your account is ' . $user['status'] . '. Please contact support.'];
         }
 
+        // --- REALTIME INACTIVITY CHECK ---
+        if ($user['role'] === 'affiliate' && !empty($user['last_login'])) {
+            $inactivityEnabled = (Config::get('config', 'app.inactivity_enabled') ?? '0') === '1';
+            if ($inactivityEnabled) {
+                $inactivityDays = (int)(Config::get('config', 'app.inactivity_days') ?? 30);
+                if ($inactivityDays > 0) {
+                    $daysInactive = (time() - strtotime($user['last_login'])) / 86400;
+                    if ($daysInactive >= $inactivityDays) {
+                        Database::query("UPDATE `users` SET `status`='suspended', `inactivity_deactivated_at`=NOW() WHERE `id`=?", [$user['id']]);
+                        return ['success' => false, 'error' => 'Your account has been suspended due to ' . $inactivityDays . ' days of inactivity. Please contact support.'];
+                    }
+                }
+            }
+        }
+
         // ── Login IP Ban check ────────────────────────────────────────────────
         // Enforce for all roles except affiliate_manager. Admin is blocked too.
         if ($user['role'] !== 'affiliate_manager') {
@@ -446,6 +461,23 @@ class Auth {
         try {
             $user = Database::fetchOne("SELECT * FROM `users` WHERE `remember_token`=?", [$token]);
             if ($user && $user['status'] === 'active') {
+                
+                // --- REALTIME INACTIVITY CHECK ---
+                if ($user['role'] === 'affiliate' && !empty($user['last_login'])) {
+                    $inactivityEnabled = (Config::get('config', 'app.inactivity_enabled') ?? '0') === '1';
+                    if ($inactivityEnabled) {
+                        $inactivityDays = (int)(Config::get('config', 'app.inactivity_days') ?? 30);
+                        if ($inactivityDays > 0) {
+                            $daysInactive = (time() - strtotime($user['last_login'])) / 86400;
+                            if ($daysInactive >= $inactivityDays) {
+                                Database::query("UPDATE `users` SET `status`='suspended', `inactivity_deactivated_at`=NOW() WHERE `id`=?", [$user['id']]);
+                                setcookie('remember_token', '', time() - 3600, '/');
+                                return; // Stop auto-login because they are now suspended
+                            }
+                        }
+                    }
+                }
+                
                 session_regenerate_id(true);
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_role'] = $user['role'];
