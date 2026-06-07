@@ -6,7 +6,8 @@ INSERT IGNORE INTO `email_templates` (`event_type`, `label`, `subject`, `html_bo
 '<!DOCTYPE html><html><body style="margin:0;padding:0;background:#F8FAFC;font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#0F172A">
     <div style="max-width:600px;margin:0 auto;padding:24px">
         <div style="background:#fff;border-radius:14px;overflow:hidden;border:1px solid #E2E8F0">
-            <div style="background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;padding:24px 28px">
+            <div style="background:linear-gradient(135deg,#7C3AED,#6D28D9);color:#fff;padding:24px 28px">
+                {{logo_html}}
                 <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.8">New Offer</div>
                 <h1 style="margin:6px 0 0;font-size:22px;line-height:1.3">{{offer_name}}</h1>
                 <div style="margin-top:6px;font-size:13px;opacity:.85">{{advertiser_name}}</div>
@@ -41,7 +42,8 @@ INSERT IGNORE INTO `email_templates` (`event_type`, `label`, `subject`, `html_bo
 '<!DOCTYPE html><html><body style="margin:0;padding:0;background:#F8FAFC;font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#0F172A">
     <div style="max-width:600px;margin:0 auto;padding:24px">
         <div style="background:#fff;border-radius:14px;overflow:hidden;border:1px solid #E2E8F0">
-            <div style="background:linear-gradient(135deg,#3B82F6,#2563EB);color:#fff;padding:24px 28px">
+            <div style="background:linear-gradient(135deg,#7C3AED,#6D28D9);color:#fff;padding:24px 28px">
+                {{logo_html}}
                 <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.8">Status Update</div>
                 <h1 style="margin:6px 0 0;font-size:22px;line-height:1.3">{{offer_name}}</h1>
                 <div style="margin-top:6px;font-size:13px;opacity:.85">Changed from {{old_status}} to {{new_status}}</div>
@@ -65,7 +67,8 @@ INSERT IGNORE INTO `email_templates` (`event_type`, `label`, `subject`, `html_bo
 '<!DOCTYPE html><html><body style="margin:0;padding:0;background:#F8FAFC;font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#0F172A">
     <div style="max-width:600px;margin:0 auto;padding:24px">
         <div style="background:#fff;border-radius:14px;overflow:hidden;border:1px solid #E2E8F0">
-            <div style="background:linear-gradient(135deg,#059669,#10B981);color:#fff;padding:24px 28px">
+            <div style="background:linear-gradient(135deg,#7C3AED,#6D28D9);color:#fff;padding:24px 28px">
+                {{logo_html}}
                 <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.8">Link Update</div>
                 <h1 style="margin:6px 0 0;font-size:22px;line-height:1.3">{{offer_name}}</h1>
             </div>

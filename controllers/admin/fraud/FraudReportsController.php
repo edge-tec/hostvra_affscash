@@ -61,6 +61,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } catch (\Exception $e) {}
         }
         $message = $done . ' conversion(s) marked as ' . $newStatus . '.';
+    } elseif ($action === 'analyze_ips') {
+        $cids = $_POST['bulk_ids'] ?? [];
+        if (!empty($cids)) {
+            $done = 0;
+            $fraudCount = 0;
+            $cfg = Config::get('fraud') ?? [];
+            foreach ($cids as $cid) {
+                $conv = Database::fetchOne("SELECT conversion_id, ip_address, status FROM conversions WHERE conversion_id=?", [$cid]);
+                if (!$conv || empty($conv['ip_address'])) continue;
+                $ip = $conv['ip_address'];
+                $ipValid = filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE);
+                if (!$ipValid) continue;
+                
+                $ipqScore = 0; $flpScore = 0; $pcScore = 0;
+                try { $ipq = FraudIQ::checkIPQuery($ip); $ipqScore = (int)($ipq['risk_score'] ?? 0); } catch(\Throwable $e){}
+                if (!empty($cfg['fraudlabspro_api_key'])) {
+                    try { $flp = FraudIQ::checkFraudLabsPro($ip); $flpScore = (int)($flp['score'] ?? 0); } catch(\Throwable $e){}
+                }
+                if (!empty($cfg['proxycheck_api_key'])) {
+                    try { $pc = FraudIQ::checkProxyCheck($ip); $pcScore = (int)($pc['score'] ?? 0); } catch(\Throwable $e){}
+                }
+                
+                $isFraud = ($ipqScore > 35 || $flpScore > 35 || $pcScore > 35);
+                $update = [
+                    'ipquery_risk_score' => $ipqScore,
+                    'fraudlabspro_score' => $flpScore,
+                    'proxycheck_score'   => $pcScore
+                ];
+                
+                if ($isFraud && $conv['status'] !== 'rejected') {
+                    $adminId = (int)(Auth::id() ?? 0);
+                    $payload = RejectionHelper::buildUpdatePayload('rejected', 'Auto-rejected by Fraud Analyzer', $adminId);
+                    $update = array_merge($update, $payload);
+                    $update['is_fraud'] = 1;
+                    $fraudCount++;
+                }
+                Database::update('conversions', $update, 'conversion_id=?', [$cid]);
+                $done++;
+            }
+            $message = "Analyzed {$done} IPs. Marked {$fraudCount} as Fraud.";
+        }
     }
 }
 
@@ -164,6 +205,7 @@ if ($tab === 'conversions') {
     $conversions = Database::fetchAll(
         "SELECT cv.conversion_id, cv.click_id, cv.ip_address, cv.payout, cv.revenue,
                 cv.status, cv.is_fraud, cv.fraud_score, cv.goal_name, cv.transaction_id,
+                cv.ipquery_risk_score, cv.fraudlabspro_score, cv.proxycheck_score,
                 cv.converted_at, cv.approved_at,
                 o.name AS offer_name, o.id AS offer_id,
                 a.affiliate_code, a.id AS affiliate_id,

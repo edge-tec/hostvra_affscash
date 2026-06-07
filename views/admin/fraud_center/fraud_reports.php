@@ -192,6 +192,7 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
         <?= Helpers::csrf() ?>
         <div id="frBulkInputs"></div>
         <input type="hidden" name="rejection_reason" id="frBulkReason" value="">
+        <button type="button" onclick="frBulkAnalyzeClick()" class="fds-btn fds-btn-sm" style="background:#4F46E5;color:#fff">&#128269; Analyze IPs</button>
         <button type="submit" name="action" value="approve" class="fds-btn fds-btn-sm" style="background:#10B981;color:#fff">&#10003; Approve Selected</button>
         <button type="button" onclick="frBulkBlockClick()" class="fds-btn fds-btn-sm fds-btn-danger">&#128683; Block Selected</button>
     </form>
@@ -222,6 +223,9 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                     <th>Payout</th>
                     <th>Goal</th>
                     <th>Speed</th>
+                    <th>IPQuery</th>
+                    <th>FraudLabs Pro</th>
+                    <th>ProxyCheck</th>
                     <th>Risk Level</th>
                     <th>Status</th>
                     <th>Date</th>
@@ -276,6 +280,27 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                         <span class="fds-text-muted fds-text-sm">—</span>
                     <?php endif; ?>
                 </td>
+                <td class="fds-text-sm" style="text-align: center;">
+                    <?php if (isset($cv['ipquery_risk_score'])): ?>
+                        <?= (int)$cv['ipquery_risk_score'] ?>
+                    <?php else: ?>
+                        <span class="fds-text-muted">N/A</span>
+                    <?php endif; ?>
+                </td>
+                <td class="fds-text-sm" style="text-align: center;">
+                    <?php if (isset($cv['fraudlabspro_score'])): ?>
+                        <?= (int)$cv['fraudlabspro_score'] ?>
+                    <?php else: ?>
+                        <span class="fds-text-muted">N/A</span>
+                    <?php endif; ?>
+                </td>
+                <td class="fds-text-sm" style="text-align: center;">
+                    <?php if (isset($cv['proxycheck_score'])): ?>
+                        <?= (int)$cv['proxycheck_score'] ?>
+                    <?php else: ?>
+                        <span class="fds-text-muted">N/A</span>
+                    <?php endif; ?>
+                </td>
                 <td>
                     <?php 
                         $score = $cv['fraud_score'] ?? 0;
@@ -286,9 +311,13 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                     <?= $isFraud ? ' <span class="fds-badge fds-badge-critical" style="font-size:10px">&#9888;</span>' : '' ?>
                 </td>
                 <td>
-                    <span class="badge badge-<?= ['approved'=>'success','pending'=>'warning','rejected'=>'danger'][$cv['status']]??'muted' ?>">
-                        <?= $cv['status'] ?>
-                    </span>
+                    <?php if ($isFraud && $cv['status'] === 'rejected'): ?>
+                        <span class="badge badge-danger">Fraud</span>
+                    <?php else: ?>
+                        <span class="badge badge-<?= ['approved'=>'success','pending'=>'warning','rejected'=>'danger'][$cv['status']]??'muted' ?>">
+                            <?= ucfirst($cv['status']) ?>
+                        </span>
+                    <?php endif; ?>
                 </td>
                 <td class="fds-text-sm fds-text-muted"><?= date('M j, H:i', strtotime($cv['converted_at'])) ?></td>
                 <?php if ($canAction): ?>
@@ -518,6 +547,22 @@ function frBulkBlockClick(){
         modalForm.onsubmit = null;
         return false;
     };
+}
+
+function frBulkAnalyzeClick() {
+    if (typeof selectedIds === 'undefined' || !selectedIds.length) {
+        alert('Select at least one conversion first.');
+        return;
+    }
+    if (confirm('Analyze selected IPs for fraud? This may take a moment.')) {
+        var bulk = document.getElementById('frBulkForm');
+        var existing = bulk.querySelector('input[name="action"]');
+        if (existing) existing.remove();
+        var actInput = document.createElement('input');
+        actInput.type = 'hidden'; actInput.name = 'action'; actInput.value = 'analyze_ips';
+        bulk.appendChild(actInput);
+        bulk.submit();
+    }
 }
 </script>
 

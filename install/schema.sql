@@ -511,7 +511,8 @@ INSERT IGNORE INTO `email_templates` (`event_type`, `label`, `subject`, `html_bo
 
 ('news_published', 'News Published', '{{title}} — {{site_name}}',
 '<div style="font-family:sans-serif;max-width:600px;margin:0 auto">
-<div style="background:linear-gradient(135deg,#4F46E5,#7C3AED);padding:28px 32px;border-radius:12px 12px 0 0">
+<div style="background:linear-gradient(135deg,#7C3AED,#6D28D9);padding:28px 32px;border-radius:12px 12px 0 0">
+  {{logo_html}}
   <h1 style="color:#fff;margin:0;font-size:22px;font-weight:800">{{site_name}}</h1>
 </div>
 <div style="background:#fff;padding:28px 32px;border:1px solid #E2E8F0;border-top:none">
@@ -561,7 +562,7 @@ ALTER TABLE `email_logs` ADD COLUMN IF NOT EXISTS `error` TEXT NULL;
 -- Insert news email template for existing installs
 INSERT IGNORE INTO `email_templates` (`event_type`, `label`, `subject`, `html_body`, `is_active`) VALUES
 ('news_published', 'News Published', '{{title}} — {{site_name}}',
-'<div style="font-family:sans-serif;max-width:600px;margin:0 auto"><div style="background:linear-gradient(135deg,#4F46E5,#7C3AED);padding:28px 32px;border-radius:12px 12px 0 0"><h1 style="color:#fff;margin:0;font-size:22px;font-weight:800">{{site_name}}</h1></div><div style="background:#fff;padding:28px 32px;border:1px solid #E2E8F0;border-top:none"><h2 style="font-size:20px;font-weight:700;color:#0F172A;margin:0 0 12px">{{title}}</h2><p style="font-size:14px;color:#475569;line-height:1.7;margin:0 0 20px">{{summary}}</p><a href="{{link}}" style="display:inline-block;background:#4F46E5;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">Read Full Article →</a></div><div style="background:#F8FAFC;padding:16px 32px;border-radius:0 0 12px 12px;border:1px solid #E2E8F0;border-top:none;text-align:center;font-size:12px;color:#94A3B8">You received this because you are an affiliate on {{site_name}}.</div></div>',
+'<div style="font-family:sans-serif;max-width:600px;margin:0 auto"><div style="background:linear-gradient(135deg,#7C3AED,#6D28D9);padding:28px 32px;border-radius:12px 12px 0 0">{{logo_html}}<h1 style="color:#fff;margin:0;font-size:22px;font-weight:800">{{site_name}}</h1></div><div style="background:#fff;padding:28px 32px;border:1px solid #E2E8F0;border-top:none"><h2 style="font-size:20px;font-weight:700;color:#0F172A;margin:0 0 12px">{{title}}</h2><p style="font-size:14px;color:#475569;line-height:1.7;margin:0 0 20px">{{summary}}</p><a href="{{link}}" style="display:inline-block;background:#4F46E5;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">Read Full Article →</a></div><div style="background:#F8FAFC;padding:16px 32px;border-radius:0 0 12px 12px;border:1px solid #E2E8F0;border-top:none;text-align:center;font-size:12px;color:#94A3B8">You received this because you are an affiliate on {{site_name}}.</div></div>',
 1);
 
 -- Missing columns on conversions (required by auto-hide feature)

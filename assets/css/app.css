@@ -63,17 +63,34 @@ a:hover { text-decoration: underline; }
     overscroll-behavior: contain;
     padding-bottom: 24px;
 }
+.sidebar-top {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+}
 .sidebar-logo {
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 20px 20px 16px;
-    border-bottom: 1px solid var(--border);
     font-weight: 700;
     font-size: 16px;
     color: var(--primary);
     text-decoration: none;
+    flex: 1;
 }
+.mobile-close-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 8px;
+    margin-right: 8px;
+    border-radius: var(--radius-sm);
+    transition: .15s;
+}
+.mobile-close-btn:hover { background: var(--bg); color: var(--text); }
 .sidebar-logo .logo-icon {
     width: 36px; height: 36px;
     background: var(--primary);
@@ -1255,6 +1272,7 @@ input[type="url"], input[type="tel"] {
 @media (max-width: 768px) {
     /* Hamburger visible */
     #sidebarToggle { display: flex; align-items: center; justify-content: center; }
+    .mobile-close-btn { display: flex; align-items: center; justify-content: center; }
 
     /* Sidebar slides in */
     .sidebar {

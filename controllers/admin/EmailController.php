@@ -14,7 +14,7 @@ if (!function_exists('wrapWithLogo')) {
 
         return '
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto">
-        <div style="background:#4F46E5;padding:20px;text-align:center;border-radius:8px 8px 0 0">
+        <div style="background:linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);padding:20px;text-align:center;border-radius:8px 8px 0 0">
             ' . $logoHtml . '
         </div>
         <div style="padding:24px;border:1px solid #E2E8F0;border-top:none;border-radius:0 0 8px 8px">

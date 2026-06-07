@@ -27,14 +27,19 @@
 </style>
 <div class="app-layout">
 <aside class="sidebar">
-    <a class="sidebar-logo" href="/advertiser/dashboard">
-        <?php if ($siteLogo = Config::get('config','app.logo')): ?>
-        <img src="<?= Helpers::e($siteLogo) ?>" alt="Logo" style="max-height:36px;max-width:140px;object-fit:contain">
-        <?php else: ?>
-        <div class="logo-icon" style="background:#0F766E">&#128200;</div>
-        <span><?= Helpers::e(Config::get('config','app.name') ?? 'AffTracker') ?></span>
-        <?php endif; ?>
-    </a>
+    <div class="sidebar-top">
+        <a class="sidebar-logo" href="/advertiser/dashboard">
+            <?php if ($siteLogo = Config::get('config','app.logo')): ?>
+            <img src="<?= Helpers::e($siteLogo) ?>" alt="Logo" style="max-height:36px;max-width:140px;object-fit:contain">
+            <?php else: ?>
+            <div class="logo-icon" style="background:#0F766E">&#128200;</div>
+            <span><?= Helpers::e(Config::get('config','app.name') ?? 'AffTracker') ?></span>
+            <?php endif; ?>
+        </a>
+        <button class="mobile-close-btn" onclick="window.toggleSidebar&&window.toggleSidebar(event)" aria-label="Close menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+    </div>
     <p class="sidebar-section">Menu</p>
     <a href="/advertiser/dashboard" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/advertiser/dashboard')?'active':'' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a>

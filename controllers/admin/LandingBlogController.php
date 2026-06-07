@@ -242,10 +242,18 @@ function _sendBlogPostEmail(int $postId, string $title, string $excerpt, string 
 
     $subject = '📝 New Blog Post: ' . $title . ' — ' . $siteName;
 
+    $appLogo = Config::get('config','app.logo') ?? '';
+    $logoHtml = '';
+    if (!empty($appLogo)) {
+        $logoUrl = filter_var($appLogo, FILTER_VALIDATE_URL) ? $appLogo : $appUrl . '/' . ltrim($appLogo, '/');
+        $logoHtml = '<div style="margin-bottom:12px;text-align:center"><img src="' . htmlspecialchars($logoUrl, ENT_QUOTES, 'UTF-8') . '" alt="' . htmlspecialchars($siteName, ENT_QUOTES, 'UTF-8') . '" style="max-height:40px;max-width:200px;object-fit:contain"></div>';
+    }
+
     $bodyTpl = '<!DOCTYPE html><html><body style="margin:0;padding:0;background:#F8FAFC;font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#0F172A">
     <div style="max-width:600px;margin:0 auto;padding:24px">
         <div style="background:#fff;border-radius:14px;overflow:hidden;border:1px solid #E2E8F0">
-            <div style="background:linear-gradient(135deg,#0F766E,#0891B2);color:#fff;padding:24px 28px">
+            <div style="background:linear-gradient(135deg,#7C3AED,#6D28D9);color:#fff;padding:24px 28px">
+                ' . $logoHtml . '
                 <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.8">New Blog Post</div>
                 <h1 style="margin:6px 0 0;font-size:22px;line-height:1.3">' . $titleH . '</h1>
             </div>'
