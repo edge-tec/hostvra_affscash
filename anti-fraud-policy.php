@@ -180,19 +180,14 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
 /* ── RESPONSIVE ── */
 @media(max-width:900px){
   .tos-layout{grid-template-columns:1fr;gap:24px;padding:40px 5% 60px}
-  .toc-wrap{position:static;margin-bottom:0;max-height:none;display:block}
-  .toc{padding:16px 20px;}
-  .toc-title{cursor:pointer;margin-bottom:0;padding-bottom:0;border-bottom:none}
-  .toc-toggle{display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:6px;background:rgba(124,58,237,.1)}
-  .toc[data-open="true"] .toc-title{margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border2)}
-  .toc[data-open="false"] .toc-scroll{display:none}
-  .toc-list{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .toc-wrap{display:none !important;}
+  .toc{display:none !important;}
   .sidebar-promo{display:none}
   .accordion-content{padding:0 20px 20px 20px}
 }
 @media(max-width:640px){
   nav{padding:0 4%;gap:10px;justify-content:space-between}
-  .nav-logo img{max-height:28px!important}
+  .nav-logo img{max-height:36px!important}
   .btn{padding:8px 12px;font-size:12px}
   .nav-spacer{display:none}
   .page-hero{padding:100px 5% 32px}
@@ -297,6 +292,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
 
   <!-- Terms Content -->
   
+
 
 
 
@@ -570,7 +566,7 @@ Fraudulent activity includes, but is not limited to:
       <li><a href="/anti-fraud-policy" class="active-link">Anti-Fraud Policy</a></li>
       <li><a href="/gdpr-compliance-policy">GDPR Compliance</a></li>
       <li><a href="/refund-payment-policy">Refund Policy</a></li>
-      <li><a href="/cookie-policy"      >Cookie Policy</a></li>
+      <li><a href="/cookie-policy"       >Cookie Policy</a></li>
       <li><a href="/login">Login</a></li>
     </ul>
   </div>
