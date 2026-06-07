@@ -65,8 +65,9 @@ if (!$fh || !flock($fh, LOCK_EX | LOCK_NB)) {
 }
 
 // ── Config gate ──────────────────────────────────────────────────────────
+$isManual = defined('INACTIVITY_MANUAL_RUN') && INACTIVITY_MANUAL_RUN;
 $enabled  = (Config::get('config', 'app.inactivity_enabled') ?? '0') === '1';
-if (!$enabled) {
+if (!$enabled && !$isManual) {
     echo "[inactivity] disabled by admin — exit.\n";
     flock($fh, LOCK_UN); fclose($fh); @unlink($lockFile);
     return;

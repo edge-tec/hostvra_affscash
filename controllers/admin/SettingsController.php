@@ -375,6 +375,20 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         Helpers::redirect('/admin/settings?tab=inactivity');
     }
 
+    elseif ($tab === 'inactivity_manual_run') {
+        ob_start();
+        try {
+            define('INACTIVITY_MANUAL_RUN', true);
+            require BASE_PATH . '/cron/affiliate_inactivity.php';
+            $output = ob_get_clean();
+            Helpers::flash('success', 'Manual inactivity check completed. <br><small>' . htmlspecialchars($output) . '</small>');
+        } catch (\Throwable $e) {
+            ob_end_clean();
+            Helpers::flash('error', 'Manual run failed: ' . $e->getMessage());
+        }
+        Helpers::redirect('/admin/settings?tab=inactivity');
+    }
+
     elseif ($tab === 'inactivity') {
         // Affiliate Inactivity Control — all values validated server-side so a
         // crafted POST cannot push an out-of-range period or a non-numeric value.

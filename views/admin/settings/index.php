@@ -787,7 +787,16 @@ try {
                 <div style="margin-bottom:0">The system automatically checks and deactivates inactive affiliates in the background without needing any manual cron job setup.</div>
             </div>
 
-            <button type="submit" class="btn btn-primary" style="margin-top:18px">Save Inactivity Settings</button>
+            <div style="margin-top:18px">
+                <button type="submit" class="btn btn-primary">Save Inactivity Settings</button>
+            </div>
+        </form>
+
+        <form method="POST" style="margin-top:12px">
+            <?= Helpers::csrf() ?>
+            <input type="hidden" name="tab" value="inactivity_manual_run">
+            <button type="submit" class="btn" style="background:#F1F5F9;color:#475569;border:1px solid #CBD5E1;font-weight:600">Run Inactivity Check Now (Manual Run)</button>
+            <div class="form-hint" style="margin-top:6px; margin-left:2px;">Manually trigger the cron sweep to warn or deactivate affiliates immediately based on the periods set above.</div>
         </form>
     </div>
 </div>
