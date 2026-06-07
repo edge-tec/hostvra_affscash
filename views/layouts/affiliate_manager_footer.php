@@ -1,14 +1,35 @@
 </main>
 </div>
 </div>
-<?php $copyright = Config::get('config','app.footer_copyright'); ?>
-<footer style="text-align:center;padding:16px 20px;font-size:12px;color:#94A3B8;border-top:1px solid #E2E8F0;background:#fff">
-    <div style="display:flex; justify-content:center; flex-wrap:wrap; gap:16px; margin-bottom:8px;">
-        <a href="#" style="color:#64748B; text-decoration:none;">Terms & Conditions</a>
-        <a href="#" style="color:#64748B; text-decoration:none;">Affiliate Agreement</a>
-        <a href="#" style="color:#64748B; text-decoration:none;">Anti-Fraud Policy</a>
-        <a href="#" style="color:#64748B; text-decoration:none;">Dashboard Disclaimers</a>
-        <a href="#" style="color:#64748B; text-decoration:none;">Refund Policy</a>
+<?php 
+$copyright = Config::get('config','app.footer_copyright'); 
+$siteLogo = Config::get('config','app.logo');
+$favIcon = Config::get('config','app.favicon');
+$defaultIcon = '<svg style="width:12px;height:12px;margin-right:4px;vertical-align:middle;color:#94A3B8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>';
+$iconHtml = $favIcon ? '<img src="'.Helpers::e($favIcon).'" style="width:12px;height:12px;margin-right:4px;vertical-align:middle;object-fit:contain">' : $defaultIcon;
+?>
+<style>
+@media (min-width: 769px) { .mobile-footer-logo { display: none !important; } }
+.footer-link { color:#64748B; text-decoration:none; display:inline-flex; align-items:center; }
+.footer-link:hover { color:#475569; }
+</style>
+<footer style="text-align:center;padding:20px;font-size:12px;color:#94A3B8;border-top:1px solid #E2E8F0;background:#fff">
+    <div class="mobile-footer-logo" style="margin-bottom:16px;">
+        <?php if ($siteLogo): ?>
+        <img src="<?= Helpers::e($siteLogo) ?>" alt="Logo" style="max-height:36px; max-width:140px; object-fit:contain; filter:grayscale(100%); opacity:0.7;">
+        <?php else: ?>
+        <span style="font-weight:bold; color:#94A3B8; font-size:16px;"><?= Helpers::e(Config::get('config','app.name') ?? 'AffTracker') ?></span>
+        <?php endif; ?>
+    </div>
+    <div style="display:flex; justify-content:center; flex-wrap:wrap; gap:16px; margin-bottom:12px;">
+        <a href="#" class="footer-link"><?= $iconHtml ?>Terms & Conditions</a>
+        <a href="#" class="footer-link"><?= $iconHtml ?>Privacy Policy</a>
+        <a href="#" class="footer-link"><?= $iconHtml ?>Affiliate Agreement</a>
+        <a href="#" class="footer-link"><?= $iconHtml ?>Anti-Fraud Policy</a>
+        <a href="#" class="footer-link"><?= $iconHtml ?>GDPR Compliance</a>
+        <a href="#" class="footer-link"><?= $iconHtml ?>Refund Policy</a>
+        <a href="#" class="footer-link"><?= $iconHtml ?>Cookie Policy</a>
+        <a href="#" class="footer-link"><?= $iconHtml ?>Dashboard Disclaimers</a>
     </div>
     <?php if ($copyright): ?>
     <div><?= Helpers::e($copyright) ?></div>
