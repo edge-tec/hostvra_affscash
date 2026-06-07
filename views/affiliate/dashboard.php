@@ -125,6 +125,9 @@ html[data-theme="dark"] .an-header {
 .an-filter-input { background: var(--card-bg) !important; color: var(--text) !important; border: 1px solid var(--border) !important; }
 .an-filter-input option { background: var(--card-bg) !important; color: var(--text) !important; }
 .an-filter-input::placeholder { color: var(--text-light) !important; }
+.an-period-tabs { background: var(--card-bg) !important; border: 1px solid var(--border) !important; }
+.an-period-tab { color: var(--text-muted) !important; }
+.an-period-tab.active { background: var(--bg) !important; color: var(--text) !important; }
 .an-btn-filter { box-shadow: none !important; }
 #an-last-updated { color: var(--text-light) !important; }
 <?php elseif ($bannerStyle === 'glass_purple'): ?>
