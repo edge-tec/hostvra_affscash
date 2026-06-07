@@ -437,7 +437,7 @@
         <li><a href="/blog">Blog</a></li>
         <li><a href="/reviews">Reviews</a></li>
         <li><a href="/#contact">Contact</a></li>
-        <?php if (class_exists('Auth') && Auth::check()): ?>
+        <?php if (class_exists('Auth') && Auth::id()): ?>
             <?php
                 $dashUrl = '/login';
                 $userRole = Auth::user()['role'] ?? '';
@@ -464,7 +464,7 @@
       <a href="/blog">Blog</a>
       <a href="/reviews">Reviews</a>
       <a href="/#contact">Contact</a>
-      <?php if (class_exists('Auth') && Auth::check()): ?>
+      <?php if (class_exists('Auth') && Auth::id()): ?>
         <a href="<?= $dashUrl ?? '/login' ?>">My Dashboard</a>
       <?php else: ?>
         <a href="/register/affiliate">Sign Up Free</a>

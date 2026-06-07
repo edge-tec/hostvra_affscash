@@ -217,7 +217,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
   </a>
   <div class="nav-spacer"></div>
   <div class="nav-actions">
-    <?php if (class_exists('Auth') && Auth::check()): ?>
+    <?php if (class_exists('Auth') && Auth::id()): ?>
         <?php
             $dashUrl = '/login';
             $userRole = Auth::user()['role'] ?? '';
@@ -302,13 +302,16 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
 
 
 
+
 <main class="tos-content">
 
 <div class="notice-block">
 
 
+
       <strong>Last Updated: June 1, 2026</strong><br>Applies To: All Affiliates, Publishers, and Partners of AffsCash.net
     
+
 
 </div>
 
@@ -568,7 +571,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       <li><a href="/anti-fraud-policy">Anti-Fraud Policy</a></li>
       <li><a href="/gdpr-compliance-policy">GDPR Compliance</a></li>
       <li><a href="/refund-payment-policy" class="active-link">Refund Policy</a></li>
-      <li><a href="/cookie-policy"    >Cookie Policy</a></li>
+      <li><a href="/cookie-policy"     >Cookie Policy</a></li>
       <li><a href="/login">Login</a></li>
     </ul>
   </div>

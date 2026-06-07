@@ -351,7 +351,7 @@ body {
     <div class="topnav-links">
         <a href="/">Home</a>
         <a href="/TRC.html">Terms &amp; Conditions</a>
-        <?php if (class_exists('Auth') && Auth::check()): ?>
+        <?php if (class_exists('Auth') && Auth::id()): ?>
             <?php
                 $dashUrl = '/login';
                 $userRole = Auth::user()['role'] ?? '';
