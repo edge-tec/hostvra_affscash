@@ -1,9 +1,19 @@
 </main>
 </div>
 </div>
-<?php $copyright = Config::get('config','app.footer_copyright'); if ($copyright): ?>
-<footer style="text-align:center;padding:12px 20px;font-size:12px;color:#94A3B8;border-top:1px solid #E2E8F0;background:#fff"><?= Helpers::e($copyright) ?></footer>
-<?php endif; ?>
+<?php $copyright = Config::get('config','app.footer_copyright'); ?>
+<footer style="text-align:center;padding:16px 20px;font-size:12px;color:#94A3B8;border-top:1px solid #E2E8F0;background:#fff">
+    <div style="display:flex; justify-content:center; flex-wrap:wrap; gap:16px; margin-bottom:8px;">
+        <a href="#" style="color:#64748B; text-decoration:none;">Terms & Conditions</a>
+        <a href="#" style="color:#64748B; text-decoration:none;">Affiliate Agreement</a>
+        <a href="#" style="color:#64748B; text-decoration:none;">Anti-Fraud Policy</a>
+        <a href="#" style="color:#64748B; text-decoration:none;">Dashboard Disclaimers</a>
+        <a href="#" style="color:#64748B; text-decoration:none;">Refund Policy</a>
+    </div>
+    <?php if ($copyright): ?>
+    <div><?= Helpers::e($copyright) ?></div>
+    <?php endif; ?>
+</footer>
 
 <?php
 // ── Live Chat Widget (skip on the dedicated /affiliate/support page) ───────
