@@ -210,6 +210,7 @@ foreach ($pendingConversions as $conv) {
     } else {
         try { Database::query("UPDATE `conversions` SET `fraudlabspro_score`=0 WHERE `conversion_id`=? AND `fraudlabspro_score` IS NULL", [$conv['conversion_id']]); } catch (\Throwable $_e) {}
     }
+    try { FraudAutoNotify::afterCheck($conv['conversion_id']); } catch (\Throwable $_e) {}
 
     $checkedConversions++;
     usleep(300000); // 300ms rate limiting between API calls

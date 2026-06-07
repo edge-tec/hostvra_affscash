@@ -15,13 +15,18 @@
 final class FraudAutoNotify
 {
     /** Score >= this is considered High Risk. Mirrored everywhere fraud is filtered for affiliates/managers. */
-    public const HIGH_RISK_THRESHOLD = 60;
+    public const HIGH_RISK_THRESHOLD = 35;
 
     /** SQL fragment used by every "high risk fraud" query — single source of truth. */
     public static function highRiskWhereSql(string $convAlias = 'cv'): string
     {
-        return "COALESCE({$convAlias}.fraud_score, 0) >= " . self::HIGH_RISK_THRESHOLD
-             . " AND {$convAlias}.fraud_checked_at IS NOT NULL";
+        $th = self::HIGH_RISK_THRESHOLD;
+        return "(COALESCE({$convAlias}.fraud_score, 0) >= {$th} "
+             . "OR COALESCE({$convAlias}.ipquery_risk_score, 0) >= {$th} "
+             . "OR COALESCE({$convAlias}.fraudlabspro_score, 0) >= {$th} "
+             . "OR COALESCE({$convAlias}.proxycheck_score, 0) >= {$th} "
+             . "OR COALESCE({$convAlias}.scamalytics_score, 0) >= {$th} "
+             . "OR COALESCE({$convAlias}.frauddefense_score, 0) >= {$th})";
     }
 
     /** Idempotent extension of the notifications table for the Fraud Alert system. */
@@ -53,7 +58,7 @@ final class FraudAutoNotify
 
         try {
             $row = Database::fetchOne(
-                "SELECT cv.conversion_id, cv.fraud_score, cv.affiliate_id, cv.payout,
+                "SELECT cv.conversion_id, cv.fraud_score, cv.ipquery_risk_score, cv.fraudlabspro_score, cv.proxycheck_score, cv.scamalytics_score, cv.frauddefense_score, cv.affiliate_id, cv.payout,
                         cv.fraud_checked_at,
                         af.user_id, af.affiliate_code,
                         o.name AS offer_name
@@ -66,7 +71,14 @@ final class FraudAutoNotify
         } catch (\Throwable $e) { return; }
 
         if (!$row || !$row['user_id']) return;
-        $score = (int)($row['fraud_score'] ?? 0);
+        $score = max(
+            (int)($row['fraud_score'] ?? 0),
+            (int)($row['ipquery_risk_score'] ?? 0),
+            (int)($row['fraudlabspro_score'] ?? 0),
+            (int)($row['proxycheck_score'] ?? 0),
+            (int)($row['scamalytics_score'] ?? 0),
+            (int)($row['frauddefense_score'] ?? 0)
+        );
         if ($score < self::HIGH_RISK_THRESHOLD) return;
 
         // De-dupe: a conversion gets at most ONE fraud alert, even if the fraud
@@ -139,8 +151,7 @@ final class FraudAutoNotify
         self::ensureSchema();
         $limit = max(1, min(5000, $limit));
 
-        $where  = "COALESCE(cv.fraud_score, 0) >= " . self::HIGH_RISK_THRESHOLD
-                . " AND cv.fraud_checked_at IS NOT NULL"
+        $where  = "(" . self::highRiskWhereSql('cv') . ")"
                 . " AND af.user_id IS NOT NULL"
                 . " AND n.id IS NULL";
         $params = [];
@@ -153,7 +164,7 @@ final class FraudAutoNotify
             // The LEFT JOIN to `notifications` filters out conversions that
             // already have a fraud alert (matched on the cid in the link URL).
             $rows = Database::fetchAll(
-                "SELECT cv.conversion_id, cv.fraud_score, cv.affiliate_id, cv.offer_id,
+                "SELECT cv.conversion_id, cv.fraud_score, cv.ipquery_risk_score, cv.fraudlabspro_score, cv.proxycheck_score, cv.scamalytics_score, cv.frauddefense_score, cv.affiliate_id, cv.offer_id,
                         cv.fraud_checked_at, cv.converted_at,
                         af.user_id, af.affiliate_code,
                         o.name AS offer_name
@@ -175,7 +186,14 @@ final class FraudAutoNotify
 
         $inserted = 0;
         foreach ($rows as $row) {
-            $score   = (int)($row['fraud_score'] ?? 0);
+            $score = max(
+                (int)($row['fraud_score'] ?? 0),
+                (int)($row['ipquery_risk_score'] ?? 0),
+                (int)($row['fraudlabspro_score'] ?? 0),
+                (int)($row['proxycheck_score'] ?? 0),
+                (int)($row['scamalytics_score'] ?? 0),
+                (int)($row['frauddefense_score'] ?? 0)
+            );
             $convId  = (string)$row['conversion_id'];
             if ($convId === '' || $score < self::HIGH_RISK_THRESHOLD) continue;
 
