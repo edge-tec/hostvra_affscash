@@ -475,6 +475,7 @@ Router::any('/api/affiliate-analytics', function() { require BASE_PATH . '/contr
 Router::any('/api/admin-analytics', function() { require BASE_PATH . '/controllers/api/AdminAnalyticsController.php'; });
 Router::any('/api/activity', function() { require BASE_PATH . '/controllers/api/ActivityController.php'; });
 Router::any('/api/theme',    function() { require BASE_PATH . '/controllers/api/ThemeController.php'; });
+Router::any('/policy/{slug}', function($slug) { $_GET['slug']=$slug; require BASE_PATH . '/controllers/shared/PolicyController.php'; });
 
 // Tracking (public - no auth)
 // In-House Offer Tracking: /offer/{id}?aff_id={code}&click_id={ext}&sub_id={sub}
