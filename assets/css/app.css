@@ -49,8 +49,7 @@ a:hover { text-decoration: underline; }
     width: var(--sidebar-w);
     background: var(--sidebar-bg);
     border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
+    display: block;
     position: fixed;
     top: 0; left: 0; bottom: 0;
     height: 100vh;
