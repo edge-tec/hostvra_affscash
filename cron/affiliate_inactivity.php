@@ -104,7 +104,7 @@ $startTs     = microtime(true);
 // the warning state automatically).
 if ($warnDays > 0) {
     $warnAfterDays = $days - $warnDays;   // e.g. 30 - 3 = 27d
-    $offset = 0;
+    $lastId = 0;
     while (true) {
         $batch = Database::fetchAll(
             "SELECT u.id, u.email, u.first_name, u.last_name, u.last_login,
@@ -112,13 +112,14 @@ if ($warnDays > 0) {
              FROM users u
              WHERE u.role='affiliate'
                AND u.status='active'
+               AND u.id > ?
                AND u.last_login IS NOT NULL
                AND u.last_login < DATE_SUB(NOW(), INTERVAL ? DAY)
                AND u.last_login >= DATE_SUB(NOW(), INTERVAL ? DAY)
                AND (u.inactivity_warned_at IS NULL OR u.inactivity_warned_at < u.last_login)
-             ORDER BY u.id
-             LIMIT 250 OFFSET ?",
-            [$warnAfterDays, $days, $offset]
+             ORDER BY u.id ASC
+             LIMIT 250",
+            [$lastId, $warnAfterDays, $days]
         ) ?: [];
 
         if (empty($batch)) break;
@@ -152,25 +153,26 @@ if ($warnDays > 0) {
                 Database::query("UPDATE users SET inactivity_warned_at=NOW() WHERE id=?", [$r['id']]);
             } catch (\Throwable $_) {}
             $warnedCount++;
+            $lastId = $r['id'];
         }
-        $offset += count($batch);
         if (count($batch) < 250) break;
     }
 }
 
 // ── Step 2: deactivate accounts past the cut-off ─────────────────────────
-$offset = 0;
+$lastId = 0;
 while (true) {
     $batch = Database::fetchAll(
         "SELECT u.id, u.email, u.first_name, u.last_name
          FROM users u
          WHERE u.role='affiliate'
            AND u.status='active'
+           AND u.id > ?
            AND u.last_login IS NOT NULL
            AND u.last_login < DATE_SUB(NOW(), INTERVAL ? DAY)
-         ORDER BY u.id
-         LIMIT 250 OFFSET ?",
-        [$days, $offset]
+         ORDER BY u.id ASC
+         LIMIT 250",
+        [$lastId, $days]
     ) ?: [];
 
     if (empty($batch)) break;
@@ -185,8 +187,8 @@ while (true) {
             );
         } catch (\Throwable $_) { continue; }
         $killedCount++;
+        $lastId = $r['id'];
     }
-    $offset += count($batch);
     if (count($batch) < 250) break;
 }
 
