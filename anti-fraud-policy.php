@@ -220,7 +220,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
     <?php if (class_exists('Auth') && Auth::id()): ?>
         <?php
             $dashUrl = '/login';
-            $userRole = Auth::user()['role'] ?? '';
+            $userRole = Auth::role() ?? '';
             if ($userRole === 'admin') $dashUrl = '/admin/dashboard';
             elseif ($userRole === 'manager') $dashUrl = '/manager/dashboard';
             elseif ($userRole === 'affiliate') $dashUrl = '/affiliate/dashboard';
@@ -297,6 +297,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
 
   <!-- Terms Content -->
   
+
 
 
 
@@ -569,7 +570,7 @@ Fraudulent activity includes, but is not limited to:
       <li><a href="/anti-fraud-policy" class="active-link">Anti-Fraud Policy</a></li>
       <li><a href="/gdpr-compliance-policy">GDPR Compliance</a></li>
       <li><a href="/refund-payment-policy">Refund Policy</a></li>
-      <li><a href="/cookie-policy"     >Cookie Policy</a></li>
+      <li><a href="/cookie-policy"      >Cookie Policy</a></li>
       <li><a href="/login">Login</a></li>
     </ul>
   </div>

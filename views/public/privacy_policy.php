@@ -354,7 +354,7 @@ body {
         <?php if (class_exists('Auth') && Auth::id()): ?>
             <?php
                 $dashUrl = '/login';
-                $userRole = Auth::user()['role'] ?? '';
+                $userRole = Auth::role() ?? '';
                 if ($userRole === 'admin') $dashUrl = '/admin/dashboard';
                 elseif ($userRole === 'manager') $dashUrl = '/manager/dashboard';
                 elseif ($userRole === 'affiliate') $dashUrl = '/affiliate/dashboard';

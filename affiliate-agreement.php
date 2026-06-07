@@ -220,7 +220,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
     <?php if (class_exists('Auth') && Auth::id()): ?>
         <?php
             $dashUrl = '/login';
-            $userRole = Auth::user()['role'] ?? '';
+            $userRole = Auth::role() ?? '';
             if ($userRole === 'admin') $dashUrl = '/admin/dashboard';
             elseif ($userRole === 'manager') $dashUrl = '/manager/dashboard';
             elseif ($userRole === 'affiliate') $dashUrl = '/affiliate/dashboard';
@@ -297,6 +297,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
 
 
 
+
 <main class="tos-content">
 
 <div class="notice-block">
@@ -304,8 +305,10 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
 
 
 
+
       This Affiliate Program Operating Agreement (the "Agreement") is made and entered into by and between Affscash ("Affscash" or "we"), and you ("you" or "Affiliate") — the party submitting an application to become an Affscash affiliate.
     
+
 
 
 
@@ -427,7 +430,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       <li><a href="/anti-fraud-policy">Anti-Fraud Policy</a></li>
       <li><a href="/gdpr-compliance-policy">GDPR Compliance</a></li>
       <li><a href="/refund-payment-policy">Refund Policy</a></li>
-      <li><a href="/cookie-policy"     >Cookie Policy</a></li>
+      <li><a href="/cookie-policy"      >Cookie Policy</a></li>
       <li><a href="/login">Login</a></li>
     </ul>
   </div>
