@@ -351,8 +351,20 @@ body {
     <div class="topnav-links">
         <a href="/">Home</a>
         <a href="/TRC.html">Terms &amp; Conditions</a>
-        <a href="/login">Login</a>
-        <a href="/register/affiliate" class="cta">Join Free</a>
+        <?php if (class_exists('Auth') && Auth::check()): ?>
+            <?php
+                $dashUrl = '/login';
+                $userRole = Auth::user()['role'] ?? '';
+                if ($userRole === 'admin') $dashUrl = '/admin/dashboard';
+                elseif ($userRole === 'manager') $dashUrl = '/manager/dashboard';
+                elseif ($userRole === 'affiliate') $dashUrl = '/affiliate/dashboard';
+                elseif ($userRole === 'advertiser') $dashUrl = '/advertiser/dashboard';
+            ?>
+            <a href="<?= $dashUrl ?>" class="cta">My Dashboard</a>
+        <?php else: ?>
+            <a href="/login">Login</a>
+            <a href="/register/affiliate" class="cta">Join Free</a>
+        <?php endif; ?>
     </div>
 </nav>
 

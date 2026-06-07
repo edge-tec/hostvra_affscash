@@ -217,8 +217,20 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
   </a>
   <div class="nav-spacer"></div>
   <div class="nav-actions">
-    <a href="/login" class="btn btn-ghost">Log In</a>
-    <a href="/register" class="btn btn-primary">Get Started</a>
+    <?php if (class_exists('Auth') && Auth::check()): ?>
+        <?php
+            $dashUrl = '/login';
+            $userRole = Auth::user()['role'] ?? '';
+            if ($userRole === 'admin') $dashUrl = '/admin/dashboard';
+            elseif ($userRole === 'manager') $dashUrl = '/manager/dashboard';
+            elseif ($userRole === 'affiliate') $dashUrl = '/affiliate/dashboard';
+            elseif ($userRole === 'advertiser') $dashUrl = '/advertiser/dashboard';
+        ?>
+        <a href="<?= $dashUrl ?>" class="btn btn-primary">My Dashboard</a>
+    <?php else: ?>
+        <a href="/login" class="btn btn-ghost">Log In</a>
+        <a href="/register" class="btn btn-primary">Get Started</a>
+    <?php endif; ?>
   </div>
 </nav>
 
@@ -285,6 +297,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
 
   <!-- Terms Content -->
   
+
 
 
 <main class="tos-content">
@@ -555,7 +568,7 @@ Fraudulent activity includes, but is not limited to:
       <li><a href="/anti-fraud-policy" class="active-link">Anti-Fraud Policy</a></li>
       <li><a href="/gdpr-compliance-policy">GDPR Compliance</a></li>
       <li><a href="/refund-payment-policy">Refund Policy</a></li>
-      <li><a href="/cookie-policy"   >Cookie Policy</a></li>
+      <li><a href="/cookie-policy"    >Cookie Policy</a></li>
       <li><a href="/login">Login</a></li>
     </ul>
   </div>

@@ -437,8 +437,20 @@
         <li><a href="/blog">Blog</a></li>
         <li><a href="/reviews">Reviews</a></li>
         <li><a href="/#contact">Contact</a></li>
-        <li><a href="/register/affiliate" class="btn-signup">Sign Up</a></li>
-        <li><a href="/login" class="btn-login">Login</a></li>
+        <?php if (class_exists('Auth') && Auth::check()): ?>
+            <?php
+                $dashUrl = '/login';
+                $userRole = Auth::user()['role'] ?? '';
+                if ($userRole === 'admin') $dashUrl = '/admin/dashboard';
+                elseif ($userRole === 'manager') $dashUrl = '/manager/dashboard';
+                elseif ($userRole === 'affiliate') $dashUrl = '/affiliate/dashboard';
+                elseif ($userRole === 'advertiser') $dashUrl = '/advertiser/dashboard';
+            ?>
+            <li><a href="<?= $dashUrl ?>" class="btn-login" style="padding-left: 20px; padding-right: 20px;">My Dashboard</a></li>
+        <?php else: ?>
+            <li><a href="/register/affiliate" class="btn-signup">Sign Up</a></li>
+            <li><a href="/login" class="btn-login">Login</a></li>
+        <?php endif; ?>
       </ul>
       <button class="hamburger" id="hamburger" aria-label="Menu">
         <span></span><span></span><span></span>
@@ -452,8 +464,12 @@
       <a href="/blog">Blog</a>
       <a href="/reviews">Reviews</a>
       <a href="/#contact">Contact</a>
-      <a href="/register/affiliate">Sign Up Free</a>
-      <a href="/login">Login</a>
+      <?php if (class_exists('Auth') && Auth::check()): ?>
+        <a href="<?= $dashUrl ?? '/login' ?>">My Dashboard</a>
+      <?php else: ?>
+        <a href="/register/affiliate">Sign Up Free</a>
+        <a href="/login">Login</a>
+      <?php endif; ?>
     </div>
   </header>
 
