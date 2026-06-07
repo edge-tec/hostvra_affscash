@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?= Helpers::e($pageTitle ?? 'Dashboard') ?> — <?= Helpers::e(Config::get('config','app.name') ?? 'AffiliateTracker') ?></title>
-<link rel="stylesheet" href="/assets/css/app.css">
+<link rel="stylesheet" href="/assets/css/app.css?v=<?= filemtime(BASE_PATH . '/assets/css/app.css') ?>">
 <?php require BASE_PATH . '/views/partials/theme_head.php'; ?>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js" defer></script>
 </head>
@@ -37,7 +37,7 @@
             <?php endif; ?>
         </a>
         <button class="mobile-close-btn" onclick="window.toggleSidebar&&window.toggleSidebar(event)" aria-label="Close menu">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
         </button>
     </div>
     <p class="sidebar-section">Menu</p>

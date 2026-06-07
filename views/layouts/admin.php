@@ -6,7 +6,7 @@
 <meta name="csrf-token" content="<?= Auth::generateCsrf() ?>">
 <title><?= Helpers::e($pageTitle ?? 'Dashboard') ?> — <?= Helpers::e(Config::get('config','app.name') ?? 'AffiliateTracker') ?></title>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="/assets/css/app.css">
+<link rel="stylesheet" href="/assets/css/app.css?v=<?= filemtime(BASE_PATH . '/assets/css/app.css') ?>">
 <?php require BASE_PATH . '/views/partials/theme_head.php'; ?>
 <style>
 /* ── In-House Fraud Detection Sidebar Module ───────────────────────── */
@@ -237,7 +237,7 @@ function fmtTs(ts, opts) {
             <?php endif; ?>
         </a>
         <button class="mobile-close-btn" onclick="window.toggleSidebar&&window.toggleSidebar(event)" aria-label="Close menu">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
         </button>
     </div>
 
