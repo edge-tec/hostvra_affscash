@@ -356,9 +356,9 @@ class Mailer
         return <<<HTML
 <div style="background:#F8FAFC;padding:40px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;">
   <div style="max-width:620px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 8px 24px rgba(148,163,184,0.15);">
-    <div style="padding:32px;text-align:center;background:linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);border-bottom:1px solid rgba(124,58,237,0.2);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);">
+    <div style="padding:32px;text-align:center;background:linear-gradient(135deg, rgba(167,139,250,0.15) 0%, rgba(124,58,237,0.15) 100%);border-bottom:1px solid rgba(124,58,237,0.2);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);">
       {$headerBranding}
-      <div style="font-size:14px;color:#ffffff;margin-top:8px;font-weight:600;letter-spacing:0.5px">{$title}</div>
+      <div style="font-size:14px;color:#4F46E5;margin-top:8px;font-weight:600;letter-spacing:0.5px">{$title}</div>
     </div>
     <div style="padding:32px;color:#334155;font-size:15px;line-height:1.7;">
       {$body}
