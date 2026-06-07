@@ -761,9 +761,9 @@ document.addEventListener('click', function(e) {
             document.querySelectorAll('.sidebar-overlay').forEach(function(el){ el.remove(); });
             bd = document.createElement('div');
             bd.id = 'sidebarBackdrop';
-            // z-index 249: above sidebar (200), below topbar dropdowns (9999)
+            // z-index 199: below sidebar (200), below topbar dropdowns (9999)
             bd.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,.45);'
-                             + 'z-index:249;display:none;touch-action:none;'
+                             + 'z-index:199;display:none;touch-action:none;'
                              + '-webkit-tap-highlight-color:transparent;';
             // touchend fires ~300ms before click — instant response on mobile
             bd.addEventListener('touchend', function(e){ e.preventDefault(); sbClose(); }, {passive:false});

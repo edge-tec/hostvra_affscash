@@ -842,7 +842,7 @@ document.addEventListener('visibilitychange', function(){
             bd = document.createElement('div');
             bd.id = 'sidebarBackdrop';
             bd.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,.45);'
-                             + 'z-index:249;display:none;touch-action:none;'
+                             + 'z-index:199;display:none;touch-action:none;'
                              + '-webkit-tap-highlight-color:transparent;';
             bd.addEventListener('touchend', function(e){ e.preventDefault(); sbClose(); }, {passive:false});
             bd.addEventListener('click', sbClose);
