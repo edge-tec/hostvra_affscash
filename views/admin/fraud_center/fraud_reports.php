@@ -282,21 +282,33 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
                 </td>
                 <td class="fds-text-sm" style="text-align: center;">
                     <?php if (isset($cv['ipquery_risk_score'])): ?>
-                        <?= (int)$cv['ipquery_risk_score'] ?>
+                        <?php 
+                            $s = (int)$cv['ipquery_risk_score'];
+                            $b = $s >= 50 ? 'high' : ($s >= 20 ? 'medium' : 'low');
+                        ?>
+                        <span class="risk-badge <?= $b ?>" style="font-size:10px;padding:2px 6px"><?= strtoupper($b) ?> (<?= $s ?>)</span>
                     <?php else: ?>
                         <span class="fds-text-muted">N/A</span>
                     <?php endif; ?>
                 </td>
                 <td class="fds-text-sm" style="text-align: center;">
                     <?php if (isset($cv['fraudlabspro_score'])): ?>
-                        <?= (int)$cv['fraudlabspro_score'] ?>
+                        <?php 
+                            $s = (int)$cv['fraudlabspro_score'];
+                            $b = $s >= 50 ? 'high' : ($s >= 20 ? 'medium' : 'low');
+                        ?>
+                        <span class="risk-badge <?= $b ?>" style="font-size:10px;padding:2px 6px"><?= strtoupper($b) ?> (<?= $s ?>)</span>
                     <?php else: ?>
                         <span class="fds-text-muted">N/A</span>
                     <?php endif; ?>
                 </td>
                 <td class="fds-text-sm" style="text-align: center;">
                     <?php if (isset($cv['proxycheck_score'])): ?>
-                        <?= (int)$cv['proxycheck_score'] ?>
+                        <?php 
+                            $s = (int)$cv['proxycheck_score'];
+                            $b = $s >= 50 ? 'high' : ($s >= 20 ? 'medium' : 'low');
+                        ?>
+                        <span class="risk-badge <?= $b ?>" style="font-size:10px;padding:2px 6px"><?= strtoupper($b) ?> (<?= $s ?>)</span>
                     <?php else: ?>
                         <span class="fds-text-muted">N/A</span>
                     <?php endif; ?>
