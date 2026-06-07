@@ -21,7 +21,7 @@ if (PHP_SAPI !== 'cli') {
     $cronSecret = Config::get('config', 'cron.secret') ?: '';
     $tokenOk    = $cronSecret !== '' && (Helpers::get('token') === $cronSecret);
     // Also allow calls from admin session
-    $adminOk    = Auth::check() && Auth::user()['role'] === 'admin';
+    $adminOk    = Auth::id() && Auth::role() === 'admin';
     if (!$tokenOk && !$adminOk) {
         http_response_code(403);
         exit('Forbidden');

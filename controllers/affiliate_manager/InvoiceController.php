@@ -427,7 +427,7 @@ elseif ($action === 'request_invoice') {
 
             // Notify admin via the notifications table
             try {
-                $mgrName = trim(Auth::user()['first_name'] . ' ' . Auth::user()['last_name']);
+                $mgrName = trim(Auth::currentUser()['first_name'] . ' ' . Auth::currentUser()['last_name']);
                 Database::insert('notifications', [
                     'user_id'     => null,
                     'target_role' => 'admin',
