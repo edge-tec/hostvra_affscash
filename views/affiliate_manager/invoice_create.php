@@ -108,7 +108,7 @@
                     </div>
                     <div class="form-group">
                         <label>Tax Rate (%)</label>
-                        <input type="number" step="0.01" name="tax_rate" id="fldTaxRate" class="form-control" value="0" min="0" max="100" oninput="recalcTotals()">
+                        <input type="number" step="0.01" name="tax_rate" id="fldTaxRate" class="form-control" value="0" max="100" oninput="recalcTotals()">
                     </div>
                 </div>
                 <div class="form-group">

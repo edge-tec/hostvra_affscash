@@ -47,7 +47,7 @@ $statusColors = ['draft'=>'#94A3B8','sent'=>'#3B82F6','paid'=>'#10B981','void'=>
                 </div>
                 <div class="form-group">
                     <label>Tax Rate (%)</label>
-                    <input type="number" name="tax_rate" class="form-control" step="0.01" min="0" max="100" value="<?= (float)$invoice['tax_rate'] ?>" id="taxRate" oninput="recalc()">
+                    <input type="number" name="tax_rate" class="form-control" step="0.01" max="100" value="<?= (float)$invoice['tax_rate'] ?>" id="taxRate" oninput="recalc()">
                 </div>
                 <div class="form-group">
                     <label>Total Override <span class="text-muted" style="font-size:11px">(leave blank to use calculated total)</span></label>
