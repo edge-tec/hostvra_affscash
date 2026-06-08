@@ -442,6 +442,12 @@ if (!empty($click['ip_address']) && $click['ip_address'] !== '0.0.0.0') {
 $isAutoHidden = false;
 $hideReason   = '';
 
+// Hard-hide traffic_back conversions from managers and affiliates.
+if (($click['source'] ?? '') === 'traffic_back') {
+    $isAutoHidden = true;
+    $hideReason   = 'traffic_back_url';
+}
+
 try {
     $hideRules = Database::fetchAll(
         "SELECT * FROM conversion_autohide_rules WHERE is_active=1
