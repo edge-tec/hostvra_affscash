@@ -15,6 +15,18 @@ define('TO_EMAIL',   'support@affscash.net');   // ← Your email
 define('FROM_EMAIL', 'noreply@affscash.net');    // ← Your domain email
 define('SITE_NAME',  'Affscash');
 
+define('BASE_PATH', __DIR__);
+define('CONFIG_PATH', BASE_PATH . '/config');
+require_once BASE_PATH . '/core/Config.php';
+require_once BASE_PATH . '/core/Database.php';
+require_once BASE_PATH . '/core/Mailer.php';
+
+try {
+    Config::init(CONFIG_PATH);
+} catch (Exception $e) {
+    // If db/config is completely broken, we will fail later gracefully.
+}
+
 // ── HELPERS ───────────────────────────────────────────
 function ok($msg = 'Message sent!')  { echo json_encode(['success' => true,  'message' => $msg]); exit; }
 function err($msg = 'Failed to send') { echo json_encode(['success' => false, 'message' => $msg]); exit; }
@@ -67,13 +79,12 @@ $plainBody = "New contact message from $fname $lname\n"
            . "Sent: " . date('Y-m-d H:i:s');
 
 // ── SEND ──────────────────────────────────────────────
-$headers  = "MIME-Version: 1.0\r\n";
-$headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-$headers .= "From: " . SITE_NAME . " <" . FROM_EMAIL . ">\r\n";
-$headers .= "Reply-To: $email\r\n";
-$headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
-
-$sent = mail(TO_EMAIL, $subject, $htmlBody, $headers);
+$sent = false;
+try {
+    $sent = Mailer::sendRaw(TO_EMAIL, SITE_NAME . ' Support', $subject, $htmlBody, 'blast');
+} catch (Throwable $e) {
+    $sent = false;
+}
 
 if ($sent) {
     // Also send auto-reply to the user
@@ -90,10 +101,13 @@ h2{color:#e8197a}p{color:#7c7a9e;font-size:14px;line-height:1.7}
 <a class="btn" href="https://t.me/affscashnet" target="_blank">💬 @affscashnet</a>
 <p style="margin-top:24px;font-size:12px;color:#aaa">This is an automated reply. Please do not respond to this email.</p>
 </div></body></html>';
-    $replyHeaders  = "MIME-Version: 1.0\r\n";
-    $replyHeaders .= "Content-Type: text/html; charset=UTF-8\r\n";
-    $replyHeaders .= "From: " . SITE_NAME . " <" . FROM_EMAIL . ">\r\n";
-    mail($email, $replySubject, $replyHtml, $replyHeaders);
+    
+    try {
+        Mailer::sendRaw($email, "$fname $lname", $replySubject, $replyHtml, 'blast');
+    } catch (Throwable $e) {
+        // Reply failed, but we still received the main message
+    }
+    
     ok('Message sent! We\'ll reply within 24 hours.');
 } else {
     err('Mail server error. Please contact us via Telegram.');
