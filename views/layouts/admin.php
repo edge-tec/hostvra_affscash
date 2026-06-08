@@ -56,9 +56,7 @@
     overflow: hidden;
     transition: max-height .3s ease, opacity .2s ease;
     opacity: 0;
-    background: linear-gradient(135deg, rgba(79, 70, 229, 0.75) 0%, rgba(49, 46, 129, 0.85) 100%);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.95) 0%, rgba(49, 46, 129, 0.98) 100%);
     border: 1px solid rgba(99, 102, 241, 0.3);
     border-top: none;
     box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.1);
