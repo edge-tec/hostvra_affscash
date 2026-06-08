@@ -59,7 +59,6 @@ a:hover { text-decoration: underline; }
     overflow-y: auto;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
     padding-bottom: 24px;
 }
 .sidebar-top {
@@ -1077,9 +1076,7 @@ table { min-width: 0; }
         overflow-y: auto;
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
-        overscroll-behavior: contain;
         pointer-events: none; /* prevent off-canvas sidebar from swallowing touches */
-        will-change: transform; /* GPU-composite the slide layer */
     }
     .sidebar.open {
         transform: translateX(0);
@@ -1285,9 +1282,7 @@ input[type="url"], input[type="tel"] {
         height: 100vh; height: 100dvh;
         overflow-y: auto; overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
-        overscroll-behavior: contain;
         pointer-events: none; /* prevent off-canvas sidebar swallowing touches */
-        will-change: transform;
     }
     .sidebar.open {
         transform: translateX(0);
