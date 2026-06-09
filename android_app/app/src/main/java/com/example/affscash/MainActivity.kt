@@ -48,12 +48,23 @@ fun WebViewScreen(url: String, modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxSize(),
         factory = { context ->
             WebView(context).apply {
-                settings.javaScriptEnabled = true
-                settings.domStorageEnabled = true
-                settings.allowFileAccess = true
-                settings.allowContentAccess = true
-                settings.useWideViewPort = true
-                settings.loadWithOverviewMode = true
+                overScrollMode = WebView.OVER_SCROLL_NEVER
+                isNestedScrollingEnabled = true
+                
+                settings.apply {
+                    javaScriptEnabled = true
+                    domStorageEnabled = true
+                    databaseEnabled = true
+                    allowFileAccess = true
+                    allowContentAccess = true
+                    useWideViewPort = true
+                    loadWithOverviewMode = true
+                    cacheMode = android.webkit.WebSettings.LOAD_DEFAULT
+                    mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
+                }
+                
+                setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
+                
                 webViewClient = object : WebViewClient() {
                     override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                         return false
