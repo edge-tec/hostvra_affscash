@@ -190,7 +190,7 @@ class Helpers {
         $default = ['country' => '', 'region' => '', 'city' => '', 'isp' => '', 'proxy' => false, 'hosting' => false];
         if ($ip === '127.0.0.1' || $ip === '::1' || $ip === '0.0.0.0') return $default;
         try {
-            $url = "http://ip-api.com/json/{$ip}?fields=status,country,countryCode,regionName,city,isp,proxy,hosting";
+            $url = "https://ip-api.com/json/{$ip}?fields=status,country,countryCode,regionName,city,isp,proxy,hosting";
             $ctx = stream_context_create(['http' => ['timeout' => 2]]);
             $json = @file_get_contents($url, false, $ctx);
             if ($json) {
@@ -223,8 +223,8 @@ class Helpers {
             CURLOPT_CONNECTTIMEOUT  => 8,            // 8 s to connect
             CURLOPT_FOLLOWLOCATION  => true,
             CURLOPT_MAXREDIRS       => 5,
-            CURLOPT_SSL_VERIFYPEER  => false,
-            CURLOPT_SSL_VERIFYHOST  => false,
+            CURLOPT_SSL_VERIFYPEER  => true,
+            CURLOPT_SSL_VERIFYHOST  => 2,
             CURLOPT_USERAGENT       => 'AffiliateTracker/2.0 Postback',
             CURLOPT_HTTPHEADER      => ['Accept: */*', 'Connection: close'],
             CURLOPT_ENCODING        => '',           // accept compressed responses

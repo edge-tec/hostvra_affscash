@@ -10,9 +10,13 @@ class Auth {
     public static function start(): void {
         if (session_status() === PHP_SESSION_NONE) {
             $cfg = Config::get('config', 'session');
+            $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+                     || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https')
+                     || (($_SERVER['SERVER_PORT'] ?? 80) == 443);
             session_set_cookie_params([
                 'lifetime' => $cfg['lifetime'] ?? 7200,
-                'secure'   => $cfg['secure'] ?? false,
+                'path'     => '/',
+                'secure'   => $isHttps,
                 'httponly' => true,
                 'samesite' => $cfg['same_site'] ?? 'Lax',
             ]);
@@ -452,8 +456,17 @@ class Auth {
         try { Database::query("ALTER TABLE `users` ADD COLUMN `remember_token` VARCHAR(64) DEFAULT NULL"); } catch (\Throwable $_e) {}
         $token = bin2hex(random_bytes(32));
         try { Database::query("UPDATE `users` SET `remember_token`=? WHERE `id`=?", [$token, $userId]); } catch (\Throwable $e) {}
-        // 30 days
-        setcookie('remember_token', $token, time() + 2592000, '/', '', false, true); 
+        $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+                 || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https')
+                 || (($_SERVER['SERVER_PORT'] ?? 80) == 443);
+        // 30 days — Secure flag auto-set on HTTPS, SameSite=Lax prevents CSRF
+        setcookie('remember_token', $token, [
+            'expires'  => time() + 2592000,
+            'path'     => '/',
+            'secure'   => $isHttps,
+            'httponly'  => true,
+            'samesite' => 'Lax',
+        ]);
     }
 
     private static function autoLoginFromCookie(string $token): void {

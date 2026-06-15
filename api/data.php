@@ -5,7 +5,22 @@
  * Works standalone (bypasses index.php router since it's a real file).
  */
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+// Restrict CORS to configured app domain instead of wildcard
+$_apiOrigin = '';
+if (file_exists(CONFIG_PATH . '/config.json')) {
+    $_cfgRaw = json_decode(file_get_contents(CONFIG_PATH . '/config.json'), true);
+    $_apiOrigin = rtrim($_cfgRaw['app']['url'] ?? '', '/');
+}
+if ($_apiOrigin) {
+    $requestOrigin = $_SERVER['HTTP_ORIGIN'] ?? '';
+    if ($requestOrigin && stripos($requestOrigin, parse_url($_apiOrigin, PHP_URL_HOST)) !== false) {
+        header('Access-Control-Allow-Origin: ' . $requestOrigin);
+    } else {
+        header('Access-Control-Allow-Origin: ' . $_apiOrigin);
+    }
+} else {
+    header('Access-Control-Allow-Origin: *');
+}
 header('Cache-Control: no-cache, must-revalidate');
 
 define('BASE_PATH', dirname(__DIR__));

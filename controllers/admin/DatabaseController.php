@@ -48,7 +48,7 @@ if ($action === 'export') {
                     if ($v === null) {
                         $vals[] = 'NULL';
                     } else {
-                        $vals[] = "'" . addslashes((string)$v) . "'";
+                        $vals[] = $pdo->quote((string)$v);
                     }
                 }
                 $valGroups[] = '(' . implode(', ', $vals) . ')';

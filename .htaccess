@@ -3,7 +3,7 @@ DirectoryIndex index.php index.html
 RewriteEngine On
 RewriteBase /
 
-# Block direct access to sensitive directories and files
+# ── Block sensitive directories ───────────────────────────────────────────────
 RewriteRule ^config/ - [F,L]
 RewriteRule ^core/ - [F,L]
 RewriteRule ^models/ - [F,L]
@@ -11,26 +11,52 @@ RewriteRule ^controllers/ - [F,L]
 RewriteRule ^logs/ - [F,L]
 RewriteRule ^storage/ - [F,L]
 RewriteRule ^data/ - [F,L]
-# Block sensitive install files (but allow install/index.php for first-time setup)
+
+# ── Block .git directory and related files ────────────────────────────────────
+RewriteRule ^\.git - [F,L]
+RewriteRule ^\.gitignore$ - [F,L]
+
+# ── Block sensitive install files ─────────────────────────────────────────────
 RewriteRule ^install/schema\.sql$ - [F,L]
 RewriteRule ^install/install\.lock$ - [F,L]
 RewriteRule ^install/config_defaults\.json$ - [F,L]
 
-# Force public route directories through the router (physical dirs conflict fix)
+# ── Block dangerous utility scripts (should be deleted, this is defense-in-depth)
+RewriteRule ^create_admin\.php$ - [F,L]
+RewriteRule ^insert_templates\.php$ - [F,L]
+RewriteRule ^test_.*\.php$ - [F,L]
+RewriteRule ^check_enum\.php$ - [F,L]
+
+# ── Block Python scripts and dev config files ─────────────────────────────────
+RewriteRule \.py$ - [F,L]
+RewriteRule ^prepros\.config$ - [F,L]
+
+# ── Block direct access to config JSON (except version.json and sample-offers.json)
+RewriteRule ^config\.json$ - [F,L]
+RewriteRule ^fraud\.json$ - [F,L]
+RewriteRule ^postback\.json$ - [F,L]
+
+# ── Force public route directories through the router ─────────────────────────
 RewriteRule ^reviews(/.*)?$ index.php [QSA,L]
 RewriteRule ^blog(/.*)?$ index.php [QSA,L]
 
-# Skip real files and directories — serve them directly
+# ── Skip real files and directories — serve them directly ─────────────────────
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-# Route everything else through index.php
+# ── Route everything else through index.php ───────────────────────────────────
 RewriteRule ^(.*)$ index.php [QSA,L]
 
-# Security headers — wrapped in IfModule so LiteSpeed won't 403 if mod_headers is unavailable
+# ── Prevent PHP execution in upload directories ──────────────────────────────
+<IfModule mod_rewrite.c>
+    RewriteRule ^uploads/.*\.php$ - [F,L]
+    RewriteRule ^assets/uploads/.*\.php$ - [F,L]
+</IfModule>
+
+# ── Security headers ─────────────────────────────────────────────────────────
 <IfModule mod_headers.c>
     Header always set X-Content-Type-Options "nosniff"
     Header always set X-Frame-Options "SAMEORIGIN"
-    Header always set X-XSS-Protection "1; mode=block"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
 </IfModule>

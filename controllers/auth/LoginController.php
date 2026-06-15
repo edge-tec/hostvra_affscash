@@ -16,6 +16,13 @@ if (Helpers::isPost()) {
     }
 
     if (!$error) {
+        // ── CSRF verification ────────────────────────────────────────────
+        if (!Auth::verifyCsrf(Helpers::postRaw('_token') ?? '')) {
+            $error = 'Invalid form submission. Please try again.';
+        }
+    }
+
+    if (!$error) {
         $email    = Helpers::postRaw('email');
         $password = Helpers::postRaw('password');
         $remember = (Helpers::postRaw('remember') === '1');

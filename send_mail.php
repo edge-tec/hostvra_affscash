@@ -5,7 +5,21 @@
 // ══════════════════════════════════════════════════════
 
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+// Restrict CORS to configured app domain instead of wildcard
+$_allowedOrigin = '';
+try {
+    $_allowedOrigin = rtrim(Config::get('config', 'app.url') ?? '', '/');
+} catch (\Throwable $_e) {}
+if ($_allowedOrigin) {
+    $requestOrigin = $_SERVER['HTTP_ORIGIN'] ?? '';
+    if ($requestOrigin && stripos($requestOrigin, parse_url($_allowedOrigin, PHP_URL_HOST)) !== false) {
+        header('Access-Control-Allow-Origin: ' . $requestOrigin);
+    } else {
+        header('Access-Control-Allow-Origin: ' . $_allowedOrigin);
+    }
+} else {
+    header('Access-Control-Allow-Origin: *');
+}
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(204); exit; }
@@ -34,6 +48,31 @@ function clean($s) { return htmlspecialchars(strip_tags(trim($s)), ENT_QUOTES, '
 
 // ── ONLY ACCEPT POST ──────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') err('Invalid request method');
+
+// ── RATE LIMITING (IP-based, max 5 per 15 min) ───────
+$_contactIp = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+try {
+    Database::query("CREATE TABLE IF NOT EXISTS `contact_form_limits` (
+        `ip_address` VARCHAR(45) PRIMARY KEY,
+        `attempts` INT NOT NULL DEFAULT 0,
+        `first_attempt` DATETIME NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    $limitRow = Database::fetchOne("SELECT `attempts`, `first_attempt` FROM `contact_form_limits` WHERE `ip_address` = ?", [$_contactIp]);
+    if ($limitRow) {
+        if (strtotime($limitRow['first_attempt']) > time() - 900) {
+            if ($limitRow['attempts'] >= 5) {
+                err('Too many messages sent. Please try again in 15 minutes.');
+            }
+            Database::query("UPDATE `contact_form_limits` SET `attempts` = `attempts` + 1 WHERE `ip_address` = ?", [$_contactIp]);
+        } else {
+            Database::query("UPDATE `contact_form_limits` SET `attempts` = 1, `first_attempt` = NOW() WHERE `ip_address` = ?", [$_contactIp]);
+        }
+    } else {
+        Database::query("INSERT INTO `contact_form_limits` (`ip_address`, `attempts`, `first_attempt`) VALUES (?, 1, NOW())", [$_contactIp]);
+    }
+} catch (\Throwable $_e) {
+    // Rate limiting failed silently — allow the message through
+}
 
 // ── PARSE BODY ────────────────────────────────────────
 $body = json_decode(file_get_contents('php://input'), true);
@@ -87,27 +126,6 @@ try {
 }
 
 if ($sent) {
-    // Also send auto-reply to the user
-    $replySubject = 'Thank you for contacting ' . SITE_NAME . '!';
-    $replyHtml    = '<!DOCTYPE html><html><head><meta charset="UTF-8">
-<style>body{font-family:Arial,sans-serif;background:#f5f5f5;margin:0;padding:20px}
-.card{background:#fff;border-radius:12px;padding:32px;max-width:560px;margin:0 auto}
-h2{color:#e8197a}p{color:#7c7a9e;font-size:14px;line-height:1.7}
-.btn{display:inline-block;background:linear-gradient(135deg,#e8197a,#7c3aed);color:#fff;padding:12px 28px;border-radius:9px;text-decoration:none;font-weight:700;margin-top:16px}
-</style></head><body><div class="card">
-<h2>Thanks, ' . $fname . '! 🎉</h2>
-<p>We received your message and our team will get back to you within <strong>24 hours</strong>.</p>
-<p>In the meantime, you can reach us instantly on Telegram:</p>
-<a class="btn" href="https://t.me/affscashnet" target="_blank">💬 @affscashnet</a>
-<p style="margin-top:24px;font-size:12px;color:#aaa">This is an automated reply. Please do not respond to this email.</p>
-</div></body></html>';
-    
-    try {
-        Mailer::sendRaw($email, "$fname $lname", $replySubject, $replyHtml, 'blast');
-    } catch (Throwable $e) {
-        // Reply failed, but we still received the main message
-    }
-    
     ok('Message sent! We\'ll reply within 24 hours.');
 } else {
     err('Mail server error. Please contact us via Telegram.');

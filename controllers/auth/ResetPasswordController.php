@@ -35,8 +35,10 @@ if (Helpers::isPost() && $tokenValid) {
         $password = Helpers::postRaw('password')        ?? '';
         $confirm  = Helpers::postRaw('password_confirm') ?? '';
 
-        if (strlen($password) < 8) {
-            $error = 'Password must be at least 8 characters long.';
+        // Enforce same strong password rules as registration
+        $passErrors = RegistrationSecurity::validatePassword($password);
+        if (!empty($passErrors)) {
+            $error = implode(' ', $passErrors);
         } elseif ($password !== $confirm) {
             $error = 'Passwords do not match. Please try again.';
         } else {
