@@ -210,12 +210,17 @@ class Auth {
             exit;
         }
         
-        // Strict verification against active sessions (handles Force Logout)
+        // Strict verification against active sessions (handles Force Logout / Inactivity)
         if (session_id()) {
             try {
                 $active = Database::fetchOne("SELECT id FROM user_active_sessions WHERE session_id=?", [session_id()]);
                 if (!$active) {
-                    self::logout();
+                    // Session expired or was cleared. Do not call full logout() so we don't wipe the remember_token.
+                    // Just clear the current session state so it can attempt auto-login or prompt for login.
+                    session_unset();
+                    session_destroy();
+                    header('Location: /login');
+                    exit;
                 } else {
                     // Update last_active on normal page navigation to prevent unexpected logouts
                     // if JS heartbeat fails or is blocked by adblockers.
@@ -242,12 +247,17 @@ class Auth {
             exit;
         }
         
-        // Strict verification against active sessions (handles Force Logout)
+        // Strict verification against active sessions (handles Force Logout / Inactivity)
         if (session_id()) {
             try {
                 $active = Database::fetchOne("SELECT id FROM user_active_sessions WHERE session_id=?", [session_id()]);
                 if (!$active) {
-                    self::logout();
+                    // Session expired or was cleared. Do not call full logout() so we don't wipe the remember_token.
+                    // Just clear the current session state so it can attempt auto-login or prompt for login.
+                    session_unset();
+                    session_destroy();
+                    header('Location: /login');
+                    exit;
                 } else {
                     // Update last_active on normal page navigation to prevent unexpected logouts
                     Database::query("UPDATE user_active_sessions SET last_active=NOW(), current_page=? WHERE session_id=?", [

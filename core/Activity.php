@@ -175,17 +175,9 @@ class Activity {
         $parsed = self::parseUA($ua);
         $geo    = self::geoLookup($ip);
 
-        // Mark any previous active sessions for this user as inactive
-        try {
-            Database::query(
-                "UPDATE user_login_logs SET is_active=0, logout_time=NOW(),
-                 duration_sec=TIMESTAMPDIFF(SECOND,login_time,NOW())
-                 WHERE user_id=? AND is_active=1", [$userId]
-            );
-            Database::query(
-                "DELETE FROM user_active_sessions WHERE user_id=?", [$userId]
-            );
-        } catch (Exception $e) {}
+        // Allow multiple concurrent sessions.
+        // We no longer delete previous active sessions for this user here.
+        // This prevents automatic logouts when opening multiple tabs, windows, or logging in from multiple devices.
 
         // Insert login log
         $logId = 0;
