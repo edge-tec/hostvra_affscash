@@ -6,24 +6,28 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.affscash.ui.auth.LoginScreen
 import com.example.affscash.ui.dashboard.DashboardScreen
+import com.example.affscash.data.local.UserManager
 
 @Composable
-fun AffscashNavGraph(startDestination: String = "login") {
+fun AffscashNavGraph(
+    startDestination: String = "login",
+    userManager: UserManager
+) {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable("login") {
             LoginScreen(
                 onLoginSuccess = { role ->
-                    navController.navigate("main_screen/$role") {
+                    navController.navigate("main_screen") {
                         popUpTo("login") { inclusive = true }
                     }
                 }
             )
         }
         
-        composable("main_screen/{role}") { backStackEntry ->
-            val role = backStackEntry.arguments?.getString("role") ?: "affiliate"
+        composable("main_screen") {
+            val role = userManager.getRole() ?: "affiliate"
             MainScreen(
                 role = role,
                 onLogout = {

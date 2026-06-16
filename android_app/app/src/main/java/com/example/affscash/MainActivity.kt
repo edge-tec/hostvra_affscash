@@ -28,8 +28,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val role = userManager.getRole()
-                    val startDest = if (role != null) "main_screen/$role" else "login"
-                    AffscashNavGraph(startDestination = startDest)
+                    val startDest = if (role != null) "main_screen" else "login"
+                    AffscashNavGraph(startDestination = startDest, userManager = userManager)
                 }
             }
         }
