@@ -2,6 +2,8 @@ package com.example.affscash.data.repository
 
 import com.example.affscash.data.model.OfferDetailsResponse
 import com.example.affscash.data.model.OfferResponse
+import com.example.affscash.data.model.AdminOfferResponse
+import com.example.affscash.data.model.ManagerOfferResponse
 import com.example.affscash.data.network.ApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -34,6 +36,36 @@ class OfferRepository @Inject constructor(
                 response.body()?.let {
                     if (it.success) return@withContext Result.success(it)
                     return@withContext Result.failure(Exception(it.error ?: "Failed to fetch offer details"))
+                }
+            }
+            Result.failure(Exception("Network error: ${response.code()}"))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getAdminOffers(): Result<AdminOfferResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.getAdminOffers()
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    if (it.success) return@withContext Result.success(it)
+                    return@withContext Result.failure(Exception(it.error ?: "Failed to fetch admin offers"))
+                }
+            }
+            Result.failure(Exception("Network error: ${response.code()}"))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getManagerOffers(): Result<ManagerOfferResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.getManagerOffers()
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    if (it.success) return@withContext Result.success(it)
+                    return@withContext Result.failure(Exception(it.error ?: "Failed to fetch manager offers"))
                 }
             }
             Result.failure(Exception("Network error: ${response.code()}"))

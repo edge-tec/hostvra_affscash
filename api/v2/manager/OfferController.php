@@ -1,0 +1,45 @@
+<?php
+header('Content-Type: application/json');
+
+if (!Auth::check('affiliate_manager', false)) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+    exit;
+}
+
+try {
+    $whereFilters = ['1=1'];
+    $whereFilters[] = "(o.is_inhouse IS NULL OR o.is_inhouse = 0)";
+    $filterWhere = implode(' AND ', $whereFilters);
+
+    $offers = Database::fetchAll(
+        "SELECT o.id, o.name, o.description, o.payout_type, o.payout_amount as payout, 
+                o.status, o.category, o.geo_targeting, o.device_targeting, o.created_at,
+                COALESCE(CONCAT(u.first_name,' ',u.last_name), 'In-House') as adv_name,
+                COUNT(DISTINCT ao.affiliate_id) as aff_count
+         FROM offers o
+         LEFT JOIN advertisers adv ON adv.id=o.advertiser_id
+         LEFT JOIN users u ON u.id=adv.user_id
+         LEFT JOIN affiliate_offers ao ON ao.offer_id=o.id AND ao.status='approved'
+         WHERE $filterWhere
+         GROUP BY o.id
+         ORDER BY o.created_at DESC"
+    );
+
+    // Parse JSON fields
+    foreach ($offers as &$offer) {
+        $offer['payout'] = (float)$offer['payout'];
+        $offer['geo_targeting'] = $offer['geo_targeting'] ? json_decode($offer['geo_targeting'], true) : [];
+        $offer['device_targeting'] = $offer['device_targeting'] ? json_decode($offer['device_targeting'], true) : [];
+        $offer['aff_count'] = (int)$offer['aff_count'];
+    }
+
+    echo json_encode([
+        'success' => true,
+        'data' => $offers
+    ]);
+
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+}

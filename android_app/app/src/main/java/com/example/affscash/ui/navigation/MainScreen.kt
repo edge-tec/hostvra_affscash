@@ -26,10 +26,12 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
 
     // Admin Screens
     object AdminDashboard : Screen("admin_dashboard", "Dashboard", Icons.Filled.Home)
+    object AdminOffers : Screen("admin_offers", "Offers", Icons.Filled.LocalOffer)
     object AdminUsers : Screen("admin_users", "Users", Icons.Filled.Assessment)
 
     // Manager Screens
     object ManagerDashboard : Screen("manager_dashboard", "Dashboard", Icons.Filled.Home)
+    object ManagerOffers : Screen("manager_offers", "Offers", Icons.Filled.LocalOffer)
     object ManagerAffiliates : Screen("manager_affiliates", "Affiliates", Icons.Filled.Assessment)
 }
 
@@ -42,8 +44,8 @@ fun MainScreen(
     val navController = rememberNavController()
 
     val items = when (role) {
-        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminUsers)
-        "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerAffiliates)
+        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminUsers)
+        "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerAffiliates)
         else -> listOf(Screen.Dashboard, Screen.Offers, Screen.Reports)
     }
     
@@ -90,10 +92,12 @@ fun MainScreen(
 
             // Admin Screens
             composable(Screen.AdminDashboard.route) { com.example.affscash.ui.admin.AdminDashboardScreen() }
+            composable(Screen.AdminOffers.route) { com.example.affscash.ui.admin.AdminOffersScreen() }
             composable(Screen.AdminUsers.route) { com.example.affscash.ui.admin.AdminDashboardScreen() } // Placeholder
 
             // Manager Screens
             composable(Screen.ManagerDashboard.route) { com.example.affscash.ui.manager.ManagerDashboardScreen() }
+            composable(Screen.ManagerOffers.route) { com.example.affscash.ui.manager.ManagerOffersScreen() }
             composable(Screen.ManagerAffiliates.route) { com.example.affscash.ui.manager.ManagerDashboardScreen() } // Placeholder
         }
     }
