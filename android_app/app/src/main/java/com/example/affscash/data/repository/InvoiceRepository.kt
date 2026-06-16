@@ -1,7 +1,10 @@
 package com.example.affscash.data.repository
 
 import com.example.affscash.data.model.InvoiceResponse
+import com.example.affscash.data.model.PdfDownloadResponse
 import com.example.affscash.data.network.ApiService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -9,37 +12,31 @@ import javax.inject.Singleton
 class InvoiceRepository @Inject constructor(
     private val apiService: ApiService
 ) {
-    suspend fun getAdminInvoices(): Result<InvoiceResponse> {
-        return try {
-            val response = apiService.getAdminInvoices()
+    suspend fun getInvoices(): Result<InvoiceResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.getInvoices()
             if (response.isSuccessful) {
-                val body = response.body()
-                if (body != null && body.success) {
-                    Result.success(body)
-                } else {
-                    Result.failure(Exception(body?.error ?: "Unknown error"))
+                response.body()?.let {
+                    if (it.success) return@withContext Result.success(it)
+                    return@withContext Result.failure(Exception(it.error ?: "Failed to fetch invoices"))
                 }
-            } else {
-                Result.failure(Exception("HTTP ${response.code()}"))
             }
+            Result.failure(Exception("Network error: ${response.code()}"))
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    suspend fun getManagerInvoices(): Result<InvoiceResponse> {
-        return try {
-            val response = apiService.getManagerInvoices()
+    suspend fun downloadInvoicePdf(invoiceId: Int): Result<PdfDownloadResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.downloadInvoicePdf(invoiceId = invoiceId)
             if (response.isSuccessful) {
-                val body = response.body()
-                if (body != null && body.success) {
-                    Result.success(body)
-                } else {
-                    Result.failure(Exception(body?.error ?: "Unknown error"))
+                response.body()?.let {
+                    if (it.success && it.url != null) return@withContext Result.success(it)
+                    return@withContext Result.failure(Exception(it.error ?: "Failed to get PDF URL"))
                 }
-            } else {
-                Result.failure(Exception("HTTP ${response.code()}"))
             }
+            Result.failure(Exception("Network error: ${response.code()}"))
         } catch (e: Exception) {
             Result.failure(e)
         }

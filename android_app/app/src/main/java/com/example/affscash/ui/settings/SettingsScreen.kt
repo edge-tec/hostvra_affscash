@@ -22,6 +22,7 @@ import com.example.affscash.MainActivity
 fun SettingsScreen(
     role: String,
     onLogout: () -> Unit,
+    onNavigateToInvoices: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -67,6 +68,25 @@ fun SettingsScreen(
                             fontWeight = FontWeight.Bold
                         )
                     }
+                }
+            }
+
+
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            if (role == "affiliate") {
+                Button(
+                    onClick = onNavigateToInvoices,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    ),
+                    contentPadding = PaddingValues(vertical = 12.dp)
+                ) {
+                    Icon(androidx.compose.material.icons.Icons.Default.PictureAsPdf, contentDescription = "Invoices")
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("My Invoices", style = MaterialTheme.typography.titleMedium)
                 }
             }
 

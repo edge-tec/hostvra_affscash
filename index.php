@@ -471,6 +471,7 @@ Router::any('/api/v2/dashboard', function() { require BASE_PATH . '/api/v2/Dashb
 Router::any('/api/v2/offers', function() { require BASE_PATH . '/api/v2/OfferController.php'; });
 Router::any('/api/v2/smartlinks', function() { require BASE_PATH . '/api/v2/SmartlinkController.php'; });
 Router::any('/api/v2/reports', function() { require BASE_PATH . '/api/v2/ReportController.php'; });
+Router::any('/api/v2/invoices', function() { require BASE_PATH . '/api/v2/InvoiceController.php'; });
 
 // Native App API Routes (v2) - Admin
 Router::any('/api/v2/admin/dashboard', function() { require BASE_PATH . '/api/v2/admin/DashboardController.php'; });

@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.Assessment
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocalOffer
 import androidx.compose.material.icons.filled.Link
+import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.MonetizationOn
 import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Settings
@@ -28,6 +29,7 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     object Offers : Screen("offers", "Offers", Icons.Filled.LocalOffer)
     object Smartlinks : Screen("smartlinks", "Smartlinks", Icons.Filled.Link)
     object Reports : Screen("reports", "Reports", Icons.Filled.Assessment)
+    object Invoices : Screen("invoices", "Invoices", Icons.Filled.PictureAsPdf)
     object AffiliateSettings : Screen("affiliate_settings", "Settings", Icons.Filled.Settings)
 
     // Admin Screens
@@ -102,7 +104,18 @@ fun MainScreen(
             composable(Screen.Offers.route) { OfferScreen(onOfferClick = {}) }
             composable(Screen.Smartlinks.route) { com.example.affscash.ui.smartlinks.SmartlinkScreen() }
             composable(Screen.Reports.route) { ReportScreen() }
-            composable(Screen.AffiliateSettings.route) { com.example.affscash.ui.settings.SettingsScreen(role, onLogout) }
+            composable(Screen.AffiliateSettings.route) { 
+                com.example.affscash.ui.settings.SettingsScreen(
+                    role = role, 
+                    onLogout = onLogout,
+                    onNavigateToInvoices = { navController.navigate(Screen.Invoices.route) }
+                ) 
+            }
+            composable(Screen.Invoices.route) {
+                com.example.affscash.ui.invoices.InvoiceScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
 
             // Admin Screens
             composable(Screen.AdminDashboard.route) { com.example.affscash.ui.admin.AdminDashboardScreen() }

@@ -119,4 +119,13 @@ interface ApiService {
         @Query("id") offerId: Int
     ): Response<OfferDetailsResponse>
 
+    @GET("api/v2/invoices")
+    suspend fun getInvoices(@Query("action") action: String = "list"): Response<com.example.affscash.data.model.InvoiceResponse>
+
+    @GET("api/v2/invoices")
+    suspend fun downloadInvoicePdf(
+        @Query("action") action: String = "download_pdf",
+        @Query("id") invoiceId: Int
+    ): Response<com.example.affscash.data.model.PdfDownloadResponse>
+
 }
