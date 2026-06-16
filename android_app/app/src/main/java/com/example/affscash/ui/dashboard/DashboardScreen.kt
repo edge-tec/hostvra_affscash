@@ -34,9 +34,70 @@ fun DashboardScreen(
                         modifier = Modifier.height(32.dp)
                     )
                 },
+                actions = {
+                    val data = (uiState as? DashboardState.Success)?.data
+                    val balance = data?.stats?.balance ?: 0.0
+                    val counts = data?.headerCounts
+                    
+                    // Balance Pill
+                    Surface(
+                        color = androidx.compose.ui.graphics.Color(0xFFDCFCE7),
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, androidx.compose.ui.graphics.Color(0xFF86EFAC)),
+                        modifier = Modifier.padding(end = 8.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                "$ $balance", 
+                                color = androidx.compose.ui.graphics.Color(0xFF15803D),
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Icon(
+                                androidx.compose.material.icons.Icons.Default.ArrowDropDown,
+                                contentDescription = "Dropdown",
+                                tint = androidx.compose.ui.graphics.Color(0xFF15803D),
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    }
+
+                    // News Icon
+                    HeaderIconWithBadge(
+                        icon = androidx.compose.material.icons.Icons.Outlined.Article,
+                        count = counts?.unreadNews ?: 0,
+                        badgeColor = androidx.compose.ui.graphics.Color(0xFF4F46E5)
+                    )
+
+                    // Notifications Icon
+                    HeaderIconWithBadge(
+                        icon = androidx.compose.material.icons.Icons.Outlined.Notifications,
+                        count = counts?.unreadNotifs ?: 0,
+                        badgeColor = androidx.compose.ui.graphics.Color(0xFFEF4444)
+                    )
+
+                    // Fraud Alerts Icon
+                    HeaderIconWithBadge(
+                        icon = androidx.compose.material.icons.Icons.Outlined.WarningAmber,
+                        count = counts?.unreadAlerts ?: 0,
+                        badgeColor = androidx.compose.ui.graphics.Color(0xFFEF4444)
+                    )
+
+                    // Chat Icon
+                    HeaderIconWithBadge(
+                        icon = androidx.compose.material.icons.Icons.Outlined.ChatBubbleOutline,
+                        count = counts?.unreadChats ?: 0,
+                        badgeColor = androidx.compose.ui.graphics.Color(0xFFEF4444)
+                    )
+                },
+
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         }
@@ -140,6 +201,39 @@ fun OfferItem(offer: DashboardOffer) {
                     text = "${offer.payoutType.uppercase()} - $${offer.payout}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun HeaderIconWithBadge(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    count: Int,
+    badgeColor: androidx.compose.ui.graphics.Color
+) {
+    Box(modifier = Modifier.padding(horizontal = 4.dp).size(36.dp), contentAlignment = Alignment.Center) {
+        Icon(
+            imageVector = icon,
+            contentDescription = "Header Icon",
+            tint = androidx.compose.ui.graphics.Color.Gray,
+            modifier = Modifier.size(24.dp)
+        )
+        if (count > 0) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .offset(x = 4.dp, y = (-4).dp)
+                    .size(16.dp)
+                    .androidx.compose.foundation.background(color = badgeColor, shape = androidx.compose.foundation.shape.CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = if (count > 9) "9+" else count.toString(),
+                    color = androidx.compose.ui.graphics.Color.White,
+                    fontSize = 10.androidx.compose.ui.unit.sp,
+                    fontWeight = FontWeight.Bold
                 )
             }
         }

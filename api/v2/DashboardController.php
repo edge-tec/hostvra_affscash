@@ -36,6 +36,20 @@ try {
         'balance'        => round((float)($bal['balance']     ?? 0), 2),
     ];
 
+    // Fetch Unread Counts for Header
+    $userId = Auth::id();
+    $unreadNews = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM news n WHERE n.status='published' AND NOT EXISTS (SELECT 1 FROM news_reads nr WHERE nr.news_id=n.id AND nr.user_id=?)", [$userId])['c'] ?? 0);
+    $unreadNotifs = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM notifications WHERE user_id=? AND is_read=0", [$userId])['c'] ?? 0);
+    $unreadAlerts = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM fraud_alerts WHERE affiliate_id=? AND is_read=0 AND resolved_at IS NULL", [$affId])['c'] ?? 0);
+    $unreadChats = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM support_messages WHERE user_id=? AND sender='admin' AND is_read=0", [$userId])['c'] ?? 0);
+
+    $header_counts = [
+        'unread_news' => $unreadNews,
+        'unread_notifs' => $unreadNotifs,
+        'unread_alerts' => $unreadAlerts,
+        'unread_chats' => $unreadChats
+    ];
+
     // Fetch Recent Approved Offers
     PrivateOffer::ensureTables();
     try {
@@ -91,6 +105,7 @@ try {
         'success' => true,
         'user' => $userInfo,
         'stats' => $stats,
+        'header_counts' => $header_counts,
         'recent_offers' => $offersList
     ]);
 
