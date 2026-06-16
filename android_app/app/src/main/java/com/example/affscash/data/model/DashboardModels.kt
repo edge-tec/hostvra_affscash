@@ -8,7 +8,8 @@ data class DashboardResponse(
     val success: Boolean,
     val user: DashboardUser? = null,
     val stats: DashboardStats? = null,
-    @SerialName("recent_offers") val recentOffers: List<DashboardOffer> = emptyList()
+    @SerialName("recent_offers") val recentOffers: List<DashboardOffer> = emptyList(),
+    val error: String? = null
 )
 
 @Serializable

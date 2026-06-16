@@ -14,19 +14,21 @@ fun AffscashNavGraph() {
     NavHost(navController = navController, startDestination = "login") {
         composable("login") {
             LoginScreen(
-                onLoginSuccess = {
-                    navController.navigate("main_screen") {
+                onLoginSuccess = { role ->
+                    navController.navigate("main_screen/$role") {
                         popUpTo("login") { inclusive = true }
                     }
                 }
             )
         }
         
-        composable("main_screen") {
+        composable("main_screen/{role}") { backStackEntry ->
+            val role = backStackEntry.arguments?.getString("role") ?: "affiliate"
             MainScreen(
+                role = role,
                 onLogout = {
                     navController.navigate("login") {
-                        popUpTo("main_screen") { inclusive = true }
+                        popUpTo(0) { inclusive = true }
                     }
                 }
             )

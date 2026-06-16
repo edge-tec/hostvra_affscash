@@ -4,6 +4,7 @@ import com.example.affscash.data.model.AuthRequest
 import com.example.affscash.data.model.AuthResponse
 import com.example.affscash.data.network.ApiService
 import com.example.affscash.data.network.SessionCookieJar
+import com.example.affscash.data.local.UserManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -12,7 +13,8 @@ import javax.inject.Singleton
 @Singleton
 class AuthRepository @Inject constructor(
     private val apiService: ApiService,
-    private val sessionCookieJar: SessionCookieJar
+    private val sessionCookieJar: SessionCookieJar,
+    private val userManager: UserManager
 ) {
     suspend fun login(email: String, password: String): Result<AuthResponse> = withContext(Dispatchers.IO) {
         try {
@@ -21,7 +23,12 @@ class AuthRepository @Inject constructor(
             val response = apiService.login(AuthRequest(email, password))
             if (response.isSuccessful) {
                 response.body()?.let {
-                    if (it.success) return@withContext Result.success(it)
+                    if (it.success) {
+                        it.user?.let { user -> 
+                            userManager.saveUser(user.role, user.email, "${user.firstName} ${user.lastName}")
+                        }
+                        return@withContext Result.success(it)
+                    }
                     return@withContext Result.failure(Exception(it.error ?: "Login failed"))
                 }
             }
@@ -35,6 +42,7 @@ class AuthRepository @Inject constructor(
         try {
             apiService.logout()
             sessionCookieJar.clearSession()
+            userManager.clearUser()
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)

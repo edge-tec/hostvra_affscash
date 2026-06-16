@@ -1,0 +1,30 @@
+package com.example.affscash.data.local
+
+import android.content.Context
+import android.content.SharedPreferences
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class UserManager @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
+    private val prefs: SharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+
+    fun saveUser(role: String, email: String, name: String) {
+        prefs.edit()
+            .putString("ROLE", role)
+            .putString("EMAIL", email)
+            .putString("NAME", name)
+            .apply()
+    }
+
+    fun getRole(): String? {
+        return prefs.getString("ROLE", null)
+    }
+
+    fun clearUser() {
+        prefs.edit().clear().apply()
+    }
+}

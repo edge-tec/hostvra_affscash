@@ -17,7 +17,7 @@ class DashboardRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     if (it.success) return@withContext Result.success(it)
-                    return@withContext Result.failure(Exception("Failed to fetch dashboard"))
+                    return@withContext Result.failure(Exception(it.error ?: "Failed to fetch dashboard"))
                 }
             }
             Result.failure(Exception("Network error: ${response.code()}"))

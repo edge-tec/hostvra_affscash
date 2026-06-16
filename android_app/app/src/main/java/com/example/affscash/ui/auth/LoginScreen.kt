@@ -15,7 +15,7 @@ import com.example.affscash.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
-    onLoginSuccess: () -> Unit,
+    onLoginSuccess: (String) -> Unit,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val authState by viewModel.authState.collectAsState()
@@ -25,7 +25,8 @@ fun LoginScreen(
 
     LaunchedEffect(authState) {
         if (authState is AuthState.Success) {
-            onLoginSuccess()
+            val user = (authState as AuthState.Success).user
+            onLoginSuccess(user.role)
         }
     }
 
