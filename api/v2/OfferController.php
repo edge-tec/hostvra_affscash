@@ -99,4 +99,12 @@ try {
         ]);
     } else {
         http_response_code(404);
+        echo json_encode(['success' => false, 'error' => 'Action not found']);
+    }
+} catch (Throwable $e) {
+    http_response_code(200);
+    echo json_encode([
+        'success' => false,
+        'error' => $e->getMessage()
+    ]);
 }
