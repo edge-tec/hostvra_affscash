@@ -10,6 +10,8 @@ import com.example.affscash.data.model.AdminDashboardResponse
 import com.example.affscash.data.model.ManagerDashboardResponse
 import com.example.affscash.data.model.AdminOfferResponse
 import com.example.affscash.data.model.ManagerOfferResponse
+import com.example.affscash.data.model.AdminAffiliateResponse
+import com.example.affscash.data.model.ManagerAffiliateResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -38,6 +40,12 @@ interface ApiService {
 
     @GET("api/v2/manager/offers")
     suspend fun getManagerOffers(): Response<ManagerOfferResponse>
+
+    @GET("api/v2/admin/affiliates")
+    suspend fun getAdminAffiliates(): Response<AdminAffiliateResponse>
+
+    @GET("api/v2/manager/affiliates")
+    suspend fun getManagerAffiliates(): Response<ManagerAffiliateResponse>
 
     @GET("api/v2/offers")
     suspend fun getOffers(@Query("action") action: String = "list"): Response<OfferResponse>

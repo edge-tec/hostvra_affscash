@@ -93,12 +93,12 @@ fun MainScreen(
             // Admin Screens
             composable(Screen.AdminDashboard.route) { com.example.affscash.ui.admin.AdminDashboardScreen() }
             composable(Screen.AdminOffers.route) { com.example.affscash.ui.admin.AdminOffersScreen() }
-            composable(Screen.AdminUsers.route) { com.example.affscash.ui.admin.AdminDashboardScreen() } // Placeholder
+            composable(Screen.AdminUsers.route) { com.example.affscash.ui.admin.AdminUsersScreen() }
 
             // Manager Screens
             composable(Screen.ManagerDashboard.route) { com.example.affscash.ui.manager.ManagerDashboardScreen() }
             composable(Screen.ManagerOffers.route) { com.example.affscash.ui.manager.ManagerOffersScreen() }
-            composable(Screen.ManagerAffiliates.route) { com.example.affscash.ui.manager.ManagerDashboardScreen() } // Placeholder
+            composable(Screen.ManagerAffiliates.route) { com.example.affscash.ui.manager.ManagerAffiliatesScreen() }
         }
     }
 }
