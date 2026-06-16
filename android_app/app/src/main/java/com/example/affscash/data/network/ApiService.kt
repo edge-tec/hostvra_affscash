@@ -6,6 +6,8 @@ import com.example.affscash.data.model.DashboardResponse
 import com.example.affscash.data.model.OfferResponse
 import com.example.affscash.data.model.OfferDetailsResponse
 import com.example.affscash.data.model.ReportResponse
+import com.example.affscash.data.model.AdminDashboardResponse
+import com.example.affscash.data.model.ManagerDashboardResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -22,6 +24,12 @@ interface ApiService {
 
     @GET("api/v2/dashboard")
     suspend fun getDashboard(): Response<DashboardResponse>
+
+    @GET("api/v2/admin/dashboard")
+    suspend fun getAdminDashboard(): Response<AdminDashboardResponse>
+
+    @GET("api/v2/manager/dashboard")
+    suspend fun getManagerDashboard(): Response<ManagerDashboardResponse>
 
     @GET("api/v2/offers")
     suspend fun getOffers(@Query("action") action: String = "list"): Response<OfferResponse>

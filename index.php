@@ -471,6 +471,13 @@ Router::any('/api/v2/dashboard', function() { require BASE_PATH . '/api/v2/Dashb
 Router::any('/api/v2/offers', function() { require BASE_PATH . '/api/v2/OfferController.php'; });
 Router::any('/api/v2/reports', function() { require BASE_PATH . '/api/v2/ReportController.php'; });
 
+// Native App API Routes (v2) - Admin
+Router::any('/api/v2/admin/dashboard', function() { require BASE_PATH . '/api/v2/admin/DashboardController.php'; });
+Router::any('/api/v2/admin/offers', function() { require BASE_PATH . '/api/v2/admin/OfferController.php'; });
+
+// Native App API Routes (v2) - Manager
+Router::any('/api/v2/manager/dashboard', function() { require BASE_PATH . '/api/v2/manager/DashboardController.php'; });
+
 // Web shell for the affiliate-inactivity cron — lets admins schedule the
 // scan from cPanel "Cron Jobs" (URL mode) or fire it from a browser when
 // they don't have SSH crontab access. Token-gated (Settings → Inactivity).
