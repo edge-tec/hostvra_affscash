@@ -40,7 +40,7 @@ try {
     PrivateOffer::ensureTables();
     try {
         $approvedOffers = Database::fetchAll(
-            "SELECT o.id, o.name, o.description, o.payout_type, o.payout, o.preview_url, ao.custom_payout
+            "SELECT o.id, o.name, o.description, o.payout_type, o.payout_amount as payout, o.preview_url, ao.custom_payout
              FROM offers o
              JOIN affiliate_offers ao ON ao.offer_id  = o.id
              LEFT JOIN private_offer_access poa ON poa.offer_id = o.id AND poa.affiliate_id = ?
@@ -52,7 +52,7 @@ try {
     } catch (PDOException $e) {
         // Fallback if visibility column is missing
         $approvedOffers = Database::fetchAll(
-            "SELECT o.id, o.name, o.description, o.payout_type, o.payout, o.preview_url, ao.custom_payout
+            "SELECT o.id, o.name, o.description, o.payout_type, o.payout_amount as payout, o.preview_url, ao.custom_payout
              FROM offers o
              JOIN affiliate_offers ao ON ao.offer_id  = o.id
              WHERE ao.affiliate_id=? AND ao.status='approved' AND o.status='active'
