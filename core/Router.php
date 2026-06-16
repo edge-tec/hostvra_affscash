@@ -39,6 +39,12 @@ class Router {
         }
 
         http_response_code(404);
+        $isApi = strpos($_SERVER['REQUEST_URI'] ?? '', '/api/') === 0;
+        if ($isApi) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'error' => 'Endpoint not found']);
+            return;
+        }
         require BASE_PATH . '/views/404.php';
     }
 }

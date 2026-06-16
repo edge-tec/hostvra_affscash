@@ -204,10 +204,33 @@ class Auth {
         return ['success' => true, 'role' => $user['role']];
     }
 
+    private static function handleUnauthorized(): void {
+        $isApi = strpos($_SERVER['REQUEST_URI'] ?? '', '/api/') === 0;
+        if ($isApi) {
+            header('Content-Type: application/json');
+            http_response_code(401);
+            echo json_encode(['success' => false, 'error' => 'Unauthenticated']);
+            exit;
+        }
+        header('Location: /login');
+        exit;
+    }
+
+    private static function handleForbidden(string $redirectRole): void {
+        $isApi = strpos($_SERVER['REQUEST_URI'] ?? '', '/api/') === 0;
+        if ($isApi) {
+            header('Content-Type: application/json');
+            http_response_code(403);
+            echo json_encode(['success' => false, 'error' => 'Forbidden']);
+            exit;
+        }
+        header('Location: /' . $redirectRole . '/dashboard');
+        exit;
+    }
+
     public static function check(?string $requiredRole = null): void {
         if (empty($_SESSION['user_id'])) {
-            header('Location: /login');
-            exit;
+            self::handleUnauthorized();
         }
         
         // Strict verification against active sessions (handles Force Logout / Inactivity)
@@ -219,8 +242,7 @@ class Auth {
                     // Just clear the current session state so it can attempt auto-login or prompt for login.
                     session_unset();
                     session_destroy();
-                    header('Location: /login');
-                    exit;
+                    self::handleUnauthorized();
                 } else {
                     // Update last_active on normal page navigation to prevent unexpected logouts
                     // if JS heartbeat fails or is blocked by adblockers.
@@ -235,16 +257,14 @@ class Auth {
         if ($requiredRole !== null && $_SESSION['user_role'] !== $requiredRole) {
             // Allow admin to access everything
             if ($_SESSION['user_role'] !== 'admin') {
-                header('Location: /' . $_SESSION['user_role'] . '/dashboard');
-                exit;
+                self::handleForbidden($_SESSION['user_role']);
             }
         }
     }
 
     public static function checkAny(array $roles): void {
         if (empty($_SESSION['user_id'])) {
-            header('Location: /login');
-            exit;
+            self::handleUnauthorized();
         }
         
         // Strict verification against active sessions (handles Force Logout / Inactivity)
@@ -256,8 +276,7 @@ class Auth {
                     // Just clear the current session state so it can attempt auto-login or prompt for login.
                     session_unset();
                     session_destroy();
-                    header('Location: /login');
-                    exit;
+                    self::handleUnauthorized();
                 } else {
                     // Update last_active on normal page navigation to prevent unexpected logouts
                     Database::query("UPDATE user_active_sessions SET last_active=NOW(), current_page=? WHERE session_id=?", [
@@ -269,8 +288,7 @@ class Auth {
         }
 
         if (!in_array($_SESSION['user_role'], $roles)) {
-            header('Location: /' . $_SESSION['user_role'] . '/dashboard');
-            exit;
+            self::handleForbidden($_SESSION['user_role']);
         }
     }
 
@@ -284,6 +302,14 @@ class Auth {
             setcookie('remember_token', '', time() - 3600, '/');
         } catch (Exception $e) {}
         session_destroy();
+        
+        $isApi = strpos($_SERVER['REQUEST_URI'] ?? '', '/api/') === 0;
+        if ($isApi) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true, 'message' => 'Logged out successfully']);
+            exit;
+        }
+        
         header('Location: /login');
         exit;
     }
