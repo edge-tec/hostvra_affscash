@@ -83,7 +83,7 @@ try {
     ]);
 
 } catch (Throwable $e) {
-    http_response_code(500);
+    http_response_code(200);
     echo json_encode([
         'success' => false,
         'error' => $e->getMessage()
