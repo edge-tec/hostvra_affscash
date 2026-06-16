@@ -23,8 +23,8 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideSessionCookieJar(): SessionCookieJar {
-        return SessionCookieJar()
+    fun provideSessionCookieJar(@dagger.hilt.android.qualifiers.ApplicationContext context: android.content.Context): SessionCookieJar {
+        return SessionCookieJar(context)
     }
 
     @Provides
