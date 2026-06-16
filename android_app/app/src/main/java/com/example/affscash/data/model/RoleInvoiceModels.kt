@@ -18,6 +18,6 @@ data class Invoice(
 @Serializable
 data class InvoiceResponse(
     val success: Boolean,
-    val data: List<Invoice>,
-    val error: String?
+    val data: List<Invoice> = emptyList(),
+    val error: String? = null
 )
