@@ -28,7 +28,8 @@ if ($action === 'login') {
             'success' => true, 
             'role' => $result['role'],
             'session_id' => session_id(),
-            'message' => 'Login successful'
+            'message' => 'Login successful',
+            'user' => Auth::currentUser()
         ]);
     } else {
         http_response_code(401);
