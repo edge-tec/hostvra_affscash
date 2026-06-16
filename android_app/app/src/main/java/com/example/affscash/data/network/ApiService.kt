@@ -94,6 +94,19 @@ interface ApiService {
     @POST("api/v2/offers?action=apply")
     suspend fun applyOffer(@Body request: com.example.affscash.data.model.ApplyOfferRequest): Response<com.example.affscash.data.model.ApplyOfferResponse>
 
+    @GET("api/v2/reports")
+    suspend fun getReports(
+        @Query("tab") tab: String = "day",
+        @Query("from") from: String? = null,
+        @Query("to") to: String? = null,
+        @Query("offer_id") offerId: Int? = null,
+        @Query("country") country: String? = null,
+        @Query("sub1") sub1: String? = null
+    ): Response<com.example.affscash.data.model.ReportResponse>
+
+    @GET("api/v2/reports?action=filters")
+    suspend fun getReportFilters(): Response<com.example.affscash.data.model.ReportFiltersResponse>
+
     @GET("api/v2/smartlinks")
     suspend fun getSmartlinks(@Query("action") action: String = "list"): Response<com.example.affscash.data.model.SmartlinkResponse>
 
@@ -106,10 +119,4 @@ interface ApiService {
         @Query("id") offerId: Int
     ): Response<OfferDetailsResponse>
 
-    @GET("api/v2/reports")
-    suspend fun getReports(
-        @Query("tab") tab: String,
-        @Query("from") fromDate: String,
-        @Query("to") toDate: String
-    ): Response<ReportResponse>
 }
