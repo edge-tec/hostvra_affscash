@@ -80,7 +80,25 @@ interface ApiService {
     suspend fun getManagerInvoices(): Response<InvoiceResponse>
 
     @GET("api/v2/offers")
-    suspend fun getOffers(@Query("action") action: String = "list"): Response<OfferResponse>
+    suspend fun getOffers(
+        @Query("action") action: String = "list",
+        @Query("q") query: String? = null,
+        @Query("category") category: String? = null,
+        @Query("payout_type") payoutType: String? = null,
+        @Query("offer_type") offerType: String? = null,
+        @Query("country") country: String? = null,
+        @Query("device") device: String? = null,
+        @Query("access_filter") accessFilter: String? = null
+    ): Response<OfferResponse>
+
+    @POST("api/v2/offers?action=apply")
+    suspend fun applyOffer(@Body request: com.example.affscash.data.model.ApplyOfferRequest): Response<com.example.affscash.data.model.ApplyOfferResponse>
+
+    @GET("api/v2/smartlinks")
+    suspend fun getSmartlinks(@Query("action") action: String = "list"): Response<com.example.affscash.data.model.SmartlinkResponse>
+
+    @POST("api/v2/smartlinks?action=apply")
+    suspend fun applySmartlink(@Body request: com.example.affscash.data.model.ApplySmartlinkRequest): Response<com.example.affscash.data.model.ApplySmartlinkResponse>
 
     @GET("api/v2/offers")
     suspend fun getOfferDetails(

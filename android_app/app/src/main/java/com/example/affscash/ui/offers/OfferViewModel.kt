@@ -24,6 +24,14 @@ class OfferViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<OfferState>(OfferState.Loading)
     val uiState: StateFlow<OfferState> = _uiState
 
+    val searchQuery = MutableStateFlow("")
+    val category = MutableStateFlow("All Categories")
+    val payoutType = MutableStateFlow("All Types")
+    val offerType = MutableStateFlow("All")
+    val country = MutableStateFlow("")
+    val device = MutableStateFlow("All")
+    val accessFilter = MutableStateFlow("All Offers")
+
     init {
         loadOffers()
     }
@@ -31,11 +39,45 @@ class OfferViewModel @Inject constructor(
     fun loadOffers() {
         viewModelScope.launch {
             _uiState.value = OfferState.Loading
-            val result = offerRepository.getOffers()
+            
+            val q = searchQuery.value.takeIf { it.isNotBlank() }
+            val cat = category.value.takeIf { it != "All Categories" }
+            val pt = payoutType.value.takeIf { it != "All Types" }
+            val ot = offerType.value.takeIf { it != "All" }
+            val ctry = country.value.takeIf { it.isNotBlank() }
+            val dev = device.value.takeIf { it != "All" }
+            val access = when (accessFilter.value) {
+                "Request Approval" -> "request"
+                "Instantly Approved" -> "all_access"
+                else -> ""
+            }
+
+            val result = offerRepository.getOffers(
+                query = q,
+                category = cat,
+                payoutType = pt,
+                offerType = ot,
+                country = ctry,
+                device = dev,
+                accessFilter = access
+            )
+            
             result.onSuccess {
                 _uiState.value = OfferState.Success(it.offers)
             }.onFailure {
                 _uiState.value = OfferState.Error(it.message ?: "Failed to load offers")
+            }
+        }
+    }
+
+    fun applyOffer(offerId: Int, promoDesc: String, onResult: (Boolean, String) -> Unit) {
+        viewModelScope.launch {
+            val result = offerRepository.applyOffer(offerId, promoDesc)
+            result.onSuccess {
+                onResult(true, it.message ?: "Applied successfully")
+                loadOffers() // Reload to get updated status
+            }.onFailure {
+                onResult(false, it.message ?: "Failed to apply")
             }
         }
     }

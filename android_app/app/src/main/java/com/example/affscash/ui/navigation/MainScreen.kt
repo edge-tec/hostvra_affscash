@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Assessment
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocalOffer
+import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.MonetizationOn
 import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Settings
@@ -25,6 +26,7 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     // Affiliate Screens
     object Dashboard : Screen("dashboard", "Dashboard", Icons.Filled.Home)
     object Offers : Screen("offers", "Offers", Icons.Filled.LocalOffer)
+    object Smartlinks : Screen("smartlinks", "Smartlinks", Icons.Filled.Link)
     object Reports : Screen("reports", "Reports", Icons.Filled.Assessment)
     object AffiliateSettings : Screen("affiliate_settings", "Settings", Icons.Filled.Settings)
 
@@ -56,7 +58,7 @@ fun MainScreen(
     val items = when (role) {
         "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminUsers, Screen.AdminConversions, Screen.AdminInvoices, Screen.AdminSettings)
         "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerInvoices, Screen.ManagerSettings)
-        else -> listOf(Screen.Dashboard, Screen.Offers, Screen.Reports, Screen.AffiliateSettings)
+        else -> listOf(Screen.Dashboard, Screen.Offers, Screen.Smartlinks, Screen.Reports, Screen.AffiliateSettings)
     }
     
     val startDest = items.first().route
@@ -98,6 +100,7 @@ fun MainScreen(
             // Affiliate Screens
             composable(Screen.Dashboard.route) { DashboardScreen() }
             composable(Screen.Offers.route) { OfferScreen(onOfferClick = {}) }
+            composable(Screen.Smartlinks.route) { com.example.affscash.ui.smartlinks.SmartlinkScreen() }
             composable(Screen.Reports.route) { ReportScreen() }
             composable(Screen.AffiliateSettings.route) { com.example.affscash.ui.settings.SettingsScreen(role, onLogout) }
 

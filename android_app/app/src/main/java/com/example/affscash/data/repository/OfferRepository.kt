@@ -14,13 +14,44 @@ import javax.inject.Singleton
 class OfferRepository @Inject constructor(
     private val apiService: ApiService
 ) {
-    suspend fun getOffers(): Result<OfferResponse> = withContext(Dispatchers.IO) {
+    suspend fun getOffers(
+        query: String? = null,
+        category: String? = null,
+        payoutType: String? = null,
+        offerType: String? = null,
+        country: String? = null,
+        device: String? = null,
+        accessFilter: String? = null
+    ): Result<OfferResponse> = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.getOffers()
+            val response = apiService.getOffers(
+                query = query,
+                category = category,
+                payoutType = payoutType,
+                offerType = offerType,
+                country = country,
+                device = device,
+                accessFilter = accessFilter
+            )
             if (response.isSuccessful) {
                 response.body()?.let {
                     if (it.success) return@withContext Result.success(it)
                     return@withContext Result.failure(Exception(it.error ?: "Failed to fetch offers"))
+                }
+            }
+            Result.failure(Exception("Network error: ${response.code()}"))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun applyOffer(offerId: Int, promoDesc: String?): Result<com.example.affscash.data.model.ApplyOfferResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.applyOffer(com.example.affscash.data.model.ApplyOfferRequest(offerId, promoDesc))
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    if (it.success) return@withContext Result.success(it)
+                    return@withContext Result.failure(Exception(it.error ?: "Failed to apply for offer"))
                 }
             }
             Result.failure(Exception("Network error: ${response.code()}"))
