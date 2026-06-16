@@ -18,7 +18,15 @@ try {
                   WHERE ao.affiliate_id=? AND ao.status='approved' AND o.status='active'
                     AND (COALESCE(o.visibility,'public') != 'private' OR poa.id IS NOT NULL)";
 
-        $offers = Database::fetchAll($query, [$affId, $affId]);
+        try {
+            $offers = Database::fetchAll($query, [$affId, $affId]);
+        } catch (PDOException $e) {
+            $query = "SELECT o.id, o.name, o.description, o.payout_type, o.payout, o.preview_url, ao.custom_payout
+                      FROM offers o
+                      JOIN affiliate_offers ao ON ao.offer_id  = o.id
+                      WHERE ao.affiliate_id=? AND ao.status='approved' AND o.status='active'";
+            $offers = Database::fetchAll($query, [$affId]);
+        }
 
         $offersList = [];
         foreach ($offers as $offer) {
@@ -42,15 +50,25 @@ try {
         $offerId = $_GET['id'] ?? 0;
         
         // Check access
-        $offer = Database::fetchOne(
-            "SELECT o.*, ao.custom_payout, ao.status as approval_status 
-             FROM offers o
-             JOIN affiliate_offers ao ON ao.offer_id = o.id
-             LEFT JOIN private_offer_access poa ON poa.offer_id = o.id AND poa.affiliate_id = ?
-             WHERE o.id=? AND ao.affiliate_id=? AND o.status='active'
-               AND (COALESCE(o.visibility,'public') != 'private' OR poa.id IS NOT NULL)",
-            [$affId, $offerId, $affId]
-        );
+        try {
+            $offer = Database::fetchOne(
+                "SELECT o.*, ao.custom_payout, ao.status as approval_status 
+                 FROM offers o
+                 JOIN affiliate_offers ao ON ao.offer_id = o.id
+                 LEFT JOIN private_offer_access poa ON poa.offer_id = o.id AND poa.affiliate_id = ?
+                 WHERE o.id=? AND ao.affiliate_id=? AND o.status='active'
+                   AND (COALESCE(o.visibility,'public') != 'private' OR poa.id IS NOT NULL)",
+                [$affId, $offerId, $affId]
+            );
+        } catch (PDOException $e) {
+            $offer = Database::fetchOne(
+                "SELECT o.*, ao.custom_payout, ao.status as approval_status 
+                 FROM offers o
+                 JOIN affiliate_offers ao ON ao.offer_id = o.id
+                 WHERE o.id=? AND ao.affiliate_id=? AND o.status='active'",
+                [$offerId, $affId]
+            );
+        }
 
         if (!$offer) {
             http_response_code(404);

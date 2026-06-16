@@ -38,16 +38,28 @@ try {
 
     // Fetch Recent Approved Offers
     PrivateOffer::ensureTables();
-    $approvedOffers = Database::fetchAll(
-        "SELECT o.id, o.name, o.description, o.payout_type, o.payout, o.preview_url, ao.custom_payout
-         FROM offers o
-         JOIN affiliate_offers ao ON ao.offer_id  = o.id
-         LEFT JOIN private_offer_access poa ON poa.offer_id = o.id AND poa.affiliate_id = ?
-         WHERE ao.affiliate_id=? AND ao.status='approved' AND o.status='active'
-           AND (COALESCE(o.visibility,'public') != 'private' OR poa.id IS NOT NULL)
-         LIMIT 10",
-        [$affId, $affId]
-    );
+    try {
+        $approvedOffers = Database::fetchAll(
+            "SELECT o.id, o.name, o.description, o.payout_type, o.payout, o.preview_url, ao.custom_payout
+             FROM offers o
+             JOIN affiliate_offers ao ON ao.offer_id  = o.id
+             LEFT JOIN private_offer_access poa ON poa.offer_id = o.id AND poa.affiliate_id = ?
+             WHERE ao.affiliate_id=? AND ao.status='approved' AND o.status='active'
+               AND (COALESCE(o.visibility,'public') != 'private' OR poa.id IS NOT NULL)
+             LIMIT 10",
+            [$affId, $affId]
+        );
+    } catch (PDOException $e) {
+        // Fallback if visibility column is missing
+        $approvedOffers = Database::fetchAll(
+            "SELECT o.id, o.name, o.description, o.payout_type, o.payout, o.preview_url, ao.custom_payout
+             FROM offers o
+             JOIN affiliate_offers ao ON ao.offer_id  = o.id
+             WHERE ao.affiliate_id=? AND ao.status='approved' AND o.status='active'
+             LIMIT 10",
+            [$affId]
+        );
+    }
 
     $offersList = [];
     if ($approvedOffers) {
