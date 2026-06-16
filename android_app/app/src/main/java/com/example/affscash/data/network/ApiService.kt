@@ -128,4 +128,24 @@ interface ApiService {
         @Query("id") invoiceId: Int
     ): Response<com.example.affscash.data.model.PdfDownloadResponse>
 
+    @GET("api/v2/settings")
+    suspend fun getSettings(@Query("action") action: String = "load"): Response<com.example.affscash.data.model.SettingsLoadResponse>
+
+    @POST("api/v2/settings?action=update_profile")
+    suspend fun updateProfile(@Body request: com.example.affscash.data.model.UpdateProfileRequest): Response<com.example.affscash.data.model.SettingsActionResponse>
+
+    @POST("api/v2/settings?action=update_security")
+    suspend fun updateSecurity(@Body request: com.example.affscash.data.model.UpdateSecurityRequest): Response<com.example.affscash.data.model.SettingsActionResponse>
+
+    @POST("api/v2/settings?action=update_payment")
+    suspend fun updatePayment(@Body request: com.example.affscash.data.model.UpdatePaymentRequest): Response<com.example.affscash.data.model.SettingsActionResponse>
+
+    @POST("api/v2/settings?action=2fa_start")
+    suspend fun start2fa(): Response<com.example.affscash.data.model.SettingsActionResponse>
+
+    @POST("api/v2/settings?action=2fa_verify")
+    suspend fun verify2fa(@Body request: com.example.affscash.data.model.TwoFactorVerifyRequest): Response<com.example.affscash.data.model.SettingsActionResponse>
+
+    @POST("api/v2/settings?action=2fa_disable")
+    suspend fun disable2fa(@Body request: com.example.affscash.data.model.TwoFactorDisableRequest): Response<com.example.affscash.data.model.SettingsActionResponse>
 }
