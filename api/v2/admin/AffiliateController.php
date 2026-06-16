@@ -4,6 +4,25 @@ header('Content-Type: application/json');
 Auth::check('admin');
 
 try {
+    $status = $_GET['status'] ?? 'all';
+    $search = $_GET['search'] ?? '';
+
+    $whereFilters = ["u.role='affiliate'", "u.status!='deleted'"];
+    $params = [];
+
+    if ($status !== 'all') {
+        $whereFilters[] = "u.status = ?";
+        $params[] = $status;
+    }
+
+    if (!empty($search)) {
+        $whereFilters[] = "(u.first_name LIKE ? OR u.last_name LIKE ? OR u.email LIKE ? OR af.affiliate_code LIKE ?)";
+        $searchLike = "%$search%";
+        $params = array_merge($params, [$searchLike, $searchLike, $searchLike, $searchLike]);
+    }
+
+    $whereClause = implode(' AND ', $whereFilters);
+
     $affiliates = Database::fetchAll(
         "SELECT u.id as user_id, u.email, u.first_name, u.last_name, u.company, u.phone, u.country, u.status, u.created_at,
                 u.last_login, u.inactivity_deactivated_at,
@@ -15,11 +34,12 @@ try {
          FROM users u
          JOIN affiliates af ON af.user_id=u.id
          LEFT JOIN conversions cv ON cv.affiliate_id = af.id AND COALESCE(cv.is_hidden,0)=0
-         WHERE u.role='affiliate' AND u.status!='deleted'
+         WHERE $whereClause
          GROUP BY u.id, u.email, u.first_name, u.last_name, u.company, u.phone, u.country, u.status, u.created_at,
                   u.last_login, u.inactivity_deactivated_at,
                   af.affiliate_code, af.balance, af.payment_method, af.payment_threshold, af.id
-         ORDER BY u.created_at DESC"
+         ORDER BY u.created_at DESC",
+        $params
     );
 
     foreach ($affiliates as &$aff) {

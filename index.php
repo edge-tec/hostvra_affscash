@@ -475,6 +475,7 @@ Router::any('/api/v2/reports', function() { require BASE_PATH . '/api/v2/ReportC
 Router::any('/api/v2/admin/dashboard', function() { require BASE_PATH . '/api/v2/admin/DashboardController.php'; });
 Router::any('/api/v2/admin/offers', function() { require BASE_PATH . '/api/v2/admin/OfferController.php'; });
 Router::any('/api/v2/admin/affiliates', function() { require BASE_PATH . '/api/v2/admin/AffiliateController.php'; });
+Router::any('/api/v2/admin/affiliate-actions', function() { require BASE_PATH . '/api/v2/admin/AffiliateActionController.php'; });
 Router::any('/api/v2/admin/conversions', function() { require BASE_PATH . '/api/v2/admin/ConversionController.php'; });
 Router::any('/api/v2/admin/invoices', function() { require BASE_PATH . '/api/v2/admin/InvoiceController.php'; });
 
@@ -482,8 +483,11 @@ Router::any('/api/v2/admin/invoices', function() { require BASE_PATH . '/api/v2/
 Router::any('/api/v2/manager/dashboard', function() { require BASE_PATH . '/api/v2/manager/DashboardController.php'; });
 Router::any('/api/v2/manager/offers', function() { require BASE_PATH . '/api/v2/manager/OfferController.php'; });
 Router::any('/api/v2/manager/affiliates', function() { require BASE_PATH . '/api/v2/manager/AffiliateController.php'; });
+Router::any('/api/v2/manager/affiliate-actions', function() { require BASE_PATH . '/api/v2/manager/AffiliateActionController.php'; });
 Router::any('/api/v2/manager/conversions', function() { require BASE_PATH . '/api/v2/manager/ConversionController.php'; });
 Router::any('/api/v2/manager/invoices', function() { require BASE_PATH . '/api/v2/manager/InvoiceController.php'; });
+
+Router::any('/api/v2/stop-impersonate', function() { require BASE_PATH . '/api/v2/StopImpersonateController.php'; });
 
 // Web shell for the affiliate-inactivity cron — lets admins schedule the
 // scan from cPanel "Cron Jobs" (URL mode) or fire it from a browser when

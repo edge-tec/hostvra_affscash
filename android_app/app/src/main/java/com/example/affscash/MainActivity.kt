@@ -10,8 +10,14 @@ import androidx.compose.ui.Modifier
 import com.example.affscash.ui.navigation.AffscashNavGraph
 import dagger.hilt.android.AndroidEntryPoint
 
+import javax.inject.Inject
+import com.example.affscash.data.local.UserManager
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var userManager: UserManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
@@ -21,7 +27,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AffscashNavGraph()
+                    val role = userManager.getRole()
+                    val startDest = if (role != null) "main_screen/$role" else "login"
+                    AffscashNavGraph(startDestination = startDest)
                 }
             }
         }

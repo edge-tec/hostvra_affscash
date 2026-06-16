@@ -18,6 +18,8 @@ data class AdminAffiliate(
     @SerialName("last_name") val lastName: String,
     val company: String? = null,
     val status: String,
+    @SerialName("last_login") val lastLogin: String? = null,
+    @SerialName("days_inactive") val daysInactive: Int? = null,
     @SerialName("affiliate_code") val affiliateCode: String,
     val balance: Double,
     @SerialName("fraud_score") val fraudScore: Int,
@@ -39,8 +41,31 @@ data class ManagerAffiliate(
     @SerialName("last_name") val lastName: String,
     val company: String? = null,
     val status: String,
+    @SerialName("aff_id") val affId: Int,
+    @SerialName("last_login") val lastLogin: String? = null,
+    @SerialName("days_inactive") val daysInactive: Int? = null,
     @SerialName("affiliate_code") val affiliateCode: String,
     val balance: Double,
     @SerialName("fraud_score") val fraudScore: Int,
     @SerialName("created_at") val createdAt: String
+)
+
+@Serializable
+data class AffiliateActionRequest(
+    val action: String,
+    @SerialName("user_id") val userId: Int? = null
+)
+
+@Serializable
+data class ManagerAffiliateActionRequest(
+    val action: String,
+    @SerialName("aff_id") val affId: Int? = null
+)
+
+@Serializable
+data class ImpersonateResponse(
+    val success: Boolean,
+    val role: String? = null,
+    val user: User? = null,
+    val error: String? = null
 )

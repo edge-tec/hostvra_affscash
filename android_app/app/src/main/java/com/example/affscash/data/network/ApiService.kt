@@ -14,6 +14,9 @@ import com.example.affscash.data.model.AdminAffiliateResponse
 import com.example.affscash.data.model.ManagerAffiliateResponse
 import com.example.affscash.data.model.ConversionResponse
 import com.example.affscash.data.model.InvoiceResponse
+import com.example.affscash.data.model.AffiliateActionRequest
+import com.example.affscash.data.model.ManagerAffiliateActionRequest
+import com.example.affscash.data.model.ImpersonateResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -44,10 +47,25 @@ interface ApiService {
     suspend fun getManagerOffers(): Response<ManagerOfferResponse>
 
     @GET("api/v2/admin/affiliates")
-    suspend fun getAdminAffiliates(): Response<AdminAffiliateResponse>
+    suspend fun getAdminAffiliates(
+        @Query("status") status: String = "all",
+        @Query("search") search: String = ""
+    ): Response<AdminAffiliateResponse>
+
+    @POST("api/v2/admin/affiliate-actions")
+    suspend fun adminAffiliateAction(@Body request: AffiliateActionRequest): Response<ImpersonateResponse>
 
     @GET("api/v2/manager/affiliates")
-    suspend fun getManagerAffiliates(): Response<ManagerAffiliateResponse>
+    suspend fun getManagerAffiliates(
+        @Query("status") status: String = "all",
+        @Query("search") search: String = ""
+    ): Response<ManagerAffiliateResponse>
+
+    @POST("api/v2/manager/affiliate-actions")
+    suspend fun managerAffiliateAction(@Body request: ManagerAffiliateActionRequest): Response<ImpersonateResponse>
+
+    @POST("api/v2/stop-impersonate")
+    suspend fun stopImpersonate(): Response<ImpersonateResponse>
 
     @GET("api/v2/admin/conversions")
     suspend fun getAdminConversions(): Response<ConversionResponse>

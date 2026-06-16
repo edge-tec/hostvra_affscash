@@ -8,10 +8,10 @@ import com.example.affscash.ui.auth.LoginScreen
 import com.example.affscash.ui.dashboard.DashboardScreen
 
 @Composable
-fun AffscashNavGraph() {
+fun AffscashNavGraph(startDestination: String = "login") {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "login") {
+    NavHost(navController = navController, startDestination = startDestination) {
         composable("login") {
             LoginScreen(
                 onLoginSuccess = { role ->
