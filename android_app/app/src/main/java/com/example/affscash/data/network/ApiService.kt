@@ -13,6 +13,7 @@ import com.example.affscash.data.model.ManagerOfferResponse
 import com.example.affscash.data.model.AdminAffiliateResponse
 import com.example.affscash.data.model.ManagerAffiliateResponse
 import com.example.affscash.data.model.ConversionResponse
+import com.example.affscash.data.model.InvoiceResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

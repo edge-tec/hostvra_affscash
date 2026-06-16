@@ -1,18 +1,21 @@
 package com.example.affscash.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Invoice(
-    @SerializedName("invoice_id") val invoiceId: Int,
-    @SerializedName("invoice_number") val invoiceNumber: String,
-    @SerializedName("type") val type: String,
-    @SerializedName("entity_name") val entityName: String?,
-    @SerializedName("total") val total: Double,
-    @SerializedName("status") val status: String,
-    @SerializedName("due_date") val dueDate: String?,
-    @SerializedName("created_at") val createdAt: String
+    @SerialName("invoice_id") val invoiceId: Int,
+    @SerialName("invoice_number") val invoiceNumber: String,
+    @SerialName("type") val type: String,
+    @SerialName("entity_name") val entityName: String?,
+    @SerialName("total") val total: Double,
+    @SerialName("status") val status: String,
+    @SerialName("due_date") val dueDate: String?,
+    @SerialName("created_at") val createdAt: String
 )
 
+@Serializable
 data class InvoiceResponse(
     val success: Boolean,
     val data: List<Invoice>,

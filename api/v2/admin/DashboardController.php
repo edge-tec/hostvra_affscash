@@ -2,11 +2,7 @@
 header('Content-Type: application/json');
 
 // Ensure only admins can access this endpoint
-if (!Auth::check('admin', false)) {
-    http_response_code(403);
-    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-    exit;
-}
+Auth::check('admin');
 
 try {
     // Total counts
