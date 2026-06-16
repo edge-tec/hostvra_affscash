@@ -5,6 +5,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Assessment
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocalOffer
+import androidx.compose.material.icons.filled.MonetizationOn
+import androidx.compose.material.icons.filled.Receipt
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -23,16 +26,23 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     object Dashboard : Screen("dashboard", "Dashboard", Icons.Filled.Home)
     object Offers : Screen("offers", "Offers", Icons.Filled.LocalOffer)
     object Reports : Screen("reports", "Reports", Icons.Filled.Assessment)
+    object AffiliateSettings : Screen("affiliate_settings", "Settings", Icons.Filled.Settings)
 
     // Admin Screens
     object AdminDashboard : Screen("admin_dashboard", "Dashboard", Icons.Filled.Home)
     object AdminOffers : Screen("admin_offers", "Offers", Icons.Filled.LocalOffer)
     object AdminUsers : Screen("admin_users", "Users", Icons.Filled.Assessment)
+    object AdminConversions : Screen("admin_conversions", "Conv", Icons.Filled.MonetizationOn)
+    object AdminInvoices : Screen("admin_invoices", "Invoices", Icons.Filled.Receipt)
+    object AdminSettings : Screen("admin_settings", "Settings", Icons.Filled.Settings)
 
     // Manager Screens
     object ManagerDashboard : Screen("manager_dashboard", "Dashboard", Icons.Filled.Home)
     object ManagerOffers : Screen("manager_offers", "Offers", Icons.Filled.LocalOffer)
     object ManagerAffiliates : Screen("manager_affiliates", "Affiliates", Icons.Filled.Assessment)
+    object ManagerConversions : Screen("manager_conversions", "Conv", Icons.Filled.MonetizationOn)
+    object ManagerInvoices : Screen("manager_invoices", "Invoices", Icons.Filled.Receipt)
+    object ManagerSettings : Screen("manager_settings", "Settings", Icons.Filled.Settings)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,9 +54,9 @@ fun MainScreen(
     val navController = rememberNavController()
 
     val items = when (role) {
-        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminUsers)
-        "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerAffiliates)
-        else -> listOf(Screen.Dashboard, Screen.Offers, Screen.Reports)
+        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminUsers, Screen.AdminConversions, Screen.AdminInvoices, Screen.AdminSettings)
+        "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerInvoices, Screen.ManagerSettings)
+        else -> listOf(Screen.Dashboard, Screen.Offers, Screen.Reports, Screen.AffiliateSettings)
     }
     
     val startDest = items.first().route
@@ -89,16 +99,23 @@ fun MainScreen(
             composable(Screen.Dashboard.route) { DashboardScreen() }
             composable(Screen.Offers.route) { OfferScreen(onOfferClick = {}) }
             composable(Screen.Reports.route) { ReportScreen() }
+            composable(Screen.AffiliateSettings.route) { com.example.affscash.ui.settings.SettingsScreen(role, onLogout) }
 
             // Admin Screens
             composable(Screen.AdminDashboard.route) { com.example.affscash.ui.admin.AdminDashboardScreen() }
             composable(Screen.AdminOffers.route) { com.example.affscash.ui.admin.AdminOffersScreen() }
             composable(Screen.AdminUsers.route) { com.example.affscash.ui.admin.AdminUsersScreen() }
+            composable(Screen.AdminConversions.route) { com.example.affscash.ui.admin.AdminConversionsScreen() }
+            composable(Screen.AdminInvoices.route) { com.example.affscash.ui.admin.AdminInvoicesScreen() }
+            composable(Screen.AdminSettings.route) { com.example.affscash.ui.settings.SettingsScreen(role, onLogout) }
 
             // Manager Screens
             composable(Screen.ManagerDashboard.route) { com.example.affscash.ui.manager.ManagerDashboardScreen() }
             composable(Screen.ManagerOffers.route) { com.example.affscash.ui.manager.ManagerOffersScreen() }
             composable(Screen.ManagerAffiliates.route) { com.example.affscash.ui.manager.ManagerAffiliatesScreen() }
+            composable(Screen.ManagerConversions.route) { com.example.affscash.ui.manager.ManagerConversionsScreen() }
+            composable(Screen.ManagerInvoices.route) { com.example.affscash.ui.manager.ManagerInvoicesScreen() }
+            composable(Screen.ManagerSettings.route) { com.example.affscash.ui.settings.SettingsScreen(role, onLogout) }
         }
     }
 }
