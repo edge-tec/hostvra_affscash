@@ -16,16 +16,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.affscash.data.model.AdminOffer
 import com.example.affscash.ui.offers.AdminOfferFilters
-import com.example.affscash.ui.offers.AdminOffersUiState
-import com.example.affscash.ui.offers.AdminOffersViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AdminOffersScreen(
+fun AdminInHouseOffersScreen(
     onNavigateToCreateOffer: () -> Unit,
     onNavigateToEditOffer: (Int) -> Unit,
-    viewModel: AdminOffersViewModel = hiltViewModel()
+    viewModel: AdminInHouseOffersViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val filters by viewModel.filters.collectAsState()
@@ -45,7 +43,7 @@ fun AdminOffersScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             FloatingActionButton(onClick = onNavigateToCreateOffer) {
-                Icon(Icons.Default.Add, contentDescription = "Create Offer")
+                Icon(Icons.Default.Add, contentDescription = "Create In-House Offer")
             }
         }
     ) { paddingValues ->
@@ -62,17 +60,24 @@ fun AdminOffersScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Manage Offers",
-                    style = MaterialTheme.typography.headlineMedium
-                )
+                Column {
+                    Text(
+                        text = "In-House Offers",
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                    Text(
+                        text = "Manage your own offers — no external advertiser needed",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                }
                 IconButton(onClick = { showFilters = !showFilters }) {
                     Icon(Icons.Default.FilterList, contentDescription = "Filters")
                 }
             }
 
             AnimatedVisibility(visible = showFilters) {
-                AdminOffersFilterSection(
+                AdminInHouseOffersFilterSection(
                     filters = filters,
                     onUpdateFilters = { viewModel.updateFilter(it) },
                     onApply = { viewModel.applyFilters() },
@@ -81,12 +86,12 @@ fun AdminOffersScreen(
             }
 
             when (val state = uiState) {
-                is AdminOffersUiState.Loading -> {
+                is AdminInHouseOffersUiState.Loading -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator()
                     }
                 }
-                is AdminOffersUiState.Error -> {
+                is AdminInHouseOffersUiState.Error -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(text = "Error: ${state.message}", color = MaterialTheme.colorScheme.error)
@@ -97,7 +102,7 @@ fun AdminOffersScreen(
                         }
                     }
                 }
-                is AdminOffersUiState.Success -> {
+                is AdminInHouseOffersUiState.Success -> {
                     val offers = state.data.data
                     if (offers.isNotEmpty()) {
                         LazyColumn(
@@ -131,7 +136,7 @@ fun AdminOffersScreen(
 }
 
 @Composable
-fun AdminOffersFilterSection(
+fun AdminInHouseOffersFilterSection(
     filters: AdminOfferFilters,
     onUpdateFilters: ((AdminOfferFilters) -> AdminOfferFilters) -> Unit,
     onApply: () -> Unit,
@@ -174,103 +179,6 @@ fun AdminOffersFilterSection(
                 Spacer(modifier = Modifier.width(8.dp))
                 Button(onClick = onApply) {
                     Text("Apply Filters")
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun AdminOfferItem(
-    offer: AdminOffer,
-    onEdit: () -> Unit,
-    onPauseActivate: () -> Unit,
-    onDelete: () -> Unit
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "#${offer.id} - ${offer.name}", 
-                    style = MaterialTheme.typography.titleMedium, 
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(1f)
-                )
-                Badge(
-                    containerColor = when(offer.status) {
-                        "active" -> MaterialTheme.colorScheme.primary
-                        "paused" -> MaterialTheme.colorScheme.error
-                        else -> MaterialTheme.colorScheme.secondary
-                    }
-                ) {
-                    Text(offer.status.uppercase(), modifier = Modifier.padding(horizontal = 4.dp))
-                }
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            Text(text = "Advertiser: ${offer.advName}", style = MaterialTheme.typography.bodyMedium)
-            
-            offer.category?.let {
-                Text(text = "Category: $it", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.secondary)
-            }
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            Divider()
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column {
-                    Text(text = "Type: ${offer.payoutType}", style = MaterialTheme.typography.bodySmall)
-                    Text(text = "Payout: $${offer.payout}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
-                    Text(text = "Revenue: $${offer.revenue}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.secondary)
-                }
-                Column(horizontalAlignment = Alignment.End) {
-                    Text(text = "Access: ${if (offer.requireApproval) "Approval" else "Public"}", style = MaterialTheme.typography.bodySmall)
-                    Text(text = "Daily Cap: ${if (offer.dailyCap > 0) offer.dailyCap else "Unlimited"}", style = MaterialTheme.typography.bodySmall)
-                }
-            }
-            
-            if (offer.geoTargeting.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "GEOs: ${offer.geoTargeting.joinToString(", ")}", style = MaterialTheme.typography.bodySmall)
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                OutlinedButton(onClick = onEdit) {
-                    Icon(Icons.Default.Edit, contentDescription = "Edit", modifier = Modifier.size(16.dp))
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("Edit")
-                }
-                Row {
-                    IconButton(onClick = onPauseActivate) {
-                        Icon(
-                            imageVector = if (offer.status == "active") Icons.Default.Pause else Icons.Default.PlayArrow, 
-                            contentDescription = "Toggle Status",
-                            tint = if (offer.status == "active") MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
-                        )
-                    }
-                    IconButton(onClick = onDelete) {
-                        Icon(Icons.Default.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.error)
-                    }
                 }
             }
         }

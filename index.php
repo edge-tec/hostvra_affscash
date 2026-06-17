@@ -483,6 +483,8 @@ Router::any('/api/v2/notifications', function() { require BASE_PATH . '/api/v2/N
 // Native App API Routes (v2) - Admin
 Router::any('/api/v2/admin/dashboard', function() { require BASE_PATH . '/api/v2/admin/DashboardController.php'; });
 Router::any('/api/v2/admin/offers', function() { require BASE_PATH . '/api/v2/admin/OfferController.php'; });
+Router::post('/api/v2/admin/offers/action', function() { require BASE_PATH . '/api/v2/admin/OfferActionController.php'; });
+Router::any('/api/v2/admin/offer-approvals', function() { require BASE_PATH . '/api/v2/admin/OfferApprovalController.php'; });
 Router::any('/api/v2/admin/affiliates', function() { require BASE_PATH . '/api/v2/admin/AffiliateController.php'; });
 Router::any('/api/v2/admin/affiliate-actions', function() { require BASE_PATH . '/api/v2/admin/AffiliateActionController.php'; });
 Router::any('/api/v2/admin/advertisers', function() { require BASE_PATH . '/api/v2/admin/AdvertiserController.php'; });

@@ -75,16 +75,80 @@ class OfferRepository @Inject constructor(
         }
     }
 
-    suspend fun getAdminOffers(): Result<AdminOfferResponse> = withContext(Dispatchers.IO) {
+    suspend fun getAdminOffers(
+        query: String? = null,
+        category: String? = null,
+        payoutType: String? = null,
+        status: String? = null,
+        offerType: String? = null,
+        country: String? = null,
+        device: String? = null,
+        offerId: Int? = null,
+        access: String? = null,
+        inHouse: Boolean? = null
+    ): Result<AdminOfferResponse> = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.getAdminOffers()
-            if (response.isSuccessful) {
+            val response = apiService.getAdminOffers(query, category, payoutType, status, offerType, country, device, offerId, access, inHouse)
+            if (response.isSuccessful && response.body()?.success == true) {
+                return@withContext Result.success(response.body()!!)
+            } else {
                 response.body()?.let {
-                    if (it.success) return@withContext Result.success(it)
                     return@withContext Result.failure(Exception(it.error ?: "Failed to fetch admin offers"))
                 }
+                return@withContext Result.failure(Exception("Error fetching admin offers: ${response.code()}"))
             }
-            Result.failure(Exception("Network error: ${response.code()}"))
+        } catch (e: Exception) {
+            return@withContext Result.failure(e)
+        }
+    }
+
+    suspend fun createAdminOffer(request: com.example.affscash.data.model.AdminOfferCreateRequest): Result<com.example.affscash.data.model.AdminOfferActionResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.createAdminOffer(request)
+            if (response.isSuccessful && response.body()?.success == true) {
+                Result.success(response.body()!!)
+            } else {
+                Result.failure(Exception(response.body()?.error ?: "Failed to create offer"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun editAdminOffer(request: com.example.affscash.data.model.AdminOfferEditRequest): Result<com.example.affscash.data.model.AdminOfferActionResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.editAdminOffer(request)
+            if (response.isSuccessful && response.body()?.success == true) {
+                Result.success(response.body()!!)
+            } else {
+                Result.failure(Exception(response.body()?.error ?: "Failed to update offer"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun updateAdminOfferStatus(id: Int, status: String): Result<Boolean> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.updateAdminOfferStatus(mapOf("id" to id.toString(), "status" to status))
+            if (response.isSuccessful && response.body()?.success == true) {
+                Result.success(true)
+            } else {
+                Result.failure(Exception(response.body()?.error ?: "Failed to update status"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun deleteAdminOffer(id: Int): Result<Boolean> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.deleteAdminOffer(mapOf("id" to id))
+            if (response.isSuccessful && response.body()?.success == true) {
+                Result.success(true)
+            } else {
+                Result.failure(Exception(response.body()?.error ?: "Failed to delete offer"))
+            }
         } catch (e: Exception) {
             Result.failure(e)
         }

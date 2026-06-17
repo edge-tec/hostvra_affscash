@@ -44,6 +44,16 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     // Admin Screens
     object AdminDashboard : Screen("admin_dashboard", "Dashboard", Icons.Filled.Home)
     object AdminOffers : Screen("admin_offers", "Offers", Icons.Filled.LocalOffer)
+    object AdminInHouseOffers : Screen("admin_inhouse_offers", "In-House Offers", Icons.Filled.HomeRepairService)
+    object AdminOfferApprovals : Screen("admin_offer_approvals", "Approvals", Icons.Filled.CheckCircle)
+    object AdminOfferCreate : Screen("admin_offer_create", "Create Offer", Icons.Filled.Add)
+    object AdminInHouseOfferCreate : Screen("admin_inhouse_offer_create", "Create In-House Offer", Icons.Filled.Add)
+    class AdminOfferEdit(id: Int) : Screen("admin_offer_edit/$id", "Edit Offer", Icons.Filled.Edit) {
+        companion object {
+            const val route = "admin_offer_edit/{offerId}"
+            fun createRoute(offerId: Int) = "admin_offer_edit/$offerId"
+        }
+    }
     object AdminUsers : Screen("admin_users", "Users", Icons.Filled.Assessment)
     object AdminAdvertisers : Screen("admin_advertisers", "Advertisers", Icons.Filled.SupervisorAccount)
     object AdminAdvertiserCreate : Screen("admin_advertiser_create", "Create", Icons.Filled.Add)
@@ -79,7 +89,7 @@ fun MainScreen(
     val navController = rememberNavController()
 
     val items = when (role) {
-        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminConversions, Screen.AdminInvoices, Screen.AdminSettings)
+        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminConversions, Screen.AdminInvoices, Screen.AdminSettings)
         "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerSmartlinks, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerReports, Screen.ManagerInvoices, Screen.ManagerSettings)
         else -> listOf(Screen.Dashboard, Screen.Offers, Screen.Smartlinks, Screen.Reports, Screen.AffiliateSettings)
     }
@@ -207,7 +217,45 @@ fun MainScreen(
 
             // Admin Screens
             composable(Screen.AdminDashboard.route) { com.example.affscash.ui.admin.AdminDashboardScreen() }
-            composable(Screen.AdminOffers.route) { com.example.affscash.ui.admin.AdminOffersScreen() }
+            composable(Screen.AdminOfferApprovals.route) { com.example.affscash.ui.admin.AdminOfferApprovalsScreen() }
+            composable(Screen.AdminInHouseOffers.route) {
+                com.example.affscash.ui.admin.AdminInHouseOffersScreen(
+                    onNavigateToCreateOffer = { navController.navigate(Screen.AdminInHouseOfferCreate.route) },
+                    onNavigateToEditOffer = { id -> navController.navigate(Screen.AdminOfferEdit.createRoute(id)) }
+                )
+            }
+            composable(Screen.AdminOffers.route) { 
+                com.example.affscash.ui.admin.AdminOffersScreen(
+                    onNavigateToCreateOffer = { navController.navigate(Screen.AdminOfferCreate.route) },
+                    onNavigateToEditOffer = { id -> navController.navigate(Screen.AdminOfferEdit.createRoute(id)) }
+                ) 
+            }
+            composable(Screen.AdminOfferCreate.route) {
+                com.example.affscash.ui.admin.AdminOfferFormScreen(
+                    offerId = null,
+                    isInHouse = false,
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(Screen.AdminInHouseOfferCreate.route) {
+                com.example.affscash.ui.admin.AdminOfferFormScreen(
+                    offerId = null,
+                    isInHouse = true,
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(
+                route = Screen.AdminOfferEdit.route
+            ) { backStackEntry ->
+                val id = backStackEntry.arguments?.getString("offerId")?.toIntOrNull()
+                if (id != null) {
+                    com.example.affscash.ui.admin.AdminOfferFormScreen(
+                        offerId = id,
+                        isInHouse = false,
+                        onNavigateBack = { navController.popBackStack() }
+                    )
+                }
+            }
             composable(Screen.AdminUsers.route) { com.example.affscash.ui.admin.AdminUsersScreen() }
             composable(Screen.AdminConversions.route) { com.example.affscash.ui.admin.AdminConversionsScreen() }
             composable(Screen.AdminInvoices.route) { com.example.affscash.ui.admin.AdminInvoicesScreen() }

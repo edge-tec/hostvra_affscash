@@ -1,9 +1,10 @@
-package com.example.affscash.ui.offers
+package com.example.affscash.ui.admin
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.affscash.data.model.AdminOfferResponse
 import com.example.affscash.data.repository.OfferRepository
+import com.example.affscash.ui.offers.AdminOfferFilters
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,31 +12,19 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-sealed class AdminOffersUiState {
-    object Loading : AdminOffersUiState()
-    data class Success(val data: AdminOfferResponse) : AdminOffersUiState()
-    data class Error(val message: String) : AdminOffersUiState()
+sealed class AdminInHouseOffersUiState {
+    object Loading : AdminInHouseOffersUiState()
+    data class Success(val data: AdminOfferResponse) : AdminInHouseOffersUiState()
+    data class Error(val message: String) : AdminInHouseOffersUiState()
 }
 
-data class AdminOfferFilters(
-    val query: String = "",
-    val category: String = "",
-    val payoutType: String = "",
-    val status: String = "",
-    val offerType: String = "",
-    val country: String = "",
-    val device: String = "",
-    val offerId: String = "",
-    val access: String = ""
-)
-
 @HiltViewModel
-class AdminOffersViewModel @Inject constructor(
+class AdminInHouseOffersViewModel @Inject constructor(
     private val repository: OfferRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<AdminOffersUiState>(AdminOffersUiState.Loading)
-    val uiState: StateFlow<AdminOffersUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow<AdminInHouseOffersUiState>(AdminInHouseOffersUiState.Loading)
+    val uiState: StateFlow<AdminInHouseOffersUiState> = _uiState.asStateFlow()
 
     private val _filters = MutableStateFlow(AdminOfferFilters())
     val filters: StateFlow<AdminOfferFilters> = _filters.asStateFlow()
@@ -62,7 +51,7 @@ class AdminOffersViewModel @Inject constructor(
 
     fun loadOffers() {
         viewModelScope.launch {
-            _uiState.value = AdminOffersUiState.Loading
+            _uiState.value = AdminInHouseOffersUiState.Loading
             val f = _filters.value
             repository.getAdminOffers(
                 query = f.query.takeIf { it.isNotEmpty() },
@@ -73,13 +62,14 @@ class AdminOffersViewModel @Inject constructor(
                 country = f.country.takeIf { it.isNotEmpty() },
                 device = f.device.takeIf { it.isNotEmpty() },
                 offerId = f.offerId.toIntOrNull(),
-                access = f.access.takeIf { it.isNotEmpty() }
+                access = f.access.takeIf { it.isNotEmpty() },
+                inHouse = true
             )
                 .onSuccess { response ->
-                    _uiState.value = AdminOffersUiState.Success(response)
+                    _uiState.value = AdminInHouseOffersUiState.Success(response)
                 }
                 .onFailure { exception ->
-                    _uiState.value = AdminOffersUiState.Error(exception.message ?: "Unknown error")
+                    _uiState.value = AdminInHouseOffersUiState.Error(exception.message ?: "Unknown error")
                 }
         }
     }

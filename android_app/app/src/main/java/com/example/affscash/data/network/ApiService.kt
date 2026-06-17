@@ -134,7 +134,40 @@ interface ApiService {
     ): Response<ManagerFiltersResponse>
 
     @GET("api/v2/admin/offers")
-    suspend fun getAdminOffers(): Response<AdminOfferResponse>
+    suspend fun getAdminOffers(
+        @Query("q") query: String? = null,
+        @Query("category") category: String? = null,
+        @Query("payout_type") payoutType: String? = null,
+        @Query("status") status: String? = null,
+        @Query("offer_type") offerType: String? = null,
+        @Query("country") country: String? = null,
+        @Query("device") device: String? = null,
+        @Query("offer_id") offerId: Int? = null,
+        @Query("access") access: String? = null,
+        @Query("in_house") inHouse: Boolean? = null
+    ): Response<AdminOfferResponse>
+
+    @POST("api/v2/admin/offers/action?action=create")
+    suspend fun createAdminOffer(@Body request: AdminOfferCreateRequest): Response<AdminOfferActionResponse>
+
+    @POST("api/v2/admin/offers/action?action=edit")
+    suspend fun editAdminOffer(@Body request: AdminOfferEditRequest): Response<AdminOfferActionResponse>
+
+    @POST("api/v2/admin/offers/action?action=update_status")
+    suspend fun updateAdminOfferStatus(@Body request: Map<String, String>): Response<AdminOfferActionResponse>
+
+    @POST("api/v2/admin/offers/action?action=delete")
+    suspend fun deleteAdminOffer(@Body request: Map<String, Int>): Response<AdminOfferActionResponse>
+
+    @GET("api/v2/admin/offer-approvals?action=list")
+    suspend fun getAdminOfferApprovals(
+        @Query("status") status: String,
+        @Query("offer_id") offerId: Int?,
+        @Query("aff") aff: String?
+    ): ManagerOfferApprovalListResponse
+
+    @POST("api/v2/admin/offer-approvals?action=review")
+    suspend fun reviewAdminOfferApproval(@Body request: ReviewOfferApprovalRequest): DefaultResponse
 
     @GET("api/v2/manager/offers")
     suspend fun getManagerOffers(
