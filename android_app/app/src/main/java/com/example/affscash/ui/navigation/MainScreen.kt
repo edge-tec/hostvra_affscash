@@ -102,7 +102,12 @@ fun MainScreen(
             modifier = Modifier.padding(innerPadding)
         ) {
             // Affiliate Screens
-            composable(Screen.Dashboard.route) { DashboardScreen() }
+            composable(Screen.Dashboard.route) { 
+                DashboardScreen(
+                    onNavigateToInvoices = { navController.navigate(Screen.Invoices.route) },
+                    onNavigateToFraudAlerts = { navController.navigate(Screen.FraudReport.route) }
+                ) 
+            }
             composable(Screen.Offers.route) { OfferScreen(onOfferClick = {}) }
             composable(Screen.Smartlinks.route) { com.example.affscash.ui.smartlinks.SmartlinkScreen() }
             composable(Screen.Reports.route) { 

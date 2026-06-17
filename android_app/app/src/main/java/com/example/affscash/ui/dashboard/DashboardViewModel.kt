@@ -24,18 +24,30 @@ class DashboardViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<DashboardState>(DashboardState.Loading)
     val uiState: StateFlow<DashboardState> = _uiState
 
+    private var pollingJob: kotlinx.coroutines.Job? = null
+
     init {
         loadDashboardData()
+        startPolling()
     }
 
-    fun loadDashboardData() {
+    private fun startPolling() {
+        pollingJob = viewModelScope.launch {
+            while (true) {
+                kotlinx.coroutines.delay(10000) // Poll every 10 seconds
+                loadDashboardData(isRefresh = true)
+            }
+        }
+    }
+
+    fun loadDashboardData(isRefresh: Boolean = false) {
         viewModelScope.launch {
-            _uiState.value = DashboardState.Loading
+            if (!isRefresh) _uiState.value = DashboardState.Loading
             val result = dashboardRepository.getDashboardData()
             result.onSuccess {
                 _uiState.value = DashboardState.Success(it)
             }.onFailure {
-                _uiState.value = DashboardState.Error(it.message ?: "Failed to load dashboard")
+                if (!isRefresh) _uiState.value = DashboardState.Error(it.message ?: "Failed to load dashboard")
             }
         }
     }

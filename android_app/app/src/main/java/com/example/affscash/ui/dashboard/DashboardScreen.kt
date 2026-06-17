@@ -33,7 +33,9 @@ import com.example.affscash.data.model.DashboardOffer
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
-    viewModel: DashboardViewModel = hiltViewModel()
+    viewModel: DashboardViewModel = hiltViewModel(),
+    onNavigateToInvoices: () -> Unit = {},
+    onNavigateToFraudAlerts: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -57,7 +59,8 @@ fun DashboardScreen(
                         color = Color(0xFFDCFCE7),
                         shape = RoundedCornerShape(8.dp),
                         border = BorderStroke(1.dp, Color(0xFF86EFAC)),
-                        modifier = Modifier.padding(end = 8.dp)
+                        modifier = Modifier.padding(end = 8.dp),
+                        onClick = onNavigateToInvoices
                     ) {
                         Row(
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
@@ -79,32 +82,38 @@ fun DashboardScreen(
                         }
                     }
 
+                    val context = androidx.compose.ui.platform.LocalContext.current
+
                     // News Icon
                     HeaderIconWithBadge(
                         icon = Icons.Outlined.Article,
                         count = counts?.unreadNews ?: 0,
-                        badgeColor = Color(0xFF4F46E5)
+                        badgeColor = Color(0xFF4F46E5),
+                        onClick = { android.widget.Toast.makeText(context, "News coming soon", android.widget.Toast.LENGTH_SHORT).show() }
                     )
 
                     // Notifications Icon
                     HeaderIconWithBadge(
                         icon = Icons.Outlined.Notifications,
                         count = counts?.unreadNotifs ?: 0,
-                        badgeColor = Color(0xFFEF4444)
+                        badgeColor = Color(0xFFEF4444),
+                        onClick = { android.widget.Toast.makeText(context, "Notifications coming soon", android.widget.Toast.LENGTH_SHORT).show() }
                     )
 
                     // Fraud Alerts Icon
                     HeaderIconWithBadge(
                         icon = Icons.Outlined.WarningAmber,
                         count = counts?.unreadAlerts ?: 0,
-                        badgeColor = Color(0xFFEF4444)
+                        badgeColor = Color(0xFFEF4444),
+                        onClick = onNavigateToFraudAlerts
                     )
 
                     // Chat Icon
                     HeaderIconWithBadge(
                         icon = Icons.Outlined.ChatBubbleOutline,
                         count = counts?.unreadChats ?: 0,
-                        badgeColor = Color(0xFFEF4444)
+                        badgeColor = Color(0xFFEF4444),
+                        onClick = { android.widget.Toast.makeText(context, "Chat coming soon", android.widget.Toast.LENGTH_SHORT).show() }
                     )
                 },
 
@@ -224,9 +233,16 @@ fun OfferItem(offer: DashboardOffer) {
 fun HeaderIconWithBadge(
     icon: ImageVector,
     count: Int,
-    badgeColor: Color
+    badgeColor: Color,
+    onClick: () -> Unit
 ) {
-    Box(modifier = Modifier.padding(horizontal = 4.dp).size(36.dp), contentAlignment = Alignment.Center) {
+    Box(
+        modifier = Modifier
+            .padding(horizontal = 4.dp)
+            .size(36.dp)
+            .androidx.compose.foundation.clickable(onClick = onClick), 
+        contentAlignment = Alignment.Center
+    ) {
         Icon(
             imageVector = icon,
             contentDescription = "Header Icon",
