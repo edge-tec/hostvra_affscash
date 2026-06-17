@@ -1,9 +1,9 @@
 <?php
-require_once __DIR__ . '/../../../classes/Database.php';
-require_once __DIR__ . '/../../../classes/Auth.php';
-require_once __DIR__ . '/../../../classes/Helpers.php';
-require_once __DIR__ . '/../../../classes/Mailer.php';
-require_once __DIR__ . '/../../../classes/Config.php';
+require_once BASE_PATH . '/core/Database.php';
+require_once BASE_PATH . '/core/Auth.php';
+require_once BASE_PATH . '/core/Helpers.php';
+require_once BASE_PATH . '/core/Mailer.php';
+require_once BASE_PATH . '/core/Config.php';
 
 class OfferApprovalController {
 
@@ -198,3 +198,5 @@ class OfferApprovalController {
         }
     }
 }
+
+OfferApprovalController::handleRequest();
