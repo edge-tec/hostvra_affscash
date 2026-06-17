@@ -485,6 +485,8 @@ Router::any('/api/v2/admin/dashboard', function() { require BASE_PATH . '/api/v2
 Router::any('/api/v2/admin/offers', function() { require BASE_PATH . '/api/v2/admin/OfferController.php'; });
 Router::any('/api/v2/admin/affiliates', function() { require BASE_PATH . '/api/v2/admin/AffiliateController.php'; });
 Router::any('/api/v2/admin/affiliate-actions', function() { require BASE_PATH . '/api/v2/admin/AffiliateActionController.php'; });
+Router::any('/api/v2/admin/advertisers', function() { require BASE_PATH . '/api/v2/admin/AdvertiserController.php'; });
+Router::any('/api/v2/admin/advertiser-actions', function() { require BASE_PATH . '/api/v2/admin/AdvertiserActionController.php'; });
 Router::any('/api/v2/admin/conversions', function() { require BASE_PATH . '/api/v2/admin/ConversionController.php'; });
 Router::any('/api/v2/admin/invoices', function() { require BASE_PATH . '/api/v2/admin/InvoiceController.php'; });
 

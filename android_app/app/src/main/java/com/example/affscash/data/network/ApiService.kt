@@ -165,6 +165,34 @@ interface ApiService {
     @POST("api/v2/admin/affiliate-actions")
     suspend fun adminAffiliateAction(@Body request: AffiliateActionRequest): Response<ImpersonateResponse>
 
+    @GET("api/v2/admin/advertisers")
+    suspend fun getAdminAdvertisers(
+        @Query("action") action: String = "list",
+        @Query("status") status: String = "all",
+        @Query("search") search: String = ""
+    ): Response<AdminAdvertiserResponse>
+
+    @GET("api/v2/admin/advertisers")
+    suspend fun getAdminAdvertiserDetails(
+        @Query("action") action: String = "view",
+        @Query("id") id: Int
+    ): Response<AdminAdvertiserDetailsResponse>
+
+    @POST("api/v2/admin/advertiser-actions")
+    suspend fun adminAdvertiserActionCreate(@Body request: CreateAdvertiserRequest): Response<BasicManagerActionResponse>
+
+    @POST("api/v2/admin/advertiser-actions")
+    suspend fun adminAdvertiserActionEdit(@Body request: EditAdvertiserRequest): Response<BasicManagerActionResponse>
+
+    @POST("api/v2/admin/advertiser-actions")
+    suspend fun adminAdvertiserActionDelete(@Body request: AdminAdvertiserActionRequest): Response<BasicManagerActionResponse>
+
+    @POST("api/v2/admin/advertiser-actions")
+    suspend fun adminAdvertiserActionStatus(@Body request: AdminAdvertiserActionRequest): Response<BasicManagerActionResponse>
+
+    @POST("api/v2/admin/advertiser-actions")
+    suspend fun adminAdvertiserActionImpersonate(@Body request: AdminAdvertiserActionRequest): Response<ImpersonateResponse>
+
     @GET("api/v2/manager/affiliates")
     suspend fun getManagerAffiliates(
         @Query("status") status: String = "all",

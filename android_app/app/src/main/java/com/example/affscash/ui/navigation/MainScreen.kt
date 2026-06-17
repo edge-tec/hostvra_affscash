@@ -45,6 +45,14 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     object AdminDashboard : Screen("admin_dashboard", "Dashboard", Icons.Filled.Home)
     object AdminOffers : Screen("admin_offers", "Offers", Icons.Filled.LocalOffer)
     object AdminUsers : Screen("admin_users", "Users", Icons.Filled.Assessment)
+    object AdminAdvertisers : Screen("admin_advertisers", "Advertisers", Icons.Filled.SupervisorAccount)
+    object AdminAdvertiserCreate : Screen("admin_advertiser_create", "Create", Icons.Filled.Add)
+    class AdminAdvertiserEdit(id: Int) : Screen("admin_advertiser_edit/$id", "Edit", Icons.Filled.Edit) {
+        companion object {
+            const val route = "admin_advertiser_edit/{advertiserId}"
+            fun createRoute(advertiserId: Int) = "admin_advertiser_edit/$advertiserId"
+        }
+    }
     object AdminConversions : Screen("admin_conversions", "Conv", Icons.Filled.MonetizationOn)
     object AdminInvoices : Screen("admin_invoices", "Invoices", Icons.Filled.Receipt)
     object AdminSettings : Screen("admin_settings", "Settings", Icons.Filled.Settings)
@@ -71,7 +79,7 @@ fun MainScreen(
     val navController = rememberNavController()
 
     val items = when (role) {
-        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminUsers, Screen.AdminConversions, Screen.AdminInvoices, Screen.AdminSettings)
+        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminConversions, Screen.AdminInvoices, Screen.AdminSettings)
         "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerSmartlinks, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerReports, Screen.ManagerInvoices, Screen.ManagerSettings)
         else -> listOf(Screen.Dashboard, Screen.Offers, Screen.Smartlinks, Screen.Reports, Screen.AffiliateSettings)
     }
@@ -119,8 +127,32 @@ fun MainScreen(
                     onNavigateToFraudAlerts = { navController.navigate(Screen.FraudReport.route) },
                     onNavigateToChat = { navController.navigate(Screen.Chat.route) },
                     onNavigateToNews = { navController.navigate(Screen.News.route) },
-                    onNavigateToNotifications = { navController.navigate(Screen.Notifications.route) }
-                ) 
+            composable(Screen.AdminAdvertisers.route) {
+                AdminAdvertisersScreen(
+                    onNavigateToCreate = { navController.navigate(Screen.AdminAdvertiserCreate.route) },
+                    onNavigateToEdit = { id -> navController.navigate(Screen.AdminAdvertiserEdit.createRoute(id)) },
+                    onNavigateToView = { /* TODO: View screen */ },
+                    onLoginToAdvertiser = { role ->
+                        if (role == "advertiser") {
+                            navController.navigate("advertiser_dashboard") {
+                                popUpTo(0) { inclusive = true }
+                            }
+                        }
+                    }
+                )
+            }
+            composable(Screen.AdminAdvertiserCreate.route) {
+                AdminAdvertiserFormScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(Screen.AdminAdvertiserEdit.route) { backStackEntry ->
+                val id = backStackEntry.arguments?.getString("advertiserId")?.toIntOrNull()
+                if (id != null) {
+                    AdminAdvertiserFormScreen(
+                        onNavigateBack = { navController.popBackStack() }
+                    )
+                }
             }
             composable(Screen.Offers.route) { OfferScreen(onOfferClick = {}) }
             composable(Screen.Smartlinks.route) { com.example.affscash.ui.smartlinks.SmartlinkScreen() }
