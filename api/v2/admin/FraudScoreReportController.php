@@ -2,7 +2,7 @@
 /**
  * Admin App API — Fraud Score Report
  */
-Auth::requireRole('admin');
+Auth::check('admin');
 
 try { PostbackFirer::ensurePostbackSentColumn(); } catch (\Throwable $e) {}
 try { Database::query("ALTER TABLE `conversions` ADD COLUMN `fraud_checked_at` DATETIME DEFAULT NULL"); } catch (\Throwable $_e) {}

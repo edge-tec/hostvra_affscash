@@ -2,7 +2,7 @@
 /**
  * Admin App API — Invoices
  */
-Auth::requireRole('admin');
+Auth::check('admin');
 
 try {
     // Read JSON input if any

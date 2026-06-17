@@ -2,7 +2,7 @@
 /**
  * Admin App API — Affiliate Report
  */
-Auth::requireRole('admin');
+Auth::check('admin');
 
 try {
     $action = $_GET['action'] ?? 'list';

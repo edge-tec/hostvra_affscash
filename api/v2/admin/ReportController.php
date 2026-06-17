@@ -2,7 +2,7 @@
 /**
  * Admin App API — Comprehensive Reports
  */
-Auth::requireRole('admin');
+Auth::check('admin');
 
 try {
     $action = $_GET['action'] ?? 'list';

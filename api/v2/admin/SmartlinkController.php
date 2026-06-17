@@ -4,7 +4,7 @@ require_once BASE_PATH . '/core/Database.php';
 require_once BASE_PATH . '/core/Helpers.php';
 require_once BASE_PATH . '/core/Mailer.php';
 
-Auth::requireRole('admin');
+Auth::check('admin');
 
 $action = Helpers::get('action') ?: 'list';
 

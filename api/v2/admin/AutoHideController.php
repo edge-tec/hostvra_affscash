@@ -2,7 +2,7 @@
 /**
  * Admin App API — Auto Hide Conversions
  */
-Auth::requireRole('admin');
+Auth::check('admin');
 
 try {
     $action = $_GET['action'] ?? 'stats';
