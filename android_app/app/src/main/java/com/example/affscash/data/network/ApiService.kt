@@ -272,6 +272,12 @@ interface ApiService {
     @GET("api/v2/manager/reports?action=filters")
     suspend fun getManagerReportFilters(): Response<com.example.affscash.data.model.ReportFiltersResponse>
 
+    @GET("api/v2/manager/duplicate_conversions")
+    suspend fun getManagerDuplicateConversions(
+        @Query("from") from: String,
+        @Query("to") to: String
+    ): Response<DuplicateConversionsResponse>
+
     @GET("api/v2/fraud-report")
     suspend fun getFraudReport(): Response<com.example.affscash.data.model.FraudReportResponse>
 

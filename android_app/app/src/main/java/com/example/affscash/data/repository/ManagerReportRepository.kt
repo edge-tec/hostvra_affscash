@@ -1,5 +1,6 @@
 package com.example.affscash.data.repository
 
+import com.example.affscash.data.model.DuplicateConversionsResponse
 import com.example.affscash.data.model.ReportFiltersResponse
 import com.example.affscash.data.model.ReportResponse
 import com.example.affscash.data.network.ApiService
@@ -52,6 +53,28 @@ class ManagerReportRepository @Inject constructor(private val apiService: ApiSer
                     emit(Result.success(body))
                 } else {
                     emit(Result.failure(Exception(body.error ?: "Failed to load filters.")))
+                }
+            } else {
+                emit(Result.failure(Exception("API Error: ${response.code()}")))
+            }
+        } catch (e: HttpException) {
+            emit(Result.failure(Exception("Network error occurred.")))
+        } catch (e: IOException) {
+            emit(Result.failure(Exception("No internet connection.")))
+        } catch (e: Exception) {
+            emit(Result.failure(e))
+        }
+    }
+
+    fun getManagerDuplicateConversions(from: String, to: String): Flow<Result<DuplicateConversionsResponse>> = flow {
+        try {
+            val response = apiService.getManagerDuplicateConversions(from, to)
+            if (response.isSuccessful && response.body() != null) {
+                val body = response.body()!!
+                if (body.success) {
+                    emit(Result.success(body))
+                } else {
+                    emit(Result.failure(Exception(body.error ?: "Failed to load duplicate conversions.")))
                 }
             } else {
                 emit(Result.failure(Exception("API Error: ${response.code()}")))

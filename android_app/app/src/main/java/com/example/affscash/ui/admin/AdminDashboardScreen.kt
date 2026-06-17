@@ -83,10 +83,10 @@ fun AdminDashboardScreen(
                                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
                             ) {
                                 Column(modifier = Modifier.padding(16.dp)) {
-                                    Text("Revenue: $${data.profitSummary.totalRevenue}")
-                                    Text("Payouts: $${data.profitSummary.totalPayout}")
+                                    Text("Revenue: $${data.profitSummary?.totalRevenue ?: 0.0}")
+                                    Text("Payouts: $${data.profitSummary?.totalPayout ?: 0.0}")
                                     Text(
-                                        "Profit: $${data.profitSummary.totalProfit}",
+                                        "Profit: $${data.profitSummary?.totalProfit ?: 0.0}",
                                         style = MaterialTheme.typography.titleMedium,
                                         color = MaterialTheme.colorScheme.primary
                                     )

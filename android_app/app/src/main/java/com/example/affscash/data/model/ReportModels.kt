@@ -13,6 +13,38 @@ data class ReportFiltersResponse(
 )
 
 @Serializable
+data class DuplicateConversionsResponse(
+    val success: Boolean,
+    @SerialName("total_groups") val totalGroups: Int = 0,
+    @SerialName("total_rows") val totalRows: Int = 0,
+    val groups: List<DuplicateConversionGroup> = emptyList(),
+    val error: String? = null
+)
+
+@Serializable
+data class DuplicateConversionGroup(
+    @SerialName("offer_id") val offerId: Int,
+    @SerialName("offer_name") val offerName: String,
+    @SerialName("ip_address") val ipAddress: String,
+    @SerialName("dup_count") val dupCount: Int,
+    val conversions: List<DuplicateConversionRow>
+)
+
+@Serializable
+data class DuplicateConversionRow(
+    val id: Int,
+    @SerialName("conversion_id") val conversionId: String,
+    @SerialName("affiliate_id") val affiliateId: Int,
+    @SerialName("affiliate_name") val affiliateName: String,
+    @SerialName("affiliate_code") val affiliateCode: String,
+    val payout: Double,
+    val status: String,
+    @SerialName("transaction_id") val transactionId: String?,
+    @SerialName("goal_name") val goalName: String?,
+    @SerialName("converted_at") val convertedAt: String
+)
+
+@Serializable
 data class ManagerAffiliateFilterItem(
     val id: Int,
     val name: String,

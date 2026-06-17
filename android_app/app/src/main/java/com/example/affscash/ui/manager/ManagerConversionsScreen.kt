@@ -21,14 +21,32 @@ import com.example.affscash.ui.conversions.ManagerConversionsViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManagerConversionsScreen(
-    viewModel: ManagerConversionsViewModel = hiltViewModel()
+    viewModel: ManagerConversionsViewModel = hiltViewModel(),
+    onNavigateToDuplicates: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val statusFilter by viewModel.statusFilter.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        // Tabs
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Manager Conversions") },
+                actions = {
+                    IconButton(onClick = onNavigateToDuplicates) {
+                        Icon(androidx.compose.material.icons.Icons.Default.Assessment, contentDescription = "Duplicate Conversions")
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            )
+        }
+    ) { paddingValues ->
+        Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+            // Tabs
         ScrollableTabRow(
             selectedTabIndex = when(statusFilter) {
                 "all" -> 0
@@ -97,6 +115,7 @@ fun ManagerConversionsScreen(
                     } else {
                         Text("No conversions found", modifier = Modifier.align(Alignment.Center))
                     }
+                }
                 }
             }
         }

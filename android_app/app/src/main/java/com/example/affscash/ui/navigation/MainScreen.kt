@@ -216,7 +216,16 @@ fun MainScreen(
                     viewModel = viewModel
                 )
             }
-            composable(Screen.ManagerConversions.route) { com.example.affscash.ui.manager.ManagerConversionsScreen() }
+            composable(Screen.ManagerConversions.route) { 
+                com.example.affscash.ui.manager.ManagerConversionsScreen(
+                    onNavigateToDuplicates = { navController.navigate("manager_duplicate_conversions") }
+                ) 
+            }
+            composable("manager_duplicate_conversions") { 
+                com.example.affscash.ui.manager.ManagerDuplicateConversionsScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                ) 
+            }
             composable(Screen.ManagerReports.route) { com.example.affscash.ui.manager.ManagerReportsScreen() }
             composable(Screen.ManagerInvoices.route) { com.example.affscash.ui.manager.ManagerInvoicesScreen() }
             composable(Screen.ManagerSettings.route) { com.example.affscash.ui.settings.SettingsScreen(role, onLogout, onRoleChange = onRoleChange) }
