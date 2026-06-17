@@ -20,7 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.affscash.data.model.RewardRule
 import com.example.affscash.data.model.RewardsResponse
-import com.example.affscash.ui.theme.PrimaryColor
+import com.example.affscash.theme.Purple40
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,7 +40,7 @@ fun RewardsScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = PrimaryColor,
+                    containerColor = Purple40,
                     titleContentColor = Color.White,
                     navigationIconContentColor = Color.White
                 )
@@ -151,7 +151,7 @@ fun NextMilestoneCard(rule: RewardRule, earned: Double) {
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "Next Milestone", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = PrimaryColor)
+            Text(text = "Next Milestone", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Purple40)
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = rule.title, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             if (rule.description != null) {
@@ -165,7 +165,7 @@ fun NextMilestoneCard(rule: RewardRule, earned: Double) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(8.dp),
-                color = PrimaryColor,
+                color = Purple40,
                 trackColor = Color(0xFFE0E0E0),
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -214,7 +214,7 @@ fun AvailableRewardItem(rule: RewardRule) {
                     }
                 }
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "Threshold: $${rule.thresholdUsd}", fontSize = 14.sp, color = PrimaryColor, fontWeight = FontWeight.Bold)
+                Text(text = "Threshold: $${rule.thresholdUsd}", fontSize = 14.sp, color = Purple40, fontWeight = FontWeight.Bold)
                 if (rule.isUnlocked) {
                     Text(text = "Unlocked", fontSize = 12.sp, color = Color(0xFF4CAF50), fontWeight = FontWeight.Bold)
                 }
@@ -227,6 +227,6 @@ fun parseColor(colorString: String): Color {
     return try {
         Color(android.graphics.Color.parseColor(colorString))
     } catch (e: Exception) {
-        PrimaryColor
+        Purple40
     }
 }

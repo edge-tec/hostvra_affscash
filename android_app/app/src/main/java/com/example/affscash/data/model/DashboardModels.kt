@@ -8,8 +8,17 @@ data class DashboardResponse(
     val success: Boolean,
     val user: DashboardUser? = null,
     val stats: DashboardStats? = null,
+    @SerialName("header_counts") val headerCounts: DashboardHeaderCounts? = null,
     @SerialName("recent_offers") val recentOffers: List<DashboardOffer> = emptyList(),
     val error: String? = null
+)
+
+@Serializable
+data class DashboardHeaderCounts(
+    @SerialName("unread_news") val unreadNews: Int = 0,
+    @SerialName("unread_notifs") val unreadNotifs: Int = 0,
+    @SerialName("unread_alerts") val unreadAlerts: Int = 0,
+    @SerialName("unread_chats") val unreadChats: Int = 0
 )
 
 @Serializable

@@ -15,6 +15,7 @@ data class Invoice(
     @SerialName("invoice_id") val invoiceId: Int,
     @SerialName("invoice_number") val invoiceNumber: String,
     val type: String? = null,
+    @SerialName("entity_name") val entityName: String? = null,
     val total: Double,
     val status: String,
     @SerialName("due_date") val dueDate: String? = null,

@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.affscash.data.model.FraudConversion
-import com.example.affscash.ui.theme.PrimaryColor
+import com.example.affscash.theme.Purple40
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,7 +38,7 @@ fun FraudReportScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = PrimaryColor,
+                    containerColor = Purple40,
                     titleContentColor = Color.White,
                     navigationIconContentColor = Color.White
                 )
@@ -133,7 +133,7 @@ fun FraudConversionItem(conversion: FraudConversion) {
             Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(text = "IP: ${conversion.ipAddress ?: "N/A"}", fontSize = 12.sp)
-                Text(text = "$${conversion.payout}", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = PrimaryColor)
+                Text(text = "$${conversion.payout}", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Purple40)
             }
             Spacer(modifier = Modifier.height(4.dp))
             Text(text = "Date: ${conversion.convertedAt}", fontSize = 12.sp, color = Color.Gray)

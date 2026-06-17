@@ -108,7 +108,7 @@ fun ManagerInvoiceItem(invoice: Invoice) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = "Created: ${invoice.createdAt.take(10)}", style = MaterialTheme.typography.bodySmall)
+                Text(text = "Created: ${invoice.createdAt?.take(10) ?: "N/A"}", style = MaterialTheme.typography.bodySmall)
                 Text(text = "Due: ${invoice.dueDate?.take(10) ?: "N/A"}", style = MaterialTheme.typography.bodySmall)
             }
             Spacer(modifier = Modifier.height(4.dp))

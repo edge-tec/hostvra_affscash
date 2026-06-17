@@ -32,7 +32,7 @@ fun SmartlinkScreen(
     viewModel: SmartlinkViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    var showApplyDialog for mutableStateOf<Smartlink?>(null)
+    var showApplyDialog by remember { mutableStateOf<Smartlink?>(null) }
     var promoDesc by remember { mutableStateOf("") }
     var applyLoading by remember { mutableStateOf(false) }
     

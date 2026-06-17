@@ -39,7 +39,7 @@ fun OfferScreen(
     val offerType by viewModel.offerType.collectAsState()
     val accessFilter by viewModel.accessFilter.collectAsState()
 
-    var showApplyDialog for mutableStateOf<Offer?>(null)
+    var showApplyDialog by remember { mutableStateOf<Offer?>(null) }
     var promoDesc by remember { mutableStateOf("") }
     var applyLoading by remember { mutableStateOf(false) }
     

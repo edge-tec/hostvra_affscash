@@ -27,6 +27,36 @@ class InvoiceRepository @Inject constructor(
         }
     }
 
+    suspend fun getAdminInvoices(): Result<InvoiceResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.getAdminInvoices()
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    if (it.success) return@withContext Result.success(it)
+                    return@withContext Result.failure(Exception(it.error ?: "Failed to fetch admin invoices"))
+                }
+            }
+            Result.failure(Exception("Network error: ${response.code()}"))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getManagerInvoices(): Result<InvoiceResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.getManagerInvoices()
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    if (it.success) return@withContext Result.success(it)
+                    return@withContext Result.failure(Exception(it.error ?: "Failed to fetch manager invoices"))
+                }
+            }
+            Result.failure(Exception("Network error: ${response.code()}"))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun downloadInvoicePdf(invoiceId: Int): Result<PdfDownloadResponse> = withContext(Dispatchers.IO) {
         try {
             val response = apiService.downloadInvoicePdf(invoiceId = invoiceId)

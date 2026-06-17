@@ -8,7 +8,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -55,7 +55,7 @@ fun ReportScreen(
                 title = { Text("My Reports") },
                 actions = {
                     IconButton(onClick = onNavigateToFraudReport) {
-                        Icon(Icons.Default.Assessment, contentDescription = "Fraud Report")
+                        Icon(Icons.Default.Warning, contentDescription = "Fraud Report")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(

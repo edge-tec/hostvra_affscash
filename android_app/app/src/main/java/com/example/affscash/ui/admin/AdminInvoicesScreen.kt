@@ -101,14 +101,14 @@ fun AdminInvoiceItem(invoice: Invoice) {
                 }
             }
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = "To: ${invoice.entityName ?: "Unknown"} (${invoice.type.replace('_', ' ')})", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "To: ${invoice.entityName ?: "Unknown"} (${invoice.type?.replace('_', ' ') ?: "N/A"})", style = MaterialTheme.typography.bodyMedium)
             
             Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = "Created: ${invoice.createdAt.take(10)}", style = MaterialTheme.typography.bodySmall)
+                Text(text = "Created: ${invoice.createdAt?.take(10) ?: "N/A"}", style = MaterialTheme.typography.bodySmall)
                 Text(text = "Due: ${invoice.dueDate?.take(10) ?: "N/A"}", style = MaterialTheme.typography.bodySmall)
             }
             Spacer(modifier = Modifier.height(4.dp))

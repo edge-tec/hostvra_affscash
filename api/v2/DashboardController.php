@@ -40,7 +40,11 @@ try {
     $userId = Auth::id();
     $unreadNews = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM news n WHERE n.status='published' AND NOT EXISTS (SELECT 1 FROM news_reads nr WHERE nr.news_id=n.id AND nr.user_id=?)", [$userId])['c'] ?? 0);
     $unreadNotifs = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM notifications WHERE user_id=? AND is_read=0", [$userId])['c'] ?? 0);
-    $unreadAlerts = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM fraud_alerts WHERE affiliate_id=? AND is_read=0 AND resolved_at IS NULL", [$affId])['c'] ?? 0);
+    try {
+        $unreadAlerts = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM fraud_alerts WHERE affiliate_id=? AND is_read=0 AND resolved_at IS NULL", [$affId])['c'] ?? 0);
+    } catch (Throwable $e) {
+        $unreadAlerts = 0;
+    }
     $unreadChats = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM support_messages WHERE user_id=? AND sender='admin' AND is_read=0", [$userId])['c'] ?? 0);
 
     $header_counts = [
