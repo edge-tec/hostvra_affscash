@@ -347,7 +347,7 @@ fun PaymentTab(payment: PaymentInfo?, methods: List<String>, viewModel: Settings
     var selectedMethod by remember { mutableStateOf(payment?.method ?: "") }
     
     // Attempt to parse JSON details
-    var rawDetails = payment?.details ?: ""
+    val rawDetails = payment?.details ?: ""
     var isJson = false
     var jsonDetails = org.json.JSONObject()
     try {
@@ -588,7 +588,7 @@ fun ManagerTab(manager: ManagerInfo?) {
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = manager.firstName.take(1).uppercase(),
+                                text = manager.firstName?.take(1)?.uppercase() ?: "",
                                 color = Color.White,
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.Bold
@@ -596,7 +596,7 @@ fun ManagerTab(manager: ManagerInfo?) {
                         }
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = "${manager.firstName} ${manager.lastName}",
+                            text = "${manager.firstName ?: ""} ${manager.lastName ?: ""}",
                             color = Color.White,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
@@ -618,7 +618,7 @@ fun ManagerTab(manager: ManagerInfo?) {
                     modifier = Modifier.weight(1f),
                     icon = Icons.Default.Email,
                     title = "EMAIL",
-                    value = manager.email
+                    value = manager.email ?: ""
                 )
                 if (!manager.telegram.isNullOrBlank()) {
                     ContactCard(

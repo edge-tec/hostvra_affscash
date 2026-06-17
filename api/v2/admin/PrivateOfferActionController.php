@@ -7,7 +7,7 @@ require_once BASE_PATH . '/core/PrivateOffer.php';
 Auth::check('admin');
 PrivateOffer::ensureTables();
 
-$data = Helpers::getJsonPayload();
+$data = json_decode(file_get_contents('php://input'), true) ?: [];
 $action = $data['action'] ?? '';
 $offerId = (int)($data['offer_id'] ?? 0);
 $adminId = Auth::id();

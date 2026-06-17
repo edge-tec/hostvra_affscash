@@ -93,7 +93,7 @@ if ($action === 'detail') {
 }
 
 if ($action === 'action') {
-    $data = Helpers::getJsonPayload();
+    $data = json_decode(file_get_contents('php://input'), true) ?: [];
     $subAction = $data['action'] ?? '';
 
     if ($subAction === 'toggle_status') {
@@ -160,7 +160,7 @@ if ($action === 'action') {
 }
 
 if ($action === 'save') {
-    $data = Helpers::getJsonPayload();
+    $data = json_decode(file_get_contents('php://input'), true) ?: [];
     $id = (int)($data['id'] ?? 0);
     $name = $data['name'] ?? '';
     $slug = preg_replace('/[^a-z0-9-]/', '-', strtolower($data['slug'] ?? ''));

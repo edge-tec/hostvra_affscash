@@ -46,6 +46,10 @@ kotlin {
     jvmToolchain(17)
 }
 
+ksp {
+    arg("hilt.correctErrorTypes", "true")
+}
+
 dependencies {
   val composeBom = platform(libs.androidx.compose.bom)
   implementation(composeBom)

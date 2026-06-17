@@ -249,7 +249,7 @@ if ($action === 'recheck_pending' && Helpers::isPost()) {
 }
 
 if ($action === 'update_status' && Helpers::isPost()) {
-    $data = Helpers::getJsonPayload();
+    $data = json_decode(file_get_contents('php://input'), true) ?: [];
     $convId = $data['conversion_id'] ?? '';
     $newStatus = $data['status'] ?? '';
 
@@ -284,7 +284,7 @@ if ($action === 'update_status' && Helpers::isPost()) {
 }
 
 if ($action === 'bulk_reject' && Helpers::isPost()) {
-    $data = Helpers::getJsonPayload();
+    $data = json_decode(file_get_contents('php://input'), true) ?: [];
     $convIds = $data['conversion_ids'] ?? [];
     $rejectReason = trim((string)($data['rejection_reason'] ?? '')) ?: 'Bulk Fraud Rejection';
     $count = 0;
