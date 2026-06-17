@@ -78,7 +78,24 @@ interface ApiService {
     suspend fun getAdminOffers(): Response<AdminOfferResponse>
 
     @GET("api/v2/manager/offers")
-    suspend fun getManagerOffers(): Response<ManagerOfferResponse>
+    suspend fun getManagerOffers(
+        @Query("action") action: String = "list",
+        @Query("tab") tab: String = "regular",
+        @Query("q") query: String? = null,
+        @Query("category") category: String? = null,
+        @Query("payout_type") payoutType: String? = null,
+        @Query("offer_type") offerType: String? = null,
+        @Query("status_filter") statusFilter: String? = null,
+        @Query("country") country: String? = null,
+        @Query("device") device: String? = null,
+        @Query("offer_id") offerId: Int? = null,
+        @Query("access_filter") accessFilter: String? = null
+    ): Response<ManagerOfferResponse>
+
+    @GET("api/v2/manager/offers")
+    suspend fun getManagerOfferFilters(
+        @Query("action") action: String = "filters"
+    ): Response<com.example.affscash.data.model.ManagerOfferFiltersResponse>
 
     @GET("api/v2/admin/affiliates")
     suspend fun getAdminAffiliates(
@@ -146,6 +163,21 @@ interface ApiService {
 
     @POST("api/v2/smartlinks?action=apply")
     suspend fun applySmartlink(@Body request: com.example.affscash.data.model.ApplySmartlinkRequest): Response<com.example.affscash.data.model.ApplySmartlinkResponse>
+
+    @GET("api/v2/manager/smartlinks")
+    suspend fun getManagerSmartlinks(
+        @Query("action") action: String = "list",
+        @Query("q") query: String? = null
+    ): Response<com.example.affscash.data.model.ManagerSmartlinkResponse>
+
+    @GET("api/v2/manager/smartlinks")
+    suspend fun getManagerSmartlinkRequests(
+        @Query("action") action: String = "requests",
+        @Query("status") status: String = "all"
+    ): Response<com.example.affscash.data.model.ManagerSmartlinkRequestsResponse>
+
+    @POST("api/v2/manager/smartlinks?action=review_request")
+    suspend fun reviewManagerSmartlinkRequest(@Body request: com.example.affscash.data.model.ReviewSmartlinkRequestAction): Response<com.example.affscash.data.model.ReviewSmartlinkResponse>
 
     @GET("api/v2/offers")
     suspend fun getOfferDetails(

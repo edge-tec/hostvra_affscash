@@ -90,13 +90,50 @@ class OfferRepository @Inject constructor(
         }
     }
 
-    suspend fun getManagerOffers(): Result<ManagerOfferResponse> = withContext(Dispatchers.IO) {
+    suspend fun getManagerOffers(
+        tab: String = "regular",
+        query: String? = null,
+        category: String? = null,
+        payoutType: String? = null,
+        offerType: String? = null,
+        statusFilter: String? = null,
+        country: String? = null,
+        device: String? = null,
+        offerId: Int? = null,
+        accessFilter: String? = null
+    ): Result<ManagerOfferResponse> = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.getManagerOffers()
+            val response = apiService.getManagerOffers(
+                tab = tab,
+                query = query,
+                category = category,
+                payoutType = payoutType,
+                offerType = offerType,
+                statusFilter = statusFilter,
+                country = country,
+                device = device,
+                offerId = offerId,
+                accessFilter = accessFilter
+            )
             if (response.isSuccessful) {
                 response.body()?.let {
                     if (it.success) return@withContext Result.success(it)
                     return@withContext Result.failure(Exception(it.error ?: "Failed to fetch manager offers"))
+                }
+            }
+            Result.failure(Exception("Network error: ${response.code()}"))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getManagerOfferFilters(): Result<com.example.affscash.data.model.ManagerOfferFiltersResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.getManagerOfferFilters()
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    if (it.success) return@withContext Result.success(it)
+                    return@withContext Result.failure(Exception(it.error ?: "Failed to fetch manager offer filters"))
                 }
             }
             Result.failure(Exception("Network error: ${response.code()}"))

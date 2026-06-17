@@ -47,6 +47,8 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     // Manager Screens
     object ManagerDashboard : Screen("manager_dashboard", "Dashboard", Icons.Filled.Home)
     object ManagerOffers : Screen("manager_offers", "Offers", Icons.Filled.LocalOffer)
+    object ManagerSmartlinks : Screen("manager_smartlinks", "Smartlinks", Icons.Filled.Link)
+    object ManagerSmartlinkRequests : Screen("manager_smartlink_requests", "Requests", Icons.Filled.Assessment)
     object ManagerAffiliates : Screen("manager_affiliates", "Affiliates", Icons.Filled.Assessment)
     object ManagerConversions : Screen("manager_conversions", "Conv", Icons.Filled.MonetizationOn)
     object ManagerInvoices : Screen("manager_invoices", "Invoices", Icons.Filled.Receipt)
@@ -63,7 +65,7 @@ fun MainScreen(
 
     val items = when (role) {
         "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminUsers, Screen.AdminConversions, Screen.AdminInvoices, Screen.AdminSettings)
-        "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerInvoices, Screen.ManagerSettings)
+        "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerSmartlinks, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerInvoices, Screen.ManagerSettings)
         else -> listOf(Screen.Dashboard, Screen.Offers, Screen.Smartlinks, Screen.Reports, Screen.AffiliateSettings)
     }
     
@@ -158,6 +160,16 @@ fun MainScreen(
             // Manager Screens
             composable(Screen.ManagerDashboard.route) { com.example.affscash.ui.manager.ManagerDashboardScreen() }
             composable(Screen.ManagerOffers.route) { com.example.affscash.ui.manager.ManagerOffersScreen() }
+            composable(Screen.ManagerSmartlinks.route) { 
+                com.example.affscash.ui.manager.ManagerSmartlinksScreen(
+                    onNavigateToRequests = { navController.navigate(Screen.ManagerSmartlinkRequests.route) }
+                ) 
+            }
+            composable(Screen.ManagerSmartlinkRequests.route) { 
+                com.example.affscash.ui.manager.ManagerSmartlinkRequestsScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                ) 
+            }
             composable(Screen.ManagerAffiliates.route) { com.example.affscash.ui.manager.ManagerAffiliatesScreen() }
             composable(Screen.ManagerConversions.route) { com.example.affscash.ui.manager.ManagerConversionsScreen() }
             composable(Screen.ManagerInvoices.route) { com.example.affscash.ui.manager.ManagerInvoicesScreen() }
