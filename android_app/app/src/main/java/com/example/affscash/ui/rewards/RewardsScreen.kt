@@ -16,6 +16,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.text.HtmlCompat
+import android.widget.TextView
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.affscash.data.model.RewardRule
@@ -156,7 +159,7 @@ fun NextMilestoneCard(rule: RewardRule, earned: Double) {
             Text(text = rule.title, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             if (rule.description != null) {
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = rule.description, fontSize = 14.sp, color = Color.Gray)
+                HtmlText(html = rule.description)
             }
             Spacer(modifier = Modifier.height(16.dp))
             val progress = if (rule.thresholdUsd > 0) (earned / rule.thresholdUsd).toFloat().coerceIn(0f, 1f) else 0f
@@ -229,4 +232,18 @@ fun parseColor(colorString: String): Color {
     } catch (e: Exception) {
         Purple40
     }
+}
+
+@Composable
+fun HtmlText(html: String, modifier: Modifier = Modifier) {
+    AndroidView(
+        modifier = modifier,
+        factory = { context -> 
+            TextView(context).apply {
+                setTextColor(android.graphics.Color.GRAY)
+                textSize = 14f
+            }
+        },
+        update = { it.text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT) }
+    )
 }
