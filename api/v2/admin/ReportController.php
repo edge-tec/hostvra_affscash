@@ -281,10 +281,10 @@ try {
                         COALESCE(sl.name, 'Unknown') as smartlink_name,
                         COALESCE(o.name, 'Custom') as offer_name,
                         CONCAT(u.first_name,' ',u.last_name) as aff_name, af.affiliate_code,
-                        ck.country
+                        c.country
                  FROM conversions cv
-                 JOIN clicks ck ON ck.click_id = cv.click_id
-                 LEFT JOIN smartlinks sl ON sl.id = ck.smartlink_id
+                 JOIN clicks c ON c.click_id = cv.click_id
+                 LEFT JOIN smartlinks sl ON sl.id = c.smartlink_id
                  LEFT JOIN offers o ON o.id = cv.offer_id
                  JOIN affiliates af ON af.id = cv.affiliate_id
                  JOIN users u ON u.id = af.user_id
