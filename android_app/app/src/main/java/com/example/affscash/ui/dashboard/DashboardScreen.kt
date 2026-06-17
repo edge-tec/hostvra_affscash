@@ -3,6 +3,7 @@ package com.example.affscash.ui.dashboard
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -240,7 +241,7 @@ fun HeaderIconWithBadge(
         modifier = Modifier
             .padding(horizontal = 4.dp)
             .size(36.dp)
-            .androidx.compose.foundation.clickable(onClick = onClick), 
+            .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Icon(

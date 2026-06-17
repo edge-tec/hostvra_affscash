@@ -10,7 +10,7 @@ class Config {
         self::$configDir = rtrim($configDir, '/');
     }
 
-    public static function get(string $file, string $key = null) {
+    public static function get(string $file, ?string $key = null) {
         if (!isset(self::$cache[$file])) {
             $path = self::$configDir . '/' . $file . '.json';
             if (!file_exists($path)) return null;
