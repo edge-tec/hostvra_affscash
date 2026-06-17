@@ -484,6 +484,12 @@ Router::any('/api/v2/notifications', function() { require BASE_PATH . '/api/v2/N
 Router::any('/api/v2/admin/dashboard', function() { require BASE_PATH . '/api/v2/admin/DashboardController.php'; });
 Router::any('/api/v2/admin/offers', function() { require BASE_PATH . '/api/v2/admin/OfferController.php'; });
 Router::post('/api/v2/admin/offers/action', function() { require BASE_PATH . '/api/v2/admin/OfferActionController.php'; });
+
+Router::any('/api/v2/admin/smartlinks', function() { require BASE_PATH . '/api/v2/admin/SmartlinkController.php'; });
+
+Router::get('/api/v2/admin/private-offers/dashboard', function() { require BASE_PATH . '/api/v2/admin/PrivateOfferDashboardController.php'; });
+Router::get('/api/v2/admin/private-offers/detail', function() { require BASE_PATH . '/api/v2/admin/PrivateOfferDetailController.php'; });
+Router::post('/api/v2/admin/private-offers/action', function() { require BASE_PATH . '/api/v2/admin/PrivateOfferActionController.php'; });
 Router::any('/api/v2/admin/offer-approvals', function() { require BASE_PATH . '/api/v2/admin/OfferApprovalController.php'; });
 Router::any('/api/v2/admin/affiliates', function() { require BASE_PATH . '/api/v2/admin/AffiliateController.php'; });
 Router::any('/api/v2/admin/affiliate-actions', function() { require BASE_PATH . '/api/v2/admin/AffiliateActionController.php'; });
@@ -491,6 +497,7 @@ Router::any('/api/v2/admin/advertisers', function() { require BASE_PATH . '/api/
 Router::any('/api/v2/admin/advertiser-actions', function() { require BASE_PATH . '/api/v2/admin/AdvertiserActionController.php'; });
 Router::any('/api/v2/admin/conversions', function() { require BASE_PATH . '/api/v2/admin/ConversionController.php'; });
 Router::any('/api/v2/admin/invoices', function() { require BASE_PATH . '/api/v2/admin/InvoiceController.php'; });
+Router::any('/api/v2/admin/fraud-score-report', function() { require BASE_PATH . '/api/v2/admin/FraudScoreReportController.php'; });
 
 // Native App API Routes (v2) - Manager
 Router::any('/api/v2/manager/dashboard', function() { require BASE_PATH . '/api/v2/manager/DashboardController.php'; });

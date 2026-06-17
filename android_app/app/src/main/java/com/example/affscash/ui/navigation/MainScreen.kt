@@ -13,6 +13,12 @@ import androidx.compose.material.icons.filled.MonetizationOn
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.VpnKey
+import androidx.compose.material.icons.filled.HomeRepairService
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.SupervisorAccount
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -25,6 +31,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.affscash.ui.dashboard.DashboardScreen
 import com.example.affscash.ui.offers.OfferScreen
 import com.example.affscash.ui.reports.ReportScreen
+import com.example.affscash.ui.admin.AdminAdvertisersScreen
+import com.example.affscash.ui.admin.AdminAdvertiserFormScreen
 
 sealed class Screen(val route: String, val title: String, val icon: androidx.compose.ui.graphics.vector.ImageVector) {
     // Affiliate Screens
@@ -44,14 +52,30 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     // Admin Screens
     object AdminDashboard : Screen("admin_dashboard", "Dashboard", Icons.Filled.Home)
     object AdminOffers : Screen("admin_offers", "Offers", Icons.Filled.LocalOffer)
+    object AdminPrivateOffers : Screen("admin_private_offers", "Private Offers", Icons.Filled.VpnKey)
     object AdminInHouseOffers : Screen("admin_inhouse_offers", "In-House Offers", Icons.Filled.HomeRepairService)
     object AdminOfferApprovals : Screen("admin_offer_approvals", "Approvals", Icons.Filled.CheckCircle)
+    object AdminSmartlinks : Screen("admin_smartlinks", "Smartlinks", Icons.Filled.Link)
+    object AdminSmartlinkRequests : Screen("admin_smartlink_requests", "SL Requests", Icons.Filled.Assessment)
+    object AdminSmartlinkCreate : Screen("admin_smartlink_create", "Create Smartlink", Icons.Filled.Add)
+    class AdminSmartlinkEdit(id: Int) : Screen("admin_smartlink_edit/$id", "Edit Smartlink", Icons.Filled.Edit) {
+        companion object {
+            const val route = "admin_smartlink_edit/{smartlinkId}"
+            fun createRoute(smartlinkId: Int) = "admin_smartlink_edit/$smartlinkId"
+        }
+    }
     object AdminOfferCreate : Screen("admin_offer_create", "Create Offer", Icons.Filled.Add)
     object AdminInHouseOfferCreate : Screen("admin_inhouse_offer_create", "Create In-House Offer", Icons.Filled.Add)
     class AdminOfferEdit(id: Int) : Screen("admin_offer_edit/$id", "Edit Offer", Icons.Filled.Edit) {
         companion object {
             const val route = "admin_offer_edit/{offerId}"
             fun createRoute(offerId: Int) = "admin_offer_edit/$offerId"
+        }
+    }
+    class AdminPrivateOfferDetail(id: Int) : Screen("admin_private_offer_detail/$id", "Manage Private Offer", Icons.Filled.Settings) {
+        companion object {
+            const val route = "admin_private_offer_detail/{offerId}"
+            fun createRoute(offerId: Int) = "admin_private_offer_detail/$offerId"
         }
     }
     object AdminUsers : Screen("admin_users", "Users", Icons.Filled.Assessment)
@@ -64,6 +88,7 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
         }
     }
     object AdminConversions : Screen("admin_conversions", "Conv", Icons.Filled.MonetizationOn)
+    object AdminFraudReport : Screen("admin_fraud", "Fraud", Icons.Filled.Security)
     object AdminInvoices : Screen("admin_invoices", "Invoices", Icons.Filled.Receipt)
     object AdminSettings : Screen("admin_settings", "Settings", Icons.Filled.Settings)
 
@@ -89,7 +114,7 @@ fun MainScreen(
     val navController = rememberNavController()
 
     val items = when (role) {
-        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminConversions, Screen.AdminInvoices, Screen.AdminSettings)
+        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminPrivateOffers, Screen.AdminSmartlinks, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminConversions, Screen.AdminFraudReport, Screen.AdminInvoices, Screen.AdminSettings)
         "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerSmartlinks, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerReports, Screen.ManagerInvoices, Screen.ManagerSettings)
         else -> listOf(Screen.Dashboard, Screen.Offers, Screen.Smartlinks, Screen.Reports, Screen.AffiliateSettings)
     }
@@ -136,7 +161,9 @@ fun MainScreen(
                     onNavigateToInvoices = { navController.navigate(Screen.Invoices.route) },
                     onNavigateToFraudAlerts = { navController.navigate(Screen.FraudReport.route) },
                     onNavigateToChat = { navController.navigate(Screen.Chat.route) },
-                    onNavigateToNews = { navController.navigate(Screen.News.route) },
+                    onNavigateToNews = { navController.navigate(Screen.News.route) }
+                )
+            }
             composable(Screen.AdminAdvertisers.route) {
                 AdminAdvertisersScreen(
                     onNavigateToCreate = { navController.navigate(Screen.AdminAdvertiserCreate.route) },
@@ -224,6 +251,59 @@ fun MainScreen(
                     onNavigateToEditOffer = { id -> navController.navigate(Screen.AdminOfferEdit.createRoute(id)) }
                 )
             }
+            composable(Screen.AdminPrivateOffers.route) {
+                com.example.affscash.ui.admin.AdminPrivateOffersScreen(
+                    onNavigateToDetail = { id -> navController.navigate(Screen.AdminPrivateOfferDetail.createRoute(id)) }
+                )
+            }
+            composable(
+                route = Screen.AdminPrivateOfferDetail.route
+            ) { backStackEntry ->
+                val id = backStackEntry.arguments?.getString("offerId")?.toIntOrNull()
+                if (id != null) {
+                    com.example.affscash.ui.admin.AdminPrivateOfferDetailScreen(
+                        offerId = id,
+                        onNavigateBack = { navController.popBackStack() }
+                    )
+                }
+            }
+            
+            // Admin Smartlinks
+            composable(Screen.AdminSmartlinks.route) {
+                val viewModel: com.example.affscash.ui.screens.admin.smartlinks.AdminSmartlinksViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                com.example.affscash.ui.screens.admin.smartlinks.AdminSmartlinksScreen(
+                    viewModel = viewModel,
+                    navController = navController
+                )
+            }
+            
+            composable(Screen.AdminSmartlinkRequests.route) {
+                val viewModel: com.example.affscash.ui.screens.admin.smartlinks.AdminSmartlinkRequestsViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                com.example.affscash.ui.screens.admin.smartlinks.AdminSmartlinkRequestsScreen(
+                    viewModel = viewModel,
+                    navController = navController
+                )
+            }
+            
+            composable(Screen.AdminSmartlinkCreate.route) {
+                val viewModel: com.example.affscash.ui.screens.admin.smartlinks.AdminSmartlinkFormViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                com.example.affscash.ui.screens.admin.smartlinks.AdminSmartlinkFormScreen(
+                    viewModel = viewModel,
+                    navController = navController,
+                    smartlinkId = null
+                )
+            }
+            
+            composable(Screen.AdminSmartlinkEdit.route) { backStackEntry ->
+                val id = backStackEntry.arguments?.getString("smartlinkId")?.toIntOrNull()
+                val viewModel: com.example.affscash.ui.screens.admin.smartlinks.AdminSmartlinkFormViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                com.example.affscash.ui.screens.admin.smartlinks.AdminSmartlinkFormScreen(
+                    viewModel = viewModel,
+                    navController = navController,
+                    smartlinkId = id
+                )
+            }
+
             composable(Screen.AdminOffers.route) { 
                 com.example.affscash.ui.admin.AdminOffersScreen(
                     onNavigateToCreateOffer = { navController.navigate(Screen.AdminOfferCreate.route) },
@@ -258,6 +338,19 @@ fun MainScreen(
             }
             composable(Screen.AdminUsers.route) { com.example.affscash.ui.admin.AdminUsersScreen() }
             composable(Screen.AdminConversions.route) { com.example.affscash.ui.admin.AdminConversionsScreen() }
+            composable(Screen.AdminFraudReport.route) {
+                val repo = com.example.affscash.data.repository.AdminFraudRepository(com.example.affscash.data.network.RetrofitClient.apiService)
+                val factory = object : androidx.lifecycle.ViewModelProvider.Factory {
+                    override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
+                        return com.example.affscash.ui.screens.admin.fraud.AdminFraudReportViewModel(repo) as T
+                    }
+                }
+                val viewModel: com.example.affscash.ui.screens.admin.fraud.AdminFraudReportViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = factory)
+                com.example.affscash.ui.screens.admin.fraud.AdminFraudReportScreen(
+                    viewModel = viewModel,
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
             composable(Screen.AdminInvoices.route) { com.example.affscash.ui.admin.AdminInvoicesScreen() }
             composable(Screen.AdminSettings.route) { com.example.affscash.ui.settings.SettingsScreen(role, onLogout) }
 
@@ -306,7 +399,8 @@ fun MainScreen(
             composable("manager_edit_affiliate/{affId}") { backStackEntry ->
                 val affId = backStackEntry.arguments?.getString("affId")?.toIntOrNull() ?: 0
                 val viewModel: com.example.affscash.ui.manager.ManagerAffiliatesViewModel = androidx.hilt.navigation.compose.hiltViewModel()
-                val affiliate = viewModel.uiState.value.affiliates.find { it.affId == affId }
+                val uiState by viewModel.uiState.collectAsState()
+                val affiliate = uiState.affiliates.find { it.affId == affId }
                 if (affiliate != null) {
                     com.example.affscash.ui.manager.ManagerEditAffiliateScreen(
                         affiliate = affiliate,

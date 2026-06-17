@@ -1,41 +1,42 @@
 package com.example.affscash.data.model
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class ManagerOfferApprovalListResponse(
     val success: Boolean,
-    val requests: List<OfferApprovalRequestItem> = emptyList(),
-    val all_offers: List<OfferOption> = emptyList(),
-    val pending_count: Int = 0,
+    val requests: List<ManagerOfferApprovalRequest> = emptyList(),
+    @SerialName("all_offers") val allOffers: List<OfferSimple> = emptyList(),
+    @SerialName("pending_count") val pendingCount: Int = 0,
     val message: String? = null
 )
 
 @Serializable
-data class OfferApprovalRequestItem(
-    val ao_id: Int,
-    val affiliate_id: Int,
-    val offer_id: Int,
+data class ManagerOfferApprovalRequest(
+    @SerialName("ao_id") val aoId: Int,
+    @SerialName("affiliate_id") val affiliateId: Int,
+    @SerialName("offer_id") val offerId: Int,
     val status: String,
-    val promotion_description: String?,
-    val requested_at: String?,
-    val approved_at: String?,
-    val offer_name: String,
-    val payout_amount: Double,
-    val payout_type: String,
-    val offer_category: String?,
-    val affiliate_name: String,
-    val affiliate_email: String,
-    val affiliate_joined: String?,
-    val affiliate_code: String?,
+    @SerialName("promotion_description") val promotionDescription: String?,
+    @SerialName("requested_at") val requestedAt: String?,
+    @SerialName("approved_at") val approvedAt: String?,
+    @SerialName("offer_name") val offerName: String,
+    @SerialName("payout_amount") val payoutAmount: Double,
+    @SerialName("payout_type") val payoutType: String,
+    @SerialName("offer_category") val offerCategory: String?,
+    @SerialName("affiliate_name") val affiliateName: String,
+    @SerialName("affiliate_email") val affiliateEmail: String,
+    @SerialName("affiliate_joined") val affiliateJoined: String?,
+    @SerialName("affiliate_code") val affiliateCode: String?,
     val country: String?,
-    val traffic_sources: String?,
-    val total_clicks: Int,
-    val total_conversions: Int
+    @SerialName("traffic_sources") val trafficSources: String?,
+    @SerialName("total_clicks") val totalClicks: Int,
+    @SerialName("total_conversions") val totalConversions: Int
 )
 
 @Serializable
-data class OfferOption(
+data class OfferSimple(
     val id: Int,
     val name: String
 )

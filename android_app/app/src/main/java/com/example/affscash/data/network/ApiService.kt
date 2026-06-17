@@ -169,6 +169,31 @@ interface ApiService {
     @POST("api/v2/admin/offer-approvals?action=review")
     suspend fun reviewAdminOfferApproval(@Body request: ReviewOfferApprovalRequest): DefaultResponse
 
+    @GET("api/v2/admin/private-offers/dashboard")
+    suspend fun getPrivateOffersDashboard(): Response<PrivateOfferDashboardWrapperResponse>
+
+    @GET("api/v2/admin/private-offers/detail")
+    suspend fun getPrivateOfferDetail(@Query("id") id: Int): Response<PrivateOfferDetailWrapperResponse>
+
+    @POST("api/v2/admin/private-offers/action")
+    suspend fun submitPrivateOfferAction(@Body request: PrivateOfferActionRequest): Response<GenericResponse>
+
+    // Admin Smartlinks
+    @GET("api/v2/admin/smartlinks?action=list")
+    suspend fun getAdminSmartlinksDashboard(): Response<AdminSmartlinkDashboardWrapperResponse>
+
+    @GET("api/v2/admin/smartlinks?action=requests")
+    suspend fun getAdminSmartlinkRequests(): Response<AdminSmartlinkRequestsWrapperResponse>
+
+    @GET("api/v2/admin/smartlinks?action=detail")
+    suspend fun getAdminSmartlinkDetail(@Query("id") id: Int): Response<AdminSmartlinkDetailWrapperResponse>
+
+    @POST("api/v2/admin/smartlinks")
+    suspend fun submitAdminSmartlinkAction(@Body request: AdminSmartlinkActionRequest): Response<GenericResponse>
+
+    @POST("api/v2/admin/smartlinks")
+    suspend fun saveAdminSmartlink(@Body request: AdminSmartlinkSaveRequest): Response<GenericResponse>
+
     @GET("api/v2/manager/offers")
     suspend fun getManagerOffers(
         @Query("action") action: String = "list",
@@ -469,5 +494,25 @@ interface ApiService {
 
     @POST("api/v2/notifications?action=mark_read")
     suspend fun markNotificationAsRead(@Body request: MarkNotificationRequest): Response<SimpleResponse>
+    // --- ADMIN: Fraud Score Report ---
+    @GET("api/v2/admin/fraud-score-report")
+    suspend fun getAdminFraudScoreReport(
+        @Query("action") action: String = "report",
+        @Query("from") from: String? = null,
+        @Query("to") to: String? = null,
+        @Query("status") status: String? = null,
+        @Query("affiliate_id") affiliateId: Int? = null,
+        @Query("offer_id") offerId: Int? = null,
+        @Query("click_id") clickId: String? = null,
+        @Query("score_min") scoreMin: Int? = null,
+        @Query("score_max") scoreMax: Int? = null,
+        @Query("sort") sort: String? = null,
+        @Query("dir") dir: String? = null
+    ): AdminFraudReportResponse
+
+    @POST("api/v2/admin/fraud-score-report")
+    suspend fun submitAdminFraudAction(
+        @Body request: AdminFraudActionRequest
+    ): AdminFraudActionResponse
 
 }
