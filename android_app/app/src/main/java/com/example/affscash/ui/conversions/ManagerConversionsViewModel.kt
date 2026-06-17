@@ -25,8 +25,22 @@ class ManagerConversionsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<ManagerConversionsUiState>(ManagerConversionsUiState.Loading)
     val uiState: StateFlow<ManagerConversionsUiState> = _uiState.asStateFlow()
 
+    private val _statusFilter = MutableStateFlow("all")
+    val statusFilter: StateFlow<String> = _statusFilter.asStateFlow()
+
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+
     init {
         loadConversions()
+    }
+
+    fun setStatusFilter(status: String) {
+        _statusFilter.value = status
+    }
+
+    fun setSearchQuery(query: String) {
+        _searchQuery.value = query
     }
 
     fun loadConversions() {
