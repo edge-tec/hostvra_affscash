@@ -2,26 +2,7 @@ package com.example.affscash.ui.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Assessment
-import androidx.compose.material.icons.filled.Article
-import androidx.compose.material.icons.filled.Chat
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.LocalOffer
-import androidx.compose.material.icons.filled.Link
-import androidx.compose.material.icons.filled.PictureAsPdf
-import androidx.compose.material.icons.filled.MonetizationOn
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Receipt
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.VpnKey
-import androidx.compose.material.icons.filled.HomeRepairService
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.SupervisorAccount
-import androidx.compose.material.icons.filled.Shield
-import androidx.compose.material.icons.filled.Group
-import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -47,8 +28,8 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     object AffiliateSettings : Screen("affiliate_settings", "Settings", Icons.Filled.Settings)
     object FraudReport : Screen("fraud_report", "Fraud Report", Icons.Filled.Assessment)
     object Rewards : Screen("rewards", "Milestones", Icons.Filled.MonetizationOn)
-    object Shop : Screen("shop", "Rewards Shop", Icons.Filled.LocalOffer) // Add Shop screen
-    object News : Screen("news", "News", Icons.Filled.Article) // Add News screen
+    object Shop : Screen("shop", "Rewards Shop", Icons.Filled.LocalOffer)
+    object News : Screen("news", "News", Icons.Filled.Article)
     object Notifications : Screen("notifications", "Notifications", Icons.Filled.Notifications)
     object Chat : Screen("chat", "Chat", Icons.Filled.Chat)
 
@@ -111,6 +92,9 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     object ManagerInvoices : Screen("manager_invoices", "Invoices", Icons.Filled.Receipt)
     object ManagerReports : Screen("manager_reports", "Reports", Icons.Filled.Assessment)
     object ManagerSettings : Screen("manager_settings", "Settings", Icons.Filled.Settings)
+    
+    // Affiliate Screens
+    object AffiliateInHouseOffers : Screen("affiliate_inhouse_offers", "In-House Offers", Icons.Filled.HomeRepairService)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -125,7 +109,7 @@ fun MainScreen(
     val items = when (role) {
         "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminPrivateOffers, Screen.AdminSmartlinks, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminAffiliateManagers, Screen.AdminConversions, Screen.AdminReports, Screen.AdminAffiliateReport, Screen.AdminFraudReport, Screen.AdminAutoHide, Screen.AdminInvoices, Screen.AdminPlatformSettings, Screen.AdminSettings)
         "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerSmartlinks, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerReports, Screen.ManagerInvoices, Screen.ManagerSettings)
-        else -> listOf(Screen.Dashboard, Screen.Offers, Screen.Smartlinks, Screen.Reports, Screen.AffiliateSettings)
+        else -> listOf(Screen.Dashboard, Screen.Offers, Screen.AffiliateInHouseOffers, Screen.Smartlinks, Screen.Reports, Screen.AffiliateSettings)
     }
     
     val startDest = items.first().route
@@ -142,15 +126,10 @@ fun MainScreen(
                         selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                         onClick = {
                             navController.navigate(screen.route) {
-                                // Pop up to the start destination of the graph to
-                                // avoid building up a large stack of destinations
                                 popUpTo(navController.graph.findStartDestination().id) {
                                     saveState = true
                                 }
-                                // Avoid multiple copies of the same destination when
-                                // reselecting the same item
                                 launchSingleTop = true
-                                // Restore state when reselecting a previously selected item
                                 restoreState = true
                             }
                         }
@@ -178,13 +157,7 @@ fun MainScreen(
                     onNavigateToCreate = { navController.navigate(Screen.AdminAdvertiserCreate.route) },
                     onNavigateToEdit = { id -> navController.navigate(Screen.AdminAdvertiserEdit.createRoute(id)) },
                     onNavigateToView = { /* TODO: View screen */ },
-                    onLoginToAdvertiser = { role ->
-                        if (role == "advertiser") {
-                            navController.navigate("advertiser_dashboard") {
-                                popUpTo(0) { inclusive = true }
-                            }
-                        }
-                    }
+                    onLoginToAdvertiser = onRoleChange
                 )
             }
             composable(Screen.AdminAdvertiserCreate.route) {
@@ -201,6 +174,7 @@ fun MainScreen(
                 }
             }
             composable(Screen.Offers.route) { OfferScreen(onOfferClick = {}) }
+            composable(Screen.AffiliateInHouseOffers.route) { com.example.affscash.ui.offers.AffiliateInHouseOffersScreen(onOfferClick = {}) }
             composable(Screen.Smartlinks.route) { com.example.affscash.ui.smartlinks.SmartlinkScreen() }
             composable(Screen.Reports.route) { 
                 ReportScreen(
@@ -277,7 +251,6 @@ fun MainScreen(
                 }
             }
             
-            // Admin Smartlinks
             composable(Screen.AdminSmartlinks.route) {
                 val viewModel: com.example.affscash.ui.screens.admin.smartlinks.AdminSmartlinksViewModel = androidx.hilt.navigation.compose.hiltViewModel()
                 com.example.affscash.ui.screens.admin.smartlinks.AdminSmartlinksScreen(
@@ -385,7 +358,7 @@ fun MainScreen(
                 com.example.affscash.ui.screens.admin.managers.AdminAffiliateManagersScreen(
                     viewModel = viewModel,
                     onNavigateBack = { navController.popBackStack() },
-                    onLoginSuccess = onLoginSuccess
+                    onLoginSuccess = onRoleChange
                 )
             }
             composable(Screen.AdminSettings.route) { com.example.affscash.ui.settings.SettingsScreen(role, onLogout) }

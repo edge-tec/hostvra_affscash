@@ -21,7 +21,8 @@ class OfferRepository @Inject constructor(
         offerType: String? = null,
         country: String? = null,
         device: String? = null,
-        accessFilter: String? = null
+        accessFilter: String? = null,
+        inHouse: Boolean? = null
     ): Result<OfferResponse> = withContext(Dispatchers.IO) {
         try {
             val response = apiService.getOffers(
@@ -31,7 +32,8 @@ class OfferRepository @Inject constructor(
                 offerType = offerType,
                 country = country,
                 device = device,
-                accessFilter = accessFilter
+                accessFilter = accessFilter,
+                inHouse = inHouse
             )
             if (response.isSuccessful) {
                 response.body()?.let {

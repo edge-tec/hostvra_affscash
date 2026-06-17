@@ -21,10 +21,12 @@ import com.example.affscash.data.model.AdminAffiliateManagerRow
 fun AdminAffiliateManagersScreen(
     viewModel: AdminAffiliateManagersViewModel = viewModel(),
     onNavigateBack: () -> Unit,
-    onLoginSuccess: (String, com.example.affscash.data.model.User) -> Unit
+    onLoginSuccess: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val userManager = remember { com.example.affscash.data.local.UserManager(context) }
 
     LaunchedEffect(uiState.error) {
         uiState.error?.let {
@@ -56,7 +58,13 @@ fun AdminAffiliateManagersScreen(
                     AdminAffiliateManagerCard(
                         manager = manager,
                         onDelete = { viewModel.deleteManager(manager.mgr_id) },
-                        onLoginAs = { viewModel.impersonateManager(manager.user_id, onLoginSuccess) }
+                        onLoginAs = { 
+                            viewModel.impersonateManager(manager.user_id) { role, user ->
+                                userManager.saveUser(role, user.email, "${user.firstName} ${user.lastName}")
+                                userManager.saveIsImpersonating(true)
+                                onLoginSuccess(role)
+                            }
+                        }
                     )
                 }
             }

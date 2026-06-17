@@ -59,8 +59,8 @@ class AdminAffiliateManagersViewModel @Inject constructor(private val repository
             val result = repository.impersonateManager(userId)
             result.onSuccess { response ->
                 _uiState.update { it.copy(isActionLoading = false) }
-                if (response.data?.user != null) {
-                    onLoginSuccess(response.data.user.role, response.data.user)
+                if (response.user != null) {
+                    onLoginSuccess(response.user.role, response.user)
                 }
             }.onFailure { error ->
                 _uiState.update { it.copy(isActionLoading = false, error = error.message) }
