@@ -12,29 +12,113 @@ data class AdminDashboardResponse(
 
 @Serializable
 data class AdminDashboardData(
-    @SerialName("total_affiliates") val totalAffiliates: Int = 0,
-    @SerialName("pending_affiliates") val pendingAffiliates: Int = 0,
-    @SerialName("total_advertisers") val totalAdvertisers: Int = 0,
-    @SerialName("total_offers") val totalOffers: Int = 0,
-    @SerialName("profit_summary") val profitSummary: AdminProfitSummary? = null,
-    @SerialName("top_profit_offers") val topProfitOffers: List<AdminTopOffer> = emptyList()
+    val summary: AdminSummaryData = AdminSummaryData(),
+    val kpis: AdminKpiData = AdminKpiData(),
+    val trend: AdminTrendData = AdminTrendData(),
+    @SerialName("conversion_status") val conversionStatus: List<AdminConversionStatus> = emptyList(),
+    val countries: List<AdminCountryData> = emptyList(),
+    val devices: List<AdminDeviceData> = emptyList(),
+    val browsers: List<AdminBrowserData> = emptyList(),
+    @SerialName("top_offers") val topOffers: List<AdminTopOffer> = emptyList(),
+    @SerialName("top_affiliates") val topAffiliates: List<AdminTopAffiliate> = emptyList(),
+    @SerialName("recent_conversions") val recentConversions: List<AdminRecentConversion> = emptyList()
 )
 
 @Serializable
-data class AdminProfitSummary(
-    @SerialName("total_revenue") val totalRevenue: Double = 0.0,
-    @SerialName("total_payout") val totalPayout: Double = 0.0,
-    @SerialName("total_profit") val totalProfit: Double = 0.0
+data class AdminSummaryData(
+    @SerialName("total_affiliates") val totalAffiliates: Int = 0,
+    @SerialName("pending_affiliates") val pendingAffiliates: Int = 0,
+    @SerialName("total_offers") val totalOffers: Int = 0,
+    @SerialName("total_advertisers") val totalAdvertisers: Int = 0
+)
+
+@Serializable
+data class AdminKpiData(
+    val clicks: Int = 0,
+    @SerialName("unique_clicks") val uniqueClicks: Int = 0,
+    val conversions: Int = 0,
+    val payout: Double = 0.0,
+    val revenue: Double = 0.0,
+    val profit: Double = 0.0,
+    val cr: Double = 0.0,
+    @SerialName("fraud_clicks") val fraudClicks: Int = 0,
+    @SerialName("fraud_conv") val fraudConv: Int = 0,
+    @SerialName("fraud_conv_pct") val fraudConvPct: Double = 0.0
+)
+
+@Serializable
+data class AdminTrendData(
+    val labels: List<String> = emptyList(),
+    val clicks: List<Int> = emptyList(),
+    val conversions: List<Int> = emptyList(),
+    val revenue: List<Double> = emptyList(),
+    val payout: List<Double> = emptyList(),
+    val fraud: List<Int> = emptyList()
+)
+
+@Serializable
+data class AdminConversionStatus(
+    val status: String,
+    val count: Int
+)
+
+@Serializable
+data class AdminCountryData(
+    val country: String,
+    val clicks: Int,
+    val conversions: Int,
+    val cr: Double
+)
+
+@Serializable
+data class AdminDeviceData(
+    val device: String,
+    val clicks: Int
+)
+
+@Serializable
+data class AdminBrowserData(
+    val browser: String,
+    val clicks: Int
 )
 
 @Serializable
 data class AdminTopOffer(
     val id: Int,
     val name: String,
-    val revenue: Double,
+    val clicks: Int,
+    val conversions: Int,
     val payout: Double,
+    val revenue: Double,
     val profit: Double,
-    val conversions: Int
+    val cr: Double,
+    @SerialName("fraud_conv") val fraudConv: Int,
+    @SerialName("fraud_conv_pct") val fraudConvPct: Double
+)
+
+@Serializable
+data class AdminTopAffiliate(
+    val id: Int,
+    val name: String,
+    val clicks: Int,
+    val conversions: Int,
+    val payout: Double,
+    val revenue: Double,
+    val profit: Double,
+    val cr: Double
+)
+
+@Serializable
+data class AdminRecentConversion(
+    val id: Int,
+    val status: String,
+    val payout: Double,
+    val revenue: Double,
+    @SerialName("converted_at") val convertedAt: String,
+    val country: String,
+    @SerialName("device_type") val deviceType: String,
+    @SerialName("offer_name") val offerName: String?,
+    @SerialName("affiliate_name") val affiliateName: String?
 )
 
 @Serializable

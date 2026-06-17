@@ -1,25 +1,48 @@
 package com.example.affscash.ui.admin
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.affscash.data.model.AdminTopOffer
+import com.example.affscash.data.model.AdminTopAffiliate
+import com.example.affscash.data.model.AdminRecentConversion
+import com.example.affscash.data.model.AdminDashboardData
 import com.example.affscash.ui.dashboard.AdminDashboardUiState
 import com.example.affscash.ui.dashboard.AdminDashboardViewModel
+import com.example.affscash.ui.dashboard.DateFilter
+import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
+import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
+import com.patrykandpatrick.vico.compose.chart.Chart
+import com.patrykandpatrick.vico.compose.chart.line.lineChart
+import com.patrykandpatrick.vico.core.entry.entryModelOf
+import com.patrykandpatrick.vico.core.entry.FloatEntry
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminDashboardScreen(
     viewModel: AdminDashboardViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val selectedFilter by viewModel.selectedFilter.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         when (val state = uiState) {
@@ -44,65 +67,160 @@ fun AdminDashboardScreen(
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp)
+                            .padding(horizontal = 16.dp),
+                        contentPadding = PaddingValues(vertical = 16.dp)
                     ) {
                         item {
                             Text(
-                                text = "Admin Dashboard",
+                                text = "Admin Analytics",
                                 style = MaterialTheme.typography.headlineMedium,
-                                modifier = Modifier.padding(bottom = 16.dp)
+                                fontWeight = FontWeight.ExtraBold,
+                                modifier = Modifier.padding(bottom = 8.dp)
                             )
                         }
 
-                        // Summary Cards
+                        // Date Filters Row
                         item {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            LazyRow(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                modifier = Modifier.padding(bottom = 16.dp)
                             ) {
-                                StatCard(title = "Total Affiliates", value = data.totalAffiliates.toString(), modifier = Modifier.weight(1f))
-                                StatCard(title = "Pending Affiliates", value = data.pendingAffiliates.toString(), modifier = Modifier.weight(1f))
-                            }
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                StatCard(title = "Total Advertisers", value = data.totalAdvertisers.toString(), modifier = Modifier.weight(1f))
-                                StatCard(title = "Total Offers", value = data.totalOffers.toString(), modifier = Modifier.weight(1f))
-                            }
-                            Spacer(modifier = Modifier.height(16.dp))
-                        }
-
-                        // Financial Summary
-                        item {
-                            Text(text = "Financial Summary (30 Days)", style = MaterialTheme.typography.titleLarge)
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Card(
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-                            ) {
-                                Column(modifier = Modifier.padding(16.dp)) {
-                                    Text("Revenue: $${data.profitSummary?.totalRevenue ?: 0.0}")
-                                    Text("Payouts: $${data.profitSummary?.totalPayout ?: 0.0}")
-                                    Text(
-                                        "Profit: $${data.profitSummary?.totalProfit ?: 0.0}",
-                                        style = MaterialTheme.typography.titleMedium,
-                                        color = MaterialTheme.colorScheme.primary
+                                items(DateFilter.values()) { filter ->
+                                    FilterChip(
+                                        selected = filter == selectedFilter,
+                                        onClick = { viewModel.setFilter(filter) },
+                                        label = { Text(filter.label) }
                                     )
                                 }
                             }
+                        }
+
+                        // KPI Grid
+                        item {
+                            AdminKpiGrid(data)
+                            Spacer(modifier = Modifier.height(24.dp))
+                        }
+
+                        // Trend Chart
+                        item {
+                            Text(text = "Performance Trend", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.height(16.dp))
+                            
+                            val trendData = data.trend
+                            if (trendData.labels.isNotEmpty() && trendData.clicks.isNotEmpty()) {
+                                val entries = trendData.clicks.mapIndexed { index, value ->
+                                    FloatEntry(x = index.toFloat(), y = value.toFloat())
+                                }
+                                val model = entryModelOf(entries)
+                                Card(
+                                    modifier = Modifier.fillMaxWidth().height(300.dp),
+                                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                                ) {
+                                    Chart(
+                                        chart = lineChart(),
+                                        model = model,
+                                        startAxis = rememberStartAxis(),
+                                        bottomAxis = rememberBottomAxis(
+                                            valueFormatter = { value, _ -> 
+                                                val index = value.toInt()
+                                                if (index >= 0 && index < trendData.labels.size) trendData.labels[index] else ""
+                                            }
+                                        ),
+                                        modifier = Modifier.fillMaxSize().padding(16.dp)
+                                    )
+                                }
+                            } else {
+                                Text("No trend data available for this period.")
+                            }
+                            Spacer(modifier = Modifier.height(24.dp))
                         }
 
                         // Top Offers
-                        if (data.topProfitOffers.isNotEmpty()) {
+                        if (data.topOffers.isNotEmpty()) {
                             item {
-                                Text(text = "Top Offers by Profit", style = MaterialTheme.typography.titleLarge)
+                                Text(text = "Top Offers", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                                 Spacer(modifier = Modifier.height(8.dp))
+                                Card(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                                ) {
+                                    Column(modifier = Modifier.padding(16.dp)) {
+                                        data.topOffers.take(5).forEach { o ->
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                                                horizontalArrangement = Arrangement.SpaceBetween
+                                            ) {
+                                                Text(o.name.ifBlank { "Offer #${o.id}" }, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
+                                                Text("C: ${o.clicks} | Cv: ${o.conversions} | $${o.profit}", color = Color.Gray, modifier = Modifier.padding(start = 8.dp))
+                                            }
+                                            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+                                        }
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(24.dp))
                             }
-                            items(data.topProfitOffers) { offer ->
-                                TopOfferItem(offer)
+                        }
+
+                        // Top Affiliates
+                        if (data.topAffiliates.isNotEmpty()) {
+                            item {
+                                Text(text = "Top Affiliates", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Card(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                                ) {
+                                    Column(modifier = Modifier.padding(16.dp)) {
+                                        data.topAffiliates.take(5).forEach { a ->
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                                                horizontalArrangement = Arrangement.SpaceBetween
+                                            ) {
+                                                Text(a.name.ifBlank { "Affiliate #${a.id}" }, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
+                                                Text("C: ${a.clicks} | Cv: ${a.conversions} | P: $${a.payout}", color = Color.Gray, modifier = Modifier.padding(start = 8.dp))
+                                            }
+                                            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+                                        }
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(24.dp))
+                            }
+                        }
+
+                        // Recent Conversions
+                        if (data.recentConversions.isNotEmpty()) {
+                            item {
+                                Text(text = "Recent Conversions", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Card(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                                ) {
+                                    Column(modifier = Modifier.padding(16.dp)) {
+                                        data.recentConversions.take(15).forEach { rc ->
+                                            Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+                                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                                    val statusColor = when (rc.status.lowercase()) {
+                                                        "approved" -> Color(0xFF10B981)
+                                                        "rejected", "chargebacked" -> Color(0xFFEF4444)
+                                                        else -> Color(0xFFF59E0B)
+                                                    }
+                                                    Text(rc.status.uppercase(), fontWeight = FontWeight.Bold, color = statusColor, fontSize = 12.sp)
+                                                    Text("$${rc.payout}", fontWeight = FontWeight.Bold, color = Color(0xFF15803D))
+                                                }
+                                                Text(rc.offerName ?: "Offer #${rc.id}", fontWeight = FontWeight.Medium)
+                                                Text(rc.affiliateName ?: "Unknown Affiliate", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                                                Text(rc.convertedAt, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                                            }
+                                            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+                                        }
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(24.dp))
                             }
                         }
                     }
@@ -115,40 +233,82 @@ fun AdminDashboardScreen(
 }
 
 @Composable
-fun StatCard(title: String, value: String, modifier: Modifier = Modifier) {
-    Card(
-        modifier = modifier,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(text = title, style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = value, style = MaterialTheme.typography.titleLarge)
+fun AdminKpiGrid(data: AdminDashboardData) {
+    val kpis = data.kpis
+    val summary = data.summary
+    Column {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            AdminKpiCard(
+                title = "Total Clicks",
+                value = kpis.clicks.toString(),
+                subTitle = "Unique: ${kpis.uniqueClicks}",
+                modifier = Modifier.weight(1f),
+                color = Color(0xFF3B82F6)
+            )
+            AdminKpiCard(
+                title = "Conversions",
+                value = kpis.conversions.toString(),
+                subTitle = "CR: ${kpis.cr}%",
+                modifier = Modifier.weight(1f),
+                color = Color(0xFF10B981)
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            AdminKpiCard(
+                title = "Revenue",
+                value = "$${kpis.revenue}",
+                subTitle = "Total generated",
+                modifier = Modifier.weight(1f),
+                color = Color(0xFF10B981)
+            )
+            AdminKpiCard(
+                title = "Profit",
+                value = "$${kpis.profit}",
+                subTitle = "Net profit",
+                modifier = Modifier.weight(1f),
+                color = Color(0xFF10B981)
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            AdminKpiCard(
+                title = "Platform Affiliates",
+                value = summary.totalAffiliates.toString(),
+                subTitle = "Pending: ${summary.pendingAffiliates}",
+                modifier = Modifier.weight(1f),
+                color = Color(0xFF6366F1)
+            )
+            AdminKpiCard(
+                title = "Fraud Rate",
+                value = "${kpis.fraudConvPct}%",
+                subTitle = "${kpis.fraudConv} Conversions",
+                modifier = Modifier.weight(1f),
+                color = if (kpis.fraudConvPct > 10.0) Color(0xFFEF4444) else Color(0xFFF59E0B)
+            )
         }
     }
 }
 
 @Composable
-fun TopOfferItem(offer: AdminTopOffer) {
+fun AdminKpiCard(
+    title: String,
+    value: String,
+    subTitle: String,
+    color: Color,
+    modifier: Modifier = Modifier
+) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        modifier = modifier,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = offer.name, style = MaterialTheme.typography.titleMedium)
+            Text(title, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(modifier = Modifier.height(4.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(text = "Conversions: ${offer.conversions}", style = MaterialTheme.typography.bodySmall)
-                Text(text = "Profit: $${offer.profit}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
-            }
+            Text(value, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(subTitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }

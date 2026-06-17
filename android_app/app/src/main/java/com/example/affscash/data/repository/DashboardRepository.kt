@@ -101,16 +101,14 @@ class DashboardRepository @Inject constructor(
         } catch (e: Exception) { Result.failure(e) }
     }
 
-    suspend fun getAdminDashboardData(): Result<AdminDashboardResponse> = withContext(Dispatchers.IO) {
+    suspend fun getAdminDashboardData(from: String? = null, to: String? = null): Result<AdminDashboardResponse> = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.getAdminDashboard()
-            if (response.isSuccessful) {
-                response.body()?.let {
-                    if (it.success) return@withContext Result.success(it)
-                    return@withContext Result.failure(Exception(it.error ?: "Failed to fetch admin dashboard"))
-                }
+            val response = apiService.getAdminDashboard(from, to)
+            if (response.isSuccessful && response.body() != null) {
+                Result.success(response.body()!!)
+            } else {
+                Result.failure(Exception("Failed to load admin dashboard: ${response.code()}"))
             }
-            Result.failure(Exception("Network error: ${response.code()}"))
         } catch (e: Exception) {
             Result.failure(e)
         }

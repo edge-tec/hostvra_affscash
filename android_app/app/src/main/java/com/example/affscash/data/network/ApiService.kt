@@ -90,7 +90,10 @@ interface ApiService {
     ): Response<DashboardOffersResponse>
 
     @GET("api/v2/admin/dashboard")
-    suspend fun getAdminDashboard(): Response<AdminDashboardResponse>
+    suspend fun getAdminDashboard(
+        @Query("from") from: String? = null,
+        @Query("to") to: String? = null
+    ): Response<AdminDashboardResponse>
 
     @GET("api/v2/manager/dashboard")
     suspend fun getManagerDashboard(): Response<ManagerDashboardResponse>

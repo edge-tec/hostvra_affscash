@@ -5,46 +5,210 @@ header('Content-Type: application/json');
 Auth::check('admin');
 
 try {
-    // Total counts
-    $totalAffiliates   = Database::count('users', 'role=? AND status=?', ['affiliate', 'active']);
-    $pendingAffiliates = Database::count('users', 'role=? AND status=?', ['affiliate', 'pending']);
-    $totalAdvertisers  = Database::count('users', 'role=? AND status=?', ['advertiser', 'active']);
-    $totalOffers       = Database::count('offers', 'status=?', ['active']);
-
-    // Profit summary (last 30 days)
-    $profitSummary = Database::fetchOne(
-        "SELECT SUM(revenue) as total_revenue, SUM(payout) as total_payout, SUM(revenue-payout) as total_profit
-         FROM conversions WHERE status='approved' AND is_hidden=0 AND converted_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)"
-    );
-
-    if (!$profitSummary) {
-        $profitSummary = ['total_revenue' => 0, 'total_payout' => 0, 'total_profit' => 0];
-    } else {
-        $profitSummary['total_revenue'] = (float)($profitSummary['total_revenue'] ?? 0);
-        $profitSummary['total_payout'] = (float)($profitSummary['total_payout'] ?? 0);
-        $profitSummary['total_profit'] = (float)($profitSummary['total_profit'] ?? 0);
+    // We will hardcode 30 days for the mobile app for now to keep things simple
+    $from = date('Y-m-d', strtotime('-29 days'));
+    $to = date('Y-m-d');
+    
+    // We can also allow them to be passed as params if the mobile app ever wants to add date pickers
+    if (isset($_GET['from']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $_GET['from'])) {
+        $from = $_GET['from'];
+    }
+    if (isset($_GET['to']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $_GET['to'])) {
+        $to = $_GET['to'];
     }
 
-    // Top profitable offers (last 30 days)
-    $topProfitOffers = Database::fetchAll(
-        "SELECT o.name, o.id,
-                SUM(c.revenue) as revenue, SUM(c.payout) as payout,
-                SUM(c.revenue - c.payout) as profit,
-                COUNT(*) as conversions
-         FROM conversions c JOIN offers o ON o.id=c.offer_id
-         WHERE c.status='approved' AND c.is_hidden=0 AND c.converted_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
-         GROUP BY o.id ORDER BY profit DESC LIMIT 5"
+    $statsW = 'sd.stat_date BETWEEN ? AND ?';
+    $statsP = [$from, $to];
+
+    $clickW = 'clicked_at BETWEEN ? AND ?';
+    $clickP = [$from . ' 00:00:00', $to . ' 23:59:59'];
+
+    $convW = 'c.converted_at BETWEEN ? AND ? AND COALESCE(c.is_hidden,0)=0';
+    $convP = [$from . ' 00:00:00', $to . ' 23:59:59'];
+
+    // 1. KPI Totals
+    $cur = Database::fetchOne("SELECT SUM(clicks) as c, SUM(unique_clicks) as u, SUM(conversions) as cv, SUM(payout) as p, SUM(revenue) as r FROM stats_daily sd WHERE $statsW", $statsP) ?? [];
+    
+    $clicks  = (int)($cur['c']  ?? 0);
+    $unique  = (int)($cur['u']  ?? 0);
+    $conv    = (int)($cur['cv'] ?? 0);
+    $payout  = round((float)($cur['p'] ?? 0), 2);
+    $revenue = round((float)($cur['r'] ?? 0), 2);
+    $profit  = round($revenue - $payout, 2);
+    $cr      = $clicks > 0 ? round($conv / $clicks * 100, 2) : 0;
+
+    $fraud = Database::fetchOne("SELECT COUNT(*) as cnt FROM clicks WHERE DATE(clicked_at) BETWEEN ? AND ? AND is_fraud=1", [$from, $to]);
+    $fraudClicks = (int)($fraud['cnt'] ?? 0);
+
+    $fcCur = Database::fetchOne(
+        "SELECT COUNT(*) AS total, SUM(CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END) AS fraud
+         FROM conversions c WHERE $convW", $convP
     );
+    $fraudConvCur     = (int)($fcCur['fraud'] ?? 0);
+    $totalConvForPct  = (int)($fcCur['total'] ?? 0);
+    $fraudConvPct      = $totalConvForPct > 0 ? round($fraudConvCur / $totalConvForPct * 100, 2) : 0;
+
+    $kpis = [
+        'clicks' => $clicks,
+        'unique_clicks' => $unique,
+        'conversions' => $conv,
+        'payout' => $payout,
+        'revenue' => $revenue,
+        'profit' => $profit,
+        'cr' => $cr,
+        'fraud_clicks' => $fraudClicks,
+        'fraud_conv' => $fraudConvCur,
+        'fraud_conv_pct' => $fraudConvPct,
+    ];
+
+    // 2. Trend Data
+    $trendRows = Database::fetchAll(
+        "SELECT sd.stat_date as d, SUM(sd.clicks) as c, SUM(sd.unique_clicks) as u,
+                SUM(sd.conversions) as cv, SUM(sd.payout) as p, SUM(sd.revenue) as r
+         FROM stats_daily sd WHERE $statsW GROUP BY sd.stat_date ORDER BY sd.stat_date",
+        $statsP
+    );
+    $map = []; foreach ($trendRows as $r) $map[$r['d']] = $r;
+    
+    $fraudByDay = [];
+    $fraudRows = Database::fetchAll("SELECT DATE(c.converted_at) as d, SUM(CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_cv FROM conversions c WHERE $convW GROUP BY DATE(c.converted_at)", $convP);
+    foreach ($fraudRows as $fr) $fraudByDay[$fr['d']] = (int)($fr['fraud_cv'] ?? 0);
+
+    $labels = []; $clicks_data = []; $conv_data = []; $revenue_data = []; $payout_data = []; $fraud_data = [];
+    $curDate = strtotime($from);
+    $endDate = strtotime($to);
+    while ($curDate <= $endDate) {
+        $d = date('Y-m-d', $curDate);
+        $r = $map[$d] ?? [];
+        $labels[]       = date('M j', $curDate);
+        $clicks_data[]  = (int)($r['c']  ?? 0);
+        $conv_data[]    = (int)($r['cv'] ?? 0);
+        $revenue_data[] = round((float)($r['r'] ?? 0), 2);
+        $payout_data[]  = round((float)($r['p'] ?? 0), 2);
+        $fraud_data[]   = (int)($fraudByDay[$d] ?? 0);
+        $curDate += 86400;
+    }
+    
+    $trend = [
+        'labels' => $labels,
+        'clicks' => $clicks_data,
+        'conversions' => $conv_data,
+        'revenue' => $revenue_data,
+        'payout' => $payout_data,
+        'fraud' => $fraud_data
+    ];
+
+    // 3. Conversion Status
+    $statusRows = Database::fetchAll("SELECT c.status, COUNT(*) as cnt FROM conversions c WHERE $convW GROUP BY c.status ORDER BY cnt DESC", $convP);
+    $status_data = [];
+    foreach($statusRows as $r) {
+        $status_data[] = ['status' => $r['status'], 'count' => (int)$r['cnt']];
+    }
+
+    // 4. Countries
+    $countryRows = Database::fetchAll("SELECT country, COUNT(*) as clicks, SUM(is_unique) as uniq FROM clicks WHERE $clickW AND country != '' AND country IS NOT NULL GROUP BY country ORDER BY clicks DESC LIMIT 15", $clickP);
+    $cvCountryRows = Database::fetchAll("SELECT COALESCE(NULLIF(c.country,''), ck.country) as country, COUNT(*) as conv FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id WHERE $convW AND COALESCE(NULLIF(c.country,''), ck.country) != '' GROUP BY COALESCE(NULLIF(c.country,''), ck.country)", $convP);
+    $cvMap = []; foreach ($cvCountryRows as $r) $cvMap[$r['country']] = (int)$r['conv'];
+    $countries = [];
+    foreach ($countryRows as $r) {
+        $c = $r['country'];
+        $cvCount = $cvMap[$c] ?? 0;
+        $countries[] = ['country' => $c, 'clicks' => (int)$r['clicks'], 'conversions' => $cvCount, 'cr' => (int)$r['clicks'] > 0 ? round($cvCount / (int)$r['clicks'] * 100, 2) : 0];
+    }
+
+    // 5. Devices
+    $deviceRows = Database::fetchAll("SELECT COALESCE(NULLIF(device_type,''),'Unknown') as label, COUNT(*) as cnt FROM clicks WHERE $clickW GROUP BY device_type ORDER BY cnt DESC", $clickP);
+    $devices = []; foreach($deviceRows as $r) $devices[] = ['device' => $r['label'], 'clicks' => (int)$r['cnt']];
+
+    // 6. Browsers
+    $browserRows = Database::fetchAll("SELECT COALESCE(NULLIF(browser,''),'Unknown') as label, COUNT(*) as cnt FROM clicks WHERE $clickW GROUP BY browser ORDER BY cnt DESC LIMIT 8", $clickP);
+    $browsers = []; foreach($browserRows as $r) $browsers[] = ['browser' => $r['label'], 'clicks' => (int)$r['cnt']];
+
+    // 7. Top Offers
+    $offerRows = Database::fetchAll("SELECT o.name, o.id, SUM(sd.clicks) as clicks, SUM(sd.conversions) as conv, SUM(sd.payout) as payout, SUM(sd.revenue) as revenue FROM stats_daily sd JOIN offers o ON o.id = sd.offer_id WHERE $statsW GROUP BY sd.offer_id ORDER BY payout DESC LIMIT 10", $statsP);
+    $fraudOfferRows = Database::fetchAll("SELECT c.offer_id, SUM(CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_cv, COUNT(*) AS total_cv FROM conversions c WHERE $convW GROUP BY c.offer_id", $convP);
+    $fraudByOffer = []; foreach ($fraudOfferRows as $fr) $fraudByOffer[(int)$fr['offer_id']] = ['fraud' => (int)($fr['fraud_cv'] ?? 0), 'total' => (int)($fr['total_cv'] ?? 0)];
+    $top_offers = [];
+    foreach ($offerRows as $r) {
+        $cl = (int)$r['clicks']; $cv = (int)$r['conv']; $oid = (int)$r['id'];
+        $fbo = $fraudByOffer[$oid] ?? ['fraud' => 0, 'total' => 0];
+        $fraudPct = $fbo['total'] > 0 ? round($fbo['fraud'] / $fbo['total'] * 100, 2) : 0;
+        $top_offers[] = [
+            'id' => $oid,
+            'name' => $r['name'],
+            'clicks' => $cl,
+            'conversions' => $cv,
+            'payout' => round((float)$r['payout'], 2),
+            'revenue' => round((float)$r['revenue'], 2),
+            'profit' => round((float)$r['revenue'] - (float)$r['payout'], 2),
+            'cr' => $cl > 0 ? round($cv / $cl * 100, 2) : 0,
+            'fraud_conv' => $fbo['fraud'],
+            'fraud_conv_pct' => $fraudPct
+        ];
+    }
+
+    // 8. Top Affiliates
+    $affRows = Database::fetchAll("SELECT CONCAT(u.first_name,' ',u.last_name) as name, af.id as aff_id, SUM(sd.clicks) as clicks, SUM(sd.conversions) as conv, SUM(sd.payout) as payout, SUM(sd.revenue) as revenue FROM stats_daily sd JOIN affiliates af ON af.id = sd.affiliate_id JOIN users u ON u.id = af.user_id WHERE $statsW GROUP BY sd.affiliate_id ORDER BY payout DESC LIMIT 10", $statsP);
+    $top_affiliates = [];
+    foreach ($affRows as $r) {
+        $cl = (int)$r['clicks']; $cv = (int)$r['conv'];
+        $top_affiliates[] = [
+            'id' => (int)$r['aff_id'],
+            'name' => $r['name'],
+            'clicks' => $cl,
+            'conversions' => $cv,
+            'payout' => round((float)$r['payout'], 2),
+            'revenue' => round((float)$r['revenue'], 2),
+            'profit' => round((float)$r['revenue'] - (float)$r['payout'], 2),
+            'cr' => $cl > 0 ? round($cv / $cl * 100, 2) : 0
+        ];
+    }
+
+    // 9. Recent Conversions
+    $recentConversions = [];
+    try {
+        $recentRows = Database::fetchAll("SELECT c.id, c.status, c.payout, c.revenue, c.converted_at, COALESCE(NULLIF(c.country,''), ck.country) as country, COALESCE(NULLIF(c.device_type,''), ck.device_type) as device_type, o.name as offer_name, CONCAT(u.first_name,' ',u.last_name) as aff_name FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id LEFT JOIN offers o ON o.id = c.offer_id LEFT JOIN affiliates af ON af.id = c.affiliate_id LEFT JOIN users u ON u.id = af.user_id WHERE $convW ORDER BY c.converted_at DESC LIMIT 15", $convP);
+        foreach ($recentRows as $r) {
+            $recentConversions[] = [
+                'id' => $r['id'],
+                'status' => $r['status'],
+                'payout' => round((float)$r['payout'], 2),
+                'revenue' => round((float)$r['revenue'], 2),
+                'converted_at' => $r['converted_at'],
+                'country' => $r['country'] ?: 'Unknown',
+                'device_type' => $r['device_type'] ?: 'Unknown',
+                'offer_name' => $r['offer_name'],
+                'affiliate_name' => $r['aff_name']
+            ];
+        }
+    } catch (Exception $e) {}
+
+    // 10. Summary Cards (Active totals)
+    $totAff  = Database::fetchOne("SELECT COUNT(*) as cnt FROM affiliates a JOIN users u ON u.id=a.user_id WHERE u.status='active'");
+    $pendAff = Database::fetchOne("SELECT COUNT(*) as cnt FROM affiliates a JOIN users u ON u.id=a.user_id WHERE u.status='pending'");
+    $totOff  = Database::fetchOne("SELECT COUNT(*) as cnt FROM offers WHERE status='active'");
+    $totAdv  = Database::fetchOne("SELECT COUNT(*) as cnt FROM advertisers a JOIN users u ON u.id=a.user_id WHERE u.status='active'");
+
+    $summary = [
+        'total_affiliates' => (int)($totAff['cnt'] ?? 0),
+        'pending_affiliates' => (int)($pendAff['cnt'] ?? 0),
+        'total_offers' => (int)($totOff['cnt'] ?? 0),
+        'total_advertisers' => (int)($totAdv['cnt'] ?? 0)
+    ];
 
     echo json_encode([
         'success' => true,
         'data' => [
-            'total_affiliates' => $totalAffiliates,
-            'pending_affiliates' => $pendingAffiliates,
-            'total_advertisers' => $totalAdvertisers,
-            'total_offers' => $totalOffers,
-            'profit_summary' => $profitSummary,
-            'top_profit_offers' => $topProfitOffers
+            'summary' => $summary,
+            'kpis' => $kpis,
+            'trend' => $trend,
+            'conversion_status' => $status_data,
+            'countries' => $countries,
+            'devices' => $devices,
+            'browsers' => $browsers,
+            'top_offers' => $top_offers,
+            'top_affiliates' => $top_affiliates,
+            'recent_conversions' => $recentConversions
         ]
     ]);
 
