@@ -25,6 +25,7 @@ import java.util.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportScreen(
+    onNavigateToFraudReport: () -> Unit = {},
     viewModel: ReportViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -52,9 +53,15 @@ fun ReportScreen(
         topBar = {
             TopAppBar(
                 title = { Text("My Reports") },
+                actions = {
+                    IconButton(onClick = onNavigateToFraudReport) {
+                        Icon(Icons.Default.Assessment, contentDescription = "Fraud Report")
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         }

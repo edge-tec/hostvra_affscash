@@ -31,6 +31,8 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     object Reports : Screen("reports", "Reports", Icons.Filled.Assessment)
     object Invoices : Screen("invoices", "Invoices", Icons.Filled.PictureAsPdf)
     object AffiliateSettings : Screen("affiliate_settings", "Settings", Icons.Filled.Settings)
+    object FraudReport : Screen("fraud_report", "Fraud Report", Icons.Filled.Assessment)
+    object Rewards : Screen("rewards", "Rewards", Icons.Filled.MonetizationOn)
 
     // Admin Screens
     object AdminDashboard : Screen("admin_dashboard", "Dashboard", Icons.Filled.Home)
@@ -103,16 +105,31 @@ fun MainScreen(
             composable(Screen.Dashboard.route) { DashboardScreen() }
             composable(Screen.Offers.route) { OfferScreen(onOfferClick = {}) }
             composable(Screen.Smartlinks.route) { com.example.affscash.ui.smartlinks.SmartlinkScreen() }
-            composable(Screen.Reports.route) { ReportScreen() }
+            composable(Screen.Reports.route) { 
+                ReportScreen(
+                    onNavigateToFraudReport = { navController.navigate(Screen.FraudReport.route) }
+                ) 
+            }
             composable(Screen.AffiliateSettings.route) { 
                 com.example.affscash.ui.settings.SettingsScreen(
                     role = role, 
                     onLogout = onLogout,
-                    onNavigateToInvoices = { navController.navigate(Screen.Invoices.route) }
+                    onNavigateToInvoices = { navController.navigate(Screen.Invoices.route) },
+                    onNavigateToRewards = { navController.navigate(Screen.Rewards.route) }
                 ) 
             }
             composable(Screen.Invoices.route) {
                 com.example.affscash.ui.invoices.InvoiceScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(Screen.FraudReport.route) {
+                com.example.affscash.ui.reports.FraudReportScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(Screen.Rewards.route) {
+                com.example.affscash.ui.rewards.RewardsScreen(
                     onNavigateBack = { navController.popBackStack() }
                 )
             }

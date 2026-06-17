@@ -148,4 +148,10 @@ interface ApiService {
 
     @POST("api/v2/settings?action=2fa_disable")
     suspend fun disable2fa(@Body request: com.example.affscash.data.model.TwoFactorDisableRequest): Response<com.example.affscash.data.model.SettingsActionResponse>
+
+    @GET("api/v2/fraud-report")
+    suspend fun getFraudReport(): Response<com.example.affscash.data.model.FraudReportResponse>
+
+    @GET("api/v2/rewards")
+    suspend fun getRewards(): Response<com.example.affscash.data.model.RewardsResponse>
 }

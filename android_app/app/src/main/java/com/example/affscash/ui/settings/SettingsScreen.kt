@@ -25,6 +25,7 @@ fun SettingsScreen(
     role: String,
     onLogout: () -> Unit,
     onNavigateToInvoices: () -> Unit = {},
+    onNavigateToRewards: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -111,6 +112,17 @@ fun SettingsScreen(
                                         Icon(Icons.Default.PictureAsPdf, contentDescription = "Invoices")
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Text("My Invoices")
+                                    }
+                                    Spacer(modifier = Modifier.height(16.dp))
+
+                                    Button(
+                                        onClick = onNavigateToRewards,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+                                    ) {
+                                        Icon(Icons.Default.MonetizationOn, contentDescription = "Rewards")
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text("My Rewards")
                                     }
                                     Spacer(modifier = Modifier.height(16.dp))
                                 }
