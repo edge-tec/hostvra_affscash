@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.affscash.data.model.AdminFraudConversion
 import com.example.affscash.data.model.AdminFraudFilterItem
 import com.example.affscash.ui.components.CustomDropdownMenu
@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminFraudReportScreen(
-    viewModel: AdminFraudReportViewModel = viewModel(),
+    viewModel: AdminFraudReportViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()

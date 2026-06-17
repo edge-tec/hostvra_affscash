@@ -2,8 +2,8 @@ package com.example.affscash.ui.manager
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.affscash.data.model.OfferApprovalRequestItem
-import com.example.affscash.data.model.OfferOption
+import com.example.affscash.data.model.ManagerOfferApprovalRequest
+import com.example.affscash.data.model.OfferSimple
 import com.example.affscash.data.repository.ManagerOfferApprovalRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,10 +16,10 @@ data class ManagerOfferApprovalsUiState(
     val isLoading: Boolean = false,
     val isActionLoading: Boolean = false,
     val statusFilter: String = "pending", // pending, approved, rejected, all
-    val offerFilter: OfferOption? = null,
+    val offerFilter: OfferSimple? = null,
     val searchQuery: String = "",
-    val requests: List<OfferApprovalRequestItem> = emptyList(),
-    val allOffers: List<OfferOption> = emptyList(),
+    val requests: List<ManagerOfferApprovalRequest> = emptyList(),
+    val allOffers: List<OfferSimple> = emptyList(),
     val pendingCount: Int = 0,
     val actionMessage: String? = null,
     val error: String? = null
@@ -48,8 +48,8 @@ class ManagerOfferApprovalsViewModel @Inject constructor(
                     it.copy(
                         isLoading = false,
                         requests = response.requests,
-                        allOffers = response.all_offers,
-                        pendingCount = response.pending_count
+                        allOffers = response.allOffers,
+                        pendingCount = response.pendingCount
                     )
                 }
             }.onFailure { error ->
@@ -63,7 +63,7 @@ class ManagerOfferApprovalsViewModel @Inject constructor(
         loadRequests()
     }
 
-    fun setOfferFilter(offer: OfferOption?) {
+    fun setOfferFilter(offer: OfferSimple?) {
         _uiState.update { it.copy(offerFilter = offer) }
         loadRequests()
     }

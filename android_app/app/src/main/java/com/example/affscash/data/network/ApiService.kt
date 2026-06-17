@@ -514,5 +514,71 @@ interface ApiService {
     suspend fun submitAdminFraudAction(
         @Body request: AdminFraudActionRequest
     ): AdminFraudActionResponse
+    // --- ADMIN: Reports ---
+    @GET("api/v2/admin/reports")
+    suspend fun getAdminReports(
+        @Query("action") action: String = "list",
+        @Query("tab") tab: String,
+        @Query("from") from: String? = null,
+        @Query("to") to: String? = null,
+        @Query("group_by") groupBy: String? = null,
+        @Query("offer_id") offerId: Int? = null,
+        @Query("affiliate_id") affiliateId: Int? = null,
+        @Query("country") country: String? = null,
+        @Query("sub1") sub1: String? = null,
+        @Query("sl_id") slId: Int? = null,
+        @Query("limit") limit: Int? = null
+    ): AdminReportResponse
 
+    @GET("api/v2/admin/reports?action=filters")
+    suspend fun getAdminReportFilters(): AdminReportFilterResponse
+
+    // --- ADMIN: Auto Hide Conversions ---
+    @GET("api/v2/admin/autohide?action=stats")
+    suspend fun getAdminAutoHideStats(): com.example.affscash.data.model.AdminAutoHideStatsResponse
+
+    @GET("api/v2/admin/autohide?action=rules")
+    suspend fun getAdminAutoHideRules(): com.example.affscash.data.model.AdminAutoHideRulesResponse
+
+    @GET("api/v2/admin/autohide?action=hidden_conversions")
+    suspend fun getAdminAutoHideConversions(
+        @Query("limit") limit: Int = 100,
+        @Query("offset") offset: Int = 0
+    ): com.example.affscash.data.model.AdminAutoHideConversionsResponse
+
+    @GET("api/v2/admin/autohide?action=filters")
+    suspend fun getAdminAutoHideFilters(): AdminReportFilterResponse // Reusing the Report filter response format
+
+    @POST("api/v2/admin/autohide?action=create")
+    suspend fun createAdminAutoHideRule(@Body request: com.example.affscash.data.model.AdminAutoHideCreateRequest): com.example.affscash.data.model.AdminAutoHideActionResponse
+
+    @POST("api/v2/admin/autohide?action=toggle")
+    suspend fun toggleAdminAutoHideRule(@Body request: com.example.affscash.data.model.AdminAutoHideActionRequest): com.example.affscash.data.model.AdminAutoHideActionResponse
+
+    @POST("api/v2/admin/autohide?action=delete")
+    suspend fun deleteAdminAutoHideRule(@Body request: com.example.affscash.data.model.AdminAutoHideActionRequest): com.example.affscash.data.model.AdminAutoHideActionResponse
+
+    @POST("api/v2/admin/autohide?action=unhide")
+    suspend fun unhideAdminConversion(@Body request: com.example.affscash.data.model.AdminAutoHideActionRequest): com.example.affscash.data.model.AdminAutoHideActionResponse
+
+    // --- ADMIN: Affiliate Report ---
+    @GET("api/v2/admin/affiliate-report")
+    suspend fun getAdminAffiliateReport(
+        @Query("action") action: String = "list",
+        @Query("from") from: String? = null,
+        @Query("to") to: String? = null,
+        @Query("affiliate_id") affiliateId: String? = null,
+        @Query("affiliate_code") affiliateCode: String? = null,
+        @Query("affiliate_name") affiliateName: String? = null,
+        @Query("offer_id") offerId: String? = null,
+        @Query("country") country: String? = null,
+        @Query("conv_status") convStatus: String? = null,
+        @Query("device") device: String? = null,
+        @Query("traffic_status") trafficStatus: String? = null,
+        @Query("ip") ip: String? = null,
+        @Query("limit") limit: String? = null
+    ): com.example.affscash.data.model.AdminAffiliateReportResponse
+
+    @GET("api/v2/admin/affiliate-report?action=filters")
+    suspend fun getAdminAffiliateReportFilters(): com.example.affscash.data.model.AdminReportFilterResponse
 }

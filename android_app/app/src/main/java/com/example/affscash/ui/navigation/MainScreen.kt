@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.SupervisorAccount
+import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -88,7 +89,10 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
         }
     }
     object AdminConversions : Screen("admin_conversions", "Conv", Icons.Filled.MonetizationOn)
-    object AdminFraudReport : Screen("admin_fraud", "Fraud", Icons.Filled.Security)
+    object AdminFraudReport : Screen("admin_fraud", "Fraud", Icons.Filled.Shield)
+    object AdminReports : Screen("admin_reports", "Reports", Icons.Filled.Assessment)
+    object AdminAffiliateReport : Screen("admin_aff_report", "Aff Rpt", Icons.Filled.Group)
+    object AdminAutoHide : Screen("admin_autohide", "Hide", Icons.Filled.VisibilityOff)
     object AdminInvoices : Screen("admin_invoices", "Invoices", Icons.Filled.Receipt)
     object AdminSettings : Screen("admin_settings", "Settings", Icons.Filled.Settings)
 
@@ -114,7 +118,7 @@ fun MainScreen(
     val navController = rememberNavController()
 
     val items = when (role) {
-        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminPrivateOffers, Screen.AdminSmartlinks, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminConversions, Screen.AdminFraudReport, Screen.AdminInvoices, Screen.AdminSettings)
+        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminPrivateOffers, Screen.AdminSmartlinks, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminConversions, Screen.AdminReports, Screen.AdminAffiliateReport, Screen.AdminFraudReport, Screen.AdminAutoHide, Screen.AdminInvoices, Screen.AdminSettings)
         "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerSmartlinks, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerReports, Screen.ManagerInvoices, Screen.ManagerSettings)
         else -> listOf(Screen.Dashboard, Screen.Offers, Screen.Smartlinks, Screen.Reports, Screen.AffiliateSettings)
     }
@@ -338,16 +342,41 @@ fun MainScreen(
             }
             composable(Screen.AdminUsers.route) { com.example.affscash.ui.admin.AdminUsersScreen() }
             composable(Screen.AdminConversions.route) { com.example.affscash.ui.admin.AdminConversionsScreen() }
-            composable(Screen.AdminFraudReport.route) {
-                val repo = com.example.affscash.data.repository.AdminFraudRepository(com.example.affscash.data.network.RetrofitClient.apiService)
+            composable(Screen.AdminReports.route) {
+                val viewModel: com.example.affscash.ui.screens.admin.reports.AdminReportsViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                com.example.affscash.ui.screens.admin.reports.AdminReportsScreen(
+                    viewModel = viewModel,
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(Screen.AdminAffiliateReport.route) {
+                val repo = com.example.affscash.data.repository.AdminAffiliateReportRepository(com.example.affscash.data.network.RetrofitClient.apiService)
                 val factory = object : androidx.lifecycle.ViewModelProvider.Factory {
                     override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
-                        return com.example.affscash.ui.screens.admin.fraud.AdminFraudReportViewModel(repo) as T
+                        return com.example.affscash.ui.screens.admin.reports.AdminAffiliateReportViewModel(repo) as T
                     }
                 }
-                val viewModel: com.example.affscash.ui.screens.admin.fraud.AdminFraudReportViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = factory)
-                com.example.affscash.ui.screens.admin.fraud.AdminFraudReportScreen(
+                val viewModel: com.example.affscash.ui.screens.admin.reports.AdminAffiliateReportViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = factory)
+                com.example.affscash.ui.screens.admin.reports.AdminAffiliateReportScreen(
                     viewModel = viewModel,
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(Screen.AdminAutoHide.route) {
+                val repo = com.example.affscash.data.repository.AdminAutoHideRepository(com.example.affscash.data.network.RetrofitClient.apiService)
+                val factory = object : androidx.lifecycle.ViewModelProvider.Factory {
+                    override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
+                        return com.example.affscash.ui.screens.admin.autohide.AdminAutoHideViewModel(repo) as T
+                    }
+                }
+                val viewModel: com.example.affscash.ui.screens.admin.autohide.AdminAutoHideViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = factory)
+                com.example.affscash.ui.screens.admin.autohide.AdminAutoHideScreen(
+                    viewModel = viewModel,
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(Screen.AdminFraudReport.route) {
+                com.example.affscash.ui.screens.admin.fraud.AdminFraudReportScreen(
                     onNavigateBack = { navController.popBackStack() }
                 )
             }

@@ -496,6 +496,9 @@ Router::any('/api/v2/admin/affiliate-actions', function() { require BASE_PATH . 
 Router::any('/api/v2/admin/advertisers', function() { require BASE_PATH . '/api/v2/admin/AdvertiserController.php'; });
 Router::any('/api/v2/admin/advertiser-actions', function() { require BASE_PATH . '/api/v2/admin/AdvertiserActionController.php'; });
 Router::any('/api/v2/admin/conversions', function() { require BASE_PATH . '/api/v2/admin/ConversionController.php'; });
+Router::any('/api/v2/admin/reports', function() { require BASE_PATH . '/api/v2/admin/ReportController.php'; });
+Router::any('/api/v2/admin/autohide', function() { require BASE_PATH . '/api/v2/admin/AutoHideController.php'; });
+Router::any('/api/v2/admin/affiliate-report', function() { require BASE_PATH . '/api/v2/admin/AffiliateReportController.php'; });
 Router::any('/api/v2/admin/invoices', function() { require BASE_PATH . '/api/v2/admin/InvoiceController.php'; });
 Router::any('/api/v2/admin/fraud-score-report', function() { require BASE_PATH . '/api/v2/admin/FraudScoreReportController.php'; });
 

@@ -7,11 +7,13 @@ import com.example.affscash.data.model.AdminFraudConversion
 import com.example.affscash.data.model.AdminFraudFilterItem
 import com.example.affscash.data.model.AdminFraudStats
 import com.example.affscash.data.repository.AdminFraudRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -37,7 +39,8 @@ data class AdminFraudReportState(
     val dir: String = "desc"
 )
 
-class AdminFraudReportViewModel(
+@HiltViewModel
+class AdminFraudReportViewModel @Inject constructor(
     private val repository: AdminFraudRepository
 ) : ViewModel() {
 

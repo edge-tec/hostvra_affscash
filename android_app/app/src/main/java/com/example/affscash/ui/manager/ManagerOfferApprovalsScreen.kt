@@ -17,7 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.affscash.data.model.OfferApprovalRequestItem
+import com.example.affscash.data.model.ManagerOfferApprovalRequest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -170,7 +170,7 @@ fun ManagerOfferApprovalsScreen(
                     items(uiState.requests) { request ->
                         ApprovalRequestCard(
                             request = request,
-                            onReview = { action -> viewModel.reviewRequest(request.affiliate_id, request.offer_id, action) }
+                            onReview = { action -> viewModel.reviewRequest(request.affiliateId, request.offerId, action) }
                         )
                     }
                 }
@@ -181,7 +181,7 @@ fun ManagerOfferApprovalsScreen(
 
 @Composable
 fun ApprovalRequestCard(
-    request: OfferApprovalRequestItem,
+    request: ManagerOfferApprovalRequest,
     onReview: (String) -> Unit
 ) {
     Card(
@@ -196,13 +196,13 @@ fun ApprovalRequestCard(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = request.offer_name,
+                        text = request.offerName,
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    Text(text = "Payout: $${request.payout_amount} (${request.payout_type})", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                    if (request.offer_category != null) {
-                        Text(text = "Category: ${request.offer_category}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                    Text(text = "Payout: $${request.payoutAmount} (${request.payoutType})", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                    if (request.offerCategory != null) {
+                        Text(text = "Category: ${request.offerCategory}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                     }
                 }
                 Spacer(modifier = Modifier.width(8.dp))
@@ -210,24 +210,24 @@ fun ApprovalRequestCard(
             }
 
             Spacer(modifier = Modifier.height(12.dp))
-            Divider()
+            HorizontalDivider()
             Spacer(modifier = Modifier.height(12.dp))
 
             Text("Affiliate Details", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium)
-            Text(text = "${request.affiliate_name} (${request.affiliate_code})", style = MaterialTheme.typography.bodySmall)
-            Text(text = request.affiliate_email, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+            Text(text = "${request.affiliateName} (${request.affiliateCode})", style = MaterialTheme.typography.bodySmall)
+            Text(text = request.affiliateEmail, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
             
             Spacer(modifier = Modifier.height(8.dp))
             
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(text = "Clicks: ${request.total_clicks}", style = MaterialTheme.typography.bodySmall)
-                Text(text = "Conversions: ${request.total_conversions}", style = MaterialTheme.typography.bodySmall)
+                Text(text = "Clicks: ${request.totalClicks}", style = MaterialTheme.typography.bodySmall)
+                Text(text = "Conversions: ${request.totalConversions}", style = MaterialTheme.typography.bodySmall)
             }
 
-            if (!request.promotion_description.isNullOrBlank()) {
+            if (!request.promotionDescription.isNullOrBlank()) {
                 Spacer(modifier = Modifier.height(12.dp))
                 Text("Promotion Plan:", fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodySmall)
-                Text(text = request.promotion_description, style = MaterialTheme.typography.bodySmall, color = Color.DarkGray)
+                Text(text = request.promotionDescription, style = MaterialTheme.typography.bodySmall, color = Color.DarkGray)
             }
 
             if (request.status == "pending") {
@@ -245,9 +245,9 @@ fun ApprovalRequestCard(
                         Text("Approve")
                     }
                 }
-            } else if (request.approved_at != null) {
+            } else if (request.approvedAt != null) {
                 Spacer(modifier = Modifier.height(12.dp))
-                Text(text = "Actioned at: ${request.approved_at}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                Text(text = "Actioned at: ${request.approvedAt}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
             }
         }
     }
