@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.affscash.data.model.*
 import com.example.affscash.data.repository.AdminAffiliateReportRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,6 +14,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import javax.inject.Inject
 
 data class AdminAffiliateReportState(
     val isLoading: Boolean = false,
@@ -46,7 +48,8 @@ data class AdminAffiliateReportState(
     val error: String? = null
 )
 
-class AdminAffiliateReportViewModel(
+@HiltViewModel
+class AdminAffiliateReportViewModel @Inject constructor(
     private val repository: AdminAffiliateReportRepository
 ) : ViewModel() {
 

@@ -5,8 +5,11 @@ import com.example.affscash.data.model.AdminReportFilterResponse
 import com.example.affscash.data.network.ApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class AdminAffiliateReportRepository(private val apiService: ApiService) {
+@Singleton
+class AdminAffiliateReportRepository @Inject constructor(private val apiService: ApiService) {
 
     suspend fun getReport(
         from: String? = null,

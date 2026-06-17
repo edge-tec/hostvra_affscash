@@ -20,6 +20,8 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.SupervisorAccount
 import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material.icons.filled.Group
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -350,26 +352,14 @@ fun MainScreen(
                 )
             }
             composable(Screen.AdminAffiliateReport.route) {
-                val repo = com.example.affscash.data.repository.AdminAffiliateReportRepository(com.example.affscash.data.network.RetrofitClient.apiService)
-                val factory = object : androidx.lifecycle.ViewModelProvider.Factory {
-                    override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
-                        return com.example.affscash.ui.screens.admin.reports.AdminAffiliateReportViewModel(repo) as T
-                    }
-                }
-                val viewModel: com.example.affscash.ui.screens.admin.reports.AdminAffiliateReportViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = factory)
+                val viewModel: com.example.affscash.ui.screens.admin.reports.AdminAffiliateReportViewModel = androidx.hilt.navigation.compose.hiltViewModel()
                 com.example.affscash.ui.screens.admin.reports.AdminAffiliateReportScreen(
                     viewModel = viewModel,
                     onNavigateBack = { navController.popBackStack() }
                 )
             }
             composable(Screen.AdminAutoHide.route) {
-                val repo = com.example.affscash.data.repository.AdminAutoHideRepository(com.example.affscash.data.network.RetrofitClient.apiService)
-                val factory = object : androidx.lifecycle.ViewModelProvider.Factory {
-                    override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
-                        return com.example.affscash.ui.screens.admin.autohide.AdminAutoHideViewModel(repo) as T
-                    }
-                }
-                val viewModel: com.example.affscash.ui.screens.admin.autohide.AdminAutoHideViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = factory)
+                val viewModel: com.example.affscash.ui.screens.admin.autohide.AdminAutoHideViewModel = androidx.hilt.navigation.compose.hiltViewModel()
                 com.example.affscash.ui.screens.admin.autohide.AdminAutoHideScreen(
                     viewModel = viewModel,
                     onNavigateBack = { navController.popBackStack() }
@@ -380,7 +370,19 @@ fun MainScreen(
                     onNavigateBack = { navController.popBackStack() }
                 )
             }
-            composable(Screen.AdminInvoices.route) { com.example.affscash.ui.admin.AdminInvoicesScreen() }
+            composable(Screen.AdminInvoices.route) {
+                val repo = com.example.affscash.data.repository.AdminInvoiceRepository(com.example.affscash.data.network.RetrofitClient.apiService)
+                val factory = object : androidx.lifecycle.ViewModelProvider.Factory {
+                    override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
+                        return com.example.affscash.ui.screens.admin.invoices.AdminInvoicesViewModel(repo) as T
+                    }
+                }
+                val viewModel: com.example.affscash.ui.screens.admin.invoices.AdminInvoicesViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = factory)
+                com.example.affscash.ui.screens.admin.invoices.AdminInvoicesScreen(
+                    viewModel = viewModel,
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
             composable(Screen.AdminSettings.route) { com.example.affscash.ui.settings.SettingsScreen(role, onLogout) }
 
             // Manager Screens

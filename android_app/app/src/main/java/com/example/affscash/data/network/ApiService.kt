@@ -581,4 +581,17 @@ interface ApiService {
 
     @GET("api/v2/admin/affiliate-report?action=filters")
     suspend fun getAdminAffiliateReportFilters(): com.example.affscash.data.model.AdminReportFilterResponse
+
+    // --- ADMIN: Invoices ---
+    @GET("api/v2/admin/invoices?action=list")
+    suspend fun getAdminInvoices(): com.example.affscash.data.model.AdminInvoiceResponse
+
+    @GET("api/v2/admin/invoices?action=view")
+    suspend fun getAdminInvoiceDetail(@Query("id") id: Int): com.example.affscash.data.model.AdminInvoiceDetailResponse
+
+    @POST("api/v2/admin/invoices?action=update_status")
+    suspend fun updateAdminInvoiceStatus(@Body request: com.example.affscash.data.model.AdminInvoiceStatusRequest): com.example.affscash.data.model.AdminInvoiceStatusResponse
+
+    @POST("api/v2/admin/invoices?action=delete")
+    suspend fun deleteAdminInvoice(@Body request: com.example.affscash.data.model.AdminInvoiceDeleteRequest): com.example.affscash.data.model.AdminInvoiceStatusResponse
 }

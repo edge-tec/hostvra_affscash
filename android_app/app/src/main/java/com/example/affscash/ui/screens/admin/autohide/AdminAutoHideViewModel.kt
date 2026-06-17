@@ -4,11 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.affscash.data.model.*
 import com.example.affscash.data.repository.AdminAutoHideRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 data class AdminAutoHideState(
     val isLoading: Boolean = false,
@@ -28,7 +30,8 @@ data class AdminAutoHideState(
     val successMessage: String? = null
 )
 
-class AdminAutoHideViewModel(
+@HiltViewModel
+class AdminAutoHideViewModel @Inject constructor(
     private val repository: AdminAutoHideRepository
 ) : ViewModel() {
 
