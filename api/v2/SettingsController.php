@@ -10,6 +10,21 @@ $action = $_GET['action'] ?? 'load';
 if ($action === 'load') {
     $aff = Database::fetchOne("SELECT af.*, u.first_name, u.last_name, u.email, u.company, u.phone, u.country, u.profile_pic, u.google2fa_enabled FROM affiliates af JOIN users u ON u.id=af.user_id WHERE af.id=?", [$affId]);
     
+    if (!$aff) {
+        $u = Database::fetchOne("SELECT first_name, last_name, email, company, phone, google2fa_enabled FROM users WHERE id=?", [$userId]);
+        $aff = [
+            'first_name' => $u['first_name'] ?? '',
+            'last_name' => $u['last_name'] ?? '',
+            'email' => $u['email'] ?? '',
+            'company' => $u['company'] ?? '',
+            'phone' => $u['phone'] ?? '',
+            'google2fa_enabled' => $u['google2fa_enabled'] ?? 0,
+            'payment_method' => null,
+            'payment_details' => null,
+            'manager_id' => null
+        ];
+    }
+    
     // Fetch available payment methods
     $paymentMethods = Database::fetchAll("SELECT name FROM payment_methods WHERE is_active=1 ORDER BY is_default DESC, name");
     $pmList = array_column($paymentMethods, 'name');
@@ -94,10 +109,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $method = trim($input['payment_method'] ?? '');
         $details = trim($input['payment_details'] ?? '');
 
-        Database::update('affiliates', [
-            'payment_method'  => $method,
-            'payment_details' => $details,
-        ], 'id=?', [$affId]);
+        if ($affId > 0) {
+            Database::update('affiliates', [
+                'payment_method'  => $method,
+                'payment_details' => $details,
+            ], 'id=?', [$affId]);
+        }
 
         echo json_encode(['success' => true, 'message' => 'Payment details saved.']);
         exit;

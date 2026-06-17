@@ -16,11 +16,11 @@ data class SettingsLoadResponse(
 
 @Serializable
 data class ProfileInfo(
-    @SerialName("first_name") val firstName: String,
-    @SerialName("last_name") val lastName: String,
-    val email: String,
-    val company: String?,
-    val phone: String?
+    @SerialName("first_name") val firstName: String? = null,
+    @SerialName("last_name") val lastName: String? = null,
+    val email: String? = null,
+    val company: String? = null,
+    val phone: String? = null
 )
 
 @Serializable
@@ -31,13 +31,13 @@ data class PaymentInfo(
 
 @Serializable
 data class ManagerInfo(
-    @SerialName("first_name") val firstName: String,
-    @SerialName("last_name") val lastName: String,
-    val email: String,
-    val company: String?,
-    val phone: String?,
-    val skype: String?,
-    val telegram: String?
+    @SerialName("first_name") val firstName: String? = null,
+    @SerialName("last_name") val lastName: String? = null,
+    val email: String? = null,
+    val company: String? = null,
+    val phone: String? = null,
+    val skype: String? = null,
+    val telegram: String? = null
 )
 
 @Serializable
