@@ -1,47 +1,51 @@
 <?php
-class SettingsController {
-    public function __construct() {
-        Auth::checkApi('admin');
-    }
+header('Content-Type: application/json');
 
-    public function index() {
-        $method = $_SERVER['REQUEST_METHOD'];
+try {
+    Auth::check('admin');
 
-        if ($method === 'GET') {
-            $config = Config::get('config') ?? [];
-            ApiResponse::success([
-                'config' => $config
-            ]);
-        } elseif ($method === 'POST') {
-            $data = json_decode(file_get_contents('php://input'), true);
-            if (!$data || !isset($data['config'])) {
-                ApiResponse::error('Invalid configuration data payload.');
-            }
+    $method = $_SERVER['REQUEST_METHOD'];
 
-            $currentConfig = Config::get('config') ?? [];
-            $newConfig = $data['config'];
-            
-            // We do a deep merge or just replace the keys that are provided
-            foreach ($newConfig as $sectionKey => $sectionValues) {
-                if (!isset($currentConfig[$sectionKey])) {
-                    $currentConfig[$sectionKey] = [];
-                }
-                if (is_array($sectionValues)) {
-                    foreach ($sectionValues as $key => $val) {
-                        $currentConfig[$sectionKey][$key] = $val;
-                    }
-                } else {
-                    $currentConfig[$sectionKey] = $sectionValues;
-                }
-            }
-
-            if (Config::write('config', $currentConfig)) {
-                ApiResponse::success(['message' => 'Settings updated successfully']);
-            } else {
-                ApiResponse::error('Failed to write settings to disk');
-            }
-        } else {
-            ApiResponse::error('Method not allowed', 405);
+    if ($method === 'GET') {
+        $config = Config::get('config') ?? [];
+        echo json_encode([
+            'config' => $config
+        ]);
+        exit;
+    } elseif ($method === 'POST') {
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (!$data || !isset($data['config'])) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid configuration data payload.']);
+            exit;
         }
+
+        $currentConfig = Config::get('config') ?? [];
+        $newConfig = $data['config'];
+        
+        foreach ($newConfig as $sectionKey => $sectionValues) {
+            if (!isset($currentConfig[$sectionKey])) {
+                $currentConfig[$sectionKey] = [];
+            }
+            if (is_array($sectionValues)) {
+                foreach ($sectionValues as $key => $val) {
+                    $currentConfig[$sectionKey][$key] = $val;
+                }
+            } else {
+                $currentConfig[$sectionKey] = $sectionValues;
+            }
+        }
+
+        if (Config::write('config', $currentConfig)) {
+            echo json_encode(['status' => 'success', 'message' => 'Settings updated successfully']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to write settings to disk']);
+        }
+        exit;
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Method not allowed']);
+        exit;
     }
+} catch (\Throwable $e) {
+    echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    exit;
 }
