@@ -70,7 +70,23 @@ function adminConvWhere($from, $to, $offerId, $affId, $country, $managerAffIds) 
     return [implode(' AND ', $w), $p];
 }
 
+function adminClicksWhere($from, $to, $offerId, $affId, $country, $device, $managerAffIds) {
+    $w = ['clicked_at BETWEEN ? AND ?'];
+    $p = [$from . ' 00:00:00', $to . ' 23:59:59'];
+    if ($offerId) { $w[] = 'offer_id = ?'; $p[] = $offerId; }
+    if ($affId)   { $w[] = 'affiliate_id = ?'; $p[] = $affId; }
+    if ($country) { $w[] = 'country = ?'; $p[] = $country; }
+    if ($device)  { $w[] = 'device_type = ?'; $p[] = $device; }
+    if (!empty($managerAffIds)) {
+        $in  = implode(',', array_fill(0, count($managerAffIds), '?'));
+        $w[] = "affiliate_id IN ($in)";
+        $p   = array_merge($p, $managerAffIds);
+    }
+    return [implode(' AND ', $w), $p];
+}
+
 [$statsW, $statsP] = adminStatsWhere($from, $to, $offerId, $affId, $managerAffIds);
+[$clickW, $clickP] = adminClicksWhere($from, $to, $offerId, $affId, $country, $device, $managerAffIds);
 [$convW, $convP] = adminConvWhere($from, $to, $offerId, $affId, $country, $managerAffIds);
 
 $days = max(1, (int)((strtotime($to) - strtotime($from)) / 86400) + 1);
@@ -241,6 +257,118 @@ if ($action === 'filters') {
             'devices' => ['Desktop', 'Mobile', 'Tablet']
         ]
     ]);
+    exit;
+}
+
+if ($action === 'extra') {
+    $extra = [];
+
+    // Hourly
+    $today = date('Y-m-d');
+    $hW    = 'DATE(clicked_at) = ?';
+    $hP    = [$today];
+    if ($offerId) { $hW .= ' AND offer_id = ?'; $hP[] = $offerId; }
+    if ($affId)   { $hW .= ' AND affiliate_id = ?'; $hP[] = $affId; }
+    if ($country) { $hW .= ' AND country = ?'; $hP[] = $country; }
+    if ($device)  { $hW .= ' AND device_type = ?'; $hP[] = $device; }
+    if (!empty($managerAffIds)) {
+        $in = implode(',', array_fill(0, count($managerAffIds), '?'));
+        $hW .= " AND affiliate_id IN ($in)";
+        $hP  = array_merge($hP, $managerAffIds);
+    }
+    $rows   = Database::fetchAll("SELECT HOUR(clicked_at) as h, COUNT(*) as cnt FROM clicks WHERE $hW GROUP BY HOUR(clicked_at)", $hP);
+    $hourly = array_fill(0, 24, 0);
+    foreach ($rows as $r) $hourly[(int)$r['h']] = (int)$r['cnt'];
+    $extra['hourly'] = [
+        'labels' => array_map(fn($h) => sprintf('%02d:00', $h), range(0, 23)),
+        'data' => array_values($hourly)
+    ];
+
+    // Conv Status
+    $rows = Database::fetchAll("SELECT c.status, COUNT(*) as cnt FROM conversions c WHERE $convW GROUP BY c.status ORDER BY cnt DESC", $convP);
+    $extra['conv_status'] = [
+        'labels' => [], 'data' => [], 'colors' => []
+    ];
+    $pieColors = ['approved' => '#10B981', 'pending' => '#F59E0B', 'rejected' => '#EF4444', 'chargebacked' => '#94A3B8'];
+    foreach ($rows as $r) {
+        if ((int)$r['cnt'] === 0) continue;
+        $extra['conv_status']['labels'][] = $r['status'];
+        $extra['conv_status']['data'][]   = (int)$r['cnt'];
+        $extra['conv_status']['colors'][] = $pieColors[$r['status']] ?? '#64748B';
+    }
+
+    // Countries
+    $clRows = Database::fetchAll("SELECT country, COUNT(*) as clicks, SUM(is_unique) as uniq FROM clicks WHERE $clickW AND country != '' AND country IS NOT NULL GROUP BY country ORDER BY clicks DESC LIMIT 15", $clickP);
+    $cvRows = Database::fetchAll("SELECT COALESCE(NULLIF(c.country,''), ck.country) as country, COUNT(*) as conv FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id WHERE $convW AND COALESCE(NULLIF(c.country,''), ck.country) != '' GROUP BY COALESCE(NULLIF(c.country,''), ck.country)", $convP);
+    $cvMap = [];
+    foreach ($cvRows as $r) $cvMap[$r['country']] = (int)$r['conv'];
+    $out = [];
+    foreach ($clRows as $r) {
+        $out[] = ['country' => $r['country'], 'clicks' => (int)$r['clicks'], 'unique' => (int)$r['uniq'], 'conv' => $cvMap[$r['country']] ?? 0];
+    }
+    $extra['countries'] = $out;
+
+    // Devices
+    $rows = Database::fetchAll("SELECT COALESCE(NULLIF(device_type,''),'Unknown') as label, COUNT(*) as cnt FROM clicks WHERE $clickW GROUP BY device_type ORDER BY cnt DESC", $clickP);
+    $extra['devices'] = ['labels' => array_column($rows, 'label'), 'data' => array_map('intval', array_column($rows, 'cnt'))];
+
+    // Browsers
+    $rows = Database::fetchAll("SELECT COALESCE(NULLIF(browser,''),'Unknown') as label, COUNT(*) as cnt FROM clicks WHERE $clickW GROUP BY browser ORDER BY cnt DESC LIMIT 8", $clickP);
+    $extra['browsers'] = ['labels' => array_column($rows, 'label'), 'data' => array_map('intval', array_column($rows, 'cnt'))];
+
+    // OS
+    $rows = Database::fetchAll("SELECT COALESCE(NULLIF(os,''),'Unknown') as label, COUNT(*) as cnt FROM clicks WHERE $clickW GROUP BY os ORDER BY cnt DESC LIMIT 8", $clickP);
+    $extra['os'] = ['labels' => array_column($rows, 'label'), 'data' => array_map('intval', array_column($rows, 'cnt'))];
+
+    // Offers
+    $rows = Database::fetchAll("SELECT o.name, o.id, SUM(sd.clicks) as clicks, SUM(sd.unique_clicks) as uclicks, SUM(sd.conversions) as conv, SUM(sd.payout) as payout, SUM(sd.revenue) as revenue FROM stats_daily sd JOIN offers o ON o.id = sd.offer_id WHERE $statsW GROUP BY sd.offer_id ORDER BY payout DESC LIMIT 10", $statsP);
+    $out = [];
+    foreach ($rows as $r) {
+        $cl = (int)$r['clicks'];
+        $cv = (int)$r['conv'];
+        $out[] = [
+            'id' => (int)$r['id'], 'name' => $r['name'], 'clicks' => $cl, 'uclicks' => (int)$r['uclicks'],
+            'conv' => $cv, 'payout' => round((float)$r['payout'], 2), 'cr' => $cl > 0 ? round($cv / $cl * 100, 2) : 0
+        ];
+    }
+    $extra['offers'] = $out;
+
+    // Affiliates
+    $rows = Database::fetchAll("SELECT CONCAT(u.first_name,' ',u.last_name) as name, af.affiliate_code, af.id as aff_id, SUM(sd.clicks) as clicks, SUM(sd.unique_clicks) as uclicks, SUM(sd.conversions) as conv, SUM(sd.payout) as payout, SUM(sd.revenue) as revenue FROM stats_daily sd JOIN affiliates af ON af.id = sd.affiliate_id JOIN users u ON u.id = af.user_id WHERE $statsW GROUP BY sd.affiliate_id ORDER BY payout DESC LIMIT 10", $statsP);
+    $out = [];
+    foreach ($rows as $r) {
+        $cl = (int)$r['clicks'];
+        $cv = (int)$r['conv'];
+        $out[] = [
+            'id' => (int)$r['aff_id'], 'name' => $r['name'], 'code' => $r['affiliate_code'], 'clicks' => $cl,
+            'uclicks' => (int)$r['uclicks'], 'conv' => $cv, 'payout' => round((float)$r['payout'], 2), 'cr' => $cl > 0 ? round($cv / $cl * 100, 2) : 0
+        ];
+    }
+    $extra['affiliates'] = $out;
+
+    // Recent Conversions
+    $cW = ['c.converted_at BETWEEN ? AND ?', 'COALESCE(c.is_hidden,0)=0'];
+    $cP = [$from . ' 00:00:00', $to . ' 23:59:59'];
+    if ($offerId) { $cW[] = 'c.offer_id = ?'; $cP[] = $offerId; }
+    if ($affId)   { $cW[] = 'c.affiliate_id = ?'; $cP[] = $affId; }
+    if ($country) { $cW[] = 'c.country = ?'; $cP[] = $country; }
+    if (!empty($managerAffIds)) {
+        $in  = implode(',', array_fill(0, count($managerAffIds), '?'));
+        $cW[] = "c.affiliate_id IN ($in)";
+        $cP   = array_merge($cP, $managerAffIds);
+    }
+    $whereStr = implode(' AND ', $cW);
+    try {
+        $extra['recent_convs'] = Database::fetchAll("SELECT c.id, c.status, c.payout, c.revenue, c.converted_at, COALESCE(NULLIF(c.country,''), ck.country) as country, COALESCE(NULLIF(c.device_type,''), ck.device_type) as device_type, o.name as offer_name, CONCAT(u.first_name,' ',u.last_name) as aff_name FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id LEFT JOIN offers o ON o.id = c.offer_id LEFT JOIN affiliates af ON af.id = c.affiliate_id LEFT JOIN users u ON u.id = af.user_id WHERE $whereStr ORDER BY c.converted_at DESC LIMIT 15", $cP) ?: [];
+    } catch (Exception $e) { $extra['recent_convs'] = []; }
+
+    // High Risk Fraud Conversions
+    $_dashFraudRiskSql = FraudAutoNotify::highRiskWhereSql('cv');
+    try {
+        $extra['fraud_convs'] = Database::fetchAll("SELECT cv.id as conversion_id, cv.payout, cv.converted_at, cv.country, cv.ip_address, af.affiliate_code, CONCAT(u.first_name,' ',u.last_name) AS aff_name, o.name AS offer_name FROM conversions cv JOIN affiliates af ON af.id = cv.affiliate_id JOIN users u ON u.id = af.user_id LEFT JOIN offers o ON o.id = cv.offer_id WHERE cv.affiliate_id IN (" . implode(',', array_fill(0, count($managerAffIds), '?')) . ") AND $_dashFraudRiskSql ORDER BY cv.converted_at DESC LIMIT 5", $managerAffIds) ?: [];
+    } catch (\Throwable $e) { $extra['fraud_convs'] = []; }
+
+    echo json_encode(['success' => true, 'data' => $extra]);
     exit;
 }
 

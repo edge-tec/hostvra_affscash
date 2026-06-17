@@ -107,3 +107,93 @@ data class ManagerFilterAffiliate(
     val id: Int,
     val label: String
 )
+
+@Serializable
+data class ManagerDashboardExtraResponse(
+    val success: Boolean,
+    val data: ManagerDashboardExtraData? = null,
+    val error: String? = null
+)
+
+@Serializable
+data class ManagerDashboardExtraData(
+    val hourly: ChartDataHourly? = null,
+    @SerialName("conv_status") val convStatus: ChartDataPie? = null,
+    val countries: List<CountryStats> = emptyList(),
+    val devices: ChartDataPie? = null,
+    val browsers: ChartDataPie? = null,
+    val os: ChartDataPie? = null,
+    val offers: List<ManagerTopOffer> = emptyList(),
+    val affiliates: List<ManagerTopAffiliate> = emptyList(),
+    @SerialName("recent_convs") val recentConvs: List<RecentConversion> = emptyList(),
+    @SerialName("fraud_convs") val fraudConvs: List<FraudConversion> = emptyList()
+)
+
+@Serializable
+data class ChartDataHourly(
+    val labels: List<String> = emptyList(),
+    val data: List<Int> = emptyList()
+)
+
+@Serializable
+data class ChartDataPie(
+    val labels: List<String> = emptyList(),
+    val data: List<Int> = emptyList(),
+    val colors: List<String> = emptyList()
+)
+
+@Serializable
+data class CountryStats(
+    val country: String,
+    val clicks: Int,
+    val unique: Int,
+    val conv: Int
+)
+
+@Serializable
+data class ManagerTopOffer(
+    val id: Int,
+    val name: String,
+    val clicks: Int,
+    val uclicks: Int,
+    val conv: Int,
+    val payout: Double,
+    val cr: Double
+)
+
+@Serializable
+data class ManagerTopAffiliate(
+    val id: Int,
+    val name: String,
+    val code: String,
+    val clicks: Int,
+    val uclicks: Int,
+    val conv: Int,
+    val payout: Double,
+    val cr: Double
+)
+
+@Serializable
+data class RecentConversion(
+    val id: Int,
+    val status: String,
+    val payout: Double,
+    val revenue: Double,
+    @SerialName("converted_at") val convertedAt: String,
+    val country: String? = null,
+    @SerialName("device_type") val deviceType: String? = null,
+    @SerialName("offer_name") val offerName: String? = null,
+    @SerialName("aff_name") val affName: String? = null
+)
+
+@Serializable
+data class FraudConversion(
+    @SerialName("conversion_id") val conversionId: Int,
+    val payout: Double,
+    @SerialName("converted_at") val convertedAt: String,
+    val country: String? = null,
+    @SerialName("ip_address") val ipAddress: String? = null,
+    @SerialName("affiliate_code") val affiliateCode: String? = null,
+    @SerialName("aff_name") val affName: String? = null,
+    @SerialName("offer_name") val offerName: String? = null
+)

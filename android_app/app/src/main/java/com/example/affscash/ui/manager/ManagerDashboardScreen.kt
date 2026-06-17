@@ -23,6 +23,35 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.geometry.Size
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.affscash.R
+import com.example.affscash.ui.dashboard.ManagerDashboardViewModel
+import com.example.affscash.ui.dashboard.HeaderIconWithBadge
+import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
+import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
+import com.patrykandpatrick.vico.compose.chart.Chart
+import com.patrykandpatrick.vico.compose.chart.line.lineChart
+import com.patrykandpatrick.vico.compose.chart.column.columnChart
+import com.patrykandpatrick.vico.core.chart.line.LineChart
+import com.patrykandpatrick.vico.core.entry.entryModelOf
+import com.patrykandpatrick.vico.core.entry.FloatEntry
+import com.patrykandpatrick.vico.core.entry.ChartEntryModel
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.Date
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.affscash.R
 import com.example.affscash.ui.dashboard.ManagerDashboardViewModel
@@ -204,8 +233,285 @@ fun ManagerDashboardScreen(
                         } else {
                             Text("No trend data available for this period.")
                         }
+                item {
+                    if (uiState.isLoadingExtra) {
+                        CircularProgressIndicator(modifier = Modifier.padding(vertical = 16.dp))
+                    } else if (uiState.extraData != null) {
+                        val extra = uiState.extraData!!
+                        
+                        // Hourly Traffic
+                        if (extra.hourly?.labels?.isNotEmpty() == true) {
+                            Text("Hourly Traffic", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            BarChartCard(extra.hourly.labels, extra.hourly.data.map { it.toFloat() })
+                            Spacer(modifier = Modifier.height(24.dp))
+                        }
+
+                        // Conversion Status
+                        if (extra.convStatus?.labels?.isNotEmpty() == true) {
+                            Text("Conversion Status", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            val customColors = extra.convStatus.colors.map { 
+                                try { Color(android.graphics.Color.parseColor(it)) } catch(e: Exception) { Color.Gray } 
+                            }
+                            PieChartCard(extra.convStatus.labels, extra.convStatus.data, customColors)
+                            Spacer(modifier = Modifier.height(24.dp))
+                        }
+
+                        // Top Countries
+                        if (extra.countries.isNotEmpty()) {
+                            Text("Top Countries", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                            ) {
+                                Column(modifier = Modifier.padding(16.dp)) {
+                                    extra.countries.take(5).forEach { c ->
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Text(c.country.ifBlank { "Unknown" }, fontWeight = FontWeight.Medium)
+                                            Text("C: ${c.clicks} | Cv: ${c.conv}", color = Color.Gray)
+                                        }
+                                        Divider(color = MaterialTheme.colorScheme.surfaceVariant)
+                                    }
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(24.dp))
+                        }
+
+                        // Breakdowns (Device, Browser, OS)
+                        Text("Traffic Breakdown", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            if (extra.devices?.labels?.isNotEmpty() == true) {
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text("Devices", style = MaterialTheme.typography.labelLarge)
+                                    PieChartCard(extra.devices.labels, extra.devices.data)
+                                }
+                            }
+                            if (extra.browsers?.labels?.isNotEmpty() == true) {
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text("Browsers", style = MaterialTheme.typography.labelLarge)
+                                    PieChartCard(extra.browsers.labels, extra.browsers.data)
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            if (extra.os?.labels?.isNotEmpty() == true) {
+                                Column(modifier = Modifier.fillMaxWidth(0.5f)) {
+                                    Text("OS", style = MaterialTheme.typography.labelLarge)
+                                    PieChartCard(extra.os.labels, extra.os.data)
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(24.dp))
+                        
+                        // Top Offers & Top Affiliates
+                        if (extra.topOffers.isNotEmpty()) {
+                            Text("Top Offers", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                            ) {
+                                Column(modifier = Modifier.padding(16.dp)) {
+                                    extra.topOffers.take(5).forEach { o ->
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Text(o.name.ifBlank { "Offer #${o.id}" }, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
+                                            Text("C: ${o.clicks} | Cv: ${o.conv}", color = Color.Gray, modifier = Modifier.padding(start = 8.dp))
+                                        }
+                                        Divider(color = MaterialTheme.colorScheme.surfaceVariant)
+                                    }
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(24.dp))
+                        }
+
+                        if (extra.topAffiliates.isNotEmpty()) {
+                            Text("Top Affiliates", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                            ) {
+                                Column(modifier = Modifier.padding(16.dp)) {
+                                    extra.topAffiliates.take(5).forEach { a ->
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Text(a.name.ifBlank { "Affiliate #${a.id}" }, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
+                                            Text("C: ${a.clicks} | Cv: ${a.conv}", color = Color.Gray, modifier = Modifier.padding(start = 8.dp))
+                                        }
+                                        Divider(color = MaterialTheme.colorScheme.surfaceVariant)
+                                    }
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(24.dp))
+                        }
+
+                        // High Risk Fraud Conversions
+                        if (extra.fraudConvs.isNotEmpty()) {
+                            Text("High Risk Fraud Conversions", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = Color(0xFFEF4444))
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = CardDefaults.cardColors(containerColor = Color(0xFFFEF2F2)),
+                                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                                border = BorderStroke(1.dp, Color(0xFFFCA5A5))
+                            ) {
+                                Column(modifier = Modifier.padding(16.dp)) {
+                                    extra.fraudConvs.forEach { fc ->
+                                        Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+                                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                                Text("ID: ${fc.conversionId}", fontWeight = FontWeight.Bold, color = Color(0xFFB91C1C))
+                                                Text("$${fc.payout}", fontWeight = FontWeight.Bold, color = Color(0xFF15803D))
+                                            }
+                                            Text("${fc.affName ?: "Unknown"} (${fc.affiliateCode ?: "-"})", style = MaterialTheme.typography.bodyMedium)
+                                            Text("IP: ${fc.ipAddress ?: "N/A"}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                                            Text(fc.convertedAt, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                                        }
+                                        Divider(color = Color(0xFFFECACA))
+                                    }
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(24.dp))
+                        }
+
+                        // Recent Conversions
+                        if (extra.recentConvs.isNotEmpty()) {
+                            Text("Recent Conversions", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                            ) {
+                                Column(modifier = Modifier.padding(16.dp)) {
+                                    extra.recentConvs.forEach { rc ->
+                                        Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+                                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                                val statusColor = when (rc.status.lowercase()) {
+                                                    "approved" -> Color(0xFF10B981)
+                                                    "rejected", "chargebacked" -> Color(0xFFEF4444)
+                                                    else -> Color(0xFFF59E0B)
+                                                }
+                                                Text(rc.status.uppercase(), fontWeight = FontWeight.Bold, color = statusColor, fontSize = 12.sp)
+                                                Text("$${rc.payout}", fontWeight = FontWeight.Bold, color = Color(0xFF15803D))
+                                            }
+                                            Text(rc.offerName ?: "Offer #${rc.id}", fontWeight = FontWeight.Medium)
+                                            Text(rc.affName ?: "Unknown Affiliate", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                                            Text(rc.convertedAt, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                                        }
+                                        Divider(color = MaterialTheme.colorScheme.surfaceVariant)
+                                    }
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(24.dp))
+                        }
                     }
-                    Spacer(modifier = Modifier.height(24.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun BarChartCard(labels: List<String>, data: List<Float>) {
+    if (labels.isEmpty() || data.isEmpty()) {
+        Card(modifier = Modifier.fillMaxWidth().height(200.dp)) {
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                Text("No data available", color = Color.Gray)
+            }
+        }
+        return
+    }
+
+    val entries = data.mapIndexed { index, value ->
+        FloatEntry(x = index.toFloat(), y = value)
+    }
+    val model = entryModelOf(entries)
+
+    Card(
+        modifier = Modifier.fillMaxWidth().height(250.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Chart(
+            chart = columnChart(),
+            model = model,
+            startAxis = rememberStartAxis(),
+            bottomAxis = rememberBottomAxis(
+                valueFormatter = { value, _ -> 
+                    val index = value.toInt()
+                    if (index >= 0 && index < labels.size) labels[index] else ""
+                }
+            ),
+            modifier = Modifier.padding(16.dp).fillMaxSize()
+        )
+    }
+}
+
+@Composable
+fun PieChartCard(labels: List<String>, data: List<Int>, customColors: List<Color>? = null) {
+    Card(
+        modifier = Modifier.fillMaxWidth().height(200.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        if (labels.isEmpty() || data.isEmpty() || data.sum() == 0) {
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                Text("No data", color = Color.Gray)
+            }
+            return@Card
+        }
+
+        val colors = customColors ?: listOf(Color(0xFF4F46E5), Color(0xFF10B981), Color(0xFFF59E0B), Color(0xFFEF4444), Color(0xFF8B5CF6))
+        val total = data.sum().toFloat()
+        
+        Column(
+            modifier = Modifier.fillMaxSize().padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Box(modifier = Modifier.size(80.dp)) {
+                Canvas(modifier = Modifier.fillMaxSize()) {
+                    var startAngle = -90f
+                    data.forEachIndexed { index, value ->
+                        val sweepAngle = (value / total) * 360f
+                        drawArc(
+                            color = colors[index % colors.size],
+                            startAngle = startAngle,
+                            sweepAngle = sweepAngle,
+                            useCenter = false,
+                            style = Stroke(width = 20f, cap = StrokeCap.Butt),
+                            size = Size(size.width, size.height)
+                        )
+                        startAngle += sweepAngle
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                labels.take(4).forEachIndexed { index, label ->
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 4.dp)) {
+                        Box(modifier = Modifier.size(6.dp).background(colors[index % colors.size], CircleShape))
+                        Spacer(modifier = Modifier.width(2.dp))
+                        Text(label, fontSize = 9.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    }
                 }
             }
         }

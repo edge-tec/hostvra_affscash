@@ -148,7 +148,7 @@ class DashboardRepository @Inject constructor(
     }
 
     suspend fun getManagerTrend(
-        from: String? = null, to: String? = null, offerId: Int? = null, affiliateId: Int? = null, country: String? = null, device: String? = null
+        from: String, to: String, offerId: Int? = null, affiliateId: Int? = null, country: String? = null, device: String? = null
     ): Result<ManagerTrendResponse> = withContext(Dispatchers.IO) {
         try {
             val response = apiService.getManagerDashboardTrend(from = from, to = to, offerId = offerId, affiliateId = affiliateId, country = country, device = device)
@@ -156,6 +156,23 @@ class DashboardRepository @Inject constructor(
                 response.body()?.let {
                     if (it.success) return@withContext Result.success(it)
                     return@withContext Result.failure(Exception(it.error ?: "Failed to fetch trend"))
+                }
+            }
+            Result.failure(Exception("Network error: ${response.code()}"))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getManagerExtra(
+        from: String, to: String, offerId: Int? = null, affiliateId: Int? = null, country: String? = null, device: String? = null
+    ): Result<ManagerDashboardExtraResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.getManagerDashboardExtra(from = from, to = to, offerId = offerId, affiliateId = affiliateId, country = country, device = device)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    if (it.success) return@withContext Result.success(it)
+                    return@withContext Result.failure(Exception(it.error ?: "Failed to fetch extra"))
                 }
             }
             Result.failure(Exception("Network error: ${response.code()}"))

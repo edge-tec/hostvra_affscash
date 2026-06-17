@@ -118,6 +118,17 @@ interface ApiService {
     ): Response<ManagerTrendResponse>
 
     @GET("api/v2/manager/dashboard")
+    suspend fun getManagerDashboardExtra(
+        @Query("action") action: String = "extra",
+        @Query("from") from: String,
+        @Query("to") to: String,
+        @Query("offer_id") offerId: Int? = null,
+        @Query("affiliate_id") affiliateId: Int? = null,
+        @Query("country") country: String? = null,
+        @Query("device") device: String? = null
+    ): Response<ManagerDashboardExtraResponse>
+
+    @GET("api/v2/manager/dashboard")
     suspend fun getManagerDashboardFilters(
         @Query("action") action: String = "filters"
     ): Response<ManagerFiltersResponse>

@@ -3,6 +3,7 @@ package com.example.affscash.ui.dashboard
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.affscash.data.model.ManagerDashboardData
+import com.example.affscash.data.model.ManagerDashboardExtraData
 import com.example.affscash.data.model.ManagerFiltersData
 import com.example.affscash.data.model.ManagerTrendData
 import com.example.affscash.data.repository.DashboardRepository
@@ -21,8 +22,10 @@ import javax.inject.Inject
 data class ManagerDashboardState(
     val isLoadingStats: Boolean = false,
     val isLoadingTrend: Boolean = false,
+    val isLoadingExtra: Boolean = false,
     val stats: ManagerDashboardData? = null,
     val trend: ManagerTrendData? = null,
+    val extraData: ManagerDashboardExtraData? = null,
     val filtersData: ManagerFiltersData? = null,
     val error: String? = null,
     
@@ -98,6 +101,26 @@ class ManagerDashboardViewModel @Inject constructor(
         }
     }
 
+    private fun loadExtra() {
+        val state = _uiState.value
+        _uiState.update { it.copy(isLoadingExtra = true, error = null) }
+        viewModelScope.launch {
+            val result = dashboardRepository.getManagerExtra(
+                from = state.fromDate,
+                to = state.toDate,
+                offerId = state.offerId,
+                affiliateId = state.affiliateId,
+                country = state.country,
+                device = state.device
+            )
+            if (result.isSuccess) {
+                _uiState.update { it.copy(isLoadingExtra = false, extraData = result.getOrNull()?.data) }
+            } else {
+                _uiState.update { it.copy(isLoadingExtra = false, error = result.exceptionOrNull()?.message) }
+            }
+        }
+    }
+
     fun setPeriod(period: String) {
         val cal = Calendar.getInstance()
         val format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
@@ -151,6 +174,7 @@ class ManagerDashboardViewModel @Inject constructor(
         }
         loadStats()
         loadTrend()
+        loadExtra()
     }
 
     fun applyFilters(offerId: Int?, affiliateId: Int?, country: String?, device: String?) {
@@ -164,6 +188,7 @@ class ManagerDashboardViewModel @Inject constructor(
         }
         loadStats()
         loadTrend()
+        loadExtra()
     }
 
     fun resetFilters() {
