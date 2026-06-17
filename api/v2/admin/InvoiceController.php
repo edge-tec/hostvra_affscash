@@ -11,17 +11,17 @@ try {
 
     if ($action === 'list') {
         $invoices = Database::fetchAll(
-            "SELECT inv.id as invoice_id, inv.invoice_number, inv.type, inv.subtotal, inv.tax_rate, inv.tax_amount, inv.total, inv.status, inv.due_date, inv.created_at, inv.period_start, inv.period_end, inv.paid_at,
+            "SELECT inv.id, inv.invoice_number, inv.type, inv.subtotal, inv.tax_rate, inv.tax_amount, inv.total, inv.status, inv.due_date, inv.created_at, inv.period_start, inv.period_end, inv.paid_at,
                     CASE
                         WHEN inv.type='affiliate_payout'  THEN CONCAT(ua.first_name,' ',ua.last_name)
                         WHEN inv.type='manager_fee'        THEN CONCAT(um.first_name,' ',um.last_name)
                         ELSE CONCAT(ub.first_name,' ',ub.last_name)
-                    END as entity_name,
+                    END as recipient_name,
                     CASE
                         WHEN inv.type='affiliate_payout'  THEN ua.email
                         WHEN inv.type='manager_fee'        THEN um.email
                         ELSE ub.email
-                    END as entity_email
+                    END as recipient_email
              FROM invoices inv
              LEFT JOIN affiliates af  ON af.id=inv.affiliate_id  LEFT JOIN users ua ON ua.id=af.user_id
              LEFT JOIN advertisers adv ON adv.id=inv.advertiser_id LEFT JOIN users ub ON ub.id=adv.user_id
@@ -30,8 +30,8 @@ try {
         );
 
         foreach ($invoices as &$inv) {
-            $inv['invoice_id'] = (int)$inv['invoice_id'];
-            $inv['total'] = (float)$inv['total'];
+            $inv['id'] = (int)$inv['id'];
+            $inv['total'] = (string)$inv['total'];
         }
 
         Helpers::json(['status' => 'success', 'data' => $invoices]);
@@ -71,9 +71,10 @@ try {
             $entityName  = $e ? trim($e['first_name'] . ' ' . $e['last_name']) : '';
             $entityEmail = $e['email'] ?? '';
         }
-        $invoice['invoice_id'] = (int)$invoice['id'];
-        $invoice['entity_name'] = $entityName;
-        $invoice['entity_email'] = $entityEmail;
+        $invoice['id'] = (int)$invoice['id'];
+        $invoice['recipient_name'] = $entityName;
+        $invoice['recipient_email'] = $entityEmail;
+        $invoice['total'] = (string)$invoice['total'];
         $invoice['items'] = json_decode($invoice['items'] ?? '[]', true) ?: [];
 
         Helpers::json(['status' => 'success', 'data' => $invoice]);
