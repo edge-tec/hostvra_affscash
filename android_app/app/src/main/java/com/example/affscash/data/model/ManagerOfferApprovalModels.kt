@@ -1,5 +1,8 @@
 package com.example.affscash.data.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class ManagerOfferApprovalListResponse(
     val success: Boolean,
     val requests: List<OfferApprovalRequestItem> = emptyList(),
@@ -8,6 +11,7 @@ data class ManagerOfferApprovalListResponse(
     val message: String? = null
 )
 
+@Serializable
 data class OfferApprovalRequestItem(
     val ao_id: Int,
     val affiliate_id: Int,
@@ -30,13 +34,22 @@ data class OfferApprovalRequestItem(
     val total_conversions: Int
 )
 
+@Serializable
 data class OfferOption(
     val id: Int,
     val name: String
 )
 
+@Serializable
 data class ReviewOfferApprovalRequest(
     val affiliate_id: Int,
     val offer_id: Int,
     val review_action: String // "approve" or "reject"
+)
+
+@Serializable
+data class DefaultResponse(
+    val success: Boolean,
+    val message: String? = null,
+    val error: String? = null
 )

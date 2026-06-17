@@ -381,6 +381,7 @@ fun StatItem(label: String, value: String) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManagerOfferFilterContent(
     uiState: ManagerOffersUiState,

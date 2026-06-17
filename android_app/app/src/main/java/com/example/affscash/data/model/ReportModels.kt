@@ -8,7 +8,15 @@ data class ReportFiltersResponse(
     val success: Boolean,
     val offers: List<OfferItem> = emptyList(),
     val countries: List<String> = emptyList(),
+    val affiliates: List<ManagerAffiliateFilterItem> = emptyList(),
     val error: String? = null
+)
+
+@Serializable
+data class ManagerAffiliateFilterItem(
+    val id: Int,
+    val name: String,
+    @SerialName("affiliate_code") val affiliateCode: String
 )
 
 @Serializable

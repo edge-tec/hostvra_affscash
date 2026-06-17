@@ -66,11 +66,3 @@ data class ManagerAffiliateActionRequest(
     val action: String,
     @SerialName("aff_id") val affId: Int? = null
 )
-
-@Serializable
-data class ImpersonateResponse(
-    val success: Boolean,
-    val role: String? = null,
-    val user: User? = null,
-    val error: String? = null
-)

@@ -52,6 +52,7 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     object ManagerAffiliates : Screen("manager_affiliates", "Affiliates", Icons.Filled.Assessment)
     object ManagerConversions : Screen("manager_conversions", "Conv", Icons.Filled.MonetizationOn)
     object ManagerInvoices : Screen("manager_invoices", "Invoices", Icons.Filled.Receipt)
+    object ManagerReports : Screen("manager_reports", "Reports", Icons.Filled.Assessment)
     object ManagerSettings : Screen("manager_settings", "Settings", Icons.Filled.Settings)
 }
 
@@ -66,7 +67,7 @@ fun MainScreen(
 
     val items = when (role) {
         "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminUsers, Screen.AdminConversions, Screen.AdminInvoices, Screen.AdminSettings)
-        "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerSmartlinks, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerInvoices, Screen.ManagerSettings)
+        "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerSmartlinks, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerReports, Screen.ManagerInvoices, Screen.ManagerSettings)
         else -> listOf(Screen.Dashboard, Screen.Offers, Screen.Smartlinks, Screen.Reports, Screen.AffiliateSettings)
     }
     
@@ -216,6 +217,7 @@ fun MainScreen(
                 )
             }
             composable(Screen.ManagerConversions.route) { com.example.affscash.ui.manager.ManagerConversionsScreen() }
+            composable(Screen.ManagerReports.route) { com.example.affscash.ui.manager.ManagerReportsScreen() }
             composable(Screen.ManagerInvoices.route) { com.example.affscash.ui.manager.ManagerInvoicesScreen() }
             composable(Screen.ManagerSettings.route) { com.example.affscash.ui.settings.SettingsScreen(role, onLogout, onRoleChange = onRoleChange) }
         }

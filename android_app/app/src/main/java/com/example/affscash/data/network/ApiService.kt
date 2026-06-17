@@ -23,6 +23,7 @@ import com.example.affscash.data.model.SendChatMessageResponse
 import com.example.affscash.data.model.UploadFileResponse
 import com.example.affscash.data.model.ManagerOfferApprovalListResponse
 import com.example.affscash.data.model.ReviewOfferApprovalRequest
+import com.example.affscash.data.model.DefaultResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -251,6 +252,25 @@ interface ApiService {
 
     @POST("api/v2/settings?action=2fa_disable")
     suspend fun disable2fa(@Body request: com.example.affscash.data.model.TwoFactorDisableRequest): Response<com.example.affscash.data.model.SettingsActionResponse>
+
+    @GET("api/v2/manager/fraud-report")
+    suspend fun getManagerFraudReport(): Response<com.example.affscash.data.model.FraudReportResponse>
+
+    // ── Manager Reports ──────────────────────────────────────────────────────────
+
+    @GET("api/v2/manager/reports")
+    suspend fun getManagerReports(
+        @Query("tab") tab: String,
+        @Query("from") from: String,
+        @Query("to") to: String,
+        @Query("offer_id") offerId: Int? = null,
+        @Query("affiliate_id") affiliateId: Int? = null,
+        @Query("country") country: String? = null,
+        @Query("sub1") sub1: String? = null
+    ): Response<com.example.affscash.data.model.ReportResponse>
+
+    @GET("api/v2/manager/reports?action=filters")
+    suspend fun getManagerReportFilters(): Response<com.example.affscash.data.model.ReportFiltersResponse>
 
     @GET("api/v2/fraud-report")
     suspend fun getFraudReport(): Response<com.example.affscash.data.model.FraudReportResponse>
