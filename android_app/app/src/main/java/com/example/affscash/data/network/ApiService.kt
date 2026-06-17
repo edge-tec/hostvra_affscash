@@ -260,7 +260,8 @@ interface ApiService {
     suspend fun getManagerAffiliates(
         @Query("action") action: String = "list",
         @Query("q") query: String? = null,
-        @Query("fraud_score_filter") fraudScoreFilter: String = "all"
+        @Query("fraud_score_filter") fraudScoreFilter: String = "all",
+        @Query("status") status: String = "all"
     ): Response<ManagerAffiliatesResponse>
 
     @POST("api/v2/manager/affiliates?action=create")

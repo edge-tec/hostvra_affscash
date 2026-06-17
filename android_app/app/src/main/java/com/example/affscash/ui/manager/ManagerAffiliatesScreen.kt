@@ -8,6 +8,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.Payment
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Tab
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -66,11 +70,46 @@ fun ManagerAffiliatesScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
+            // Action Buttons
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedButton(onClick = { Toast.makeText(context, "Export CSV not supported on mobile", Toast.LENGTH_SHORT).show() }) {
+                    Icon(Icons.Default.Download, contentDescription = null, modifier = Modifier.size(16.dp))
+                    Spacer(Modifier.width(4.dp))
+                    Text("Export CSV")
+                }
+                Button(onClick = { Toast.makeText(context, "Navigate to Payouts", Toast.LENGTH_SHORT).show() }) {
+                    Icon(Icons.Default.Payment, contentDescription = null, modifier = Modifier.size(16.dp))
+                    Spacer(Modifier.width(4.dp))
+                    Text("Payout Management")
+                }
+            }
+
+            // Status Tabs
+            val tabs = listOf("all" to "All", "active" to "Active", "pending" to "Pending", "suspended" to "Suspended", "rejected" to "Rejected")
+            ScrollableTabRow(
+                selectedTabIndex = tabs.indexOfFirst { it.first == uiState.statusFilter }.takeIf { it >= 0 } ?: 0,
+                edgePadding = 16.dp,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                tabs.forEachIndexed { index, (key, title) ->
+                    Tab(
+                        selected = uiState.statusFilter == key,
+                        onClick = { viewModel.setStatusFilter(key) },
+                        text = { Text(title) }
+                    )
+                }
+            }
+
             // Filters
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 OutlinedTextField(
@@ -180,6 +219,9 @@ fun ManagerAffiliateCard(
                     )
                     Text(text = affiliate.email, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                     Text(text = affiliate.affiliateCode, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold)
+                    if (!affiliate.company.isNullOrBlank()) {
+                        Text(text = affiliate.company, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.primary)
+                    }
                 }
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
@@ -193,6 +235,24 @@ fun ManagerAffiliateCard(
             }
 
             Spacer(modifier = Modifier.height(12.dp))
+            
+            // Stats Grid
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Column {
+                    Text("Joined", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+                    Text(affiliate.createdAt.take(10), style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Medium)
+                }
+                Column {
+                    Text("Last Login", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+                    Text(affiliate.lastLogin?.take(16) ?: "Never", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Medium)
+                }
+                Column {
+                    Text("Days Inactive", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+                    Text(affiliate.daysInactive?.let { "$it DAYS" } ?: "-", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Medium)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.Warning, contentDescription = null, modifier = Modifier.size(16.dp), tint = Color.Gray)
@@ -225,11 +285,19 @@ fun ManagerAffiliateCard(
                     Button(onClick = onImpersonate, contentPadding = PaddingValues(horizontal = 8.dp)) {
                         Icon(Icons.Default.VpnKey, contentDescription = null, modifier = Modifier.size(16.dp))
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text("Login")
+                        Text("Login As")
                     }
                     
                     if (canApprove) {
-                        if (affiliate.status == "active") {
+                        if (affiliate.status == "pending") {
+                            Button(
+                                onClick = { onUpdateStatus("active") },
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
+                                contentPadding = PaddingValues(horizontal = 8.dp)
+                            ) {
+                                Text("Approve")
+                            }
+                        } else if (affiliate.status == "active") {
                             Button(
                                 onClick = { onUpdateStatus("suspended") },
                                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),

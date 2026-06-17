@@ -11,9 +11,9 @@ import javax.inject.Singleton
 class ManagerAffiliateRepository @Inject constructor(
     private val apiService: ApiService
 ) {
-    suspend fun getManagerAffiliates(query: String?, fraudScoreFilter: String): Result<ManagerAffiliatesResponse> = withContext(Dispatchers.IO) {
+    suspend fun getManagerAffiliates(query: String?, fraudScoreFilter: String, status: String = "all"): Result<ManagerAffiliatesResponse> = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.getManagerAffiliates(query = query, fraudScoreFilter = fraudScoreFilter)
+            val response = apiService.getManagerAffiliates(query = query, fraudScoreFilter = fraudScoreFilter, status = status)
             if (response.isSuccessful) {
                 response.body()?.let {
                     if (it.success) return@withContext Result.success(it)

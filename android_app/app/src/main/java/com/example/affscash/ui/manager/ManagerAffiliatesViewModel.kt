@@ -19,6 +19,7 @@ data class ManagerAffiliatesUiState(
     val canApprove: Boolean = false,
     val searchQuery: String = "",
     val fraudScoreFilter: String = "all", // all, low, medium, high
+    val statusFilter: String = "all", // all, active, pending, suspended, rejected
     val error: String? = null,
     val actionMessage: String? = null,
     
@@ -44,8 +45,9 @@ class ManagerAffiliatesViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true, error = null, actionMessage = null) }
             val query = _uiState.value.searchQuery.ifBlank { null }
             val filter = _uiState.value.fraudScoreFilter
+            val status = _uiState.value.statusFilter
             
-            val result = repository.getManagerAffiliates(query = query, fraudScoreFilter = filter)
+            val result = repository.getManagerAffiliates(query = query, fraudScoreFilter = filter, status = status)
             
             result.onSuccess { response ->
                 _uiState.update { it.copy(
@@ -69,6 +71,11 @@ class ManagerAffiliatesViewModel @Inject constructor(
 
     fun setFraudScoreFilter(filter: String) {
         _uiState.update { it.copy(fraudScoreFilter = filter) }
+        loadAffiliates()
+    }
+
+    fun setStatusFilter(status: String) {
+        _uiState.update { it.copy(statusFilter = status) }
         loadAffiliates()
     }
 

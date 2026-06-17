@@ -29,7 +29,9 @@ data class ManagerAffiliateListModel(
     @SerialName("affiliate_code") val affiliateCode: String,
     val balance: String? = null,
     @SerialName("fraud_score") val fraudScore: Double = 0.0,
-    @SerialName("fraud_checked_count") val fraudCheckedCount: Int = 0
+    @SerialName("fraud_checked_count") val fraudCheckedCount: Int = 0,
+    @SerialName("last_login") val lastLogin: String? = null,
+    @SerialName("days_inactive") val daysInactive: Int? = null
 )
 
 @Serializable
