@@ -31,7 +31,7 @@ if ($action === 'list') {
 
     $pendingCount = Database::fetchOne("SELECT COUNT(*) as cnt FROM smartlink_requests WHERE status='pending'")['cnt'] ?? 0;
 
-    Helpers::jsonResponse([
+    Helpers::json([
         'status' => 'success',
         'data' => [
             'smartlinks' => $smartlinks,
@@ -51,7 +51,7 @@ if ($action === 'requests') {
          ORDER BY sr.created_at DESC"
     ) ?: [];
 
-    Helpers::jsonResponse([
+    Helpers::json([
         'status' => 'success',
         'data' => [
             'requests' => $requests
@@ -63,7 +63,7 @@ if ($action === 'detail') {
     $id = (int)Helpers::get('id');
     $sl = Database::fetchOne("SELECT * FROM smartlinks WHERE id=?", [$id]);
     if (!$sl) {
-        Helpers::jsonResponse(['status' => 'error', 'message' => 'Smartlink not found'], 404);
+        Helpers::json(['status' => 'error', 'message' => 'Smartlink not found'], 404);
     }
 
     $offers = Database::fetchAll(
@@ -82,7 +82,7 @@ if ($action === 'detail') {
 
     $activeOffers = Database::fetchAll("SELECT id, name, payout_amount as payout FROM offers WHERE status='active' ORDER BY name") ?: [];
 
-    Helpers::jsonResponse([
+    Helpers::json([
         'status' => 'success',
         'data' => [
             'smartlink' => $sl,
@@ -102,9 +102,9 @@ if ($action === 'action') {
         if ($cur) {
             $newStatus = $cur['status'] === 'active' ? 'paused' : 'active';
             Database::update('smartlinks', ['status' => $newStatus], 'id=?', [$id]);
-            Helpers::jsonResponse(['status' => 'success', 'message' => 'Status updated']);
+            Helpers::json(['status' => 'success', 'message' => 'Status updated']);
         }
-        Helpers::jsonResponse(['status' => 'error', 'message' => 'Not found'], 404);
+        Helpers::json(['status' => 'error', 'message' => 'Not found'], 404);
     }
 
     if ($subAction === 'delete') {
@@ -112,7 +112,7 @@ if ($action === 'action') {
         Database::query("DELETE FROM smartlink_offers WHERE smartlink_id=?", [$id]);
         Database::query("DELETE FROM smartlink_requests WHERE smartlink_id=?", [$id]);
         Database::query("DELETE FROM smartlinks WHERE id=?", [$id]);
-        Helpers::jsonResponse(['status' => 'success', 'message' => 'Deleted successfully']);
+        Helpers::json(['status' => 'success', 'message' => 'Deleted successfully']);
     }
 
     if ($subAction === 'review_request') {
@@ -121,7 +121,7 @@ if ($action === 'action') {
         $note = $data['admin_note'] ?? '';
 
         if (!in_array($decision, ['approved', 'rejected'])) {
-            Helpers::jsonResponse(['status' => 'error', 'message' => 'Invalid decision']);
+            Helpers::json(['status' => 'error', 'message' => 'Invalid decision']);
         }
 
         $req = Database::fetchOne(
@@ -150,13 +150,13 @@ if ($action === 'action') {
                 'link'    => '/affiliate/smartlinks',
             ]);
 
-            Helpers::jsonResponse(['status' => 'success', 'message' => "Request $decision"]);
+            Helpers::json(['status' => 'success', 'message' => "Request $decision"]);
         } else {
-            Helpers::jsonResponse(['status' => 'error', 'message' => 'Not found'], 404);
+            Helpers::json(['status' => 'error', 'message' => 'Not found'], 404);
         }
     }
 
-    Helpers::jsonResponse(['status' => 'error', 'message' => 'Invalid action'], 400);
+    Helpers::json(['status' => 'error', 'message' => 'Invalid action'], 400);
 }
 
 if ($action === 'save') {
@@ -171,19 +171,19 @@ if ($action === 'save') {
     $offers = $data['offers'] ?? [];
 
     if (!$name || !$slug) {
-        Helpers::jsonResponse(['status' => 'error', 'message' => 'Name and slug are required'], 400);
+        Helpers::json(['status' => 'error', 'message' => 'Name and slug are required'], 400);
     }
 
     if (empty($offers)) {
-        Helpers::jsonResponse(['status' => 'error', 'message' => 'At least one offer is required'], 400);
+        Helpers::json(['status' => 'error', 'message' => 'At least one offer is required'], 400);
     }
 
     if ($id > 0) {
         $existing = Database::fetchOne("SELECT id FROM smartlinks WHERE slug=? AND id!=?", [$slug, $id]);
-        if ($existing) Helpers::jsonResponse(['status' => 'error', 'message' => 'Slug already in use'], 400);
+        if ($existing) Helpers::json(['status' => 'error', 'message' => 'Slug already in use'], 400);
     } else {
         $existing = Database::fetchOne("SELECT id FROM smartlinks WHERE slug=?", [$slug]);
-        if ($existing) Helpers::jsonResponse(['status' => 'error', 'message' => 'Slug already in use'], 400);
+        if ($existing) Helpers::json(['status' => 'error', 'message' => 'Slug already in use'], 400);
     }
 
     Database::begin();
@@ -231,11 +231,11 @@ if ($action === 'save') {
             ]);
         }
         Database::commit();
-        Helpers::jsonResponse(['status' => 'success', 'message' => 'Saved successfully']);
+        Helpers::json(['status' => 'success', 'message' => 'Saved successfully']);
     } catch (Exception $e) {
         Database::rollback();
-        Helpers::jsonResponse(['status' => 'error', 'message' => 'Failed to save: ' . $e->getMessage()], 500);
+        Helpers::json(['status' => 'error', 'message' => 'Failed to save: ' . $e->getMessage()], 500);
     }
 }
 
-Helpers::jsonResponse(['status' => 'error', 'message' => 'Invalid action'], 400);
+Helpers::json(['status' => 'error', 'message' => 'Invalid action'], 400);

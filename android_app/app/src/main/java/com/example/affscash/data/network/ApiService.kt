@@ -584,7 +584,7 @@ interface ApiService {
 
     // --- ADMIN: Invoices ---
     @GET("api/v2/admin/invoices?action=list")
-    suspend fun getAdminInvoices(): com.example.affscash.data.model.AdminInvoiceResponse
+    suspend fun getAdminInvoicesList(): com.example.affscash.data.model.AdminInvoiceResponse
 
     @GET("api/v2/admin/invoices?action=view")
     suspend fun getAdminInvoiceDetail(@Query("id") id: Int): com.example.affscash.data.model.AdminInvoiceDetailResponse

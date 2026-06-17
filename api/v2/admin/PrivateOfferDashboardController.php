@@ -36,7 +36,7 @@ try {
     ) ?: [];
 } catch (\Throwable $_) {}
 
-Helpers::jsonResponse([
+Helpers::json([
     'status' => 'success',
     'data' => [
         'privateOffers' => $privateOffers,

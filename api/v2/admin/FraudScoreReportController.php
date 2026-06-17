@@ -113,7 +113,7 @@ if ($action === 'tick' && Helpers::isPost()) {
            AND converted_at > DATE_SUB(NOW(), INTERVAL 30 DAY)"
     )['c'] ?? 0);
 
-    Helpers::jsonResponse(['status' => 'success', 'processed' => count($pending), 'remaining' => $remaining, 'updates' => $updates]);
+    Helpers::json(['status' => 'success', 'processed' => count($pending), 'remaining' => $remaining, 'updates' => $updates]);
 }
 
 if ($action === 'recheck_pending' && Helpers::isPost()) {
@@ -245,7 +245,7 @@ if ($action === 'recheck_pending' && Helpers::isPost()) {
         []
     )['c'] ?? 0);
 
-    Helpers::jsonResponse(['status' => 'success', 'checked' => $checked, 'remaining' => $remaining]);
+    Helpers::json(['status' => 'success', 'checked' => $checked, 'remaining' => $remaining]);
 }
 
 if ($action === 'update_status' && Helpers::isPost()) {
@@ -277,10 +277,10 @@ if ($action === 'update_status' && Helpers::isPost()) {
                     ManagerCommissionService::reverseForConversion((int)$conv['id']);
                 } catch (\Throwable $_mce) {}
             }
-            Helpers::jsonResponse(['status' => 'success', 'message' => "Conversion $newStatus."]);
+            Helpers::json(['status' => 'success', 'message' => "Conversion $newStatus."]);
         }
     }
-    Helpers::jsonResponse(['status' => 'error', 'message' => 'Invalid action'], 400);
+    Helpers::json(['status' => 'error', 'message' => 'Invalid action'], 400);
 }
 
 if ($action === 'bulk_reject' && Helpers::isPost()) {
@@ -314,7 +314,7 @@ if ($action === 'bulk_reject' && Helpers::isPost()) {
             }
         }
     }
-    Helpers::jsonResponse(['status' => 'success', 'rejected_count' => $count]);
+    Helpers::json(['status' => 'success', 'rejected_count' => $count]);
 }
 
 if ($action === 'report') {
@@ -416,7 +416,7 @@ if ($action === 'report') {
         $offers = Database::fetchAll("SELECT id, name FROM offers WHERE status='active' ORDER BY name");
     } catch (\Throwable $e) { $offers = []; }
 
-    Helpers::jsonResponse([
+    Helpers::json([
         'status' => 'success',
         'stats' => $stats,
         'conversions' => $conversions,
@@ -425,4 +425,4 @@ if ($action === 'report') {
     ]);
 }
 
-Helpers::jsonResponse(['status' => 'error', 'message' => 'Invalid action'], 400);
+Helpers::json(['status' => 'error', 'message' => 'Invalid action'], 400);

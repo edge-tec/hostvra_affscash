@@ -4,8 +4,11 @@ import com.example.affscash.data.model.*
 import com.example.affscash.data.network.ApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class AdminAffiliateManagerRepository(private val apiService: ApiService) {
+@Singleton
+class AdminAffiliateManagerRepository @Inject constructor(private val apiService: ApiService) {
 
     suspend fun getManagers(): Result<List<AdminAffiliateManagerRow>> {
         return withContext(Dispatchers.IO) {

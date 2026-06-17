@@ -10,7 +10,7 @@ PrivateOffer::ensureTables();
 $offerId = (int)Helpers::get('id');
 
 if ($offerId <= 0) {
-    Helpers::jsonResponse(['status' => 'error', 'message' => 'Invalid offer ID'], 400);
+    Helpers::json(['status' => 'error', 'message' => 'Invalid offer ID'], 400);
 }
 
 $offer = Database::fetchOne(
@@ -19,7 +19,7 @@ $offer = Database::fetchOne(
 );
 
 if (!$offer) {
-    Helpers::jsonResponse(['status' => 'error', 'message' => 'Offer not found'], 404);
+    Helpers::json(['status' => 'error', 'message' => 'Offer not found'], 404);
 }
 
 $grants = PrivateOffer::listAccess($offerId);
@@ -40,7 +40,7 @@ try {
     ) ?: [];
 } catch (\Throwable $_) {}
 
-Helpers::jsonResponse([
+Helpers::json([
     'status' => 'success',
     'data' => [
         'offer' => $offer,

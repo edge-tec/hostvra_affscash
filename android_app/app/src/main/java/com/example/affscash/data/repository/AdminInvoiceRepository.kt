@@ -4,13 +4,16 @@ import com.example.affscash.data.model.*
 import com.example.affscash.data.network.ApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class AdminInvoiceRepository(private val apiService: ApiService) {
+@Singleton
+class AdminInvoiceRepository @Inject constructor(private val apiService: ApiService) {
 
     suspend fun getInvoices(): Result<List<AdminInvoiceRow>> {
         return withContext(Dispatchers.IO) {
             try {
-                val response = apiService.getAdminInvoices()
+                val response = apiService.getAdminInvoicesList()
                 if (response.status == "success") {
                     Result.success(response.data ?: emptyList())
                 } else {

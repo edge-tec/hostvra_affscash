@@ -372,26 +372,14 @@ fun MainScreen(
                 )
             }
             composable(Screen.AdminInvoices.route) {
-                val repo = com.example.affscash.data.repository.AdminInvoiceRepository(com.example.affscash.data.network.RetrofitClient.apiService)
-                val factory = object : androidx.lifecycle.ViewModelProvider.Factory {
-                    override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
-                        return com.example.affscash.ui.screens.admin.invoices.AdminInvoicesViewModel(repo) as T
-                    }
-                }
-                val viewModel: com.example.affscash.ui.screens.admin.invoices.AdminInvoicesViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = factory)
+                val viewModel: com.example.affscash.ui.screens.admin.invoices.AdminInvoicesViewModel = androidx.hilt.navigation.compose.hiltViewModel()
                 com.example.affscash.ui.screens.admin.invoices.AdminInvoicesScreen(
                     viewModel = viewModel,
                     onNavigateBack = { navController.popBackStack() }
                 )
             }
             composable(Screen.AdminAffiliateManagers.route) {
-                val repo = com.example.affscash.data.repository.AdminAffiliateManagerRepository(com.example.affscash.data.network.RetrofitClient.apiService)
-                val factory = object : androidx.lifecycle.ViewModelProvider.Factory {
-                    override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
-                        return com.example.affscash.ui.screens.admin.managers.AdminAffiliateManagersViewModel(repo) as T
-                    }
-                }
-                val viewModel: com.example.affscash.ui.screens.admin.managers.AdminAffiliateManagersViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = factory)
+                val viewModel: com.example.affscash.ui.screens.admin.managers.AdminAffiliateManagersViewModel = androidx.hilt.navigation.compose.hiltViewModel()
                 com.example.affscash.ui.screens.admin.managers.AdminAffiliateManagersScreen(
                     viewModel = viewModel,
                     onNavigateBack = { navController.popBackStack() }

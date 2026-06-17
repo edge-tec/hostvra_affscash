@@ -13,7 +13,7 @@ class AdminOfferApprovalController {
         } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] === 'review') {
             self::reviewApproval();
         } else {
-            Helpers::jsonResponse(['success' => false, 'message' => 'Invalid action.'], 400);
+            Helpers::json(['success' => false, 'message' => 'Invalid action.'], 400);
         }
     }
 
@@ -83,7 +83,7 @@ class AdminOfferApprovalController {
              ORDER BY o.name"
         );
 
-        Helpers::jsonResponse([
+        Helpers::json([
             'success' => true,
             'requests' => $requests,
             'all_offers' => $allOffers,
@@ -121,7 +121,7 @@ class AdminOfferApprovalController {
                     
                     self::sendNotification($affId, $ao['offer_name'], true);
                     
-                    Helpers::jsonResponse(['success' => true, 'message' => 'Access to "' . $ao['offer_name'] . '" approved.']);
+                    Helpers::json(['success' => true, 'message' => 'Access to "' . $ao['offer_name'] . '" approved.']);
                 } else {
                     Database::update('affiliate_offers',
                         ['status' => 'rejected'],
@@ -131,13 +131,13 @@ class AdminOfferApprovalController {
                     
                     self::sendNotification($affId, $ao['offer_name'], false);
 
-                    Helpers::jsonResponse(['success' => true, 'message' => 'Request rejected.']);
+                    Helpers::json(['success' => true, 'message' => 'Request rejected.']);
                 }
             } else {
-                Helpers::jsonResponse(['success' => false, 'message' => 'Request not found.'], 404);
+                Helpers::json(['success' => false, 'message' => 'Request not found.'], 404);
             }
         } else {
-            Helpers::jsonResponse(['success' => false, 'message' => 'Invalid parameters.'], 400);
+            Helpers::json(['success' => false, 'message' => 'Invalid parameters.'], 400);
         }
     }
     

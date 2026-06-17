@@ -13,7 +13,7 @@ class OfferApprovalController {
         } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] === 'review') {
             self::reviewApproval();
         } else {
-            Helpers::jsonResponse(['success' => false, 'message' => 'Invalid action.'], 400);
+            Helpers::json(['success' => false, 'message' => 'Invalid action.'], 400);
         }
     }
 
@@ -21,12 +21,12 @@ class OfferApprovalController {
         Auth::check('affiliate_manager');
 
         if (!Auth::hasPermission('view_affiliates')) {
-            Helpers::jsonResponse(['success' => false, 'message' => 'Permission denied'], 403);
+            Helpers::json(['success' => false, 'message' => 'Permission denied'], 403);
         }
 
         $affIds = Auth::managerAffiliateIds();
         if (empty($affIds)) {
-            Helpers::jsonResponse([
+            Helpers::json([
                 'success' => true,
                 'requests' => [],
                 'all_offers' => [],
@@ -103,7 +103,7 @@ class OfferApprovalController {
             $affIds
         );
 
-        Helpers::jsonResponse([
+        Helpers::json([
             'success' => true,
             'requests' => $requests,
             'all_offers' => $allOffers,
@@ -115,7 +115,7 @@ class OfferApprovalController {
         Auth::check('affiliate_manager');
 
         if (!Auth::hasPermission('view_affiliates')) {
-            Helpers::jsonResponse(['success' => false, 'message' => 'Permission denied'], 403);
+            Helpers::json(['success' => false, 'message' => 'Permission denied'], 403);
         }
 
         $data = json_decode(file_get_contents('php://input'), true) ?: $_POST;
@@ -148,7 +148,7 @@ class OfferApprovalController {
                     
                     self::sendNotification($affId, $ao['offer_name'], true);
                     
-                    Helpers::jsonResponse(['success' => true, 'message' => 'Access to "' . $ao['offer_name'] . '" approved.']);
+                    Helpers::json(['success' => true, 'message' => 'Access to "' . $ao['offer_name'] . '" approved.']);
                 } else {
                     Database::update('affiliate_offers',
                         ['status' => 'rejected'],
@@ -158,13 +158,13 @@ class OfferApprovalController {
                     
                     self::sendNotification($affId, $ao['offer_name'], false);
 
-                    Helpers::jsonResponse(['success' => true, 'message' => 'Request rejected.']);
+                    Helpers::json(['success' => true, 'message' => 'Request rejected.']);
                 }
             } else {
-                Helpers::jsonResponse(['success' => false, 'message' => 'Request not found.'], 404);
+                Helpers::json(['success' => false, 'message' => 'Request not found.'], 404);
             }
         } else {
-            Helpers::jsonResponse(['success' => false, 'message' => 'Invalid parameters or permission denied.'], 400);
+            Helpers::json(['success' => false, 'message' => 'Invalid parameters or permission denied.'], 400);
         }
     }
     
