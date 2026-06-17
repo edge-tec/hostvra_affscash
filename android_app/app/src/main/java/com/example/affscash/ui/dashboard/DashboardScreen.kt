@@ -36,7 +36,8 @@ import com.example.affscash.data.model.DashboardOffer
 fun DashboardScreen(
     viewModel: DashboardViewModel = hiltViewModel(),
     onNavigateToInvoices: () -> Unit = {},
-    onNavigateToFraudAlerts: () -> Unit = {}
+    onNavigateToFraudAlerts: () -> Unit = {},
+    onNavigateToChat: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
 

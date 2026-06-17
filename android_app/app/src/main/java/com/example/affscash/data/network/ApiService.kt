@@ -47,6 +47,33 @@ interface ApiService {
     @GET("api/v2/manager/dashboard")
     suspend fun getManagerDashboard(): Response<ManagerDashboardResponse>
 
+    @GET("api/v2/manager/dashboard")
+    suspend fun getManagerDashboardStats(
+        @Query("action") action: String = "stats",
+        @Query("from") from: String? = null,
+        @Query("to") to: String? = null,
+        @Query("offer_id") offerId: Int? = null,
+        @Query("affiliate_id") affiliateId: Int? = null,
+        @Query("country") country: String? = null,
+        @Query("device") device: String? = null
+    ): Response<com.example.affscash.data.model.ManagerDashboardResponse>
+
+    @GET("api/v2/manager/dashboard")
+    suspend fun getManagerDashboardTrend(
+        @Query("action") action: String = "trend",
+        @Query("from") from: String? = null,
+        @Query("to") to: String? = null,
+        @Query("offer_id") offerId: Int? = null,
+        @Query("affiliate_id") affiliateId: Int? = null,
+        @Query("country") country: String? = null,
+        @Query("device") device: String? = null
+    ): Response<com.example.affscash.data.model.ManagerTrendResponse>
+
+    @GET("api/v2/manager/dashboard")
+    suspend fun getManagerDashboardFilters(
+        @Query("action") action: String = "filters"
+    ): Response<com.example.affscash.data.model.ManagerFiltersResponse>
+
     @GET("api/v2/admin/offers")
     suspend fun getAdminOffers(): Response<AdminOfferResponse>
 
