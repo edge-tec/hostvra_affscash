@@ -31,7 +31,7 @@ class ManagerPermissions
         'view_affiliates'        => ['label' => 'View affiliate accounts',          'default' => 1, 'group' => 'access'],
         'view_affiliate_reports' => ['label' => 'View affiliate reports',           'default' => 1, 'group' => 'access'],
         'reject_fraud_conv'      => ['label' => 'Approve/reject fraud conversions', 'default' => 0, 'group' => 'fraud'],
-        'view_fraud_reports'     => ['label' => 'View fraud reports',               'default' => 0, 'group' => 'fraud'],
+        'view_fraud_reports'     => ['label' => 'View fraud reports',               'default' => 1, 'group' => 'fraud'],
         'create_invoice_request' => ['label' => 'Create invoice requests',          'default' => 1, 'group' => 'invoice'],
         'access_support'         => ['label' => 'Access support / chat',            'default' => 1, 'group' => 'support'],
         'view_payment_history'   => ['label' => 'View payment history',             'default' => 1, 'group' => 'access'],
