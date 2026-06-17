@@ -1,10 +1,14 @@
 package com.example.affscash.data.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class AdminAutoHideStatsResponse(
     val status: String,
     val stats: AdminAutoHideStats? = null
 )
 
+@Serializable
 data class AdminAutoHideStats(
     val total_hidden: Int,
     val payout_saved: Double,
@@ -12,11 +16,13 @@ data class AdminAutoHideStats(
     val total_rules: Int
 )
 
+@Serializable
 data class AdminAutoHideRulesResponse(
     val status: String,
     val rules: List<AdminAutoHideRule> = emptyList()
 )
 
+@Serializable
 data class AdminAutoHideRule(
     val id: Int,
     val name: String,
@@ -33,11 +39,13 @@ data class AdminAutoHideRule(
     val activated_at: String?
 )
 
+@Serializable
 data class AdminAutoHideConversionsResponse(
     val status: String,
     val conversions: List<AdminAutoHideConversion> = emptyList()
 )
 
+@Serializable
 data class AdminAutoHideConversion(
     val id: Int,
     val conversion_id: String,
@@ -51,6 +59,7 @@ data class AdminAutoHideConversion(
     val affiliate_code: String?
 )
 
+@Serializable
 data class AdminAutoHideCreateRequest(
     val name: String,
     val type: String,
@@ -61,11 +70,13 @@ data class AdminAutoHideCreateRequest(
     val apply_existing: Boolean = false
 )
 
+@Serializable
 data class AdminAutoHideActionRequest(
     val rule_id: Int? = null,
     val conversion_id: String? = null
 )
 
+@Serializable
 data class AdminAutoHideActionResponse(
     val status: String,
     val message: String? = null

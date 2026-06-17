@@ -1,5 +1,8 @@
 package com.example.affscash.data.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class AdminAffiliateReportResponse(
     val status: String,
     val rows: List<AdminAffiliateReportRow> = emptyList(),
@@ -8,6 +11,7 @@ data class AdminAffiliateReportResponse(
     val message: String? = null
 )
 
+@Serializable
 data class AdminAffiliateReportRow(
     val affiliate_id: Int,
     val affiliate_code: String,
@@ -30,6 +34,7 @@ data class AdminAffiliateReportRow(
     val registered_at: String?
 )
 
+@Serializable
 data class AdminAffiliateReportIpqsStats(
     val affiliate_id: Int,
     val total_checked: Int,
@@ -39,6 +44,7 @@ data class AdminAffiliateReportIpqsStats(
     val low_risk: Int
 )
 
+@Serializable
 data class AdminAffiliateReportTrafficRow(
     val click_id: String,
     val sub1: String?,
