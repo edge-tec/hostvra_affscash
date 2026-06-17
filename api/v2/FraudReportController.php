@@ -6,6 +6,11 @@ try {
     $affId = Auth::affiliateId();
     $riskSql = FraudAutoNotify::highRiskWhereSql('cv');
 
+    // Clear unread fraud alerts since they are viewing the report
+    try {
+        Database::query("UPDATE fraud_alerts SET is_read = 1 WHERE affiliate_id = ? AND is_read = 0", [$affId]);
+    } catch (\Throwable $e) {}
+
     // 30-day count for the summary card
     try {
         $count30 = (int)(Database::fetchOne(

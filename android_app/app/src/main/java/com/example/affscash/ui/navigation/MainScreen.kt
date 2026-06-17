@@ -37,6 +37,7 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     object Rewards : Screen("rewards", "Milestones", Icons.Filled.MonetizationOn)
     object Shop : Screen("shop", "Rewards Shop", Icons.Filled.LocalOffer) // Add Shop screen
     object News : Screen("news", "News", Icons.Filled.Article) // Add News screen
+    object Notifications : Screen("notifications", "Notifications", Icons.Filled.Notifications)
     object Chat : Screen("chat", "Chat", Icons.Filled.Chat)
 
     // Admin Screens
@@ -116,7 +117,8 @@ fun MainScreen(
                     onNavigateToInvoices = { navController.navigate(Screen.Invoices.route) },
                     onNavigateToFraudAlerts = { navController.navigate(Screen.FraudReport.route) },
                     onNavigateToChat = { navController.navigate(Screen.Chat.route) },
-                    onNavigateToNews = { navController.navigate(Screen.News.route) }
+                    onNavigateToNews = { navController.navigate(Screen.News.route) },
+                    onNavigateToNotifications = { navController.navigate(Screen.Notifications.route) }
                 ) 
             }
             composable(Screen.Offers.route) { OfferScreen(onOfferClick = {}) }
@@ -161,6 +163,11 @@ fun MainScreen(
             }
             composable(Screen.News.route) {
                 com.example.affscash.ui.news.NewsScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(Screen.Notifications.route) {
+                com.example.affscash.ui.notifications.NotificationsScreen(
                     onNavigateBack = { navController.popBackStack() }
                 )
             }

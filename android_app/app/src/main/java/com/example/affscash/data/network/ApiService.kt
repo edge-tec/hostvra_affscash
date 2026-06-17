@@ -402,4 +402,10 @@ interface ApiService {
     @POST("api/v2/news?action=mark_all_read")
     suspend fun markAllNewsAsRead(): Response<SimpleResponse>
 
+    @GET("api/v2/notifications?action=list")
+    suspend fun getNotifications(): Response<NotificationsResponse>
+
+    @POST("api/v2/notifications?action=mark_read")
+    suspend fun markNotificationAsRead(@Body request: MarkNotificationRequest): Response<SimpleResponse>
+
 }
