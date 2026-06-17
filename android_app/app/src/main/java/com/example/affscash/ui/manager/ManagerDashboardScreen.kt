@@ -3,7 +3,6 @@ package com.example.affscash.ui.manager
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -45,25 +44,7 @@ import com.patrykandpatrick.vico.core.entry.ChartEntryModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.Date
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.affscash.R
-import com.example.affscash.ui.dashboard.ManagerDashboardViewModel
-import com.example.affscash.ui.dashboard.HeaderIconWithBadge
-import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
-import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
-import com.patrykandpatrick.vico.compose.chart.Chart
-import com.patrykandpatrick.vico.compose.chart.line.lineChart
-import com.patrykandpatrick.vico.core.chart.line.LineChart
-import com.patrykandpatrick.vico.core.entry.entryModelOf
-import com.patrykandpatrick.vico.core.entry.FloatEntry
-import com.patrykandpatrick.vico.core.entry.ChartEntryModel
+
 import kotlin.math.abs
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -233,6 +214,9 @@ fun ManagerDashboardScreen(
                         } else {
                             Text("No trend data available for this period.")
                         }
+                    }
+                }
+
                 item {
                     if (uiState.isLoadingExtra) {
                         CircularProgressIndicator(modifier = Modifier.padding(vertical = 16.dp))
@@ -276,7 +260,7 @@ fun ManagerDashboardScreen(
                                             Text(c.country.ifBlank { "Unknown" }, fontWeight = FontWeight.Medium)
                                             Text("C: ${c.clicks} | Cv: ${c.conv}", color = Color.Gray)
                                         }
-                                        Divider(color = MaterialTheme.colorScheme.surfaceVariant)
+                                        HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
                                     }
                                 }
                             }
@@ -312,7 +296,7 @@ fun ManagerDashboardScreen(
                         Spacer(modifier = Modifier.height(24.dp))
                         
                         // Top Offers & Top Affiliates
-                        if (extra.topOffers.isNotEmpty()) {
+                        if (extra.offers.isNotEmpty()) {
                             Text("Top Offers", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.height(8.dp))
                             Card(
@@ -321,7 +305,7 @@ fun ManagerDashboardScreen(
                                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                             ) {
                                 Column(modifier = Modifier.padding(16.dp)) {
-                                    extra.topOffers.take(5).forEach { o ->
+                                    extra.offers.take(5).forEach { o ->
                                         Row(
                                             modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                                             horizontalArrangement = Arrangement.SpaceBetween
@@ -329,14 +313,14 @@ fun ManagerDashboardScreen(
                                             Text(o.name.ifBlank { "Offer #${o.id}" }, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
                                             Text("C: ${o.clicks} | Cv: ${o.conv}", color = Color.Gray, modifier = Modifier.padding(start = 8.dp))
                                         }
-                                        Divider(color = MaterialTheme.colorScheme.surfaceVariant)
+                                        HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
                                     }
                                 }
                             }
                             Spacer(modifier = Modifier.height(24.dp))
                         }
 
-                        if (extra.topAffiliates.isNotEmpty()) {
+                        if (extra.affiliates.isNotEmpty()) {
                             Text("Top Affiliates", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.height(8.dp))
                             Card(
@@ -345,7 +329,7 @@ fun ManagerDashboardScreen(
                                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                             ) {
                                 Column(modifier = Modifier.padding(16.dp)) {
-                                    extra.topAffiliates.take(5).forEach { a ->
+                                    extra.affiliates.take(5).forEach { a ->
                                         Row(
                                             modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                                             horizontalArrangement = Arrangement.SpaceBetween
@@ -353,7 +337,7 @@ fun ManagerDashboardScreen(
                                             Text(a.name.ifBlank { "Affiliate #${a.id}" }, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
                                             Text("C: ${a.clicks} | Cv: ${a.conv}", color = Color.Gray, modifier = Modifier.padding(start = 8.dp))
                                         }
-                                        Divider(color = MaterialTheme.colorScheme.surfaceVariant)
+                                        HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
                                     }
                                 }
                             }
@@ -381,7 +365,7 @@ fun ManagerDashboardScreen(
                                             Text("IP: ${fc.ipAddress ?: "N/A"}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                                             Text(fc.convertedAt, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                                         }
-                                        Divider(color = Color(0xFFFECACA))
+                                        HorizontalDivider(color = Color(0xFFFECACA))
                                     }
                                 }
                             }
@@ -413,7 +397,7 @@ fun ManagerDashboardScreen(
                                             Text(rc.affName ?: "Unknown Affiliate", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                                             Text(rc.convertedAt, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                                         }
-                                        Divider(color = MaterialTheme.colorScheme.surfaceVariant)
+                                        HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
                                     }
                                 }
                             }

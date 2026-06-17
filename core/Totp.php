@@ -53,11 +53,7 @@ final class Totp
      */
     public static function qrCodeUrl(string $otpauthUri, int $size = 220): string
     {
-        return 'https://api.qrserver.com/v1/create-qr-code/'
-             . '?size=' . $size . 'x' . $size
-             . '&ecc=M'
-             . '&margin=8'
-             . '&data=' . rawurlencode($otpauthUri);
+        return 'https://quickchart.io/qr?size=' . $size . 'x' . $size . '&margin=2&text=' . rawurlencode($otpauthUri);
     }
 
     // ── Code computation / verification ─────────────────────────────────────

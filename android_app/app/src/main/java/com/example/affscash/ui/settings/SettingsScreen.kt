@@ -722,7 +722,10 @@ fun TwoFactorTab(isEnabled: Boolean, viewModel: SettingsViewModel) {
             Text("1. Scan this QR code with Google Authenticator or Authy.")
             Spacer(modifier = Modifier.height(8.dp))
             AsyncImage(
-                model = qrUrl,
+                model = coil.request.ImageRequest.Builder(LocalContext.current)
+                    .data(qrUrl)
+                    .crossfade(true)
+                    .build(),
                 contentDescription = "QR Code",
                 modifier = Modifier.size(200.dp).align(Alignment.CenterHorizontally)
             )

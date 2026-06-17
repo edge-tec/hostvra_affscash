@@ -454,7 +454,10 @@ fun GoogleAuthenticatorTabContent(
                     } else {
                         Text("1. Scan this QR Code with Google Authenticator app:")
                         AsyncImage(
-                            model = qrUrl,
+                            model = coil.request.ImageRequest.Builder(LocalContext.current)
+                                .data(qrUrl)
+                                .crossfade(true)
+                                .build(),
                             contentDescription = "QR Code",
                             modifier = Modifier.size(200.dp).align(Alignment.CenterHorizontally)
                         )
