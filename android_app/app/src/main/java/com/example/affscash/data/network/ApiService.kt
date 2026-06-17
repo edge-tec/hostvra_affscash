@@ -17,6 +17,9 @@ import com.example.affscash.data.model.InvoiceResponse
 import com.example.affscash.data.model.AffiliateActionRequest
 import com.example.affscash.data.model.ManagerAffiliateActionRequest
 import com.example.affscash.data.model.ImpersonateResponse
+import com.example.affscash.data.model.ChatMessagesResponse
+import com.example.affscash.data.model.SendChatMessageRequest
+import com.example.affscash.data.model.SendChatMessageResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -154,4 +157,10 @@ interface ApiService {
 
     @GET("api/v2/rewards")
     suspend fun getRewards(): Response<com.example.affscash.data.model.RewardsResponse>
+
+    @GET("api/v2/chat")
+    suspend fun getChatMessages(@Query("action") action: String = "messages"): Response<ChatMessagesResponse>
+
+    @POST("api/v2/chat")
+    suspend fun sendChatMessage(@Body request: SendChatMessageRequest): Response<SendChatMessageResponse>
 }

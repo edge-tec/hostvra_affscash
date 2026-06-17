@@ -475,6 +475,7 @@ Router::any('/api/v2/fraud-report', function() { require BASE_PATH . '/api/v2/Fr
 Router::any('/api/v2/rewards', function() { require BASE_PATH . '/api/v2/RewardsController.php'; });
 Router::any('/api/v2/invoices', function() { require BASE_PATH . '/api/v2/InvoiceController.php'; });
 Router::any('/api/v2/settings', function() { require BASE_PATH . '/api/v2/SettingsController.php'; });
+Router::any('/api/v2/chat', function() { require BASE_PATH . '/api/v2/ChatController.php'; });
 
 // Native App API Routes (v2) - Admin
 Router::any('/api/v2/admin/dashboard', function() { require BASE_PATH . '/api/v2/admin/DashboardController.php'; });

@@ -3,6 +3,7 @@ package com.example.affscash.ui.navigation
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Assessment
+import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocalOffer
 import androidx.compose.material.icons.filled.Link
@@ -33,6 +34,7 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     object AffiliateSettings : Screen("affiliate_settings", "Settings", Icons.Filled.Settings)
     object FraudReport : Screen("fraud_report", "Fraud Report", Icons.Filled.Assessment)
     object Rewards : Screen("rewards", "Rewards", Icons.Filled.MonetizationOn)
+    object Chat : Screen("chat", "Chat", Icons.Filled.Chat)
 
     // Admin Screens
     object AdminDashboard : Screen("admin_dashboard", "Dashboard", Icons.Filled.Home)
@@ -105,7 +107,8 @@ fun MainScreen(
             composable(Screen.Dashboard.route) { 
                 DashboardScreen(
                     onNavigateToInvoices = { navController.navigate(Screen.Invoices.route) },
-                    onNavigateToFraudAlerts = { navController.navigate(Screen.FraudReport.route) }
+                    onNavigateToFraudAlerts = { navController.navigate(Screen.FraudReport.route) },
+                    onNavigateToChat = { navController.navigate(Screen.Chat.route) }
                 ) 
             }
             composable(Screen.Offers.route) { OfferScreen(onOfferClick = {}) }
@@ -135,6 +138,11 @@ fun MainScreen(
             }
             composable(Screen.Rewards.route) {
                 com.example.affscash.ui.rewards.RewardsScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(Screen.Chat.route) {
+                com.example.affscash.ui.chat.ChatScreen(
                     onNavigateBack = { navController.popBackStack() }
                 )
             }

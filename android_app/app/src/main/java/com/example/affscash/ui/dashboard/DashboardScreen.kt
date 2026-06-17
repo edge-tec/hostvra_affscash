@@ -114,7 +114,7 @@ fun DashboardScreen(
                         icon = Icons.Outlined.ChatBubbleOutline,
                         count = counts?.unreadChats ?: 0,
                         badgeColor = Color(0xFFEF4444),
-                        onClick = { android.widget.Toast.makeText(context, "Chat coming soon", android.widget.Toast.LENGTH_SHORT).show() }
+                        onClick = onNavigateToChat
                     )
                 },
 
