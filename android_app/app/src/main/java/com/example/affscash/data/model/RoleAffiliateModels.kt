@@ -27,9 +27,14 @@ data class AdminAffiliate(
 )
 
 @Serializable
+data class ManagerAffiliateData(
+    val affiliates: List<ManagerAffiliate> = emptyList()
+)
+
+@Serializable
 data class ManagerAffiliateResponse(
     val success: Boolean,
-    val data: List<ManagerAffiliate> = emptyList(),
+    val data: ManagerAffiliateData? = null,
     val error: String? = null
 )
 

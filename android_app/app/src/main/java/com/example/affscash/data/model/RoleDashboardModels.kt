@@ -12,19 +12,19 @@ data class AdminDashboardResponse(
 
 @Serializable
 data class AdminDashboardData(
-    @SerialName("total_affiliates") val totalAffiliates: Int,
-    @SerialName("pending_affiliates") val pendingAffiliates: Int,
-    @SerialName("total_advertisers") val totalAdvertisers: Int,
-    @SerialName("total_offers") val totalOffers: Int,
-    @SerialName("profit_summary") val profitSummary: AdminProfitSummary,
+    @SerialName("total_affiliates") val totalAffiliates: Int = 0,
+    @SerialName("pending_affiliates") val pendingAffiliates: Int = 0,
+    @SerialName("total_advertisers") val totalAdvertisers: Int = 0,
+    @SerialName("total_offers") val totalOffers: Int = 0,
+    @SerialName("profit_summary") val profitSummary: AdminProfitSummary? = null,
     @SerialName("top_profit_offers") val topProfitOffers: List<AdminTopOffer> = emptyList()
 )
 
 @Serializable
 data class AdminProfitSummary(
-    @SerialName("total_revenue") val totalRevenue: Double,
-    @SerialName("total_payout") val totalPayout: Double,
-    @SerialName("total_profit") val totalProfit: Double
+    @SerialName("total_revenue") val totalRevenue: Double = 0.0,
+    @SerialName("total_payout") val totalPayout: Double = 0.0,
+    @SerialName("total_profit") val totalProfit: Double = 0.0
 )
 
 @Serializable
