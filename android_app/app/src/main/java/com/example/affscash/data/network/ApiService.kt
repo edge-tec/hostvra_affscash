@@ -17,6 +17,78 @@ interface ApiService {
     @GET("api/v2/dashboard")
     suspend fun getDashboard(): Response<DashboardResponse>
 
+    @GET("api/affiliate-analytics?action=stats")
+    suspend fun getAffiliateAnalyticsStats(
+        @Query("from") from: String,
+        @Query("to") to: String,
+        @Query("offer_id") offerId: Int? = null,
+        @Query("country") country: String? = null,
+        @Query("device") device: String? = null
+    ): Response<DashboardAnalyticsStatsResponse>
+
+    @GET("api/affiliate-analytics?action=trend")
+    suspend fun getAffiliateAnalyticsTrend(
+        @Query("from") from: String,
+        @Query("to") to: String,
+        @Query("offer_id") offerId: Int? = null,
+        @Query("country") country: String? = null,
+        @Query("device") device: String? = null
+    ): Response<DashboardTrendChartResponse>
+
+    @GET("api/affiliate-analytics?action=devices")
+    suspend fun getAffiliateAnalyticsDevices(
+        @Query("from") from: String,
+        @Query("to") to: String,
+        @Query("offer_id") offerId: Int? = null,
+        @Query("country") country: String? = null,
+        @Query("device") device: String? = null
+    ): Response<DashboardPieChartResponse>
+
+    @GET("api/affiliate-analytics?action=browsers")
+    suspend fun getAffiliateAnalyticsBrowsers(
+        @Query("from") from: String,
+        @Query("to") to: String,
+        @Query("offer_id") offerId: Int? = null,
+        @Query("country") country: String? = null,
+        @Query("device") device: String? = null
+    ): Response<DashboardPieChartResponse>
+
+    @GET("api/affiliate-analytics?action=sources")
+    suspend fun getAffiliateAnalyticsSources(
+        @Query("from") from: String,
+        @Query("to") to: String,
+        @Query("offer_id") offerId: Int? = null,
+        @Query("country") country: String? = null,
+        @Query("device") device: String? = null
+    ): Response<DashboardPieChartResponse>
+
+    @GET("api/affiliate-analytics?action=hourly")
+    suspend fun getAffiliateAnalyticsHourly(
+        @Query("from") from: String,
+        @Query("to") to: String,
+        @Query("offer_id") offerId: Int? = null,
+        @Query("country") country: String? = null,
+        @Query("device") device: String? = null
+    ): Response<DashboardHourlyResponse>
+
+    @GET("api/affiliate-analytics?action=countries")
+    suspend fun getAffiliateAnalyticsCountries(
+        @Query("from") from: String,
+        @Query("to") to: String,
+        @Query("offer_id") offerId: Int? = null,
+        @Query("country") country: String? = null,
+        @Query("device") device: String? = null
+    ): Response<DashboardCountriesResponse>
+
+    @GET("api/affiliate-analytics?action=offers")
+    suspend fun getAffiliateAnalyticsOffers(
+        @Query("from") from: String,
+        @Query("to") to: String,
+        @Query("offer_id") offerId: Int? = null,
+        @Query("country") country: String? = null,
+        @Query("device") device: String? = null
+    ): Response<DashboardOffersResponse>
+
     @GET("api/v2/admin/dashboard")
     suspend fun getAdminDashboard(): Response<AdminDashboardResponse>
 

@@ -5,6 +5,12 @@ import com.example.affscash.data.model.AdminDashboardResponse
 import com.example.affscash.data.model.ManagerDashboardResponse
 import com.example.affscash.data.model.ManagerTrendResponse
 import com.example.affscash.data.model.ManagerFiltersResponse
+import com.example.affscash.data.model.DashboardAnalyticsStatsResponse
+import com.example.affscash.data.model.DashboardTrendChartResponse
+import com.example.affscash.data.model.DashboardPieChartResponse
+import com.example.affscash.data.model.DashboardHourlyResponse
+import com.example.affscash.data.model.DashboardCountriesResponse
+import com.example.affscash.data.model.DashboardOffersResponse
 import com.example.affscash.data.network.ApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -28,6 +34,70 @@ class DashboardRepository @Inject constructor(
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+
+    suspend fun getAffiliateStats(from: String, to: String, offerId: Int? = null, country: String? = null, device: String? = null): Result<DashboardAnalyticsStatsResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.getAffiliateAnalyticsStats(from, to, offerId, country, device)
+            if (response.isSuccessful) response.body()?.let { return@withContext Result.success(it) }
+            Result.failure(Exception("Failed to fetch stats"))
+        } catch (e: Exception) { Result.failure(e) }
+    }
+
+    suspend fun getAffiliateTrend(from: String, to: String, offerId: Int? = null, country: String? = null, device: String? = null): Result<DashboardTrendChartResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.getAffiliateAnalyticsTrend(from, to, offerId, country, device)
+            if (response.isSuccessful) response.body()?.let { return@withContext Result.success(it) }
+            Result.failure(Exception("Failed to fetch trend"))
+        } catch (e: Exception) { Result.failure(e) }
+    }
+
+    suspend fun getAffiliateDevices(from: String, to: String, offerId: Int? = null, country: String? = null, device: String? = null): Result<DashboardPieChartResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.getAffiliateAnalyticsDevices(from, to, offerId, country, device)
+            if (response.isSuccessful) response.body()?.let { return@withContext Result.success(it) }
+            Result.failure(Exception("Failed to fetch devices"))
+        } catch (e: Exception) { Result.failure(e) }
+    }
+
+    suspend fun getAffiliateBrowsers(from: String, to: String, offerId: Int? = null, country: String? = null, device: String? = null): Result<DashboardPieChartResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.getAffiliateAnalyticsBrowsers(from, to, offerId, country, device)
+            if (response.isSuccessful) response.body()?.let { return@withContext Result.success(it) }
+            Result.failure(Exception("Failed to fetch browsers"))
+        } catch (e: Exception) { Result.failure(e) }
+    }
+
+    suspend fun getAffiliateSources(from: String, to: String, offerId: Int? = null, country: String? = null, device: String? = null): Result<DashboardPieChartResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.getAffiliateAnalyticsSources(from, to, offerId, country, device)
+            if (response.isSuccessful) response.body()?.let { return@withContext Result.success(it) }
+            Result.failure(Exception("Failed to fetch sources"))
+        } catch (e: Exception) { Result.failure(e) }
+    }
+
+    suspend fun getAffiliateHourly(from: String, to: String, offerId: Int? = null, country: String? = null, device: String? = null): Result<DashboardHourlyResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.getAffiliateAnalyticsHourly(from, to, offerId, country, device)
+            if (response.isSuccessful) response.body()?.let { return@withContext Result.success(it) }
+            Result.failure(Exception("Failed to fetch hourly"))
+        } catch (e: Exception) { Result.failure(e) }
+    }
+
+    suspend fun getAffiliateCountries(from: String, to: String, offerId: Int? = null, country: String? = null, device: String? = null): Result<DashboardCountriesResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.getAffiliateAnalyticsCountries(from, to, offerId, country, device)
+            if (response.isSuccessful) response.body()?.let { return@withContext Result.success(it) }
+            Result.failure(Exception("Failed to fetch countries"))
+        } catch (e: Exception) { Result.failure(e) }
+    }
+
+    suspend fun getAffiliateOffers(from: String, to: String, offerId: Int? = null, country: String? = null, device: String? = null): Result<DashboardOffersResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.getAffiliateAnalyticsOffers(from, to, offerId, country, device)
+            if (response.isSuccessful) response.body()?.let { return@withContext Result.success(it) }
+            Result.failure(Exception("Failed to fetch offers"))
+        } catch (e: Exception) { Result.failure(e) }
     }
 
     suspend fun getAdminDashboardData(): Result<AdminDashboardResponse> = withContext(Dispatchers.IO) {
