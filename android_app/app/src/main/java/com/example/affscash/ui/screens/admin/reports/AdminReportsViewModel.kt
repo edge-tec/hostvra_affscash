@@ -6,6 +6,7 @@ import com.example.affscash.data.model.AdminReportFilterOption
 import com.example.affscash.data.model.AdminReportTotals
 import com.example.affscash.data.repository.AdminReportRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.serialization.json.JsonObject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,7 +37,7 @@ data class AdminReportsState(
     
     // Data
     val totals: AdminReportTotals? = null,
-    val rows: List<Map<String, Any>> = emptyList(),
+    val rows: List<JsonObject> = emptyList(),
     val error: String? = null
 )
 

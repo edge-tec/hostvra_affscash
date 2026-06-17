@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.affscash.ui.components.CustomDropdownMenu
+import kotlinx.serialization.json.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -173,50 +174,50 @@ fun StatCard(label: String, value: String, valueColor: Color = Color.Unspecified
 }
 
 @Composable
-fun ReportRowCard(tab: String, row: Map<String, Any>) {
+fun ReportRowCard(tab: String, row: JsonObject) {
     Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
         Column(modifier = Modifier.padding(12.dp)) {
             when (tab) {
                 "performance" -> {
-                    Text(row["label"]?.toString() ?: "Unknown", fontWeight = FontWeight.Bold)
+                    Text(row["label"].asString("Unknown"), fontWeight = FontWeight.Bold)
                     Spacer(Modifier.height(4.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text("Clicks: ${row["clicks"]}", style = MaterialTheme.typography.bodySmall)
-                        Text("Conv: ${row["conversions"]}", style = MaterialTheme.typography.bodySmall)
-                        Text("Profit: $${row["revenue"].toString().toDoubleOrNull()?.minus(row["payout"].toString().toDoubleOrNull() ?: 0.0) ?: 0.0}", style = MaterialTheme.typography.bodySmall)
+                        Text("Clicks: ${row["clicks"].asString()}", style = MaterialTheme.typography.bodySmall)
+                        Text("Conv: ${row["conversions"].asString()}", style = MaterialTheme.typography.bodySmall)
+                        Text("Profit: $${row["revenue"].asDouble() - row["payout"].asDouble()}", style = MaterialTheme.typography.bodySmall)
                     }
                 }
                 "offer_report" -> {
-                    Text(row["offer_name"]?.toString() ?: "Unknown Offer", fontWeight = FontWeight.Bold)
-                    Text("Status: ${row["offer_status"]}", style = MaterialTheme.typography.labelSmall)
+                    Text(row["offer_name"].asString("Unknown Offer"), fontWeight = FontWeight.Bold)
+                    Text("Status: ${row["offer_status"].asString()}", style = MaterialTheme.typography.labelSmall)
                     Spacer(Modifier.height(4.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text("Clicks: ${row["clicks"]}", style = MaterialTheme.typography.bodySmall)
-                        Text("Conv: ${row["conversions"]}", style = MaterialTheme.typography.bodySmall)
-                        Text("Payout: $${row["payout"]}", style = MaterialTheme.typography.bodySmall)
+                        Text("Clicks: ${row["clicks"].asString()}", style = MaterialTheme.typography.bodySmall)
+                        Text("Conv: ${row["conversions"].asString()}", style = MaterialTheme.typography.bodySmall)
+                        Text("Payout: $${row["payout"].asString()}", style = MaterialTheme.typography.bodySmall)
                     }
                 }
                 "clicks", "sl_clicks" -> {
-                    Text("IP: ${row["ip_address"]}", fontWeight = FontWeight.Bold)
-                    Text("Offer: ${row["offer_name"]}", style = MaterialTheme.typography.bodySmall)
-                    Text("Time: ${row["clicked_at"]}", style = MaterialTheme.typography.bodySmall)
+                    Text("IP: ${row["ip_address"].asString()}", fontWeight = FontWeight.Bold)
+                    Text("Offer: ${row["offer_name"].asString()}", style = MaterialTheme.typography.bodySmall)
+                    Text("Time: ${row["clicked_at"].asString()}", style = MaterialTheme.typography.bodySmall)
                 }
                 "conversions", "rejected", "pending", "autohide", "sl_conversions" -> {
-                    Text("Conv ID: ${row["conversion_id"]}", fontWeight = FontWeight.Bold)
-                    Text("Offer: ${row["offer_name"]}", style = MaterialTheme.typography.bodySmall)
-                    Text("Payout: $${row["payout"]} | Status: ${row["status"]}", style = MaterialTheme.typography.bodySmall)
+                    Text("Conv ID: ${row["conversion_id"].asString()}", fontWeight = FontWeight.Bold)
+                    Text("Offer: ${row["offer_name"].asString()}", style = MaterialTheme.typography.bodySmall)
+                    Text("Payout: $${row["payout"].asString()} | Status: ${row["status"].asString()}", style = MaterialTheme.typography.bodySmall)
                 }
                 "postback" -> {
-                    Text("URL: ${row["fired_url"]?.toString()?.take(50)}...", fontWeight = FontWeight.Bold)
-                    Text("Status: ${row["http_status"]} | Success: ${row["is_success"]}", style = MaterialTheme.typography.bodySmall)
+                    Text("URL: ${row["fired_url"].asString().take(50)}...", fontWeight = FontWeight.Bold)
+                    Text("Status: ${row["http_status"].asString()} | Success: ${row["is_success"].asString()}", style = MaterialTheme.typography.bodySmall)
                 }
                 "sl_affiliates" -> {
-                    Text("Affiliate: ${row["aff_name"]}", fontWeight = FontWeight.Bold)
-                    Text("SmartLink: ${row["smartlink_name"]}", style = MaterialTheme.typography.bodySmall)
+                    Text("Affiliate: ${row["aff_name"].asString()}", fontWeight = FontWeight.Bold)
+                    Text("SmartLink: ${row["smartlink_name"].asString()}", style = MaterialTheme.typography.bodySmall)
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text("Clicks: ${row["clicks"]}", style = MaterialTheme.typography.bodySmall)
-                        Text("Conv: ${row["conversions"]}", style = MaterialTheme.typography.bodySmall)
-                        Text("Payout: $${row["payout"]}", style = MaterialTheme.typography.bodySmall)
+                        Text("Clicks: ${row["clicks"].asString()}", style = MaterialTheme.typography.bodySmall)
+                        Text("Conv: ${row["conversions"].asString()}", style = MaterialTheme.typography.bodySmall)
+                        Text("Payout: $${row["payout"].asString()}", style = MaterialTheme.typography.bodySmall)
                     }
                 }
                 else -> {
@@ -225,6 +226,14 @@ fun ReportRowCard(tab: String, row: Map<String, Any>) {
             }
         }
     }
+}
+
+private fun JsonElement?.asString(default: String = ""): String {
+    return this?.jsonPrimitive?.contentOrNull ?: default
+}
+
+private fun JsonElement?.asDouble(): Double {
+    return this?.jsonPrimitive?.doubleOrNull ?: 0.0
 }
 
 fun getTabIndex(tab: String): Int {
