@@ -603,7 +603,7 @@ interface ApiService {
     @POST("api/v2/admin/affiliate-managers?action=delete")
     suspend fun deleteAdminAffiliateManager(@Body request: com.example.affscash.data.model.AdminAffiliateManagerDeleteRequest): com.example.affscash.data.model.AdminAffiliateManagerDeleteResponse
 
-    @POST("api/v2/admin/affiliate-managers")
+    @POST("api/v2/admin/affiliate-managers?action=impersonate")
     suspend fun impersonateAdminAffiliateManager(@Body request: com.example.affscash.data.model.AdminAffiliateManagerImpersonateRequest): com.example.affscash.data.model.AuthResponse
 
     // --- ADMIN: Platform Settings ---
