@@ -601,4 +601,11 @@ interface ApiService {
 
     @POST("api/v2/admin/affiliate-managers?action=delete")
     suspend fun deleteAdminAffiliateManager(@Body request: com.example.affscash.data.model.AdminAffiliateManagerDeleteRequest): com.example.affscash.data.model.AdminAffiliateManagerDeleteResponse
+
+    // --- ADMIN: Platform Settings ---
+    @GET("api/v2/admin/settings")
+    suspend fun getAdminPlatformSettings(): com.example.affscash.data.model.AdminPlatformSettingsResponse
+
+    @POST("api/v2/admin/settings")
+    suspend fun updateAdminPlatformSettings(@Body request: com.example.affscash.data.model.AdminPlatformSettingsRequest): com.example.affscash.data.model.GenericResponse
 }
