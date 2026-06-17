@@ -492,6 +492,7 @@ Router::any('/api/v2/manager/affiliates', function() { require BASE_PATH . '/api
 Router::any('/api/v2/manager/affiliate-actions', function() { require BASE_PATH . '/api/v2/manager/AffiliateActionController.php'; });
 Router::any('/api/v2/manager/conversions', function() { require BASE_PATH . '/api/v2/manager/ConversionController.php'; });
 Router::any('/api/v2/manager/invoices', function() { require BASE_PATH . '/api/v2/manager/InvoiceController.php'; });
+Router::any('/api/v2/manager/profile', function() { require BASE_PATH . '/api/v2/manager/ProfileController.php'; });
 Router::any('/api/v2/manager/reports', function() { require BASE_PATH . '/api/v2/manager/ReportController.php'; });
 Router::any('/api/v2/manager/smartlinks', function() { require BASE_PATH . '/api/v2/manager/SmartlinkController.php'; });
 Router::any('/api/v2/manager/offer-approvals', function() { require BASE_PATH . '/api/v2/manager/OfferApprovalController.php'; });

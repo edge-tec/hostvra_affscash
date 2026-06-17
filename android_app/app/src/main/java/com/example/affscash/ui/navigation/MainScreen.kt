@@ -234,7 +234,7 @@ fun MainScreen(
             }
             composable(Screen.ManagerReports.route) { com.example.affscash.ui.manager.ManagerReportsScreen() }
             composable(Screen.ManagerInvoices.route) { com.example.affscash.ui.manager.ManagerInvoicesScreen() }
-            composable(Screen.ManagerSettings.route) { com.example.affscash.ui.settings.SettingsScreen(role, onLogout, onRoleChange = onRoleChange) }
+            composable(Screen.ManagerSettings.route) { com.example.affscash.ui.manager.ManagerProfileScreen(onLogout = onLogout) }
         }
     }
 }

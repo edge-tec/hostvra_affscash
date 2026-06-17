@@ -26,9 +26,10 @@ import com.example.affscash.data.model.ReviewOfferApprovalRequest
 import com.example.affscash.data.model.DefaultResponse
 import com.example.affscash.data.model.DuplicateConversionsResponse
 import okhttp3.MultipartBody
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
+import retrofit2.http.*
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
@@ -133,6 +134,39 @@ interface ApiService {
 
     @GET("api/v2/manager/invoices")
     suspend fun getManagerInvoices(): Response<com.example.affscash.data.model.ManagerInvoicesResponse>
+
+    // --- Manager Profile ---
+    @GET("api/v2/manager/profile?action=load")
+    suspend fun getManagerProfile(): Response<com.example.affscash.data.model.ManagerProfileResponse>
+
+    @Multipart
+    @POST("api/v2/manager/profile?action=update_profile")
+    suspend fun updateManagerProfile(
+        @Part("first_name") firstName: RequestBody,
+        @Part("last_name") lastName: RequestBody,
+        @Part("email") email: RequestBody,
+        @Part("company") company: RequestBody?,
+        @Part("phone") phone: RequestBody?,
+        @Part("skype") skype: RequestBody?,
+        @Part("telegram") telegram: RequestBody?,
+        @Part("discord") discord: RequestBody?,
+        @Part profilePic: MultipartBody.Part?
+    ): Response<com.example.affscash.data.model.SimpleResponse>
+
+    @POST("api/v2/manager/profile?action=update_security")
+    suspend fun updateManagerSecurity(@Body request: Map<String, String>): Response<com.example.affscash.data.model.SimpleResponse>
+
+    @POST("api/v2/manager/profile?action=update_payment")
+    suspend fun updateManagerPayment(@Body request: Map<String, String>): Response<com.example.affscash.data.model.SimpleResponse>
+
+    @POST("api/v2/manager/profile?action=2fa_start")
+    suspend fun startManager2fa(): Response<com.example.affscash.data.model.TwoFactorStartResponse>
+
+    @POST("api/v2/manager/profile?action=2fa_verify")
+    suspend fun verifyManager2fa(@Body request: Map<String, String>): Response<com.example.affscash.data.model.SimpleResponse>
+
+    @POST("api/v2/manager/profile?action=2fa_disable")
+    suspend fun disableManager2fa(@Body request: Map<String, String>): Response<com.example.affscash.data.model.SimpleResponse>
 
     @GET("api/v2/offers")
     suspend fun getOffers(
