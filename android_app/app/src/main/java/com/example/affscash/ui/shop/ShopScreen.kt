@@ -28,6 +28,9 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import android.net.Uri
 import androidx.compose.material.icons.filled.Image
+import androidx.core.text.HtmlCompat
+import android.widget.TextView
+import androidx.compose.ui.viewinterop.AndroidView
 import com.example.affscash.data.model.ShopOrder
 import com.example.affscash.data.model.ShopProduct
 
@@ -219,6 +222,7 @@ fun ProductCard(
             SubcomposeAsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(imageUrl)
+                    .addHeader("User-Agent", "Mozilla/5.0 (Linux; Android 13; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36")
                     .crossfade(true)
                     .build(),
                 contentDescription = product.name,
@@ -252,12 +256,19 @@ fun ProductCard(
 
             if (!product.description.isNullOrEmpty()) {
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = product.description,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis
+                AndroidView(
+                    factory = { context ->
+                        TextView(context).apply {
+                            text = HtmlCompat.fromHtml(product.description, HtmlCompat.FROM_HTML_MODE_COMPACT).toString()
+                            textSize = 12f
+                            setTextColor(android.graphics.Color.GRAY)
+                            maxLines = 3
+                            ellipsize = android.text.TextUtils.TruncateAt.END
+                        }
+                    },
+                    update = { textView ->
+                        textView.text = HtmlCompat.fromHtml(product.description, HtmlCompat.FROM_HTML_MODE_COMPACT).toString()
+                    }
                 )
             }
 

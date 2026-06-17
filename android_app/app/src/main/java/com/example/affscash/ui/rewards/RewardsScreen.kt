@@ -6,8 +6,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
+import java.util.Locale
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,9 +19,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
+import androidx.core.graphics.toColorInt
 import android.widget.TextView
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
+import coil.request.ImageRequest
+import androidx.compose.ui.platform.LocalContext
 import android.net.Uri
 import androidx.compose.material.icons.filled.Image
 import com.example.affscash.data.model.RewardRule
@@ -41,7 +46,7 @@ fun RewardsScreen(
                 title = { Text("My Rewards") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -175,8 +180,8 @@ fun NextMilestoneCard(rule: RewardRule, earned: Double) {
             )
             Spacer(modifier = Modifier.height(8.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(text = "$${String.format("%.2f", earned)} earned", fontSize = 12.sp, color = Color.Gray)
-                Text(text = "$${String.format("%.2f", rule.thresholdUsd)} goal", fontSize = 12.sp, color = Color.Gray)
+                Text(text = "$${String.format(Locale.US, "%.2f", earned)} earned", fontSize = 12.sp, color = Color.Gray)
+                Text(text = "$${String.format(Locale.US, "%.2f", rule.thresholdUsd)} goal", fontSize = 12.sp, color = Color.Gray)
             }
         }
     }
@@ -197,7 +202,11 @@ fun AvailableRewardItem(rule: RewardRule) {
                 val cleanPath = rule.imagePath.removePrefix("/")
                 val fullImageUrl = if (cleanPath.startsWith("http")) cleanPath else "https://affscash.net/" + Uri.encode(cleanPath, "/")
                 SubcomposeAsyncImage(
-                    model = fullImageUrl,
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(fullImageUrl)
+                        .addHeader("User-Agent", "Mozilla/5.0 (Linux; Android 13; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36")
+                        .crossfade(true)
+                        .build(),
                     contentDescription = rule.title,
                     modifier = Modifier.size(60.dp),
                     loading = {
@@ -241,8 +250,8 @@ fun AvailableRewardItem(rule: RewardRule) {
 
 fun parseColor(colorString: String): Color {
     return try {
-        Color(android.graphics.Color.parseColor(colorString))
-    } catch (e: Exception) {
+        Color(colorString.toColorInt())
+    } catch (_: Exception) {
         Purple40
     }
 }

@@ -27,10 +27,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
-import android.net.Uri
 import androidx.compose.material.icons.filled.Image
 import androidx.core.text.HtmlCompat
 import android.widget.TextView
@@ -146,6 +144,7 @@ fun NewsScreen(
                         SubcomposeAsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
                                 .data(imageUrl)
+                                .addHeader("User-Agent", "Mozilla/5.0 (Linux; Android 13; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36")
                                 .crossfade(true)
                                 .build(),
                             contentDescription = news.title,
@@ -223,6 +222,7 @@ fun NewsCard(newsItem: NewsItem, onClick: () -> Unit) {
                 SubcomposeAsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(imageUrl)
+                        .addHeader("User-Agent", "Mozilla/5.0 (Linux; Android 13; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36")
                         .crossfade(true)
                         .build(),
                     contentDescription = newsItem.title,
