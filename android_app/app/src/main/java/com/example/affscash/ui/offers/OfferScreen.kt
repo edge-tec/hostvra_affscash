@@ -43,6 +43,9 @@ fun OfferScreen(
     var promoDesc by remember { mutableStateOf("") }
     var applyLoading by remember { mutableStateOf(false) }
     
+    var showTrackingLinkDialog by remember { mutableStateOf<String?>(null) }
+    var trackingLinkLoading by remember { mutableStateOf<Int?>(null) }
+    
     val context = LocalContext.current
 
     Scaffold(
@@ -137,7 +140,18 @@ fun OfferScreen(
                                 items(offers) { offer ->
                                     OfferListItem(
                                         offer = offer,
-                                        onClick = { onOfferClick(offer.id) },
+                                        isLoadingLink = trackingLinkLoading == offer.id,
+                                        onClick = { 
+                                            trackingLinkLoading = offer.id
+                                            viewModel.getOfferDetails(offer.id) { success, link ->
+                                                trackingLinkLoading = null
+                                                if (success && link != null) {
+                                                    showTrackingLinkDialog = link
+                                                } else {
+                                                    Toast.makeText(context, link ?: "Failed to get tracking link", Toast.LENGTH_SHORT).show()
+                                                }
+                                            }
+                                        },
                                         onApplyClick = { showApplyDialog = offer }
                                     )
                                 }
@@ -197,6 +211,42 @@ fun OfferScreen(
                 }
             )
         }
+
+        // Tracking Link Dialog
+        showTrackingLinkDialog?.let { link ->
+            AlertDialog(
+                onDismissRequest = { showTrackingLinkDialog = null },
+                title = { Text("Your Tracking Link") },
+                text = {
+                    Column {
+                        OutlinedTextField(
+                            value = link,
+                            onValueChange = {},
+                            readOnly = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            val clipboard = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                            val clip = android.content.ClipData.newPlainText("Tracking Link", link)
+                            clipboard.setPrimaryClip(clip)
+                            Toast.makeText(context, "Link copied to clipboard", Toast.LENGTH_SHORT).show()
+                            showTrackingLinkDialog = null
+                        }
+                    ) {
+                        Text("Copy Link")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showTrackingLinkDialog = null }) {
+                        Text("Close")
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -245,7 +295,7 @@ fun FilterDropdown(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OfferListItem(offer: Offer, onClick: () -> Unit, onApplyClick: () -> Unit) {
+fun OfferListItem(offer: Offer, isLoadingLink: Boolean, onClick: () -> Unit, onApplyClick: () -> Unit) {
     Card(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
@@ -352,11 +402,16 @@ fun OfferListItem(offer: Offer, onClick: () -> Unit, onApplyClick: () -> Unit) {
                     if (offer.accessStatus == "approved") {
                         Button(
                             onClick = onClick,
+                            enabled = !isLoadingLink,
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                             contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
                             modifier = Modifier.height(32.dp)
                         ) {
-                            Text("Get Link", fontSize = 12.sp)
+                            if (isLoadingLink) {
+                                CircularProgressIndicator(modifier = Modifier.size(16.dp), color = MaterialTheme.colorScheme.onPrimary, strokeWidth = 2.dp)
+                            } else {
+                                Text("Get Link", fontSize = 12.sp)
+                            }
                         }
                     } else if (offer.accessStatus == null || offer.accessStatus == "removed") {
                         Button(

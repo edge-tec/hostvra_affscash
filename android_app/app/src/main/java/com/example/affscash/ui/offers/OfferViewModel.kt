@@ -81,4 +81,19 @@ class OfferViewModel @Inject constructor(
             }
         }
     }
+
+    fun getOfferDetails(offerId: Int, onResult: (Boolean, String?) -> Unit) {
+        viewModelScope.launch {
+            val result = offerRepository.getOfferDetails(offerId)
+            result.onSuccess {
+                if (it.success && it.offer != null) {
+                    onResult(true, it.offer.trackingLink)
+                } else {
+                    onResult(false, it.error)
+                }
+            }.onFailure {
+                onResult(false, it.message)
+            }
+        }
+    }
 }
