@@ -159,7 +159,7 @@ try {
         $rows = Database::fetchAll(
             "SELECT c.click_id, c.sub1, c.sub2, c.os, c.browser, c.device_type, c.ip_address, c.country,
                     c.is_fraud, c.clicked_at, o.name as offer_name,
-                    CONCAT(u.first_name,' ',u.last_name) as aff_name, af.affiliate_code,
+                    CONCAT(u.first_name,' ',u.last_name) as aff_name, af.affiliate_code, af.id as affiliate_id,
                     COALESCE(cv.revenue, 0) as revenue, COALESCE(cv.payout, 0) as payout,
                     cv.status as conv_status
              FROM clicks c
@@ -196,7 +196,7 @@ try {
                     cv.is_fraud, cv.fraud_score, cv.converted_at, cv.ip_address,
                     COALESCE(cv.rejection_reason, '') as rejection_reason,
                     o.name as offer_name,
-                    CONCAT(u.first_name,' ',u.last_name) as aff_name, af.affiliate_code,
+                    CONCAT(u.first_name,' ',u.last_name) as aff_name, af.affiliate_code, af.id as affiliate_id,
                     ck.country, ck.city
              FROM conversions cv
              LEFT JOIN offers o ON o.id=cv.offer_id
@@ -263,7 +263,7 @@ try {
                 "SELECT c.click_id, c.sub1, c.country, c.clicked_at,
                         COALESCE(sl.name, 'Unknown') as smartlink_name,
                         COALESCE(o.name, 'Custom') as offer_name,
-                        CONCAT(u.first_name,' ',u.last_name) as aff_name, af.affiliate_code,
+                        CONCAT(u.first_name,' ',u.last_name) as aff_name, af.affiliate_code, af.id as affiliate_id,
                         COALESCE(cv.revenue, 0) as revenue, COALESCE(cv.payout, 0) as payout, cv.status as conv_status
                  FROM clicks c
                  LEFT JOIN smartlinks sl ON sl.id = c.smartlink_id
@@ -280,7 +280,7 @@ try {
                 "SELECT cv.conversion_id, cv.status, cv.payout, cv.revenue, cv.converted_at,
                         COALESCE(sl.name, 'Unknown') as smartlink_name,
                         COALESCE(o.name, 'Custom') as offer_name,
-                        CONCAT(u.first_name,' ',u.last_name) as aff_name, af.affiliate_code,
+                        CONCAT(u.first_name,' ',u.last_name) as aff_name, af.affiliate_code, af.id as affiliate_id,
                         c.country
                  FROM conversions cv
                  JOIN clicks c ON c.click_id = cv.click_id
@@ -294,7 +294,7 @@ try {
             );
         } elseif ($tab === 'sl_affiliates') {
             $rows = Database::fetchAll(
-                "SELECT CONCAT(u.first_name,' ',u.last_name) as aff_name, af.affiliate_code,
+                "SELECT CONCAT(u.first_name,' ',u.last_name) as aff_name, af.affiliate_code, af.id as affiliate_id,
                         COALESCE(sl.name, 'Unknown') as smartlink_name,
                         COUNT(c.click_id) as clicks, SUM(c.is_unique) as uclicks,
                         COUNT(cv.id) as conversions,

@@ -199,11 +199,13 @@ fun ReportRowCard(tab: String, row: JsonObject) {
                 }
                 "clicks", "sl_clicks" -> {
                     Text("IP: ${row["ip_address"].asString()}", fontWeight = FontWeight.Bold)
+                    Text("Affiliate: ID ${row["affiliate_id"].asString()} - ${row["aff_name"].asString()}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
                     Text("Offer: ${row["offer_name"].asString()}", style = MaterialTheme.typography.bodySmall)
                     Text("Time: ${row["clicked_at"].asString()}", style = MaterialTheme.typography.bodySmall)
                 }
                 "conversions", "rejected", "pending", "autohide", "sl_conversions" -> {
                     Text("Conv ID: ${row["conversion_id"].asString()}", fontWeight = FontWeight.Bold)
+                    Text("Affiliate: ID ${row["affiliate_id"].asString()} - ${row["aff_name"].asString()}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
                     Text("Offer: ${row["offer_name"].asString()}", style = MaterialTheme.typography.bodySmall)
                     Text("Payout: $${row["payout"].asString()} | Status: ${row["status"].asString()}", style = MaterialTheme.typography.bodySmall)
                 }
