@@ -17,21 +17,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.affscash.data.model.ManagerFraudConversion
 import com.example.affscash.data.model.ManagerFraudTotals
-import com.example.affscash.data.network.RetrofitClient
-import com.example.affscash.data.repository.ManagerReportRepository
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManagerFraudReportsScreen(
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    viewModel: ManagerFraudReportsViewModel = hiltViewModel()
 ) {
-    val apiService = RetrofitClient.getApiService()
-    val repository = remember { ManagerReportRepository(apiService) }
-    val viewModel: ManagerFraudReportsViewModel = viewModel(factory = ManagerFraudReportsViewModelFactory(repository))
-
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(

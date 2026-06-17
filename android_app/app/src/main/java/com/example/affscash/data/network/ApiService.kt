@@ -132,7 +132,7 @@ interface ApiService {
     suspend fun getAdminInvoices(): Response<InvoiceResponse>
 
     @GET("api/v2/manager/invoices")
-    suspend fun getManagerInvoices(): Response<InvoiceResponse>
+    suspend fun getManagerInvoices(): Response<com.example.affscash.data.model.ManagerInvoicesResponse>
 
     @GET("api/v2/offers")
     suspend fun getOffers(

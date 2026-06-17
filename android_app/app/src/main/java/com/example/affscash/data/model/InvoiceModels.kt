@@ -11,6 +11,29 @@ data class InvoiceResponse(
 )
 
 @Serializable
+data class ManagerInvoicesResponse(
+    val success: Boolean,
+    @SerialName("affiliate_invoices") val affiliateInvoices: List<Invoice> = emptyList(),
+    @SerialName("my_invoices") val myInvoices: List<Invoice> = emptyList(),
+    val totals: ManagerInvoiceTotals? = null,
+    val error: String? = null
+)
+
+@Serializable
+data class ManagerInvoiceTotals(
+    val affiliate: ManagerInvoiceTabTotals? = null,
+    val my: ManagerInvoiceTabTotals? = null,
+    @SerialName("my_balance") val myBalance: Double = 0.0
+)
+
+@Serializable
+data class ManagerInvoiceTabTotals(
+    @SerialName("total_invoices") val totalInvoices: Int,
+    val pending: Double,
+    val paid: Double
+)
+
+@Serializable
 data class Invoice(
     @SerialName("invoice_id") val invoiceId: Int,
     @SerialName("invoice_number") val invoiceNumber: String,

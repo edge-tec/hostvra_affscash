@@ -42,7 +42,7 @@ class InvoiceRepository @Inject constructor(
         }
     }
 
-    suspend fun getManagerInvoices(): Result<InvoiceResponse> = withContext(Dispatchers.IO) {
+    suspend fun getManagerInvoices(): Result<com.example.affscash.data.model.ManagerInvoicesResponse> = withContext(Dispatchers.IO) {
         try {
             val response = apiService.getManagerInvoices()
             if (response.isSuccessful) {
