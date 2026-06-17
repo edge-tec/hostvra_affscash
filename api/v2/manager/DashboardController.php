@@ -110,22 +110,26 @@ if ($action === 'stats') {
     $fraudConvPctPrev = $totalConvPrevForPct > 0 ? round($fraudConvPrev / $totalConvPrevForPct * 100, 2) : 0;
 
     // Fraud Score Average (IPQS real-time from conversions + fraud_logs)
-    $in30 = implode(',', array_fill(0, count($managerAffIds), '?'));
-    $since30 = date('Y-m-d 00:00:00', strtotime('-30 days'));
-    $ipqsRows = Database::fetchAll(
-        "SELECT fl.fraud_score FROM conversions cv JOIN fraud_logs fl ON fl.click_id = cv.click_id
-         WHERE cv.affiliate_id IN ($in30) AND cv.converted_at >= ? AND cv.is_hidden = 0 AND fl.fraud_score IS NOT NULL",
-        array_merge($managerAffIds, [$since30])
-    );
     $fraudScoreAgg = 0;
-    if (!empty($ipqsRows)) {
-        $ipqsSum = 0;
-        foreach ($ipqsRows as $_r) $ipqsSum += (int)$_r['fraud_score'];
-        $fraudScoreAgg = (int)round($ipqsSum / count($ipqsRows));
-    } else {
-        $sum = 0;
-        foreach ($managerAffIds as $_aid) $sum += FraudScore::forAffiliate((int)$_aid);
-        $fraudScoreAgg = (int)round($sum / max(1, count($managerAffIds)));
+    try {
+        $in30 = implode(',', array_fill(0, count($managerAffIds), '?'));
+        $since30 = date('Y-m-d 00:00:00', strtotime('-30 days'));
+        $ipqsRows = Database::fetchAll(
+            "SELECT fl.fraud_score FROM conversions cv JOIN fraud_logs fl ON fl.click_id = cv.click_id
+             WHERE cv.affiliate_id IN ($in30) AND cv.converted_at >= ? AND cv.is_hidden = 0 AND fl.fraud_score IS NOT NULL",
+            array_merge($managerAffIds, [$since30])
+        );
+        if (!empty($ipqsRows)) {
+            $ipqsSum = 0;
+            foreach ($ipqsRows as $_r) $ipqsSum += (int)$_r['fraud_score'];
+            $fraudScoreAgg = (int)round($ipqsSum / count($ipqsRows));
+        } else {
+            $sum = 0;
+            foreach ($managerAffIds as $_aid) $sum += FraudScore::forAffiliate((int)$_aid);
+            $fraudScoreAgg = (int)round($sum / max(1, count($managerAffIds)));
+        }
+    } catch (\Throwable $e) {
+        $fraudScoreAgg = 0;
     }
 
     $mgrUserId = Auth::id();
@@ -137,8 +141,12 @@ if ($action === 'stats') {
     $unreadNotifs = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM notifications WHERE user_id=? AND is_read=0", [$mgrUserId])['c'] ?? 0);
     $unreadAlerts = 0;
     if (!empty($managerAffIds)) {
-        $inAff = implode(',', array_fill(0, count($managerAffIds), '?'));
-        $unreadAlerts = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM fraud_alerts WHERE affiliate_id IN ($inAff) AND is_read=0 AND resolved_at IS NULL", $managerAffIds)['c'] ?? 0);
+        try {
+            $inAff = implode(',', array_fill(0, count($managerAffIds), '?'));
+            $unreadAlerts = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM fraud_alerts WHERE affiliate_id IN ($inAff) AND is_read=0 AND resolved_at IS NULL", $managerAffIds)['c'] ?? 0);
+        } catch (\Throwable $e) {
+            $unreadAlerts = 0;
+        }
     }
     $unreadChats = (int)(Database::fetchOne("SELECT COUNT(*) c FROM manager_messages WHERE manager_id=? AND sender_role='admin' AND read_by_manager=0", [$mgrId])['c'] ?? 0);
 
