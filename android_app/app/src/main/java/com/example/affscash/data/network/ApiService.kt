@@ -188,10 +188,10 @@ interface ApiService {
     @GET("api/v2/admin/smartlinks?action=detail")
     suspend fun getAdminSmartlinkDetail(@Query("id") id: Int): Response<AdminSmartlinkDetailWrapperResponse>
 
-    @POST("api/v2/admin/smartlinks")
+    @POST("api/v2/admin/smartlinks?action=action")
     suspend fun submitAdminSmartlinkAction(@Body request: AdminSmartlinkActionRequest): Response<GenericResponse>
 
-    @POST("api/v2/admin/smartlinks")
+    @POST("api/v2/admin/smartlinks?action=save")
     suspend fun saveAdminSmartlink(@Body request: AdminSmartlinkSaveRequest): Response<GenericResponse>
 
     @GET("api/v2/manager/offers")
@@ -317,7 +317,8 @@ interface ApiService {
         @Query("offer_type") offerType: String? = null,
         @Query("country") country: String? = null,
         @Query("device") device: String? = null,
-        @Query("access_filter") accessFilter: String? = null
+        @Query("access_filter") accessFilter: String? = null,
+        @Query("in_house") inHouse: Boolean? = null
     ): Response<OfferResponse>
 
     @POST("api/v2/offers?action=apply")
