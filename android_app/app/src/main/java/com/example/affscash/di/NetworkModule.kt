@@ -12,6 +12,8 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import okhttp3.Interceptor
+import okhttp3.ResponseBody.Companion.toResponseBody
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -34,9 +36,33 @@ object NetworkModule {
             level = HttpLoggingInterceptor.Level.BODY
         }
 
+        val cleanJsonResponseInterceptor = Interceptor { chain ->
+            val response = chain.proceed(chain.request())
+            val body = response.body
+            if (body != null) {
+                val contentType = body.contentType()
+                val content = body.string()
+                
+                val startIndex = content.indexOfFirst { it == '{' || it == '[' }
+                val endIndex = content.indexOfLast { it == '}' || it == ']' }
+                
+                val cleanContent = if (startIndex in 0..endIndex) {
+                    content.substring(startIndex, endIndex + 1)
+                } else {
+                    content
+                }
+                
+                val newBody = cleanContent.toResponseBody(contentType)
+                response.newBuilder().body(newBody).build()
+            } else {
+                response
+            }
+        }
+
         return OkHttpClient.Builder()
             .cookieJar(cookieJar)
             .addInterceptor(loggingInterceptor)
+            .addInterceptor(cleanJsonResponseInterceptor)
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
