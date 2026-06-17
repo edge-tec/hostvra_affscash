@@ -59,7 +59,8 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
 @Composable
 fun MainScreen(
     role: String,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    onRoleChange: (String) -> Unit = {}
 ) {
     val navController = rememberNavController()
 
@@ -125,7 +126,8 @@ fun MainScreen(
                     role = role, 
                     onLogout = onLogout,
                     onNavigateToInvoices = { navController.navigate(Screen.Invoices.route) },
-                    onNavigateToRewards = { navController.navigate(Screen.Rewards.route) }
+                    onNavigateToRewards = { navController.navigate(Screen.Rewards.route) },
+                    onRoleChange = onRoleChange
                 ) 
             }
             composable(Screen.Invoices.route) {
@@ -170,10 +172,45 @@ fun MainScreen(
                     onNavigateBack = { navController.popBackStack() }
                 ) 
             }
-            composable(Screen.ManagerAffiliates.route) { com.example.affscash.ui.manager.ManagerAffiliatesScreen() }
+            composable(Screen.ManagerAffiliates.route) { 
+                com.example.affscash.ui.manager.ManagerAffiliatesScreen(
+                    onLoginToAffiliate = onRoleChange,
+                    onNavigateToCreate = { navController.navigate("manager_create_affiliate") },
+                    onNavigateToEdit = { affId -> navController.navigate("manager_edit_affiliate/$affId") },
+                    onNavigateToView = { affId -> navController.navigate("manager_view_affiliate/$affId") }
+                ) 
+            }
+            composable("manager_create_affiliate") {
+                val viewModel: com.example.affscash.ui.manager.ManagerAffiliatesViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                com.example.affscash.ui.manager.ManagerCreateAffiliateScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    viewModel = viewModel
+                )
+            }
+            composable("manager_edit_affiliate/{affId}") { backStackEntry ->
+                val affId = backStackEntry.arguments?.getString("affId")?.toIntOrNull() ?: 0
+                val viewModel: com.example.affscash.ui.manager.ManagerAffiliatesViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                val affiliate = viewModel.uiState.value.affiliates.find { it.affId == affId }
+                if (affiliate != null) {
+                    com.example.affscash.ui.manager.ManagerEditAffiliateScreen(
+                        affiliate = affiliate,
+                        onNavigateBack = { navController.popBackStack() },
+                        viewModel = viewModel
+                    )
+                }
+            }
+            composable("manager_view_affiliate/{affId}") { backStackEntry ->
+                val affId = backStackEntry.arguments?.getString("affId")?.toIntOrNull() ?: 0
+                val viewModel: com.example.affscash.ui.manager.ManagerAffiliatesViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                com.example.affscash.ui.manager.ManagerAffiliateDetailsScreen(
+                    affId = affId,
+                    onNavigateBack = { navController.popBackStack() },
+                    viewModel = viewModel
+                )
+            }
             composable(Screen.ManagerConversions.route) { com.example.affscash.ui.manager.ManagerConversionsScreen() }
             composable(Screen.ManagerInvoices.route) { com.example.affscash.ui.manager.ManagerInvoicesScreen() }
-            composable(Screen.ManagerSettings.route) { com.example.affscash.ui.settings.SettingsScreen(role, onLogout) }
+            composable(Screen.ManagerSettings.route) { com.example.affscash.ui.settings.SettingsScreen(role, onLogout, onRoleChange = onRoleChange) }
         }
     }
 }

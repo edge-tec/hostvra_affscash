@@ -164,6 +164,34 @@ interface ApiService {
     @POST("api/v2/smartlinks?action=apply")
     suspend fun applySmartlink(@Body request: com.example.affscash.data.model.ApplySmartlinkRequest): Response<com.example.affscash.data.model.ApplySmartlinkResponse>
 
+    @GET("api/v2/manager/affiliates")
+    suspend fun getManagerAffiliates(
+        @Query("action") action: String = "list",
+        @Query("q") query: String? = null,
+        @Query("fraud_score_filter") fraudScoreFilter: String = "all"
+    ): Response<com.example.affscash.data.model.ManagerAffiliatesResponse>
+
+    @POST("api/v2/manager/affiliates?action=create")
+    suspend fun createManagerAffiliate(@Body request: com.example.affscash.data.model.CreateAffiliateRequest): Response<com.example.affscash.data.model.BasicManagerActionResponse>
+
+    @GET("api/v2/manager/affiliates")
+    suspend fun getManagerAffiliateDetails(
+        @Query("action") action: String = "view",
+        @Query("id") affId: Int
+    ): Response<com.example.affscash.data.model.ManagerAffiliateDetailsResponse>
+
+    @POST("api/v2/manager/affiliates?action=edit")
+    suspend fun editManagerAffiliate(@Body request: com.example.affscash.data.model.EditAffiliateRequest): Response<com.example.affscash.data.model.BasicManagerActionResponse>
+
+    @POST("api/v2/manager/affiliates?action=update_status")
+    suspend fun updateManagerAffiliateStatus(@Body request: com.example.affscash.data.model.UpdateAffiliateStatusRequest): Response<com.example.affscash.data.model.BasicManagerActionResponse>
+
+    @POST("api/v2/manager/affiliates?action=impersonate")
+    suspend fun impersonateAffiliate(@Body request: com.example.affscash.data.model.ImpersonateAffiliateRequest): Response<com.example.affscash.data.model.ImpersonateResponse>
+
+    @POST("api/v2/stop_impersonate")
+    suspend fun stopImpersonating(): Response<com.example.affscash.data.model.StopImpersonateResponse>
+
     @GET("api/v2/manager/smartlinks")
     suspend fun getManagerSmartlinks(
         @Query("action") action: String = "list",

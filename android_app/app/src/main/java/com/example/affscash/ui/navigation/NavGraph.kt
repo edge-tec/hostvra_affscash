@@ -14,11 +14,15 @@ fun AffscashNavGraph(
     userManager: UserManager
 ) {
     val navController = rememberNavController()
+    var currentRole by androidx.compose.runtime.remember { 
+        androidx.compose.runtime.mutableStateOf(userManager.getRole()) 
+    }
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable("login") {
             LoginScreen(
                 onLoginSuccess = { role ->
+                    currentRole = role
                     navController.navigate("main_screen") {
                         popUpTo("login") { inclusive = true }
                     }
@@ -27,11 +31,18 @@ fun AffscashNavGraph(
         }
         
         composable("main_screen") {
-            val role = userManager.getRole() ?: "affiliate"
+            val role = currentRole ?: "affiliate"
             MainScreen(
                 role = role,
                 onLogout = {
+                    currentRole = null
                     navController.navigate("login") {
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
+                onRoleChange = { newRole ->
+                    currentRole = newRole
+                    navController.navigate("main_screen") {
                         popUpTo(0) { inclusive = true }
                     }
                 }

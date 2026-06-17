@@ -1,113 +1,150 @@
 package com.example.affscash.ui.manager
 
-import android.content.Intent
 import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.affscash.MainActivity
-import com.example.affscash.data.model.ManagerAffiliate
-import com.example.affscash.ui.affiliates.ManagerAffiliatesUiState
-import com.example.affscash.ui.affiliates.ManagerAffiliatesViewModel
+import com.example.affscash.data.local.UserManager
+import com.example.affscash.data.model.ManagerAffiliateListModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManagerAffiliatesScreen(
+    onLoginToAffiliate: (String) -> Unit = {},
+    onNavigateToCreate: () -> Unit = {},
+    onNavigateToEdit: (Int) -> Unit = {},
+    onNavigateToView: (Int) -> Unit = {},
     viewModel: ManagerAffiliatesViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val statusTab by viewModel.status.collectAsState()
-    val searchQuery by viewModel.searchQuery.collectAsState()
     val context = LocalContext.current
+    val userManager = com.example.affscash.data.local.UserManager(context)
 
-    val tabs = listOf("all", "pending", "active", "rejected", "suspended")
-
-    Column(modifier = Modifier.fillMaxSize()) {
-        OutlinedTextField(
-            value = searchQuery,
-            onValueChange = { viewModel.setSearchQuery(it) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            placeholder = { Text("Search by name, email, code") },
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-            singleLine = true
-        )
-
-        ScrollableTabRow(
-            selectedTabIndex = tabs.indexOf(statusTab),
-            edgePadding = 16.dp,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            tabs.forEachIndexed { index, tab ->
-                Tab(
-                    selected = index == tabs.indexOf(statusTab),
-                    onClick = { viewModel.setStatus(tab) },
-                    text = { Text(tab.uppercase()) }
-                )
-            }
+    LaunchedEffect(uiState.error, uiState.actionMessage) {
+        uiState.error?.let {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            viewModel.clearActionMessage()
         }
+        uiState.actionMessage?.let {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            viewModel.clearActionMessage()
+        }
+    }
 
-        Box(modifier = Modifier.fillMaxSize()) {
-            when (val state = uiState) {
-                is ManagerAffiliatesUiState.Loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("My Affiliates") },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                ),
+                actions = {
+                    IconButton(onClick = onNavigateToCreate) {
+                        Icon(Icons.Default.Add, contentDescription = "Create Affiliate", tint = MaterialTheme.colorScheme.onPrimary)
+                    }
                 }
-                is ManagerAffiliatesUiState.Error -> {
-                    Column(
-                        modifier = Modifier.align(Alignment.Center),
-                        horizontalAlignment = Alignment.CenterHorizontally
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            // Filters
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OutlinedTextField(
+                    value = uiState.searchQuery,
+                    onValueChange = { viewModel.updateSearchQuery(it) },
+                    placeholder = { Text("Search affiliates...") },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                    modifier = Modifier.weight(1f),
+                    singleLine = true
+                )
+                
+                Spacer(modifier = Modifier.width(8.dp))
+                
+                var expanded by remember { mutableStateOf(false) }
+                ExposedDropdownMenuBox(
+                    expanded = expanded,
+                    onExpandedChange = { expanded = it }
+                ) {
+                    OutlinedTextField(
+                        value = when(uiState.fraudScoreFilter) {
+                            "low" -> "Low (< 30)"
+                            "medium" -> "Medium (30-70)"
+                            "high" -> "High (> 70)"
+                            else -> "All scores"
+                        },
+                        onValueChange = {},
+                        readOnly = true,
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                        modifier = Modifier.width(140.dp).menuAnchor()
+                    )
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
                     ) {
-                        Text(text = "Error: ${state.message}", color = MaterialTheme.colorScheme.error)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Button(onClick = { viewModel.loadAffiliates() }) {
-                            Text("Retry")
+                        listOf("all" to "All scores", "low" to "Low (< 30)", "medium" to "Medium (30-70)", "high" to "High (> 70)").forEach { (key, label) ->
+                            DropdownMenuItem(
+                                text = { Text(label) },
+                                onClick = {
+                                    viewModel.setFraudScoreFilter(key)
+                                    expanded = false
+                                }
+                            )
                         }
                     }
                 }
-                is ManagerAffiliatesUiState.Success -> {
-                    val affiliates = state.data.data
-                    if (affiliates.isNotEmpty()) {
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(horizontal = 16.dp),
-                            contentPadding = PaddingValues(vertical = 16.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-                            items(affiliates) { affiliate ->
-                                ManagerAffiliateItem(
-                                    affiliate = affiliate,
-                                    onAction = { action ->
-                                        viewModel.performAction(action, affiliate.affId, onSuccess = { role ->
-                                            if (role != null) {
-                                                Toast.makeText(context, "Logged in as ${affiliate.firstName}", Toast.LENGTH_SHORT).show()
-                                                val intent = Intent(context, MainActivity::class.java).apply {
-                                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                                }
-                                                context.startActivity(intent)
-                                            } else {
-                                                Toast.makeText(context, "Action successful", Toast.LENGTH_SHORT).show()
-                                            }
-                                        }, onError = { msg ->
-                                            Toast.makeText(context, "Error: $msg", Toast.LENGTH_LONG).show()
-                                        })
-                                    }
-                                )
-                            }
-                        }
-                    } else {
-                        Text("No affiliates assigned to you", modifier = Modifier.align(Alignment.Center))
+            }
+
+            if (uiState.isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            } else if (uiState.affiliates.isEmpty()) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("No affiliates found.")
+                }
+            } else {
+                LazyColumn(
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(uiState.affiliates) { affiliate ->
+                        ManagerAffiliateCard(
+                            affiliate = affiliate,
+                            canApprove = uiState.canApprove,
+                            onUpdateStatus = { status -> viewModel.updateAffiliateStatus(affiliate.affId, status) },
+                            onImpersonate = {
+                                viewModel.impersonateAffiliate(affiliate.affId) { role, user ->
+                                    userManager.saveUser(role, user.email, "${user.firstName} ${user.lastName}")
+                                    userManager.saveIsImpersonating(true)
+                                    onLoginToAffiliate(role)
+                                }
+                            },
+                            onView = { onNavigateToView(affiliate.affId) },
+                            onEdit = { onNavigateToEdit(affiliate.affId) }
+                        )
                     }
                 }
             }
@@ -116,66 +153,125 @@ fun ManagerAffiliatesScreen(
 }
 
 @Composable
-fun ManagerAffiliateItem(affiliate: ManagerAffiliate, onAction: (String) -> Unit) {
+fun ManagerAffiliateCard(
+    affiliate: ManagerAffiliateListModel,
+    canApprove: Boolean,
+    onUpdateStatus: (String) -> Unit,
+    onImpersonate: () -> Unit,
+    onView: () -> Unit,
+    onEdit: () -> Unit
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.Top
             ) {
-                Text(
-                    text = "${affiliate.firstName} ${affiliate.lastName}",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Badge(containerColor = if (affiliate.status == "active") MaterialTheme.colorScheme.primary else if (affiliate.status == "pending") MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.error) {
-                    Text(affiliate.status.uppercase(), modifier = Modifier.padding(horizontal = 4.dp))
+                Column {
+                    Text(
+                        text = "${affiliate.firstName} ${affiliate.lastName}",
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(text = affiliate.email, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                    Text(text = affiliate.affiliateCode, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold)
+                }
+                Column(horizontalAlignment = Alignment.End) {
+                    Text(
+                        text = affiliate.balance ?: "$0.00",
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    StatusBadge(status = affiliate.status)
                 }
             }
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = affiliate.email, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.secondary)
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(text = "Code: ${affiliate.affiliateCode}", style = MaterialTheme.typography.bodySmall)
-                Text(text = "Fraud Score: ${affiliate.fraudScore}", style = MaterialTheme.typography.bodySmall, color = if (affiliate.fraudScore > 20) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface)
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.Warning, contentDescription = null, modifier = Modifier.size(16.dp), tint = Color.Gray)
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = "Fraud Score: ${affiliate.fraudScore.toInt()} (${affiliate.fraudCheckedCount} checks)",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (affiliate.fraudScore > 70) Color.Red else if (affiliate.fraudScore > 30) Color(0xFFFFA500) else Color(0xFF4CAF50)
+                )
             }
-            Spacer(modifier = Modifier.height(4.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(text = "Joined: ${affiliate.createdAt.take(10)}", style = MaterialTheme.typography.bodySmall)
-                Text(text = "Balance: $${affiliate.balance}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
-            }
-            
+
             Spacer(modifier = Modifier.height(16.dp))
+            Divider()
+            Spacer(modifier = Modifier.height(12.dp))
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                if (affiliate.status == "pending") {
-                    Button(onClick = { onAction("approve") }, modifier = Modifier.padding(end = 8.dp)) {
-                        Text("Approve")
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedButton(onClick = onView, contentPadding = PaddingValues(horizontal = 8.dp)) {
+                        Text("View")
+                    }
+                    OutlinedButton(onClick = onEdit, contentPadding = PaddingValues(horizontal = 8.dp)) {
+                        Text("Edit")
                     }
                 }
-                if (affiliate.status == "active") {
-                    OutlinedButton(onClick = { onAction("impersonate") }) {
-                        Text("Login As")
+                
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Button(onClick = onImpersonate, contentPadding = PaddingValues(horizontal = 8.dp)) {
+                        Icon(Icons.Default.VpnKey, contentDescription = null, modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Login")
+                    }
+                    
+                    if (canApprove) {
+                        if (affiliate.status == "active") {
+                            Button(
+                                onClick = { onUpdateStatus("suspended") },
+                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                                contentPadding = PaddingValues(horizontal = 8.dp)
+                            ) {
+                                Text("Suspend")
+                            }
+                        } else {
+                            Button(
+                                onClick = { onUpdateStatus("active") },
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
+                                contentPadding = PaddingValues(horizontal = 8.dp)
+                            ) {
+                                Text("Activate")
+                            }
+                        }
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun StatusBadge(status: String) {
+    val (color, text) = when (status) {
+        "active" -> Color(0xFFE8F5E9) to Color(0xFF2E7D32)
+        "pending" -> Color(0xFFFFF3E0) to Color(0xFFEF6C00)
+        "suspended" -> Color(0xFFFFEBEE) to Color(0xFFC62828)
+        "rejected" -> Color(0xFFF5F5F5) to Color(0xFF616161)
+        else -> Color(0xFFF5F5F5) to Color(0xFF616161)
+    }
+    
+    Box(
+        modifier = Modifier
+            .background(color = color, shape = MaterialTheme.shapes.small)
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+    ) {
+        Text(
+            text = status.uppercase(),
+            color = text,
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Bold
+        )
     }
 }

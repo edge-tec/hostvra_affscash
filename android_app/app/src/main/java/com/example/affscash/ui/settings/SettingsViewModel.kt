@@ -19,7 +19,8 @@ sealed class SettingsUiState {
         val payment: PaymentInfo?,
         val manager: ManagerInfo?,
         val paymentMethods: List<String>,
-        val twoFactorEnabled: Boolean
+        val twoFactorEnabled: Boolean,
+        val isImpersonating: Boolean = false
     ) : SettingsUiState()
     data class Error(val message: String) : SettingsUiState()
 }
@@ -48,7 +49,8 @@ class SettingsViewModel @Inject constructor(
                         payment = res.payment,
                         manager = res.manager,
                         paymentMethods = res.paymentMethods,
-                        twoFactorEnabled = res.twoFactorEnabled
+                        twoFactorEnabled = res.twoFactorEnabled,
+                        isImpersonating = userManager.isImpersonating()
                     )
                 }
                 .onFailure {
@@ -123,6 +125,7 @@ class SettingsViewModel @Inject constructor(
                 .onSuccess { response ->
                     response.role?.let {
                         userManager.saveUser(it, response.user?.email ?: "", response.user?.firstName + " " + response.user?.lastName)
+                        userManager.saveIsImpersonating(false)
                     }
                     onSuccess(response.role)
                 }

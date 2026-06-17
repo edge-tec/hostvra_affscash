@@ -28,6 +28,7 @@ fun SettingsScreen(
     onLogout: () -> Unit,
     onNavigateToInvoices: () -> Unit = {},
     onNavigateToRewards: () -> Unit = {},
+    onRoleChange: (String) -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -129,11 +130,13 @@ fun SettingsScreen(
                                     Spacer(modifier = Modifier.height(16.dp))
                                 }
 
-                                if (role == "admin" || role == "manager") {
+                                if (state.isImpersonating) {
                                     Button(
                                         onClick = {
                                             viewModel.stopImpersonating(
-                                                onSuccess = { onLogout() },
+                                                onSuccess = { newRole -> 
+                                                    if (newRole != null) onRoleChange(newRole) else onLogout() 
+                                                },
                                                 onError = { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
                                             )
                                         },
@@ -142,7 +145,7 @@ fun SettingsScreen(
                                     ) {
                                         Icon(Icons.Default.ExitToApp, contentDescription = "Return")
                                         Spacer(modifier = Modifier.width(8.dp))
-                                        Text("Return to $role Dashboard")
+                                        Text("Return to Dashboard")
                                     }
                                     Spacer(modifier = Modifier.height(16.dp))
                                 }

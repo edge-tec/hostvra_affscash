@@ -24,6 +24,14 @@ class UserManager @Inject constructor(
         return prefs.getString("ROLE", null)
     }
 
+    fun saveIsImpersonating(isImpersonating: Boolean) {
+        prefs.edit().putBoolean("IS_IMPERSONATING", isImpersonating).apply()
+    }
+
+    fun isImpersonating(): Boolean {
+        return prefs.getBoolean("IS_IMPERSONATING", false)
+    }
+
     fun clearUser() {
         prefs.edit().clear().apply()
     }
