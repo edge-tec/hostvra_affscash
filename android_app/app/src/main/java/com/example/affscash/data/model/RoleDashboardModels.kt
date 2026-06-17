@@ -54,6 +54,8 @@ data class ManagerDashboardData(
     @SerialName("fraud_conv") val fraudConv: Int = 0,
     @SerialName("fraud_conv_pct") val fraudConvPct: Double = 0.0,
     @SerialName("fraud_score_average") val fraudScoreAverage: Int = 0,
+    @SerialName("commission_balance") val commissionBalance: Double = 0.0,
+    @SerialName("header_counts") val headerCounts: DashboardHeaderCounts? = null,
     val trend: ManagerTrend? = null
 )
 

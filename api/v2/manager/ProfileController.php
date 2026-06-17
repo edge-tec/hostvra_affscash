@@ -4,6 +4,9 @@ header('Content-Type: application/json');
 Auth::checkAPI('affiliate_manager');
 
 $userId = Auth::id();
+try { Database::query("ALTER TABLE `users` ADD COLUMN `google2fa_enabled` TINYINT(1) NOT NULL DEFAULT 0"); } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `users` ADD COLUMN `google2fa_enabled_at` DATETIME DEFAULT NULL"); } catch (\Throwable $_e) {}
+
 $mgr = Database::fetchOne(
     "SELECT am.*, u.first_name, u.last_name, u.email, u.company, u.phone, u.profile_pic, u.google2fa_enabled 
      FROM affiliate_managers am 

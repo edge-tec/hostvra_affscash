@@ -161,7 +161,14 @@ fun MainScreen(
             composable(Screen.AdminSettings.route) { com.example.affscash.ui.settings.SettingsScreen(role, onLogout) }
 
             // Manager Screens
-            composable(Screen.ManagerDashboard.route) { com.example.affscash.ui.manager.ManagerDashboardScreen() }
+            composable(Screen.ManagerDashboard.route) { 
+                val context = androidx.compose.ui.platform.LocalContext.current
+                com.example.affscash.ui.manager.ManagerDashboardScreen(
+                    onNavigateToInvoices = { navController.navigate(Screen.ManagerInvoices.route) },
+                    onNavigateToFraudAlerts = { navController.navigate("manager_fraud_reports") },
+                    onNavigateToChat = { android.widget.Toast.makeText(context, "Chat coming soon", android.widget.Toast.LENGTH_SHORT).show() }
+                ) 
+            }
             composable(Screen.ManagerOffers.route) { 
                 com.example.affscash.ui.manager.ManagerOffersScreen(
                     onNavigateToApprovals = { navController.navigate("manager_offer_approvals") }

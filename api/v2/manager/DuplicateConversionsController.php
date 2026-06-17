@@ -14,35 +14,40 @@ $dateTo   = date('Y-m-d 23:59:59', strtotime($to));
 
 $rows = [];
 if ($hasAffiliates) {
-    $inSql = implode(',', array_fill(0, count($affIds), '?'));
-    $rows = Database::fetchAll(
-        "SELECT cv.id, cv.conversion_id, cv.offer_id, cv.affiliate_id,
-                cv.payout, cv.status, cv.ip_address, cv.converted_at,
-                cv.transaction_id, cv.goal_name,
-                o.name AS offer_name,
-                CONCAT(u.first_name,' ',u.last_name) AS affiliate_name,
-                af.affiliate_code,
-                dup.dup_count
-         FROM conversions cv
-         JOIN (
-            SELECT offer_id, ip_address, COUNT(*) AS dup_count
-            FROM conversions
-            WHERE offer_id IS NOT NULL AND offer_id > 0
-              AND ip_address IS NOT NULL AND ip_address <> ''
-              AND converted_at BETWEEN ? AND ?
-              AND is_hidden = 0
-            GROUP BY offer_id, ip_address
-            HAVING dup_count > 1
-         ) dup ON dup.offer_id = cv.offer_id AND dup.ip_address = cv.ip_address
-         LEFT JOIN offers o      ON o.id  = cv.offer_id
-         LEFT JOIN affiliates af ON af.id = cv.affiliate_id
-         LEFT JOIN users u       ON u.id  = af.user_id
-         WHERE cv.affiliate_id IN ($inSql)
-           AND cv.converted_at BETWEEN ? AND ?
-           AND cv.is_hidden = 0
-         ORDER BY cv.offer_id, cv.ip_address, cv.converted_at DESC",
-        array_merge([$dateFrom, $dateTo], $affIds, [$dateFrom, $dateTo])
-    ) ?: [];
+    try {
+        $inSql = implode(',', array_fill(0, count($affIds), '?'));
+        $rows = Database::fetchAll(
+            "SELECT cv.id, cv.conversion_id, cv.offer_id, cv.affiliate_id,
+                    cv.payout, cv.status, cv.ip_address, cv.converted_at,
+                    cv.transaction_id, cv.goal_name,
+                    o.name AS offer_name,
+                    CONCAT(u.first_name,' ',u.last_name) AS affiliate_name,
+                    af.affiliate_code,
+                    dup.dup_count
+             FROM conversions cv
+             JOIN (
+                SELECT offer_id, ip_address, COUNT(*) AS dup_count
+                FROM conversions
+                WHERE offer_id IS NOT NULL AND offer_id > 0
+                  AND ip_address IS NOT NULL AND ip_address <> ''
+                  AND converted_at BETWEEN ? AND ?
+                  AND COALESCE(is_hidden, 0) = 0
+                GROUP BY offer_id, ip_address
+                HAVING dup_count > 1
+             ) dup ON dup.offer_id = cv.offer_id AND dup.ip_address = cv.ip_address
+             LEFT JOIN offers o      ON o.id  = cv.offer_id
+             LEFT JOIN affiliates af ON af.id = cv.affiliate_id
+             LEFT JOIN users u       ON u.id  = af.user_id
+             WHERE cv.affiliate_id IN ($inSql)
+               AND cv.converted_at BETWEEN ? AND ?
+               AND COALESCE(cv.is_hidden, 0) = 0
+             ORDER BY cv.offer_id, cv.ip_address, cv.converted_at DESC",
+            array_merge([$dateFrom, $dateTo], $affIds, [$dateFrom, $dateTo])
+        ) ?: [];
+    } catch (\Throwable $e) {
+        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+        exit;
+    }
 }
 
 $groups = [];

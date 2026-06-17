@@ -1,39 +1,10 @@
 package com.example.affscash.data.network
 
-import com.example.affscash.data.model.AuthRequest
-import com.example.affscash.data.model.AuthResponse
-import com.example.affscash.data.model.DashboardResponse
-import com.example.affscash.data.model.OfferResponse
-import com.example.affscash.data.model.OfferDetailsResponse
-import com.example.affscash.data.model.ReportResponse
-import com.example.affscash.data.model.AdminDashboardResponse
-import com.example.affscash.data.model.ManagerDashboardResponse
-import com.example.affscash.data.model.AdminOfferResponse
-import com.example.affscash.data.model.ManagerOfferResponse
-import com.example.affscash.data.model.AdminAffiliateResponse
-import com.example.affscash.data.model.ManagerAffiliateResponse
-import com.example.affscash.data.model.ConversionResponse
-import com.example.affscash.data.model.InvoiceResponse
-import com.example.affscash.data.model.AffiliateActionRequest
-import com.example.affscash.data.model.ManagerAffiliateActionRequest
-import com.example.affscash.data.model.ImpersonateResponse
-import com.example.affscash.data.model.ChatMessagesResponse
-import com.example.affscash.data.model.SendChatMessageRequest
-import com.example.affscash.data.model.SendChatMessageResponse
-import com.example.affscash.data.model.UploadFileResponse
-import com.example.affscash.data.model.ManagerOfferApprovalListResponse
-import com.example.affscash.data.model.ReviewOfferApprovalRequest
-import com.example.affscash.data.model.DefaultResponse
-import com.example.affscash.data.model.DuplicateConversionsResponse
-import okhttp3.MultipartBody
+import com.example.affscash.data.model.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.*
-import retrofit2.http.Multipart
-import retrofit2.http.POST
-import retrofit2.http.Part
-import retrofit2.http.Query
 
 interface ApiService {
 
@@ -61,7 +32,7 @@ interface ApiService {
         @Query("affiliate_id") affiliateId: Int? = null,
         @Query("country") country: String? = null,
         @Query("device") device: String? = null
-    ): Response<com.example.affscash.data.model.ManagerDashboardResponse>
+    ): Response<ManagerDashboardResponse>
 
     @GET("api/v2/manager/dashboard")
     suspend fun getManagerDashboardTrend(
@@ -72,12 +43,12 @@ interface ApiService {
         @Query("affiliate_id") affiliateId: Int? = null,
         @Query("country") country: String? = null,
         @Query("device") device: String? = null
-    ): Response<com.example.affscash.data.model.ManagerTrendResponse>
+    ): Response<ManagerTrendResponse>
 
     @GET("api/v2/manager/dashboard")
     suspend fun getManagerDashboardFilters(
         @Query("action") action: String = "filters"
-    ): Response<com.example.affscash.data.model.ManagerFiltersResponse>
+    ): Response<ManagerFiltersResponse>
 
     @GET("api/v2/admin/offers")
     suspend fun getAdminOffers(): Response<AdminOfferResponse>
@@ -100,7 +71,7 @@ interface ApiService {
     @GET("api/v2/manager/offers")
     suspend fun getManagerOfferFilters(
         @Query("action") action: String = "filters"
-    ): Response<com.example.affscash.data.model.ManagerOfferFiltersResponse>
+    ): Response<ManagerOfferFiltersResponse>
 
     @GET("api/v2/admin/affiliates")
     suspend fun getAdminAffiliates(
@@ -133,11 +104,11 @@ interface ApiService {
     suspend fun getAdminInvoices(): Response<InvoiceResponse>
 
     @GET("api/v2/manager/invoices")
-    suspend fun getManagerInvoices(): Response<com.example.affscash.data.model.ManagerInvoicesResponse>
+    suspend fun getManagerInvoices(): Response<ManagerInvoicesResponse>
 
     // --- Manager Profile ---
     @GET("api/v2/manager/profile?action=load")
-    suspend fun getManagerProfile(): Response<com.example.affscash.data.model.ManagerProfileResponse>
+    suspend fun getManagerProfile(): Response<ManagerProfileResponse>
 
     @Multipart
     @POST("api/v2/manager/profile?action=update_profile")
@@ -151,22 +122,22 @@ interface ApiService {
         @Part("telegram") telegram: RequestBody?,
         @Part("discord") discord: RequestBody?,
         @Part profilePic: MultipartBody.Part?
-    ): Response<com.example.affscash.data.model.SimpleResponse>
+    ): Response<SimpleResponse>
 
     @POST("api/v2/manager/profile?action=update_security")
-    suspend fun updateManagerSecurity(@Body request: Map<String, String>): Response<com.example.affscash.data.model.SimpleResponse>
+    suspend fun updateManagerSecurity(@Body request: Map<String, String>): Response<SimpleResponse>
 
     @POST("api/v2/manager/profile?action=update_payment")
-    suspend fun updateManagerPayment(@Body request: Map<String, String>): Response<com.example.affscash.data.model.SimpleResponse>
+    suspend fun updateManagerPayment(@Body request: Map<String, String>): Response<SimpleResponse>
 
     @POST("api/v2/manager/profile?action=2fa_start")
-    suspend fun startManager2fa(): Response<com.example.affscash.data.model.TwoFactorStartResponse>
+    suspend fun startManager2fa(): Response<TwoFactorStartResponse>
 
     @POST("api/v2/manager/profile?action=2fa_verify")
-    suspend fun verifyManager2fa(@Body request: Map<String, String>): Response<com.example.affscash.data.model.SimpleResponse>
+    suspend fun verifyManager2fa(@Body request: Map<String, String>): Response<SimpleResponse>
 
     @POST("api/v2/manager/profile?action=2fa_disable")
-    suspend fun disableManager2fa(@Body request: Map<String, String>): Response<com.example.affscash.data.model.SimpleResponse>
+    suspend fun disableManager2fa(@Body request: Map<String, String>): Response<SimpleResponse>
 
     @GET("api/v2/offers")
     suspend fun getOffers(
@@ -181,7 +152,7 @@ interface ApiService {
     ): Response<OfferResponse>
 
     @POST("api/v2/offers?action=apply")
-    suspend fun applyOffer(@Body request: com.example.affscash.data.model.ApplyOfferRequest): Response<com.example.affscash.data.model.ApplyOfferResponse>
+    suspend fun applyOffer(@Body request: ApplyOfferRequest): Response<ApplyOfferResponse>
 
     @GET("api/v2/reports")
     suspend fun getReports(
@@ -191,43 +162,43 @@ interface ApiService {
         @Query("offer_id") offerId: Int? = null,
         @Query("country") country: String? = null,
         @Query("sub1") sub1: String? = null
-    ): Response<com.example.affscash.data.model.ReportResponse>
+    ): Response<ReportResponse>
 
     @GET("api/v2/reports?action=filters")
-    suspend fun getReportFilters(): Response<com.example.affscash.data.model.ReportFiltersResponse>
+    suspend fun getReportFilters(): Response<ReportFiltersResponse>
 
     @GET("api/v2/smartlinks")
-    suspend fun getSmartlinks(@Query("action") action: String = "list"): Response<com.example.affscash.data.model.SmartlinkResponse>
+    suspend fun getSmartlinks(@Query("action") action: String = "list"): Response<SmartlinkResponse>
 
     @POST("api/v2/smartlinks?action=apply")
-    suspend fun applySmartlink(@Body request: com.example.affscash.data.model.ApplySmartlinkRequest): Response<com.example.affscash.data.model.ApplySmartlinkResponse>
+    suspend fun applySmartlink(@Body request: ApplySmartlinkRequest): Response<ApplySmartlinkResponse>
 
     @GET("api/v2/manager/affiliates")
     suspend fun getManagerAffiliates(
         @Query("action") action: String = "list",
         @Query("q") query: String? = null,
         @Query("fraud_score_filter") fraudScoreFilter: String = "all"
-    ): Response<com.example.affscash.data.model.ManagerAffiliatesResponse>
+    ): Response<ManagerAffiliatesResponse>
 
     @POST("api/v2/manager/affiliates?action=create")
-    suspend fun createManagerAffiliate(@Body request: com.example.affscash.data.model.CreateAffiliateRequest): Response<com.example.affscash.data.model.BasicManagerActionResponse>
+    suspend fun createManagerAffiliate(@Body request: CreateAffiliateRequest): Response<BasicManagerActionResponse>
 
     @GET("api/v2/manager/affiliates")
     suspend fun getManagerAffiliateDetails(
         @Query("action") action: String = "view",
         @Query("id") affId: Int
-    ): Response<com.example.affscash.data.model.ManagerAffiliateDetailsResponse>
+    ): Response<ManagerAffiliateDetailsResponse>
 
     @POST("api/v2/manager/affiliates?action=edit")
-    suspend fun editManagerAffiliate(@Body request: com.example.affscash.data.model.EditAffiliateRequest): Response<com.example.affscash.data.model.BasicManagerActionResponse>
+    suspend fun editManagerAffiliate(@Body request: EditAffiliateRequest): Response<BasicManagerActionResponse>
 
     @POST("api/v2/manager/affiliates?action=update_status")
-    suspend fun updateManagerAffiliateStatus(@Body request: com.example.affscash.data.model.UpdateAffiliateStatusRequest): Response<com.example.affscash.data.model.BasicManagerActionResponse>
+    suspend fun updateManagerAffiliateStatus(@Body request: UpdateAffiliateStatusRequest): Response<BasicManagerActionResponse>
 
     @POST("api/v2/manager/affiliates?action=impersonate")
-    suspend fun impersonateAffiliate(@Body request: com.example.affscash.data.model.ImpersonateAffiliateRequest): Response<com.example.affscash.data.model.ImpersonateResponse>
+    suspend fun impersonateAffiliate(@Body request: ImpersonateAffiliateRequest): Response<ImpersonateResponse>
 
-    @GET("manager/OfferApprovalController.php?action=list")
+    @GET("api/v2/manager/offer-approvals?action=list")
     suspend fun getOfferApprovals(
         @Query("status") status: String,
         @Query("offer_id") offerId: Int?,
@@ -235,22 +206,22 @@ interface ApiService {
     ): ManagerOfferApprovalListResponse
 
     @POST("api/v2/stop_impersonate")
-    suspend fun stopImpersonating(): Response<com.example.affscash.data.model.StopImpersonateResponse>
+    suspend fun stopImpersonating(): Response<StopImpersonateResponse>
 
     @GET("api/v2/manager/smartlinks")
     suspend fun getManagerSmartlinks(
         @Query("action") action: String = "list",
         @Query("q") query: String? = null
-    ): Response<com.example.affscash.data.model.ManagerSmartlinkResponse>
+    ): Response<ManagerSmartlinkResponse>
 
     @GET("api/v2/manager/smartlinks")
     suspend fun getManagerSmartlinkRequests(
         @Query("action") action: String = "requests",
         @Query("status") status: String = "all"
-    ): Response<com.example.affscash.data.model.ManagerSmartlinkRequestsResponse>
+    ): Response<ManagerSmartlinkRequestsResponse>
 
     @POST("api/v2/manager/smartlinks?action=review_request")
-    suspend fun reviewManagerSmartlinkRequest(@Body request: com.example.affscash.data.model.ReviewSmartlinkRequestAction): Response<com.example.affscash.data.model.ReviewSmartlinkResponse>
+    suspend fun reviewManagerSmartlinkRequest(@Body request: ReviewSmartlinkRequestAction): Response<ReviewSmartlinkResponse>
 
     @GET("api/v2/offers")
     suspend fun getOfferDetails(
@@ -259,34 +230,34 @@ interface ApiService {
     ): Response<OfferDetailsResponse>
 
     @GET("api/v2/invoices")
-    suspend fun getInvoices(@Query("action") action: String = "list"): Response<com.example.affscash.data.model.InvoiceResponse>
+    suspend fun getInvoices(@Query("action") action: String = "list"): Response<InvoiceResponse>
 
     @GET("api/v2/invoices")
     suspend fun downloadInvoicePdf(
         @Query("action") action: String = "download_pdf",
         @Query("id") invoiceId: Int
-    ): Response<com.example.affscash.data.model.PdfDownloadResponse>
+    ): Response<PdfDownloadResponse>
 
     @GET("api/v2/settings")
-    suspend fun getSettings(@Query("action") action: String = "load"): Response<com.example.affscash.data.model.SettingsLoadResponse>
+    suspend fun getSettings(@Query("action") action: String = "load"): Response<SettingsLoadResponse>
 
     @POST("api/v2/settings?action=update_profile")
-    suspend fun updateProfile(@Body request: com.example.affscash.data.model.UpdateProfileRequest): Response<com.example.affscash.data.model.SettingsActionResponse>
+    suspend fun updateProfile(@Body request: UpdateProfileRequest): Response<SettingsActionResponse>
 
     @POST("api/v2/settings?action=update_security")
-    suspend fun updateSecurity(@Body request: com.example.affscash.data.model.UpdateSecurityRequest): Response<com.example.affscash.data.model.SettingsActionResponse>
+    suspend fun updateSecurity(@Body request: UpdateSecurityRequest): Response<SettingsActionResponse>
 
     @POST("api/v2/settings?action=update_payment")
-    suspend fun updatePayment(@Body request: com.example.affscash.data.model.UpdatePaymentRequest): Response<com.example.affscash.data.model.SettingsActionResponse>
+    suspend fun updatePayment(@Body request: UpdatePaymentRequest): Response<SettingsActionResponse>
 
     @POST("api/v2/settings?action=2fa_start")
-    suspend fun start2fa(): Response<com.example.affscash.data.model.SettingsActionResponse>
+    suspend fun start2fa(): Response<SettingsActionResponse>
 
     @POST("api/v2/settings?action=2fa_verify")
-    suspend fun verify2fa(@Body request: com.example.affscash.data.model.TwoFactorVerifyRequest): Response<com.example.affscash.data.model.SettingsActionResponse>
+    suspend fun verify2fa(@Body request: TwoFactorVerifyRequest): Response<SettingsActionResponse>
 
     @POST("api/v2/settings?action=2fa_disable")
-    suspend fun disable2fa(@Body request: com.example.affscash.data.model.TwoFactorDisableRequest): Response<com.example.affscash.data.model.SettingsActionResponse>
+    suspend fun disable2fa(@Body request: TwoFactorDisableRequest): Response<SettingsActionResponse>
 
     // ── Manager Reports ──────────────────────────────────────────────────────────
 
@@ -299,10 +270,10 @@ interface ApiService {
         @Query("affiliate_id") affiliateId: Int? = null,
         @Query("country") country: String? = null,
         @Query("sub1") sub1: String? = null
-    ): Response<com.example.affscash.data.model.ReportResponse>
+    ): Response<ReportResponse>
 
     @GET("api/v2/manager/reports?action=filters")
-    suspend fun getManagerReportFilters(): Response<com.example.affscash.data.model.ReportFiltersResponse>
+    suspend fun getManagerReportFilters(): Response<ReportFiltersResponse>
 
     @GET("api/v2/manager/duplicate_conversions")
     suspend fun getManagerDuplicateConversions(
@@ -311,13 +282,13 @@ interface ApiService {
     ): Response<DuplicateConversionsResponse>
 
     @GET("api/v2/manager/fraud-report")
-    suspend fun getManagerFraudReport(): Response<com.example.affscash.data.model.ManagerFraudReportResponse>
+    suspend fun getManagerFraudReport(): Response<ManagerFraudReportResponse>
 
     @GET("api/v2/fraud-report")
-    suspend fun getFraudReport(): Response<com.example.affscash.data.model.FraudReportResponse>
+    suspend fun getFraudReport(): Response<FraudReportResponse>
 
     @GET("api/v2/rewards")
-    suspend fun getRewards(): Response<com.example.affscash.data.model.RewardsResponse>
+    suspend fun getRewards(): Response<RewardsResponse>
 
     @GET("api/v2/chat")
     suspend fun getChatMessages(@Query("action") action: String = "messages"): Response<ChatMessagesResponse>
@@ -328,7 +299,8 @@ interface ApiService {
     @Multipart
     @POST("api/v2/chat?action=upload")
     suspend fun uploadFile(@Part file: MultipartBody.Part): Response<UploadFileResponse>
-    @POST("manager/OfferApprovalController.php?action=review")
+
+    @POST("api/v2/manager/offer-approvals?action=review")
     suspend fun reviewOfferApproval(@Body request: ReviewOfferApprovalRequest): DefaultResponse
 
 }

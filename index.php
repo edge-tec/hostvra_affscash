@@ -552,4 +552,17 @@ Router::any('/smartlink/{slug}', function($slug) {
 });
 
 // Dispatch
-Router::dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
+try {
+    Router::dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
+} catch (\Throwable $e) {
+    if (strpos($_SERVER['REQUEST_URI'] ?? '', '/api/') === 0) {
+        http_response_code(500);
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'error' => 'Server Error: ' . $e->getMessage()
+        ]);
+    } else {
+        throw $e;
+    }
+}

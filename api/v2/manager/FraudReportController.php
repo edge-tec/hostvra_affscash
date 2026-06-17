@@ -46,7 +46,7 @@ if ($hasAffiliates) {
              LEFT JOIN offers o ON o.id = cv.offer_id
              LEFT JOIN fraud_logs fl ON fl.click_id = cv.click_id
              WHERE cv.affiliate_id IN ($in)
-               AND cv.is_hidden = 0
+               AND COALESCE(cv.is_hidden, 0) = 0
                AND $riskSql
              ORDER BY cv.converted_at DESC LIMIT 1000",
             $affIds

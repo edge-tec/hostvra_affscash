@@ -38,3 +38,10 @@ data class TwoFactorStartResponse(
     @SerialName("qr_url") val qrUrl: String? = null,
     val error: String? = null
 )
+
+@Serializable
+data class SimpleResponse(
+    val success: Boolean,
+    val message: String? = null,
+    val error: String? = null
+)

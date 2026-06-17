@@ -11,6 +11,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.outlined.ChatBubbleOutline
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.WarningAmber
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,6 +26,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.affscash.R
 import com.example.affscash.ui.dashboard.ManagerDashboardViewModel
+import com.example.affscash.ui.dashboard.HeaderIconWithBadge
+import com.example.affscash.ui.components.PeriodTabs
+import com.example.affscash.ui.components.KpiGrid
+import com.example.affscash.ui.components.TrendChart
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
@@ -36,7 +43,10 @@ import kotlin.math.abs
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManagerDashboardScreen(
-    viewModel: ManagerDashboardViewModel = hiltViewModel()
+    viewModel: ManagerDashboardViewModel = hiltViewModel(),
+    onNavigateToInvoices: () -> Unit = {},
+    onNavigateToFraudAlerts: () -> Unit = {},
+    onNavigateToChat: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -48,6 +58,65 @@ fun ManagerDashboardScreen(
                         painter = painterResource(id = R.drawable.logo),
                         contentDescription = "AffsCash Logo",
                         modifier = Modifier.height(32.dp)
+                    )
+                },
+                actions = {
+                    val stats = uiState.stats
+                    val balance = stats?.commissionBalance ?: 0.0
+                    val counts = stats?.headerCounts
+                    
+                    // Balance Pill
+                    Surface(
+                        color = Color(0xFFDCFCE7),
+                        shape = RoundedCornerShape(8.dp),
+                        border = BorderStroke(1.dp, Color(0xFF86EFAC)),
+                        modifier = Modifier.padding(end = 8.dp),
+                        onClick = onNavigateToInvoices
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                "$ $balance", 
+                                color = Color(0xFF15803D),
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Icon(
+                                Icons.Default.ArrowDropDown,
+                                contentDescription = "Dropdown",
+                                tint = Color(0xFF15803D),
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    }
+
+                    val context = androidx.compose.ui.platform.LocalContext.current
+
+                    // Notifications Icon
+                    HeaderIconWithBadge(
+                        icon = Icons.Outlined.Notifications,
+                        count = counts?.unreadNotifs ?: 0,
+                        badgeColor = Color(0xFFEF4444),
+                        onClick = { android.widget.Toast.makeText(context, "Notifications coming soon", android.widget.Toast.LENGTH_SHORT).show() }
+                    )
+
+                    // Fraud Alerts Icon
+                    HeaderIconWithBadge(
+                        icon = Icons.Outlined.WarningAmber,
+                        count = counts?.unreadAlerts ?: 0,
+                        badgeColor = Color(0xFFEF4444),
+                        onClick = onNavigateToFraudAlerts
+                    )
+
+                    // Chat Icon
+                    HeaderIconWithBadge(
+                        icon = Icons.Outlined.ChatBubbleOutline,
+                        count = counts?.unreadChats ?: 0,
+                        badgeColor = Color(0xFFEF4444),
+                        onClick = onNavigateToChat
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(

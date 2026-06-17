@@ -254,6 +254,11 @@ class ManagerPermissions
     {
         $label = self::CATALOGUE[$key]['label'] ?? $key;
         http_response_code(403);
+        if (strpos($_SERVER['REQUEST_URI'] ?? '', '/api/') === 0) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'error' => "Permission denied. Required: $label"]);
+            return;
+        }
         echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Access Denied</title>'
            . '<link rel="stylesheet" href="/assets/css/app.css"></head><body style="background:#F8FAFC;font-family:-apple-system,Segoe UI,Roboto,sans-serif">'
            . '<div style="max-width:520px;margin:80px auto;background:#fff;border:1px solid #E2E8F0;border-radius:14px;padding:36px 32px;text-align:center;box-shadow:0 10px 32px -16px rgba(15,23,42,.2)">'

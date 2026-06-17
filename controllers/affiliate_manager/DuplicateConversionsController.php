@@ -38,7 +38,7 @@ if ($hasAffiliates) {
             WHERE offer_id IS NOT NULL AND offer_id > 0
               AND ip_address IS NOT NULL AND ip_address <> ''
               AND converted_at BETWEEN ? AND ?
-              AND is_hidden = 0
+              AND COALESCE(is_hidden, 0) = 0
             GROUP BY offer_id, ip_address
             HAVING dup_count > 1
          ) dup ON dup.offer_id = cv.offer_id AND dup.ip_address = cv.ip_address
@@ -47,7 +47,7 @@ if ($hasAffiliates) {
          LEFT JOIN users u       ON u.id  = af.user_id
          WHERE cv.affiliate_id IN ($inSql)
            AND cv.converted_at BETWEEN ? AND ?
-           AND cv.is_hidden = 0
+           AND COALESCE(cv.is_hidden, 0) = 0
          ORDER BY cv.offer_id, cv.ip_address, cv.converted_at DESC",
         array_merge([$dateFrom, $dateTo], $affIds, [$dateFrom, $dateTo])
     ) ?: [];

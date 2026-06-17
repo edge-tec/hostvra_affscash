@@ -7,10 +7,24 @@ $mgrUserId = Auth::id();
 $managerAffIds = Auth::managerAffiliateIds();
 
 if (empty($managerAffIds)) {
+    $mgrUserId = Auth::id();
+    $mgrRow = Database::fetchOne("SELECT am.id, am.balance FROM affiliate_managers am WHERE am.user_id=?", [$mgrUserId]);
+    $commBalance = (float)($mgrRow['balance'] ?? 0);
+    $mgrId = $mgrRow['id'] ?? 0;
+    $unreadNotifs = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM notifications WHERE user_id=? AND is_read=0", [$mgrUserId])['c'] ?? 0);
+    $unreadChats = (int)(Database::fetchOne("SELECT COUNT(*) c FROM manager_messages WHERE manager_id=? AND sender_role='admin' AND read_by_manager=0", [$mgrId])['c'] ?? 0);
+
     echo json_encode([
         'success' => true,
         'data' => [
             'total_affiliates' => 0,
+            'commission_balance' => $commBalance,
+            'header_counts' => [
+                'unread_news' => 0,
+                'unread_notifs' => $unreadNotifs,
+                'unread_alerts' => 0,
+                'unread_chats' => $unreadChats
+            ],
             'fraud_score_average' => 0,
             'fraud_score_counts' => ['high' => 0, 'medium' => 0, 'low' => 0],
             'stats' => null,
@@ -113,10 +127,33 @@ if ($action === 'stats') {
         $fraudScoreAgg = (int)round($sum / max(1, count($managerAffIds)));
     }
 
+    $mgrUserId = Auth::id();
+    $mgrRow = Database::fetchOne("SELECT am.id, am.balance FROM affiliate_managers am WHERE am.user_id=?", [$mgrUserId]);
+    $commBalance = (float)($mgrRow['balance'] ?? 0);
+    $mgrId = $mgrRow['id'] ?? 0;
+
+    $unreadNews = 0;
+    $unreadNotifs = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM notifications WHERE user_id=? AND is_read=0", [$mgrUserId])['c'] ?? 0);
+    $unreadAlerts = 0;
+    if (!empty($managerAffIds)) {
+        $inAff = implode(',', array_fill(0, count($managerAffIds), '?'));
+        $unreadAlerts = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM fraud_alerts WHERE affiliate_id IN ($inAff) AND is_read=0 AND resolved_at IS NULL", $managerAffIds)['c'] ?? 0);
+    }
+    $unreadChats = (int)(Database::fetchOne("SELECT COUNT(*) c FROM manager_messages WHERE manager_id=? AND sender_role='admin' AND read_by_manager=0", [$mgrId])['c'] ?? 0);
+
+    $header_counts = [
+        'unread_news' => $unreadNews,
+        'unread_notifs' => $unreadNotifs,
+        'unread_alerts' => $unreadAlerts,
+        'unread_chats' => $unreadChats
+    ];
+
     echo json_encode([
         'success' => true,
         'data' => [
             'total_affiliates' => count($managerAffIds),
+            'commission_balance' => $commBalance,
+            'header_counts' => $header_counts,
             'clicks' => $clicks,
             'unique' => $unique,
             'conv' => $conv,
