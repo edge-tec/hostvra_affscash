@@ -1,6 +1,12 @@
 package com.example.affscash.ui.chat
 
+import android.content.Intent
+import android.net.Uri
+import android.provider.OpenableColumns
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -8,16 +14,25 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.AttachFile
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.affscash.data.model.ChatMessage
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,8 +44,25 @@ fun ChatScreen(
     val uiState by viewModel.uiState.collectAsState()
     var messageText by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
+    val context = LocalContext.current
 
-    // Auto-scroll to bottom when new messages arrive
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            val contentResolver = context.contentResolver
+            val mimeType = contentResolver.getType(it)
+            var name: String? = null
+            contentResolver.query(it, null, null, null, null)?.use { cursor ->
+                val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (cursor.moveToFirst() && nameIndex != -1) {
+                    name = cursor.getString(nameIndex)
+                }
+            }
+            viewModel.selectFile(it, name, mimeType)
+        }
+    }
+
     LaunchedEffect(uiState.messages.size) {
         if (uiState.messages.isNotEmpty()) {
             listState.animateScrollToItem(uiState.messages.size - 1)
@@ -52,40 +84,117 @@ fun ChatScreen(
                     navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
-        },
-        bottomBar = {
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            // Messages List
+            LazyColumn(
+                state = listState,
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                contentPadding = PaddingValues(vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(uiState.messages) { message ->
+                    ChatMessageBubble(message = message)
+                }
+            }
+
+            // Error Message
+            if (uiState.error != null) {
+                Text(
+                    text = uiState.error!!,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+
+            // Selected File Preview
+            if (uiState.selectedFileName != null) {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 4.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            Icons.Default.InsertDriveFile,
+                            contentDescription = "File",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = uiState.selectedFileName!!,
+                            modifier = Modifier.weight(1f),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        IconButton(onClick = { viewModel.clearSelectedFile() }) {
+                            Icon(Icons.Default.Close, contentDescription = "Remove file")
+                        }
+                    }
+                }
+            }
+
+            // Input Area
             Surface(
-                tonalElevation = 8.dp,
+                color = MaterialTheme.colorScheme.surface,
                 shadowElevation = 8.dp
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp)
-                        .navigationBarsPadding(),
+                        .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    IconButton(
+                        onClick = { launcher.launch("*/*") },
+                        enabled = !uiState.isSending
+                    ) {
+                        Icon(
+                            Icons.Default.AttachFile,
+                            contentDescription = "Attach File",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+
                     OutlinedTextField(
                         value = messageText,
                         onValueChange = { messageText = it },
                         modifier = Modifier
                             .weight(1f)
-                            .padding(end = 8.dp),
+                            .padding(horizontal = 8.dp),
                         placeholder = { Text("Type a message...") },
-                        shape = RoundedCornerShape(24.dp),
                         maxLines = 4,
+                        shape = RoundedCornerShape(24.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
                         )
                     )
-                    
-                    FilledIconButton(
+
+                    FloatingActionButton(
                         onClick = {
-                            viewModel.sendMessage(messageText)
+                            viewModel.sendMessage(context, messageText)
                             messageText = ""
                         },
-                        enabled = messageText.isNotBlank() && !uiState.isSending,
-                        shape = RoundedCornerShape(50)
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(48.dp),
+                        shape = RoundedCornerShape(24.dp)
                     ) {
                         if (uiState.isSending) {
                             CircularProgressIndicator(
@@ -94,63 +203,13 @@ fun ChatScreen(
                                 strokeWidth = 2.dp
                             )
                         } else {
-                            Icon(Icons.Default.Send, contentDescription = "Send")
+                            Icon(
+                                Icons.Default.Send,
+                                contentDescription = "Send",
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
                         }
                     }
-                }
-            }
-        }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
-        ) {
-            if (uiState.isLoading && uiState.messages.isEmpty()) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            } else if (uiState.messages.isEmpty()) {
-                Column(
-                    modifier = Modifier.align(Alignment.Center),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        "No messages yet",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        "Send a message to start chatting with support.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                        modifier = Modifier.padding(top = 8.dp)
-                    )
-                }
-            } else {
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(uiState.messages) { message ->
-                        ChatMessageBubble(message = message)
-                    }
-                }
-            }
-            
-            uiState.error?.let { error ->
-                Snackbar(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(16.dp),
-                    action = {
-                        TextButton(onClick = { viewModel.clearError() }) {
-                            Text("Dismiss", color = MaterialTheme.colorScheme.inversePrimary)
-                        }
-                    }
-                ) {
-                    Text(error)
                 }
             }
         }
@@ -160,63 +219,124 @@ fun ChatScreen(
 @Composable
 fun ChatMessageBubble(message: ChatMessage) {
     val isUser = message.senderRole == "affiliate"
+    val context = LocalContext.current
     
-    // Purple for user, Grey for admin
     val bubbleColor = if (isUser) {
-        MaterialTheme.colorScheme.primary
+        Color(0xFF6200EE) // Purple for user
     } else {
-        MaterialTheme.colorScheme.surfaceVariant
+        Color(0xFFE0E0E0) // Gray for admin
     }
     
-    val textColor = if (isUser) {
-        MaterialTheme.colorScheme.onPrimary
-    } else {
-        MaterialTheme.colorScheme.onSurfaceVariant
-    }
-    
-    val shape = if (isUser) {
-        RoundedCornerShape(16.dp, 16.dp, 4.dp, 16.dp)
-    } else {
-        RoundedCornerShape(16.dp, 16.dp, 16.dp, 4.dp)
-    }
+    val textColor = if (isUser) Color.White else Color.Black
 
-    Column(
+    Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = if (isUser) Alignment.End else Alignment.Start
+        horizontalArrangement = if (isUser) Arrangement.End else Arrangement.Start
     ) {
-        if (!isUser) {
-            Text(
-                text = message.senderName,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                modifier = Modifier.padding(start = 8.dp, bottom = 4.dp)
-            )
-        }
-        
-        Box(
-            modifier = Modifier
-                .background(bubbleColor, shape)
-                .padding(horizontal = 16.dp, vertical = 10.dp)
-                .widthIn(max = 280.dp)
+        Column(
+            modifier = Modifier.fillMaxWidth(0.8f),
+            horizontalAlignment = if (isUser) Alignment.End else Alignment.Start
         ) {
-            Text(
-                text = message.message,
-                color = textColor,
-                fontSize = 15.sp,
-                lineHeight = 22.sp
-            )
+            if (!isUser) {
+                Text(
+                    text = message.senderName,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(bottom = 4.dp, start = 4.dp)
+                )
+            }
+
+            Surface(
+                color = bubbleColor,
+                shape = RoundedCornerShape(
+                    topStart = 16.dp,
+                    topEnd = 16.dp,
+                    bottomStart = if (isUser) 16.dp else 4.dp,
+                    bottomEnd = if (isUser) 4.dp else 16.dp
+                ),
+                shadowElevation = 1.dp
+            ) {
+                Column(modifier = Modifier.padding(12.dp)) {
+                    // Attachment Handling
+                    if (message.attachmentPath != null) {
+                        val isImage = message.attachmentType?.startsWith("image/") == true
+                        val attachmentUrl = "https://affscash.net/api/v2/chat?action=download&id=${message.id}"
+                        
+                        if (isImage) {
+                            AsyncImage(
+                                model = ImageRequest.Builder(context)
+                                    .data(attachmentUrl)
+                                    .crossfade(true)
+                                    .build(),
+                                contentDescription = "Image attachment",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(200.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .padding(bottom = if (message.message.isNotBlank()) 8.dp else 0.dp)
+                                    .clickable {
+                                        val intent = Intent(Intent.ACTION_VIEW).apply {
+                                            data = Uri.parse(attachmentUrl)
+                                        }
+                                        context.startActivity(intent)
+                                    }
+                            )
+                        } else {
+                            // File attachment (PDF, CSV)
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(Color.Black.copy(alpha = 0.1f), RoundedCornerShape(8.dp))
+                                    .padding(8.dp)
+                                    .clickable {
+                                        val intent = Intent(Intent.ACTION_VIEW).apply {
+                                            data = Uri.parse(attachmentUrl)
+                                        }
+                                        context.startActivity(intent)
+                                    },
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    Icons.Default.InsertDriveFile,
+                                    contentDescription = "File",
+                                    tint = textColor,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = message.attachmentName ?: "File",
+                                    color = textColor,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                            if (message.message.isNotBlank()) {
+                                Spacer(modifier = Modifier.height(8.dp))
+                            }
+                        }
+                    }
+
+                    if (message.message.isNotBlank()) {
+                        Text(
+                            text = message.message,
+                            color = textColor,
+                            fontSize = 16.sp,
+                            lineHeight = 22.sp
+                        )
+                    }
+
+                    Text(
+                        text = message.createdAt,
+                        color = textColor.copy(alpha = 0.7f),
+                        fontSize = 10.sp,
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .padding(top = 4.dp)
+                    )
+                }
+            }
         }
-        
-        Text(
-            text = message.createdAt,
-            fontSize = 10.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
-            modifier = Modifier.padding(
-                top = 4.dp,
-                start = if (isUser) 0.dp else 8.dp,
-                end = if (isUser) 8.dp else 0.dp
-            )
-        )
     }
 }

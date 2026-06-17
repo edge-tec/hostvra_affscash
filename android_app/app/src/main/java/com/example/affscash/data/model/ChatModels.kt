@@ -11,7 +11,11 @@ data class ChatMessage(
     @SerialName("message") val message: String,
     @SerialName("created_at") val createdAt: String,
     @SerialName("is_read") val isRead: Int,
-    @SerialName("sender_name") val senderName: String
+    @SerialName("sender_name") val senderName: String,
+    @SerialName("attachment_path") val attachmentPath: String? = null,
+    @SerialName("attachment_name") val attachmentName: String? = null,
+    @SerialName("attachment_type") val attachmentType: String? = null,
+    @SerialName("attachment_size") val attachmentSize: Int? = null
 )
 
 @Serializable
@@ -24,12 +28,23 @@ data class ChatMessagesResponse(
 @Serializable
 data class SendChatMessageRequest(
     @SerialName("action") val action: String = "send",
-    @SerialName("message") val message: String
+    @SerialName("message") val message: String,
+    @SerialName("attachment_id") val attachmentId: Int? = null
 )
 
 @Serializable
 data class SendChatMessageResponse(
     @SerialName("success") val success: Boolean = false,
     @SerialName("message") val message: ChatMessage? = null,
+    @SerialName("error") val error: String? = null
+)
+
+@Serializable
+data class UploadFileResponse(
+    @SerialName("success") val success: Boolean = false,
+    @SerialName("attachment_id") val attachmentId: Int? = null,
+    @SerialName("attachment_name") val attachmentName: String? = null,
+    @SerialName("attachment_size") val attachmentSize: Int? = null,
+    @SerialName("attachment_type") val attachmentType: String? = null,
     @SerialName("error") val error: String? = null
 )

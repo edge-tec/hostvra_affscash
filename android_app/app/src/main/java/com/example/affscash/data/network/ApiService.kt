@@ -20,10 +20,14 @@ import com.example.affscash.data.model.ImpersonateResponse
 import com.example.affscash.data.model.ChatMessagesResponse
 import com.example.affscash.data.model.SendChatMessageRequest
 import com.example.affscash.data.model.SendChatMessageResponse
+import com.example.affscash.data.model.UploadFileResponse
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Query
 
 interface ApiService {
@@ -163,4 +167,8 @@ interface ApiService {
 
     @POST("api/v2/chat")
     suspend fun sendChatMessage(@Body request: SendChatMessageRequest): Response<SendChatMessageResponse>
+
+    @Multipart
+    @POST("api/v2/chat?action=upload")
+    suspend fun uploadFile(@Part file: MultipartBody.Part): Response<UploadFileResponse>
 }

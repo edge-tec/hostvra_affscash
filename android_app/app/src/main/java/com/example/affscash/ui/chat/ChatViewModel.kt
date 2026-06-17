@@ -1,5 +1,8 @@
 package com.example.affscash.ui.chat
 
+import android.content.Context
+import android.net.Uri
+import android.provider.OpenableColumns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.affscash.data.model.ChatMessage
@@ -73,15 +76,69 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun sendMessage(message: String) {
-        if (message.isBlank()) return
+    fun selectFile(uri: Uri?, name: String?, mimeType: String?) {
+        _uiState.value = _uiState.value.copy(
+            selectedFileUri = uri,
+            selectedFileName = name,
+            selectedFileMimeType = mimeType
+        )
+    }
+
+    fun clearSelectedFile() {
+        _uiState.value = _uiState.value.copy(
+            selectedFileUri = null,
+            selectedFileName = null,
+            selectedFileMimeType = null
+        )
+    }
+
+    fun sendMessage(context: Context, message: String) {
+        val uri = _uiState.value.selectedFileUri
+        if (message.isBlank() && uri == null) return
         
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isSending = true, error = null)
-            val result = chatRepository.sendMessage(message)
+            
+            var attachmentId: Int? = null
+            
+            // Upload file first if exists
+            if (uri != null) {
+                try {
+                    val bytes = context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
+                    val name = _uiState.value.selectedFileName ?: "attachment"
+                    val mimeType = _uiState.value.selectedFileMimeType ?: "application/octet-stream"
+                    
+                    if (bytes != null) {
+                        val uploadResult = chatRepository.uploadFile(bytes, name, mimeType)
+                        uploadResult.onSuccess {
+                            if (it.success) {
+                                attachmentId = it.attachmentId
+                            } else {
+                                throw Exception(it.error ?: "File upload failed")
+                            }
+                        }.onFailure {
+                            throw it
+                        }
+                    }
+                } catch (e: Exception) {
+                    _uiState.value = _uiState.value.copy(
+                        isSending = false,
+                        error = "Upload failed: ${e.message}"
+                    )
+                    return@launch
+                }
+            }
+
+            // Send message with optional attachment
+            val result = chatRepository.sendMessage(message, attachmentId)
             result.onSuccess { response ->
                 if (response.success) {
-                    _uiState.value = _uiState.value.copy(isSending = false)
+                    _uiState.value = _uiState.value.copy(
+                        isSending = false,
+                        selectedFileUri = null,
+                        selectedFileName = null,
+                        selectedFileMimeType = null
+                    )
                     // Fetch all messages again to get the updated list
                     fetchMessagesSilently()
                 } else {
@@ -108,5 +165,8 @@ data class ChatUiState(
     val messages: List<ChatMessage> = emptyList(),
     val isLoading: Boolean = false,
     val isSending: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val selectedFileUri: Uri? = null,
+    val selectedFileName: String? = null,
+    val selectedFileMimeType: String? = null
 )
