@@ -154,7 +154,7 @@ class PrivateOffer {
         self::ensureTables();
         try {
             return Database::fetchAll(
-                "SELECT o.*,
+                "SELECT o.id, o.name, o.payout_type, o.payout_amount as payout, o.status,
                         (SELECT COUNT(*) FROM private_offer_access poa WHERE poa.offer_id = o.id) AS access_count
                  FROM offers o
                  WHERE COALESCE(o.visibility,'public') = 'private'
