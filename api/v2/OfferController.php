@@ -17,12 +17,18 @@ try {
         $countryFilter   = $_GET['country'] ?? '';
         $deviceFilter    = $_GET['device'] ?? '';
         $accessFilter    = $_GET['access_filter'] ?? '';
+        $inHouse         = filter_var($_GET['in_house'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
         $offerWhere = [
             "o.status='active'",
-            "(COALESCE(o.visibility,'public') != 'private' OR poa.id IS NOT NULL)",
-            "(o.is_inhouse IS NULL OR o.is_inhouse = 0)"
+            "(COALESCE(o.visibility,'public') != 'private' OR poa.id IS NOT NULL)"
         ];
+        
+        if ($inHouse) {
+            $offerWhere[] = "o.is_inhouse = 1";
+        } else {
+            $offerWhere[] = "(o.is_inhouse IS NULL OR o.is_inhouse = 0)";
+        }
         $offerParams = [];
 
         if ($qFilter)         { $offerWhere[] = "o.name LIKE ?";        $offerParams[] = '%'.$qFilter.'%'; }
