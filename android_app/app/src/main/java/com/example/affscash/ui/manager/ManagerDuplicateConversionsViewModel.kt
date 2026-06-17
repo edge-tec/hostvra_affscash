@@ -1,10 +1,10 @@
 package com.example.affscash.ui.manager
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.affscash.data.model.DuplicateConversionsResponse
 import com.example.affscash.data.repository.ManagerReportRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import javax.inject.Inject
 
 data class ManagerDuplicateConversionsUiState(
     val isLoading: Boolean = false,
@@ -22,7 +23,10 @@ data class ManagerDuplicateConversionsUiState(
     val toDate: String = ""
 )
 
-class ManagerDuplicateConversionsViewModel(private val repository: ManagerReportRepository) : ViewModel() {
+@HiltViewModel
+class ManagerDuplicateConversionsViewModel @Inject constructor(
+    private val repository: ManagerReportRepository
+) : ViewModel() {
     private val _uiState = MutableStateFlow(ManagerDuplicateConversionsUiState())
     val uiState: StateFlow<ManagerDuplicateConversionsUiState> = _uiState.asStateFlow()
 
@@ -58,15 +62,5 @@ class ManagerDuplicateConversionsViewModel(private val repository: ManagerReport
     fun setDateRange(from: String, to: String) {
         _uiState.update { it.copy(fromDate = from, toDate = to) }
         loadReport()
-    }
-}
-
-class ManagerDuplicateConversionsViewModelFactory(private val repository: ManagerReportRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ManagerDuplicateConversionsViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return ManagerDuplicateConversionsViewModel(repository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

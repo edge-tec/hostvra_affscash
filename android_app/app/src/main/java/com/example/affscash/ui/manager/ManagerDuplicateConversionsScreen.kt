@@ -16,23 +16,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.affscash.data.model.DuplicateConversionGroup
 import com.example.affscash.data.model.DuplicateConversionRow
-import com.example.affscash.data.network.RetrofitClient
-import com.example.affscash.data.repository.ManagerReportRepository
 import java.text.SimpleDateFormat
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManagerDuplicateConversionsScreen(
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    viewModel: ManagerDuplicateConversionsViewModel = hiltViewModel()
 ) {
-    val apiService = RetrofitClient.getApiService()
-    val repository = remember { ManagerReportRepository(apiService) }
-    val viewModel: ManagerDuplicateConversionsViewModel = viewModel(factory = ManagerDuplicateConversionsViewModelFactory(repository))
-
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(

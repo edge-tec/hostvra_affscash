@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Assessment
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -22,7 +23,8 @@ import com.example.affscash.ui.conversions.ManagerConversionsViewModel
 @Composable
 fun ManagerConversionsScreen(
     viewModel: ManagerConversionsViewModel = hiltViewModel(),
-    onNavigateToDuplicates: () -> Unit = {}
+    onNavigateToDuplicates: () -> Unit = {},
+    onNavigateToFraud: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val statusFilter by viewModel.statusFilter.collectAsState()
@@ -33,8 +35,11 @@ fun ManagerConversionsScreen(
             TopAppBar(
                 title = { Text("Manager Conversions") },
                 actions = {
+                    IconButton(onClick = onNavigateToFraud) {
+                        Icon(Icons.Default.Warning, contentDescription = "Fraud Reports")
+                    }
                     IconButton(onClick = onNavigateToDuplicates) {
-                        Icon(androidx.compose.material.icons.Icons.Default.Assessment, contentDescription = "Duplicate Conversions")
+                        Icon(Icons.Default.Assessment, contentDescription = "Duplicate Conversions")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(

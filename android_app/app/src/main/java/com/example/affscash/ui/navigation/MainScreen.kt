@@ -218,11 +218,17 @@ fun MainScreen(
             }
             composable(Screen.ManagerConversions.route) { 
                 com.example.affscash.ui.manager.ManagerConversionsScreen(
-                    onNavigateToDuplicates = { navController.navigate("manager_duplicate_conversions") }
+                    onNavigateToDuplicates = { navController.navigate("manager_duplicate_conversions") },
+                    onNavigateToFraud = { navController.navigate("manager_fraud_reports") }
                 ) 
             }
             composable("manager_duplicate_conversions") { 
                 com.example.affscash.ui.manager.ManagerDuplicateConversionsScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                ) 
+            }
+            composable("manager_fraud_reports") { 
+                com.example.affscash.ui.manager.ManagerFraudReportsScreen(
                     onNavigateBack = { navController.popBackStack() }
                 ) 
             }

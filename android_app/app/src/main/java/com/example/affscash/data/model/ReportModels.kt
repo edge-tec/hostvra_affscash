@@ -13,6 +13,54 @@ data class ReportFiltersResponse(
 )
 
 @Serializable
+data class ManagerFraudReportResponse(
+    val success: Boolean,
+    val totals: ManagerFraudTotals? = null,
+    val conversions: List<ManagerFraudConversion> = emptyList(),
+    val error: String? = null
+)
+
+@Serializable
+data class ManagerFraudTotals(
+    val total: Int,
+    val approved: Int,
+    val pending: Int,
+    val blocked: Int,
+    @SerialName("fraud_flagged") val fraudFlagged: Int,
+    val payout: Double
+)
+
+@Serializable
+data class ManagerFraudConversion(
+    @SerialName("conversion_id") val conversionId: String,
+    @SerialName("click_id") val clickId: String,
+    val status: String,
+    val payout: Double,
+    @SerialName("converted_at") val convertedAt: String,
+    @SerialName("ip_address") val ipAddress: String?,
+    val country: String?,
+    @SerialName("device_type") val deviceType: String?,
+    @SerialName("os_version") val osVersion: String?,
+    @SerialName("user_agent") val userAgent: String?,
+    @SerialName("goal_name") val goalName: String?,
+    @SerialName("rejection_reason") val rejectionReason: String,
+    @SerialName("rejected_at") val rejectedAt: String?,
+    @SerialName("affiliate_code") val affiliateCode: String,
+    @SerialName("aff_name") val affName: String,
+    @SerialName("affiliate_id") val affiliateId: Int,
+    @SerialName("offer_name") val offerName: String?,
+    @SerialName("ipqs_score") val ipqsScore: Int?,
+    @SerialName("ipqs_is_vpn") val ipqsIsVpn: Int?,
+    @SerialName("ipqs_is_proxy") val ipqsIsProxy: Int?,
+    @SerialName("ipqs_is_tor") val ipqsIsTor: Int?,
+    @SerialName("ipqs_is_bot") val ipqsIsBot: Int?,
+    @SerialName("ipqs_is_datacenter") val ipqsIsDatacenter: Int?,
+    @SerialName("ipqs_isp") val ipqsIsp: String?,
+    @SerialName("ipqs_action") val ipqsAction: String?,
+    @SerialName("ipqs_checked_at") val ipqsCheckedAt: String?
+)
+
+@Serializable
 data class DuplicateConversionsResponse(
     val success: Boolean,
     @SerialName("total_groups") val totalGroups: Int = 0,

@@ -24,6 +24,7 @@ import com.example.affscash.data.model.UploadFileResponse
 import com.example.affscash.data.model.ManagerOfferApprovalListResponse
 import com.example.affscash.data.model.ReviewOfferApprovalRequest
 import com.example.affscash.data.model.DefaultResponse
+import com.example.affscash.data.model.DuplicateConversionsResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -253,9 +254,6 @@ interface ApiService {
     @POST("api/v2/settings?action=2fa_disable")
     suspend fun disable2fa(@Body request: com.example.affscash.data.model.TwoFactorDisableRequest): Response<com.example.affscash.data.model.SettingsActionResponse>
 
-    @GET("api/v2/manager/fraud-report")
-    suspend fun getManagerFraudReport(): Response<com.example.affscash.data.model.FraudReportResponse>
-
     // ── Manager Reports ──────────────────────────────────────────────────────────
 
     @GET("api/v2/manager/reports")
@@ -277,6 +275,9 @@ interface ApiService {
         @Query("from") from: String,
         @Query("to") to: String
     ): Response<DuplicateConversionsResponse>
+
+    @GET("api/v2/manager/fraud-report")
+    suspend fun getManagerFraudReport(): Response<com.example.affscash.data.model.ManagerFraudReportResponse>
 
     @GET("api/v2/fraud-report")
     suspend fun getFraudReport(): Response<com.example.affscash.data.model.FraudReportResponse>
