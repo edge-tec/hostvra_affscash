@@ -471,6 +471,7 @@ Router::any('/api/v2/dashboard', function() { require BASE_PATH . '/api/v2/Dashb
 Router::any('/api/v2/offers', function() { require BASE_PATH . '/api/v2/OfferController.php'; });
 Router::any('/api/v2/smartlinks', function() { require BASE_PATH . '/api/v2/SmartlinkController.php'; });
 Router::any('/api/v2/reports', function() { require BASE_PATH . '/api/v2/ReportController.php'; });
+Router::any('/api/v2/news', function() { require BASE_PATH . '/api/v2/NewsController.php'; });
 Router::any('/api/v2/fraud-report', function() { require BASE_PATH . '/api/v2/FraudReportController.php'; });
 Router::any('/api/v2/rewards', function() { require BASE_PATH . '/api/v2/RewardsController.php'; });
 Router::any('/api/v2/shop', function() { require BASE_PATH . '/api/v2/ShopController.php'; });
