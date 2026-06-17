@@ -17,7 +17,7 @@ sealed class OfferState {
 }
 
 @HiltViewModel
-class OfferViewModel @Inject constructor(
+class AffiliateOffersViewModel @Inject constructor(
     private val offerRepository: OfferRepository
 ) : ViewModel() {
 

@@ -104,22 +104,13 @@ try {
         }
 
         if (Auth::impersonate($userId)) {
-            Helpers::json([
-                'status' => 'success',
-                'message' => 'Impersonation successful',
-                'data' => [
-                    'session_token' => Session::get('api_session_token'),
-                    'user' => [
-                        'id' => $_SESSION['user_id'],
-                        'role' => $_SESSION['role'],
-                        'first_name' => $_SESSION['first_name'],
-                        'last_name' => $_SESSION['last_name'],
-                        'email' => $_SESSION['email']
-                    ]
-                ]
+            echo json_encode([
+                'success' => true,
+                'role' => 'affiliate_manager',
+                'user' => Auth::currentUser()
             ]);
         } else {
-            Helpers::json(['status' => 'error', 'message' => 'Failed to impersonate'], 500);
+            echo json_encode(['success' => false, 'error' => 'Failed to impersonate']);
         }
         exit;
     }
