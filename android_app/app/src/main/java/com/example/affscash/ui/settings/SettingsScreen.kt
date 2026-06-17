@@ -330,7 +330,35 @@ fun SecurityTab(viewModel: SettingsViewModel) {
 fun PaymentTab(payment: PaymentInfo?, methods: List<String>, viewModel: SettingsViewModel) {
     val context = LocalContext.current
     var selectedMethod by remember { mutableStateOf(payment?.method ?: "") }
-    var details by remember { mutableStateOf(payment?.details ?: "") }
+    
+    // Attempt to parse JSON details
+    var rawDetails = payment?.details ?: ""
+    var isJson = false
+    var jsonDetails = org.json.JSONObject()
+    try {
+        if (rawDetails.startsWith("{")) {
+            jsonDetails = org.json.JSONObject(rawDetails)
+            isJson = true
+        }
+    } catch (e: Exception) {}
+
+    // State for structured fields
+    var accountHolderName by remember { mutableStateOf(jsonDetails.optString("account_holder_name", "")) }
+    var emailId by remember { mutableStateOf(jsonDetails.optString("email", "")) }
+    
+    var bankName by remember { mutableStateOf(jsonDetails.optString("bank_name", "")) }
+    var accountNumber by remember { mutableStateOf(jsonDetails.optString("account_number", "")) }
+    var ibanSwift by remember { mutableStateOf(jsonDetails.optString("iban_swift", "")) }
+    var routingNumber by remember { mutableStateOf(jsonDetails.optString("routing_number", "")) }
+    var branchName by remember { mutableStateOf(jsonDetails.optString("branch_name", "")) }
+    var bankAddress by remember { mutableStateOf(jsonDetails.optString("bank_address", "")) }
+    
+    var cryptoType by remember { mutableStateOf(jsonDetails.optString("crypto_type", "")) }
+    var networkType by remember { mutableStateOf(jsonDetails.optString("network_type", "")) }
+    var walletAddress by remember { mutableStateOf(jsonDetails.optString("wallet_address", "")) }
+    
+    var customDetails by remember { mutableStateOf(if (!isJson) rawDetails else "") }
+
     var expanded by remember { mutableStateOf(false) }
     var isUpdating by remember { mutableStateOf(false) }
 
@@ -367,20 +395,134 @@ fun PaymentTab(payment: PaymentInfo?, methods: List<String>, viewModel: Settings
         }
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
-            value = details,
-            onValueChange = { details = it },
-            label = { Text("Payment Details") },
-            modifier = Modifier.fillMaxWidth().height(150.dp),
-            placeholder = { Text("Enter your account numbers, crypto addresses, or emails here.") }
-        )
+        val lowerMethod = selectedMethod.lowercase()
+        val type = when {
+            lowerMethod.contains("crypto") -> "crypto"
+            lowerMethod.contains("wire") || lowerMethod.contains("bank") -> "wire"
+            lowerMethod.contains("paypal") || lowerMethod.contains("payoneer") || lowerMethod.contains("wise") -> "simple"
+            else -> "custom"
+        }
+
+        when (type) {
+            "simple" -> {
+                OutlinedTextField(
+                    value = accountHolderName,
+                    onValueChange = { accountHolderName = it },
+                    label = { Text("Account Holder Name *") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = emailId,
+                    onValueChange = { emailId = it },
+                    label = { Text("Email / Account ID *") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            "wire" -> {
+                OutlinedTextField(
+                    value = accountHolderName,
+                    onValueChange = { accountHolderName = it },
+                    label = { Text("Account Holder Name *") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = bankName,
+                    onValueChange = { bankName = it },
+                    label = { Text("Bank Name *") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = accountNumber,
+                    onValueChange = { accountNumber = it },
+                    label = { Text("Account Number *") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = ibanSwift,
+                    onValueChange = { ibanSwift = it },
+                    label = { Text("IBAN / SWIFT Code") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = bankAddress,
+                    onValueChange = { bankAddress = it },
+                    label = { Text("Bank Address *") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            "crypto" -> {
+                OutlinedTextField(
+                    value = cryptoType,
+                    onValueChange = { cryptoType = it },
+                    label = { Text("Cryptocurrency (e.g. USDT) *") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = networkType,
+                    onValueChange = { networkType = it },
+                    label = { Text("Network Type (e.g. TRC20) *") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = walletAddress,
+                    onValueChange = { walletAddress = it },
+                    label = { Text("Wallet Address *") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            else -> {
+                OutlinedTextField(
+                    value = customDetails,
+                    onValueChange = { customDetails = it },
+                    label = { Text("Payment Details") },
+                    modifier = Modifier.fillMaxWidth().height(150.dp),
+                    placeholder = { Text("Enter your account numbers, crypto addresses, or emails here.") }
+                )
+            }
+        }
+        
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
+                val updatedDetails = when (type) {
+                    "simple" -> {
+                        org.json.JSONObject().apply {
+                            put("account_holder_name", accountHolderName)
+                            put("email", emailId)
+                        }.toString()
+                    }
+                    "wire" -> {
+                        org.json.JSONObject().apply {
+                            put("account_holder_name", accountHolderName)
+                            put("bank_name", bankName)
+                            put("account_number", accountNumber)
+                            put("iban_swift", ibanSwift)
+                            put("routing_number", routingNumber)
+                            put("branch_name", branchName)
+                            put("bank_address", bankAddress)
+                        }.toString()
+                    }
+                    "crypto" -> {
+                        org.json.JSONObject().apply {
+                            put("crypto_type", cryptoType)
+                            put("network_type", networkType)
+                            put("wallet_address", walletAddress)
+                        }.toString()
+                    }
+                    else -> customDetails
+                }
+
                 isUpdating = true
                 viewModel.updatePayment(
-                    UpdatePaymentRequest(selectedMethod, details),
+                    UpdatePaymentRequest(selectedMethod, updatedDetails),
                     onSuccess = { 
                         isUpdating = false
                         Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
