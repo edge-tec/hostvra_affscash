@@ -594,4 +594,11 @@ interface ApiService {
 
     @POST("api/v2/admin/invoices?action=delete")
     suspend fun deleteAdminInvoice(@Body request: com.example.affscash.data.model.AdminInvoiceDeleteRequest): com.example.affscash.data.model.AdminInvoiceStatusResponse
+
+    // --- ADMIN: Affiliate Managers ---
+    @GET("api/v2/admin/affiliate-managers?action=list")
+    suspend fun getAdminAffiliateManagers(): com.example.affscash.data.model.AdminAffiliateManagerResponse
+
+    @POST("api/v2/admin/affiliate-managers?action=delete")
+    suspend fun deleteAdminAffiliateManager(@Body request: com.example.affscash.data.model.AdminAffiliateManagerDeleteRequest): com.example.affscash.data.model.AdminAffiliateManagerDeleteResponse
 }

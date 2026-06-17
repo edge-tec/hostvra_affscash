@@ -96,6 +96,7 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     object AdminAffiliateReport : Screen("admin_aff_report", "Aff Rpt", Icons.Filled.Group)
     object AdminAutoHide : Screen("admin_autohide", "Hide", Icons.Filled.VisibilityOff)
     object AdminInvoices : Screen("admin_invoices", "Invoices", Icons.Filled.Receipt)
+    object AdminAffiliateManagers : Screen("admin_managers", "Managers", Icons.Filled.SupervisorAccount)
     object AdminSettings : Screen("admin_settings", "Settings", Icons.Filled.Settings)
 
     // Manager Screens
@@ -120,7 +121,7 @@ fun MainScreen(
     val navController = rememberNavController()
 
     val items = when (role) {
-        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminPrivateOffers, Screen.AdminSmartlinks, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminConversions, Screen.AdminReports, Screen.AdminAffiliateReport, Screen.AdminFraudReport, Screen.AdminAutoHide, Screen.AdminInvoices, Screen.AdminSettings)
+        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminPrivateOffers, Screen.AdminSmartlinks, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminAffiliateManagers, Screen.AdminConversions, Screen.AdminReports, Screen.AdminAffiliateReport, Screen.AdminFraudReport, Screen.AdminAutoHide, Screen.AdminInvoices, Screen.AdminSettings)
         "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerSmartlinks, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerReports, Screen.ManagerInvoices, Screen.ManagerSettings)
         else -> listOf(Screen.Dashboard, Screen.Offers, Screen.Smartlinks, Screen.Reports, Screen.AffiliateSettings)
     }
@@ -379,6 +380,19 @@ fun MainScreen(
                 }
                 val viewModel: com.example.affscash.ui.screens.admin.invoices.AdminInvoicesViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = factory)
                 com.example.affscash.ui.screens.admin.invoices.AdminInvoicesScreen(
+                    viewModel = viewModel,
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(Screen.AdminAffiliateManagers.route) {
+                val repo = com.example.affscash.data.repository.AdminAffiliateManagerRepository(com.example.affscash.data.network.RetrofitClient.apiService)
+                val factory = object : androidx.lifecycle.ViewModelProvider.Factory {
+                    override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
+                        return com.example.affscash.ui.screens.admin.managers.AdminAffiliateManagersViewModel(repo) as T
+                    }
+                }
+                val viewModel: com.example.affscash.ui.screens.admin.managers.AdminAffiliateManagersViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = factory)
+                com.example.affscash.ui.screens.admin.managers.AdminAffiliateManagersScreen(
                     viewModel = viewModel,
                     onNavigateBack = { navController.popBackStack() }
                 )

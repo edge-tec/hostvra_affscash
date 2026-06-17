@@ -492,6 +492,7 @@ Router::get('/api/v2/admin/private-offers/detail', function() { require BASE_PAT
 Router::post('/api/v2/admin/private-offers/action', function() { require BASE_PATH . '/api/v2/admin/PrivateOfferActionController.php'; });
 Router::any('/api/v2/admin/offer-approvals', function() { require BASE_PATH . '/api/v2/admin/OfferApprovalController.php'; });
 Router::any('/api/v2/admin/affiliates', function() { require BASE_PATH . '/api/v2/admin/AffiliateController.php'; });
+Router::any('/api/v2/admin/affiliate-managers', function() { require BASE_PATH . '/api/v2/admin/AffiliateManagerController.php'; });
 Router::any('/api/v2/admin/affiliate-actions', function() { require BASE_PATH . '/api/v2/admin/AffiliateActionController.php'; });
 Router::any('/api/v2/admin/advertisers', function() { require BASE_PATH . '/api/v2/admin/AdvertiserController.php'; });
 Router::any('/api/v2/admin/advertiser-actions', function() { require BASE_PATH . '/api/v2/admin/AdvertiserActionController.php'; });
