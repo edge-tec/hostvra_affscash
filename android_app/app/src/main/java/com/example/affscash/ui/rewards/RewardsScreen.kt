@@ -21,6 +21,14 @@ import androidx.core.text.HtmlCompat
 import android.widget.TextView
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
+import android.net.Uri
+import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.Icons
+import androidx.compose.material3.Icon
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import com.example.affscash.data.model.RewardRule
 import com.example.affscash.data.model.RewardsResponse
 import com.example.affscash.theme.Purple40
@@ -192,12 +200,22 @@ fun AvailableRewardItem(rule: RewardRule) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (rule.imagePath != null) {
-                val cleanPath = rule.imagePath.removePrefix("/").replace(" ", "%20")
-                val fullImageUrl = if (cleanPath.startsWith("http")) cleanPath else "https://affscash.net/$cleanPath"
-                AsyncImage(
+                val cleanPath = rule.imagePath.removePrefix("/")
+                val fullImageUrl = if (cleanPath.startsWith("http")) cleanPath else "https://affscash.net/" + Uri.encode(cleanPath, "/")
+                SubcomposeAsyncImage(
                     model = fullImageUrl,
                     contentDescription = rule.title,
-                    modifier = Modifier.size(60.dp)
+                    modifier = Modifier.size(60.dp),
+                    loading = {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                        }
+                    },
+                    error = {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Icon(Icons.Default.Image, contentDescription = "No Image", tint = Color.Gray, modifier = Modifier.size(24.dp))
+                        }
+                    }
                 )
                 Spacer(modifier = Modifier.width(16.dp))
             }

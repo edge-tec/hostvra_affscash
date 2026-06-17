@@ -24,7 +24,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import android.net.Uri
+import androidx.compose.material.icons.filled.Image
 import com.example.affscash.data.model.ShopOrder
 import com.example.affscash.data.model.ShopProduct
 
@@ -205,14 +208,15 @@ fun ProductCard(
         ) {
             val rawPath = product.imagePath ?: ""
             val imageUrl = if (rawPath.isEmpty()) {
-                "https://via.placeholder.com/200?text=No+Image"
+                "" // Trigger error fallback
             } else if (!rawPath.startsWith("http")) {
-                "https://affscash.net/" + rawPath.removePrefix("/").replace(" ", "%20")
+                val cleanPath = rawPath.removePrefix("/")
+                "https://affscash.net/" + Uri.encode(cleanPath, "/")
             } else {
-                rawPath.replace(" ", "%20")
+                rawPath
             }
 
-            AsyncImage(
+            SubcomposeAsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(imageUrl)
                     .crossfade(true)
@@ -223,7 +227,17 @@ fun ProductCard(
                     .fillMaxWidth()
                     .aspectRatio(1f)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(Color.White)
+                    .background(Color(0xFFF1F5F9)),
+                loading = {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                    }
+                },
+                error = {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Icon(Icons.Default.Image, contentDescription = "No Image", tint = Color.Gray, modifier = Modifier.size(48.dp))
+                    }
+                }
             )
 
             Spacer(modifier = Modifier.height(12.dp))
