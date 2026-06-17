@@ -44,7 +44,7 @@ fun AdminSmartlinksScreen(
                             },
                             modifier = Modifier.padding(end = 16.dp)
                         ) {
-                            IconButton(onClick = { navController.navigate("admin/smartlinks/requests") }) {
+                            IconButton(onClick = { navController.navigate("admin_smartlink_requests") }) {
                                 Icon(Icons.Default.Notifications, contentDescription = "Requests")
                             }
                         }
@@ -53,7 +53,7 @@ fun AdminSmartlinksScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { navController.navigate("admin/smartlinks/create") }) {
+            FloatingActionButton(onClick = { navController.navigate("admin_smartlink_create") }) {
                 Icon(Icons.Default.Add, contentDescription = "Create Smartlink")
             }
         }
@@ -79,7 +79,7 @@ fun AdminSmartlinksScreen(
                         items(state.smartlinks) { smartlink ->
                             AdminSmartlinkItem(
                                 smartlink = smartlink,
-                                onEdit = { navController.navigate("admin/smartlinks/edit/${smartlink.id}") },
+                                onEdit = { navController.navigate("admin_smartlink_edit/${smartlink.id}") },
                                 onToggleStatus = { viewModel.toggleStatus(smartlink.id) },
                                 onDelete = { viewModel.deleteSmartlink(smartlink.id) }
                             )
