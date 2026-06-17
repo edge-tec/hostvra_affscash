@@ -112,7 +112,8 @@ try {
 
         $payout = $offer['custom_payout'] !== null ? $offer['custom_payout'] : $offer['payout'];
         
-        $affiliateCode = Database::fetchOne("SELECT affiliate_code FROM affiliates WHERE id=?", [$affId])['affiliate_code'] ?? '';
+        $affRow = Database::fetchOne("SELECT affiliate_code FROM affiliates WHERE id=?", [$affId]);
+        $affiliateCode = $affRow ? ($affRow['affiliate_code'] ?? '') : '';
         
         $appUrl = Config::get('config', 'app.url');
         $trackingLink = rtrim($appUrl, '/') . '/offer/' . $offerId . '?aff_id=' . $affiliateCode;
