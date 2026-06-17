@@ -25,6 +25,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.affscash.ui.components.QrCodeImage
 import coil.compose.AsyncImage
 import com.example.affscash.data.model.ManagerProfileResponse
 
@@ -453,12 +454,8 @@ fun GoogleAuthenticatorTabContent(
                         }
                     } else {
                         Text("1. Scan this QR Code with Google Authenticator app:")
-                        AsyncImage(
-                            model = coil.request.ImageRequest.Builder(LocalContext.current)
-                                .data(qrUrl)
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = "QR Code",
+                        QrCodeImage(
+                            data = "otpauth://totp/Affscash?secret=$twoFaSecret&issuer=Affscash",
                             modifier = Modifier.size(200.dp).align(Alignment.CenterHorizontally)
                         )
                         Text("Or enter this secret manually: $twoFaSecret", fontWeight = FontWeight.Bold)

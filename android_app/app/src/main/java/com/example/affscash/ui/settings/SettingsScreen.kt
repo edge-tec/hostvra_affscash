@@ -18,7 +18,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
+import com.example.affscash.ui.components.QrCodeImage
 import com.example.affscash.data.model.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -698,7 +698,7 @@ fun ContactCard(modifier: Modifier = Modifier, icon: androidx.compose.ui.graphic
 @Composable
 fun TwoFactorTab(isEnabled: Boolean, viewModel: SettingsViewModel) {
     val context = LocalContext.current
-    var qrUrl by remember { mutableStateOf<String?>(null) }
+    var twoFaSecret by remember { mutableStateOf<String?>(null) }
     var pendingSecret by remember { mutableStateOf<String?>(null) }
     var otpCode by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -717,7 +717,7 @@ fun TwoFactorTab(isEnabled: Boolean, viewModel: SettingsViewModel) {
                     viewModel.start2fa(
                         onSuccess = { secret, url ->
                             pendingSecret = secret
-                            qrUrl = url
+                            twoFaSecret = secret
                             isLoading = false
                         },
                         onError = {
@@ -731,14 +731,9 @@ fun TwoFactorTab(isEnabled: Boolean, viewModel: SettingsViewModel) {
                 Text(if (isLoading) "Loading..." else "Enable 2FA")
             }
         } else if (pendingSecret != null && !isEnabled) {
-            Text("1. Scan this QR code with Google Authenticator or Authy.")
-            Spacer(modifier = Modifier.height(8.dp))
-            AsyncImage(
-                model = coil.request.ImageRequest.Builder(LocalContext.current)
-                    .data(qrUrl)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = "QR Code",
+            Text("1. Scan this QR Code with Google Authenticator app:")
+            QrCodeImage(
+                data = "otpauth://totp/Affscash?secret=$twoFaSecret&issuer=Affscash",
                 modifier = Modifier.size(200.dp).align(Alignment.CenterHorizontally)
             )
             Spacer(modifier = Modifier.height(8.dp))

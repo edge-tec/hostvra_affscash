@@ -110,4 +110,7 @@ dependencies {
   // Charting (Vico)
   implementation("com.patrykandpatrick.vico:compose-m3:1.15.0")
   implementation("com.patrykandpatrick.vico:core:1.15.0")
+
+  // ZXing for QR Code generation
+  implementation("com.google.zxing:core:3.5.2")
 }
