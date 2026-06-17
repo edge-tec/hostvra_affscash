@@ -45,7 +45,11 @@ try {
     } catch (Throwable $e) {
         $unreadAlerts = 0;
     }
-    $unreadChats = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM support_messages WHERE user_id=? AND sender='admin' AND is_read=0", [$userId])['c'] ?? 0);
+    try {
+        $unreadChats = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM support_messages WHERE affiliate_id=? AND owner_type='affiliate' AND sender_role!='affiliate' AND is_read=0 AND is_deleted=0", [$affId])['c'] ?? 0);
+    } catch (Throwable $e) {
+        $unreadChats = 0;
+    }
 
     $header_counts = [
         'unread_news' => $unreadNews,
