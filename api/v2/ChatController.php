@@ -68,11 +68,11 @@ try {
                 'owner_type' => 'affiliate',
                 'status' => 'open',
                 'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s')
+                'last_message_at' => date('Y-m-d H:i:s')
             ]);
         } else {
             $convId = $openConv['id'];
-            Database::query("UPDATE support_conversations SET updated_at=NOW() WHERE id=?", [$convId]);
+            Database::query("UPDATE support_conversations SET last_message_at=NOW() WHERE id=?", [$convId]);
         }
 
         $userId = $_SESSION['user_id'] ?? $affId;
