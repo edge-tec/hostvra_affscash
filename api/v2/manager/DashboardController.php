@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json');
 Auth::check('affiliate_manager');
+ManagerPermissions::ensureSchema();
 
 $action = Helpers::get('action') ?: 'stats';
 $mgrUserId = Auth::id();

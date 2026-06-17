@@ -1,6 +1,6 @@
 <?php
 Auth::check('affiliate_manager');               // Manager-only — admins use the existing Fraud Score Report
-ManagerPermissions::requirePermission('reject_fraud_conv');
+ManagerPermissions::requirePermission('view_fraud_reports');
 $pageTitle = 'Fraud Report';
 
 $affIds = Auth::managerAffiliateIds();
@@ -17,6 +17,9 @@ if (Helpers::isPost() && Helpers::post('action') === 'reject_fraud' && Auth::ver
     $reason = trim((string)Helpers::postRaw('reason'));
     if ($convId !== '' && $reason !== '' && !empty($affIds)) {
         $in = implode(',', array_fill(0, count($affIds), '?'));
+        if (!Auth::hasPermission('reject_fraud_conv')) {
+            Helpers::jsonResponse(['success' => false, 'message' => 'Permission denied'], 403);
+        }
         // Scope check — must belong to one of the manager's affiliates AND
         // not already be rejected. The IN-clause is the security gate.
         $conv = Database::fetchOne(
