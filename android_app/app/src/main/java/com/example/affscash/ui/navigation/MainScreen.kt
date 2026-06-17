@@ -33,7 +33,8 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     object Invoices : Screen("invoices", "Invoices", Icons.Filled.PictureAsPdf)
     object AffiliateSettings : Screen("affiliate_settings", "Settings", Icons.Filled.Settings)
     object FraudReport : Screen("fraud_report", "Fraud Report", Icons.Filled.Assessment)
-    object Rewards : Screen("rewards", "Rewards", Icons.Filled.MonetizationOn)
+    object Rewards : Screen("rewards", "Milestones", Icons.Filled.MonetizationOn)
+    object Shop : Screen("shop", "Rewards Shop", Icons.Filled.LocalOffer) // Add Shop screen
     object Chat : Screen("chat", "Chat", Icons.Filled.Chat)
 
     // Admin Screens
@@ -128,6 +129,7 @@ fun MainScreen(
                     onLogout = onLogout,
                     onNavigateToInvoices = { navController.navigate(Screen.Invoices.route) },
                     onNavigateToRewards = { navController.navigate(Screen.Rewards.route) },
+                    onNavigateToShop = { navController.navigate(Screen.Shop.route) },
                     onRoleChange = onRoleChange
                 ) 
             }
@@ -150,6 +152,9 @@ fun MainScreen(
                 com.example.affscash.ui.chat.ChatScreen(
                     onNavigateBack = { navController.popBackStack() }
                 )
+            }
+            composable(Screen.Shop.route) {
+                com.example.affscash.ui.shop.ShopScreen()
             }
 
             // Admin Screens

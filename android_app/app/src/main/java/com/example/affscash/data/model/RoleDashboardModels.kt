@@ -126,7 +126,7 @@ data class ManagerDashboardExtraData(
     val offers: List<ManagerTopOffer> = emptyList(),
     val affiliates: List<ManagerTopAffiliate> = emptyList(),
     @SerialName("recent_convs") val recentConvs: List<RecentConversion> = emptyList(),
-    @SerialName("fraud_convs") val fraudConvs: List<FraudConversion> = emptyList()
+    @SerialName("fraud_convs") val fraudConvs: List<DashboardFraudConversion> = emptyList()
 )
 
 @Serializable
@@ -187,7 +187,7 @@ data class RecentConversion(
 )
 
 @Serializable
-data class FraudConversion(
+data class DashboardFraudConversion(
     @SerialName("conversion_id") val conversionId: Int,
     val payout: Double,
     @SerialName("converted_at") val convertedAt: String,

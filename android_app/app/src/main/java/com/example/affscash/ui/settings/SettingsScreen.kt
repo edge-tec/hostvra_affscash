@@ -28,6 +28,7 @@ fun SettingsScreen(
     onLogout: () -> Unit,
     onNavigateToInvoices: () -> Unit = {},
     onNavigateToRewards: () -> Unit = {},
+    onNavigateToShop: () -> Unit = {},
     onRoleChange: (String) -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
@@ -125,7 +126,18 @@ fun SettingsScreen(
                                     ) {
                                         Icon(Icons.Default.MonetizationOn, contentDescription = "Rewards")
                                         Spacer(modifier = Modifier.width(8.dp))
-                                        Text("My Rewards")
+                                        Text("My Rewards (Milestones)")
+                                    }
+                                    Spacer(modifier = Modifier.height(16.dp))
+
+                                    Button(
+                                        onClick = onNavigateToShop,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6C43E8))
+                                    ) {
+                                        Icon(Icons.Default.LocalOffer, contentDescription = "Shop")
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text("Rewards Shop")
                                     }
                                     Spacer(modifier = Modifier.height(16.dp))
                                 }
