@@ -89,6 +89,7 @@ dependencies {
   // Networking (Retrofit, OkHttp, KotlinX Serialization)
   implementation(libs.retrofit)
   implementation(libs.retrofit.kotlinx.serialization)
+  implementation(libs.gson)
   implementation(platform(libs.okhttp.bom))
   implementation(libs.okhttp)
   implementation(libs.okhttp.logging)

@@ -96,7 +96,36 @@ try {
         exit;
     }
 
+    if ($action === 'impersonate') {
+        $userId = isset($input['user_id']) ? (int)$input['user_id'] : 0;
+        if ($userId <= 0) {
+            Helpers::json(['status' => 'error', 'message' => 'Invalid user ID']);
+            exit;
+        }
+
+        if (Auth::impersonate($userId)) {
+            Helpers::json([
+                'status' => 'success',
+                'message' => 'Impersonation successful',
+                'data' => [
+                    'session_token' => Session::get('api_session_token'),
+                    'user' => [
+                        'id' => $_SESSION['user_id'],
+                        'role' => $_SESSION['role'],
+                        'first_name' => $_SESSION['first_name'],
+                        'last_name' => $_SESSION['last_name'],
+                        'email' => $_SESSION['email']
+                    ]
+                ]
+            ]);
+        } else {
+            Helpers::json(['status' => 'error', 'message' => 'Failed to impersonate'], 500);
+        }
+        exit;
+    }
+
     Helpers::json(['status' => 'error', 'message' => 'Invalid action'], 400);
+
 
 } catch (\Exception $e) {
     error_log("Admin AffiliateManager API Error: " . $e->getMessage());

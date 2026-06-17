@@ -384,7 +384,8 @@ fun MainScreen(
                 val viewModel: com.example.affscash.ui.screens.admin.managers.AdminAffiliateManagersViewModel = androidx.hilt.navigation.compose.hiltViewModel()
                 com.example.affscash.ui.screens.admin.managers.AdminAffiliateManagersScreen(
                     viewModel = viewModel,
-                    onNavigateBack = { navController.popBackStack() }
+                    onNavigateBack = { navController.popBackStack() },
+                    onLoginSuccess = onLoginSuccess
                 )
             }
             composable(Screen.AdminSettings.route) { com.example.affscash.ui.settings.SettingsScreen(role, onLogout) }

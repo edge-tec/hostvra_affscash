@@ -15,7 +15,8 @@ import javax.inject.Inject
 data class AdminAffiliateManagersUiState(
     val isLoading: Boolean = false,
     val managers: List<AdminAffiliateManagerRow> = emptyList(),
-    val error: String? = null
+    val error: String? = null,
+    val isActionLoading: Boolean = false
 )
 
 @HiltViewModel
@@ -40,13 +41,29 @@ class AdminAffiliateManagersViewModel @Inject constructor(private val repository
     }
 
     fun deleteManager(mgrId: Int) {
-        _uiState.update { it.copy(isLoading = true) }
+        _uiState.update { it.copy(isActionLoading = true) }
         viewModelScope.launch {
             val result = repository.deleteManager(mgrId)
             if (result.isSuccess) {
+                _uiState.update { it.copy(isActionLoading = false) }
                 loadManagers()
             } else {
-                _uiState.update { it.copy(isLoading = false, error = result.exceptionOrNull()?.message) }
+                _uiState.update { it.copy(isActionLoading = false, error = result.exceptionOrNull()?.message) }
+            }
+        }
+    }
+
+    fun impersonateManager(userId: Int, onLoginSuccess: (String, com.example.affscash.data.model.User) -> Unit) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isActionLoading = true, error = null) }
+            val result = repository.impersonateManager(userId)
+            result.onSuccess { response ->
+                _uiState.update { it.copy(isActionLoading = false) }
+                if (response.data?.user != null) {
+                    onLoginSuccess(response.data.user.role, response.data.user)
+                }
+            }.onFailure { error ->
+                _uiState.update { it.copy(isActionLoading = false, error = error.message) }
             }
         }
     }

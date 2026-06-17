@@ -40,4 +40,20 @@ class AdminAffiliateManagerRepository @Inject constructor(private val apiService
             }
         }
     }
+    suspend fun impersonateManager(userId: Int): Result<AuthResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val request = AdminAffiliateManagerImpersonateRequest(user_id = userId)
+                val response = apiService.impersonateAdminAffiliateManager(request)
+                if (response.status == "success") {
+                    Result.success(response)
+                } else {
+                    Result.failure(Exception(response.message ?: "Failed to impersonate"))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
 }
+

@@ -20,7 +20,8 @@ import com.example.affscash.data.model.AdminAffiliateManagerRow
 @Composable
 fun AdminAffiliateManagersScreen(
     viewModel: AdminAffiliateManagersViewModel = viewModel(),
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onLoginSuccess: (String, com.example.affscash.data.model.User) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -54,7 +55,8 @@ fun AdminAffiliateManagersScreen(
                 items(uiState.managers) { manager ->
                     AdminAffiliateManagerCard(
                         manager = manager,
-                        onDelete = { viewModel.deleteManager(manager.mgr_id) }
+                        onDelete = { viewModel.deleteManager(manager.mgr_id) },
+                        onLoginAs = { viewModel.impersonateManager(manager.user_id, onLoginSuccess) }
                     )
                 }
             }
@@ -66,7 +68,8 @@ fun AdminAffiliateManagersScreen(
 @Composable
 fun AdminAffiliateManagerCard(
     manager: AdminAffiliateManagerRow,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onLoginAs: () -> Unit
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
 
@@ -89,6 +92,10 @@ fun AdminAffiliateManagerCard(
                         Icon(Icons.Default.MoreVert, "More Options")
                     }
                     DropdownMenu(expanded = menuExpanded, onDismissRequest = { menuExpanded = false }) {
+                        DropdownMenuItem(
+                            text = { Text("Login", color = Color(0xFF1976D2)) }, 
+                            onClick = { menuExpanded = false; onLoginAs() }
+                        )
                         DropdownMenuItem(
                             text = { Text("Delete", color = Color.Red) }, 
                             onClick = { menuExpanded = false; onDelete() }

@@ -38,3 +38,9 @@ data class AdminAffiliateManagerDeleteResponse(
     val status: String,
     val message: String?
 )
+
+@Serializable
+data class AdminAffiliateManagerImpersonateRequest(
+    val action: String = "impersonate",
+    val user_id: Int
+)
