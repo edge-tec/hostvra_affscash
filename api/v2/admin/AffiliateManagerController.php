@@ -47,21 +47,19 @@ try {
             }
         }
 
-        echo json_encode(['status' => 'success', 'data' => ['managers' => $result]]);
+        Helpers::json(['status' => 'success', 'message' => null, 'data' => ['managers' => $result]]);
         exit;
     }
 
     if ($action === 'delete') {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            http_response_code(405);
-            echo json_encode(['status' => 'error', 'message' => 'Method not allowed']);
-            exit;
+            Helpers::json(['status' => 'error', 'message' => 'Method not allowed'], 405);
         }
 
         $mgrId = isset($input['mgr_id']) ? (int)$input['mgr_id'] : 0;
 
         if ($mgrId <= 0) {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid manager ID']);
+            Helpers::json(['status' => 'error', 'message' => 'Invalid manager ID']);
             exit;
         }
 
@@ -74,7 +72,7 @@ try {
         );
 
         if (!$manager) {
-            echo json_encode(['status' => 'error', 'message' => 'Manager not found']);
+            Helpers::json(['status' => 'error', 'message' => 'Manager not found']);
             exit;
         }
 
@@ -94,13 +92,13 @@ try {
 
         Database::commit();
         
-        echo json_encode(['status' => 'success', 'message' => 'Affiliate Manager account deleted successfully.']);
+        Helpers::json(['status' => 'success', 'message' => 'Affiliate Manager account deleted successfully.']);
         exit;
     }
 
-    echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
+    Helpers::json(['status' => 'error', 'message' => 'Invalid action'], 400);
 
 } catch (\Exception $e) {
-    http_response_code(500);
-    echo json_encode(['status' => 'error', 'message' => 'Server error: ' . $e->getMessage()]);
+    error_log("Admin AffiliateManager API Error: " . $e->getMessage());
+    Helpers::json(['status' => 'error', 'message' => 'Server error: ' . $e->getMessage()], 500);
 }
