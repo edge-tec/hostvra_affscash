@@ -192,7 +192,8 @@ fun AvailableRewardItem(rule: RewardRule) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (rule.imagePath != null) {
-                val fullImageUrl = "https://affscash.net${rule.imagePath}"
+                val cleanPath = rule.imagePath.removePrefix("/").replace(" ", "%20")
+                val fullImageUrl = if (cleanPath.startsWith("http")) cleanPath else "https://affscash.net/$cleanPath"
                 AsyncImage(
                     model = fullImageUrl,
                     contentDescription = rule.title,

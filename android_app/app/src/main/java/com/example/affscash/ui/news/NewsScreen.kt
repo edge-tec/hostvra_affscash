@@ -127,11 +127,12 @@ fun NewsScreen(
             title = { Text(news.title) },
             text = {
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    if (!news.image.isNullOrEmpty()) {
-                        val imageUrl = if (!news.image.startsWith("http")) {
-                            "https://affscash.net/" + news.image
+                    val rawPath = news.image ?: ""
+                    if (rawPath.isNotEmpty()) {
+                        val imageUrl = if (!rawPath.startsWith("http")) {
+                            "https://affscash.net/" + rawPath.removePrefix("/").replace(" ", "%20")
                         } else {
-                            news.image
+                            rawPath.replace(" ", "%20")
                         }
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
@@ -179,12 +180,13 @@ fun NewsCard(newsItem: NewsItem, onClick: () -> Unit) {
                     .fillMaxWidth()
                     .height(180.dp)
             ) {
-                val imageUrl = if (newsItem.image.isNullOrEmpty()) {
+                val rawPath = newsItem.image ?: ""
+                val imageUrl = if (rawPath.isEmpty()) {
                     "https://via.placeholder.com/400x200?text=News"
-                } else if (!newsItem.image.startsWith("http")) {
-                    "https://affscash.net/" + newsItem.image
+                } else if (!rawPath.startsWith("http")) {
+                    "https://affscash.net/" + rawPath.removePrefix("/").replace(" ", "%20")
                 } else {
-                    newsItem.image
+                    rawPath.replace(" ", "%20")
                 }
 
                 AsyncImage(

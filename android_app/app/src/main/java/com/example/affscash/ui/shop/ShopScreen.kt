@@ -203,12 +203,13 @@ fun ProductCard(
         Column(
             modifier = Modifier.fillMaxWidth().padding(12.dp)
         ) {
-            val imageUrl = if (product.imagePath.isNullOrEmpty()) {
+            val rawPath = product.imagePath ?: ""
+            val imageUrl = if (rawPath.isEmpty()) {
                 "https://via.placeholder.com/200?text=No+Image"
-            } else if (!product.imagePath.startsWith("http")) {
-                "https://affscash.net/" + product.imagePath
+            } else if (!rawPath.startsWith("http")) {
+                "https://affscash.net/" + rawPath.removePrefix("/").replace(" ", "%20")
             } else {
-                product.imagePath
+                rawPath.replace(" ", "%20")
             }
 
             AsyncImage(
