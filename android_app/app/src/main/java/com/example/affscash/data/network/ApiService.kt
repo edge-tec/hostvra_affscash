@@ -386,4 +386,20 @@ interface ApiService {
     @POST("api/v2/manager/offer-approvals?action=review")
     suspend fun reviewOfferApproval(@Body request: ReviewOfferApprovalRequest): DefaultResponse
 
+    @GET("api/v2/shop")
+    suspend fun getShopData(): Response<ShopListResponse>
+
+    @POST("api/v2/shop?action=place_order")
+    suspend fun placeShopOrder(@Body request: PlaceOrderRequest): Response<ShopOrderResponse>
+
+    // --- News ---
+    @GET("api/v2/news?action=list")
+    suspend fun getNews(): Response<NewsListResponse>
+
+    @POST("api/v2/news?action=mark_read")
+    suspend fun markNewsAsRead(@Body request: MarkNewsReadRequest): Response<SimpleResponse>
+
+    @POST("api/v2/news?action=mark_all_read")
+    suspend fun markAllNewsAsRead(): Response<SimpleResponse>
+
 }

@@ -3,6 +3,7 @@ package com.example.affscash.ui.navigation
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Assessment
+import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocalOffer
@@ -35,6 +36,7 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     object FraudReport : Screen("fraud_report", "Fraud Report", Icons.Filled.Assessment)
     object Rewards : Screen("rewards", "Milestones", Icons.Filled.MonetizationOn)
     object Shop : Screen("shop", "Rewards Shop", Icons.Filled.LocalOffer) // Add Shop screen
+    object News : Screen("news", "News", Icons.Filled.Article) // Add News screen
     object Chat : Screen("chat", "Chat", Icons.Filled.Chat)
 
     // Admin Screens
@@ -113,7 +115,8 @@ fun MainScreen(
                 DashboardScreen(
                     onNavigateToInvoices = { navController.navigate(Screen.Invoices.route) },
                     onNavigateToFraudAlerts = { navController.navigate(Screen.FraudReport.route) },
-                    onNavigateToChat = { navController.navigate(Screen.Chat.route) }
+                    onNavigateToChat = { navController.navigate(Screen.Chat.route) },
+                    onNavigateToNews = { navController.navigate(Screen.News.route) }
                 ) 
             }
             composable(Screen.Offers.route) { OfferScreen(onOfferClick = {}) }
@@ -155,6 +158,11 @@ fun MainScreen(
             }
             composable(Screen.Shop.route) {
                 com.example.affscash.ui.shop.ShopScreen()
+            }
+            composable(Screen.News.route) {
+                com.example.affscash.ui.news.NewsScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
             }
 
             // Admin Screens

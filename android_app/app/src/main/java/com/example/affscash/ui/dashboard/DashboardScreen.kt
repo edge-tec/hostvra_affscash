@@ -56,7 +56,8 @@ fun DashboardScreen(
     viewModel: DashboardViewModel = hiltViewModel(),
     onNavigateToInvoices: () -> Unit = {},
     onNavigateToFraudAlerts: () -> Unit = {},
-    onNavigateToChat: () -> Unit = {}
+    onNavigateToChat: () -> Unit = {},
+    onNavigateToNews: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val filterOption by viewModel.filterOption.collectAsState()
@@ -111,7 +112,7 @@ fun DashboardScreen(
                         icon = Icons.Outlined.Article,
                         count = counts?.unreadNews ?: 0,
                         badgeColor = Color(0xFF4F46E5),
-                        onClick = { android.widget.Toast.makeText(context, "News coming soon", android.widget.Toast.LENGTH_SHORT).show() }
+                        onClick = onNavigateToNews
                     )
 
                     // Notifications Icon
