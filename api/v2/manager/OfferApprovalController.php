@@ -18,7 +18,7 @@ class OfferApprovalController {
     }
 
     private static function listApprovals() {
-        Auth::checkApi('affiliate_manager');
+        Auth::check('affiliate_manager');
 
         if (!Auth::hasPermission('view_affiliates')) {
             Helpers::jsonResponse(['success' => false, 'message' => 'Permission denied'], 403);
@@ -112,7 +112,7 @@ class OfferApprovalController {
     }
 
     private static function reviewApproval() {
-        Auth::checkApi('affiliate_manager');
+        Auth::check('affiliate_manager');
 
         if (!Auth::hasPermission('view_affiliates')) {
             Helpers::jsonResponse(['success' => false, 'message' => 'Permission denied'], 403);

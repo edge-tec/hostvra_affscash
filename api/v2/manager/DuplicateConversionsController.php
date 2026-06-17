@@ -2,7 +2,7 @@
 /**
  * Manager App API — Duplicate Conversions
  */
-Auth::checkAPI('affiliate_manager');
+Auth::check('affiliate_manager');
 
 $affIds = Auth::managerAffiliateIds();
 $hasAffiliates = !empty($affIds);

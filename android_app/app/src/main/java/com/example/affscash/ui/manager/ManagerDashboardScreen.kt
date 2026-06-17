@@ -27,9 +27,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.affscash.R
 import com.example.affscash.ui.dashboard.ManagerDashboardViewModel
 import com.example.affscash.ui.dashboard.HeaderIconWithBadge
-import com.example.affscash.ui.components.PeriodTabs
-import com.example.affscash.ui.components.KpiGrid
-import com.example.affscash.ui.components.TrendChart
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
 import com.patrykandpatrick.vico.compose.chart.Chart

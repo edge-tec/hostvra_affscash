@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 
-Auth::checkAPI('affiliate_manager');
+Auth::check('affiliate_manager');
 
 $userId = Auth::id();
 try { Database::query("ALTER TABLE `users` ADD COLUMN `google2fa_enabled` TINYINT(1) NOT NULL DEFAULT 0"); } catch (\Throwable $_e) {}

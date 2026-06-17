@@ -2,7 +2,7 @@
 /**
  * Manager App API — Fraud Report
  */
-Auth::checkAPI('affiliate_manager');
+Auth::check('affiliate_manager');
 ManagerPermissions::requirePermission('reject_fraud_conv');
 
 $affIds = Auth::managerAffiliateIds();
