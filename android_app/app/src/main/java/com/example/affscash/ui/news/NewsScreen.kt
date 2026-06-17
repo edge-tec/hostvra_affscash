@@ -28,7 +28,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import android.net.Uri
+import androidx.compose.material.icons.filled.Image
+import androidx.core.text.HtmlCompat
+import android.widget.TextView
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import com.example.affscash.data.model.NewsItem
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -126,15 +134,16 @@ fun NewsScreen(
             onDismissRequest = { selectedNews = null },
             title = { Text(news.title) },
             text = {
-                Column(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
                     val rawPath = news.image ?: ""
                     if (rawPath.isNotEmpty()) {
                         val imageUrl = if (!rawPath.startsWith("http")) {
-                            "https://affscash.net/" + rawPath.removePrefix("/").replace(" ", "%20")
+                            val cleanPath = rawPath.removePrefix("/")
+                            "https://affscash.net/" + Uri.encode(cleanPath, "/")
                         } else {
-                            rawPath.replace(" ", "%20")
+                            rawPath
                         }
-                        AsyncImage(
+                        SubcomposeAsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
                                 .data(imageUrl)
                                 .crossfade(true)
@@ -145,13 +154,34 @@ fun NewsScreen(
                                 .fillMaxWidth()
                                 .height(200.dp)
                                 .clip(RoundedCornerShape(8.dp))
+                                .background(Color(0xFFF1F5F9)),
+                            loading = {
+                                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                                }
+                            },
+                            error = {
+                                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                    Icon(Icons.Default.Image, contentDescription = "No Image", tint = Color.Gray, modifier = Modifier.size(48.dp))
+                                }
+                            }
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                     
-                    Text(
-                        text = news.body ?: news.summary ?: "",
-                        style = MaterialTheme.typography.bodyMedium
+                    val contentHtml = news.body ?: news.summary ?: ""
+                    AndroidView(
+                        factory = { context ->
+                            TextView(context).apply {
+                                text = HtmlCompat.fromHtml(contentHtml, HtmlCompat.FROM_HTML_MODE_COMPACT)
+                                textSize = 15f
+                                setTextColor(android.graphics.Color.DKGRAY)
+                                setLineSpacing(0f, 1.2f)
+                            }
+                        },
+                        update = { textView ->
+                            textView.text = HtmlCompat.fromHtml(contentHtml, HtmlCompat.FROM_HTML_MODE_COMPACT)
+                        }
                     )
                 }
             },
@@ -182,14 +212,15 @@ fun NewsCard(newsItem: NewsItem, onClick: () -> Unit) {
             ) {
                 val rawPath = newsItem.image ?: ""
                 val imageUrl = if (rawPath.isEmpty()) {
-                    "https://via.placeholder.com/400x200?text=News"
+                    "" // Error state
                 } else if (!rawPath.startsWith("http")) {
-                    "https://affscash.net/" + rawPath.removePrefix("/").replace(" ", "%20")
+                    val cleanPath = rawPath.removePrefix("/")
+                    "https://affscash.net/" + Uri.encode(cleanPath, "/")
                 } else {
-                    rawPath.replace(" ", "%20")
+                    rawPath
                 }
 
-                AsyncImage(
+                SubcomposeAsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(imageUrl)
                         .crossfade(true)
@@ -197,6 +228,17 @@ fun NewsCard(newsItem: NewsItem, onClick: () -> Unit) {
                     contentDescription = newsItem.title,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
+                        .background(Color(0xFFF1F5F9)),
+                    loading = {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                        }
+                    },
+                    error = {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Icon(Icons.Default.Image, contentDescription = "No Image", tint = Color.Gray, modifier = Modifier.size(48.dp))
+                        }
+                    }
                 )
 
                 // Hot Badge
@@ -248,12 +290,20 @@ fun NewsCard(newsItem: NewsItem, onClick: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Text(
-                    text = newsItem.summary ?: "",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis,
+                val summaryHtml = newsItem.summary ?: ""
+                AndroidView(
+                    factory = { context ->
+                        TextView(context).apply {
+                            text = HtmlCompat.fromHtml(summaryHtml, HtmlCompat.FROM_HTML_MODE_COMPACT).toString()
+                            textSize = 14f
+                            setTextColor(android.graphics.Color.GRAY)
+                            maxLines = 3
+                            ellipsize = android.text.TextUtils.TruncateAt.END
+                        }
+                    },
+                    update = { textView ->
+                        textView.text = HtmlCompat.fromHtml(summaryHtml, HtmlCompat.FROM_HTML_MODE_COMPACT).toString()
+                    },
                     modifier = Modifier.weight(1f, fill = false)
                 )
 

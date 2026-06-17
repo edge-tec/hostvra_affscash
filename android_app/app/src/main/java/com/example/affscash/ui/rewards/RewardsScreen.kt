@@ -20,15 +20,9 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
 import android.widget.TextView
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import android.net.Uri
 import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Icon
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import com.example.affscash.data.model.RewardRule
 import com.example.affscash.data.model.RewardsResponse
 import com.example.affscash.theme.Purple40
