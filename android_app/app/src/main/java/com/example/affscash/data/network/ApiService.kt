@@ -21,6 +21,8 @@ import com.example.affscash.data.model.ChatMessagesResponse
 import com.example.affscash.data.model.SendChatMessageRequest
 import com.example.affscash.data.model.SendChatMessageResponse
 import com.example.affscash.data.model.UploadFileResponse
+import com.example.affscash.data.model.ManagerOfferApprovalListResponse
+import com.example.affscash.data.model.ReviewOfferApprovalRequest
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -189,6 +191,13 @@ interface ApiService {
     @POST("api/v2/manager/affiliates?action=impersonate")
     suspend fun impersonateAffiliate(@Body request: com.example.affscash.data.model.ImpersonateAffiliateRequest): Response<com.example.affscash.data.model.ImpersonateResponse>
 
+    @GET("manager/OfferApprovalController.php?action=list")
+    suspend fun getOfferApprovals(
+        @Query("status") status: String,
+        @Query("offer_id") offerId: Int?,
+        @Query("aff") aff: String?
+    ): ManagerOfferApprovalListResponse
+
     @POST("api/v2/stop_impersonate")
     suspend fun stopImpersonating(): Response<com.example.affscash.data.model.StopImpersonateResponse>
 
@@ -258,4 +267,7 @@ interface ApiService {
     @Multipart
     @POST("api/v2/chat?action=upload")
     suspend fun uploadFile(@Part file: MultipartBody.Part): Response<UploadFileResponse>
+    @POST("manager/OfferApprovalController.php?action=review")
+    suspend fun reviewOfferApproval(@Body request: ReviewOfferApprovalRequest): DefaultResponse
+
 }

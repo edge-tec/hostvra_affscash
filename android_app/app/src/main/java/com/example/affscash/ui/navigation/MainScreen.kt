@@ -161,7 +161,14 @@ fun MainScreen(
 
             // Manager Screens
             composable(Screen.ManagerDashboard.route) { com.example.affscash.ui.manager.ManagerDashboardScreen() }
-            composable(Screen.ManagerOffers.route) { com.example.affscash.ui.manager.ManagerOffersScreen() }
+            composable(Screen.ManagerOffers.route) { 
+                com.example.affscash.ui.manager.ManagerOffersScreen(
+                    onNavigateToApprovals = { navController.navigate("manager_offer_approvals") }
+                ) 
+            }
+            composable("manager_offer_approvals") {
+                com.example.affscash.ui.manager.ManagerOfferApprovalsScreen()
+            }
             composable(Screen.ManagerSmartlinks.route) { 
                 com.example.affscash.ui.manager.ManagerSmartlinksScreen(
                     onNavigateToRequests = { navController.navigate(Screen.ManagerSmartlinkRequests.route) }

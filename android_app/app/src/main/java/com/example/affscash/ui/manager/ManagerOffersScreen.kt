@@ -31,6 +31,7 @@ import com.example.affscash.data.model.ManagerOffer
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManagerOffersScreen(
+    onNavigateToApprovals: () -> Unit = {},
     viewModel: ManagerOffersViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -51,6 +52,9 @@ fun ManagerOffersScreen(
                         }
                     },
                     actions = {
+                        IconButton(onClick = onNavigateToApprovals) {
+                            Icon(Icons.Default.Approval, contentDescription = "Approvals")
+                        }
                         IconButton(onClick = { showFilterSheet = true }) {
                             Icon(Icons.Default.FilterList, contentDescription = "Filter")
                         }

@@ -1,0 +1,200 @@
+<?php
+require_once __DIR__ . '/../../../classes/Database.php';
+require_once __DIR__ . '/../../../classes/Auth.php';
+require_once __DIR__ . '/../../../classes/Helpers.php';
+require_once __DIR__ . '/../../../classes/Mailer.php';
+require_once __DIR__ . '/../../../classes/Config.php';
+
+class OfferApprovalController {
+
+    public static function handleRequest() {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'list') {
+            self::listApprovals();
+        } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] === 'review') {
+            self::reviewApproval();
+        } else {
+            Helpers::jsonResponse(['success' => false, 'message' => 'Invalid action.'], 400);
+        }
+    }
+
+    private static function listApprovals() {
+        Auth::checkApi('affiliate_manager');
+
+        if (!Auth::hasPermission('view_affiliates')) {
+            Helpers::jsonResponse(['success' => false, 'message' => 'Permission denied'], 403);
+        }
+
+        $affIds = Auth::managerAffiliateIds();
+        if (empty($affIds)) {
+            Helpers::jsonResponse([
+                'success' => true,
+                'requests' => [],
+                'all_offers' => [],
+                'pending_count' => 0
+            ]);
+        }
+
+        $inSql = implode(',', array_fill(0, count($affIds), '?'));
+        
+        $filterStatus = $_GET['status'] ?? 'pending';
+        $filterOffer  = $_GET['offer_id'] ?? null;
+        $filterAff    = $_GET['aff'] ?? null;
+
+        $where  = ["ao.affiliate_id IN ($inSql)"];
+        $params = $affIds;
+
+        $validStatuses = ['pending', 'approved', 'rejected', 'all'];
+        if ($filterStatus && $filterStatus !== 'all' && in_array($filterStatus, $validStatuses)) {
+            $where[]  = "ao.status = ?";
+            $params[] = $filterStatus;
+        }
+        if ($filterOffer) {
+            $where[]  = "ao.offer_id = ?";
+            $params[] = (int)$filterOffer;
+        }
+        if ($filterAff) {
+            $where[]  = "(u.first_name LIKE ? OR u.last_name LIKE ? OR af.affiliate_code LIKE ? OR u.email LIKE ?)";
+            $params   = array_merge($params, ['%'.$filterAff.'%','%'.$filterAff.'%','%'.$filterAff.'%','%'.$filterAff.'%']);
+        }
+
+        $whereStr = 'WHERE ' . implode(' AND ', $where);
+
+        $requests = Database::fetchAll(
+            "SELECT
+                ao.id          as ao_id,
+                ao.affiliate_id,
+                ao.offer_id,
+                ao.status,
+                ao.notes       as promotion_description,
+                ao.approved_at as requested_at,
+                ao.approved_at,
+                o.name         as offer_name,
+                o.payout_amount,
+                o.payout_type,
+                o.category     as offer_category,
+                CONCAT(u.first_name,' ',u.last_name) as affiliate_name,
+                u.email        as affiliate_email,
+                u.created_at   as affiliate_joined,
+                af.affiliate_code,
+                u.country,
+                af.traffic_sources,
+                (SELECT COUNT(*) FROM clicks cl WHERE cl.affiliate_id=ao.affiliate_id AND cl.status='valid') as total_clicks,
+                (SELECT COUNT(*) FROM conversions cv WHERE cv.affiliate_id=ao.affiliate_id AND cv.status='approved' AND cv.is_hidden=0) as total_conversions
+             FROM affiliate_offers ao
+             JOIN offers o ON o.id = ao.offer_id
+             JOIN affiliates af ON af.id = ao.affiliate_id
+             JOIN users u ON u.id = af.user_id
+             $whereStr
+             ORDER BY ao.approved_at DESC",
+            $params
+        );
+
+        $pendingCount = Database::fetchOne(
+            "SELECT COUNT(*) as cnt FROM affiliate_offers
+             WHERE status='pending' AND affiliate_id IN ($inSql)",
+            $affIds
+        )['cnt'] ?? 0;
+
+        $allOffers = Database::fetchAll(
+            "SELECT DISTINCT o.id, o.name FROM offers o
+             JOIN affiliate_offers ao ON ao.offer_id=o.id
+             WHERE ao.affiliate_id IN ($inSql)
+             ORDER BY o.name",
+            $affIds
+        );
+
+        Helpers::jsonResponse([
+            'success' => true,
+            'requests' => $requests,
+            'all_offers' => $allOffers,
+            'pending_count' => $pendingCount
+        ]);
+    }
+
+    private static function reviewApproval() {
+        Auth::checkApi('affiliate_manager');
+
+        if (!Auth::hasPermission('view_affiliates')) {
+            Helpers::jsonResponse(['success' => false, 'message' => 'Permission denied'], 403);
+        }
+
+        $data = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+        $affId = (int)($data['affiliate_id'] ?? 0);
+        $offerId = (int)($data['offer_id'] ?? 0);
+        $action = $data['review_action'] ?? '';
+
+        $affIds = Auth::managerAffiliateIds();
+
+        if (in_array($action, ['approve', 'reject'], true) && $affId && $offerId
+            && in_array($affId, array_map('intval', $affIds), true)) {
+
+            $ao = Database::fetchOne(
+                "SELECT ao.*, o.name as offer_name
+                 FROM affiliate_offers ao
+                 JOIN offers o ON o.id = ao.offer_id
+                 JOIN affiliates af ON af.id = ao.affiliate_id
+                 JOIN users u ON u.id = af.user_id
+                 WHERE ao.affiliate_id=? AND ao.offer_id=?",
+                [$affId, $offerId]
+            );
+
+            if ($ao) {
+                if ($action === 'approve') {
+                    Database::update('affiliate_offers',
+                        ['status' => 'approved', 'approved_at' => date('Y-m-d H:i:s'), 'approved_by' => Auth::id()],
+                        'affiliate_id=? AND offer_id=?',
+                        [$affId, $offerId]
+                    );
+                    
+                    self::sendNotification($affId, $ao['offer_name'], true);
+                    
+                    Helpers::jsonResponse(['success' => true, 'message' => 'Access to "' . $ao['offer_name'] . '" approved.']);
+                } else {
+                    Database::update('affiliate_offers',
+                        ['status' => 'rejected'],
+                        'affiliate_id=? AND offer_id=?',
+                        [$affId, $offerId]
+                    );
+                    
+                    self::sendNotification($affId, $ao['offer_name'], false);
+
+                    Helpers::jsonResponse(['success' => true, 'message' => 'Request rejected.']);
+                }
+            } else {
+                Helpers::jsonResponse(['success' => false, 'message' => 'Request not found.'], 404);
+            }
+        } else {
+            Helpers::jsonResponse(['success' => false, 'message' => 'Invalid parameters or permission denied.'], 400);
+        }
+    }
+    
+    private static function sendNotification($affId, $offerName, $isApproved) {
+        $affUser = Database::fetchOne(
+            "SELECT u.email, u.first_name, u.last_name FROM affiliates af JOIN users u ON u.id=af.user_id WHERE af.id=?",
+            [$affId]
+        );
+        if ($affUser) {
+            $type = $isApproved ? 'success' : 'warning';
+            $title = $isApproved ? 'Offer Access Approved' : 'Offer Access Rejected';
+            $message = $isApproved ? 'Your access to offer "' . $offerName . '" has been approved.' : 'Your access request for offer "' . $offerName . '" was not approved.';
+            
+            Database::insert('notifications', [
+                'user_id'     => null,
+                'target_role' => null,
+                'type'        => $type,
+                'title'       => $title,
+                'message'     => $message,
+                'link'        => '/affiliate/offers',
+            ]);
+            try {
+                $emailEvent = $isApproved ? 'offer_approved' : 'offer_rejected';
+                Mailer::sendEvent($affUser['email'], $affUser['first_name'].' '.$affUser['last_name'], $emailEvent, [
+                    'name'       => $affUser['first_name'].' '.$affUser['last_name'],
+                    'offer_name' => $offerName,
+                    'app_url'    => rtrim(Config::get('config','app.url') ?? '', '/'),
+                    'site_name'  => Config::get('config','app.name') ?? 'AffiliateTracker',
+                ]);
+            } catch (Exception $e) {}
+        }
+    }
+}
