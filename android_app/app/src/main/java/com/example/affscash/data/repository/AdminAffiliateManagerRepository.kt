@@ -45,10 +45,10 @@ class AdminAffiliateManagerRepository @Inject constructor(private val apiService
             try {
                 val request = AdminAffiliateManagerImpersonateRequest(user_id = userId)
                 val response = apiService.impersonateAdminAffiliateManager(request)
-                if (response.status == "success") {
+                if (response.success) {
                     Result.success(response)
                 } else {
-                    Result.failure(Exception(response.message ?: "Failed to impersonate"))
+                    Result.failure(Exception(response.error ?: "Failed to impersonate"))
                 }
             } catch (e: Exception) {
                 Result.failure(e)
