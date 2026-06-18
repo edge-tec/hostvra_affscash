@@ -278,19 +278,30 @@ fun ManagerReportsScreen(
                             modifier = Modifier.fillMaxWidth().weight(1f)
                         ) {
                             uiState.reportResponse!!.rows?.let { rows ->
-                                if (rows.isEmpty()) item { Text("No data found.", modifier = Modifier.padding(16.dp)) }
+                                item { 
+                                    Text(
+                                        text = if (uiState.currentTab == "day" || uiState.currentTab == "week" || uiState.currentTab == "month" || uiState.currentTab == "year") "Performance ${tabs.find { it.first == uiState.currentTab }?.second?.replace("By ", "By ") ?: "By Offer"}" else "By Offer", 
+                                        style = MaterialTheme.typography.titleMedium, 
+                                        fontWeight = FontWeight.Bold, 
+                                        modifier = Modifier.padding(vertical = 8.dp)
+                                    ) 
+                                }
+                                if (rows.isEmpty()) item { Text("No performance data found.", modifier = Modifier.padding(start = 8.dp, bottom = 16.dp)) }
                                 items(rows) { row -> PerformanceRowItem(row) }
                             }
                             uiState.reportResponse!!.clicks?.let { clicks ->
-                                if (clicks.isEmpty()) item { Text("No clicks found.", modifier = Modifier.padding(16.dp)) }
+                                item { Text("Click Log", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)) }
+                                if (clicks.isEmpty()) item { Text("No clicks found.", modifier = Modifier.padding(start = 8.dp, bottom = 16.dp)) }
                                 items(clicks) { c -> ClickRowItem(c) }
                             }
                             uiState.reportResponse!!.conversions?.let { convs ->
-                                if (convs.isEmpty()) item { Text("No conversions found.", modifier = Modifier.padding(16.dp)) }
+                                item { Text("Conversion Log", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)) }
+                                if (convs.isEmpty()) item { Text("No conversions found.", modifier = Modifier.padding(start = 8.dp, bottom = 16.dp)) }
                                 items(convs) { cv -> ConversionRowItem(cv) }
                             }
                             uiState.reportResponse!!.slClicks?.let { sls ->
-                                if (sls.isEmpty()) item { Text("No smartlink traffic found.", modifier = Modifier.padding(16.dp)) }
+                                item { Text("Smartlink Click Log", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)) }
+                                if (sls.isEmpty()) item { Text("No smartlink traffic found.", modifier = Modifier.padding(start = 8.dp, bottom = 16.dp)) }
                                 items(sls) { sl -> SmartlinkRowItem(sl) }
                             }
                         }
