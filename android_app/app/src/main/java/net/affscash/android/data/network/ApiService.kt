@@ -546,7 +546,13 @@ interface ApiService {
     suspend fun getManagerFraudReport(): Response<ManagerFraudReportResponse>
 
     @GET("api/v2/fraud-report")
-    suspend fun getFraudReport(): Response<FraudReportResponse>
+    suspend fun getFraudReport(): Response<net.affscash.android.data.model.FraudReportResponse>
+
+    @GET("api/v2/duplicate-conversions")
+    suspend fun getDuplicateConversions(
+        @Query("from") from: String,
+        @Query("to") to: String
+    ): Response<net.affscash.android.data.model.DuplicateConversionsResponse>
 
     @GET("api/v2/rewards")
     suspend fun getRewards(): Response<RewardsResponse>

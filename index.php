@@ -473,6 +473,7 @@ Router::any('/api/v2/smartlinks', function() { require BASE_PATH . '/api/v2/Smar
 Router::any('/api/v2/reports', function() { require BASE_PATH . '/api/v2/ReportController.php'; });
 Router::any('/api/v2/news', function() { require BASE_PATH . '/api/v2/NewsController.php'; });
 Router::any('/api/v2/fraud-report', function() { require BASE_PATH . '/api/v2/FraudReportController.php'; });
+Router::any('/api/v2/duplicate-conversions', function() { require BASE_PATH . '/api/v2/DuplicateConversionsController.php'; });
 Router::any('/api/v2/rewards', function() { require BASE_PATH . '/api/v2/RewardsController.php'; });
 Router::any('/api/v2/shop', function() { require BASE_PATH . '/api/v2/ShopController.php'; });
 Router::any('/api/v2/invoices', function() { require BASE_PATH . '/api/v2/InvoiceController.php'; });

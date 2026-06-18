@@ -36,6 +36,9 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     object Offers : Screen("offers", "Offers", Icons.Filled.LocalOffer)
     object Smartlinks : Screen("smartlinks", "Smartlinks", Icons.Filled.Link)
     object Reports : Screen("reports", "Reports", Icons.Filled.Assessment)
+    object AffiliateReports : Screen("affiliate_reports", "Reports", Icons.Filled.BarChart)
+    object AffiliateDuplicateConversions : Screen("affiliate_duplicate_conversions", "Duplicate Conversions", Icons.Filled.Warning)
+    object AffiliateInvoices : Screen("affiliate_invoices", "Invoices", Icons.Filled.ShoppingCart)
     object Invoices : Screen("invoices", "Invoices", Icons.Filled.PictureAsPdf)
     object AffiliateSettings : Screen("affiliate_settings", "Settings", Icons.Filled.Settings)
     object FraudReport : Screen("fraud_report", "Fraud Report", Icons.Filled.Assessment)
@@ -155,7 +158,7 @@ fun MainScreen(
     val allItems = when (role) {
         "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminPrivateOffers, Screen.AdminSmartlinks, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminShop, Screen.AdminAffiliateManagers, Screen.AdminSupport, Screen.AdminConversions, Screen.AdminReports, Screen.AdminAffiliateReport, Screen.AdminFraudReport, Screen.AdminAutoHide, Screen.AdminInvoices, Screen.AdminPlatformSettings, Screen.AdminSettings)
         "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerSupport, Screen.ManagerSmartlinks, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerReports, Screen.ManagerInvoices, Screen.ManagerSettings)
-        else -> listOf(Screen.Dashboard, Screen.Offers, Screen.AffiliateInHouseOffers, Screen.Smartlinks, Screen.Reports, Screen.AffiliateSettings)
+        else -> listOf(Screen.Dashboard, Screen.Offers, Screen.AffiliateInHouseOffers, Screen.Smartlinks, Screen.Reports, Screen.AffiliateDuplicateConversions, Screen.AffiliateSettings)
     }
     
     val startDest = allItems.first().route
@@ -360,6 +363,9 @@ fun MainScreen(
                 net.affscash.android.ui.invoices.InvoiceScreen(
                     onNavigateBack = { navController.popBackStack() }
                 )
+            }
+            composable(Screen.AffiliateDuplicateConversions.route) {
+                net.affscash.android.ui.affiliate.duplicate_conversions.DuplicateConversionsScreen()
             }
             composable(Screen.FraudReport.route) {
                 net.affscash.android.ui.reports.FraudReportScreen(
