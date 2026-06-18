@@ -346,10 +346,22 @@ function fmtTs(ts, opts) {
                     My Profile
                 </a>
                 <div class="dropdown-divider"></div>
-                <a href="/logout" class="dropdown-item" style="color:#EF4444">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                    Sign Out
-                </a>
+                <?php if (Auth::isImpersonating()): ?>
+                    <?php 
+                    $returnUrl   = $_SESSION['impersonate_return_url'] ?? '/admin/stop-impersonate';
+                    $stopUrl     = (strpos($returnUrl, 'affiliate_manager') !== false) ? '/affiliate_manager/stop-impersonate' : '/admin/stop-impersonate';
+                    $actorLabel  = (strpos($returnUrl, 'affiliate_manager') !== false) ? 'Manager' : 'Admin';
+                    ?>
+                    <a href="<?= $stopUrl ?>" class="dropdown-item" style="color:#F59E0B">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 10 4 15 9 20"/><path d="M20 4v7a4 4 0 0 1-4 4H4"/></svg>
+                        Return to <?= $actorLabel ?>
+                    </a>
+                <?php else: ?>
+                    <a href="/logout" class="dropdown-item" style="color:#EF4444">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        Sign Out
+                    </a>
+                <?php endif; ?>
             </div>
         </div>
     </div>

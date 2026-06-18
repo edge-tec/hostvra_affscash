@@ -293,6 +293,22 @@ class Auth {
     }
 
     public static function logout(): void {
+        if (self::isImpersonating()) {
+            $returnUrl = $_SESSION['impersonate_return_url'] ?? '/admin/stop-impersonate';
+            $stopUrl   = (strpos($returnUrl, 'affiliate_manager') !== false)
+                            ? '/affiliate_manager/stop-impersonate'
+                            : '/admin/stop-impersonate';
+            
+            $isApi = strpos($_SERVER['REQUEST_URI'] ?? '', '/api/') === 0;
+            if ($isApi) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => true, 'redirect' => $stopUrl]);
+                exit;
+            }
+            header("Location: $stopUrl");
+            exit;
+        }
+
         // Log logout before session is destroyed
         try {
             if (!empty($_SESSION['user_id'])) {
