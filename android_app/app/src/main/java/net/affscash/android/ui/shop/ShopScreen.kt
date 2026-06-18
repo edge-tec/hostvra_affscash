@@ -214,7 +214,7 @@ fun ProductCard(
                 "" // Trigger error fallback
             } else if (!rawPath.startsWith("http")) {
                 val cleanPath = rawPath.removePrefix("/")
-                "https://affscash.net/" + Uri.encode(cleanPath, "/")
+                "https://affscash.net/" + cleanPath
             } else {
                 rawPath
             }
