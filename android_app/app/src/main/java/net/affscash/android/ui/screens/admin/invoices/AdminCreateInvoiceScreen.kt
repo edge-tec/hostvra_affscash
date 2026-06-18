@@ -1,5 +1,7 @@
 package net.affscash.android.ui.screens.admin.invoices
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -7,6 +9,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,6 +19,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,16 +89,16 @@ fun AdminCreateInvoiceScreen(
                             }
 
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                OutlinedTextField(
-                                    value = uiState.periodStart,
-                                    onValueChange = { viewModel.setPeriodStart(it) },
-                                    label = { Text("Period Start (YYYY-MM-DD)") },
+                                DatePickerField(
+                                    label = "Period Start",
+                                    selectedDate = uiState.periodStart,
+                                    onDateSelected = { viewModel.setPeriodStart(it) },
                                     modifier = Modifier.weight(1f)
                                 )
-                                OutlinedTextField(
-                                    value = uiState.periodEnd,
-                                    onValueChange = { viewModel.setPeriodEnd(it) },
-                                    label = { Text("Period End (YYYY-MM-DD)") },
+                                DatePickerField(
+                                    label = "Period End",
+                                    selectedDate = uiState.periodEnd,
+                                    onDateSelected = { viewModel.setPeriodEnd(it) },
                                     modifier = Modifier.weight(1f)
                                 )
                             }
@@ -169,10 +175,10 @@ fun AdminCreateInvoiceScreen(
                                 modifier = Modifier.fillMaxWidth()
                             )
                             
-                            OutlinedTextField(
-                                value = uiState.dueDate,
-                                onValueChange = { viewModel.setDueDate(it) },
-                                label = { Text("Due Date (YYYY-MM-DD)") },
+                            DatePickerField(
+                                label = "Due Date",
+                                selectedDate = uiState.dueDate,
+                                onDateSelected = { viewModel.setDueDate(it) },
                                 modifier = Modifier.fillMaxWidth()
                             )
 
@@ -314,6 +320,66 @@ fun EntityDropdown(
                     }
                 )
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DatePickerField(
+    label: String,
+    selectedDate: String,
+    onDateSelected: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var showDialog by remember { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = System.currentTimeMillis()
+    )
+
+    OutlinedTextField(
+        value = selectedDate,
+        onValueChange = {},
+        label = { Text(label) },
+        readOnly = true,
+        modifier = modifier,
+        trailingIcon = {
+            IconButton(onClick = { showDialog = true }) {
+                Icon(Icons.Default.DateRange, contentDescription = "Select Date")
+            }
+        },
+        interactionSource = remember { MutableInteractionSource() }.also { interactionSource ->
+            LaunchedEffect(interactionSource) {
+                interactionSource.interactions.collect {
+                    if (it is PressInteraction.Release) {
+                        showDialog = true
+                    }
+                }
+            }
+        }
+    )
+
+    if (showDialog) {
+        DatePickerDialog(
+            onDismissRequest = { showDialog = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    datePickerState.selectedDateMillis?.let { millis ->
+                        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                        onDateSelected(sdf.format(Date(millis)))
+                    }
+                    showDialog = false
+                }) {
+                    Text("OK")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
         }
     }
 }
