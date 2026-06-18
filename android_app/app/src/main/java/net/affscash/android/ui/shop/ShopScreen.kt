@@ -25,7 +25,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
+import coil.imageLoader
 import coil.request.ImageRequest
+import kotlinx.coroutines.launch
 import android.net.Uri
 import androidx.compose.material.icons.filled.Image
 import androidx.core.text.HtmlCompat
@@ -33,6 +35,7 @@ import android.widget.TextView
 import androidx.compose.ui.viewinterop.AndroidView
 import net.affscash.android.data.model.ShopOrder
 import net.affscash.android.data.model.ShopProduct
+import net.affscash.android.utils.CoilImageGetter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -258,10 +261,17 @@ fun ProductCard(
 
             if (!product.description.isNullOrEmpty()) {
                 Spacer(modifier = Modifier.height(4.dp))
+                val context = LocalContext.current
+                val imageLoader = context.imageLoader
                 AndroidView(
-                    factory = { context ->
-                        TextView(context).apply {
-                            text = HtmlCompat.fromHtml(product.description, HtmlCompat.FROM_HTML_MODE_COMPACT).toString()
+                    factory = { ctx ->
+                        TextView(ctx).apply {
+                            text = HtmlCompat.fromHtml(
+                                product.description,
+                                HtmlCompat.FROM_HTML_MODE_COMPACT,
+                                CoilImageGetter(this, imageLoader),
+                                null
+                            )
                             textSize = 12f
                             setTextColor(android.graphics.Color.GRAY)
                             maxLines = 3
@@ -269,7 +279,12 @@ fun ProductCard(
                         }
                     },
                     update = { textView ->
-                        textView.text = HtmlCompat.fromHtml(product.description, HtmlCompat.FROM_HTML_MODE_COMPACT).toString()
+                        textView.text = HtmlCompat.fromHtml(
+                            product.description,
+                            HtmlCompat.FROM_HTML_MODE_COMPACT,
+                            CoilImageGetter(textView, imageLoader),
+                            null
+                        )
                     }
                 )
             }

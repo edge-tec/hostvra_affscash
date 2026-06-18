@@ -6,8 +6,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.DeleteOutline
+import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import net.affscash.android.data.model.AdminAccountDeleteRequestItem
 import java.text.SimpleDateFormat
@@ -40,7 +42,7 @@ fun AdminAccountDeleteRequestsScreen(
                 title = { Text("Account Deletion Requests") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -114,6 +116,7 @@ fun AdminAccountDeleteRequestsScreen(
                     CircularProgressIndicator()
                 }
             } else if (uiState.error != null && uiState.requests.isEmpty()) {
+                val errorText = uiState.error ?: "Unknown error"
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Icon(
@@ -126,7 +129,7 @@ fun AdminAccountDeleteRequestsScreen(
                         Text(text = "Error loading requests", style = MaterialTheme.typography.titleMedium)
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = uiState.error,
+                            text = errorText,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center,
@@ -408,7 +411,7 @@ private fun formatDate(dateStr: String): String {
         val formatter = SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault())
         val date = parser.parse(dateStr)
         if (date != null) formatter.format(date) else dateStr
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         dateStr
     }
 }

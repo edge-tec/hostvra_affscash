@@ -24,6 +24,7 @@ import android.widget.TextView
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
+import coil.imageLoader
 import coil.request.ImageRequest
 import androidx.compose.ui.platform.LocalContext
 import android.net.Uri
@@ -31,6 +32,7 @@ import androidx.compose.material.icons.filled.Image
 import net.affscash.android.data.model.RewardRule
 import net.affscash.android.data.model.RewardsResponse
 import net.affscash.android.theme.Purple40
+import net.affscash.android.utils.CoilImageGetter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -260,14 +262,23 @@ fun parseColor(colorString: String): Color {
 
 @Composable
 fun HtmlText(html: String, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val imageLoader = context.imageLoader
     AndroidView(
         modifier = modifier,
-        factory = { context -> 
-            TextView(context).apply {
+        factory = { ctx -> 
+            TextView(ctx).apply {
                 setTextColor(android.graphics.Color.GRAY)
                 textSize = 14f
             }
         },
-        update = { it.text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT) }
+        update = { textView -> 
+            textView.text = HtmlCompat.fromHtml(
+                html, 
+                HtmlCompat.FROM_HTML_MODE_COMPACT,
+                CoilImageGetter(textView, imageLoader),
+                null
+            ) 
+        }
     )
 }

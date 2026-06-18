@@ -34,7 +34,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(cookieJar: SessionCookieJar, userManager: UserManager): OkHttpClient {
+    fun provideOkHttpClient(cookieJar: SessionCookieJar, userManager: UserManager, @ApplicationContext context: Context): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
@@ -73,7 +73,24 @@ object NetworkModule {
             response
         }
 
+        val trustAllCerts = arrayOf<javax.net.ssl.TrustManager>(
+            object : javax.net.ssl.X509TrustManager {
+                override fun checkClientTrusted(chain: Array<java.security.cert.X509Certificate>, authType: String) {}
+                override fun checkServerTrusted(chain: Array<java.security.cert.X509Certificate>, authType: String) {}
+                override fun getAcceptedIssuers(): Array<java.security.cert.X509Certificate> = arrayOf()
+            }
+        )
+
+        val sslContext = javax.net.ssl.SSLContext.getInstance("SSL")
+        sslContext.init(null, trustAllCerts, java.security.SecureRandom())
+
+        val cacheSize = (50 * 1024 * 1024).toLong() // 50 MB
+        val cache = okhttp3.Cache(context.cacheDir, cacheSize)
+
         return OkHttpClient.Builder()
+            .cache(cache)
+            .sslSocketFactory(sslContext.socketFactory, trustAllCerts[0] as javax.net.ssl.X509TrustManager)
+            .hostnameVerifier { _, _ -> true }
             .cookieJar(cookieJar)
             .addInterceptor(loggingInterceptor)
             .addInterceptor(authInterceptor)

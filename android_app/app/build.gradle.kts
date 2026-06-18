@@ -117,6 +117,8 @@ dependencies {
   
   // Image Loading (Coil)
   implementation(libs.coil.compose)
+  implementation(libs.coil.svg)
+  implementation(libs.coil.gif)
 
   // Charting (Vico)
   implementation("com.patrykandpatrick.vico:compose-m3:1.15.0")

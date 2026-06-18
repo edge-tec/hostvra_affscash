@@ -36,6 +36,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import net.affscash.android.data.model.NewsItem
+import net.affscash.android.utils.CoilImageGetter
+import coil.imageLoader
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -169,17 +171,29 @@ fun NewsScreen(
                     }
                     
                     val contentHtml = news.body ?: news.summary ?: ""
+                    val context = LocalContext.current
+                    val imageLoader = context.imageLoader
                     AndroidView(
-                        factory = { context ->
-                            TextView(context).apply {
-                                text = HtmlCompat.fromHtml(contentHtml, HtmlCompat.FROM_HTML_MODE_COMPACT)
+                        factory = { ctx ->
+                            TextView(ctx).apply {
+                                text = HtmlCompat.fromHtml(
+                                    contentHtml, 
+                                    HtmlCompat.FROM_HTML_MODE_COMPACT,
+                                    CoilImageGetter(this, imageLoader),
+                                    null
+                                )
                                 textSize = 15f
                                 setTextColor(android.graphics.Color.DKGRAY)
                                 setLineSpacing(0f, 1.2f)
                             }
                         },
                         update = { textView ->
-                            textView.text = HtmlCompat.fromHtml(contentHtml, HtmlCompat.FROM_HTML_MODE_COMPACT)
+                            textView.text = HtmlCompat.fromHtml(
+                                contentHtml, 
+                                HtmlCompat.FROM_HTML_MODE_COMPACT,
+                                CoilImageGetter(textView, imageLoader),
+                                null
+                            )
                         }
                     )
                 }
