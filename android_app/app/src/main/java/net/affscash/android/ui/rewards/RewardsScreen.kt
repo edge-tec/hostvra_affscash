@@ -199,12 +199,14 @@ fun AvailableRewardItem(rule: RewardRule) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (rule.imagePath != null) {
-                val cleanPath = rule.imagePath.removePrefix("/")
+                val cleanPath = rule.imagePath.trim().removePrefix("/")
                 val fullImageUrl = (if (cleanPath.startsWith("http")) cleanPath else "https://affscash.net/" + cleanPath).replace(" ", "%20")
                 SubcomposeAsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(fullImageUrl)
                         .addHeader("User-Agent", "Mozilla/5.0 (Linux; Android 13; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36")
+                        .addHeader("Accept", "image/webp,image/apng,image/*,*/*;q=0.8")
+                        .addHeader("Referer", "https://affscash.net/")
                         .crossfade(true)
                         .build(),
                     contentDescription = rule.title,

@@ -161,7 +161,7 @@ fun AdminShopProductCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
-                product.imagePath?.takeIf { it.isNotEmpty() }?.let { rawPath ->
+                product.imagePath?.trim()?.takeIf { it.isNotEmpty() }?.let { rawPath ->
                     val imageUrl = (if (!rawPath.startsWith("http")) {
                         "https://affscash.net/" + rawPath.removePrefix("/")
                     } else {
@@ -171,6 +171,8 @@ fun AdminShopProductCard(
                         model = coil.request.ImageRequest.Builder(androidx.compose.ui.platform.LocalContext.current)
                             .data(imageUrl)
                             .addHeader("User-Agent", "Mozilla/5.0 (Linux; Android 13; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36")
+                            .addHeader("Accept", "image/webp,image/apng,image/*,*/*;q=0.8")
+                            .addHeader("Referer", "https://affscash.net/")
                             .crossfade(true)
                             .build(),
                         contentDescription = "Product Image",

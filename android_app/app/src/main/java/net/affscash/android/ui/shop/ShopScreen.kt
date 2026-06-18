@@ -209,7 +209,7 @@ fun ProductCard(
         Column(
             modifier = Modifier.fillMaxWidth().padding(12.dp)
         ) {
-            val rawPath = product.imagePath ?: ""
+            val rawPath = product.imagePath?.trim() ?: ""
             val imageUrl = (if (rawPath.isEmpty()) {
                 "" // Trigger error fallback
             } else if (!rawPath.startsWith("http")) {
@@ -223,6 +223,8 @@ fun ProductCard(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(imageUrl)
                     .addHeader("User-Agent", "Mozilla/5.0 (Linux; Android 13; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36")
+                    .addHeader("Accept", "image/webp,image/apng,image/*,*/*;q=0.8")
+                    .addHeader("Referer", "https://affscash.net/")
                     .crossfade(true)
                     .build(),
                 contentDescription = product.name,

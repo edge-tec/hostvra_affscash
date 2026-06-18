@@ -840,7 +840,6 @@ fun TwoFactorTab(isEnabled: Boolean, viewModel: SettingsViewModel) {
                 Text(if (isLoading) "Disabling..." else "Disable 2FA")
             }
         }
-        }
     }
 }
 
