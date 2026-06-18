@@ -83,10 +83,10 @@ try {
     $rows = [];
     $totals = null;
 
-    $perfTabs = ['day','offer','country','sub','affiliate'];
+    $perfTabs = ['day','week','month','year','offer','country','sub','affiliate'];
 
     if (in_array($tab, $perfTabs)) {
-        if (in_array($tab, ['day','offer','affiliate'])) {
+        if (in_array($tab, ['day','week','month','year','offer','affiliate'])) {
             $where  = ["sd.stat_date BETWEEN ? AND ?", "sd.affiliate_id IN ($activeInSql)"];
             $params = array_merge([$from, $to], $activeAffIds);
             if ($offerId > 0) { $where[] = 'sd.offer_id=?'; $params[] = $offerId; }
@@ -94,16 +94,25 @@ try {
 
             $selectMap = [
                 'day'       => 'sd.stat_date as label',
+                'week'      => "CONCAT(YEAR(sd.stat_date), '-W', WEEK(sd.stat_date)) as label",
+                'month'     => "DATE_FORMAT(sd.stat_date, '%Y-%m') as label",
+                'year'      => "YEAR(sd.stat_date) as label",
                 'offer'     => 'o.name as label',
                 'affiliate' => "CONCAT(u.first_name,' ',u.last_name) as label",
             ];
             $joinMap = [
                 'day'       => '',
+                'week'      => '',
+                'month'     => '',
+                'year'      => '',
                 'offer'     => 'JOIN offers o ON o.id=sd.offer_id',
                 'affiliate' => 'JOIN affiliates af ON af.id=sd.affiliate_id JOIN users u ON u.id=af.user_id',
             ];
             $groupMap = [
                 'day'       => 'sd.stat_date',
+                'week'      => 'YEAR(sd.stat_date), WEEK(sd.stat_date)',
+                'month'     => "DATE_FORMAT(sd.stat_date, '%Y-%m')",
+                'year'      => 'YEAR(sd.stat_date)',
                 'offer'     => 'sd.offer_id',
                 'affiliate' => 'sd.affiliate_id',
             ];
