@@ -89,24 +89,24 @@ fun ManagerReferralScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Card(modifier = Modifier.weight(1f)) {
-                        Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("REFERRED AFFILIATES", style = MaterialTheme.typography.labelSmall)
-                            Text("${data.stats.totalReferrals}", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-                            Text("Auto-assigned to your team", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Column(modifier = Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text("REFERRED AFFILIATES", style = MaterialTheme.typography.labelSmall, fontSize = 8.sp, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                            Text("${data.stats.totalReferrals}", style = MaterialTheme.typography.headlineMedium, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                            Text("Auto-assigned to your team", style = MaterialTheme.typography.bodySmall, fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                     Card(modifier = Modifier.weight(1f)) {
-                        Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("ACTIVE", style = MaterialTheme.typography.labelSmall)
-                            Text("${data.stats.activeReferrals}", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-                            Text("Of ${data.stats.totalReferrals} referred affiliates", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Column(modifier = Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text("ACTIVE", style = MaterialTheme.typography.labelSmall, fontSize = 8.sp)
+                            Text("${data.stats.activeReferrals}", style = MaterialTheme.typography.headlineMedium, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                            Text("Of ${data.stats.totalReferrals} referred affiliates", style = MaterialTheme.typography.bodySmall, fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                     Card(modifier = Modifier.weight(1f)) {
-                        Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("TOTAL EARNED", style = MaterialTheme.typography.labelSmall)
-                            Text("$${data.stats.totalEarned}", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary)
-                            Text("By your referred affiliates", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Column(modifier = Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text("TOTAL EARNED", style = MaterialTheme.typography.labelSmall, fontSize = 8.sp)
+                            Text("$${data.stats.totalEarned}", style = MaterialTheme.typography.headlineMedium, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary)
+                            Text("By your referred affiliates", style = MaterialTheme.typography.bodySmall, fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                 }

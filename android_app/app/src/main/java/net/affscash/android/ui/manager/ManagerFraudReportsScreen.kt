@@ -174,13 +174,13 @@ fun ManagerFraudReportsScreen(
 
 @Composable
 fun SummaryCard(title: String, value: String, valueColor: Color) {
-    Card(modifier = Modifier.width(120.dp)) {
+    Card(modifier = Modifier.width(100.dp)) {
         Column(
-            modifier = Modifier.padding(12.dp).fillMaxWidth(),
+            modifier = Modifier.padding(8.dp).fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(value, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = valueColor)
-            Text(title, fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
+            Text(value, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = valueColor)
+            Text(title, fontSize = 8.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
         }
     }
 }
