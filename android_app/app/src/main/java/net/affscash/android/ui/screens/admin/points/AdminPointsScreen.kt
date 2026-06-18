@@ -11,7 +11,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Info
+import android.app.DatePickerDialog
+import java.util.Calendar
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -375,11 +378,34 @@ fun ToolsSection(
                 Spacer(modifier = Modifier.height(8.dp))
                 Text("Scans all approved conversions and automatically credits missing points following the active rule.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(modifier = Modifier.height(8.dp))
+                var showDatePicker by remember { mutableStateOf(false) }
+
+                if (showDatePicker) {
+                    val calendar = Calendar.getInstance()
+                    DatePickerDialog(
+                        context,
+                        { _, year, month, dayOfMonth ->
+                            syncSince = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth)
+                            showDatePicker = false
+                        },
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH)
+                    ).apply {
+                        setOnDismissListener { showDatePicker = false }
+                    }.show()
+                }
+
                 OutlinedTextField(
                     value = syncSince,
                     onValueChange = { syncSince = it },
                     label = { Text("Only since date (optional, YYYY-MM-DD)") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    trailingIcon = {
+                        IconButton(onClick = { showDatePicker = true }) {
+                            Icon(Icons.Default.DateRange, contentDescription = "Select Date")
+                        }
+                    }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
