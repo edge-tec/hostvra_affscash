@@ -26,21 +26,23 @@ fun FilterDropdown(
     label: String,
     options: List<String>,
     selected: String,
-    onSelected: (String) -> Unit
+    onSelected: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
-        onExpandedChange = { expanded = !expanded }
+        onExpandedChange = { expanded = !expanded },
+        modifier = modifier
     ) {
         OutlinedTextField(
             value = selected,
             onValueChange = {},
             readOnly = true,
-            label = { Text(label) },
+            label = { Text(label, maxLines = 1, overflow = TextOverflow.Ellipsis) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier.menuAnchor().width(160.dp),
+            modifier = Modifier.menuAnchor().fillMaxWidth(),
             colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
                 unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                 focusedContainerColor = MaterialTheme.colorScheme.surface

@@ -62,50 +62,53 @@ fun AffiliateInHouseOffersScreen(
         Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
             
             // Filters Section
-            LazyRow(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                item {
-                    OutlinedTextField(
-                        value = searchQuery,
-                        onValueChange = { viewModel.searchQuery.value = it; viewModel.loadOffers() },
-                        placeholder = { Text("Search...") },
-                        modifier = Modifier.width(150.dp),
-                        singleLine = true,
-                        colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                            focusedContainerColor = MaterialTheme.colorScheme.surface
-                        )
-                    )
-                }
-                item {
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = { viewModel.searchQuery.value = it; viewModel.loadOffers() },
+                    placeholder = { Text("Search in-house offers...") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                        focusedContainerColor = MaterialTheme.colorScheme.surface
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                )
+                
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
                     FilterDropdown(
                         label = "Category",
                         options = listOf("All Categories", "Dating", "Sweepstakes", "Nutra", "Gaming", "Finance"),
                         selected = category,
-                        onSelected = { viewModel.category.value = it; viewModel.loadOffers() }
+                        onSelected = { viewModel.category.value = it; viewModel.loadOffers() },
+                        modifier = Modifier.weight(1f)
                     )
-                }
-                item {
                     FilterDropdown(
                         label = "Type",
                         options = listOf("All Types", "CPA", "CPL", "CPS", "RevShare"),
                         selected = payoutType,
-                        onSelected = { viewModel.payoutType.value = it; viewModel.loadOffers() }
+                        onSelected = { viewModel.payoutType.value = it; viewModel.loadOffers() },
+                        modifier = Modifier.weight(1f)
                     )
                 }
-                item {
-                    FilterDropdown(
-                        label = "Access",
-                        options = listOf("All Offers", "Request Approval", "Instantly Approved"),
-                        selected = accessFilter,
-                        onSelected = { viewModel.accessFilter.value = it; viewModel.loadOffers() }
-                    )
-                }
+
+                FilterDropdown(
+                    label = "Access",
+                    options = listOf("All Offers", "Request Approval", "Instantly Approved"),
+                    selected = accessFilter,
+                    onSelected = { viewModel.accessFilter.value = it; viewModel.loadOffers() },
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
 
             HorizontalDivider()
