@@ -133,7 +133,7 @@ fun FraudConversionItem(conversion: FraudConversion) {
             Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(text = "IP: ${conversion.ipAddress ?: "N/A"}", fontSize = 12.sp)
-                Text(text = "$${conversion.payout}", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Purple40)
+                Text(text = "$${(( conversion.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Purple40)
             }
             Spacer(modifier = Modifier.height(4.dp))
             Text(text = "Date: ${conversion.convertedAt}", fontSize = 12.sp, color = Color.Gray)

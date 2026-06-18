@@ -360,7 +360,7 @@ fun ManagerDashboardScreen(
                                         Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
                                             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                                                 Text("ID: ${fc.conversionId}", fontWeight = FontWeight.Bold, color = Color(0xFFB91C1C))
-                                                Text("$${fc.payout}", fontWeight = FontWeight.Bold, color = Color(0xFF15803D))
+                                                Text("$${(( fc.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontWeight = FontWeight.Bold, color = Color(0xFF15803D))
                                             }
                                             Text("${fc.affName ?: "Unknown"} (${fc.affiliateCode ?: "-"})", style = MaterialTheme.typography.bodyMedium)
                                             Text("IP: ${fc.ipAddress ?: "N/A"}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
@@ -392,7 +392,7 @@ fun ManagerDashboardScreen(
                                                     else -> Color(0xFFF59E0B)
                                                 }
                                                 Text(rc.status.uppercase(), fontWeight = FontWeight.Bold, color = statusColor, fontSize = 12.sp)
-                                                Text("$${rc.payout}", fontWeight = FontWeight.Bold, color = Color(0xFF15803D))
+                                                Text("$${(( rc.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontWeight = FontWeight.Bold, color = Color(0xFF15803D))
                                             }
                                             Text(rc.offerName ?: "Offer #${rc.id}", fontWeight = FontWeight.Medium)
                                             Text(rc.affName ?: "Unknown Affiliate", style = MaterialTheme.typography.bodySmall, color = Color.Gray)

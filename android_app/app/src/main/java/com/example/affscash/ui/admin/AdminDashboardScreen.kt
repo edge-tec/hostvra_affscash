@@ -153,7 +153,7 @@ fun AdminDashboardScreen(
                                                 horizontalArrangement = Arrangement.SpaceBetween
                                             ) {
                                                 Text(o.name.ifBlank { "Offer #${o.id}" }, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
-                                                Text("C: ${o.clicks} | Cv: ${o.conversions} | $${o.profit}", color = Color.Gray, modifier = Modifier.padding(start = 8.dp))
+                                                Text("C: ${o.clicks} | Cv: ${o.conversions} | $${(( o.profit )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", color = Color.Gray, modifier = Modifier.padding(start = 8.dp))
                                             }
                                             HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
                                         }
@@ -180,7 +180,7 @@ fun AdminDashboardScreen(
                                                 horizontalArrangement = Arrangement.SpaceBetween
                                             ) {
                                                 Text(a.name.ifBlank { "Affiliate #${a.id}" }, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
-                                                Text("C: ${a.clicks} | Cv: ${a.conversions} | P: $${a.payout}", color = Color.Gray, modifier = Modifier.padding(start = 8.dp))
+                                                Text("C: ${a.clicks} | Cv: ${a.conversions} | P: $${(( a.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", color = Color.Gray, modifier = Modifier.padding(start = 8.dp))
                                             }
                                             HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
                                         }
@@ -210,7 +210,7 @@ fun AdminDashboardScreen(
                                                         else -> Color(0xFFF59E0B)
                                                     }
                                                     Text(rc.status.uppercase(), fontWeight = FontWeight.Bold, color = statusColor, fontSize = 12.sp)
-                                                    Text("$${rc.payout}", fontWeight = FontWeight.Bold, color = Color(0xFF15803D))
+                                                    Text("$${(( rc.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontWeight = FontWeight.Bold, color = Color(0xFF15803D))
                                                 }
                                                 Text(rc.offerName ?: "Offer #${rc.id}", fontWeight = FontWeight.Medium)
                                                 Text(rc.affiliateName ?: "Unknown Affiliate", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
@@ -257,14 +257,14 @@ fun AdminKpiGrid(data: AdminDashboardData) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             AdminKpiCard(
                 title = "Revenue",
-                value = "$${kpis.revenue}",
+                value = "$${(( kpis.revenue )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }",
                 subTitle = "Total generated",
                 modifier = Modifier.weight(1f),
                 color = Color(0xFF10B981)
             )
             AdminKpiCard(
                 title = "Profit",
-                value = "$${kpis.profit}",
+                value = "$${(( kpis.profit )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }",
                 subTitle = "Net profit",
                 modifier = Modifier.weight(1f),
                 color = Color(0xFF10B981)

@@ -235,8 +235,8 @@ fun AdminOfferItem(
             ) {
                 Column {
                     Text(text = "Type: ${offer.payoutType}", style = MaterialTheme.typography.bodySmall)
-                    Text(text = "Payout: $${offer.payout}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
-                    Text(text = "Revenue: $${offer.revenue}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.secondary)
+                    Text(text = "Payout: $${(( offer.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+                    Text(text = "Revenue: $${(( offer.revenue )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.secondary)
                 }
                 Column(horizontalAlignment = Alignment.End) {
                     Text(text = "Access: ${if (offer.requireApproval) "Approval" else "Public"}", style = MaterialTheme.typography.bodySmall)

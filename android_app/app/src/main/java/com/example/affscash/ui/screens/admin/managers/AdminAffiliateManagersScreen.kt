@@ -148,7 +148,7 @@ fun AdminAffiliateManagerCard(
             Spacer(Modifier.height(8.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("Created: ${manager.created_at.take(10)}", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
-                Text("Balance: $${manager.balance}", style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
+                Text("Balance: $${(( manager.balance )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
             }
         }
     }

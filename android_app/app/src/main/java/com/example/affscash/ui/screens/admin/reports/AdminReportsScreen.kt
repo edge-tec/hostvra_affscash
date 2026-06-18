@@ -133,9 +133,9 @@ fun AdminReportsScreen(
                     StatCard("Clicks", totals.clicks.toString())
                     StatCard("Unique", totals.uclicks.toString())
                     StatCard("Conversions", totals.conversions.toString(), Color(0xFF388E3C))
-                    StatCard("Payout", "$${totals.payout}")
-                    StatCard("Revenue", "$${totals.revenue}")
-                    StatCard("Profit", "$${totals.profit}", if (totals.profit >= 0) Color(0xFF388E3C) else Color.Red)
+                    StatCard("Payout", "$${(( totals.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }")
+                    StatCard("Revenue", "$${(( totals.revenue )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }")
+                    StatCard("Profit", "$${(( totals.profit )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", if (totals.profit >= 0) Color(0xFF388E3C) else Color.Red)
                 }
             }
 
@@ -192,7 +192,7 @@ fun ReportRowCard(tab: String, row: JsonObject) {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text("Clicks: ${row["clicks"].asString()}", style = MaterialTheme.typography.bodySmall)
                         Text("Conv: ${row["conversions"].asString()}", style = MaterialTheme.typography.bodySmall)
-                        Text("Profit: $${row["revenue"].asDouble() - row["payout"].asDouble()}", style = MaterialTheme.typography.bodySmall)
+                        Text("Profit: $${(( row["revenue"].asDouble() - row["payout"].asDouble() )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.bodySmall)
                     }
                 }
                 "offer_report" -> {
@@ -202,7 +202,7 @@ fun ReportRowCard(tab: String, row: JsonObject) {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text("Clicks: ${row["clicks"].asString()}", style = MaterialTheme.typography.bodySmall)
                         Text("Conv: ${row["conversions"].asString()}", style = MaterialTheme.typography.bodySmall)
-                        Text("Payout: $${row["payout"].asString()}", style = MaterialTheme.typography.bodySmall)
+                        Text("Payout: $${(( row["payout"].asString() )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.bodySmall)
                     }
                 }
                 "clicks", "sl_clicks" -> {
@@ -215,7 +215,7 @@ fun ReportRowCard(tab: String, row: JsonObject) {
                     Text("Conv ID: ${row["conversion_id"].asString()}", fontWeight = FontWeight.Bold)
                     Text("Affiliate: ID ${row["affiliate_id"].asString()} - ${row["aff_name"].asString()}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
                     Text("Offer: ${row["offer_name"].asString()}", style = MaterialTheme.typography.bodySmall)
-                    Text("Payout: $${row["payout"].asString()} | Status: ${row["status"].asString()}", style = MaterialTheme.typography.bodySmall)
+                    Text("Payout: $${(( row["payout"].asString() )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } } | Status: ${row["status"].asString()}", style = MaterialTheme.typography.bodySmall)
                 }
                 "postback" -> {
                     Text("URL: ${row["fired_url"].asString().take(50)}...", fontWeight = FontWeight.Bold)
@@ -227,7 +227,7 @@ fun ReportRowCard(tab: String, row: JsonObject) {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text("Clicks: ${row["clicks"].asString()}", style = MaterialTheme.typography.bodySmall)
                         Text("Conv: ${row["conversions"].asString()}", style = MaterialTheme.typography.bodySmall)
-                        Text("Payout: $${row["payout"].asString()}", style = MaterialTheme.typography.bodySmall)
+                        Text("Payout: $${(( row["payout"].asString() )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.bodySmall)
                     }
                 }
                 else -> {

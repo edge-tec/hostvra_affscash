@@ -67,7 +67,7 @@ fun ManagerInvoicesScreen(
                     val response = state.data
                     val tabTitles = listOf(
                         "Affiliate Invoices", 
-                        "My Invoices $${response.totals?.myBalance ?: 0.0}"
+                        "My Invoices $${"%.2f".format(response.totals?.myBalance ?: 0.0)}"
                     )
                     
                     // Tabs
@@ -94,8 +94,8 @@ fun ManagerInvoicesScreen(
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             InvoiceSummaryCard("TOTAL INVOICES", totals.totalInvoices.toString(), Color.Black)
-                            InvoiceSummaryCard("PENDING AMOUNT", "$${totals.pending}", Color(0xFFF59E0B))
-                            InvoiceSummaryCard("TOTAL PAID", "$${totals.paid}", Color(0xFF10B981))
+                            InvoiceSummaryCard("PENDING AMOUNT", "$${"%.2f".format(totals.pending)}", Color(0xFFF59E0B))
+                            InvoiceSummaryCard("TOTAL PAID", "$${"%.2f".format(totals.paid)}", Color(0xFF10B981))
                         }
                     }
                     
@@ -193,7 +193,7 @@ fun ManagerInvoiceDetailedItem(invoice: Invoice) {
                 }
                 Column(horizontalAlignment = Alignment.End) {
                     Text("Amount", fontSize = 9.sp, color = Color.Gray)
-                    Text("$${invoice.total}", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    Text("$${"%.2f".format(invoice.total)}", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 }
             }
             

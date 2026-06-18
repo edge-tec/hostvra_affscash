@@ -1,8 +1,10 @@
 package com.example.affscash.ui.manager
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Assessment
 import androidx.compose.material.icons.filled.Search
@@ -13,8 +15,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.affscash.data.model.Conversion
 import com.example.affscash.ui.conversions.ManagerConversionsUiState
@@ -152,18 +156,18 @@ fun ManagerConversionItem(conversion: Conversion) {
                 )
                 val statusLower = conversion.status.lowercase()
                 val containerColor = when(statusLower) {
-                    "approved" -> androidx.compose.ui.graphics.Color(0xFF4CAF50)
+                    "approved" -> Color(0xFF4CAF50)
                     "rejected" -> MaterialTheme.colorScheme.error
-                    else -> androidx.compose.ui.graphics.Color(0xFFFFA500)
+                    else -> Color(0xFFFFA500)
                 }
                 Box(
                     modifier = Modifier
-                        .background(color = containerColor, shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp))
+                        .background(color = containerColor, shape = RoundedCornerShape(12.dp))
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Text(
                         text = conversion.status.uppercase(),
-                        color = androidx.compose.ui.graphics.Color.White,
+                        color = Color.White,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -193,7 +197,7 @@ fun ManagerConversionItem(conversion: Conversion) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(text = "Date: ${conversion.convertedAt.take(16)}", style = MaterialTheme.typography.bodySmall)
-                Text(text = "Payout: $${conversion.payout}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+                Text(text = "Payout: $${(( conversion.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
             }
         }
     }

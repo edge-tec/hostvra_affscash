@@ -239,7 +239,7 @@ fun AvailableRewardItem(rule: RewardRule) {
                     }
                 }
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "Threshold: $${rule.thresholdUsd}", fontSize = 14.sp, color = Purple40, fontWeight = FontWeight.Bold)
+                Text(text = "Threshold: $${(( rule.thresholdUsd )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 14.sp, color = Purple40, fontWeight = FontWeight.Bold)
                 if (rule.isUnlocked) {
                     Text(text = "Unlocked", fontSize = 12.sp, color = Color(0xFF4CAF50), fontWeight = FontWeight.Bold)
                 }

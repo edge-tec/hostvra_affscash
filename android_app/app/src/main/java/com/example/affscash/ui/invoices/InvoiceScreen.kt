@@ -171,7 +171,7 @@ fun InvoiceCard(invoice: Invoice, onPdfClick: () -> Unit) {
                 Column(horizontalAlignment = Alignment.End) {
                     Text("Total", fontSize = 12.sp, color = Color.Gray)
                     Text(
-                        text = "$${invoice.total}", 
+                        text = "$${(( invoice.total )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", 
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary

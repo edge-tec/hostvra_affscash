@@ -286,7 +286,7 @@ fun KpiGrid(stats: DashboardAnalyticsStatsResponse) {
         }
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             KpiCard(title = "Conversions", value = "${stats.conversions}", trend = stats.trend.conv, modifier = Modifier.weight(1f))
-            KpiCard(title = "Revenue", value = "$${stats.revenue}", trend = stats.trend.revenue, modifier = Modifier.weight(1f))
+            KpiCard(title = "Revenue", value = "$${(( stats.revenue )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", trend = stats.trend.revenue, modifier = Modifier.weight(1f))
         }
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             KpiCard(title = "Conv. Rate", value = "${stats.cr}%", trend = null, modifier = Modifier.weight(1f))
@@ -478,7 +478,7 @@ fun OffersTable(offers: List<com.example.affscash.data.model.DashboardOfferRow>)
                         Text(offer.name, modifier = Modifier.weight(2f), fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
                         Text("${offer.clicks}", modifier = Modifier.weight(1f), fontSize = 12.sp, textAlign = TextAlign.End)
                         Text("${offer.conv}", modifier = Modifier.weight(1f), fontSize = 12.sp, textAlign = TextAlign.End, color = Color(0xFF8B5CF6))
-                        Text("$${offer.payout}", modifier = Modifier.weight(1f), fontSize = 12.sp, textAlign = TextAlign.End, color = Color(0xFF16A34A))
+                        Text("$${(( offer.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", modifier = Modifier.weight(1f), fontSize = 12.sp, textAlign = TextAlign.End, color = Color(0xFF16A34A))
                     }
                     Divider(color = Color.LightGray.copy(alpha = 0.5f))
                 }

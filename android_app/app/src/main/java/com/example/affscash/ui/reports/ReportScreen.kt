@@ -341,7 +341,7 @@ fun ConversionRowItem(conv: ConversionRow) {
                         "rejected" -> Color(0xFFEF4444)
                         else -> Color(0xFFF59E0B)
                     })
-                    Text("$${conv.payout}", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    Text("$${(( conv.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -362,7 +362,7 @@ fun SmartlinkRowItem(sl: SmartlinkClickRow) {
                 Column(horizontalAlignment = Alignment.End) {
                     Text(sl.convStatus?.takeIf { it.isNotBlank() } ?: "No conv", fontSize = 12.sp)
                     if (sl.convPayout != null && sl.convPayout > 0) {
-                        Text("$${sl.convPayout}", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        Text("$${(( sl.convPayout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }

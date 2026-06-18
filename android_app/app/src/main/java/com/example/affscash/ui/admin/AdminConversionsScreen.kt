@@ -140,8 +140,8 @@ fun AdminConversionItem(conversion: Conversion) {
             ) {
                 Text(text = conversion.convertedAt, style = MaterialTheme.typography.bodySmall, color = androidx.compose.ui.graphics.Color.Gray)
                 Column(horizontalAlignment = Alignment.End) {
-                    Text(text = "Payout: $${conversion.payout}", style = MaterialTheme.typography.titleSmall, color = androidx.compose.ui.graphics.Color(0xFF10B981), fontWeight = FontWeight.Bold)
-                    Text(text = "Rev: $${conversion.revenue}", style = MaterialTheme.typography.labelSmall, color = androidx.compose.ui.graphics.Color.Gray)
+                    Text(text = "Payout: $${(( conversion.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.titleSmall, color = androidx.compose.ui.graphics.Color(0xFF10B981), fontWeight = FontWeight.Bold)
+                    Text(text = "Rev: $${(( conversion.revenue )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.labelSmall, color = androidx.compose.ui.graphics.Color.Gray)
                 }
             }
         }

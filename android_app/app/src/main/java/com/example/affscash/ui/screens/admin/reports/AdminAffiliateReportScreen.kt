@@ -144,7 +144,7 @@ fun AdminAffiliateReportScreen(
                                 Text("Fraud Score: ${row.fraud_score ?: "N/A"} (${if(row.is_fraud == 1) "FRAUD" else "CLEAN"})", style = MaterialTheme.typography.bodySmall, color = if(row.is_fraud == 1) Color.Red else Color(0xFF388E3C))
                                 if (row.conv_status != null) {
                                     Text("Conv Status: ${row.conv_status.uppercase()}", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = Color(0xFF1976D2))
-                                    Text("Payout: $${row.conv_payout}", style = MaterialTheme.typography.bodySmall)
+                                    Text("Payout: $${(( row.conv_payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.bodySmall)
                                 }
                                 Text("Time: ${row.clicked_at}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                             }

@@ -215,7 +215,7 @@ fun DuplicateRowView(row: DuplicateConversionRow) {
         Spacer(modifier = Modifier.height(2.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text("Affiliate: ${row.affiliateName} (#${row.affiliateId})", fontSize = 12.sp)
-            Text("$${row.payout}", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+            Text("$${(( row.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 12.sp, fontWeight = FontWeight.Bold)
         }
         Spacer(modifier = Modifier.height(2.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {

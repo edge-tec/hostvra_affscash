@@ -60,7 +60,7 @@ fun AdminAutoHideScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     StatCard("Total Hidden", stats.total_hidden.toString())
-                    StatCard("Payout Saved", "$${stats.payout_saved}")
+                    StatCard("Payout Saved", "$${(( stats.payout_saved )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }")
                     StatCard("Active Rules", stats.active_rules.toString())
                     StatCard("Total Rules", stats.total_rules.toString())
                 }
@@ -123,7 +123,7 @@ fun AdminAutoHideScreen(
                                     Text("Conv ID: ${conv.conversion_id}", fontWeight = FontWeight.Bold)
                                     Text("Offer: ${conv.offer_name}", style = MaterialTheme.typography.bodySmall)
                                     Text("Affiliate: ${conv.aff_name} (${conv.affiliate_code})", style = MaterialTheme.typography.bodySmall)
-                                    Text("Payout Saved: $${conv.payout}", style = MaterialTheme.typography.bodySmall, color = Color(0xFF388E3C))
+                                    Text("Payout Saved: $${(( conv.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.bodySmall, color = Color(0xFF388E3C))
                                     Text("Reason: ${conv.hide_reason}", style = MaterialTheme.typography.bodySmall)
                                     
                                     androidx.compose.material3.Button(

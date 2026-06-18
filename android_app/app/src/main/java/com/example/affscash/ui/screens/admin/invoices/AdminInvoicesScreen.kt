@@ -121,7 +121,7 @@ fun AdminInvoiceCard(
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
                     Text("Total", style = MaterialTheme.typography.labelSmall)
-                    Text("$${invoice.total}", fontWeight = FontWeight.Bold)
+                    Text("$${(( invoice.total )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontWeight = FontWeight.Bold)
                 }
                 Column {
                     Text("Period", style = MaterialTheme.typography.labelSmall)
@@ -181,9 +181,9 @@ fun AdminInvoiceDetailView(
             Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(item.description, fontWeight = FontWeight.Medium)
-                    Text("Qty: ${item.qty} @ $${item.rate}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                    Text("Qty: ${item.qty} @ $${(( item.rate )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                 }
-                Text("$${item.amount}", fontWeight = FontWeight.Bold)
+                Text("$${(( item.amount )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontWeight = FontWeight.Bold)
             }
             Divider(color = Color.LightGray.copy(alpha = 0.5f))
         }
@@ -192,17 +192,17 @@ fun AdminInvoiceDetailView(
             Spacer(Modifier.height(16.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 Text("Subtotal: ", color = Color.Gray)
-                Text("$${detail.subtotal ?: "0.00"}", fontWeight = FontWeight.Bold)
+                Text("$${(( detail.subtotal ?: "0.00" )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontWeight = FontWeight.Bold)
             }
             if ((detail.tax_amount?.toFloatOrNull() ?: 0f) > 0f) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     Text("Tax (${detail.tax_rate}%): ", color = Color.Gray)
-                    Text("$${detail.tax_amount}", fontWeight = FontWeight.Bold)
+                    Text("$${(( detail.tax_amount )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontWeight = FontWeight.Bold)
                 }
             }
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 Text("Total: ", style = MaterialTheme.typography.titleMedium)
-                Text("$${detail.total}", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color(0xFF1976D2))
+                Text("$${(( detail.total )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color(0xFF1976D2))
             }
 
             Spacer(Modifier.height(32.dp))

@@ -207,7 +207,7 @@ fun AdminApprovalRequestCard(
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    Text(text = "Payout: $${request.payoutAmount} (${request.payoutType})", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                    Text(text = "Payout: $${(( request.payoutAmount )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } } (${request.payoutType})", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                     if (request.offerCategory != null) {
                         Text(text = "Category: ${request.offerCategory}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                     }

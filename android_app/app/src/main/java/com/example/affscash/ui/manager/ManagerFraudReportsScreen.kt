@@ -107,7 +107,7 @@ fun ManagerFraudReportsScreen(
                                 SummaryCard("PENDING", totals.pending.toString(), Color(0xFFF59E0B))
                                 SummaryCard("BLOCKED", totals.blocked.toString(), Color(0xFFDC2626))
                                 SummaryCard("FRAUD FLAGGED", totals.fraudFlagged.toString(), Color(0xFFDC2626))
-                                SummaryCard("PAYOUT", "$${totals.payout}", Color.Black)
+                                SummaryCard("PAYOUT", "$${(( totals.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", Color.Black)
                             }
                         }
                         
@@ -204,7 +204,7 @@ fun ManagerFraudConversionItem(cv: ManagerFraudConversion) {
             ) {
                 Column {
                     Text("Payout", fontSize = 9.sp, color = Color.Gray)
-                    Text("$${cv.payout}", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    Text("$${(( cv.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 }
                 
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {

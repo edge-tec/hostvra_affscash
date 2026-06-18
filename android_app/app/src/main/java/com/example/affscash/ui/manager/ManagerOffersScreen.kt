@@ -212,7 +212,7 @@ fun ManagerOfferCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                StatItem("Payout", if (offer.payoutType == "RevShare") "${offer.payout}%" else "$${offer.payout}")
+                StatItem("Payout", if (offer.payoutType == "RevShare") "${offer.payout}%" else "$${(( offer.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }")
                 StatItem("Affiliates", offer.affCount.toString())
                 FraudScoreBadge(offer.fraudScore, offer.fraudLevel)
             }
