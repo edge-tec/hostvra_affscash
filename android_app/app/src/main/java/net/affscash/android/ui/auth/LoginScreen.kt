@@ -16,6 +16,7 @@ import net.affscash.android.R
 @Composable
 fun LoginScreen(
     onLoginSuccess: (String) -> Unit,
+    onForgotPasswordClick: () -> Unit = {},
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val authState by viewModel.authState.collectAsState()
@@ -93,6 +94,12 @@ fun LoginScreen(
                 } else {
                     Text("Login")
                 }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            TextButton(onClick = onForgotPasswordClick) {
+                Text("Forgot Password?")
             }
         }
     }

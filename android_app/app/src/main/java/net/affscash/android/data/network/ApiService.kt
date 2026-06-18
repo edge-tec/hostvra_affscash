@@ -43,6 +43,15 @@ interface ApiService {
     @POST("api/v2/auth?action=logout")
     suspend fun logout(): Response<AuthResponse>
 
+    @POST("api/v2/auth?action=forgot_password")
+    suspend fun forgotPassword(@Body request: ForgotPasswordRequest): Response<BasicResponse>
+
+    @POST("api/v2/auth?action=verify_otp")
+    suspend fun verifyOtp(@Body request: VerifyOtpRequest): Response<VerifyOtpResponse>
+
+    @POST("api/v2/auth?action=reset_password")
+    suspend fun resetPassword(@Body request: ResetPasswordRequest): Response<BasicResponse>
+
     @GET("api/v2/dashboard")
     suspend fun getDashboard(): Response<DashboardResponse>
 
@@ -656,7 +665,7 @@ interface ApiService {
     // --- ADMIN: Account Deletion Requests ---
     @GET("api/v2/admin/account-delete-requests")
     suspend fun getAdminAccountDeleteRequests(
-        @Query("status") status: String
+        @Query("status") status: String?
     ): net.affscash.android.data.model.AdminAccountDeleteResponse
 
     @POST("api/v2/admin/account-delete-requests?action=update_status")

@@ -48,4 +48,40 @@ class AuthRepository @Inject constructor(
             Result.failure(e)
         }
     }
+
+    suspend fun forgotPassword(email: String): Result<net.affscash.android.data.model.BasicResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.forgotPassword(net.affscash.android.data.model.ForgotPasswordRequest(email))
+            if (response.isSuccessful) {
+                response.body()?.let { return@withContext Result.success(it) }
+            }
+            Result.failure(Exception("Network error: ${response.code()}"))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun verifyOtp(email: String, otp: String): Result<net.affscash.android.data.model.VerifyOtpResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.verifyOtp(net.affscash.android.data.model.VerifyOtpRequest(email, otp))
+            if (response.isSuccessful) {
+                response.body()?.let { return@withContext Result.success(it) }
+            }
+            Result.failure(Exception("Network error: ${response.code()}"))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun resetPassword(email: String, token: String, password: String): Result<net.affscash.android.data.model.BasicResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.resetPassword(net.affscash.android.data.model.ResetPasswordRequest(email, token, password))
+            if (response.isSuccessful) {
+                response.body()?.let { return@withContext Result.success(it) }
+            }
+            Result.failure(Exception("Network error: ${response.code()}"))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import net.affscash.android.ui.auth.LoginScreen
+import net.affscash.android.ui.auth.ForgotPasswordScreen
 import net.affscash.android.ui.dashboard.DashboardScreen
 import net.affscash.android.data.local.UserManager
 
@@ -28,6 +29,17 @@ fun AffscashNavGraph(
                     navController.navigate("main_screen") {
                         popUpTo("login") { inclusive = true }
                     }
+                },
+                onForgotPasswordClick = {
+                    navController.navigate("forgot_password")
+                }
+            )
+        }
+
+        composable("forgot_password") {
+            ForgotPasswordScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
                 }
             )
         }

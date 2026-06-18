@@ -26,3 +26,35 @@ data class User(
     val role: String,
     val status: String
 )
+
+@Serializable
+data class ForgotPasswordRequest(
+    val email: String
+)
+
+@Serializable
+data class VerifyOtpRequest(
+    val email: String,
+    val otp: String
+)
+
+@Serializable
+data class VerifyOtpResponse(
+    val success: Boolean,
+    val error: String? = null,
+    val token: String? = null
+)
+
+@Serializable
+data class ResetPasswordRequest(
+    val email: String,
+    val token: String,
+    val password: String
+)
+
+@Serializable
+data class BasicResponse(
+    val success: Boolean,
+    val error: String? = null,
+    val message: String? = null
+)
