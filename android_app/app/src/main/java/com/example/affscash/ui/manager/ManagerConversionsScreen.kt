@@ -142,19 +142,31 @@ fun ManagerConversionItem(conversion: Conversion) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.Top
             ) {
                 Text(
                     text = conversion.offerName ?: "Unknown Offer",
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f).padding(end = 8.dp)
                 )
-                Badge(containerColor = when(conversion.status.lowercase()) {
-                    "approved" -> MaterialTheme.colorScheme.primary
+                val statusLower = conversion.status.lowercase()
+                val containerColor = when(statusLower) {
+                    "approved" -> androidx.compose.ui.graphics.Color(0xFF4CAF50)
                     "rejected" -> MaterialTheme.colorScheme.error
-                    else -> MaterialTheme.colorScheme.secondary
-                }) {
-                    Text(conversion.status.uppercase(), modifier = Modifier.padding(horizontal = 4.dp))
+                    else -> androidx.compose.ui.graphics.Color(0xFFFFA500)
+                }
+                Box(
+                    modifier = Modifier
+                        .background(color = containerColor, shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp))
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = conversion.status.uppercase(),
+                        color = androidx.compose.ui.graphics.Color.White,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(4.dp))
