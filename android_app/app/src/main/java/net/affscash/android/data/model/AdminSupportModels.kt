@@ -6,13 +6,13 @@ import kotlinx.serialization.SerialName
 @Serializable
 data class AdminSupportConversationsResponse(
     @SerialName("success") val success: Boolean,
-    @SerialName("data") val data: AdminSupportConversationsData?,
+    @SerialName("data") val data: AdminSupportConversationsData? = null,
     @SerialName("error") val error: String? = null
 )
 
 @Serializable
 data class AdminSupportConversationsData(
-    @SerialName("conversations") val conversations: List<AdminSupportConversationRow>
+    @SerialName("conversations") val conversations: List<AdminSupportConversationRow> = emptyList()
 )
 
 @Serializable
@@ -30,14 +30,14 @@ data class AdminSupportConversationRow(
 @Serializable
 data class AdminSupportMessagesResponse(
     @SerialName("success") val success: Boolean,
-    @SerialName("data") val data: AdminSupportMessagesData?,
+    @SerialName("data") val data: AdminSupportMessagesData? = null,
     @SerialName("error") val error: String? = null
 )
 
 @Serializable
 data class AdminSupportMessagesData(
-    @SerialName("conversation") val conversation: AdminSupportConversationState?,
-    @SerialName("messages") val messages: List<AdminSupportMessage>
+    @SerialName("conversation") val conversation: AdminSupportConversationState? = null,
+    @SerialName("messages") val messages: List<AdminSupportMessage> = emptyList()
 )
 
 @Serializable
@@ -72,7 +72,7 @@ data class AdminSupportSendRequest(
 @Serializable
 data class AdminSupportSendResponse(
     @SerialName("success") val success: Boolean,
-    @SerialName("data") val data: AdminSupportSendResponseData?,
+    @SerialName("data") val data: AdminSupportSendResponseData? = null,
     @SerialName("error") val error: String? = null
 )
 
