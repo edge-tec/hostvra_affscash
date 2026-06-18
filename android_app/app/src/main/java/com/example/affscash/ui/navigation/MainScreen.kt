@@ -329,6 +329,7 @@ fun MainScreen(
             }
             composable(Screen.Chat.route) {
                 com.example.affscash.ui.chat.ChatScreen(
+                    role = role,
                     onNavigateBack = { navController.popBackStack() }
                 )
             }

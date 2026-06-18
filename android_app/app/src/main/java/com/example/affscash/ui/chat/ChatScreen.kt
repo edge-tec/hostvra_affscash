@@ -38,6 +38,7 @@ import com.example.affscash.data.model.ChatMessage
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(
+    role: String = "affiliate",
     onNavigateBack: () -> Unit,
     viewModel: ChatViewModel = hiltViewModel()
 ) {
@@ -72,7 +73,14 @@ fun ChatScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Live Support") },
+                title = { 
+                    Column {
+                        Text(if (role == "affiliate_manager") "Messages with Admin" else "Live Support")
+                        if (role == "affiliate_manager") {
+                            Text("Direct line to the admin team", fontSize = 12.sp, color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f))
+                        }
+                    }
+                },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
