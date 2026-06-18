@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
     lateinit var userManager: UserManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
+        androidx.activity.enableEdgeToEdge()
         setContent {
             androidx.compose.runtime.LaunchedEffect(Unit) {
                 userManager.unauthFlow.collect {
