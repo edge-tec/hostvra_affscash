@@ -71,7 +71,6 @@ try {
              FROM affiliates af
              JOIN users u ON u.id = af.user_id
              LEFT JOIN affiliate_points ap ON ap.affiliate_id = af.id
-             WHERE u.status = 'active'
              ORDER BY balance DESC, lifetime_earned DESC
              LIMIT 500"
         ) ?: [];

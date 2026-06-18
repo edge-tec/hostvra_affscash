@@ -572,6 +572,60 @@ fun PaymentTab(payment: PaymentInfo?, methods: List<String>, viewModel: Settings
 }
 
 @Composable
+fun GlobalPostbackTab(postback: GlobalPostbackInfo?, viewModel: SettingsViewModel) {
+    val context = LocalContext.current
+    var url by remember { mutableStateOf(postback?.url ?: "") }
+    var isUpdating by remember { mutableStateOf(false) }
+
+    Column {
+        Text("Global Postback Settings", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        Text(
+            "The Global Postback URL is used to notify your tracking system of conversions across all offers. " +
+            "Use macros like {click_id}, {payout}, {currency}, etc. which will be replaced by our system.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = url,
+            onValueChange = { url = it },
+            label = { Text("Global Postback URL") },
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text("https://your-tracker.com/postback?cid={click_id}") }
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = {
+                if (url.isBlank()) {
+                    Toast.makeText(context, "Postback URL cannot be empty", Toast.LENGTH_SHORT).show()
+                    return@Button
+                }
+                isUpdating = true
+                viewModel.updateGlobalPostback(
+                    UpdateGlobalPostbackRequest(url),
+                    onSuccess = { 
+                        isUpdating = false
+                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
+                    },
+                    onError = { 
+                        isUpdating = false
+                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
+                    }
+                )
+            },
+            enabled = !isUpdating,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(if (isUpdating) "Saving..." else "Save Postback URL")
+        }
+    }
+}
+
+@Composable
 fun ManagerTab(manager: ManagerInfo?) {
     Column {
         Text("Your Affiliate Manager", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
