@@ -1,80 +1,93 @@
 package net.affscash.android.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
+@Serializable
 data class AdminSupportConversationsResponse(
-    @SerializedName("success") val success: Boolean,
-    @SerializedName("data") val data: AdminSupportConversationsData?,
-    @SerializedName("error") val error: String?
+    @SerialName("success") val success: Boolean,
+    @SerialName("data") val data: AdminSupportConversationsData?,
+    @SerialName("error") val error: String? = null
 )
 
+@Serializable
 data class AdminSupportConversationsData(
-    @SerializedName("conversations") val conversations: List<AdminSupportConversationRow>
+    @SerialName("conversations") val conversations: List<AdminSupportConversationRow>
 )
 
+@Serializable
 data class AdminSupportConversationRow(
-    @SerializedName("conversation_id") val conversationId: Int,
-    @SerializedName("affiliate_id") val affiliateId: Int,
-    @SerializedName("name") val name: String,
-    @SerializedName("affiliate_code") val affiliateCode: String,
-    @SerializedName("status") val status: String,
-    @SerializedName("last_message_at") val lastMessageAt: String?,
-    @SerializedName("unread") val unread: Int,
-    @SerializedName("last_msg") val lastMsg: String
+    @SerialName("conversation_id") val conversationId: Int,
+    @SerialName("affiliate_id") val affiliateId: Int,
+    @SerialName("name") val name: String,
+    @SerialName("affiliate_code") val affiliateCode: String,
+    @SerialName("status") val status: String,
+    @SerialName("last_message_at") val lastMessageAt: String? = null,
+    @SerialName("unread") val unread: Int = 0,
+    @SerialName("last_msg") val lastMsg: String? = null
 )
 
+@Serializable
 data class AdminSupportMessagesResponse(
-    @SerializedName("success") val success: Boolean,
-    @SerializedName("data") val data: AdminSupportMessagesData?,
-    @SerializedName("error") val error: String?
+    @SerialName("success") val success: Boolean,
+    @SerialName("data") val data: AdminSupportMessagesData?,
+    @SerialName("error") val error: String? = null
 )
 
+@Serializable
 data class AdminSupportMessagesData(
-    @SerializedName("conversation") val conversation: AdminSupportConversationState?,
-    @SerializedName("messages") val messages: List<AdminSupportMessage>
+    @SerialName("conversation") val conversation: AdminSupportConversationState?,
+    @SerialName("messages") val messages: List<AdminSupportMessage>
 )
 
+@Serializable
 data class AdminSupportConversationState(
-    @SerializedName("id") val id: Int,
-    @SerializedName("status") val status: String
+    @SerialName("id") val id: Int,
+    @SerialName("status") val status: String
 )
 
+@Serializable
 data class AdminSupportMessage(
-    @SerializedName("id") val id: Int,
-    @SerializedName("sender_id") val senderId: Int,
-    @SerializedName("sender_role") val senderRole: String,
-    @SerializedName("sender_name") val senderName: String,
-    @SerializedName("message") val message: String,
-    @SerializedName("created_at") val createdAt: String,
-    @SerializedName("is_read") val isRead: Int,
-    @SerializedName("attachment_path") val attachmentPath: String?,
-    @SerializedName("attachment_name") val attachmentName: String?,
-    @SerializedName("attachment_type") val attachmentType: String?,
-    @SerializedName("attachment_size") val attachmentSize: Int?,
-    @SerializedName("edited_at") val editedAt: String?
+    @SerialName("id") val id: Int,
+    @SerialName("sender_id") val senderId: Int,
+    @SerialName("sender_role") val senderRole: String,
+    @SerialName("sender_name") val senderName: String,
+    @SerialName("message") val message: String,
+    @SerialName("created_at") val createdAt: String,
+    @SerialName("is_read") val isRead: Int = 0,
+    @SerialName("attachment_path") val attachmentPath: String? = null,
+    @SerialName("attachment_name") val attachmentName: String? = null,
+    @SerialName("attachment_type") val attachmentType: String? = null,
+    @SerialName("attachment_size") val attachmentSize: Int? = null,
+    @SerialName("edited_at") val editedAt: String? = null
 )
 
+@Serializable
 data class AdminSupportSendRequest(
-    @SerializedName("affiliate_id") val affiliateId: Int,
-    @SerializedName("owner_type") val ownerType: String,
-    @SerializedName("message") val message: String
+    @SerialName("affiliate_id") val affiliateId: Int,
+    @SerialName("owner_type") val ownerType: String,
+    @SerialName("message") val message: String
 )
 
+@Serializable
 data class AdminSupportSendResponse(
-    @SerializedName("success") val success: Boolean,
-    @SerializedName("data") val data: AdminSupportSendResponseData?,
-    @SerializedName("error") val error: String?
+    @SerialName("success") val success: Boolean,
+    @SerialName("data") val data: AdminSupportSendResponseData?,
+    @SerialName("error") val error: String? = null
 )
 
+@Serializable
 data class AdminSupportSendResponseData(
-    @SerializedName("message_id") val messageId: Int
+    @SerialName("message_id") val messageId: Int
 )
 
+@Serializable
 data class AdminSupportActionRequest(
-    @SerializedName("conversation_id") val conversationId: Int
+    @SerialName("conversation_id") val conversationId: Int
 )
 
+@Serializable
 data class AdminSupportActionResponse(
-    @SerializedName("success") val success: Boolean,
-    @SerializedName("error") val error: String?
+    @SerialName("success") val success: Boolean,
+    @SerialName("error") val error: String? = null
 )

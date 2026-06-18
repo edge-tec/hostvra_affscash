@@ -1,92 +1,107 @@
 package net.affscash.android.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
+@Serializable
 data class AdminInvoiceFormDataResponse(
     val status: String,
     val data: AdminInvoiceFormData? = null,
     val message: String? = null
 )
 
+@Serializable
 data class AdminInvoiceFormData(
     val affiliates: List<InvoiceEntityOption>,
     val advertisers: List<InvoiceEntityOption>,
     val managers: List<InvoiceEntityOption>
 )
 
+@Serializable
 data class InvoiceEntityOption(
     val id: Int,
     val label: String
 )
 
+@Serializable
 data class AdminInvoiceAffiliateInfoResponse(
     val status: String,
     val data: AdminInvoiceAffiliateInfo? = null,
     val message: String? = null
 )
 
+@Serializable
 data class AdminInvoiceAffiliateInfo(
     val balance: Double,
     val threshold: Double,
-    @SerializedName("payment_method") val paymentMethod: String,
-    @SerializedName("payment_details") val paymentDetails: String
+    @SerialName("payment_method") val paymentMethod: String,
+    @SerialName("payment_details") val paymentDetails: String
 )
 
+@Serializable
 data class AdminInvoiceManagerInfoResponse(
     val status: String,
     val data: AdminInvoiceManagerInfo? = null,
     val message: String? = null
 )
 
+@Serializable
 data class AdminInvoiceManagerInfo(
     val balance: Double,
     val name: String,
     val email: String
 )
 
+@Serializable
 data class AdminInvoiceLoadOffersResponse(
     val status: String,
     val data: AdminInvoiceLoadOffersData? = null,
     val message: String? = null
 )
 
+@Serializable
 data class AdminInvoiceLoadOffersData(
     val offers: List<AdminInvoiceOfferItem>
 )
 
+@Serializable
 data class AdminInvoiceOfferItem(
-    @SerializedName("offer_id") val offerId: Int,
-    @SerializedName("offer_name") val offerName: String,
+    @SerialName("offer_id") val offerId: Int,
+    @SerialName("offer_name") val offerName: String,
     val conversions: Int,
-    @SerializedName("total_payout") val totalPayout: Double,
-    @SerializedName("avg_rate") val avgRate: Double
+    @SerialName("total_payout") val totalPayout: Double,
+    @SerialName("avg_rate") val avgRate: Double
 )
 
+@Serializable
 data class AdminCreateInvoiceRequest(
     val type: String,
-    @SerializedName("entity_id") val entityId: Int,
-    @SerializedName("period_start") val periodStart: String?,
-    @SerializedName("period_end") val periodEnd: String?,
-    @SerializedName("due_date") val dueDate: String?,
+    @SerialName("entity_id") val entityId: Int,
+    @SerialName("period_start") val periodStart: String?,
+    @SerialName("period_end") val periodEnd: String?,
+    @SerialName("due_date") val dueDate: String?,
     val notes: String?,
-    @SerializedName("tax_rate") val taxRate: Double,
-    @SerializedName("total_override") val totalOverride: String?,
-    @SerializedName("payment_details_override") val paymentDetailsOverride: String?,
+    @SerialName("tax_rate") val taxRate: Double,
+    @SerialName("total_override") val totalOverride: String?,
+    @SerialName("payment_details_override") val paymentDetailsOverride: String?,
     val items: List<AdminCreateInvoiceLineItem>
 )
 
+@Serializable
 data class AdminCreateInvoiceLineItem(
     val description: String,
     val qty: Double,
     val rate: Double
 )
 
+@Serializable
 data class AdminCreateInvoiceResponse(
     val status: String,
     val message: String?,
     val data: AdminCreateInvoiceResponseData? = null
 )
 
+@Serializable
 data class AdminCreateInvoiceResponseData(
-    @SerializedName("invoice_id") val invoiceId: Int
+    @SerialName("invoice_id") val invoiceId: Int
 )
