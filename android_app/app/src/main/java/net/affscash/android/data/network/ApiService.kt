@@ -650,8 +650,21 @@ interface ApiService {
 
     @POST("api/v2/admin/fraud-score-report")
     suspend fun submitAdminFraudAction(
-        @Body request: AdminFraudActionRequest
-    ): AdminFraudActionResponse
+        @Body request: net.affscash.android.data.model.AdminFraudActionRequest
+    ): net.affscash.android.data.model.AdminFraudActionResponse
+
+    // --- ADMIN: Account Deletion Requests ---
+    @GET("api/v2/admin/AccountDeleteRequestController.php")
+    suspend fun getAdminAccountDeleteRequests(
+        @Query("action") action: String = "list",
+        @Query("status") status: String? = null
+    ): net.affscash.android.data.model.AdminAccountDeleteResponse
+
+    @POST("api/v2/admin/AccountDeleteRequestController.php")
+    suspend fun submitAdminAccountDeleteAction(
+        @Body request: net.affscash.android.data.model.AdminAccountDeleteActionRequest
+    ): net.affscash.android.data.model.BasicResponse
+
     // --- ADMIN: Reports ---
     @GET("api/v2/admin/reports")
     suspend fun getAdminReports(
