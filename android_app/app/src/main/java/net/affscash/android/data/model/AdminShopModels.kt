@@ -5,25 +5,25 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AdminShopProduct(
-    val id: Int,
-    val name: String,
+    val id: Int = 0,
+    val name: String = "",
     val description: String? = null,
-    @SerialName("price_points") val pricePoints: Int,
+    @SerialName("price_points") val pricePoints: Int = 0,
     val stock: String? = null,
     @SerialName("image_path") val imagePath: String? = null,
-    val status: String,
+    val status: String = "active",
     @SerialName("created_at") val createdAt: String? = null
 )
 
 @Serializable
 data class AdminShopOrder(
-    val id: Int,
+    val id: Int = 0,
     @SerialName("product_name") val productName: String? = null,
-    @SerialName("points_spent") val pointsSpent: Int,
-    @SerialName("affiliate_id") val affiliateId: Int,
+    @SerialName("points_spent") val pointsSpent: Int = 0,
+    @SerialName("affiliate_id") val affiliateId: Int = 0,
     @SerialName("first_name") val firstName: String? = null,
     @SerialName("last_name") val lastName: String? = null,
-    val status: String,
+    val status: String = "pending",
     @SerialName("tracking_code") val trackingCode: String? = null,
     @SerialName("admin_note") val adminNote: String? = null,
     @SerialName("created_at") val createdAt: String? = null
