@@ -62,51 +62,67 @@ fun ReportScreen(
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
-            ScrollableTabRow(
-                selectedTabIndex = tabs.indexOfFirst { it.first == selectedTab }.coerceAtLeast(0),
-                edgePadding = 8.dp
-            ) {
-                tabs.forEach { tabInfo ->
-                    Tab(
-                        selected = selectedTab == tabInfo.first,
-                        onClick = { viewModel.updateTab(tabInfo.first) },
-                        text = { Text(tabInfo.second) }
-                    )
+            // Report Type Dropdown
+            var reportTypeExpanded by remember { mutableStateOf(false) }
+            val currentTabName = tabs.find { it.first == selectedTab }?.second ?: "Report Type"
+            Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp)) {
+                OutlinedButton(
+                    onClick = { reportTypeExpanded = true },
+                    modifier = Modifier.fillMaxWidth(),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
+                ) {
+                    Text(currentTabName, modifier = Modifier.weight(1f))
+                    Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                }
+                DropdownMenu(expanded = reportTypeExpanded, onDismissRequest = { reportTypeExpanded = false }) {
+                    tabs.forEach { tabInfo ->
+                        DropdownMenuItem(
+                            text = { Text(tabInfo.second) },
+                            onClick = { viewModel.updateTab(tabInfo.first); reportTypeExpanded = false }
+                        )
+                    }
                 }
             }
 
             // Filters Section
-            Column(modifier = Modifier.padding(8.dp)) {
-                // Date Chips
-                Row(
-                    modifier = Modifier.horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    val dateRanges = listOf("Today", "Yesterday", "Last 7 Days", "This Month")
-                    dateRanges.forEach { range ->
-                        FilterChip(
-                            selected = false, // Simplified
-                            onClick = {
-                                val cal = Calendar.getInstance()
-                                val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-                                val to = sdf.format(cal.time)
-                                val from = when (range) {
-                                    "Today" -> to
-                                    "Yesterday" -> { cal.add(Calendar.DAY_OF_YEAR, -1); sdf.format(cal.time).also { cal.add(Calendar.DAY_OF_YEAR, 1) } }
-                                    "Last 7 Days" -> { cal.add(Calendar.DAY_OF_YEAR, -7); sdf.format(cal.time).also { cal.add(Calendar.DAY_OF_YEAR, 7) } }
-                                    "This Month" -> { cal.set(Calendar.DAY_OF_MONTH, 1); sdf.format(cal.time) }
-                                    else -> to
-                                }
-                                if (range == "Yesterday") {
-                                    viewModel.setDateRange(from, from)
-                                } else {
-                                    viewModel.setDateRange(from, to)
-                                }
-                            },
-                            label = { Text(range) }
-                        )
+            Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+                // Date Range Dropdown
+                var dateExpanded by remember { mutableStateOf(false) }
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    OutlinedButton(
+                        onClick = { dateExpanded = true },
+                        modifier = Modifier.fillMaxWidth(),
+                        contentPadding = PaddingValues(horizontal = 16.dp)
+                    ) {
+                        Text("$fromDate to $toDate", modifier = Modifier.weight(1f))
+                        Icon(Icons.Default.ArrowDropDown, contentDescription = null)
                     }
-                    Text(text = "$fromDate to $toDate", modifier = Modifier.align(Alignment.CenterVertically), fontSize = 12.sp)
+                    DropdownMenu(expanded = dateExpanded, onDismissRequest = { dateExpanded = false }) {
+                        val dateRanges = listOf("Today", "Yesterday", "Last 7 Days", "This Month")
+                        dateRanges.forEach { range ->
+                            DropdownMenuItem(
+                                text = { Text(range) },
+                                onClick = {
+                                    val cal = Calendar.getInstance()
+                                    val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                                    val to = sdf.format(cal.time)
+                                    val from = when (range) {
+                                        "Today" -> to
+                                        "Yesterday" -> { cal.add(Calendar.DAY_OF_YEAR, -1); sdf.format(cal.time).also { cal.add(Calendar.DAY_OF_YEAR, 1) } }
+                                        "Last 7 Days" -> { cal.add(Calendar.DAY_OF_YEAR, -7); sdf.format(cal.time).also { cal.add(Calendar.DAY_OF_YEAR, 7) } }
+                                        "This Month" -> { cal.set(Calendar.DAY_OF_MONTH, 1); sdf.format(cal.time) }
+                                        else -> to
+                                    }
+                                    if (range == "Yesterday") {
+                                        viewModel.setDateRange(from, from)
+                                    } else {
+                                        viewModel.setDateRange(from, to)
+                                    }
+                                    dateExpanded = false
+                                }
+                            )
+                        }
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))

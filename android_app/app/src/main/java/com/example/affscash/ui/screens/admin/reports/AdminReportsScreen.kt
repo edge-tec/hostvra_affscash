@@ -51,31 +51,38 @@ fun AdminReportsScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
         Column(modifier = Modifier.fillMaxSize().padding(padding)) {
-            // Tabs
-            ScrollableTabRow(
-                selectedTabIndex = getTabIndex(uiState.tab),
-                edgePadding = 8.dp,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                val tabs = listOf(
-                    "performance" to "Performance",
-                    "clicks" to "Clicks",
-                    "conversions" to "Conversions",
-                    "rejected" to "Rejected",
-                    "pending" to "Pending",
-                    "autohide" to "Autohide",
-                    "offer_report" to "Offer Reports",
-                    "postback" to "Postback Log",
-                    "sl_clicks" to "SmartLink Clicks",
-                    "sl_conversions" to "SmartLink Conv",
-                    "sl_affiliates" to "SmartLink Affiliates"
-                )
-                tabs.forEachIndexed { index, tabInfo ->
-                    Tab(
-                        selected = uiState.tab == tabInfo.first,
-                        onClick = { viewModel.updateTab(tabInfo.first) },
-                        text = { Text(tabInfo.second) }
-                    )
+            // Tabs as Dropdown
+            var reportTypeExpanded by remember { mutableStateOf(false) }
+            val tabs = listOf(
+                "performance" to "Performance",
+                "clicks" to "Clicks",
+                "conversions" to "Conversions",
+                "rejected" to "Rejected",
+                "pending" to "Pending",
+                "autohide" to "Autohide",
+                "offer_report" to "Offer Reports",
+                "postback" to "Postback Log",
+                "sl_clicks" to "SmartLink Clicks",
+                "sl_conversions" to "SmartLink Conv",
+                "sl_affiliates" to "SmartLink Affiliates"
+            )
+            val currentTabName = tabs.find { it.first == uiState.tab }?.second ?: "Report Type"
+            Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp)) {
+                OutlinedButton(
+                    onClick = { reportTypeExpanded = true },
+                    modifier = Modifier.fillMaxWidth(),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
+                ) {
+                    Text(currentTabName, modifier = Modifier.weight(1f))
+                    Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                }
+                DropdownMenu(expanded = reportTypeExpanded, onDismissRequest = { reportTypeExpanded = false }) {
+                    tabs.forEach { tabInfo ->
+                        DropdownMenuItem(
+                            text = { Text(tabInfo.second) },
+                            onClick = { viewModel.updateTab(tabInfo.first); reportTypeExpanded = false }
+                        )
+                    }
                 }
             }
 
