@@ -12,6 +12,12 @@ class UserManager @Inject constructor(
 ) {
     private val prefs: SharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
 
+    val unauthFlow = kotlinx.coroutines.flow.MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+
+    fun triggerUnauth() {
+        unauthFlow.tryEmit(Unit)
+    }
+
     fun saveUser(role: String, email: String, name: String) {
         prefs.edit()
             .putString("ROLE", role)

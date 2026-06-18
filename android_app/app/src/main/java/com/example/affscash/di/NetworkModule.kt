@@ -31,7 +31,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(cookieJar: SessionCookieJar): OkHttpClient {
+    fun provideOkHttpClient(cookieJar: SessionCookieJar, userManager: com.example.affscash.data.local.UserManager): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
@@ -59,9 +59,19 @@ object NetworkModule {
             }
         }
 
+        val authInterceptor = Interceptor { chain ->
+            val request = chain.request()
+            val response = chain.proceed(request)
+            if (response.code == 401) {
+                userManager.triggerUnauth()
+            }
+            response
+        }
+
         return OkHttpClient.Builder()
             .cookieJar(cookieJar)
             .addInterceptor(loggingInterceptor)
+            .addInterceptor(authInterceptor)
             .addInterceptor(cleanJsonResponseInterceptor)
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)

@@ -22,6 +22,16 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         
         setContent {
+            androidx.compose.runtime.LaunchedEffect(Unit) {
+                userManager.unauthFlow.collect {
+                    userManager.clearUser()
+                    // Restart Activity
+                    val intent = android.content.Intent(this@MainActivity, MainActivity::class.java)
+                    intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    startActivity(intent)
+                    finish()
+                }
+            }
             MaterialTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
