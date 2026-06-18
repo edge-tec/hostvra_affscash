@@ -112,37 +112,48 @@ fun ManagerAffiliatesScreen(
                     .padding(horizontal = 16.dp, vertical = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                TextField(
-                    value = uiState.searchQuery,
-                    onValueChange = { viewModel.updateSearchQuery(it) },
-                    placeholder = { Text("Search affiliates...", fontSize = 14.sp) },
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(20.dp)) },
-                    modifier = Modifier.weight(1f).height(48.dp),
-                    singleLine = true,
-                    colors = TextFieldDefaults.colors(
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-                    ),
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
-                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp)
-                )
+                // Search Input
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(36.dp)
+                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), androidx.compose.foundation.shape.RoundedCornerShape(18.dp))
+                        .padding(horizontal = 12.dp),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(16.dp), tint = Color.Gray)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        androidx.compose.foundation.text.BasicTextField(
+                            value = uiState.searchQuery,
+                            onValueChange = { viewModel.updateSearchQuery(it) },
+                            singleLine = true,
+                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface),
+                            modifier = Modifier.fillMaxWidth(),
+                            decorationBox = { innerTextField ->
+                                if (uiState.searchQuery.isEmpty()) {
+                                    Text("Search affiliates...", fontSize = 13.sp, color = Color.Gray)
+                                }
+                                innerTextField()
+                            }
+                        )
+                    }
+                }
                 
                 Spacer(modifier = Modifier.width(8.dp))
                 
+                // Filter Dropdown
                 var expanded by remember { mutableStateOf(false) }
                 Box {
-                    Surface(
-                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
-                        modifier = Modifier.height(48.dp).clickable { expanded = true }
+                    Box(
+                        modifier = Modifier
+                            .height(36.dp)
+                            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), androidx.compose.foundation.shape.RoundedCornerShape(18.dp))
+                            .clickable { expanded = true }
+                            .padding(horizontal = 12.dp),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 0.dp)
-                        ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
                                 text = when(uiState.fraudScoreFilter) {
                                     "low" -> "Low Score"
@@ -150,10 +161,11 @@ fun ManagerAffiliatesScreen(
                                     "high" -> "High Score"
                                     else -> "All scores"
                                 },
-                                fontSize = 14.sp
+                                fontSize = 13.sp,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             Spacer(modifier = Modifier.width(4.dp))
-                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, modifier = Modifier.size(20.dp))
+                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, modifier = Modifier.size(16.dp), tint = Color.Gray)
                         }
                     }
                     DropdownMenu(
@@ -162,7 +174,7 @@ fun ManagerAffiliatesScreen(
                     ) {
                         listOf("all" to "All scores", "low" to "Low (< 30)", "medium" to "Medium (30-70)", "high" to "High (> 70)").forEach { (key, label) ->
                             DropdownMenuItem(
-                                text = { Text(label, fontSize = 14.sp) },
+                                text = { Text(label, fontSize = 13.sp) },
                                 onClick = {
                                     viewModel.setFraudScoreFilter(key)
                                     expanded = false
