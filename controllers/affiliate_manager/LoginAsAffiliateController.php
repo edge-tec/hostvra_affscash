@@ -35,7 +35,7 @@ if (!$aff) {
 }
 
 // Store manager return path before impersonating
-$_SESSION['impersonate_return_url'] = '/affiliate_manager/affiliates';
+$_SESSION['impersonate_return_url'] = $_SERVER['HTTP_REFERER'] ?? '/affiliate_manager/affiliates';
 
 if (!Auth::impersonate((int)$aff['user_id'])) {
     Helpers::flash('error', 'Could not log in as this affiliate.');

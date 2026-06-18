@@ -587,8 +587,11 @@ elseif ($action === 'impersonate') {
         "SELECT id FROM users WHERE id=? AND role='affiliate_manager'",
         [$userId]
     );
-    if ($user && Auth::impersonate($userId)) {
-        Helpers::redirect('/affiliate_manager/dashboard');
+    if ($user) {
+        $_SESSION['impersonate_return_url'] = $_SERVER['HTTP_REFERER'] ?? '/admin/affiliate-managers';
+        if (Auth::impersonate($userId)) {
+            Helpers::redirect('/affiliate_manager/dashboard');
+        }
     }
     Helpers::flash('error', 'Could not switch to that account.');
     Helpers::redirect('/admin/affiliate-managers');

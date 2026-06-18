@@ -22,9 +22,12 @@ if ($action === 'toggle_budget_exempt') {
 
 if ($action === 'impersonate') {
     $userId = (int)($_GET['user_id'] ?? 0);
-    $user = Database::fetchOne("SELECT u.id FROM users u JOIN advertisers adv ON adv.user_id=u.id WHERE u.id=? AND u.role='advertiser'", [$userId]);
-    if ($user && Auth::impersonate($userId)) {
-        Helpers::redirect('/advertiser/dashboard');
+    $user = Database::fetchOne("SELECT u.id FROM users u JOIN advertisers ad ON ad.user_id=u.id WHERE u.id=? AND u.role='advertiser'", [$userId]);
+    if ($user) {
+        $_SESSION['impersonate_return_url'] = $_SERVER['HTTP_REFERER'] ?? '/admin/advertisers';
+        if (Auth::impersonate($userId)) {
+            Helpers::redirect('/advertiser/dashboard');
+        }
     }
     Helpers::flash('error', 'Could not switch to that account.');
     Helpers::redirect('/admin/advertisers');

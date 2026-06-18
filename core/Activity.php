@@ -67,6 +67,18 @@ class Activity {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
         } catch (Exception $e) {}
 
+        try {
+            Database::query("CREATE TABLE IF NOT EXISTS impersonation_logs (
+                id              INT AUTO_INCREMENT PRIMARY KEY,
+                admin_user_id   INT NOT NULL,
+                target_user_id  INT NOT NULL,
+                impersonated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                returned_at     DATETIME DEFAULT NULL,
+                INDEX idx_il_admin  (admin_user_id),
+                INDEX idx_il_target (target_user_id)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+        } catch (Exception $e) {}
+
         self::$tablesReady = true;
     }
 
@@ -279,5 +291,29 @@ class Activity {
             $r = Database::fetchOne("SELECT COUNT(*) as cnt FROM user_active_sessions");
             return (int)($r['cnt'] ?? 0);
         } catch (Exception $e) { return 0; }
+    }
+
+    // ── Impersonation Logging ─────────────────────────────────────────────────
+    public static function logImpersonationStart(int $adminId, int $targetId): int {
+        try {
+            self::ensureTables();
+            return Database::insert('impersonation_logs', [
+                'admin_user_id'  => $adminId,
+                'target_user_id' => $targetId
+            ]);
+        } catch (Exception $e) {
+            return 0;
+        }
+    }
+
+    public static function logImpersonationStop(int $logId): void {
+        if ($logId <= 0) return;
+        try {
+            self::ensureTables();
+            Database::query(
+                "UPDATE impersonation_logs SET returned_at=NOW() WHERE id=?",
+                [$logId]
+            );
+        } catch (Exception $e) {}
     }
 }

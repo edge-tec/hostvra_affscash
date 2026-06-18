@@ -7,5 +7,6 @@ if (empty($_SESSION['admin_user_role']) || $_SESSION['admin_user_role'] !== 'adm
 if (!Auth::isImpersonating()) {
     Helpers::redirect('/admin/dashboard');
 }
+$returnUrl = $_SESSION['impersonate_return_url'] ?? '/admin/dashboard';
 Auth::stopImpersonating();
-Helpers::redirect('/admin/dashboard');
+Helpers::redirect($returnUrl);

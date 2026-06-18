@@ -13,8 +13,11 @@ $action = Helpers::get('action') ?: (isset($_GET['id']) ? 'view' : 'index');
 if ($action === 'impersonate') {
     $userId = (int)($_GET['user_id'] ?? 0);
     $user = Database::fetchOne("SELECT u.id FROM users u JOIN affiliates af ON af.user_id=u.id WHERE u.id=? AND u.role='affiliate'", [$userId]);
-    if ($user && Auth::impersonate($userId)) {
-        Helpers::redirect('/affiliate/dashboard');
+    if ($user) {
+        $_SESSION['impersonate_return_url'] = $_SERVER['HTTP_REFERER'] ?? '/admin/affiliates';
+        if (Auth::impersonate($userId)) {
+            Helpers::redirect('/affiliate/dashboard');
+        }
     }
     Helpers::flash('error', 'Could not switch to that account.');
     Helpers::redirect('/admin/affiliates');

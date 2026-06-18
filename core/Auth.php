@@ -361,11 +361,16 @@ class Auth {
         $user = Database::fetchOne("SELECT * FROM `users` WHERE `id`=?", [$userId]);
         if (!$user) return false;
 
+        $logId = Activity::logImpersonationStart($_SESSION['user_id'], $userId);
+
         // Save original admin session
         $_SESSION['impersonating']       = true;
         $_SESSION['admin_user_id']       = $_SESSION['user_id'];
         $_SESSION['admin_user_name']     = $_SESSION['user_name'];
         $_SESSION['admin_user_role']     = $_SESSION['user_role'];
+        if ($logId > 0) {
+            $_SESSION['impersonation_log_id'] = $logId;
+        }
 
         // Switch to target user
         $_SESSION['user_id']    = $user['id'];
@@ -389,6 +394,17 @@ class Auth {
 
     public static function stopImpersonating(): void {
         if (empty($_SESSION['impersonating'])) return;
+
+        // If for any reason the original admin session data is missing, log them out completely
+        if (empty($_SESSION['admin_user_id']) || empty($_SESSION['admin_user_role'])) {
+            self::logout();
+            return;
+        }
+
+        if (!empty($_SESSION['impersonation_log_id'])) {
+            Activity::logImpersonationStop($_SESSION['impersonation_log_id']);
+            unset($_SESSION['impersonation_log_id']);
+        }
 
         $_SESSION['user_id']   = $_SESSION['admin_user_id'];
         $_SESSION['user_role'] = $_SESSION['admin_user_role'];
