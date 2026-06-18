@@ -155,6 +155,8 @@ try {
 
         Helpers::json(['status' => 'success', 'message' => 'Invoice deleted successfully']);
         exit;
+    }
+
     if ($action === 'get_create_form_data') {
         $affiliates = Database::fetchAll("SELECT af.id, CONCAT(u.first_name,' ',u.last_name,' — ',af.affiliate_code) as label FROM affiliates af JOIN users u ON u.id=af.user_id WHERE u.status='active' ORDER BY u.first_name");
         $advertisers = Database::fetchAll("SELECT adv.id, CONCAT(u.first_name,' ',u.last_name,' (',u.company,')') as label FROM advertisers adv JOIN users u ON u.id=adv.user_id WHERE u.status='active' ORDER BY u.first_name");
@@ -312,6 +314,8 @@ try {
         Helpers::json(['status' => 'success', 'message' => "Invoice {$invNum} created successfully.", 'data' => ['invoice_id' => $newId]]);
         exit;
     }
+    
+    Helpers::json(['status' => 'error', 'message' => 'Invalid action'], 400);
 
 } catch (\Throwable $e) {
     error_log("Admin Invoice API Error: " . $e->getMessage());
