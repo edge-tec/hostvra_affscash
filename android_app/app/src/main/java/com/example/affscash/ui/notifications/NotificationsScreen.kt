@@ -100,7 +100,8 @@ fun NotificationsScreen(
                                         }
                                         if (!notif.link.isNullOrEmpty()) {
                                             try {
-                                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(notif.link))
+                                                val fullLink = if (notif.link.startsWith("/")) "https://affscash.net${notif.link}" else notif.link
+                                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(fullLink))
                                                 context.startActivity(intent)
                                             } catch (e: Exception) {
                                                 // ignore invalid link
