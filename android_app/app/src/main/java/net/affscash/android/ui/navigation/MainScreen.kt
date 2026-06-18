@@ -309,7 +309,8 @@ fun MainScreen(
                     onNavigateToInvoices = { navController.navigate(Screen.Invoices.route) },
                     onNavigateToFraudAlerts = { navController.navigate(Screen.FraudReport.route) },
                     onNavigateToChat = { navController.navigate(Screen.Chat.route) },
-                    onNavigateToNews = { navController.navigate(Screen.News.route) }
+                    onNavigateToNews = { navController.navigate(Screen.News.route) },
+                    onNavigateToNotifications = { navController.navigate(Screen.Notifications.route) }
                 )
             }
             composable(Screen.AdminAdvertisers.route) {
