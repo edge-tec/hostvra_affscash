@@ -713,6 +713,34 @@ fun MainScreen(
                     onLogout = onLogout
                 ) 
             }
+            
+            // Admin Shop Screens
+            composable(Screen.AdminShop.route) {
+                net.affscash.android.ui.admin.shop.AdminShopScreen(
+                    onNavigateToCreateProduct = { navController.navigate(Screen.AdminShopProductForm.createRoute(null)) },
+                    onNavigateToEditProduct = { id -> navController.navigate(Screen.AdminShopProductForm.createRoute(id)) },
+                    onNavigateToOrders = { navController.navigate(Screen.AdminShopOrders.route) }
+                )
+            }
+            composable(
+                route = Screen.AdminShopProductForm.routePattern,
+                arguments = listOf(androidx.navigation.navArgument("id") {
+                    type = androidx.navigation.NavType.StringType
+                    nullable = true
+                })
+            ) { backStackEntry ->
+                val idStr = backStackEntry.arguments?.getString("id")
+                val id = if (idStr == "{id}") null else idStr?.toIntOrNull()
+                net.affscash.android.ui.admin.shop.AdminShopProductFormScreen(
+                    productId = id,
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(Screen.AdminShopOrders.route) {
+                net.affscash.android.ui.admin.shop.AdminShopOrdersScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
         }
     }
 }
