@@ -576,14 +576,11 @@ fun MainScreen(
                 ) 
             }
             composable(Screen.ManagerInvoices.route) { 
-                net.affscash.android.ui.manager.ManagerInvoicesScreen(
-                    onNavigateBack = { navController.popBackStack() }
-                ) 
+                net.affscash.android.ui.manager.ManagerInvoicesScreen() 
             }
             composable(Screen.ManagerSettings.route) { 
                 net.affscash.android.ui.manager.ManagerProfileScreen(
-                    onLogout = onLogout,
-                    onNavigateBack = { navController.popBackStack() }
+                    onLogout = onLogout
                 ) 
             }
         }
