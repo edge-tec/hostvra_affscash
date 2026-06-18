@@ -665,6 +665,17 @@ interface ApiService {
         @Body request: net.affscash.android.data.model.AdminAccountDeleteActionRequest
     ): net.affscash.android.data.model.BasicResponse
 
+    // --- ADMIN: Points Module ---
+    @GET("api/v2/admin/PointsController.php")
+    suspend fun getAdminPoints(
+        @Query("action") action: String = "list"
+    ): net.affscash.android.data.model.AdminPointsResponse
+
+    @POST("api/v2/admin/PointsController.php")
+    suspend fun submitAdminPointsAction(
+        @Body request: net.affscash.android.data.model.AdminPointsActionRequest
+    ): net.affscash.android.data.model.AdminPointsSyncResponse
+
     // --- ADMIN: Reports ---
     @GET("api/v2/admin/reports")
     suspend fun getAdminReports(
