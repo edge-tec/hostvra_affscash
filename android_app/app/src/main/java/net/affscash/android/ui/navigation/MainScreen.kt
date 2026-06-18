@@ -106,7 +106,18 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     }
     object AdminSettings : Screen("admin_settings", "Settings", Icons.Filled.Settings)
     object AdminPlatformSettings : Screen("admin_platform_settings", "Platform Settings", Icons.Filled.Settings)
-
+    object AdminShop : Screen("admin_shop", "Affiliate Shop", Icons.Filled.ShoppingCart)
+    class AdminShopProductForm(id: Int? = null) : Screen(
+        if (id == null) "admin_shop_product_form" else "admin_shop_product_form?id=$id",
+        if (id == null) "Create Product" else "Edit Product",
+        Icons.Filled.Edit
+    ) {
+        companion object {
+            const val routePattern = "admin_shop_product_form?id={id}"
+            fun createRoute(id: Int?) = if (id == null) "admin_shop_product_form" else "admin_shop_product_form?id=$id"
+        }
+    }
+    object AdminShopOrders : Screen("admin_shop_orders", "Shop Orders", Icons.Filled.List)
 
     // Manager Screens
     object ManagerDashboard : Screen("manager_dashboard", "Dashboard", Icons.Filled.Home)
@@ -142,7 +153,7 @@ fun MainScreen(
     }
 
     val allItems = when (role) {
-        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminPrivateOffers, Screen.AdminSmartlinks, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminAffiliateManagers, Screen.AdminSupport, Screen.AdminConversions, Screen.AdminReports, Screen.AdminAffiliateReport, Screen.AdminFraudReport, Screen.AdminAutoHide, Screen.AdminInvoices, Screen.AdminPlatformSettings, Screen.AdminSettings)
+        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminPrivateOffers, Screen.AdminSmartlinks, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminShop, Screen.AdminAffiliateManagers, Screen.AdminSupport, Screen.AdminConversions, Screen.AdminReports, Screen.AdminAffiliateReport, Screen.AdminFraudReport, Screen.AdminAutoHide, Screen.AdminInvoices, Screen.AdminPlatformSettings, Screen.AdminSettings)
         "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerSupport, Screen.ManagerSmartlinks, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerReports, Screen.ManagerInvoices, Screen.ManagerSettings)
         else -> listOf(Screen.Dashboard, Screen.Offers, Screen.AffiliateInHouseOffers, Screen.Smartlinks, Screen.Reports, Screen.AffiliateSettings)
     }

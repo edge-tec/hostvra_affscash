@@ -227,7 +227,7 @@ fun ConversationItem(conv: AdminSupportConversationRow, onClick: () -> Unit) {
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = conv.lastMsg.ifEmpty { "No messages yet." },
+                    text = conv.lastMsg.orEmpty().ifEmpty { "No messages yet." },
                     fontSize = 14.sp,
                     color = Color.DarkGray,
                     maxLines = 1,

@@ -218,6 +218,26 @@ interface ApiService {
     @POST("api/v2/admin/offers/action?action=update_status")
     suspend fun updateAdminOfferStatus(@Body request: Map<String, String>): Response<AdminOfferActionResponse>
 
+    // --- Admin Shop Endpoints ---
+    @GET("api/v2/admin/shop?action=list")
+    suspend fun getAdminShopDashboard(): Response<net.affscash.android.data.model.AdminShopDashboardResponse>
+
+    @GET("api/v2/admin/shop?action=orders")
+    suspend fun getAdminShopOrders(
+        @Query("status") status: String? = null,
+        @Query("page") page: Int = 1
+    ): Response<net.affscash.android.data.model.AdminShopOrdersResponse>
+
+    @POST("api/v2/admin/shop?action=save_product")
+    suspend fun saveAdminShopProduct(@Body request: net.affscash.android.data.model.AdminShopProductRequest): Response<net.affscash.android.data.model.AdminShopActionResponse>
+
+    @POST("api/v2/admin/shop?action=delete_product")
+    suspend fun deleteAdminShopProduct(@Body request: Map<String, Int>): Response<net.affscash.android.data.model.AdminShopActionResponse>
+
+    @POST("api/v2/admin/shop?action=update_order")
+    suspend fun updateAdminShopOrder(@Body request: net.affscash.android.data.model.AdminShopOrderUpdateRequest): Response<net.affscash.android.data.model.AdminShopActionResponse>
+
+
     @POST("api/v2/admin/offers/action?action=delete")
     suspend fun deleteAdminOffer(@Body request: Map<String, Int>): Response<AdminOfferActionResponse>
 
