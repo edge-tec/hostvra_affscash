@@ -11,7 +11,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.data.model.AffiliateDuplicateConversionCluster
@@ -168,9 +171,9 @@ fun DuplicateClusterCard(cluster: AffiliateDuplicateConversionCluster) {
                 Spacer(modifier = Modifier.width(8.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = androidx.compose.ui.text.buildAnnotatedString {
+                        text = buildAnnotatedString {
                             append("Offer ")
-                            androidx.compose.ui.text.withStyle(androidx.compose.ui.text.SpanStyle(fontWeight = FontWeight.Bold)) {
+                            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
                                 append(cluster.offerName)
                             }
                         },

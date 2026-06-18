@@ -71,10 +71,11 @@ fun OfferScreen(
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { viewModel.searchQuery.value = it; viewModel.loadOffers() },
-                    placeholder = { Text("Search offers...") },
-                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = { Text("Search offers...", fontSize = 12.sp) },
+                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 12.sp),
+                    modifier = Modifier.fillMaxWidth().height(52.dp),
                     singleLine = true,
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", modifier = Modifier.size(20.dp)) },
                     colors = OutlinedTextFieldDefaults.colors(
                         unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                         focusedContainerColor = MaterialTheme.colorScheme.surface
