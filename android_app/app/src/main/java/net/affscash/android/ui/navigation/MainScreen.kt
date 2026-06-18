@@ -270,6 +270,42 @@ fun MainScreen(
 
     Scaffold(
         contentWindowInsets = WindowInsets(0.dp),
+        topBar = {
+            if (isImpersonating) {
+                Surface(
+                    color = androidx.compose.ui.graphics.Color(0xFFF59E0B),
+                    contentColor = androidx.compose.ui.graphics.Color(0xFF1F2937),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Filled.Visibility, contentDescription = "Impersonating", modifier = Modifier.size(20.dp))
+                            Spacer(Modifier.width(8.dp))
+                            Text("Viewing as Affiliate", style = MaterialTheme.typography.labelMedium, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                        }
+                        Button(
+                            onClick = {
+                                viewModel.stopImpersonating(
+                                    onSuccess = { newRole -> 
+                                        if (newRole != null) onRoleChange(newRole) else onLogout() 
+                                    },
+                                    onError = { android.widget.Toast.makeText(context, it, android.widget.Toast.LENGTH_SHORT).show() }
+                                )
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = androidx.compose.ui.graphics.Color(0xFF1F2937), contentColor = androidx.compose.ui.graphics.Color.White),
+                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+                            modifier = Modifier.height(32.dp)
+                        ) {
+                            Text("Return", fontSize = androidx.compose.ui.unit.TextUnit(12f, androidx.compose.ui.unit.TextUnitType.Sp), fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                        }
+                    }
+                }
+            }
+        },
         bottomBar = {
             NavigationBar {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
