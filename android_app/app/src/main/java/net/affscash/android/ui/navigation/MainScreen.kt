@@ -214,35 +214,7 @@ fun MainScreen(
                     }
                 }
                 
-                // Role Back (Stop Impersonating) Button
-                if (isImpersonating) {
-                    item {
-                        Card(
-                            onClick = {
-                                viewModel.stopImpersonating(
-                                    onSuccess = { newRole -> 
-                                        showMoreSheet = false
-                                        if (newRole != null) onRoleChange(newRole) else onLogout() 
-                                    },
-                                    onError = { android.widget.Toast.makeText(context, it, android.widget.Toast.LENGTH_SHORT).show() }
-                                )
-                            },
-                            modifier = Modifier.fillMaxWidth().aspectRatio(1f),
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
-                        ) {
-                            Column(
-                                modifier = Modifier.fillMaxSize().padding(8.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Icon(Icons.Filled.ExitToApp, contentDescription = "Return", modifier = Modifier.size(28.dp), tint = MaterialTheme.colorScheme.onSecondaryContainer)
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Text("Return to Admin", style = MaterialTheme.typography.labelMedium, textAlign = TextAlign.Center, maxLines = 2, color = MaterialTheme.colorScheme.onSecondaryContainer)
-                            }
-                        }
-                    }
-                }
-                
+
                 // Explicit Logout Button
                 item {
                     Card(
