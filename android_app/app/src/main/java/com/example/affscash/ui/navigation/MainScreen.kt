@@ -108,9 +108,16 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
 fun MainScreen(
     role: String,
     onLogout: () -> Unit,
-    onRoleChange: (String) -> Unit = {}
+    onRoleChange: (String) -> Unit = {},
+    viewModel: MainViewModel = androidx.hilt.navigation.compose.hiltViewModel()
 ) {
     val navController = rememberNavController()
+    val isImpersonating by viewModel.isImpersonating.collectAsState()
+    val context = androidx.compose.ui.platform.LocalContext.current
+
+    LaunchedEffect(role) {
+        viewModel.refreshImpersonatingState()
+    }
 
     val allItems = when (role) {
         "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminPrivateOffers, Screen.AdminSmartlinks, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminAffiliateManagers, Screen.AdminConversions, Screen.AdminReports, Screen.AdminAffiliateReport, Screen.AdminFraudReport, Screen.AdminAutoHide, Screen.AdminInvoices, Screen.AdminPlatformSettings, Screen.AdminSettings)
@@ -162,6 +169,35 @@ fun MainScreen(
                             Icon(screen.icon, contentDescription = null, modifier = Modifier.size(28.dp), tint = MaterialTheme.colorScheme.primary)
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(screen.title, style = MaterialTheme.typography.labelMedium, textAlign = TextAlign.Center, maxLines = 2)
+                        }
+                    }
+                }
+                
+                // Role Back (Stop Impersonating) Button
+                if (isImpersonating) {
+                    item {
+                        Card(
+                            onClick = {
+                                viewModel.stopImpersonating(
+                                    onSuccess = { newRole -> 
+                                        showMoreSheet = false
+                                        if (newRole != null) onRoleChange(newRole) else onLogout() 
+                                    },
+                                    onError = { android.widget.Toast.makeText(context, it, android.widget.Toast.LENGTH_SHORT).show() }
+                                )
+                            },
+                            modifier = Modifier.fillMaxWidth().aspectRatio(1f),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                        ) {
+                            Column(
+                                modifier = Modifier.fillMaxSize().padding(8.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Icon(Icons.Filled.ExitToApp, contentDescription = "Return", modifier = Modifier.size(28.dp), tint = MaterialTheme.colorScheme.onSecondaryContainer)
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text("Return to Admin", style = MaterialTheme.typography.labelMedium, textAlign = TextAlign.Center, maxLines = 2, color = MaterialTheme.colorScheme.onSecondaryContainer)
+                            }
                         }
                     }
                 }
