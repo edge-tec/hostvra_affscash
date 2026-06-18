@@ -13,9 +13,9 @@ data class AdminAccountDeleteStats(
 
 @Serializable
 data class AdminAccountDeleteRequestItem(
-    val id: Int,
-    @SerialName("affiliate_id") val affiliateId: Int,
-    @SerialName("user_id") val userId: Int,
+    val id: String,
+    @SerialName("affiliate_id") val affiliateId: String,
+    @SerialName("user_id") val userId: String,
     val email: String? = null,
     @SerialName("first_name") val firstName: String? = null,
     @SerialName("last_name") val lastName: String? = null,
@@ -40,7 +40,7 @@ data class AdminAccountDeleteResponse(
 @Serializable
 data class AdminAccountDeleteActionRequest(
     val action: String = "update_status",
-    @SerialName("request_id") val requestId: Int,
+    @SerialName("request_id") val requestId: String,
     val decision: String,
     @SerialName("admin_note") val adminNote: String
 )

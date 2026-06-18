@@ -66,7 +66,7 @@ class AdminAccountDeleteRequestsViewModel @Inject constructor(
         }
     }
 
-    fun submitAction(requestId: Int, decision: String, adminNote: String, onSuccess: (String) -> Unit, onError: (String) -> Unit) {
+    fun submitAction(requestId: String, decision: String, adminNote: String, onSuccess: (String) -> Unit, onError: (String) -> Unit) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             val request = AdminAccountDeleteActionRequest(
