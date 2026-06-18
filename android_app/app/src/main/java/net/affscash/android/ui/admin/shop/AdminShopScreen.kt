@@ -161,10 +161,20 @@ fun AdminShopProductCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
-                product.imagePath?.let { url ->
+                product.imagePath?.takeIf { it.isNotEmpty() }?.let { rawPath ->
+                    val imageUrl = if (!rawPath.startsWith("http")) {
+                        "https://affscash.net/" + rawPath.removePrefix("/")
+                    } else {
+                        rawPath
+                    }
                     AsyncImage(
-                        model = "https://affscash.net$url",
+                        model = coil.request.ImageRequest.Builder(androidx.compose.ui.platform.LocalContext.current)
+                            .data(imageUrl)
+                            .addHeader("User-Agent", "Mozilla/5.0 (Linux; Android 13; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36")
+                            .crossfade(true)
+                            .build(),
                         contentDescription = "Product Image",
+                        contentScale = androidx.compose.ui.layout.ContentScale.Crop,
                         modifier = Modifier.size(50.dp)
                     )
                     Spacer(modifier = Modifier.width(16.dp))

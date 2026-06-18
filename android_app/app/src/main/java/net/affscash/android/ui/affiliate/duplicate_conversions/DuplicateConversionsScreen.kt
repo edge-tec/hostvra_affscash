@@ -166,19 +166,31 @@ fun DuplicateClusterCard(cluster: AffiliateDuplicateConversionCluster) {
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Offer ", color = MaterialTheme.colorScheme.onErrorContainer)
-                Text(cluster.offerName, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onErrorContainer)
-                Text(" • IP ", color = MaterialTheme.colorScheme.onErrorContainer)
-                Surface(
-                    color = MaterialTheme.colorScheme.surface,
-                    shape = MaterialTheme.shapes.small
-                ) {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        cluster.ipAddress,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                        text = androidx.compose.ui.text.buildAnnotatedString {
+                            append("Offer ")
+                            androidx.compose.ui.text.withStyle(androidx.compose.ui.text.SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append(cluster.offerName)
+                            }
+                        },
+                        color = MaterialTheme.colorScheme.onErrorContainer
                     )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("IP ", color = MaterialTheme.colorScheme.onErrorContainer)
+                        Surface(
+                            color = MaterialTheme.colorScheme.surface,
+                            shape = MaterialTheme.shapes.small
+                        ) {
+                            Text(
+                                cluster.ipAddress,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                            )
+                        }
+                    }
                 }
             }
 

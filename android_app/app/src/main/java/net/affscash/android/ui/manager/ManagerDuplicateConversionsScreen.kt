@@ -184,12 +184,19 @@ fun DuplicateClusterView(group: DuplicateConversionGroup) {
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    "Offer: ${group.offerName} · IP: ${group.ipAddress}",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF991B1B)
-                )
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        "Offer: ${group.offerName}",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF991B1B)
+                    )
+                    Text(
+                        "IP: ${group.ipAddress}",
+                        fontSize = 11.sp,
+                        color = Color(0xFF991B1B)
+                    )
+                }
             }
 
             // Rows
