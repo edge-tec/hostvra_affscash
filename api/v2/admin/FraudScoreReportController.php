@@ -9,6 +9,14 @@ try { Database::query("ALTER TABLE `conversions` ADD COLUMN `fraud_checked_at` D
 try { Database::query("ALTER TABLE `conversions` MODIFY COLUMN `fraud_score` TINYINT UNSIGNED DEFAULT NULL"); } catch (\Throwable $_e) {}
 
 $action = Helpers::get('action') ?: (Helpers::isPost() ? Helpers::post('action') : 'report');
+if (empty($action) && Helpers::isPost()) {
+    $input = json_decode(file_get_contents('php://input'), true);
+    if (is_array($input) && isset($input['action'])) {
+        $action = $input['action'];
+    } else {
+        $action = 'report'; // fallback
+    }
+}
 
 if ($action === 'tick' && Helpers::isPost()) {
     require_once BASE_PATH . '/core/FraudIQ.php';
