@@ -52,17 +52,12 @@ fun ReportScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("My Reports") },
+                title = { Text("Reports") },
                 actions = {
                     IconButton(onClick = onNavigateToFraudReport) {
                         Icon(Icons.Default.Warning, contentDescription = "Fraud Report")
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
-                )
+                }
             )
         }
     ) { paddingValues ->
