@@ -27,7 +27,7 @@ try {
                    (SELECT COUNT(*) FROM support_messages m WHERE m.conversation_id = c.id AND m.is_read = 0 AND m.sender_role = c.owner_type) as unread,
                    (SELECT message FROM support_messages m2 WHERE m2.conversation_id = c.id ORDER BY m2.created_at DESC LIMIT 1) as last_msg,
                    u.first_name, u.last_name, 
-                   COALESCE(af.affiliate_code, adv.company, u.email) as entity_code
+                   COALESCE(af.affiliate_code, u.company, u.email) as entity_code
             FROM support_conversations c
             LEFT JOIN affiliates af ON c.owner_type = 'affiliate' AND c.affiliate_id = af.id
             LEFT JOIN advertisers adv ON c.owner_type = 'advertiser' AND c.affiliate_id = adv.id
