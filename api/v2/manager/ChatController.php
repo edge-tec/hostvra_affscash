@@ -39,13 +39,13 @@ try {
                     (SELECT COUNT(*) FROM support_messages WHERE conversation_id=sc.id AND sender_role='affiliate' AND is_read=0 AND is_deleted=0) as unread
              FROM affiliates af
              JOIN users u ON u.id=af.user_id
-             JOIN support_conversations sc ON sc.id = (
+             LEFT JOIN support_conversations sc ON sc.id = (
                  SELECT id FROM support_conversations
                  WHERE affiliate_id=af.id AND owner_type='affiliate' $statusSql
                  ORDER BY id DESC LIMIT 1
              )
-             WHERE af.id IN ($in)
-             ORDER BY sc.last_message_at DESC",
+             WHERE af.id IN ($in) " . ($statusFilter === 'open' ? "" : "AND sc.id IS NOT NULL") . "
+             ORDER BY COALESCE(sc.last_message_at, '2000-01-01') DESC",
             $managerAffIds
         );
 
