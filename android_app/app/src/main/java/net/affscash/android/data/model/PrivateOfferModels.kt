@@ -5,34 +5,34 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PrivateOffer(
     val id: Int,
-    val name: String,
-    val payout: String?,
-    val payout_type: String?,
-    val status: String,
+    val name: String = "",
+    val payout: String? = null,
+    val payout_type: String? = null,
+    val status: String = "",
     val access_count: Int? = 0
 )
 
 @Serializable
 data class ConvertableOffer(
     val id: Int,
-    val name: String,
-    val payout: String?,
-    val payout_type: String?,
-    val status: String
+    val name: String = "",
+    val payout: String? = null,
+    val payout_type: String? = null,
+    val status: String = ""
 )
 
 @Serializable
 data class PrivateOfferLog(
     val id: Int,
     val action: String,
-    val offer_name: String?,
-    val actor_name: String?,
-    val aff_name: String?,
-    val affiliate_code: String?,
-    val source: String,
-    val details: String?,
-    val ip_address: String?,
-    val created_at: String
+    val offer_name: String? = null,
+    val actor_name: String? = null,
+    val aff_name: String? = null,
+    val affiliate_code: String? = null,
+    val source: String = "",
+    val details: String? = null,
+    val ip_address: String? = null,
+    val created_at: String = ""
 )
 
 @Serializable
@@ -45,24 +45,24 @@ data class PrivateOfferDashboardResponse(
 @Serializable
 data class PrivateOfferGrant(
     val grant_id: Int,
-    val granted_at: String,
-    val notes: String?,
+    val granted_at: String = "",
+    val notes: String? = null,
     val affiliate_id: Int,
-    val affiliate_code: String?,
-    val email: String?,
-    val first_name: String?,
-    val last_name: String?,
-    val user_status: String?
+    val affiliate_code: String? = null,
+    val email: String? = null,
+    val first_name: String? = null,
+    val last_name: String? = null,
+    val user_status: String? = null
 )
 
 @Serializable
 data class PrivateOfferDetail(
     val id: Int,
-    val name: String,
-    val payout: String?,
-    val payout_type: String?,
-    val status: String,
-    val visibility: String?
+    val name: String = "",
+    val payout: String? = null,
+    val payout_type: String? = null,
+    val status: String = "",
+    val visibility: String? = null
 )
 
 @Serializable

@@ -637,6 +637,24 @@ interface ApiService {
     @POST("api/v2/admin/invoices?action=delete")
     suspend fun deleteAdminInvoice(@Body request: net.affscash.android.data.model.AdminInvoiceDeleteRequest): net.affscash.android.data.model.AdminInvoiceStatusResponse
 
+    @GET("api/v2/admin/invoices?action=get_create_form_data")
+    suspend fun getAdminInvoiceFormData(): net.affscash.android.data.model.AdminInvoiceFormDataResponse
+
+    @GET("api/v2/admin/invoices?action=get_affiliate_info")
+    suspend fun getAdminInvoiceAffiliateInfo(@Query("affiliate_id") affiliateId: Int): net.affscash.android.data.model.AdminInvoiceAffiliateInfoResponse
+
+    @GET("api/v2/admin/invoices?action=get_manager_info")
+    suspend fun getAdminInvoiceManagerInfo(@Query("manager_id") managerId: Int): net.affscash.android.data.model.AdminInvoiceManagerInfoResponse
+
+    @GET("api/v2/admin/invoices?action=load_offers")
+    suspend fun loadAdminInvoiceOffers(
+        @Query("affiliate_id") affiliateId: Int,
+        @Query("from") from: String,
+        @Query("to") to: String
+    ): net.affscash.android.data.model.AdminInvoiceLoadOffersResponse
+
+    @POST("api/v2/admin/invoices?action=create")
+    suspend fun createAdminInvoice(@Body request: net.affscash.android.data.model.AdminCreateInvoiceRequest): net.affscash.android.data.model.AdminCreateInvoiceResponse
     // --- ADMIN: Affiliate Managers ---
     @GET("api/v2/admin/affiliate-managers?action=list")
     suspend fun getAdminAffiliateManagers(): net.affscash.android.data.model.AdminAffiliateManagerResponse

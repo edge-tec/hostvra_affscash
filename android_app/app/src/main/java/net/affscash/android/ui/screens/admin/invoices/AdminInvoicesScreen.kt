@@ -14,12 +14,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.material.icons.filled.Add
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminInvoicesScreen(
     viewModel: AdminInvoicesViewModel = viewModel(),
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onCreateInvoice: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -47,6 +49,13 @@ fun AdminInvoicesScreen(
                     }
                 }
             )
+        },
+        floatingActionButton = {
+            if (uiState.invoiceDetail == null) {
+                FloatingActionButton(onClick = onCreateInvoice) {
+                    Icon(Icons.Default.Add, contentDescription = "Create Invoice")
+                }
+            }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->

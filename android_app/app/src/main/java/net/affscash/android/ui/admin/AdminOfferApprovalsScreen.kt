@@ -7,6 +7,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -89,71 +91,106 @@ fun AdminOfferApprovalsScreen(
                         }
                     }
 
-                    // Filters
-                    Row(
+                    // Modern Filters
+                    Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)),
+                        shape = MaterialTheme.shapes.medium
                     ) {
-                        // Offer Dropdown
-                        var expanded by remember { mutableStateOf(false) }
-                        ExposedDropdownMenuBox(
-                            expanded = expanded,
-                            onExpandedChange = { expanded = it },
-                            modifier = Modifier.weight(1f)
+                        Column(
+                            modifier = Modifier.padding(12.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            val selectedOffer = state.allOffers.find { it.id == state.filterOfferId }
+                            var searchQuery by remember { mutableStateOf(state.filterAff) }
                             OutlinedTextField(
-                                value = selectedOffer?.name ?: "All Offers",
-                                onValueChange = {},
-                                readOnly = true,
-                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                                modifier = Modifier.menuAnchor().fillMaxWidth(),
-                                singleLine = true
-                            )
-                            ExposedDropdownMenu(
-                                expanded = expanded,
-                                onDismissRequest = { expanded = false }
-                            ) {
-                                DropdownMenuItem(
-                                    text = { Text("All Offers") },
-                                    onClick = {
-                                        viewModel.loadData(offerId = null)
-                                        expanded = false
-                                    }
-                                )
-                                state.allOffers.forEach { offer ->
-                                    DropdownMenuItem(
-                                        text = { Text(offer.name) },
-                                        onClick = {
-                                            viewModel.loadData(offerId = offer.id)
-                                            expanded = false
+                                value = searchQuery,
+                                onValueChange = { searchQuery = it },
+                                placeholder = { Text("Search by name, email or code") },
+                                modifier = Modifier.fillMaxWidth(),
+                                singleLine = true,
+                                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.primary) },
+                                trailingIcon = {
+                                    if (searchQuery.isNotEmpty()) {
+                                        IconButton(onClick = { 
+                                            searchQuery = ""
+                                            viewModel.loadData(aff = "") 
+                                        }) {
+                                            Icon(Icons.Default.Clear, contentDescription = "Clear")
                                         }
+                                    }
+                                },
+                                shape = MaterialTheme.shapes.medium,
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    unfocusedBorderColor = Color.Transparent,
+                                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                                    focusedContainerColor = MaterialTheme.colorScheme.surface
+                                )
+                            )
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                var expanded by remember { mutableStateOf(false) }
+                                ExposedDropdownMenuBox(
+                                    expanded = expanded,
+                                    onExpandedChange = { expanded = it },
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    val selectedOffer = state.allOffers.find { it.id == state.filterOfferId }
+                                    OutlinedTextField(
+                                        value = selectedOffer?.name ?: "All Offers",
+                                        onValueChange = {},
+                                        readOnly = true,
+                                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                                        modifier = Modifier.menuAnchor().fillMaxWidth(),
+                                        singleLine = true,
+                                        shape = MaterialTheme.shapes.medium,
+                                        colors = OutlinedTextFieldDefaults.colors(
+                                            unfocusedBorderColor = Color.Transparent,
+                                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                                            focusedContainerColor = MaterialTheme.colorScheme.surface
+                                        )
                                     )
+                                    ExposedDropdownMenu(
+                                        expanded = expanded,
+                                        onDismissRequest = { expanded = false }
+                                    ) {
+                                        DropdownMenuItem(
+                                            text = { Text("All Offers") },
+                                            onClick = {
+                                                viewModel.loadData(offerId = null)
+                                                expanded = false
+                                            }
+                                        )
+                                        state.allOffers.forEach { offer ->
+                                            DropdownMenuItem(
+                                                text = { Text(offer.name) },
+                                                onClick = {
+                                                    viewModel.loadData(offerId = offer.id)
+                                                    expanded = false
+                                                }
+                                            )
+                                        }
+                                    }
+                                }
+
+                                Button(
+                                    onClick = { viewModel.loadData(aff = searchQuery) },
+                                    modifier = Modifier.height(56.dp),
+                                    shape = MaterialTheme.shapes.medium
+                                ) {
+                                    Icon(Icons.Default.FilterList, contentDescription = "Filter", modifier = Modifier.size(18.dp))
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text("Filter")
                                 }
                             }
-                        }
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        // Search Box
-                        var searchQuery by remember { mutableStateOf(state.filterAff) }
-                        OutlinedTextField(
-                            value = searchQuery,
-                            onValueChange = { searchQuery = it },
-                            placeholder = { Text("Name, email or code...") },
-                            modifier = Modifier.weight(1.5f),
-                            singleLine = true
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Button(
-                            onClick = { viewModel.loadData(aff = searchQuery) },
-                            contentPadding = PaddingValues(horizontal = 16.dp)
-                        ) {
-                            Text("Filter")
                         }
                     }
 

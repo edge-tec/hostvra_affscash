@@ -26,6 +26,7 @@ import net.affscash.android.ui.admin.AdminAdvertiserFormScreen
 import net.affscash.android.ui.admin.AdminUsersScreen
 import net.affscash.android.ui.admin.AdminAffiliateDetailsScreen
 import net.affscash.android.ui.admin.AdminEditAffiliateScreen
+import net.affscash.android.ui.admin.AdminAdvertiserDetailsScreen
 import androidx.navigation.navArgument
 import androidx.navigation.NavType
 
@@ -82,12 +83,19 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
             fun createRoute(advertiserId: Int) = "admin_advertiser_edit/$advertiserId"
         }
     }
+    class AdminAdvertiserDetails(id: Int) : Screen("admin_advertiser_details/$id", "Advertiser Details", Icons.Filled.Info) {
+        companion object {
+            const val route = "admin_advertiser_details/{advId}"
+            fun createRoute(advId: Int) = "admin_advertiser_details/$advId"
+        }
+    }
     object AdminConversions : Screen("admin_conversions", "Conv", Icons.Filled.MonetizationOn)
     object AdminFraudReport : Screen("admin_fraud", "Fraud", Icons.Filled.Shield)
     object AdminReports : Screen("admin_reports", "Reports", Icons.Filled.Assessment)
     object AdminAffiliateReport : Screen("admin_aff_report", "Aff Rpt", Icons.Filled.Group)
     object AdminAutoHide : Screen("admin_autohide", "Hide", Icons.Filled.VisibilityOff)
     object AdminInvoices : Screen("admin_invoices", "Invoices", Icons.Filled.Receipt)
+    object AdminCreateInvoice : Screen("admin_create_invoice", "Create Invoice", Icons.Filled.Add)
     object AdminAffiliateManagers : Screen("admin_managers", "Managers", Icons.Filled.SupervisorAccount)
     object AdminSettings : Screen("admin_settings", "Settings", Icons.Filled.Settings)
     object AdminPlatformSettings : Screen("admin_platform_settings", "Platform Settings", Icons.Filled.Settings)
@@ -285,7 +293,7 @@ fun MainScreen(
                 AdminAdvertisersScreen(
                     onNavigateToCreate = { navController.navigate(Screen.AdminAdvertiserCreate.route) },
                     onNavigateToEdit = { id -> navController.navigate(Screen.AdminAdvertiserEdit.createRoute(id)) },
-                    onNavigateToView = { /* TODO: View screen */ },
+                    onNavigateToView = { id -> navController.navigate(Screen.AdminAdvertiserDetails.createRoute(id)) },
                     onLoginToAdvertiser = onRoleChange
                 )
             }
@@ -301,6 +309,16 @@ fun MainScreen(
                         onNavigateBack = { navController.popBackStack() }
                     )
                 }
+            }
+            composable(
+                route = Screen.AdminAdvertiserDetails.route,
+                arguments = listOf(navArgument("advId") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val advId = backStackEntry.arguments?.getInt("advId") ?: 0
+                AdminAdvertiserDetailsScreen(
+                    advId = advId,
+                    onNavigateBack = { navController.popBackStack() }
+                )
             }
             composable(Screen.Offers.route) { OfferScreen(onOfferClick = {}) }
             composable(Screen.AffiliateInHouseOffers.route) { net.affscash.android.ui.offers.AffiliateInHouseOffersScreen(onOfferClick = {}) }
@@ -505,6 +523,12 @@ fun MainScreen(
                 val viewModel: net.affscash.android.ui.screens.admin.invoices.AdminInvoicesViewModel = androidx.hilt.navigation.compose.hiltViewModel()
                 net.affscash.android.ui.screens.admin.invoices.AdminInvoicesScreen(
                     viewModel = viewModel,
+                    onNavigateBack = { navController.popBackStack() },
+                    onCreateInvoice = { navController.navigate(Screen.AdminCreateInvoice.route) }
+                )
+            }
+            composable(Screen.AdminCreateInvoice.route) {
+                net.affscash.android.ui.screens.admin.invoices.AdminCreateInvoiceScreen(
                     onNavigateBack = { navController.popBackStack() }
                 )
             }

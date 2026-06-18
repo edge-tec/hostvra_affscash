@@ -19,7 +19,9 @@ data class AdminAdvertisersUiState(
     val searchQuery: String = "",
     val statusFilter: String = "all",
     val error: String? = null,
-    val actionMessage: String? = null
+    val actionMessage: String? = null,
+    val isDetailsLoading: Boolean = false,
+    val selectedAdvertiserDetails: AdminAdvertiserDetailsData? = null
 )
 
 @HiltViewModel
@@ -109,5 +111,23 @@ class AdminAdvertisersViewModel @Inject constructor(
 
     fun clearActionMessage() {
         _uiState.update { it.copy(actionMessage = null, error = null) }
+    }
+
+    fun loadAdvertiserDetails(id: Int) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isDetailsLoading = true, selectedAdvertiserDetails = null, error = null) }
+            val result = repository.getAdvertiserDetails(id)
+            result.onSuccess { response ->
+                _uiState.update { it.copy(
+                    isDetailsLoading = false,
+                    selectedAdvertiserDetails = response.data
+                ) }
+            }.onFailure { exception ->
+                _uiState.update { it.copy(
+                    isDetailsLoading = false,
+                    error = exception.message ?: "Failed to load advertiser details"
+                ) }
+            }
+        }
     }
 }

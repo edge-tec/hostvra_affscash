@@ -7,6 +7,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -82,69 +84,101 @@ fun ManagerOfferApprovalsScreen(
                 }
             }
 
-            // Filters
-            Row(
+            // Modern Filters
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)),
+                shape = MaterialTheme.shapes.medium
             ) {
-                // Offer Dropdown
-                var expanded by remember { mutableStateOf(false) }
-                ExposedDropdownMenuBox(
-                    expanded = expanded,
-                    onExpandedChange = { expanded = it },
-                    modifier = Modifier.weight(1f)
+                Column(
+                    modifier = Modifier.padding(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     OutlinedTextField(
-                        value = uiState.offerFilter?.name ?: "All Offers",
-                        onValueChange = {},
-                        readOnly = true,
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                        modifier = Modifier.menuAnchor().fillMaxWidth(),
-                        singleLine = true
-                    )
-                    ExposedDropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("All Offers") },
-                            onClick = {
-                                viewModel.setOfferFilter(null)
-                                expanded = false
-                            }
-                        )
-                        uiState.allOffers.forEach { offer ->
-                            DropdownMenuItem(
-                                text = { Text(offer.name) },
-                                onClick = {
-                                    viewModel.setOfferFilter(offer)
-                                    expanded = false
+                        value = uiState.searchQuery,
+                        onValueChange = { viewModel.updateSearchQuery(it) },
+                        placeholder = { Text("Search by name, email or code") },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true,
+                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.primary) },
+                        trailingIcon = {
+                            if (uiState.searchQuery.isNotEmpty()) {
+                                IconButton(onClick = { viewModel.updateSearchQuery("") }) {
+                                    Icon(Icons.Default.Clear, contentDescription = "Clear")
                                 }
+                            }
+                        },
+                        shape = MaterialTheme.shapes.medium,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            unfocusedBorderColor = Color.Transparent,
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                            focusedContainerColor = MaterialTheme.colorScheme.surface
+                        )
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        var expanded by remember { mutableStateOf(false) }
+                        ExposedDropdownMenuBox(
+                            expanded = expanded,
+                            onExpandedChange = { expanded = it },
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            OutlinedTextField(
+                                value = uiState.offerFilter?.name ?: "All Offers",
+                                onValueChange = {},
+                                readOnly = true,
+                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                                modifier = Modifier.menuAnchor().fillMaxWidth(),
+                                singleLine = true,
+                                shape = MaterialTheme.shapes.medium,
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    unfocusedBorderColor = Color.Transparent,
+                                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                                    focusedContainerColor = MaterialTheme.colorScheme.surface
+                                )
                             )
+                            ExposedDropdownMenu(
+                                expanded = expanded,
+                                onDismissRequest = { expanded = false }
+                            ) {
+                                DropdownMenuItem(
+                                    text = { Text("All Offers") },
+                                    onClick = {
+                                        viewModel.setOfferFilter(null)
+                                        expanded = false
+                                    }
+                                )
+                                uiState.allOffers.forEach { offer ->
+                                    DropdownMenuItem(
+                                        text = { Text(offer.name) },
+                                        onClick = {
+                                            viewModel.setOfferFilter(offer)
+                                            expanded = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
+
+                        Button(
+                            onClick = { viewModel.loadRequests() },
+                            modifier = Modifier.height(56.dp),
+                            shape = MaterialTheme.shapes.medium
+                        ) {
+                            Icon(Icons.Default.FilterList, contentDescription = "Filter", modifier = Modifier.size(18.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Filter")
                         }
                     }
-                }
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                // Search Box
-                OutlinedTextField(
-                    value = uiState.searchQuery,
-                    onValueChange = { viewModel.updateSearchQuery(it) },
-                    placeholder = { Text("Name, email or code...") },
-                    modifier = Modifier.weight(1.5f),
-                    singleLine = true
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Button(
-                    onClick = { viewModel.loadRequests() },
-                    contentPadding = PaddingValues(horizontal = 16.dp)
-                ) {
-                    Text("Filter")
                 }
             }
 

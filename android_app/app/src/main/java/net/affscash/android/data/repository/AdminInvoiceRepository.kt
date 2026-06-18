@@ -71,4 +71,79 @@ class AdminInvoiceRepository @Inject constructor(private val apiService: ApiServ
             }
         }
     }
+
+    suspend fun getFormData(): Result<AdminInvoiceFormData> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.getAdminInvoiceFormData()
+                if (response.status == "success" && response.data != null) {
+                    Result.success(response.data)
+                } else {
+                    Result.failure(Exception(response.message ?: "Failed to fetch form data"))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
+    suspend fun getAffiliateInfo(affiliateId: Int): Result<AdminInvoiceAffiliateInfo> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.getAdminInvoiceAffiliateInfo(affiliateId)
+                if (response.status == "success" && response.data != null) {
+                    Result.success(response.data)
+                } else {
+                    Result.failure(Exception(response.message ?: "Failed to fetch affiliate info"))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
+    suspend fun getManagerInfo(managerId: Int): Result<AdminInvoiceManagerInfo> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.getAdminInvoiceManagerInfo(managerId)
+                if (response.status == "success" && response.data != null) {
+                    Result.success(response.data)
+                } else {
+                    Result.failure(Exception(response.message ?: "Failed to fetch manager info"))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
+    suspend fun loadOffers(affiliateId: Int, from: String, to: String): Result<List<AdminInvoiceOfferItem>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.loadAdminInvoiceOffers(affiliateId, from, to)
+                if (response.status == "success" && response.data != null) {
+                    Result.success(response.data.offers)
+                } else {
+                    Result.failure(Exception(response.message ?: "Failed to load offers"))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
+    suspend fun createInvoice(request: AdminCreateInvoiceRequest): Result<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.createAdminInvoice(request)
+                if (response.status == "success") {
+                    Result.success(response.message ?: "Invoice created successfully")
+                } else {
+                    Result.failure(Exception(response.message ?: "Failed to create invoice"))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
 }
