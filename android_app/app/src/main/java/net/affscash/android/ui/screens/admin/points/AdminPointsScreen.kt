@@ -113,6 +113,9 @@ fun BalancesList(balances: List<AdminPointsBalance>) {
         }
         return
     }
+    
+    val numberFormat = java.text.NumberFormat.getNumberInstance(java.util.Locale.US)
+    
     LazyColumn(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -132,7 +135,7 @@ fun BalancesList(balances: List<AdminPointsBalance>) {
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "#${balance.affiliateId} ${balance.name ?: ""}",
+                            text = "#${balance.affiliateId} · ${balance.name ?: ""}",
                             fontWeight = FontWeight.Bold,
                             style = MaterialTheme.typography.titleMedium
                         )
@@ -143,13 +146,20 @@ fun BalancesList(balances: List<AdminPointsBalance>) {
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "Earned: ${balance.lifetimeEarned} | Spent: ${balance.lifetimeSpent}",
+                            text = "Earned: ${numberFormat.format(balance.lifetimeEarned)} | Spent: ${numberFormat.format(balance.lifetimeSpent)}",
                             style = MaterialTheme.typography.labelSmall
                         )
+                        if (!balance.updatedAt.isNullOrEmpty()) {
+                            Text(
+                                text = "Last Updated: ${balance.updatedAt}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     }
                     Column(horizontalAlignment = Alignment.End) {
                         Text(
-                            text = balance.balance.toString(),
+                            text = numberFormat.format(balance.balance),
                             fontWeight = FontWeight.Bold,
                             style = MaterialTheme.typography.headlineSmall,
                             color = Color(0xFF388E3C)
