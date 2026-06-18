@@ -1,96 +1,109 @@
 package net.affscash.android.data.model
 
-import com.google.gson.annotations.SerializedName
-import java.io.Serializable
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class AdminReferralDashboardResponse(
-    @SerializedName("success") val success: Boolean,
-    @SerializedName("data") val data: AdminReferralDashboardData?
-) : Serializable
+    @SerialName("success") val success: Boolean,
+    @SerialName("data") val data: AdminReferralDashboardData? = null
+)
 
+@Serializable
 data class AdminReferralDashboardData(
-    @SerializedName("total_signups") val totalSignups: Int,
-    @SerializedName("total_codes") val totalCodes: Int,
-    @SerializedName("total_commission_paid") val totalCommissionPaid: Double,
-    @SerializedName("pending_commissions") val pendingCommissions: Int,
-    @SerializedName("commission_rate") val commissionRate: String?,
-    @SerializedName("commission_type") val commissionType: String?
-) : Serializable
+    @SerialName("total_signups") val totalSignups: Int,
+    @SerialName("total_codes") val totalCodes: Int,
+    @SerialName("total_commission_paid") val totalCommissionPaid: Double,
+    @SerialName("pending_commissions") val pendingCommissions: Int,
+    @SerialName("commission_rate") val commissionRate: String? = null,
+    @SerialName("commission_type") val commissionType: String? = null
+)
 
+@Serializable
 data class AdminReferralSignupsResponse(
-    @SerializedName("success") val success: Boolean,
-    @SerializedName("data") val data: AdminReferralSignupsData?
-) : Serializable
+    @SerialName("success") val success: Boolean,
+    @SerialName("data") val data: AdminReferralSignupsData? = null
+)
 
+@Serializable
 data class AdminReferralSignupsData(
-    @SerializedName("signups") val signups: List<AdminReferralSignup>
-) : Serializable
+    @SerialName("signups") val signups: List<AdminReferralSignup> = emptyList()
+)
 
+@Serializable
 data class AdminReferralSignup(
-    @SerializedName("id") val id: Int,
-    @SerializedName("referrer_name") val referrerName: String?,
-    @SerializedName("referrer_email") val referrerEmail: String?,
-    @SerializedName("referrer_code") val referrerCode: String?,
-    @SerializedName("referrer_role") val referrerRole: String?,
-    @SerializedName("referred_name") val referredName: String?,
-    @SerializedName("referred_email") val referredEmail: String?,
-    @SerializedName("referred_status") val referredStatus: String?,
-    @SerializedName("referred_aff_code") val referredAffCode: String?,
-    @SerializedName("referred_balance") val referredBalance: Double?,
-    @SerializedName("created_at") val createdAt: String?
-) : Serializable
+    @SerialName("id") val id: Int,
+    @SerialName("referrer_name") val referrerName: String? = null,
+    @SerialName("referrer_email") val referrerEmail: String? = null,
+    @SerialName("referrer_code") val referrerCode: String? = null,
+    @SerialName("referrer_role") val referrerRole: String? = null,
+    @SerialName("referred_name") val referredName: String? = null,
+    @SerialName("referred_email") val referredEmail: String? = null,
+    @SerialName("referred_status") val referredStatus: String? = null,
+    @SerialName("referred_aff_code") val referredAffCode: String? = null,
+    @SerialName("referred_balance") val referredBalance: Double? = null,
+    @SerialName("created_at") val createdAt: String? = null
+)
 
+@Serializable
 data class AdminReferralCommissionsResponse(
-    @SerializedName("success") val success: Boolean,
-    @SerializedName("data") val data: AdminReferralCommissionsData?
-) : Serializable
+    @SerialName("success") val success: Boolean,
+    @SerialName("data") val data: AdminReferralCommissionsData? = null
+)
 
+@Serializable
 data class AdminReferralCommissionsData(
-    @SerializedName("commissions") val commissions: List<AdminReferralCommission>,
-    @SerializedName("totals") val totals: AdminReferralCommissionTotals?
-) : Serializable
+    @SerialName("commissions") val commissions: List<AdminReferralCommission> = emptyList(),
+    @SerialName("totals") val totals: AdminReferralCommissionTotals? = null
+)
 
+@Serializable
 data class AdminReferralCommissionTotals(
-    @SerializedName("total") val total: Int,
-    @SerializedName("approved") val approved: Int,
-    @SerializedName("pending") val pending: Int,
-    @SerializedName("amount") val amount: Double
-) : Serializable
+    @SerialName("total") val total: Int,
+    @SerialName("approved") val approved: Int,
+    @SerialName("pending") val pending: Int,
+    @SerialName("amount") val amount: Double
+)
 
+@Serializable
 data class AdminReferralCommission(
-    @SerializedName("id") val id: Int,
-    @SerializedName("referrer_name") val referrerName: String?,
-    @SerializedName("referrer_code") val referrerCode: String?,
-    @SerializedName("referred_name") val referredName: String?,
-    @SerializedName("referred_aff_code") val referredAffCode: String?,
-    @SerializedName("base_payout") val basePayout: Double?,
-    @SerializedName("commission_rate") val commissionRate: String?,
-    @SerializedName("commission_type") val commissionType: String?,
-    @SerializedName("commission_amount") val commissionAmount: Double?,
-    @SerializedName("status") val status: String?,
-    @SerializedName("created_at") val createdAt: String?
-) : Serializable
+    @SerialName("id") val id: Int,
+    @SerialName("referrer_name") val referrerName: String? = null,
+    @SerialName("referrer_code") val referrerCode: String? = null,
+    @SerialName("referred_name") val referredName: String? = null,
+    @SerialName("referred_aff_code") val referredAffCode: String? = null,
+    @SerialName("base_payout") val basePayout: Double? = null,
+    @SerialName("commission_rate") val commissionRate: String? = null,
+    @SerialName("commission_type") val commissionType: String? = null,
+    @SerialName("commission_amount") val commissionAmount: Double? = null,
+    @SerialName("status") val status: String? = null,
+    @SerialName("created_at") val createdAt: String? = null
+)
 
+@Serializable
 data class AdminReferralCodesResponse(
-    @SerializedName("success") val success: Boolean,
-    @SerializedName("data") val data: AdminReferralCodesData?
-) : Serializable
+    @SerialName("success") val success: Boolean,
+    @SerialName("data") val data: AdminReferralCodesData? = null
+)
 
+@Serializable
 data class AdminReferralCodesData(
-    @SerializedName("codes") val codes: List<AdminReferralCode>
-) : Serializable
+    @SerialName("codes") val codes: List<AdminReferralCode> = emptyList()
+)
 
+@Serializable
 data class AdminReferralCode(
-    @SerializedName("id") val id: Int,
-    @SerializedName("user_name") val userName: String?,
-    @SerializedName("email") val email: String?,
-    @SerializedName("role") val role: String?,
-    @SerializedName("code") val code: String?,
-    @SerializedName("signup_count") val signupCount: Int?,
-    @SerializedName("total_earned") val totalEarned: Double?,
-    @SerializedName("created_at") val createdAt: String?
-) : Serializable
+    @SerialName("id") val id: Int,
+    @SerialName("user_name") val userName: String? = null,
+    @SerialName("email") val email: String? = null,
+    @SerialName("role") val role: String? = null,
+    @SerialName("code") val code: String? = null,
+    @SerialName("signup_count") val signupCount: Int? = null,
+    @SerialName("total_earned") val totalEarned: Double? = null,
+    @SerialName("created_at") val createdAt: String? = null
+)
 
+@Serializable
 data class AdminReferralActionRequest(
-    @SerializedName("commission_id") val commissionId: Int
-) : Serializable
+    @SerialName("commission_id") val commissionId: Int
+)
