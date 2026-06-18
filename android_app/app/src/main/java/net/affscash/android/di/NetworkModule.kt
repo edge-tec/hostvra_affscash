@@ -41,19 +41,21 @@ object NetworkModule {
             val body = response.body
             if (body != null) {
                 val contentType = body.contentType()
-                val content = body.string()
-                
-                val startIndex = content.indexOfFirst { it == '{' || it == '[' }
-                val endIndex = content.indexOfLast { it == '}' || it == ']' }
-                
-                val cleanContent = if (startIndex in 0..endIndex) {
-                    content.substring(startIndex, endIndex + 1)
+                if (contentType?.subtype?.contains(\"json\") == true) {
+                    val content = body.string()
+                    val startIndex = content.indexOfFirst { it == '{' || it == '[' }
+                    val endIndex = content.indexOfLast { it == '}' || it == ']' }
+                    
+                    val cleanContent = if (startIndex in 0..endIndex) {
+                        content.substring(startIndex, endIndex + 1)
+                    } else {
+                        content
+                    }
+                    val newBody = cleanContent.toResponseBody(contentType)
+                    response.newBuilder().body(newBody).build()
                 } else {
-                    content
+                    response
                 }
-                
-                val newBody = cleanContent.toResponseBody(contentType)
-                response.newBuilder().body(newBody).build()
             } else {
                 response
             }
