@@ -32,9 +32,9 @@ try {
         case 'all_access': $whereFilters[] = "o.require_approval = 0 AND COALESCE(o.visibility,'public') != 'private'"; break;
     }
 
-    if ($isInHouse == '1' || $isInHouse === 'true') {
+    if ($isInHouse === '1' || $isInHouse === 'true') {
         $whereFilters[] = "o.is_inhouse = 1";
-    } else {
+    } elseif ($isInHouse === '0' || $isInHouse === 'false') {
         $whereFilters[] = "(o.is_inhouse IS NULL OR o.is_inhouse = 0)";
     }
     

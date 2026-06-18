@@ -73,7 +73,8 @@ class AdminOffersViewModel @Inject constructor(
                 country = f.country.takeIf { it.isNotEmpty() },
                 device = f.device.takeIf { it.isNotEmpty() },
                 offerId = f.offerId.toIntOrNull(),
-                access = f.access.takeIf { it.isNotEmpty() }
+                access = f.access.takeIf { it.isNotEmpty() },
+                inHouse = false
             )
                 .onSuccess { response ->
                     _uiState.value = AdminOffersUiState.Success(response)
