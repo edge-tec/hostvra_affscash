@@ -551,6 +551,9 @@ interface ApiService {
     @POST("api/v2/settings?action=2fa_disable")
     suspend fun disable2fa(@Body request: TwoFactorDisableRequest): Response<SettingsActionResponse>
 
+    @POST("api/v2/settings?action=request_account_delete")
+    suspend fun requestAccountDelete(@Body request: DeleteAccountRequest): Response<SettingsActionResponse>
+
     // ── Manager Reports ──────────────────────────────────────────────────────────
 
     @GET("api/v2/manager/reports")

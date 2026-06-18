@@ -35,7 +35,7 @@ fun SettingsScreen(
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
     var selectedTabIndex by remember { mutableIntStateOf(0) }
-    val tabs = listOf("Profile", "Security", "Payment", "My Manager", "2FA")
+    val tabs = listOf("Profile", "Security", "Payment", "My Manager", "2FA", "Delete Account")
 
     Scaffold(
         topBar = {
@@ -63,7 +63,13 @@ fun SettingsScreen(
                     Tab(
                         selected = selectedTabIndex == index,
                         onClick = { selectedTabIndex = index },
-                        text = { Text(title) }
+                        text = { 
+                            if (title == "Delete Account") {
+                                Text(title, color = MaterialTheme.colorScheme.error)
+                            } else {
+                                Text(title)
+                            }
+                        }
                     )
                 }
             }
@@ -99,6 +105,7 @@ fun SettingsScreen(
                                 2 -> PaymentTab(state.payment, state.paymentMethods, viewModel)
                                 3 -> ManagerTab(state.manager)
                                 4 -> TwoFactorTab(state.twoFactorEnabled, viewModel)
+                                5 -> DeleteAccountTab(state.deleteRequest, viewModel)
                             }
 
                             Spacer(modifier = Modifier.height(32.dp))
@@ -831,6 +838,92 @@ fun TwoFactorTab(isEnabled: Boolean, viewModel: SettingsViewModel) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(if (isLoading) "Disabling..." else "Disable 2FA")
+            }
+        }
+        }
+    }
+}
+
+@Composable
+fun DeleteAccountTab(deleteRequest: DeleteRequestInfo?, viewModel: SettingsViewModel) {
+    val context = LocalContext.current
+    var reason by remember { mutableStateOf("") }
+    var isRequesting by remember { mutableStateOf(false) }
+
+    Column {
+        Text("Delete Account", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        if (deleteRequest != null) {
+            Card(
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text("Account Deletion Status", fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Status: ${deleteRequest.status.uppercase()}", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text("Requested At: ${deleteRequest.requestedAt}", style = MaterialTheme.typography.bodySmall)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Reason:", fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodySmall)
+                    Text(deleteRequest.reason, style = MaterialTheme.typography.bodySmall)
+                }
+            }
+        } else {
+            Card(
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        "Warning: This action is permanent and cannot be undone. " +
+                        "If you submit an account deletion request, an administrator will review it. " +
+                        "Once approved, all your data, balance, and history will be permanently deleted.",
+                        color = MaterialTheme.colorScheme.onErrorContainer,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = reason,
+                onValueChange = { reason = it },
+                label = { Text("Reason for deletion (Optional but helpful)") },
+                modifier = Modifier.fillMaxWidth().height(120.dp),
+                maxLines = 4
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = {
+                    if (reason.length < 10) {
+                        Toast.makeText(context, "Please provide a reason (at least 10 characters).", Toast.LENGTH_SHORT).show()
+                        return@Button
+                    }
+                    isRequesting = true
+                    viewModel.requestAccountDelete(
+                        DeleteAccountRequest(reason),
+                        onSuccess = {
+                            isRequesting = false
+                            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                        },
+                        onError = {
+                            isRequesting = false
+                            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                },
+                enabled = !isRequesting,
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+            ) {
+                if (isRequesting) {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onError)
+                } else {
+                    Text("Request Account Deletion")
+                }
             }
         }
     }

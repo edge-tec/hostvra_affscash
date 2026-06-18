@@ -11,7 +11,15 @@ data class SettingsLoadResponse(
     val manager: ManagerInfo? = null,
     @SerialName("payment_methods") val paymentMethods: List<String> = emptyList(),
     @SerialName("two_factor_enabled") val twoFactorEnabled: Boolean = false,
+    @SerialName("delete_request") val deleteRequest: DeleteRequestInfo? = null,
     val error: String? = null
+)
+
+@Serializable
+data class DeleteRequestInfo(
+    val status: String,
+    @SerialName("requested_at") val requestedAt: String,
+    val reason: String
 )
 
 @Serializable
@@ -79,4 +87,9 @@ data class TwoFactorVerifyRequest(
 data class TwoFactorDisableRequest(
     val password: String,
     val code: String
+)
+
+@Serializable
+data class DeleteAccountRequest(
+    val reason: String
 )

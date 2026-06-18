@@ -20,6 +20,7 @@ sealed class SettingsUiState {
         val manager: ManagerInfo?,
         val paymentMethods: List<String>,
         val twoFactorEnabled: Boolean,
+        val deleteRequest: DeleteRequestInfo?,
         val isImpersonating: Boolean = false
     ) : SettingsUiState()
     data class Error(val message: String) : SettingsUiState()
@@ -50,6 +51,7 @@ class SettingsViewModel @Inject constructor(
                         manager = res.manager,
                         paymentMethods = res.paymentMethods,
                         twoFactorEnabled = res.twoFactorEnabled,
+                        deleteRequest = res.deleteRequest,
                         isImpersonating = userManager.isImpersonating()
                     )
                 }
@@ -132,6 +134,17 @@ class SettingsViewModel @Inject constructor(
                 .onFailure {
                     onError(it.message ?: "Failed to stop impersonating")
                 }
+        }
+    }
+
+    fun requestAccountDelete(request: DeleteAccountRequest, onSuccess: (String) -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch {
+            settingsRepository.requestAccountDelete(request)
+                .onSuccess {
+                    onSuccess(it.message ?: "Account deletion requested")
+                    loadSettings() // refresh state to show pending status
+                }
+                .onFailure { onError(it.message ?: "Request failed") }
         }
     }
 }

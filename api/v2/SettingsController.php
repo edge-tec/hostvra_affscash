@@ -42,6 +42,15 @@ if ($action === 'load') {
         );
     }
 
+    // Check for pending delete request
+    $deleteRequest = null;
+    if ($affId > 0) {
+        $deleteRequest = Database::fetchOne(
+            "SELECT status, requested_at, reason FROM account_delete_requests WHERE affiliate_id=? ORDER BY requested_at DESC LIMIT 1",
+            [$affId]
+        );
+    }
+
     echo json_encode([
         'success' => true,
         'profile' => [
@@ -57,7 +66,8 @@ if ($action === 'load') {
         ],
         'manager' => $manager,
         'payment_methods' => $pmList,
-        'two_factor_enabled' => (bool)$aff['google2fa_enabled']
+        'two_factor_enabled' => (bool)$aff['google2fa_enabled'],
+        'delete_request' => $deleteRequest
     ]);
     exit;
 }
@@ -179,6 +189,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ], 'id=?', [$userId]);
 
         echo json_encode(['success' => true, 'message' => '2FA disabled successfully.']);
+        exit;
+    }
+
+    if ($action === 'request_account_delete') {
+        $reason = trim($input['reason'] ?? '');
+        if (strlen($reason) < 10) {
+            echo json_encode(['success' => false, 'error' => 'Please provide a reason (at least 10 characters).']);
+            exit;
+        }
+
+        $existing = Database::fetchOne(
+            "SELECT id FROM account_delete_requests WHERE affiliate_id=? AND status='pending' ORDER BY requested_at DESC LIMIT 1",
+            [$affId]
+        );
+
+        if ($existing) {
+            echo json_encode(['success' => false, 'error' => 'You already have a pending account deletion request. Please wait for admin review.']);
+            exit;
+        }
+
+        Database::insert('account_delete_requests', [
+            'affiliate_id' => $affId,
+            'user_id'      => $userId,
+            'reason'       => $reason,
+            'status'       => 'pending',
+            'requested_at' => date('Y-m-d H:i:s')
+        ]);
+
+        echo json_encode(['success' => true, 'message' => 'Your account deletion request has been submitted.']);
         exit;
     }
 }

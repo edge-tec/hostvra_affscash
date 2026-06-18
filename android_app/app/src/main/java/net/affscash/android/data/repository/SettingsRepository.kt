@@ -105,12 +105,33 @@ class SettingsRepository @Inject constructor(
         try {
             val response = apiService.disable2fa(request)
             if (response.isSuccessful) {
-                response.body()?.let {
-                    if (it.success) return@withContext Result.success(it)
-                    return@withContext Result.failure(Exception(it.error ?: "Failed to disable 2FA"))
+                val body = response.body()
+                if (body != null && body.success) {
+                    Result.success(body)
+                } else {
+                    Result.failure(Exception(body?.error ?: "Failed to disable 2FA"))
                 }
+            } else {
+                Result.failure(Exception("API Error: ${response.code()}"))
             }
-            Result.failure(Exception("Network error: ${response.code()}"))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun requestAccountDelete(request: DeleteAccountRequest): Result<SettingsActionResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.requestAccountDelete(request)
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null && body.success) {
+                    Result.success(body)
+                } else {
+                    Result.failure(Exception(body?.error ?: "Failed to request account deletion"))
+                }
+            } else {
+                Result.failure(Exception("API Error: ${response.code()}"))
+            }
         } catch (e: Exception) {
             Result.failure(e)
         }
