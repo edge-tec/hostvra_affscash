@@ -570,9 +570,22 @@ fun MainScreen(
                     onNavigateBack = { navController.popBackStack() }
                 ) 
             }
-            composable(Screen.ManagerReports.route) { net.affscash.android.ui.manager.ManagerReportsScreen() }
-            composable(Screen.ManagerInvoices.route) { net.affscash.android.ui.manager.ManagerInvoicesScreen() }
-            composable(Screen.ManagerSettings.route) { net.affscash.android.ui.manager.ManagerProfileScreen(onLogout = onLogout) }
+            composable(Screen.ManagerReports.route) { 
+                net.affscash.android.ui.manager.ManagerReportsScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                ) 
+            }
+            composable(Screen.ManagerInvoices.route) { 
+                net.affscash.android.ui.manager.ManagerInvoicesScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                ) 
+            }
+            composable(Screen.ManagerSettings.route) { 
+                net.affscash.android.ui.manager.ManagerProfileScreen(
+                    onLogout = onLogout,
+                    onNavigateBack = { navController.popBackStack() }
+                ) 
+            }
         }
     }
 }
