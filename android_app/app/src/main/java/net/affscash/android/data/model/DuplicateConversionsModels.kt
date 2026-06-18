@@ -1,33 +1,38 @@
 package net.affscash.android.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class AffiliateDuplicateConversionRow(
     val id: Int,
-    @SerializedName("conversion_id") val conversionId: String,
+    @SerialName("conversion_id") val conversionId: String,
     val status: String,
     val payout: Double,
-    @SerializedName("transaction_id") val transactionId: String?,
-    @SerializedName("goal_name") val goalName: String?,
-    @SerializedName("converted_at") val convertedAt: String
+    @SerialName("transaction_id") val transactionId: String? = null,
+    @SerialName("goal_name") val goalName: String? = null,
+    @SerialName("converted_at") val convertedAt: String
 )
 
+@Serializable
 data class AffiliateDuplicateConversionCluster(
-    @SerializedName("offer_id") val offerId: Int,
-    @SerializedName("offer_name") val offerName: String,
-    @SerializedName("ip_address") val ipAddress: String,
-    @SerializedName("dup_count") val dupCount: Int,
+    @SerialName("offer_id") val offerId: Int,
+    @SerialName("offer_name") val offerName: String,
+    @SerialName("ip_address") val ipAddress: String,
+    @SerialName("dup_count") val dupCount: Int,
     val conversions: List<AffiliateDuplicateConversionRow>
 )
 
+@Serializable
 data class AffiliateDuplicateConversionsData(
-    @SerializedName("total_clusters") val totalClusters: Int,
-    @SerializedName("total_conversions") val totalConversions: Int,
+    @SerialName("total_clusters") val totalClusters: Int,
+    @SerialName("total_conversions") val totalConversions: Int,
     val clusters: List<AffiliateDuplicateConversionCluster>
 )
 
+@Serializable
 data class AffiliateDuplicateConversionsResponse(
     val success: Boolean,
-    val data: AffiliateDuplicateConversionsData?,
-    val error: String?
+    val data: AffiliateDuplicateConversionsData? = null,
+    val error: String? = null
 )
