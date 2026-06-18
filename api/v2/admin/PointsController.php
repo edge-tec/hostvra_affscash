@@ -76,6 +76,14 @@ try {
              LIMIT 500"
         ) ?: [];
 
+        $rows = array_map(function($r) {
+            $r['affiliate_id'] = (int)$r['affiliate_id'];
+            $r['balance'] = (int)$r['balance'];
+            $r['lifetime_earned'] = (int)$r['lifetime_earned'];
+            $r['lifetime_spent'] = (int)$r['lifetime_spent'];
+            return $r;
+        }, $rows);
+
         $recent = Database::fetchAll(
             "SELECT pt.*, CONCAT(u.first_name,' ',u.last_name) AS aff_name, u.email
              FROM points_transactions pt
@@ -83,6 +91,13 @@ try {
              LEFT JOIN users u ON u.id = af.user_id
              ORDER BY pt.id DESC LIMIT 50"
         ) ?: [];
+
+        $recent = array_map(function($r) {
+            $r['id'] = (int)$r['id'];
+            $r['affiliate_id'] = (int)$r['affiliate_id'];
+            $r['amount'] = (int)$r['amount'];
+            return $r;
+        }, $recent);
 
         echo json_encode([
             'success' => true,
