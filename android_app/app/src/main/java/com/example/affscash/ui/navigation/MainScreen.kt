@@ -490,11 +490,11 @@ fun MainScreen(
 
             // Manager Screens
             composable(Screen.ManagerDashboard.route) { 
-                val context = androidx.compose.ui.platform.LocalContext.current
                 com.example.affscash.ui.manager.ManagerDashboardScreen(
                     onNavigateToInvoices = { navController.navigate(Screen.ManagerInvoices.route) },
                     onNavigateToFraudAlerts = { navController.navigate("manager_fraud_reports") },
-                    onNavigateToChat = { android.widget.Toast.makeText(context, "Chat coming soon", android.widget.Toast.LENGTH_SHORT).show() }
+                    onNavigateToChat = { navController.navigate(Screen.Chat.route) },
+                    onNavigateToNotifications = { navController.navigate(Screen.Notifications.route) }
                 ) 
             }
             composable(Screen.ManagerOffers.route) { 

@@ -53,7 +53,8 @@ fun ManagerDashboardScreen(
     viewModel: ManagerDashboardViewModel = hiltViewModel(),
     onNavigateToInvoices: () -> Unit = {},
     onNavigateToFraudAlerts: () -> Unit = {},
-    onNavigateToChat: () -> Unit = {}
+    onNavigateToChat: () -> Unit = {},
+    onNavigateToNotifications: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -107,7 +108,7 @@ fun ManagerDashboardScreen(
                         icon = Icons.Outlined.Notifications,
                         count = counts?.unreadNotifs ?: 0,
                         badgeColor = Color(0xFFEF4444),
-                        onClick = { android.widget.Toast.makeText(context, "Notifications coming soon", android.widget.Toast.LENGTH_SHORT).show() }
+                        onClick = onNavigateToNotifications
                     )
 
                     // Fraud Alerts Icon
