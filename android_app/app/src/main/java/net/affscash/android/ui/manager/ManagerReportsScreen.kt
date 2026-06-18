@@ -37,7 +37,14 @@ fun ManagerReportsScreen(
         "day" to "By Day",
         "week" to "By Week",
         "month" to "By Month",
-        "year" to "By Year"
+        "year" to "By Year",
+        "offer" to "By Offer",
+        "country" to "By Country",
+        "sub" to "By Aff Sub",
+        "affiliate" to "Affiliate Report",
+        "click" to "Click Log",
+        "conversion" to "Conversion Log",
+        "sl_report" to "SmartLink Report"
     )
 
     val metricOptions = listOf(
@@ -280,7 +287,7 @@ fun ManagerReportsScreen(
                             uiState.reportResponse!!.rows?.let { rows ->
                                 item { 
                                     Text(
-                                        text = if (uiState.currentTab == "day" || uiState.currentTab == "week" || uiState.currentTab == "month" || uiState.currentTab == "year") "Performance ${tabs.find { it.first == uiState.currentTab }?.second?.replace("By ", "By ") ?: "By Offer"}" else "By Offer", 
+                                        text = "Performance ${tabs.find { it.first == uiState.currentTab }?.second?.replace("Performance", "") ?: ""}".trim(), 
                                         style = MaterialTheme.typography.titleMedium, 
                                         fontWeight = FontWeight.Bold, 
                                         modifier = Modifier.padding(vertical = 8.dp)
