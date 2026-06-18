@@ -1,6 +1,6 @@
 package net.affscash.android.data.repository
 
-import net.affscash.android.data.model.DuplicateConversionsResponse
+import net.affscash.android.data.model.AffiliateDuplicateConversionsResponse
 import net.affscash.android.data.network.ApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -11,7 +11,7 @@ import javax.inject.Singleton
 class DuplicateConversionsRepository @Inject constructor(
     private val apiService: ApiService
 ) {
-    suspend fun getDuplicateConversions(from: String, to: String): Result<DuplicateConversionsResponse> = withContext(Dispatchers.IO) {
+    suspend fun getDuplicateConversions(from: String, to: String): Result<AffiliateDuplicateConversionsResponse> = withContext(Dispatchers.IO) {
         try {
             val response = apiService.getDuplicateConversions(from, to)
             if (response.isSuccessful && response.body()?.success == true) {

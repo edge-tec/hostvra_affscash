@@ -524,7 +524,7 @@ interface ApiService {
 
     @GET("api/v2/manager/reports")
     suspend fun getManagerReports(
-        @Query("tab") tab: String,
+        @Query("group_by") groupBy: String,
         @Query("from") from: String,
         @Query("to") to: String,
         @Query("offer_id") offerId: Int? = null,
@@ -532,6 +532,9 @@ interface ApiService {
         @Query("country") country: String? = null,
         @Query("sub1") sub1: String? = null
     ): Response<ReportResponse>
+
+    @GET("api/v2/manager/referral")
+    suspend fun getManagerReferral(): Response<net.affscash.android.data.model.ManagerReferralResponse>
 
     @GET("api/v2/manager/reports?action=filters")
     suspend fun getManagerReportFilters(): Response<ReportFiltersResponse>
@@ -552,10 +555,14 @@ interface ApiService {
     suspend fun getDuplicateConversions(
         @Query("from") from: String,
         @Query("to") to: String
-    ): Response<net.affscash.android.data.model.DuplicateConversionsResponse>
+    ): Response<AffiliateDuplicateConversionsResponse>
 
     @GET("api/v2/rewards")
     suspend fun getRewards(): Response<RewardsResponse>
+
+
+    @GET("api/v2/referral")
+    suspend fun getAffiliateReferral(): Response<net.affscash.android.data.model.AffiliateReferralResponse>
 
     @GET("api/v2/chat")
     suspend fun getChatMessages(@Query("action") action: String = "messages"): Response<ChatMessagesResponse>

@@ -14,8 +14,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import net.affscash.android.data.model.DuplicateConversionCluster
-import net.affscash.android.data.model.DuplicateConversionRow
+import net.affscash.android.data.model.AffiliateDuplicateConversionCluster
+import net.affscash.android.data.model.AffiliateDuplicateConversionRow
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -143,7 +143,7 @@ fun DuplicateConversionsScreen(
 }
 
 @Composable
-fun DuplicateClusterCard(cluster: DuplicateConversionCluster) {
+fun DuplicateClusterCard(cluster: AffiliateDuplicateConversionCluster) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Column {
             // Header

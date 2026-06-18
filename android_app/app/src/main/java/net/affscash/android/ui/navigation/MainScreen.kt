@@ -38,6 +38,7 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     object Reports : Screen("reports", "Reports", Icons.Filled.Assessment)
     object AffiliateReports : Screen("affiliate_reports", "Reports", Icons.Filled.BarChart)
     object AffiliateDuplicateConversions : Screen("affiliate_duplicate_conversions", "Duplicate Conversions", Icons.Filled.Warning)
+    object AffiliateReferral : Screen("affiliate_referral", "Referral Program", Icons.Filled.PersonAdd)
     object AffiliateInvoices : Screen("affiliate_invoices", "Invoices", Icons.Filled.ShoppingCart)
     object Invoices : Screen("invoices", "Invoices", Icons.Filled.PictureAsPdf)
     object AffiliateSettings : Screen("affiliate_settings", "Settings", Icons.Filled.Settings)
@@ -127,10 +128,11 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     object ManagerOffers : Screen("manager_offers", "Offers", Icons.Filled.LocalOffer)
     object ManagerSmartlinks : Screen("manager_smartlinks", "Smartlinks", Icons.Filled.Link)
     object ManagerSmartlinkRequests : Screen("manager_smartlink_requests", "Requests", Icons.Filled.Assessment)
-    object ManagerAffiliates : Screen("manager_affiliates", "Affiliates", Icons.Filled.Assessment)
-    object ManagerConversions : Screen("manager_conversions", "Conv", Icons.Filled.MonetizationOn)
+    object ManagerAffiliates : Screen("manager_affiliates", "Affiliates", Icons.Filled.People)
+    object ManagerConversions : Screen("manager_conversions", "Conversions", Icons.Filled.TrendingUp)
+    object ManagerReports : Screen("manager_reports", "Reports", Icons.Filled.BarChart)
+    object ManagerReferral : Screen("manager_referral", "Referral Link", Icons.Filled.PersonAdd)
     object ManagerInvoices : Screen("manager_invoices", "Invoices", Icons.Filled.Receipt)
-    object ManagerReports : Screen("manager_reports", "Reports", Icons.Filled.Assessment)
     object ManagerSupport : Screen("manager_support", "Support", Icons.Filled.SupportAgent)
     object ManagerChat : Screen("manager_chat", "Chat", Icons.Filled.Chat)
     object ManagerSettings : Screen("manager_settings", "Settings", Icons.Filled.Settings)
@@ -157,8 +159,8 @@ fun MainScreen(
 
     val allItems = when (role) {
         "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminPrivateOffers, Screen.AdminSmartlinks, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminShop, Screen.AdminAffiliateManagers, Screen.AdminSupport, Screen.AdminConversions, Screen.AdminReports, Screen.AdminAffiliateReport, Screen.AdminFraudReport, Screen.AdminAutoHide, Screen.AdminInvoices, Screen.AdminPlatformSettings, Screen.AdminSettings)
-        "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerSupport, Screen.ManagerSmartlinks, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerReports, Screen.ManagerInvoices, Screen.ManagerSettings)
-        else -> listOf(Screen.Dashboard, Screen.Offers, Screen.AffiliateInHouseOffers, Screen.Smartlinks, Screen.Reports, Screen.AffiliateDuplicateConversions, Screen.AffiliateSettings)
+        "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerSupport, Screen.ManagerSmartlinks, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerReports, Screen.ManagerReferral, Screen.ManagerInvoices, Screen.ManagerSettings)
+        else -> listOf(Screen.Dashboard, Screen.Offers, Screen.AffiliateInHouseOffers, Screen.Smartlinks, Screen.Reports, Screen.AffiliateDuplicateConversions, Screen.AffiliateReferral, Screen.AffiliateSettings)
     }
     
     val startDest = allItems.first().route
@@ -366,6 +368,9 @@ fun MainScreen(
             }
             composable(Screen.AffiliateDuplicateConversions.route) {
                 net.affscash.android.ui.affiliate.duplicate_conversions.DuplicateConversionsScreen()
+            }
+            composable(Screen.AffiliateReferral.route) {
+                net.affscash.android.ui.affiliate.referral.AffiliateReferralScreen()
             }
             composable(Screen.FraudReport.route) {
                 net.affscash.android.ui.reports.FraudReportScreen(
@@ -681,6 +686,9 @@ fun MainScreen(
                 net.affscash.android.ui.manager.ManagerReportsScreen(
                     onNavigateBack = { navController.popBackStack() }
                 ) 
+            }
+            composable(Screen.ManagerReferral.route) { 
+                net.affscash.android.ui.manager.referral.ManagerReferralScreen() 
             }
             composable(Screen.ManagerSupport.route) {
                 net.affscash.android.ui.manager.support.ManagerSupportScreen(

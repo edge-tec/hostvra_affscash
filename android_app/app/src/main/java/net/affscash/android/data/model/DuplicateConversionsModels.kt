@@ -2,7 +2,7 @@ package net.affscash.android.data.model
 
 import com.google.gson.annotations.SerializedName
 
-data class DuplicateConversionRow(
+data class AffiliateDuplicateConversionRow(
     val id: Int,
     @SerializedName("conversion_id") val conversionId: String,
     val status: String,
@@ -12,22 +12,22 @@ data class DuplicateConversionRow(
     @SerializedName("converted_at") val convertedAt: String
 )
 
-data class DuplicateConversionCluster(
+data class AffiliateDuplicateConversionCluster(
     @SerializedName("offer_id") val offerId: Int,
     @SerializedName("offer_name") val offerName: String,
     @SerializedName("ip_address") val ipAddress: String,
     @SerializedName("dup_count") val dupCount: Int,
-    val conversions: List<DuplicateConversionRow>
+    val conversions: List<AffiliateDuplicateConversionRow>
 )
 
-data class DuplicateConversionsData(
+data class AffiliateDuplicateConversionsData(
     @SerializedName("total_clusters") val totalClusters: Int,
     @SerializedName("total_conversions") val totalConversions: Int,
-    val clusters: List<DuplicateConversionCluster>
+    val clusters: List<AffiliateDuplicateConversionCluster>
 )
 
-data class DuplicateConversionsResponse(
+data class AffiliateDuplicateConversionsResponse(
     val success: Boolean,
-    val data: DuplicateConversionsData?,
+    val data: AffiliateDuplicateConversionsData?,
     val error: String?
 )

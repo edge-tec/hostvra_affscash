@@ -2,7 +2,7 @@ package net.affscash.android.ui.affiliate.duplicate_conversions
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import net.affscash.android.data.model.DuplicateConversionsData
+import net.affscash.android.data.model.AffiliateDuplicateConversionsData
 import net.affscash.android.data.repository.DuplicateConversionsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 sealed class DuplicateConversionsUiState {
     object Loading : DuplicateConversionsUiState()
-    data class Success(val data: DuplicateConversionsData) : DuplicateConversionsUiState()
+    data class Success(val data: AffiliateDuplicateConversionsData) : DuplicateConversionsUiState()
     data class Error(val message: String) : DuplicateConversionsUiState()
 }
 

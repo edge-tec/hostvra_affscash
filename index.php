@@ -474,6 +474,7 @@ Router::any('/api/v2/reports', function() { require BASE_PATH . '/api/v2/ReportC
 Router::any('/api/v2/news', function() { require BASE_PATH . '/api/v2/NewsController.php'; });
 Router::any('/api/v2/fraud-report', function() { require BASE_PATH . '/api/v2/FraudReportController.php'; });
 Router::any('/api/v2/duplicate-conversions', function() { require BASE_PATH . '/api/v2/DuplicateConversionsController.php'; });
+Router::any('/api/v2/referral', function() { require BASE_PATH . '/api/v2/ReferralController.php'; });
 Router::any('/api/v2/rewards', function() { require BASE_PATH . '/api/v2/RewardsController.php'; });
 Router::any('/api/v2/shop', function() { require BASE_PATH . '/api/v2/ShopController.php'; });
 Router::any('/api/v2/invoices', function() { require BASE_PATH . '/api/v2/InvoiceController.php'; });
@@ -516,6 +517,7 @@ Router::any('/api/v2/manager/conversions', function() { require BASE_PATH . '/ap
 Router::any('/api/v2/manager/invoices', function() { require BASE_PATH . '/api/v2/manager/InvoiceController.php'; });
 Router::any('/api/v2/manager/profile', function() { require BASE_PATH . '/api/v2/manager/ProfileController.php'; });
 Router::any('/api/v2/manager/reports', function() { require BASE_PATH . '/api/v2/manager/ReportController.php'; });
+Router::any('/api/v2/manager/referral', function() { require BASE_PATH . '/api/v2/manager/ReferralController.php'; });
 Router::any('/api/v2/manager/smartlinks', function() { require BASE_PATH . '/api/v2/manager/SmartlinkController.php'; });
 Router::any('/api/v2/manager/offer-approvals', function() { require BASE_PATH . '/api/v2/manager/OfferApprovalController.php'; });
 Router::any('/api/v2/manager/duplicate_conversions', function() { require BASE_PATH . '/api/v2/manager/DuplicateConversionsController.php'; });
