@@ -94,7 +94,8 @@ try {
         $recent = array_map(function($r) {
             $r['id'] = (int)$r['id'];
             $r['affiliate_id'] = (int)$r['affiliate_id'];
-            $r['amount'] = (int)$r['amount'];
+            $r['amount'] = (int)($r['delta'] ?? 0);
+            $r['type'] = $r['kind'] ?? 'earn';
             return $r;
         }, $recent);
 
