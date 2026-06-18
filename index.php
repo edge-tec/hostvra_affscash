@@ -504,6 +504,7 @@ Router::any('/api/v2/admin/autohide', function() { require BASE_PATH . '/api/v2/
 Router::any('/api/v2/admin/affiliate-report', function() { require BASE_PATH . '/api/v2/admin/AffiliateReportController.php'; });
 Router::any('/api/v2/admin/invoices', function() { require BASE_PATH . '/api/v2/admin/InvoiceController.php'; });
 Router::any('/api/v2/admin/fraud-score-report', function() { require BASE_PATH . '/api/v2/admin/FraudScoreReportController.php'; });
+Router::any('/api/v2/admin/account-delete-requests', function() { require BASE_PATH . '/api/v2/admin/AccountDeleteRequestController.php'; });
 Router::any('/api/v2/admin/settings', function() { require BASE_PATH . '/api/v2/admin/SettingsController.php'; });
 Router::any('/api/v2/admin/chat', function() { require BASE_PATH . '/api/v2/admin/ChatController.php'; });
 Router::any('/api/v2/admin/shop', function() { require BASE_PATH . '/api/v2/admin/ShopController.php'; });

@@ -654,13 +654,12 @@ interface ApiService {
     ): net.affscash.android.data.model.AdminFraudActionResponse
 
     // --- ADMIN: Account Deletion Requests ---
-    @GET("api/v2/admin/AccountDeleteRequestController.php")
+    @GET("api/v2/admin/account-delete-requests")
     suspend fun getAdminAccountDeleteRequests(
-        @Query("action") action: String = "list",
-        @Query("status") status: String? = null
+        @Query("status") status: String
     ): net.affscash.android.data.model.AdminAccountDeleteResponse
 
-    @POST("api/v2/admin/AccountDeleteRequestController.php")
+    @POST("api/v2/admin/account-delete-requests?action=update_status")
     suspend fun submitAdminAccountDeleteAction(
         @Body request: net.affscash.android.data.model.AdminAccountDeleteActionRequest
     ): net.affscash.android.data.model.BasicResponse
