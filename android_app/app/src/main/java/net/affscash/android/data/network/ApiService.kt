@@ -313,6 +313,37 @@ interface ApiService {
     @POST("api/v2/admin/affiliate-actions")
     suspend fun editAdminAffiliate(@Body request: EditAffiliateRequest): Response<BasicResponse>
 
+    // --- Admin Referral ---
+    @GET("api/v2/admin/referral")
+    suspend fun getAdminReferralDashboard(
+        @Query("action") action: String = "dashboard"
+    ): retrofit2.Response<AdminReferralDashboardResponse>
+
+    @GET("api/v2/admin/referral")
+    suspend fun getAdminReferralSignups(
+        @Query("action") action: String = "signups"
+    ): retrofit2.Response<AdminReferralSignupsResponse>
+
+    @GET("api/v2/admin/referral")
+    suspend fun getAdminReferralCommissions(
+        @Query("action") action: String = "commissions"
+    ): retrofit2.Response<AdminReferralCommissionsResponse>
+
+    @GET("api/v2/admin/referral")
+    suspend fun getAdminReferralCodes(
+        @Query("action") action: String = "codes"
+    ): retrofit2.Response<AdminReferralCodesResponse>
+
+    @POST("api/v2/admin/referral?action=approve_commission")
+    suspend fun approveAdminReferralCommission(
+        @Body request: AdminReferralActionRequest
+    ): retrofit2.Response<BasicResponse>
+
+    @POST("api/v2/admin/referral?action=reject_commission")
+    suspend fun rejectAdminReferralCommission(
+        @Body request: AdminReferralActionRequest
+    ): retrofit2.Response<BasicResponse>
+
     @GET("api/v2/admin/advertisers")
     suspend fun getAdminAdvertisers(
         @Query("action") action: String = "list",

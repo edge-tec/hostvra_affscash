@@ -507,6 +507,7 @@ Router::any('/api/v2/admin/fraud-score-report', function() { require BASE_PATH .
 Router::any('/api/v2/admin/settings', function() { require BASE_PATH . '/api/v2/admin/SettingsController.php'; });
 Router::any('/api/v2/admin/chat', function() { require BASE_PATH . '/api/v2/admin/ChatController.php'; });
 Router::any('/api/v2/admin/shop', function() { require BASE_PATH . '/api/v2/admin/ShopController.php'; });
+Router::any('/api/v2/admin/referral', function() { require BASE_PATH . '/api/v2/admin/ReferralController.php'; });
 
 // Native App API Routes (v2) - Manager
 Router::any('/api/v2/manager/dashboard', function() { require BASE_PATH . '/api/v2/manager/DashboardController.php'; });

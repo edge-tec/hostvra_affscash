@@ -40,8 +40,9 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     object AffiliateDuplicateConversions : Screen("affiliate_duplicate_conversions", "Duplicate Conversions", Icons.Filled.Warning)
     object AffiliateReferral : Screen("affiliate_referral", "Referral Program", Icons.Filled.PersonAdd)
     object AffiliateInvoices : Screen("affiliate_invoices", "Invoices", Icons.Filled.ShoppingCart)
-    object Invoices : Screen("invoices", "Invoices", Icons.Filled.PictureAsPdf)
-    object AffiliateSettings : Screen("affiliate_settings", "Settings", Icons.Filled.Settings)
+    object AdminInvoices : Screen("admin_invoices", "Invoices", Icons.Default.Receipt)
+    object AdminSettings : Screen("admin_settings", "Settings", Icons.Default.Settings)
+    object AdminReferral : Screen("admin_referral", "Referral System", Icons.Default.Share)
     object FraudReport : Screen("fraud_report", "Fraud Report", Icons.Filled.Assessment)
     object Rewards : Screen("rewards", "Milestones", Icons.Filled.MonetizationOn)
     object Shop : Screen("shop", "Rewards Shop", Icons.Filled.LocalOffer)
@@ -80,17 +81,17 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     }
     object AdminUsers : Screen("admin_users", "Users", Icons.Filled.Assessment)
     object AdminAdvertisers : Screen("admin_advertisers", "Advertisers", Icons.Filled.SupervisorAccount)
-    object AdminAdvertiserCreate : Screen("admin_advertiser_create", "Create", Icons.Filled.Add)
-    class AdminAdvertiserEdit(id: Int) : Screen("admin_advertiser_edit/$id", "Edit", Icons.Filled.Edit) {
+    object AdminAdvertiserCreate : Screen("admin_create", "Create", Icons.Filled.Add)
+    class AdminAdvertiserEdit(id: Int) : Screen("admin_edit/$id", "Edit", Icons.Filled.Edit) {
         companion object {
-            const val route = "admin_advertiser_edit/{advertiserId}"
-            fun createRoute(advertiserId: Int) = "admin_advertiser_edit/$advertiserId"
+            const val route = "admin_edit/{advertiserId}"
+            fun createRoute(advertiserId: Int) = "admin_edit/$advertiserId"
         }
     }
-    class AdminAdvertiserDetails(id: Int) : Screen("admin_advertiser_details/$id", "Advertiser Details", Icons.Filled.Info) {
+    class AdminAdvertiserDetails(id: Int) : Screen("admin_details/$id", "Advertiser Details", Icons.Filled.Info) {
         companion object {
-            const val route = "admin_advertiser_details/{advId}"
-            fun createRoute(advId: Int) = "admin_advertiser_details/$advId"
+            const val route = "admin_details/{advId}"
+            fun createRoute(advId: Int) = "admin_details/$advId"
         }
     }
     object AdminConversions : Screen("admin_conversions", "Conv", Icons.Filled.MonetizationOn)
@@ -98,7 +99,6 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     object AdminReports : Screen("admin_reports", "Reports", Icons.Filled.Assessment)
     object AdminAffiliateReport : Screen("admin_aff_report", "Aff Rpt", Icons.Filled.Group)
     object AdminAutoHide : Screen("admin_autohide", "Hide", Icons.Filled.VisibilityOff)
-    object AdminInvoices : Screen("admin_invoices", "Invoices", Icons.Filled.Receipt)
     object AdminCreateInvoice : Screen("admin_create_invoice", "Create Invoice", Icons.Filled.Add)
     object AdminAffiliateManagers : Screen("admin_managers", "Managers", Icons.Filled.SupervisorAccount)
     object AdminSupport : Screen("admin_support", "Live Support", Icons.Filled.SupportAgent)
@@ -108,7 +108,6 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
             fun createRoute(convId: Int, affId: Int, name: String) = "admin_chat/$convId/$affId/$name"
         }
     }
-    object AdminSettings : Screen("admin_settings", "Settings", Icons.Filled.Settings)
     object AdminPlatformSettings : Screen("admin_platform_settings", "Platform Settings", Icons.Filled.Settings)
     object AdminShop : Screen("admin_shop", "Affiliate Shop", Icons.Filled.ShoppingCart)
     class AdminShopProductForm(id: Int? = null) : Screen(
@@ -138,6 +137,8 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     object ManagerSettings : Screen("manager_settings", "Settings", Icons.Filled.Settings)
     
     // Affiliate Screens
+    object Invoices : Screen("invoices", "Invoices", Icons.Filled.PictureAsPdf)
+    object AffiliateSettings : Screen("affiliate_settings", "Settings", Icons.Filled.Settings)
     object AffiliateInHouseOffers : Screen("affiliate_inhouse_offers", "In-House Offers", Icons.Filled.HomeRepairService)
 }
 
@@ -158,7 +159,7 @@ fun MainScreen(
     }
 
     val allItems = when (role) {
-        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminPrivateOffers, Screen.AdminSmartlinks, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminShop, Screen.AdminAffiliateManagers, Screen.AdminSupport, Screen.AdminConversions, Screen.AdminReports, Screen.AdminAffiliateReport, Screen.AdminFraudReport, Screen.AdminAutoHide, Screen.AdminInvoices, Screen.AdminPlatformSettings, Screen.AdminSettings)
+        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminPrivateOffers, Screen.AdminSmartlinks, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminShop, Screen.AdminAffiliateManagers, Screen.AdminSupport, Screen.AdminConversions, Screen.AdminReports, Screen.AdminAffiliateReport, Screen.AdminFraudReport, Screen.AdminAutoHide, Screen.AdminInvoices, Screen.AdminPlatformSettings, Screen.AdminSettings, Screen.AdminReferral)
         "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerSupport, Screen.ManagerSmartlinks, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerReports, Screen.ManagerReferral, Screen.ManagerInvoices, Screen.ManagerSettings)
         else -> listOf(Screen.Dashboard, Screen.Offers, Screen.AffiliateInHouseOffers, Screen.Smartlinks, Screen.Reports, Screen.AffiliateDuplicateConversions, Screen.AffiliateReferral, Screen.AffiliateSettings)
     }
@@ -601,7 +602,11 @@ fun MainScreen(
             composable(Screen.AdminPlatformSettings.route) { 
                 net.affscash.android.ui.screens.admin.settings.AdminPlatformSettingsScreen(navController = navController) 
             }
-
+            composable(Screen.AdminReferral.route) {
+                net.affscash.android.ui.admin.referral.AdminReferralScreen(
+                    navController = navController
+                )
+            }
 
             // Manager Screens
             composable(Screen.ManagerDashboard.route) { 
