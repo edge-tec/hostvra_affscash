@@ -1,0 +1,51 @@
+package net.affscash.android.data.repository
+
+import net.affscash.android.data.model.AuthRequest
+import net.affscash.android.data.model.AuthResponse
+import net.affscash.android.data.network.ApiService
+import net.affscash.android.data.network.SessionCookieJar
+import net.affscash.android.data.local.UserManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class AuthRepository @Inject constructor(
+    private val apiService: ApiService,
+    private val sessionCookieJar: SessionCookieJar,
+    private val userManager: UserManager
+) {
+    suspend fun login(email: String, password: String): Result<AuthResponse> = withContext(Dispatchers.IO) {
+        try {
+            // Clear any old session before logging in
+            sessionCookieJar.clearSession()
+            val response = apiService.login(AuthRequest(email, password))
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    if (it.success) {
+                        it.user?.let { user -> 
+                            userManager.saveUser(user.role, user.email, "${user.firstName} ${user.lastName}")
+                        }
+                        return@withContext Result.success(it)
+                    }
+                    return@withContext Result.failure(Exception(it.error ?: "Login failed"))
+                }
+            }
+            Result.failure(Exception("Network error: ${response.code()}"))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun logout(): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            apiService.logout()
+            sessionCookieJar.clearSession()
+            userManager.clearUser()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+}
