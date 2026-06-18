@@ -517,6 +517,7 @@ Router::any('/api/v2/manager/smartlinks', function() { require BASE_PATH . '/api
 Router::any('/api/v2/manager/offer-approvals', function() { require BASE_PATH . '/api/v2/manager/OfferApprovalController.php'; });
 Router::any('/api/v2/manager/duplicate_conversions', function() { require BASE_PATH . '/api/v2/manager/DuplicateConversionsController.php'; });
 Router::any('/api/v2/manager/fraud-report', function() { require BASE_PATH . '/api/v2/manager/FraudReportController.php'; });
+Router::any('/api/v2/manager/chat', function() { require BASE_PATH . '/api/v2/manager/ChatController.php'; });
 
 Router::any('/api/v2/stop-impersonate', function() { require BASE_PATH . '/api/v2/StopImpersonateController.php'; });
 

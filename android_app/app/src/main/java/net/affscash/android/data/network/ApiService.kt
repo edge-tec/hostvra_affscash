@@ -9,30 +9,30 @@ import retrofit2.http.*
 interface ApiService {
 
     // ADMIN SUPPORT
-    @GET("api/v2/admin/ChatController.php?action=list")
+    @GET("api/v2/admin/chat?action=list")
     suspend fun getAdminConversations(
         @Query("status") status: String,
         @Query("owner_type") ownerType: String
     ): Response<AdminSupportConversationsResponse>
 
-    @GET("api/v2/admin/ChatController.php?action=messages")
+    @GET("api/v2/admin/chat?action=messages")
     suspend fun getAdminMessages(
         @Query("affiliate_id") affiliateId: Int,
         @Query("owner_type") ownerType: String,
         @Query("conversation_id") conversationId: Int
     ): Response<AdminSupportMessagesResponse>
 
-    @POST("api/v2/admin/ChatController.php?action=send")
+    @POST("api/v2/admin/chat?action=send")
     suspend fun sendAdminMessage(
         @Body request: AdminSupportSendRequest
     ): Response<AdminSupportSendResponse>
 
-    @POST("api/v2/admin/ChatController.php?action=close_conversation")
+    @POST("api/v2/admin/chat?action=close_conversation")
     suspend fun closeAdminConversation(
         @Body request: AdminSupportActionRequest
     ): Response<AdminSupportActionResponse>
 
-    @POST("api/v2/admin/ChatController.php?action=reopen_conversation")
+    @POST("api/v2/admin/chat?action=reopen_conversation")
     suspend fun reopenAdminConversation(
         @Body request: AdminSupportActionRequest
     ): Response<AdminSupportActionResponse>
@@ -166,18 +166,18 @@ interface ApiService {
     ): Response<ManagerFiltersResponse>
 
     // MANAGER SUPPORT
-    @GET("api/v2/manager/ChatController.php?action=list")
+    @GET("api/v2/manager/chat?action=list")
     suspend fun getManagerConversations(
         @Query("status") status: String
     ): Response<net.affscash.android.data.model.ManagerConversationResponse>
 
-    @GET("api/v2/manager/ChatController.php?action=messages")
+    @GET("api/v2/manager/chat?action=messages")
     suspend fun getManagerMessages(
         @Query("conversation_id") conversationId: Int,
         @Query("affiliate_id") affiliateId: Int
     ): Response<net.affscash.android.data.model.ManagerMessageResponse>
 
-    @POST("api/v2/manager/ChatController.php")
+    @POST("api/v2/manager/chat")
     @FormUrlEncoded
     suspend fun sendManagerMessage(
         @Field("action") action: String = "send",
@@ -187,7 +187,7 @@ interface ApiService {
     ): Response<net.affscash.android.data.model.ManagerSendMessageResponse>
 
     @Multipart
-    @POST("api/v2/manager/ChatController.php")
+    @POST("api/v2/manager/chat")
     suspend fun uploadManagerAttachment(
         @Part("action") action: okhttp3.RequestBody,
         @Part("affiliate_id") affiliateId: okhttp3.RequestBody,
