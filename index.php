@@ -503,6 +503,7 @@ Router::any('/api/v2/admin/affiliate-report', function() { require BASE_PATH . '
 Router::any('/api/v2/admin/invoices', function() { require BASE_PATH . '/api/v2/admin/InvoiceController.php'; });
 Router::any('/api/v2/admin/fraud-score-report', function() { require BASE_PATH . '/api/v2/admin/FraudScoreReportController.php'; });
 Router::any('/api/v2/admin/settings', function() { require BASE_PATH . '/api/v2/admin/SettingsController.php'; });
+Router::any('/api/v2/admin/chat', function() { require BASE_PATH . '/api/v2/admin/ChatController.php'; });
 
 // Native App API Routes (v2) - Manager
 Router::any('/api/v2/manager/dashboard', function() { require BASE_PATH . '/api/v2/manager/DashboardController.php'; });
