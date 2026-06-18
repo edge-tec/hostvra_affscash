@@ -674,12 +674,12 @@ interface ApiService {
     ): net.affscash.android.data.model.BasicResponse
 
     // --- ADMIN: Points Module ---
-    @GET("api/v2/admin/PointsController.php")
+    @GET("api/v2/admin/points")
     suspend fun getAdminPoints(
         @Query("action") action: String = "list"
     ): net.affscash.android.data.model.AdminPointsResponse
 
-    @POST("api/v2/admin/PointsController.php")
+    @POST("api/v2/admin/points")
     suspend fun submitAdminPointsAction(
         @Body request: net.affscash.android.data.model.AdminPointsActionRequest
     ): net.affscash.android.data.model.AdminPointsSyncResponse
