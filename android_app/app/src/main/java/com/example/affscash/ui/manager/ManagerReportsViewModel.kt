@@ -27,6 +27,8 @@ data class ManagerReportsUiState(
 
     // Current filters applied
     val currentTab: String = "day",
+    val selectedMetric: String = "Clicks",
+    val selectedView: String = "Chart View",
     val fromDate: String = "",
     val toDate: String = "",
     val selectedOfferId: Int = 0,
@@ -109,5 +111,17 @@ class ManagerReportsViewModel @Inject constructor(private val repository: Manage
             sub1Query = sub1
         ) }
         loadReport()
+    }
+
+    fun setMetric(metric: String) {
+        if (_uiState.value.selectedMetric != metric) {
+            _uiState.update { it.copy(selectedMetric = metric) }
+        }
+    }
+
+    fun setView(view: String) {
+        if (_uiState.value.selectedView != view) {
+            _uiState.update { it.copy(selectedView = view) }
+        }
     }
 }

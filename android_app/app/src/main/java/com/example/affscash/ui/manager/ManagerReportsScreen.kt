@@ -33,13 +33,17 @@ fun ManagerReportsScreen(
 
     val tabs = listOf(
         "day" to "By Day",
-        "offer" to "By Offer",
-        "country" to "By Country",
-        "sub" to "By Aff Sub",
-        "affiliate" to "Affiliate Report",
-        "click" to "Click Log",
-        "conversion" to "Conversions",
-        "sl_report" to "SmartLink Report"
+        "week" to "By Week",
+        "month" to "By Month",
+        "year" to "By Year"
+    )
+
+    val metricOptions = listOf(
+        "Clicks", "Conversions", "Approved", "Rejected", "Fraud Clicks", "Approved Payout"
+    )
+
+    val viewOptions = listOf(
+        "Chart View", "Summary View", "Detailed Report"
     )
 
     val filters = uiState.filtersResponse
@@ -60,9 +64,9 @@ fun ManagerReportsScreen(
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
-            // Report Type Dropdown
+            // Report Filter Dropdown (By Day, Week, Month, Year)
             var reportTypeExpanded by remember { mutableStateOf(false) }
-            val currentTabName = tabs.find { it.first == uiState.currentTab }?.second ?: "Report Type"
+            val currentTabName = tabs.find { it.first == uiState.currentTab }?.second ?: "By Day"
             Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp)) {
                 OutlinedButton(
                     onClick = { reportTypeExpanded = true },
@@ -78,6 +82,51 @@ fun ManagerReportsScreen(
                             text = { Text(tabInfo.second) },
                             onClick = { viewModel.setTab(tabInfo.first); reportTypeExpanded = false }
                         )
+                    }
+                }
+            }
+
+            // Metrics and View Dropdowns
+            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                // Metrics
+                var metricExpanded by remember { mutableStateOf(false) }
+                Box(modifier = Modifier.weight(1f)) {
+                    OutlinedButton(
+                        onClick = { metricExpanded = true },
+                        modifier = Modifier.fillMaxWidth(),
+                        contentPadding = PaddingValues(horizontal = 8.dp)
+                    ) {
+                        Text(uiState.selectedMetric, maxLines = 1, modifier = Modifier.weight(1f))
+                        Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                    }
+                    DropdownMenu(expanded = metricExpanded, onDismissRequest = { metricExpanded = false }) {
+                        metricOptions.forEach { metric ->
+                            DropdownMenuItem(
+                                text = { Text(metric) },
+                                onClick = { viewModel.setMetric(metric); metricExpanded = false }
+                            )
+                        }
+                    }
+                }
+
+                // View
+                var viewExpanded by remember { mutableStateOf(false) }
+                Box(modifier = Modifier.weight(1f)) {
+                    OutlinedButton(
+                        onClick = { viewExpanded = true },
+                        modifier = Modifier.fillMaxWidth(),
+                        contentPadding = PaddingValues(horizontal = 8.dp)
+                    ) {
+                        Text(uiState.selectedView, maxLines = 1, modifier = Modifier.weight(1f))
+                        Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                    }
+                    DropdownMenu(expanded = viewExpanded, onDismissRequest = { viewExpanded = false }) {
+                        viewOptions.forEach { v ->
+                            DropdownMenuItem(
+                                text = { Text(v) },
+                                onClick = { viewModel.setView(v); viewExpanded = false }
+                            )
+                        }
                     }
                 }
             }
@@ -217,51 +266,121 @@ fun ManagerReportsScreen(
                     }
                 } else if (uiState.reportResponse != null) {
                     Column {
-                        // Totals Cards (only for performance tabs)
-                        if (uiState.reportResponse!!.totals != null) {
-                            val t = uiState.reportResponse!!.totals!!
-                            LazyVerticalGrid(
-                                columns = GridCells.Fixed(2),
-                                contentPadding = PaddingValues(8.dp),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
-                                modifier = Modifier.heightIn(max = 280.dp)
-                            ) {
-                                item { SummaryCard("CLICKS", "${t.clicks}", "Unique: ${t.uclicks}") }
-                                item { SummaryCard("CONVERSIONS", "${t.conv}", "") }
-                                item { SummaryCard("APPROVED", "${t.approved}", "", Color(0xFF10B981)) }
-                                item { SummaryCard("REJECTED", "${t.rejected}", "", Color(0xFFEF4444)) }
-                                item { SummaryCard("FRAUD CLICKS", "${t.fraud}", "High risk", Color(0xFFEF4444)) }
-                                item { SummaryCard("APPROVED PAYOUT", "$${"%.2f".format(t.payout)}", "Approved only", Color(0xFF10B981)) }
-                            }
-                        }
-
-                        // Dynamic Lists
-                        LazyColumn(
-                            contentPadding = PaddingValues(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier.fillMaxSize()
-                        ) {
+                        // Content based on Selected View
+                        if (uiState.selectedView == "Chart View") {
                             uiState.reportResponse!!.rows?.let { rows ->
-                                if (rows.isEmpty()) item { Text("No data found.", modifier = Modifier.padding(16.dp)) }
-                                items(rows) { row -> PerformanceRowItem(row) }
+                                if (rows.isNotEmpty()) {
+                                    ReportChartView(rows = rows, metric = uiState.selectedMetric)
+                                } else {
+                                    Text("No data available for chart.", modifier = Modifier.padding(16.dp))
+                                }
                             }
-                            uiState.reportResponse!!.clicks?.let { clicks ->
-                                if (clicks.isEmpty()) item { Text("No clicks found.", modifier = Modifier.padding(16.dp)) }
-                                items(clicks) { c -> ClickRowItem(c) }
+                        } else if (uiState.selectedView == "Summary View") {
+                            // Totals Cards
+                            if (uiState.reportResponse!!.totals != null) {
+                                val t = uiState.reportResponse!!.totals!!
+                                LazyVerticalGrid(
+                                    columns = GridCells.Fixed(2),
+                                    contentPadding = PaddingValues(8.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                                    modifier = Modifier.fillMaxSize()
+                                ) {
+                                    item { SummaryCard("CLICKS", "${t.clicks}", "Unique: ${t.uclicks}") }
+                                    item { SummaryCard("CONVERSIONS", "${t.conv}", "") }
+                                    item { SummaryCard("APPROVED", "${t.approved}", "", Color(0xFF10B981)) }
+                                    item { SummaryCard("REJECTED", "${t.rejected}", "", Color(0xFFEF4444)) }
+                                    item { SummaryCard("FRAUD CLICKS", "${t.fraud}", "High risk", Color(0xFFEF4444)) }
+                                    item { SummaryCard("APPROVED PAYOUT", "$${"%.2f".format(t.payout)}", "Approved only", Color(0xFF10B981)) }
+                                }
                             }
-                            uiState.reportResponse!!.conversions?.let { convs ->
-                                if (convs.isEmpty()) item { Text("No conversions found.", modifier = Modifier.padding(16.dp)) }
-                                items(convs) { cv -> ConversionRowItem(cv) }
-                            }
-                            uiState.reportResponse!!.slClicks?.let { sls ->
-                                if (sls.isEmpty()) item { Text("No smartlink traffic found.", modifier = Modifier.padding(16.dp)) }
-                                items(sls) { sl -> SmartlinkRowItem(sl) }
+                        } else {
+                            // Detailed Report Lists
+                            LazyColumn(
+                                contentPadding = PaddingValues(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                uiState.reportResponse!!.rows?.let { rows ->
+                                    if (rows.isEmpty()) item { Text("No data found.", modifier = Modifier.padding(16.dp)) }
+                                    items(rows) { row -> PerformanceRowItem(row) }
+                                }
+                                uiState.reportResponse!!.clicks?.let { clicks ->
+                                    if (clicks.isEmpty()) item { Text("No clicks found.", modifier = Modifier.padding(16.dp)) }
+                                    items(clicks) { c -> ClickRowItem(c) }
+                                }
+                                uiState.reportResponse!!.conversions?.let { convs ->
+                                    if (convs.isEmpty()) item { Text("No conversions found.", modifier = Modifier.padding(16.dp)) }
+                                    items(convs) { cv -> ConversionRowItem(cv) }
+                                }
+                                uiState.reportResponse!!.slClicks?.let { sls ->
+                                    if (sls.isEmpty()) item { Text("No smartlink traffic found.", modifier = Modifier.padding(16.dp)) }
+                                    items(sls) { sl -> SmartlinkRowItem(sl) }
+                                }
                             }
                         }
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun ReportChartView(rows: List<ReportRow>, metric: String) {
+    if (rows.isEmpty()) return
+
+    // Reverse rows so chronological order goes left to right on chart if API returns descending
+    // Let's assume the API sorts by date descending. We'll reverse it for charting so oldest is left.
+    val sortedRows = rows.reversed()
+
+    val entryModel = remember(sortedRows, metric) {
+        val entries = sortedRows.mapIndexed { index, row ->
+            val yValue = when (metric) {
+                "Clicks" -> row.clicks.toFloat()
+                "Conversions" -> row.conv.toFloat()
+                "Approved" -> row.approved.toFloat()
+                "Rejected" -> row.rejected.toFloat()
+                "Fraud Clicks" -> row.fraud.toFloat()
+                "Approved Payout" -> row.payout.toFloat()
+                else -> row.clicks.toFloat()
+            }
+            com.patrykandpatrick.vico.core.entry.entryOf(index.toFloat(), yValue)
+        }
+        com.patrykandpatrick.vico.core.entry.entryModelOf(entries)
+    }
+    
+    val color = when (metric) {
+        "Approved Payout", "Approved" -> Color(0xFF10B981)
+        "Rejected", "Fraud Clicks" -> Color(0xFFEF4444)
+        else -> MaterialTheme.colorScheme.primary
+    }
+
+    Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = "$metric Trend", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(16.dp))
+            com.patrykandpatrick.vico.compose.chart.Chart(
+                chart = com.patrykandpatrick.vico.compose.chart.line.lineChart(
+                    lines = listOf(
+                        com.patrykandpatrick.vico.compose.chart.line.lineSpec(
+                            lineColor = color,
+                            lineBackgroundShader = com.patrykandpatrick.vico.compose.component.shape.shader.verticalGradient(
+                                arrayOf(color.copy(alpha = 0.5f), color.copy(alpha = 0.05f))
+                            )
+                        )
+                    )
+                ),
+                model = entryModel,
+                startAxis = com.patrykandpatrick.vico.compose.axis.vertical.startAxis(),
+                bottomAxis = com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis(
+                    valueFormatter = { value, _ -> 
+                        val idx = value.toInt()
+                        if (idx in sortedRows.indices) sortedRows[idx].label.takeLast(5) else "" 
+                    }
+                ),
+                modifier = Modifier.fillMaxWidth().height(250.dp)
+            )
         }
     }
 }
