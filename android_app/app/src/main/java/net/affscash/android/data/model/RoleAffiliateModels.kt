@@ -13,6 +13,7 @@ data class AdminAffiliateResponse(
 @Serializable
 data class AdminAffiliate(
     @SerialName("user_id") val userId: Int,
+    @SerialName("aff_id") val affId: Int,
     val email: String,
     @SerialName("first_name") val firstName: String,
     @SerialName("last_name") val lastName: String,

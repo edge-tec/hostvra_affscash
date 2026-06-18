@@ -17,18 +17,31 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.MainActivity
 import net.affscash.android.data.model.AdminAffiliate
-import net.affscash.android.ui.affiliates.AdminAffiliatesUiState
+// Removed
 import net.affscash.android.ui.affiliates.AdminAffiliatesViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminUsersScreen(
+    onNavigateToEdit: (Int) -> Unit = {},
+    onNavigateToView: (Int) -> Unit = {},
     viewModel: AdminAffiliatesViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val statusTab by viewModel.status.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val context = LocalContext.current
+
+    LaunchedEffect(uiState.error, uiState.actionMessage) {
+        uiState.error?.let {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            viewModel.clearActionMessage()
+        }
+        uiState.actionMessage?.let {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            viewModel.clearActionMessage()
+        }
+    }
 
     val tabs = listOf("all", "pending", "active", "rejected", "suspended")
 
@@ -59,64 +72,48 @@ fun AdminUsersScreen(
         }
 
         Box(modifier = Modifier.fillMaxSize()) {
-            when (val state = uiState) {
-                is AdminAffiliatesUiState.Loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
-                is AdminAffiliatesUiState.Error -> {
-                    Column(
-                        modifier = Modifier.align(Alignment.Center),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(text = "Error: ${state.message}", color = MaterialTheme.colorScheme.error)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Button(onClick = { viewModel.loadAffiliates() }) {
-                            Text("Retry")
-                        }
-                    }
-                }
-                is AdminAffiliatesUiState.Success -> {
-                    val affiliates = state.data.data
-                    if (affiliates.isNotEmpty()) {
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(horizontal = 16.dp),
-                            contentPadding = PaddingValues(vertical = 16.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-                            items(affiliates) { affiliate ->
-                                AdminAffiliateItem(
-                                    affiliate = affiliate,
-                                    onAction = { action ->
-                                        viewModel.performAction(action, affiliate.userId, onSuccess = { role ->
-                                            if (role != null) {
-                                                Toast.makeText(context, "Logged in as ${affiliate.firstName}", Toast.LENGTH_SHORT).show()
-                                                val intent = Intent(context, MainActivity::class.java).apply {
-                                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                                }
-                                                context.startActivity(intent)
-                                            } else {
-                                                Toast.makeText(context, "Action successful", Toast.LENGTH_SHORT).show()
-                                            }
-                                        }, onError = { msg ->
-                                            Toast.makeText(context, "Error: $msg", Toast.LENGTH_LONG).show()
-                                        })
+            if (uiState.isLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            } else if (uiState.affiliates.isNotEmpty()) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                    contentPadding = PaddingValues(vertical = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(uiState.affiliates) { affiliate ->
+                        AdminAffiliateItem(
+                            affiliate = affiliate,
+                            onAction = { action ->
+                                viewModel.performAction(action, affiliate.userId, onSuccess = { role ->
+                                    if (role != null) {
+                                        Toast.makeText(context, "Logged in as ${affiliate.firstName}", Toast.LENGTH_SHORT).show()
+                                        val intent = Intent(context, MainActivity::class.java).apply {
+                                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                        }
+                                        context.startActivity(intent)
+                                    } else {
+                                        Toast.makeText(context, "Action successful", Toast.LENGTH_SHORT).show()
                                     }
-                                )
-                            }
-                        }
-                    } else {
-                        Text("No affiliates found", modifier = Modifier.align(Alignment.Center))
+                                }, onError = { msg ->
+                                    Toast.makeText(context, "Error: $msg", Toast.LENGTH_LONG).show()
+                                })
+                            },
+                            onView = { onNavigateToView(affiliate.affId) },
+                            onEdit = { onNavigateToEdit(affiliate.affId) }
+                        )
                     }
                 }
+            } else {
+                Text("No affiliates found", modifier = Modifier.align(Alignment.Center))
             }
         }
     }
 }
 
 @Composable
-fun AdminAffiliateItem(affiliate: AdminAffiliate, onAction: (String) -> Unit) {
+fun AdminAffiliateItem(affiliate: AdminAffiliate, onAction: (String) -> Unit, onView: () -> Unit, onEdit: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -161,18 +158,32 @@ fun AdminAffiliateItem(affiliate: AdminAffiliate, onAction: (String) -> Unit) {
             }
             
             Spacer(modifier = Modifier.height(16.dp))
+            HorizontalDivider()
+            Spacer(modifier = Modifier.height(12.dp))
+            
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                if (affiliate.status == "pending") {
-                    Button(onClick = { onAction("approve") }, modifier = Modifier.padding(end = 8.dp)) {
-                        Text("Approve")
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedButton(onClick = onView, contentPadding = PaddingValues(horizontal = 8.dp)) {
+                        Text("View")
+                    }
+                    OutlinedButton(onClick = onEdit, contentPadding = PaddingValues(horizontal = 8.dp)) {
+                        Text("Edit")
                     }
                 }
-                if (affiliate.status == "active") {
-                    OutlinedButton(onClick = { onAction("impersonate") }) {
-                        Text("Login As")
+
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    if (affiliate.status == "pending") {
+                        Button(onClick = { onAction("approve") }, modifier = Modifier.padding(end = 8.dp)) {
+                            Text("Approve")
+                        }
+                    }
+                    if (affiliate.status == "active") {
+                        OutlinedButton(onClick = { onAction("impersonate") }) {
+                            Text("Login As")
+                        }
                     }
                 }
             }

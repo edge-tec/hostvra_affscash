@@ -16,22 +16,25 @@ import okhttp3.Interceptor
 import okhttp3.ResponseBody.Companion.toResponseBody
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
+import dagger.hilt.android.qualifiers.ApplicationContext
+import android.content.Context
+import net.affscash.android.data.local.UserManager
 
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "https://affscash.net/" // Should match PHP server URL
+    private const val BASE_URL = "https://affscash.net/"
 
     @Provides
     @Singleton
-    fun provideSessionCookieJar(@dagger.hilt.android.qualifiers.ApplicationContext context: android.content.Context): SessionCookieJar {
+    fun provideSessionCookieJar(@ApplicationContext context: Context): SessionCookieJar {
         return SessionCookieJar(context)
     }
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(cookieJar: SessionCookieJar, userManager: net.affscash.android.data.local.UserManager): OkHttpClient {
+    fun provideOkHttpClient(cookieJar: SessionCookieJar, userManager: UserManager): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
@@ -41,7 +44,7 @@ object NetworkModule {
             val body = response.body
             if (body != null) {
                 val contentType = body.contentType()
-                if (contentType?.subtype?.contains(\"json\") == true) {
+                if (contentType?.subtype?.contains("json") == true) {
                     val content = body.string()
                     val startIndex = content.indexOfFirst { it == '{' || it == '[' }
                     val endIndex = content.indexOfLast { it == '}' || it == ']' }

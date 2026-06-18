@@ -12,11 +12,19 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import net.affscash.android.data.local.UserManager
 
-sealed class AdminAffiliatesUiState {
-    object Loading : AdminAffiliatesUiState()
-    data class Success(val data: AdminAffiliateResponse) : AdminAffiliatesUiState()
-    data class Error(val message: String) : AdminAffiliatesUiState()
-}
+import net.affscash.android.data.model.EditAffiliateRequest
+import kotlinx.coroutines.flow.update
+
+data class AdminAffiliatesUiStateData(
+    val isLoading: Boolean = false,
+    val affiliates: List<net.affscash.android.data.model.AdminAffiliate> = emptyList(),
+    val error: String? = null,
+    val actionMessage: String? = null,
+    
+    // Details
+    val isDetailsLoading: Boolean = false,
+    val selectedAffiliateDetails: net.affscash.android.data.model.ManagerAffiliateDetailsData? = null
+)
 
 @HiltViewModel
 class AdminAffiliatesViewModel @Inject constructor(
@@ -24,8 +32,8 @@ class AdminAffiliatesViewModel @Inject constructor(
     private val userManager: UserManager
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<AdminAffiliatesUiState>(AdminAffiliatesUiState.Loading)
-    val uiState: StateFlow<AdminAffiliatesUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(AdminAffiliatesUiStateData())
+    val uiState: StateFlow<AdminAffiliatesUiStateData> = _uiState.asStateFlow()
 
     private val _status = MutableStateFlow("all")
     val status: StateFlow<String> = _status.asStateFlow()
@@ -49,13 +57,13 @@ class AdminAffiliatesViewModel @Inject constructor(
 
     fun loadAffiliates() {
         viewModelScope.launch {
-            _uiState.value = AdminAffiliatesUiState.Loading
+            _uiState.update { it.copy(isLoading = true, error = null) }
             repository.getAdminAffiliates(_status.value, _searchQuery.value)
                 .onSuccess { response ->
-                    _uiState.value = AdminAffiliatesUiState.Success(response)
+                    _uiState.update { it.copy(isLoading = false, affiliates = response.data ?: emptyList()) }
                 }
                 .onFailure { exception ->
-                    _uiState.value = AdminAffiliatesUiState.Error(exception.message ?: "Unknown error")
+                    _uiState.update { it.copy(isLoading = false, error = exception.message ?: "Unknown error") }
                 }
         }
     }
@@ -76,5 +84,43 @@ class AdminAffiliatesViewModel @Inject constructor(
                     onError(exception.message ?: "Action failed")
                 }
         }
+    }
+
+    fun loadAffiliateDetails(affId: Int) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isDetailsLoading = true, selectedAffiliateDetails = null, error = null) }
+            repository.getAdminAffiliateDetails(affId)
+                .onSuccess { response ->
+                    _uiState.update { it.copy(
+                        isDetailsLoading = false,
+                        selectedAffiliateDetails = response.data
+                    ) }
+                }
+                .onFailure { exception ->
+                    _uiState.update { it.copy(
+                        isDetailsLoading = false,
+                        error = exception.message ?: "Unknown error"
+                    ) }
+                }
+        }
+    }
+
+    fun editAffiliate(request: EditAffiliateRequest, onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = null) }
+            repository.editAdminAffiliate(request)
+                .onSuccess {
+                    _uiState.update { it.copy(isLoading = false, actionMessage = "Affiliate updated successfully") }
+                    loadAffiliates()
+                    onSuccess()
+                }
+                .onFailure { exception ->
+                    _uiState.update { it.copy(isLoading = false, error = exception.message ?: "Unknown error") }
+                }
+        }
+    }
+    
+    fun clearActionMessage() {
+        _uiState.update { it.copy(actionMessage = null, error = null) }
     }
 }

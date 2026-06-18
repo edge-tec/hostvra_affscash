@@ -22,6 +22,38 @@ try {
         exit;
     }
 
+    if ($action === 'edit') {
+        $affId = (int)($input['id'] ?? 0);
+        $affiliate = Database::fetchOne("SELECT u.* FROM users u JOIN affiliates af ON af.user_id=u.id WHERE af.id=?", [$affId]);
+        
+        if (!$affiliate) {
+            echo json_encode(['success' => false, 'error' => 'Affiliate not found.']);
+            exit;
+        }
+
+        $fname   = $input['first_name'] ?? $affiliate['first_name'];
+        $lname   = $input['last_name'] ?? $affiliate['last_name'];
+        $company = $input['company'] ?? $affiliate['company'];
+        $phone   = $input['phone'] ?? $affiliate['phone'];
+        $country = strtoupper(substr($input['country'] ?: 'US', 0, 2));
+
+        if (!$fname || !$lname) {
+            echo json_encode(['success' => false, 'error' => 'First and last name are required.']);
+            exit;
+        }
+
+        Database::update('users', [
+            'first_name' => $fname,
+            'last_name'  => $lname,
+            'company'    => $company,
+            'phone'      => $phone,
+            'country'    => $country,
+        ], 'id=?', [$affiliate['id']]);
+
+        echo json_encode(['success' => true, 'message' => 'Affiliate profile updated.']);
+        exit;
+    }
+
     if ($action === 'impersonate') {
         if (Auth::impersonate($userId)) {
             echo json_encode([

@@ -10,6 +10,7 @@ import net.affscash.android.data.model.ManagerAffiliateActionRequest
 import net.affscash.android.data.model.ImpersonateResponse
 import javax.inject.Inject
 import javax.inject.Singleton
+import retrofit2.Response
 
 @Singleton
 class AffiliateRepository @Inject constructor(
@@ -22,6 +23,36 @@ class AffiliateRepository @Inject constructor(
                 response.body()?.let {
                     if (it.success) return@withContext Result.success(it)
                     return@withContext Result.failure(Exception(it.error ?: "Failed to fetch admin affiliates"))
+                }
+            }
+            Result.failure(Exception("Network error: ${response.code()}"))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getAdminAffiliateDetails(id: Int): Result<net.affscash.android.data.model.ManagerAffiliateDetailsResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.getAdminAffiliateDetails(id)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    if (it.success) return@withContext Result.success(it)
+                    return@withContext Result.failure(Exception(it.error ?: "Failed to fetch affiliate details"))
+                }
+            }
+            Result.failure(Exception("Network error: ${response.code()}"))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun editAdminAffiliate(request: net.affscash.android.data.model.EditAffiliateRequest): Result<net.affscash.android.data.model.BasicResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.editAdminAffiliate(request)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    if (it.success) return@withContext Result.success(it)
+                    return@withContext Result.failure(Exception(it.error ?: "Failed to edit affiliate"))
                 }
             }
             Result.failure(Exception("Network error: ${response.code()}"))

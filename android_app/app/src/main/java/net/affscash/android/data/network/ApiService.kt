@@ -136,6 +136,36 @@ interface ApiService {
         @Query("action") action: String = "filters"
     ): Response<ManagerFiltersResponse>
 
+    // MANAGER SUPPORT
+    @GET("api/v2/manager/ChatController.php?action=list")
+    suspend fun getManagerConversations(
+        @Query("status") status: String
+    ): Response<net.affscash.android.data.model.ManagerConversationResponse>
+
+    @GET("api/v2/manager/ChatController.php?action=messages")
+    suspend fun getManagerMessages(
+        @Query("conversation_id") conversationId: Int,
+        @Query("affiliate_id") affiliateId: Int
+    ): Response<net.affscash.android.data.model.ManagerMessageResponse>
+
+    @POST("api/v2/manager/ChatController.php")
+    @FormUrlEncoded
+    suspend fun sendManagerMessage(
+        @Field("action") action: String = "send",
+        @Field("affiliate_id") affiliateId: Int,
+        @Field("message") message: String,
+        @Field("attachment_id") attachmentId: Int? = null
+    ): Response<net.affscash.android.data.model.ManagerSendMessageResponse>
+
+    @Multipart
+    @POST("api/v2/manager/ChatController.php")
+    suspend fun uploadManagerAttachment(
+        @Part("action") action: okhttp3.RequestBody,
+        @Part("affiliate_id") affiliateId: okhttp3.RequestBody,
+        @Part file: okhttp3.MultipartBody.Part
+    ): Response<net.affscash.android.data.model.ManagerUploadResponse>
+
+
     @GET("api/v2/admin/offers")
     suspend fun getAdminOffers(
         @Query("q") query: String? = null,
@@ -223,8 +253,16 @@ interface ApiService {
         @Query("search") search: String = ""
     ): Response<AdminAffiliateResponse>
 
+    @GET("api/v2/admin/affiliates?action=view")
+    suspend fun getAdminAffiliateDetails(
+        @Query("id") id: Int
+    ): Response<ManagerAffiliateDetailsResponse>
+
     @POST("api/v2/admin/affiliate-actions")
     suspend fun adminAffiliateAction(@Body request: AffiliateActionRequest): Response<ImpersonateResponse>
+
+    @POST("api/v2/admin/affiliate-actions")
+    suspend fun editAdminAffiliate(@Body request: EditAffiliateRequest): Response<BasicResponse>
 
     @GET("api/v2/admin/advertisers")
     suspend fun getAdminAdvertisers(

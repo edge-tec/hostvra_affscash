@@ -1,3 +1,4 @@
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 package net.affscash.android.ui.manager
 
 import android.net.Uri
@@ -5,12 +6,12 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -28,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.ui.components.QrCodeImage
 import coil.compose.AsyncImage
 import net.affscash.android.data.model.ManagerProfileResponse
+import androidx.compose.material3.ExperimentalMaterial3Api
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,7 +63,7 @@ fun ManagerProfileScreen(
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
             val tabs = listOf("Profile", "Security", "Payment", "Google Authenticator")
-            ScrollableTabRow(
+            SecondaryScrollableTabRow(
                 selectedTabIndex = selectedTab,
                 edgePadding = 8.dp,
                 containerColor = MaterialTheme.colorScheme.surface
@@ -179,7 +181,7 @@ fun ProfileTabContent(
                             )
                         } else if (!data.profile?.profilePic.isNullOrEmpty()) {
                             AsyncImage(
-                                model = data.profile?.profilePic,
+                                model = data.profile.profilePic,
                                 contentDescription = "Profile Pic",
                                 modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop
@@ -280,7 +282,7 @@ fun ProfileTabContent(
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                 ) {
-                    Icon(Icons.Default.ExitToApp, contentDescription = "Logout")
+                    Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Logout")
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Logout")
                 }
@@ -349,6 +351,7 @@ fun SecurityTabContent(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentTabContent(
     data: ManagerProfileResponse,
@@ -357,6 +360,31 @@ fun PaymentTabContent(
 ) {
     var method by remember { mutableStateOf(data.payment?.method ?: "") }
     var details by remember { mutableStateOf(data.payment?.details ?: "") }
+
+    val methods = listOf("PayPal", "Payoneer", "Wise", "Bank Wire", "Cryptocurrency", "Other")
+    var expanded by remember { mutableStateOf(false) }
+    var selectedMethod by remember { mutableStateOf(method) }
+
+    val detailsJson = remember(details) {
+        try {
+            org.json.JSONObject(details)
+        } catch (_: Exception) {
+            org.json.JSONObject()
+        }
+    }
+
+    var accountHolderName by remember { mutableStateOf(detailsJson.optString("account_holder_name", "")) }
+    var emailId by remember { mutableStateOf(detailsJson.optString("email", "")) }
+    var bankName by remember { mutableStateOf(detailsJson.optString("bank_name", "")) }
+    var accountNumber by remember { mutableStateOf(detailsJson.optString("account_number", "")) }
+    var ibanSwift by remember { mutableStateOf(detailsJson.optString("iban_swift", "")) }
+    var routingNumber by remember { mutableStateOf(detailsJson.optString("routing_number", "")) }
+    var branchName by remember { mutableStateOf(detailsJson.optString("branch_name", "")) }
+    var bankAddress by remember { mutableStateOf(detailsJson.optString("bank_address", "")) }
+    var cryptoType by remember { mutableStateOf(detailsJson.optString("crypto_type", "")) }
+    var networkType by remember { mutableStateOf(detailsJson.optString("network_type", "")) }
+    var walletAddress by remember { mutableStateOf(detailsJson.optString("wallet_address", "")) }
+    var customDetails by remember { mutableStateOf(if (detailsJson.length() == 0) details else "") }
 
     Column(
         modifier = Modifier
@@ -379,7 +407,7 @@ fun PaymentTabContent(
                         onValueChange = { selectedMethod = it },
                         label = { Text("Payment Method") },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                        modifier = Modifier.menuAnchor().fillMaxWidth()
+                        modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable).fillMaxWidth()
                     )
                     ExposedDropdownMenu(
                         expanded = expanded,

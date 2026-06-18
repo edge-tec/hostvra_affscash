@@ -23,6 +23,11 @@ import net.affscash.android.ui.offers.OfferScreen
 import net.affscash.android.ui.reports.ReportScreen
 import net.affscash.android.ui.admin.AdminAdvertisersScreen
 import net.affscash.android.ui.admin.AdminAdvertiserFormScreen
+import net.affscash.android.ui.admin.AdminUsersScreen
+import net.affscash.android.ui.admin.AdminAffiliateDetailsScreen
+import net.affscash.android.ui.admin.AdminEditAffiliateScreen
+import androidx.navigation.navArgument
+import androidx.navigation.NavType
 
 sealed class Screen(val route: String, val title: String, val icon: androidx.compose.ui.graphics.vector.ImageVector) {
     // Affiliate Screens
@@ -97,6 +102,8 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     object ManagerConversions : Screen("manager_conversions", "Conv", Icons.Filled.MonetizationOn)
     object ManagerInvoices : Screen("manager_invoices", "Invoices", Icons.Filled.Receipt)
     object ManagerReports : Screen("manager_reports", "Reports", Icons.Filled.Assessment)
+    object ManagerSupport : Screen("manager_support", "Support", Icons.Filled.SupportAgent)
+    object ManagerChat : Screen("manager_chat", "Chat", Icons.Filled.Chat)
     object ManagerSettings : Screen("manager_settings", "Settings", Icons.Filled.Settings)
     
     // Affiliate Screens
@@ -121,7 +128,7 @@ fun MainScreen(
 
     val allItems = when (role) {
         "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminPrivateOffers, Screen.AdminSmartlinks, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminAffiliateManagers, Screen.AdminConversions, Screen.AdminReports, Screen.AdminAffiliateReport, Screen.AdminFraudReport, Screen.AdminAutoHide, Screen.AdminInvoices, Screen.AdminPlatformSettings, Screen.AdminSettings)
-        "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerSmartlinks, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerReports, Screen.ManagerInvoices, Screen.ManagerSettings)
+        "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerSupport, Screen.ManagerSmartlinks, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerReports, Screen.ManagerInvoices, Screen.ManagerSettings)
         else -> listOf(Screen.Dashboard, Screen.Offers, Screen.AffiliateInHouseOffers, Screen.Smartlinks, Screen.Reports, Screen.AffiliateSettings)
     }
     
@@ -441,7 +448,32 @@ fun MainScreen(
                     )
                 }
             }
-            composable(Screen.AdminUsers.route) { net.affscash.android.ui.admin.AdminUsersScreen() }
+            composable("admin_users") { AdminUsersScreen(
+                onNavigateToEdit = { affId -> navController.navigate("admin_edit_affiliate/$affId") },
+                onNavigateToView = { affId -> navController.navigate("admin_affiliate_details/$affId") }
+            ) }
+            
+            composable(
+                route = "admin_affiliate_details/{affId}",
+                arguments = listOf(navArgument("affId") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val affId = backStackEntry.arguments?.getInt("affId") ?: return@composable
+                AdminAffiliateDetailsScreen(
+                    affId = affId,
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(
+                route = "admin_edit_affiliate/{affId}",
+                arguments = listOf(navArgument("affId") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val affId = backStackEntry.arguments?.getInt("affId") ?: return@composable
+                AdminEditAffiliateScreen(
+                    affId = affId,
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
             composable(Screen.AdminConversions.route) { net.affscash.android.ui.admin.AdminConversionsScreen() }
             composable(Screen.AdminReports.route) {
                 val viewModel: net.affscash.android.ui.screens.admin.reports.AdminReportsViewModel = androidx.hilt.navigation.compose.hiltViewModel()
@@ -574,6 +606,20 @@ fun MainScreen(
                 net.affscash.android.ui.manager.ManagerReportsScreen(
                     onNavigateBack = { navController.popBackStack() }
                 ) 
+            }
+            composable(Screen.ManagerSupport.route) {
+                net.affscash.android.ui.manager.support.ManagerSupportScreen(
+                    navController = navController
+                )
+            }
+            composable(Screen.ManagerChat.route) {
+                val viewModel: net.affscash.android.ui.manager.support.ManagerSupportViewModel = androidx.hilt.navigation.compose.hiltViewModel(
+                    navController.getBackStackEntry(Screen.ManagerSupport.route)
+                )
+                net.affscash.android.ui.manager.support.ManagerChatScreen(
+                    navController = navController,
+                    viewModel = viewModel
+                )
             }
             composable(Screen.ManagerInvoices.route) { 
                 net.affscash.android.ui.manager.ManagerInvoicesScreen() 
