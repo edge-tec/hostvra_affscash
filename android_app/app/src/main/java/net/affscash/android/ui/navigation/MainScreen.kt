@@ -79,7 +79,7 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
             fun createRoute(offerId: Int) = "admin_private_offer_detail/$offerId"
         }
     }
-    object AdminUsers : Screen("admin_users", "Users", Icons.Filled.Assessment)
+    object AdminUsers : Screen("admin_users", "Affiliates", Icons.Filled.People)
     object AdminAdvertisers : Screen("admin_advertisers", "Advertisers", Icons.Filled.SupervisorAccount)
     object AdminAdvertiserCreate : Screen("admin_create", "Create", Icons.Filled.Add)
     class AdminAdvertiserEdit(id: Int) : Screen("admin_edit/$id", "Edit", Icons.Filled.Edit) {
