@@ -51,13 +51,13 @@ fun AffscashNavGraph(
                 onLogout = {
                     currentRole = null
                     navController.navigate("login") {
-                        popUpTo(0) { inclusive = true }
+                        popUpTo(navController.graph.id) { inclusive = true }
                     }
                 },
                 onRoleChange = { newRole ->
                     currentRole = newRole
                     navController.navigate("main_screen") {
-                        popUpTo(0) { inclusive = true }
+                        popUpTo(navController.graph.id) { inclusive = true }
                     }
                 }
             )

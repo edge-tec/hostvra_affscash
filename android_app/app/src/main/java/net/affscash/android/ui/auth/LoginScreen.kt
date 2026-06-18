@@ -101,6 +101,23 @@ fun LoginScreen(
             TextButton(onClick = onForgotPasswordClick) {
                 Text("Forgot Password?")
             }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TextButton(onClick = { uriHandler.openUri("https://affscash.net/privacy-policy") }) {
+                    Text("Privacy Policy", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary)
+                }
+                Text("•", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary)
+                TextButton(onClick = { uriHandler.openUri("https://affscash.net/terms-and-conditions") }) {
+                    Text("Terms & Conditions", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary)
+                }
+            }
         }
     }
 }

@@ -51,10 +51,3 @@ data class ResetPasswordRequest(
     val token: String,
     val password: String
 )
-
-@Serializable
-data class BasicResponse(
-    val success: Boolean,
-    val error: String? = null,
-    val message: String? = null
-)

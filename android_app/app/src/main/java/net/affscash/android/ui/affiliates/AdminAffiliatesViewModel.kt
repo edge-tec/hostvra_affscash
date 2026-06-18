@@ -76,7 +76,10 @@ class AdminAffiliatesViewModel @Inject constructor(
                         loadAffiliates()
                         onSuccess(null)
                     } else if (action == "impersonate") {
-                        response.role?.let { userManager.saveUser(it, response.user?.email ?: "", response.user?.firstName + " " + response.user?.lastName) }
+                        response.role?.let {
+                            userManager.saveIsImpersonating(true)
+                            userManager.saveUser(it, response.user?.email ?: "", response.user?.firstName + " " + response.user?.lastName)
+                        }
                         onSuccess(response.role)
                     }
                 }
