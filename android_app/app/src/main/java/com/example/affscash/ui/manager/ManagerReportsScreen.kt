@@ -205,18 +205,18 @@ fun ManagerReportsScreen(
                         if (uiState.reportResponse!!.totals != null) {
                             val t = uiState.reportResponse!!.totals!!
                             LazyVerticalGrid(
-                                columns = GridCells.Fixed(3),
+                                columns = GridCells.Fixed(2),
                                 contentPadding = PaddingValues(8.dp),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                                modifier = Modifier.height(180.dp)
+                                modifier = Modifier.heightIn(max = 280.dp)
                             ) {
                                 item { SummaryCard("CLICKS", "${t.clicks}", "Unique: ${t.uclicks}") }
                                 item { SummaryCard("CONVERSIONS", "${t.conv}", "") }
                                 item { SummaryCard("APPROVED", "${t.approved}", "", Color(0xFF10B981)) }
                                 item { SummaryCard("REJECTED", "${t.rejected}", "", Color(0xFFEF4444)) }
                                 item { SummaryCard("FRAUD CLICKS", "${t.fraud}", "High risk", Color(0xFFEF4444)) }
-                                item { SummaryCard("APPROVED PAYOUT", "$${t.payout}", "Approved only", Color(0xFF10B981)) }
+                                item { SummaryCard("APPROVED PAYOUT", "$${"%.2f".format(t.payout)}", "Approved only", Color(0xFF10B981)) }
                             }
                         }
 
@@ -252,11 +252,23 @@ fun ManagerReportsScreen(
 
 @Composable
 fun SummaryCard(title: String, value: String, subtitle: String, valueColor: Color = Color.Black) {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(8.dp)) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+    ) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Text(title, fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
-            Text(value, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = valueColor)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = value,
+                fontSize = if (value.length > 7) 16.sp else 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = valueColor,
+                maxLines = 1,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+            )
             if (subtitle.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(2.dp))
                 Text(subtitle, fontSize = 10.sp, color = Color.Gray)
             }
         }
@@ -275,7 +287,7 @@ fun PerformanceRowItem(row: ReportRow) {
                     Text("Conversions: ${row.conv}", fontSize = 12.sp)
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text("Payout: $${row.payout}", fontSize = 12.sp, color = Color(0xFF10B981), fontWeight = FontWeight.Bold)
+                    Text("Payout: $${"%.2f".format(row.payout)}", fontSize = 12.sp, color = Color(0xFF10B981), fontWeight = FontWeight.Bold)
                     Text("App: ${row.approved} | Rej: ${row.rejected}", fontSize = 12.sp)
                 }
             }
@@ -298,7 +310,7 @@ fun ClickRowItem(click: ClickRow) {
                 Column(horizontalAlignment = Alignment.End) {
                     Text(click.convStatus ?: "no conversion", fontSize = 12.sp, color = if (click.convStatus == "approved") Color(0xFF10B981) else Color.Gray)
                     if (click.convPayout != null && click.convPayout > 0) {
-                        Text("$${click.convPayout}", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        Text("$${"%.2f".format(click.convPayout)}", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -321,7 +333,7 @@ fun ConversionRowItem(conversion: ConversionRow) {
                 }
                 Column(horizontalAlignment = Alignment.End) {
                     Text(conversion.status.uppercase(), fontSize = 12.sp, color = if (conversion.status == "approved") Color(0xFF10B981) else Color(0xFFEF4444), fontWeight = FontWeight.Bold)
-                    Text("$${conversion.payout}", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    Text("$${"%.2f".format(conversion.payout)}", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -344,7 +356,7 @@ fun SmartlinkRowItem(click: SmartlinkClickRow) {
                 Column(horizontalAlignment = Alignment.End) {
                     Text(click.convStatus ?: "no conversion", fontSize = 12.sp, color = if (click.convStatus == "approved") Color(0xFF10B981) else Color.Gray)
                     if (click.convPayout != null && click.convPayout > 0) {
-                        Text("$${click.convPayout}", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        Text("$${"%.2f".format(click.convPayout)}", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }
