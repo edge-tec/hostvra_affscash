@@ -8,6 +8,35 @@ import retrofit2.http.*
 
 interface ApiService {
 
+    // ADMIN SUPPORT
+    @GET("api/v2/admin/ChatController.php?action=list")
+    suspend fun getAdminConversations(
+        @Query("status") status: String,
+        @Query("owner_type") ownerType: String
+    ): Response<AdminSupportConversationsResponse>
+
+    @GET("api/v2/admin/ChatController.php?action=messages")
+    suspend fun getAdminMessages(
+        @Query("affiliate_id") affiliateId: Int,
+        @Query("owner_type") ownerType: String,
+        @Query("conversation_id") conversationId: Int
+    ): Response<AdminSupportMessagesResponse>
+
+    @POST("api/v2/admin/ChatController.php?action=send")
+    suspend fun sendAdminMessage(
+        @Body request: AdminSupportSendRequest
+    ): Response<AdminSupportSendResponse>
+
+    @POST("api/v2/admin/ChatController.php?action=close_conversation")
+    suspend fun closeAdminConversation(
+        @Body request: AdminSupportActionRequest
+    ): Response<AdminSupportActionResponse>
+
+    @POST("api/v2/admin/ChatController.php?action=reopen_conversation")
+    suspend fun reopenAdminConversation(
+        @Body request: AdminSupportActionRequest
+    ): Response<AdminSupportActionResponse>
+
     @POST("api/v2/auth")
     suspend fun login(@Body request: AuthRequest): Response<AuthResponse>
 

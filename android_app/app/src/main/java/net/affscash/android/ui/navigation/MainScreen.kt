@@ -97,6 +97,13 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
     object AdminInvoices : Screen("admin_invoices", "Invoices", Icons.Filled.Receipt)
     object AdminCreateInvoice : Screen("admin_create_invoice", "Create Invoice", Icons.Filled.Add)
     object AdminAffiliateManagers : Screen("admin_managers", "Managers", Icons.Filled.SupervisorAccount)
+    object AdminSupport : Screen("admin_support", "Live Support", Icons.Filled.SupportAgent)
+    class AdminChat(id: Int, affId: Int, name: String) : Screen("admin_chat/$id/$affId/$name", "Chat", Icons.Filled.Chat) {
+        companion object {
+            const val route = "admin_chat/{convId}/{affId}/{name}"
+            fun createRoute(convId: Int, affId: Int, name: String) = "admin_chat/$convId/$affId/$name"
+        }
+    }
     object AdminSettings : Screen("admin_settings", "Settings", Icons.Filled.Settings)
     object AdminPlatformSettings : Screen("admin_platform_settings", "Platform Settings", Icons.Filled.Settings)
 
@@ -135,7 +142,7 @@ fun MainScreen(
     }
 
     val allItems = when (role) {
-        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminPrivateOffers, Screen.AdminSmartlinks, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminAffiliateManagers, Screen.AdminConversions, Screen.AdminReports, Screen.AdminAffiliateReport, Screen.AdminFraudReport, Screen.AdminAutoHide, Screen.AdminInvoices, Screen.AdminPlatformSettings, Screen.AdminSettings)
+        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminPrivateOffers, Screen.AdminSmartlinks, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminAffiliateManagers, Screen.AdminSupport, Screen.AdminConversions, Screen.AdminReports, Screen.AdminAffiliateReport, Screen.AdminFraudReport, Screen.AdminAutoHide, Screen.AdminInvoices, Screen.AdminPlatformSettings, Screen.AdminSettings)
         "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerSupport, Screen.ManagerSmartlinks, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerReports, Screen.ManagerInvoices, Screen.ManagerSettings)
         else -> listOf(Screen.Dashboard, Screen.Offers, Screen.AffiliateInHouseOffers, Screen.Smartlinks, Screen.Reports, Screen.AffiliateSettings)
     }
@@ -439,6 +446,33 @@ fun MainScreen(
                     onNavigateToCreateOffer = { navController.navigate(Screen.AdminOfferCreate.route) },
                     onNavigateToEditOffer = { id -> navController.navigate(Screen.AdminOfferEdit.createRoute(id)) }
                 ) 
+            }
+            
+            composable(Screen.AdminSupport.route) {
+                net.affscash.android.ui.screens.admin.support.AdminSupportScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToChat = { convId, affId, name ->
+                        navController.navigate(Screen.AdminChat.createRoute(convId, affId, java.net.URLEncoder.encode(name, "UTF-8")))
+                    }
+                )
+            }
+            
+            composable(Screen.AdminChat.route) { backStackEntry ->
+                val convId = backStackEntry.arguments?.getString("convId")?.toIntOrNull() ?: 0
+                val affId = backStackEntry.arguments?.getString("affId")?.toIntOrNull() ?: 0
+                val name = backStackEntry.arguments?.getString("name")?.let { java.net.URLDecoder.decode(it, "UTF-8") } ?: "Unknown"
+                // For Chat, we can pass the ViewModel if needed, but since it's scoped to the activity/navGraph,
+                // we can just retrieve the same instance using hiltViewModel() inside the ChatScreen, OR
+                // since the ViewModel is already shared via NavGraph/Activity, we can just fetch it here.
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(Screen.AdminSupport.route)
+                }
+                val viewModel: net.affscash.android.ui.screens.admin.support.AdminSupportViewModel = androidx.hilt.navigation.compose.hiltViewModel(parentEntry)
+                
+                net.affscash.android.ui.screens.admin.support.AdminSupportChatScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    viewModel = viewModel
+                )
             }
             composable(Screen.AdminOfferCreate.route) {
                 net.affscash.android.ui.admin.AdminOfferFormScreen(
