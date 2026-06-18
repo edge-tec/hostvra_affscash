@@ -3,8 +3,7 @@ package net.affscash.android.ui.manager
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
@@ -262,12 +261,10 @@ fun ManagerReportsScreen(
                         // Totals Cards
                         if (uiState.reportResponse!!.totals != null) {
                             val t = uiState.reportResponse!!.totals!!
-                            LazyVerticalGrid(
-                                columns = GridCells.Fixed(2),
+                            LazyRow(
                                 contentPadding = PaddingValues(8.dp),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
-                                modifier = Modifier.fillMaxWidth().height(250.dp) // Fixed height for totals
+                                modifier = Modifier.fillMaxWidth()
                             ) {
                                 item { SummaryCard("CLICKS", "${t.clicks}", "Unique: ${t.uclicks}") }
                                 item { SummaryCard("CONVERSIONS", "${t.conv}", "") }
@@ -322,7 +319,7 @@ fun ManagerReportsScreen(
 @Composable
 fun SummaryCard(title: String, value: String, subtitle: String, valueColor: Color = Color.Black) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.width(120.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
