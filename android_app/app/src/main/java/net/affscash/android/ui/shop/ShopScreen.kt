@@ -210,14 +210,14 @@ fun ProductCard(
             modifier = Modifier.fillMaxWidth().padding(12.dp)
         ) {
             val rawPath = product.imagePath ?: ""
-            val imageUrl = if (rawPath.isEmpty()) {
+            val imageUrl = (if (rawPath.isEmpty()) {
                 "" // Trigger error fallback
             } else if (!rawPath.startsWith("http")) {
                 val cleanPath = rawPath.removePrefix("/")
                 "https://affscash.net/" + cleanPath
             } else {
                 rawPath
-            }
+            }).replace(" ", "%20")
 
             SubcomposeAsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)

@@ -162,11 +162,11 @@ fun AdminShopProductCard(
         ) {
             Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
                 product.imagePath?.takeIf { it.isNotEmpty() }?.let { rawPath ->
-                    val imageUrl = if (!rawPath.startsWith("http")) {
+                    val imageUrl = (if (!rawPath.startsWith("http")) {
                         "https://affscash.net/" + rawPath.removePrefix("/")
                     } else {
                         rawPath
-                    }
+                    }).replace(" ", "%20")
                     AsyncImage(
                         model = coil.request.ImageRequest.Builder(androidx.compose.ui.platform.LocalContext.current)
                             .data(imageUrl)

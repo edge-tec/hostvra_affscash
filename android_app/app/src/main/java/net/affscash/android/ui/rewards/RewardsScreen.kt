@@ -200,7 +200,7 @@ fun AvailableRewardItem(rule: RewardRule) {
         ) {
             if (rule.imagePath != null) {
                 val cleanPath = rule.imagePath.removePrefix("/")
-                val fullImageUrl = if (cleanPath.startsWith("http")) cleanPath else "https://affscash.net/" + cleanPath
+                val fullImageUrl = (if (cleanPath.startsWith("http")) cleanPath else "https://affscash.net/" + cleanPath).replace(" ", "%20")
                 SubcomposeAsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(fullImageUrl)
