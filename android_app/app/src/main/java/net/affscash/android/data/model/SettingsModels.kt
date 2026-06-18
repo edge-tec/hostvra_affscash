@@ -4,6 +4,12 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class GlobalPostbackInfo(
+    val url: String? = null,
+    val status: String? = null
+)
+
+@Serializable
 data class SettingsLoadResponse(
     val success: Boolean,
     val profile: ProfileInfo? = null,
@@ -12,7 +18,13 @@ data class SettingsLoadResponse(
     @SerialName("payment_methods") val paymentMethods: List<String> = emptyList(),
     @SerialName("two_factor_enabled") val twoFactorEnabled: Boolean = false,
     @SerialName("delete_request") val deleteRequest: DeleteRequestInfo? = null,
+    @SerialName("global_postback") val globalPostback: GlobalPostbackInfo? = null,
     val error: String? = null
+)
+
+@Serializable
+data class UpdateGlobalPostbackRequest(
+    @SerialName("global_postback_url") val globalPostbackUrl: String
 )
 
 @Serializable

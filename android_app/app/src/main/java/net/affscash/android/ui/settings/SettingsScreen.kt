@@ -35,7 +35,14 @@ fun SettingsScreen(
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
     var selectedTabIndex by remember { mutableIntStateOf(0) }
-    val tabs = listOf("Profile", "Security", "Payment", "My Manager", "2FA", "Delete Account")
+    val tabs = remember(role) {
+        val list = mutableListOf("Profile", "Security", "Payment")
+        if (role == "affiliate") {
+            list.add("Global Postback")
+        }
+        list.addAll(listOf("My Manager", "2FA", "Delete Account"))
+        list
+    }
 
     Scaffold(
         topBar = {
@@ -99,13 +106,14 @@ fun SettingsScreen(
                                 .verticalScroll(scrollState)
                                 .padding(16.dp)
                         ) {
-                            when (selectedTabIndex) {
-                                0 -> ProfileTab(state.profile, viewModel)
-                                1 -> SecurityTab(viewModel)
-                                2 -> PaymentTab(state.payment, state.paymentMethods, viewModel)
-                                3 -> ManagerTab(state.manager)
-                                4 -> TwoFactorTab(state.twoFactorEnabled, viewModel)
-                                5 -> DeleteAccountTab(state.deleteRequest, viewModel)
+                            when (tabs[selectedTabIndex]) {
+                                "Profile" -> ProfileTab(state.profile, viewModel)
+                                "Security" -> SecurityTab(viewModel)
+                                "Payment" -> PaymentTab(state.payment, state.paymentMethods, viewModel)
+                                "Global Postback" -> GlobalPostbackTab(state.globalPostback, viewModel)
+                                "My Manager" -> ManagerTab(state.manager)
+                                "2FA" -> TwoFactorTab(state.twoFactorEnabled, viewModel)
+                                "Delete Account" -> DeleteAccountTab(state.deleteRequest, viewModel)
                             }
 
                             Spacer(modifier = Modifier.height(32.dp))

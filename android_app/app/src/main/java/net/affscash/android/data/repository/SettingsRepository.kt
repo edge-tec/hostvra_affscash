@@ -135,5 +135,21 @@ class SettingsRepository @Inject constructor(
         } catch (e: Exception) {
             Result.failure(e)
         }
+    suspend fun updateGlobalPostback(request: UpdateGlobalPostbackRequest): Result<SettingsActionResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.updateGlobalPostback(request)
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null && body.success) {
+                    Result.success(body)
+                } else {
+                    Result.failure(Exception(body?.error ?: "Failed to update global postback"))
+                }
+            } else {
+                Result.failure(Exception("API Error: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

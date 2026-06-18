@@ -563,6 +563,9 @@ interface ApiService {
     @POST("api/v2/settings?action=request_account_delete")
     suspend fun requestAccountDelete(@Body request: DeleteAccountRequest): Response<SettingsActionResponse>
 
+    @POST("api/v2/settings?action=update_global_postback")
+    suspend fun updateGlobalPostback(@Body request: UpdateGlobalPostbackRequest): Response<SettingsActionResponse>
+
     // ── Manager Reports ──────────────────────────────────────────────────────────
 
     @GET("api/v2/manager/reports")

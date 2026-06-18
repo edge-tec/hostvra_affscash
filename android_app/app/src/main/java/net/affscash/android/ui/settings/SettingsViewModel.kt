@@ -21,6 +21,7 @@ sealed class SettingsUiState {
         val paymentMethods: List<String>,
         val twoFactorEnabled: Boolean,
         val deleteRequest: DeleteRequestInfo?,
+        val globalPostback: GlobalPostbackInfo?,
         val isImpersonating: Boolean = false
     ) : SettingsUiState()
     data class Error(val message: String) : SettingsUiState()
@@ -52,6 +53,7 @@ class SettingsViewModel @Inject constructor(
                         paymentMethods = res.paymentMethods,
                         twoFactorEnabled = res.twoFactorEnabled,
                         deleteRequest = res.deleteRequest,
+                        globalPostback = res.globalPostback,
                         isImpersonating = userManager.isImpersonating()
                     )
                 }
@@ -145,6 +147,17 @@ class SettingsViewModel @Inject constructor(
                     loadSettings() // refresh state to show pending status
                 }
                 .onFailure { onError(it.message ?: "Request failed") }
+        }
+    }
+
+    fun updateGlobalPostback(request: UpdateGlobalPostbackRequest, onSuccess: (String) -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch {
+            settingsRepository.updateGlobalPostback(request)
+                .onSuccess {
+                    onSuccess(it.message ?: "Global postback updated")
+                    loadSettings() // refresh state
+                }
+                .onFailure { onError(it.message ?: "Update failed") }
         }
     }
 }

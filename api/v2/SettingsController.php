@@ -58,7 +58,8 @@ if ($action === 'load') {
             'last_name' => $aff['last_name'],
             'email' => $aff['email'],
             'company' => $aff['company'],
-            'phone' => $aff['phone']
+            'phone' => $aff['phone'],
+            'global_postback_url' => $aff['global_postback_url'] ?? null
         ],
         'payment' => [
             'method' => $aff['payment_method'],
@@ -127,6 +128,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         echo json_encode(['success' => true, 'message' => 'Payment details saved.']);
+        exit;
+    }
+
+    if ($action === 'update_global_postback') {
+        $url = trim($input['global_postback_url'] ?? '');
+        if ($url && !filter_var(strtok($url, '?'), FILTER_VALIDATE_URL)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid URL. Must start with https://']);
+            exit;
+        }
+
+        if ($affId > 0) {
+            if ($url) {
+                Database::update('affiliates', [
+                    'global_postback_url' => $url,
+                    'global_pb_admin_status' => 'approved',
+                    'global_pb_active' => 1
+                ], 'id=?', [$affId]);
+            } else {
+                Database::update('affiliates', [
+                    'global_postback_url' => null,
+                    'global_pb_admin_status' => null,
+                    'global_pb_admin_note' => null,
+                    'global_pb_submitted_at' => null
+                ], 'id=?', [$affId]);
+            }
+        }
+        
+        echo json_encode(['success' => true, 'message' => 'Global postback URL saved.']);
         exit;
     }
 
