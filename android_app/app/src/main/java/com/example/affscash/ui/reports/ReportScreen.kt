@@ -62,126 +62,155 @@ fun ReportScreen(
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
-            // Report Type Dropdown
-            var reportTypeExpanded by remember { mutableStateOf(false) }
-            val currentTabName = tabs.find { it.first == selectedTab }?.second ?: "Report Type"
-            Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp)) {
-                OutlinedButton(
-                    onClick = { reportTypeExpanded = true },
-                    modifier = Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(horizontal = 16.dp)
-                ) {
-                    Text(currentTabName, modifier = Modifier.weight(1f))
-                    Icon(Icons.Default.ArrowDropDown, contentDescription = null)
-                }
-                DropdownMenu(expanded = reportTypeExpanded, onDismissRequest = { reportTypeExpanded = false }) {
-                    tabs.forEach { tabInfo ->
-                        DropdownMenuItem(
-                            text = { Text(tabInfo.second) },
-                            onClick = { viewModel.updateTab(tabInfo.first); reportTypeExpanded = false }
+            // Expandable Filters Section
+            var filtersExpanded by remember { mutableStateOf(false) }
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
+                elevation = CardDefaults.cardElevation(2.dp),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+            ) {
+                Column {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { filtersExpanded = !filtersExpanded }
+                            .padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text("Filters & Options", fontWeight = FontWeight.Bold)
+                        Icon(
+                            if (filtersExpanded) androidx.compose.material.icons.filled.KeyboardArrowUp else androidx.compose.material.icons.filled.KeyboardArrowDown,
+                            contentDescription = "Toggle Filters"
                         )
                     }
-                }
-            }
 
-            // Filters Section
-            Column(modifier = Modifier.padding(horizontal = 8.dp)) {
-                // Date Range Dropdown
-                var dateExpanded by remember { mutableStateOf(false) }
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    OutlinedButton(
-                        onClick = { dateExpanded = true },
-                        modifier = Modifier.fillMaxWidth(),
-                        contentPadding = PaddingValues(horizontal = 16.dp)
-                    ) {
-                        Text("$fromDate to $toDate", modifier = Modifier.weight(1f))
-                        Icon(Icons.Default.ArrowDropDown, contentDescription = null)
-                    }
-                    DropdownMenu(expanded = dateExpanded, onDismissRequest = { dateExpanded = false }) {
-                        val dateRanges = listOf("Today", "Yesterday", "Last 7 Days", "This Month")
-                        dateRanges.forEach { range ->
-                            DropdownMenuItem(
-                                text = { Text(range) },
-                                onClick = {
-                                    val cal = Calendar.getInstance()
-                                    val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-                                    val to = sdf.format(cal.time)
-                                    val from = when (range) {
-                                        "Today" -> to
-                                        "Yesterday" -> { cal.add(Calendar.DAY_OF_YEAR, -1); sdf.format(cal.time).also { cal.add(Calendar.DAY_OF_YEAR, 1) } }
-                                        "Last 7 Days" -> { cal.add(Calendar.DAY_OF_YEAR, -7); sdf.format(cal.time).also { cal.add(Calendar.DAY_OF_YEAR, 7) } }
-                                        "This Month" -> { cal.set(Calendar.DAY_OF_MONTH, 1); sdf.format(cal.time) }
-                                        else -> to
-                                    }
-                                    if (range == "Yesterday") {
-                                        viewModel.setDateRange(from, from)
-                                    } else {
-                                        viewModel.setDateRange(from, to)
-                                    }
-                                    dateExpanded = false
+                    androidx.compose.animation.AnimatedVisibility(visible = filtersExpanded) {
+                        Column(modifier = Modifier.padding(bottom = 12.dp)) {
+                            // Report Type Dropdown
+                            var reportTypeExpanded by remember { mutableStateOf(false) }
+                            val currentTabName = tabs.find { it.first == selectedTab }?.second ?: "Report Type"
+                            Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp)) {
+                                OutlinedButton(
+                                    onClick = { reportTypeExpanded = true },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentPadding = PaddingValues(horizontal = 16.dp)
+                                ) {
+                                    Text(currentTabName, modifier = Modifier.weight(1f))
+                                    Icon(Icons.Default.ArrowDropDown, contentDescription = null)
                                 }
-                            )
-                        }
-                    }
-                }
+                                DropdownMenu(expanded = reportTypeExpanded, onDismissRequest = { reportTypeExpanded = false }) {
+                                    tabs.forEach { tabInfo ->
+                                        DropdownMenuItem(
+                                            text = { Text(tabInfo.second) },
+                                            onClick = { viewModel.updateTab(tabInfo.first); reportTypeExpanded = false }
+                                        )
+                                    }
+                                }
+                            }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                            // Filters Section
+                            Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+                                // Date Range Dropdown
+                                var dateExpanded by remember { mutableStateOf(false) }
+                                Box(modifier = Modifier.fillMaxWidth()) {
+                                    OutlinedButton(
+                                        onClick = { dateExpanded = true },
+                                        modifier = Modifier.fillMaxWidth(),
+                                        contentPadding = PaddingValues(horizontal = 16.dp)
+                                    ) {
+                                        Text("$fromDate to $toDate", modifier = Modifier.weight(1f))
+                                        Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                                    }
+                                    DropdownMenu(expanded = dateExpanded, onDismissRequest = { dateExpanded = false }) {
+                                        val dateRanges = listOf("Today", "Yesterday", "Last 7 Days", "This Month")
+                                        dateRanges.forEach { range ->
+                                            DropdownMenuItem(
+                                                text = { Text(range) },
+                                                onClick = {
+                                                    val cal = Calendar.getInstance()
+                                                    val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                                                    val to = sdf.format(cal.time)
+                                                    val from = when (range) {
+                                                        "Today" -> to
+                                                        "Yesterday" -> { cal.add(Calendar.DAY_OF_YEAR, -1); sdf.format(cal.time).also { cal.add(Calendar.DAY_OF_YEAR, 1) } }
+                                                        "Last 7 Days" -> { cal.add(Calendar.DAY_OF_YEAR, -7); sdf.format(cal.time).also { cal.add(Calendar.DAY_OF_YEAR, 7) } }
+                                                        "This Month" -> { cal.set(Calendar.DAY_OF_MONTH, 1); sdf.format(cal.time) }
+                                                        else -> to
+                                                    }
+                                                    if (range == "Yesterday") {
+                                                        viewModel.setDateRange(from, from)
+                                                    } else {
+                                                        viewModel.setDateRange(from, to)
+                                                    }
+                                                    dateExpanded = false
+                                                }
+                                            )
+                                        }
+                                    }
+                                }
 
-                // Dropdowns
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    // Offer Dropdown
-                    var offerExpanded by remember { mutableStateOf(false) }
-                    Box(modifier = Modifier.weight(1f)) {
-                        OutlinedButton(
-                            onClick = { offerExpanded = true },
-                            modifier = Modifier.fillMaxWidth(),
-                            contentPadding = PaddingValues(horizontal = 8.dp)
-                        ) {
-                            Text(offers.find { it.id == selectedOfferId }?.name ?: "All My Offers", maxLines = 1)
-                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
-                        }
-                        DropdownMenu(expanded = offerExpanded, onDismissRequest = { offerExpanded = false }) {
-                            DropdownMenuItem(text = { Text("All My Offers") }, onClick = { viewModel.selectedOfferId.value = null; viewModel.loadReports(); offerExpanded = false })
-                            offers.forEach { o ->
-                                DropdownMenuItem(text = { Text(o.name) }, onClick = { viewModel.selectedOfferId.value = o.id; viewModel.loadReports(); offerExpanded = false })
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                // Dropdowns
+                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    // Offer Dropdown
+                                    var offerExpanded by remember { mutableStateOf(false) }
+                                    Box(modifier = Modifier.weight(1f)) {
+                                        OutlinedButton(
+                                            onClick = { offerExpanded = true },
+                                            modifier = Modifier.fillMaxWidth(),
+                                            contentPadding = PaddingValues(horizontal = 8.dp)
+                                        ) {
+                                            Text(offers.find { it.id == selectedOfferId }?.name ?: "All My Offers", maxLines = 1)
+                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                                        }
+                                        DropdownMenu(expanded = offerExpanded, onDismissRequest = { offerExpanded = false }) {
+                                            DropdownMenuItem(text = { Text("All My Offers") }, onClick = { viewModel.selectedOfferId.value = null; viewModel.loadReports(); offerExpanded = false })
+                                            offers.forEach { o ->
+                                                DropdownMenuItem(text = { Text(o.name) }, onClick = { viewModel.selectedOfferId.value = o.id; viewModel.loadReports(); offerExpanded = false })
+                                            }
+                                        }
+                                    }
+
+                                    // Country Dropdown
+                                    var countryExpanded by remember { mutableStateOf(false) }
+                                    Box(modifier = Modifier.weight(1f)) {
+                                        OutlinedButton(
+                                            onClick = { countryExpanded = true },
+                                            modifier = Modifier.fillMaxWidth(),
+                                            contentPadding = PaddingValues(horizontal = 8.dp)
+                                        ) {
+                                            Text(selectedCountry ?: "All Countries", maxLines = 1)
+                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                                        }
+                                        DropdownMenu(expanded = countryExpanded, onDismissRequest = { countryExpanded = false }) {
+                                            DropdownMenuItem(text = { Text("All Countries") }, onClick = { viewModel.selectedCountry.value = null; viewModel.loadReports(); countryExpanded = false })
+                                            countries.forEach { c ->
+                                                DropdownMenuItem(text = { Text(c) }, onClick = { viewModel.selectedCountry.value = c; viewModel.loadReports(); countryExpanded = false })
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                                Spacer(modifier = Modifier.height(8.dp))
+                                
+                                // Sub1 Filter
+                                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                                    OutlinedTextField(
+                                        value = sub1Filter,
+                                        onValueChange = { viewModel.sub1Filter.value = it },
+                                        modifier = Modifier.weight(1f).height(50.dp),
+                                        placeholder = { Text("Aff Sub 1") },
+                                        singleLine = true
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Button(onClick = { viewModel.loadReports() }, modifier = Modifier.height(50.dp)) {
+                                        Text("Apply")
+                                    }
+                                }
                             }
                         }
-                    }
-
-                    // Country Dropdown
-                    var countryExpanded by remember { mutableStateOf(false) }
-                    Box(modifier = Modifier.weight(1f)) {
-                        OutlinedButton(
-                            onClick = { countryExpanded = true },
-                            modifier = Modifier.fillMaxWidth(),
-                            contentPadding = PaddingValues(horizontal = 8.dp)
-                        ) {
-                            Text(selectedCountry ?: "All Countries", maxLines = 1)
-                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
-                        }
-                        DropdownMenu(expanded = countryExpanded, onDismissRequest = { countryExpanded = false }) {
-                            DropdownMenuItem(text = { Text("All Countries") }, onClick = { viewModel.selectedCountry.value = null; viewModel.loadReports(); countryExpanded = false })
-                            countries.forEach { c ->
-                                DropdownMenuItem(text = { Text(c) }, onClick = { viewModel.selectedCountry.value = c; viewModel.loadReports(); countryExpanded = false })
-                            }
-                        }
-                    }
-                }
-                
-                Spacer(modifier = Modifier.height(8.dp))
-                
-                // Sub1 Filter
-                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    OutlinedTextField(
-                        value = sub1Filter,
-                        onValueChange = { viewModel.sub1Filter.value = it },
-                        modifier = Modifier.weight(1f).height(50.dp),
-                        placeholder = { Text("Aff Sub 1") },
-                        singleLine = true
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Button(onClick = { viewModel.loadReports() }, modifier = Modifier.height(50.dp)) {
-                        Text("Apply")
                     }
                 }
             }
