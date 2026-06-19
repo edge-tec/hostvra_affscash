@@ -3,6 +3,7 @@ package net.affscash.android.ui.offers
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Devices
 import androidx.compose.material.icons.filled.Public
@@ -116,8 +117,36 @@ fun OfferListItem(offer: Offer, isLoadingLink: Boolean, onClick: () -> Unit, onA
             
             Spacer(modifier = Modifier.height(8.dp))
             
-            offer.description?.let {
-                Text(it, fontSize = 13.sp, maxLines = 2, overflow = TextOverflow.Ellipsis, color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 18.sp)
+            offer.description?.let { desc ->
+                var isDescExpanded by remember { mutableStateOf(false) }
+                var showSeeMore by remember { mutableStateOf(false) }
+
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = desc,
+                        fontSize = 13.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        lineHeight = 18.sp,
+                        maxLines = if (isDescExpanded) Int.MAX_VALUE else 2,
+                        overflow = TextOverflow.Ellipsis,
+                        onTextLayout = { textLayoutResult ->
+                            if (textLayoutResult.hasVisualOverflow) {
+                                showSeeMore = true
+                            }
+                        }
+                    )
+                    if (showSeeMore || isDescExpanded) {
+                        Text(
+                            text = if (isDescExpanded) "See less" else "See more",
+                            color = MaterialTheme.colorScheme.primary,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .padding(top = 4.dp, bottom = 4.dp)
+                                .clickable { isDescExpanded = !isDescExpanded }
+                        )
+                    }
+                }
                 Spacer(modifier = Modifier.height(8.dp))
             }
             
@@ -131,12 +160,20 @@ fun OfferListItem(offer: Offer, isLoadingLink: Boolean, onClick: () -> Unit, onA
             ) {
                 // Geo and Devices
                 Column {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.Public, contentDescription = "GEO", modifier = Modifier.size(14.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                    var isGeoExpanded by remember { mutableStateOf(false) }
+                    Row(
+                        verticalAlignment = if (isGeoExpanded) Alignment.Top else Alignment.CenterVertically,
+                        modifier = Modifier.clickable { isGeoExpanded = !isGeoExpanded }
+                    ) {
+                        Icon(Icons.Default.Public, contentDescription = "GEO", modifier = Modifier.size(14.dp).padding(top = if (isGeoExpanded) 2.dp else 0.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         Spacer(modifier = Modifier.width(4.dp))
                         val geos = parseJsonArray(offer.countries)
-                        if (geos.isEmpty()) Text("Global", fontSize = 12.sp)
-                        else Text(geos.take(3).joinToString(", ") + if (geos.size > 3) " +${geos.size-3}" else "", fontSize = 12.sp)
+                        if (geos.isEmpty()) {
+                            Text("Global", fontSize = 12.sp)
+                        } else {
+                            val displayText = if (isGeoExpanded) geos.joinToString(", ") else (geos.take(3).joinToString(", ") + if (geos.size > 3) " +${geos.size-3}" else "")
+                            Text(displayText, fontSize = 12.sp, modifier = Modifier.weight(1f, fill = false))
+                        }
                     }
                     Spacer(modifier = Modifier.height(6.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
