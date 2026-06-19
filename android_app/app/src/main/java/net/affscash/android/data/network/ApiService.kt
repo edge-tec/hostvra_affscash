@@ -399,6 +399,25 @@ interface ApiService {
     @GET("api/v2/manager/conversions")
     suspend fun getManagerConversions(): Response<ConversionResponse>
 
+    @GET("admin/SettingsController.php")
+    suspend fun getAdminSettings(): Response<AdminSettingsResponse>
+
+    // Admin VPN Logs
+    @GET("api/v2/admin/VpnLogController.php?action=list")
+    suspend fun getAdminVpnLogs(
+        @Query("q_ip") ip: String? = null,
+        @Query("q_aff") affiliate: String? = null,
+        @Query("q_type") type: String? = null,
+        @Query("date_from") dateFrom: String? = null,
+        @Query("date_to") dateTo: String? = null
+    ): Response<net.affscash.android.data.model.VpnLogListResponse>
+
+    @GET("api/v2/admin/VpnLogController.php?action=stats")
+    suspend fun getAdminVpnLogStats(): Response<net.affscash.android.data.model.VpnLogStatsResponse>
+
+    @GET("api/v2/admin/VpnLogController.php?action=clear")
+    suspend fun clearAdminVpnLogs(): Response<net.affscash.android.data.model.BaseResponse>
+
     @GET("api/v2/admin/invoices")
     suspend fun getAdminInvoices(): Response<InvoiceResponse>
 
