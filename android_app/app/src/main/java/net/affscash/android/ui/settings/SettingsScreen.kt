@@ -622,6 +622,57 @@ fun GlobalPostbackTab(postback: GlobalPostbackInfo?, viewModel: SettingsViewMode
         ) {
             Text(if (isUpdating) "Saving..." else "Save Postback URL")
         }
+
+        Spacer(modifier = Modifier.height(24.dp))
+        Text("📋 Example Postback URLs", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.height(8.dp))
+        Card(
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(modifier = Modifier.padding(12.dp)) {
+                TrackerExample("Binom", "https://binom.example.com/postback?click_id={click_id}&payout={payout}&sub1={aff_sub1}")
+                TrackerExample("Keitaro", "https://keitaro.example.com/postback?subid={click_id}&revenue={payout}")
+                TrackerExample("RedTrack", "https://postback.redtrack.io/postback?clickid={click_id}&cost={payout}")
+                TrackerExample("FunnelFlux", "https://i.funnelflux.pro/postback?tid={click_id}&payout={payout}")
+                TrackerExample("Voluum", "https://trk.voluum.com/postback?cid={click_id}&payout={payout}")
+                TrackerExample("Any tracker", "https://yourtracker.com/postback?click_id={click_id}&payout={payout}&affid={affid}")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        Text("Supported Macros", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.height(8.dp))
+        Card(
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(modifier = Modifier.padding(12.dp)) {
+                MacroItem("{click_id}", "your tracker's click ID (passed as click_id= in offer link)")
+                MacroItem("{payout}", "conversion payout amount")
+                MacroItem("{sub_id_1}", "sub_id_1= from offer link (stored in sub2)")
+                MacroItem("{sub_id_2}", "sub_id_2= from offer link (stored in sub3)")
+                MacroItem("{sub_id_3}", "sub_id_3= from offer link (stored in sub4)")
+                MacroItem("{sub_id_4}", "sub_id_4= from offer link (stored in sub5)")
+                MacroItem("{sub_id_5}", "sub_id_5= from offer link (stored in sub6)")
+            }
+        }
+    }
+}
+
+@Composable
+fun TrackerExample(name: String, url: String) {
+    Column(modifier = Modifier.padding(bottom = 12.dp)) {
+        Text(name, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelMedium)
+        Text(url, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
+    }
+}
+
+@Composable
+fun MacroItem(macro: String, desc: String) {
+    Row(modifier = Modifier.padding(bottom = 6.dp)) {
+        Text(macro, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodySmall, modifier = Modifier.width(80.dp), color = MaterialTheme.colorScheme.onSurface)
+        Text("= $desc", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
