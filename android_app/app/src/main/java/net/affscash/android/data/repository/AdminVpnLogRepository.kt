@@ -2,7 +2,7 @@ package net.affscash.android.data.repository
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import net.affscash.android.data.api.AdminApiService
+import net.affscash.android.data.network.ApiService
 import net.affscash.android.data.model.BaseResponse
 import net.affscash.android.data.model.VpnLogListResponse
 import net.affscash.android.data.model.VpnLogStatsResponse
@@ -11,7 +11,7 @@ import javax.inject.Singleton
 
 @Singleton
 class AdminVpnLogRepository @Inject constructor(
-    private val apiService: AdminApiService
+    private val apiService: ApiService
 ) {
     suspend fun getVpnLogs(
         ip: String? = null,
