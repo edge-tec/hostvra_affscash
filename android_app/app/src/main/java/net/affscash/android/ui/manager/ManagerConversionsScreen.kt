@@ -243,8 +243,8 @@ fun ManagerConversionItem(conversion: Conversion) {
             ) {
                 Text(
                     text = conversion.offerName ?: "Unknown Offer",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.ExtraBold,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f).padding(end = 8.dp),
                     color = MaterialTheme.colorScheme.onSurface
                 )

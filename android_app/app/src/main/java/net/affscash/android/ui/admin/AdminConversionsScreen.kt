@@ -148,7 +148,7 @@ fun AdminConversionItem(conversion: Conversion) {
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = conversion.offerName ?: "Unknown Offer",
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis

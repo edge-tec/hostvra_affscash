@@ -86,7 +86,11 @@ fun OfferListItem(offer: Offer, isLoadingLink: Boolean, onClick: () -> Unit, onA
                         fontSize = 10.sp
                     )
                     Spacer(modifier = Modifier.height(2.dp))
-                    Text(offer.name, fontSize = 16.sp, fontWeight = FontWeight.Bold, lineHeight = 20.sp)
+                    Text(
+                        text = offer.name, 
+                        style = MaterialTheme.typography.titleSmall, 
+                        fontWeight = FontWeight.Bold
+                    )
                     
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 4.dp)) {
                         offer.category?.let {
