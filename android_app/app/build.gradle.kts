@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "net.affscash.android"
-    compileSdk = 36
+    compileSdk = 35
     defaultConfig {
         applicationId = "net.affscash.android"
         minSdk = 24
@@ -93,11 +93,6 @@ dependencies {
   androidTestImplementation(libs.androidx.test.runner)
   androidTestImplementation(libs.androidx.test.espresso.core)
 
-  // Navigation
-  implementation(libs.androidx.navigation3.ui)
-  implementation(libs.androidx.navigation3.runtime)
-  implementation(libs.androidx.lifecycle.viewmodel.navigation3)
-  
   // Networking (Retrofit, OkHttp, KotlinX Serialization)
   implementation(libs.retrofit)
   implementation(libs.retrofit.kotlinx.serialization)
