@@ -185,9 +185,9 @@ fun MainScreen(
         ) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
-                contentPadding = PaddingValues(11.dp),
-                horizontalArrangement = Arrangement.spacedBy(11.dp),
-                verticalArrangement = Arrangement.spacedBy(11.dp),
+                contentPadding = PaddingValues(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.padding(bottom = 32.dp)
             ) {
                 items(moreItems) { screen ->
@@ -202,26 +202,26 @@ fun MainScreen(
                                 restoreState = (screen.route != startDest)
                             }
                         },
-                        modifier = Modifier.fillMaxWidth().aspectRatio(1f),
-                        shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp),
+                        modifier = Modifier.fillMaxWidth().aspectRatio(1.1f),
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                     ) {
                         Column(
-                            modifier = Modifier.fillMaxSize().padding(8.dp),
+                            modifier = Modifier.fillMaxSize().padding(4.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
                             Surface(
                                 shape = androidx.compose.foundation.shape.CircleShape,
                                 color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
-                                modifier = Modifier.size(44.dp)
+                                modifier = Modifier.size(40.dp)
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
-                                    Icon(screen.icon, contentDescription = null, modifier = Modifier.size(24.dp), tint = MaterialTheme.colorScheme.primary)
+                                    Icon(screen.icon, contentDescription = null, modifier = Modifier.size(22.dp), tint = MaterialTheme.colorScheme.primary)
                                 }
                             }
-                            Spacer(modifier = Modifier.height(10.dp))
+                            Spacer(modifier = Modifier.height(6.dp))
                             Text(screen.title, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, maxLines = 2)
                         }
                     }
@@ -235,26 +235,26 @@ fun MainScreen(
                             showMoreSheet = false
                             onLogout()
                         },
-                        modifier = Modifier.fillMaxWidth().aspectRatio(1f),
-                        shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp),
+                        modifier = Modifier.fillMaxWidth().aspectRatio(1.1f),
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f)),
                         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                     ) {
                         Column(
-                            modifier = Modifier.fillMaxSize().padding(8.dp),
+                            modifier = Modifier.fillMaxSize().padding(4.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
                             Surface(
                                 shape = androidx.compose.foundation.shape.CircleShape,
                                 color = MaterialTheme.colorScheme.error.copy(alpha = 0.1f),
-                                modifier = Modifier.size(44.dp)
+                                modifier = Modifier.size(40.dp)
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
-                                    Icon(Icons.Filled.ExitToApp, contentDescription = "Logout", modifier = Modifier.size(24.dp), tint = MaterialTheme.colorScheme.error)
+                                    Icon(Icons.Filled.ExitToApp, contentDescription = "Logout", modifier = Modifier.size(22.dp), tint = MaterialTheme.colorScheme.error)
                                 }
                             }
-                            Spacer(modifier = Modifier.height(10.dp))
+                            Spacer(modifier = Modifier.height(6.dp))
                             Text("Logout", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, maxLines = 2, color = MaterialTheme.colorScheme.error)
                         }
                     }
