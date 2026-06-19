@@ -73,32 +73,32 @@ fun OfferListItem(offer: Offer, isLoadingLink: Boolean, onClick: () -> Unit, onA
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(10.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Top) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = "OFF-${offer.id.toString().padStart(4, '0')}",
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 10.sp
+                        fontSize = 8.sp
                     )
                     Spacer(modifier = Modifier.height(2.dp))
-                    Text(offer.name, fontSize = 14.sp, fontWeight = FontWeight.Bold, lineHeight = 16.sp)
+                    Text(offer.name, fontSize = 11.sp, fontWeight = FontWeight.Bold, lineHeight = 12.sp)
                     
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 4.dp)) {
                         offer.category?.let {
-                            Text(it, fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Text(" • ", fontSize = 10.sp)
+                            Text(it, fontSize = 8.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(" • ", fontSize = 8.sp)
                         }
                         
                         Badge(containerColor = MaterialTheme.colorScheme.secondaryContainer) {
-                            Text(offer.payoutType.uppercase(), color = MaterialTheme.colorScheme.onSecondaryContainer, fontSize = 9.sp, modifier = Modifier.padding(horizontal = 2.dp, vertical = 0.dp))
+                            Text(offer.payoutType.uppercase(), color = MaterialTheme.colorScheme.onSecondaryContainer, fontSize = 7.sp, modifier = Modifier.padding(horizontal = 2.dp, vertical = 0.dp))
                         }
                         
                         if (offer.offerType != null) {
                             Spacer(modifier = Modifier.width(4.dp))
                             Badge(containerColor = MaterialTheme.colorScheme.tertiaryContainer) {
-                                Text(offer.offerType.uppercase(), color = MaterialTheme.colorScheme.onTertiaryContainer, fontSize = 9.sp, modifier = Modifier.padding(horizontal = 2.dp, vertical = 0.dp))
+                                Text(offer.offerType.uppercase(), color = MaterialTheme.colorScheme.onTertiaryContainer, fontSize = 7.sp, modifier = Modifier.padding(horizontal = 2.dp, vertical = 0.dp))
                             }
                         }
                     }
@@ -107,22 +107,22 @@ fun OfferListItem(offer: Offer, isLoadingLink: Boolean, onClick: () -> Unit, onA
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
                         text = "$${String.format("%.2f", offer.payout)}",
-                        fontSize = 16.sp,
+                        fontSize = 12.sp,
                         color = Color(0xFF10B981), // Green color matching web
                         fontWeight = FontWeight.Bold
                     )
                 }
             }
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             
             offer.description?.let {
-                Text(it, fontSize = 11.sp, maxLines = 2, overflow = TextOverflow.Ellipsis, color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 14.sp)
-                Spacer(modifier = Modifier.height(8.dp))
+                Text(it, fontSize = 9.sp, maxLines = 2, overflow = TextOverflow.Ellipsis, color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 11.sp)
+                Spacer(modifier = Modifier.height(6.dp))
             }
             
             Divider(color = MaterialTheme.colorScheme.surfaceVariant)
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -132,19 +132,19 @@ fun OfferListItem(offer: Offer, isLoadingLink: Boolean, onClick: () -> Unit, onA
                 // Geo and Devices
                 Column {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.Public, contentDescription = "GEO", modifier = Modifier.size(12.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Icon(Icons.Default.Public, contentDescription = "GEO", modifier = Modifier.size(10.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         Spacer(modifier = Modifier.width(4.dp))
                         val geos = parseJsonArray(offer.countries)
-                        if (geos.isEmpty()) Text("Global", fontSize = 10.sp)
-                        else Text(geos.take(3).joinToString(", ") + if (geos.size > 3) " +${geos.size-3}" else "", fontSize = 10.sp)
+                        if (geos.isEmpty()) Text("Global", fontSize = 8.sp)
+                        else Text(geos.take(3).joinToString(", ") + if (geos.size > 3) " +${geos.size-3}" else "", fontSize = 8.sp)
                     }
                     Spacer(modifier = Modifier.height(4.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.Devices, contentDescription = "Devices", modifier = Modifier.size(12.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Icon(Icons.Default.Devices, contentDescription = "Devices", modifier = Modifier.size(10.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         Spacer(modifier = Modifier.width(4.dp))
                         val devs = parseJsonArray(offer.devices)
-                        if (devs.isEmpty()) Text("All Devices", fontSize = 10.sp)
-                        else Text(devs.joinToString(", "), fontSize = 10.sp)
+                        if (devs.isEmpty()) Text("All Devices", fontSize = 8.sp)
+                        else Text(devs.joinToString(", "), fontSize = 8.sp)
                     }
                 }
                 
@@ -164,35 +164,35 @@ fun OfferListItem(offer: Offer, isLoadingLink: Boolean, onClick: () -> Unit, onA
                     }
                     
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(modifier = Modifier.size(6.dp).background(statusColor, RoundedCornerShape(50)))
+                        Box(modifier = Modifier.size(4.dp).background(statusColor, RoundedCornerShape(50)))
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text(statusText, fontSize = 9.sp, fontWeight = FontWeight.Bold, color = statusColor)
+                        Text(statusText, fontSize = 7.sp, fontWeight = FontWeight.Bold, color = statusColor)
                     }
                     
-                    Spacer(modifier = Modifier.height(6.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     
                     if (offer.accessStatus == "approved") {
                         Button(
                             onClick = onClick,
                             enabled = !isLoadingLink,
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
-                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 0.dp),
-                            modifier = Modifier.height(28.dp)
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                            modifier = Modifier.height(24.dp)
                         ) {
                             if (isLoadingLink) {
-                                CircularProgressIndicator(modifier = Modifier.size(14.dp), color = MaterialTheme.colorScheme.onPrimary, strokeWidth = 2.dp)
+                                CircularProgressIndicator(modifier = Modifier.size(10.dp), color = MaterialTheme.colorScheme.onPrimary, strokeWidth = 2.dp)
                             } else {
-                                Text("Get Link", fontSize = 10.sp)
+                                Text("Get Link", fontSize = 8.sp)
                             }
                         }
                     } else if (offer.accessStatus == null || offer.accessStatus == "removed") {
                         Button(
                             onClick = onApplyClick,
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
-                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 0.dp),
-                            modifier = Modifier.height(28.dp)
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                            modifier = Modifier.height(24.dp)
                         ) {
-                            Text("Request Access", fontSize = 10.sp)
+                            Text("Request Access", fontSize = 8.sp)
                         }
                     }
                 }

@@ -47,16 +47,16 @@ fun AffiliateReferralScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(11.dp),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
                 ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text("Your Referral Link", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                    Column(modifier = Modifier.padding(11.dp)) {
+                        Text("Your Referral Link", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
                         Text(
                             "Share this link with other affiliates. When they sign up and earn, you get a ${data.stats.commissionRate}% commission on their payouts!",
-                            style = MaterialTheme.typography.bodySmall,
+                            fontSize = 9.sp,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
+                            modifier = Modifier.padding(top = 3.dp, bottom = 8.dp)
                         )
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -66,21 +66,22 @@ fun AffiliateReferralScreen(
                                 value = data.referralLink,
                                 onValueChange = {},
                                 readOnly = true,
-                                modifier = Modifier.weight(1f),
+                                modifier = Modifier.weight(1f).height(36.dp),
+                                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 9.sp),
                                 singleLine = true
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Spacer(modifier = Modifier.width(6.dp))
                             Button(onClick = {
                                 val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                                 val clipData = ClipData.newPlainText("Referral Link", data.referralLink)
                                 clipboardManager.setPrimaryClip(clipData)
                                 Toast.makeText(context, "Link copied to clipboard", Toast.LENGTH_SHORT).show()
-                            }) {
-                                Text("Copy Link")
+                            }, modifier = Modifier.height(36.dp), contentPadding = PaddingValues(horizontal = 8.dp)) {
+                                Text("Copy Link", fontSize = 9.sp)
                             }
                         }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text("Your referral code: ${data.referralCode}", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text("Your referral code: ${data.referralCode}", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
                     }
                 }
 
@@ -165,26 +166,26 @@ fun AffiliateReferralScreen(
 
 @Composable
 fun ReferredAffiliateItem(aff: ReferredAffiliate) {
-    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+    Column(modifier = Modifier.fillMaxWidth().padding(11.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text(aff.name, fontWeight = FontWeight.Bold)
-            Text(aff.status.uppercase(), style = MaterialTheme.typography.labelSmall, color = if (aff.status == "active") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(aff.name, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+            Text(aff.status.uppercase(), fontSize = 8.sp, color = if (aff.status == "active") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        Text("Code: ${aff.affiliateCode} • Joined: ${aff.joinedAt}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Spacer(modifier = Modifier.height(4.dp))
-        Text("Conversions: ${aff.convCount}", style = MaterialTheme.typography.bodySmall)
+        Text("Code: ${aff.affiliateCode} • Joined: ${aff.joinedAt}", fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Spacer(modifier = Modifier.height(3.dp))
+        Text("Conversions: ${aff.convCount}", fontSize = 9.sp)
     }
 }
 
 @Composable
 fun CommissionItem(comm: ReferralCommission) {
-    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+    Column(modifier = Modifier.fillMaxWidth().padding(11.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("From: ${comm.referredName}", fontWeight = FontWeight.Bold)
-            Text("+$${comm.commissionAmount}", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+            Text("From: ${comm.referredName}", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+            Text("+$${comm.commissionAmount}", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
         }
-        Text("Conv ID: ${comm.conversionId} • Date: ${comm.createdAt}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Spacer(modifier = Modifier.height(4.dp))
-        Text("Base Payout: $${comm.basePayout} (${comm.commissionRate}%) • Status: ${comm.status}", style = MaterialTheme.typography.bodySmall)
+        Text("Conv ID: ${comm.conversionId} • Date: ${comm.createdAt}", fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Spacer(modifier = Modifier.height(3.dp))
+        Text("Base Payout: $${comm.basePayout} (${comm.commissionRate}%) • Status: ${comm.status}", fontSize = 9.sp)
     }
 }

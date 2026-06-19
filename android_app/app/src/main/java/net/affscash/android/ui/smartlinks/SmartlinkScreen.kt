@@ -158,34 +158,34 @@ fun SmartlinkCard(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(11.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Top) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = "#${smartlink.id}",
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontSize = 12.sp,
+                        fontSize = 9.sp,
                         fontWeight = FontWeight.Bold
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(smartlink.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(3.dp))
+                    Text(smartlink.name, fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 }
                 
                 Badge(containerColor = MaterialTheme.colorScheme.primaryContainer) {
-                    Text(smartlink.distributionType.uppercase(), color = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp))
+                    Text(smartlink.distributionType.uppercase(), color = MaterialTheme.colorScheme.onPrimaryContainer, fontSize = 8.sp, modifier = Modifier.padding(horizontal = 3.dp, vertical = 2.dp))
                 }
             }
             
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             
             smartlink.description?.let {
-                Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Spacer(modifier = Modifier.height(12.dp))
+                Text(it, fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 11.sp)
+                Spacer(modifier = Modifier.height(8.dp))
             }
             
-            Text("${smartlink.offerCount} active offers in rotation", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+            Text("${smartlink.offerCount} active offers in rotation", fontSize = 9.sp, fontWeight = FontWeight.SemiBold)
             
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(11.dp))
             
             when (smartlink.accessStatus) {
                 "approved" -> {
@@ -194,16 +194,16 @@ fun SmartlinkCard(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(Color(0xFFD1FAE5), RoundedCornerShape(8.dp))
-                            .padding(12.dp)
+                            .padding(8.dp)
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.CheckCircle, contentDescription = null, tint = Color(0xFF10B981), modifier = Modifier.size(16.dp))
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("Access Granted — you can use this smartlink", color = Color(0xFF065F46), fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                            Icon(Icons.Default.CheckCircle, contentDescription = null, tint = Color(0xFF10B981), modifier = Modifier.size(12.dp))
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text("Access Granted — you can use this smartlink", color = Color(0xFF065F46), fontSize = 9.sp, fontWeight = FontWeight.SemiBold)
                         }
                     }
                     
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                     
                     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         OutlinedTextField(
@@ -211,31 +211,31 @@ fun SmartlinkCard(
                             onValueChange = {},
                             readOnly = true,
                             singleLine = true,
-                            modifier = Modifier.weight(1f).height(50.dp),
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 12.sp)
+                            modifier = Modifier.weight(1f).height(36.dp),
+                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 9.sp)
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(6.dp))
                         Button(
                             onClick = { smartlink.trackingLink?.let { onCopyClick(it) } },
-                            contentPadding = PaddingValues(horizontal = 12.dp),
-                            modifier = Modifier.height(50.dp)
+                            contentPadding = PaddingValues(horizontal = 8.dp),
+                            modifier = Modifier.height(36.dp)
                         ) {
-                            Icon(Icons.Default.ContentCopy, contentDescription = "Copy", modifier = Modifier.size(16.dp))
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text("Copy")
+                            Icon(Icons.Default.ContentCopy, contentDescription = "Copy", modifier = Modifier.size(12.dp))
+                            Spacer(modifier = Modifier.width(3.dp))
+                            Text("Copy", fontSize = 9.sp)
                         }
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("Replace sub1= with your sub-parameter value", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text("Replace sub1= with your sub-parameter value", fontSize = 7.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 "pending" -> {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(Color(0xFFFEF3C7), RoundedCornerShape(8.dp))
-                            .padding(12.dp)
+                            .padding(8.dp)
                     ) {
-                        Text("Pending Approval", color = Color(0xFFB45309), fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                        Text("Pending Approval", color = Color(0xFFB45309), fontSize = 9.sp, fontWeight = FontWeight.SemiBold)
                     }
                 }
                 "rejected" -> {
@@ -243,18 +243,19 @@ fun SmartlinkCard(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(Color(0xFFFEE2E2), RoundedCornerShape(8.dp))
-                            .padding(12.dp)
+                            .padding(8.dp)
                     ) {
-                        Text("Access Rejected", color = Color(0xFF991B1B), fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                        Text("Access Rejected", color = Color(0xFF991B1B), fontSize = 9.sp, fontWeight = FontWeight.SemiBold)
                     }
                 }
                 else -> {
                     Button(
                         onClick = onApplyClick,
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth().height(36.dp),
+                        contentPadding = PaddingValues(0.dp)
                     ) {
-                        Text("Request Access")
+                        Text("Request Access", fontSize = 9.sp)
                     }
                 }
             }
