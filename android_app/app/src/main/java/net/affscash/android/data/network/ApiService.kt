@@ -608,7 +608,7 @@ interface ApiService {
 
     @GET("api/v2/manager/reports")
     suspend fun getManagerReports(
-        @Query("group_by") groupBy: String,
+        @Query("tab") tab: String,
         @Query("from") from: String,
         @Query("to") to: String,
         @Query("offer_id") offerId: Int? = null,
