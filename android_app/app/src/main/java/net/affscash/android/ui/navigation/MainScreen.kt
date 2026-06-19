@@ -286,8 +286,8 @@ fun MainScreen(
                 val currentDestination = navBackStackEntry?.destination
                 mainItems.forEach { screen ->
                     NavigationBarItem(
-                        icon = { Icon(screen.icon, contentDescription = null) },
-                        label = { Text(screen.title, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis) },
+                        icon = { Icon(screen.icon, contentDescription = null, modifier = Modifier.size(18.dp)) },
+                        label = { Text(screen.title, fontSize = androidx.compose.ui.unit.TextUnit(9f, androidx.compose.ui.unit.TextUnitType.Sp), maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis) },
                         selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                         onClick = {
                             navController.navigate(screen.route) {
@@ -302,8 +302,8 @@ fun MainScreen(
                 }
                 if (moreItems.isNotEmpty()) {
                     NavigationBarItem(
-                        icon = { Icon(Icons.Filled.Menu, contentDescription = "Menu") },
-                        label = { Text("Menu") },
+                        icon = { Icon(Icons.Filled.Menu, contentDescription = "Menu", modifier = Modifier.size(18.dp)) },
+                        label = { Text("Menu", fontSize = androidx.compose.ui.unit.TextUnit(9f, androidx.compose.ui.unit.TextUnitType.Sp)) },
                         selected = currentDestination?.route?.let { route -> moreItems.any { it.route == route } } == true,
                         onClick = { showMoreSheet = true }
                     )
