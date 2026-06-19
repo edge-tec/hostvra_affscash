@@ -209,9 +209,9 @@ fun MainScreen(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
-                            Icon(screen.icon, contentDescription = null, modifier = Modifier.size(22.dp), tint = MaterialTheme.colorScheme.primary)
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(screen.title, style = MaterialTheme.typography.labelSmall, textAlign = TextAlign.Center, maxLines = 2)
+                            Icon(screen.icon, contentDescription = null, modifier = Modifier.size(28.dp), tint = MaterialTheme.colorScheme.primary)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(screen.title, style = MaterialTheme.typography.labelMedium, textAlign = TextAlign.Center, maxLines = 2)
                         }
                     }
                 }
@@ -232,9 +232,9 @@ fun MainScreen(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
-                            Icon(Icons.Filled.ExitToApp, contentDescription = "Logout", modifier = Modifier.size(22.dp), tint = MaterialTheme.colorScheme.error)
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text("Logout", style = MaterialTheme.typography.labelSmall, textAlign = TextAlign.Center, maxLines = 2, color = MaterialTheme.colorScheme.onErrorContainer)
+                            Icon(Icons.Filled.ExitToApp, contentDescription = "Logout", modifier = Modifier.size(28.dp), tint = MaterialTheme.colorScheme.error)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text("Logout", style = MaterialTheme.typography.labelMedium, textAlign = TextAlign.Center, maxLines = 2, color = MaterialTheme.colorScheme.onErrorContainer)
                         }
                     }
                 }

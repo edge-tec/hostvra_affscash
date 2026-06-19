@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import net.affscash.android.data.model.ManagerConversation
@@ -146,7 +147,7 @@ fun ConversationItem(conversation: ManagerConversation, onClick: () -> Unit) {
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = conversation.lastMessageAt?.take(10) ?: "",
-                        fontSize = 9.sp,
+                        fontSize = 13.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1
                     )
@@ -177,7 +178,7 @@ fun ConversationItem(conversation: ManagerConversation, onClick: () -> Unit) {
                             Text(
                                 text = conversation.unread.toString(),
                                 color = MaterialTheme.colorScheme.onError,
-                                fontSize = 8.sp
+                                fontSize = 12.sp
                             )
                         }
                     }

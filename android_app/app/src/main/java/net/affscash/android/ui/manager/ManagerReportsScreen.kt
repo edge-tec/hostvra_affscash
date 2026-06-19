@@ -323,7 +323,7 @@ fun SummaryCard(title: String, value: String, subtitle: String, valueColor: Colo
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
-            Text(title, fontSize = 8.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
+            Text(title, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = value,
@@ -335,7 +335,7 @@ fun SummaryCard(title: String, value: String, subtitle: String, valueColor: Colo
             )
             if (subtitle.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(2.dp))
-                Text(subtitle, fontSize = 8.sp, color = Color.Gray)
+                Text(subtitle, fontSize = 12.sp, color = Color.Gray)
             }
         }
     }

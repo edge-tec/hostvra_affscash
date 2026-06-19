@@ -5,15 +5,20 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -51,10 +56,10 @@ fun AffiliateReferralScreen(
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
                 ) {
                     Column(modifier = Modifier.padding(11.dp)) {
-                        Text("Your Referral Link", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                        Text("Your Referral Link", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
                         Text(
                             "Share this link with other affiliates. When they sign up and earn, you get a ${data.stats.commissionRate}% commission on their payouts!",
-                            fontSize = 9.sp,
+                            fontSize = 13.sp,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier.padding(top = 3.dp, bottom = 8.dp)
                         )
@@ -66,17 +71,17 @@ fun AffiliateReferralScreen(
                                 modifier = Modifier
                                     .weight(1f)
                                     .height(36.dp)
-                                    .androidx.compose.foundation.border(1.dp, MaterialTheme.colorScheme.outline, androidx.compose.foundation.shape.RoundedCornerShape(4.dp))
+                                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(4.dp))
                                     .padding(horizontal = 8.dp),
                                 contentAlignment = Alignment.CenterStart
                             ) {
-                                androidx.compose.foundation.text.BasicTextField(
+                                BasicTextField(
                                     value = data.referralLink,
                                     onValueChange = {},
                                     readOnly = true,
                                     singleLine = true,
-                                    textStyle = androidx.compose.ui.text.TextStyle(
-                                        fontSize = 11.sp,
+                                    textStyle = TextStyle(
+                                        fontSize = 13.sp,
                                         color = MaterialTheme.colorScheme.onSurface
                                     ),
                                     modifier = Modifier.fillMaxWidth()
@@ -88,12 +93,12 @@ fun AffiliateReferralScreen(
                                 val clipData = ClipData.newPlainText("Referral Link", data.referralLink)
                                 clipboardManager.setPrimaryClip(clipData)
                                 Toast.makeText(context, "Link copied to clipboard", Toast.LENGTH_SHORT).show()
-                            }, modifier = Modifier.height(36.dp), contentPadding = PaddingValues(horizontal = 8.dp)) {
-                                Text("Copy Link", fontSize = 9.sp)
+                            }, modifier = Modifier.height(36.dp), contentPadding = PaddingValues(horizontal = 12.dp)) {
+                                Text("Copy Link", fontSize = 13.sp)
                             }
                         }
                         Spacer(modifier = Modifier.height(6.dp))
-                        Text("Your referral code: ${data.referralCode}", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                        Text("Your referral code: ${data.referralCode}", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
                     }
                 }
 
@@ -106,23 +111,23 @@ fun AffiliateReferralScreen(
                 ) {
                     Card(modifier = Modifier.weight(1f)) {
                         Column(modifier = Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("TOTAL REFERRALS", style = MaterialTheme.typography.labelSmall, fontSize = 8.sp, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
-                            Text("${data.stats.totalReferrals}", style = MaterialTheme.typography.headlineMedium, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                            Text("Affiliates you referred", style = MaterialTheme.typography.bodySmall, fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text("TOTAL REFERRALS", style = MaterialTheme.typography.labelSmall, fontSize = 10.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            Text("${data.stats.totalReferrals}", style = MaterialTheme.typography.headlineMedium, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                            Text("Affiliates you referred", style = MaterialTheme.typography.bodySmall, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                     Card(modifier = Modifier.weight(1f)) {
                         Column(modifier = Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("COMMISSIONS", style = MaterialTheme.typography.labelSmall, fontSize = 8.sp, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
-                            Text("$${data.stats.commissionsEarned}", style = MaterialTheme.typography.headlineMedium, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-                            Text("Total earned", style = MaterialTheme.typography.bodySmall, fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text("COMMISSIONS", style = MaterialTheme.typography.labelSmall, fontSize = 10.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            Text("$${data.stats.commissionsEarned}", style = MaterialTheme.typography.headlineMedium, fontSize = 24.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                            Text("Total earned", style = MaterialTheme.typography.bodySmall, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                     Card(modifier = Modifier.weight(1f)) {
                         Column(modifier = Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("RATE", style = MaterialTheme.typography.labelSmall, fontSize = 8.sp)
-                            Text("${data.stats.commissionRate}%", style = MaterialTheme.typography.headlineMedium, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary)
-                            Text("Commission rate", style = MaterialTheme.typography.bodySmall, fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text("RATE", style = MaterialTheme.typography.labelSmall, fontSize = 10.sp)
+                            Text("${data.stats.commissionRate}%", style = MaterialTheme.typography.headlineMedium, fontSize = 24.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary)
+                            Text("Commission rate", style = MaterialTheme.typography.bodySmall, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                 }
@@ -180,12 +185,12 @@ fun AffiliateReferralScreen(
 fun ReferredAffiliateItem(aff: ReferredAffiliate) {
     Column(modifier = Modifier.fillMaxWidth().padding(11.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text(aff.name, fontSize = 11.sp, fontWeight = FontWeight.Bold)
-            Text(aff.status.uppercase(), fontSize = 8.sp, color = if (aff.status == "active") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(aff.name, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+            Text(aff.status.uppercase(), fontSize = 12.sp, color = if (aff.status == "active") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        Text("Code: ${aff.affiliateCode} • Joined: ${aff.joinedAt}", fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Spacer(modifier = Modifier.height(3.dp))
-        Text("Conversions: ${aff.convCount}", fontSize = 9.sp)
+        Spacer(modifier = Modifier.height(4.dp))
+        Text("Code: ${aff.affiliateCode} • Joined: ${aff.joinedAt}", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text("Conversions: ${aff.convCount}", fontSize = 12.sp)
     }
 }
 
@@ -193,11 +198,11 @@ fun ReferredAffiliateItem(aff: ReferredAffiliate) {
 fun CommissionItem(comm: ReferralCommission) {
     Column(modifier = Modifier.fillMaxWidth().padding(11.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("From: ${comm.referredName}", fontSize = 11.sp, fontWeight = FontWeight.Bold)
-            Text("+$${comm.commissionAmount}", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+            Text("From: ${comm.referredName}", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+            Text("+$${comm.commissionAmount}", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
         }
-        Text("Conv ID: ${comm.conversionId} • Date: ${comm.createdAt}", fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Spacer(modifier = Modifier.height(3.dp))
-        Text("Base Payout: $${comm.basePayout} (${comm.commissionRate}%) • Status: ${comm.status}", fontSize = 9.sp)
+        Text("Conv ID: ${comm.conversionId} • Date: ${comm.createdAt}", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Spacer(modifier = Modifier.height(4.dp))
+        Text("Base Payout: $${comm.basePayout} (${comm.commissionRate}%) • Status: ${comm.status}", fontSize = 12.sp)
     }
 }

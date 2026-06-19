@@ -33,7 +33,7 @@ fun ManagerDuplicateConversionsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Duplicate Conversions", fontSize = 18.sp) },
+                title = { Text("Duplicate Conversions", fontSize = 112.sp) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")

@@ -495,7 +495,7 @@ fun PieChartCard(labels: List<String>, data: List<Int>, customColors: List<Color
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 4.dp)) {
                         Box(modifier = Modifier.size(6.dp).background(colors[index % colors.size], CircleShape))
                         Spacer(modifier = Modifier.width(2.dp))
-                        Text(label, fontSize = 9.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text(label, fontSize = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                 }
             }

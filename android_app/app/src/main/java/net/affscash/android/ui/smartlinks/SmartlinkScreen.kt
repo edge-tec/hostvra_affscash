@@ -5,10 +5,12 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ContentCopy
@@ -19,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -164,26 +167,26 @@ fun SmartlinkCard(
                     Text(
                         text = "#${smartlink.id}",
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontSize = 9.sp,
+                        fontSize = 12.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(3.dp))
-                    Text(smartlink.name, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    Text(smartlink.name, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
                 
                 Badge(containerColor = MaterialTheme.colorScheme.primaryContainer) {
-                    Text(smartlink.distributionType.uppercase(), color = MaterialTheme.colorScheme.onPrimaryContainer, fontSize = 8.sp, modifier = Modifier.padding(horizontal = 3.dp, vertical = 2.dp))
+                    Text(smartlink.distributionType.uppercase(), color = MaterialTheme.colorScheme.onPrimaryContainer, fontSize = 10.sp, modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp))
                 }
             }
             
             Spacer(modifier = Modifier.height(8.dp))
             
             smartlink.description?.let {
-                Text(it, fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 11.sp)
+                Text(it, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 112.sp)
                 Spacer(modifier = Modifier.height(8.dp))
             }
             
-            Text("${smartlink.offerCount} active offers in rotation", fontSize = 9.sp, fontWeight = FontWeight.SemiBold)
+            Text("${smartlink.offerCount} active offers in rotation", fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
             
             Spacer(modifier = Modifier.height(11.dp))
             
@@ -197,9 +200,9 @@ fun SmartlinkCard(
                             .padding(8.dp)
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.CheckCircle, contentDescription = null, tint = Color(0xFF10B981), modifier = Modifier.size(12.dp))
+                            Icon(Icons.Default.CheckCircle, contentDescription = null, tint = Color(0xFF10B981), modifier = Modifier.size(16.dp))
                             Spacer(modifier = Modifier.width(6.dp))
-                            Text("Access Granted — you can use this smartlink", color = Color(0xFF065F46), fontSize = 9.sp, fontWeight = FontWeight.SemiBold)
+                            Text("Access Granted — you can use this smartlink", color = Color(0xFF065F46), fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
                         }
                     }
                     
@@ -210,17 +213,17 @@ fun SmartlinkCard(
                             modifier = Modifier
                                 .weight(1f)
                                 .height(36.dp)
-                                .androidx.compose.foundation.border(1.dp, MaterialTheme.colorScheme.outline, androidx.compose.foundation.shape.RoundedCornerShape(4.dp))
+                                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(4.dp))
                                 .padding(horizontal = 8.dp),
                             contentAlignment = Alignment.CenterStart
                         ) {
-                            androidx.compose.foundation.text.BasicTextField(
+                            BasicTextField(
                                 value = smartlink.trackingLink ?: "",
                                 onValueChange = {},
                                 readOnly = true,
                                 singleLine = true,
-                                textStyle = androidx.compose.ui.text.TextStyle(
-                                    fontSize = 11.sp,
+                                textStyle = TextStyle(
+                                    fontSize = 12.sp,
                                     color = MaterialTheme.colorScheme.onSurface
                                 ),
                                 modifier = Modifier.fillMaxWidth()
@@ -229,16 +232,16 @@ fun SmartlinkCard(
                         Spacer(modifier = Modifier.width(6.dp))
                         Button(
                             onClick = { smartlink.trackingLink?.let { onCopyClick(it) } },
-                            contentPadding = PaddingValues(horizontal = 8.dp),
+                            contentPadding = PaddingValues(horizontal = 12.dp),
                             modifier = Modifier.height(36.dp)
                         ) {
-                            Icon(Icons.Default.ContentCopy, contentDescription = "Copy", modifier = Modifier.size(12.dp))
-                            Spacer(modifier = Modifier.width(3.dp))
-                            Text("Copy", fontSize = 9.sp)
+                            Icon(Icons.Default.ContentCopy, contentDescription = "Copy", modifier = Modifier.size(14.dp))
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text("Copy", fontSize = 12.sp)
                         }
                     }
                     Spacer(modifier = Modifier.height(6.dp))
-                    Text("Replace sub1= with your sub-parameter value", fontSize = 7.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Replace sub1= with your sub-parameter value", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 "pending" -> {
                     Box(
@@ -247,7 +250,7 @@ fun SmartlinkCard(
                             .background(Color(0xFFFEF3C7), RoundedCornerShape(8.dp))
                             .padding(8.dp)
                     ) {
-                        Text("Pending Approval", color = Color(0xFFB45309), fontSize = 9.sp, fontWeight = FontWeight.SemiBold)
+                        Text("Pending Approval", color = Color(0xFFB45309), fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
                     }
                 }
                 "rejected" -> {
@@ -257,17 +260,17 @@ fun SmartlinkCard(
                             .background(Color(0xFFFEE2E2), RoundedCornerShape(8.dp))
                             .padding(8.dp)
                     ) {
-                        Text("Access Rejected", color = Color(0xFF991B1B), fontSize = 9.sp, fontWeight = FontWeight.SemiBold)
+                        Text("Access Rejected", color = Color(0xFF991B1B), fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
                     }
                 }
                 else -> {
                     Button(
                         onClick = onApplyClick,
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
-                        modifier = Modifier.fillMaxWidth().height(36.dp),
+                        modifier = Modifier.fillMaxWidth().height(40.dp),
                         contentPadding = PaddingValues(0.dp)
                     ) {
-                        Text("Request Access", fontSize = 9.sp)
+                        Text("Request Access", fontSize = 13.sp)
                     }
                 }
             }

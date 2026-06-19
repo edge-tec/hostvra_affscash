@@ -553,7 +553,7 @@ fun HeaderIconWithBadge(
                 Text(
                     text = if (count > 99) "99+" else count.toString(),
                     color = Color.White,
-                    fontSize = 8.sp,
+                    fontSize = 12.sp,
                     fontWeight = FontWeight.Bold
                 )
             }

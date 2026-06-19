@@ -33,7 +33,7 @@ fun ManagerFraudReportsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Fraud Reports", fontSize = 18.sp) },
+                title = { Text("Fraud Reports", fontSize = 112.sp) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
@@ -180,7 +180,7 @@ fun SummaryCard(title: String, value: String, valueColor: Color) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(value, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = valueColor)
-            Text(title, fontSize = 8.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
+            Text(title, fontSize = 12.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -229,19 +229,19 @@ fun ManagerFraudConversionItem(cv: ManagerFraudConversion) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
-                    Text("Payout", fontSize = 9.sp, color = Color.Gray)
+                    Text("Payout", fontSize = 13.sp, color = Color.Gray)
                     Text("$${(( cv.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 }
                 
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("IPQS Score", fontSize = 9.sp, color = Color.Gray)
+                    Text("IPQS Score", fontSize = 13.sp, color = Color.Gray)
                     val score = cv.ipqsScore ?: 0
                     val scoreColor = if (score > 80) Color.Red else if (score > 50) Color(0xFFF59E0B) else Color(0xFF10B981)
                     Text("$score", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = scoreColor)
                 }
                 
                 Column(horizontalAlignment = Alignment.End) {
-                    Text("Status", fontSize = 9.sp, color = Color.Gray)
+                    Text("Status", fontSize = 13.sp, color = Color.Gray)
                     val statusColor = if (cv.status == "rejected") Color.Red else if (cv.status == "approved") Color(0xFF10B981) else Color(0xFFF59E0B)
                     Text(cv.status.uppercase(), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = statusColor)
                 }

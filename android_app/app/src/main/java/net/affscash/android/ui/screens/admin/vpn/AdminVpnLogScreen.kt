@@ -225,9 +225,9 @@ fun StatCard(title: String, value: String, color: Color, modifier: Modifier = Mo
             modifier = Modifier.padding(8.dp).fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(title, fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Color.Gray, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(title, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color.Gray, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Spacer(modifier = Modifier.height(2.dp))
-            Text(value, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = color)
+            Text(value, fontSize = 112.sp, fontWeight = FontWeight.Bold, color = color)
         }
     }
 }

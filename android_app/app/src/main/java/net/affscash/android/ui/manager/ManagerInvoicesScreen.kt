@@ -147,7 +147,7 @@ fun InvoiceSummaryCard(title: String, value: String, valueColor: Color) {
             modifier = Modifier.padding(12.dp).fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(value, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = valueColor)
+            Text(value, fontSize = 112.sp, fontWeight = FontWeight.Bold, color = valueColor)
             Spacer(modifier = Modifier.height(4.dp))
             Text(title, fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
         }
@@ -186,13 +186,13 @@ fun ManagerInvoiceDetailedItem(invoice: Invoice) {
             // Details Row
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
-                    Text("Period", fontSize = 9.sp, color = Color.Gray)
+                    Text("Period", fontSize = 13.sp, color = Color.Gray)
                     val pStart = invoice.periodStart ?: "N/A"
                     val pEnd = invoice.periodEnd ?: "N/A"
                     Text("$pStart - $pEnd", fontSize = 11.sp)
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text("Amount", fontSize = 9.sp, color = Color.Gray)
+                    Text("Amount", fontSize = 13.sp, color = Color.Gray)
                     Text("$${"%.2f".format(invoice.total)}", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 }
             }

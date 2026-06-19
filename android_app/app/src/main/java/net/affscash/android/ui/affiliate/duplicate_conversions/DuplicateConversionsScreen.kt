@@ -16,6 +16,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.data.model.AffiliateDuplicateConversionCluster
 import net.affscash.android.data.model.AffiliateDuplicateConversionRow
@@ -109,16 +110,16 @@ fun DuplicateConversionsScreen(
                 ) {
                     Card(modifier = Modifier.weight(1f)) {
                         Column(modifier = Modifier.padding(11.dp)) {
-                            Text("DUPLICATE CLUSTERS", fontSize = 8.sp, fontWeight = FontWeight.Bold)
-                            Text("${data.totalClusters}", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                            Text("Unique (offer + IP) groups", fontSize = 8.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text("DUPLICATE CLUSTERS", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                            Text("${data.totalClusters}", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                            Text("Unique (offer + IP) groups", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                     Card(modifier = Modifier.weight(1f)) {
                         Column(modifier = Modifier.padding(11.dp)) {
-                            Text("DUPLICATE CONVERSIONS", fontSize = 8.sp, fontWeight = FontWeight.Bold)
-                            Text("${data.totalConversions}", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error)
-                            Text("Total flagged rows", fontSize = 8.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text("DUPLICATE CONVERSIONS", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                            Text("${data.totalConversions}", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error)
+                            Text("Total flagged rows", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                 }
@@ -164,7 +165,7 @@ fun DuplicateClusterCard(cluster: AffiliateDuplicateConversionCluster) {
                     Text(
                         "${cluster.dupCount} DUPLICATES",
                         color = MaterialTheme.colorScheme.onError,
-                        fontSize = 8.sp,
+                        fontSize = 11.sp,
                         modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
                     )
                 }
@@ -178,20 +179,20 @@ fun DuplicateClusterCard(cluster: AffiliateDuplicateConversionCluster) {
                             }
                         },
                         color = MaterialTheme.colorScheme.onErrorContainer,
-                        fontSize = 11.sp
+                        fontSize = 14.sp
                     )
                     Spacer(modifier = Modifier.height(3.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("IP ", color = MaterialTheme.colorScheme.onErrorContainer, fontSize = 9.sp)
+                        Text("IP ", color = MaterialTheme.colorScheme.onErrorContainer, fontSize = 12.sp)
                         Surface(
                             color = MaterialTheme.colorScheme.surface,
                             shape = MaterialTheme.shapes.small
                         ) {
                             Text(
                                 cluster.ipAddress,
-                                fontSize = 8.sp,
+                                fontSize = 11.sp,
                                 color = MaterialTheme.colorScheme.error,
-                                modifier = Modifier.padding(horizontal = 3.dp, vertical = 2.dp)
+                                modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
                             )
                         }
                     }
@@ -205,8 +206,8 @@ fun DuplicateClusterCard(cluster: AffiliateDuplicateConversionCluster) {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text("ID: ${conversion.conversionId}", fontSize = 9.sp, fontWeight = FontWeight.Bold)
-                        Text("$${conversion.payout}", fontSize = 9.sp, fontWeight = FontWeight.Bold)
+                        Text("ID: ${conversion.conversionId}", fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                        Text("$${conversion.payout}", fontSize = 13.sp, fontWeight = FontWeight.Bold)
                     }
                     Spacer(modifier = Modifier.height(3.dp))
                     Row(
@@ -214,7 +215,7 @@ fun DuplicateClusterCard(cluster: AffiliateDuplicateConversionCluster) {
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(conversion.convertedAt, fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(conversion.convertedAt, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         
                         val statusColor = when (conversion.status.lowercase()) {
                             "approved" -> MaterialTheme.colorScheme.primary
@@ -225,7 +226,7 @@ fun DuplicateClusterCard(cluster: AffiliateDuplicateConversionCluster) {
                         
                         Text(
                             text = conversion.status.uppercase(),
-                            fontSize = 8.sp,
+                            fontSize = 11.sp,
                             color = statusColor,
                             fontWeight = FontWeight.Bold
                         )
@@ -234,7 +235,7 @@ fun DuplicateClusterCard(cluster: AffiliateDuplicateConversionCluster) {
                         Spacer(modifier = Modifier.height(3.dp))
                         Text(
                             "Txn: ${conversion.transactionId ?: "—"} • Goal: ${conversion.goalName ?: "—"}",
-                            fontSize = 8.sp,
+                            fontSize = 11.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }

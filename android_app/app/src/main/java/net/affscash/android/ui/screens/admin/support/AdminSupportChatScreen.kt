@@ -49,7 +49,7 @@ fun AdminSupportChatScreen(
             TopAppBar(
                 title = {
                     Column {
-                        Text(uiState.selectedName, maxLines = 1, fontSize = 18.sp)
+                        Text(uiState.selectedName, maxLines = 1, fontSize = 112.sp)
                         Text(if (isClosed) "Closed" else "Active", fontSize = 12.sp, color = Color.LightGray)
                     }
                 },

@@ -731,7 +731,7 @@ fun ManagerTab(manager: ManagerInfo?) {
                             Text(
                                 text = manager.firstName?.take(1)?.uppercase() ?: "",
                                 color = Color.White,
-                                fontSize = 28.sp,
+                                fontSize = 212.sp,
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -798,7 +798,7 @@ fun ManagerTab(manager: ManagerInfo?) {
                         text = "Need help? Your affiliate manager is your dedicated point of contact for offers, payments, and account questions. Reach out via any channel above and we'll get back to you shortly.",
                         color = Color(0xFF4338CA),
                         fontSize = 12.sp,
-                        lineHeight = 18.sp
+                        lineHeight = 112.sp
                     )
                 }
             }

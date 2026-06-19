@@ -204,7 +204,7 @@ fun ConversationItem(conv: AdminSupportConversationRow, onClick: () -> Unit) {
                             containerColor = MaterialTheme.colorScheme.error,
                             contentColor = MaterialTheme.colorScheme.onError
                         ) {
-                            Text(text = conv.unread.toString(), fontSize = 8.sp)
+                            Text(text = conv.unread.toString(), fontSize = 12.sp)
                         }
                     }
                 }
@@ -216,12 +216,12 @@ fun ConversationItem(conv: AdminSupportConversationRow, onClick: () -> Unit) {
                 ) {
                     Text(
                         text = conv.affiliateCode,
-                        fontSize = 9.sp,
+                        fontSize = 13.sp,
                         color = Color.Gray
                     )
                     Text(
                         text = formatDate(conv.lastMessageAt),
-                        fontSize = 9.sp,
+                        fontSize = 13.sp,
                         color = Color.Gray
                     )
                 }

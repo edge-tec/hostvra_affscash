@@ -150,16 +150,16 @@ fun ManagerSmartlinkCard(
             ) {
                 Text(
                     text = "#${smartlink.id}",
-                    style = MaterialTheme.typography.labelSmall,
+                    fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 if (smartlink.status.lowercase() == "active") {
                     Badge(containerColor = Color(0xFF4CAF50)) {
-                        Text("ACTIVE", fontSize = 9.sp, modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp))
+                        Text("ACTIVE", fontSize = 11.sp, modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp))
                     }
                 } else {
                     Badge(containerColor = Color(0xFF9E9E9E)) {
-                        Text("PAUSED", fontSize = 9.sp, modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp))
+                        Text("PAUSED", fontSize = 11.sp, modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp))
                     }
                 }
             }
@@ -168,7 +168,7 @@ fun ManagerSmartlinkCard(
 
             Text(
                 text = smartlink.name,
-                fontSize = 14.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
@@ -176,7 +176,7 @@ fun ManagerSmartlinkCard(
             if (!smartlink.description.isNullOrEmpty()) {
                 Text(
                     text = smartlink.description,
-                    fontSize = 11.sp,
+                    fontSize = 13.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -192,17 +192,17 @@ fun ManagerSmartlinkCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
-                    Text("My Affiliates", fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("My Affiliates", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Spacer(modifier = Modifier.height(4.dp))
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(12.dp))
                             .background(Color(0xFFE8F5E9))
-                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
                     ) {
                         Text(
                             text = "🟢 ${smartlink.myApproved} APPROVED",
-                            fontSize = 9.sp,
+                            fontSize = 11.sp,
                             color = Color(0xFF2E7D32),
                             fontWeight = FontWeight.Bold
                         )
@@ -211,18 +211,18 @@ fun ManagerSmartlinkCard(
 
                 if (smartlink.myPending > 0) {
                     Column {
-                        Text("Requests", fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("Requests", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Spacer(modifier = Modifier.height(4.dp))
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(12.dp))
                                 .background(Color(0xFFFFF3E0))
                                 .clickable { onNavigateToRequests() }
-                                .padding(horizontal = 6.dp, vertical = 2.dp)
+                                .padding(horizontal = 8.dp, vertical = 4.dp)
                         ) {
                             Text(
                                 text = "🟠 ${smartlink.myPending} PENDING",
-                                fontSize = 9.sp,
+                                fontSize = 11.sp,
                                 color = Color(0xFFEF6C00),
                                 fontWeight = FontWeight.Bold
                             )
@@ -231,10 +231,10 @@ fun ManagerSmartlinkCard(
                 }
 
                 Column(horizontalAlignment = Alignment.End) {
-                    Text("Total Appv", fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Total Appv", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Text(
                         text = smartlink.totalApproved.toString(),
-                        fontSize = 13.sp,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
                     )
                 }
