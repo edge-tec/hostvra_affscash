@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="net.affscash.android" />
+                  <option name="mobileSdkAppId" value="1:342117017820:android:132c2bee61f82cf636ec19" />
+                  <option name="projectId" value="affscash-30f8c" />
+                  <option name="projectNumber" value="342117017820" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
