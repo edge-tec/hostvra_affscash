@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import net.affscash.android.data.model.PaymentSettingsData
+import net.affscash.android.data.model.PaymentTermsRequest
 import net.affscash.android.data.repository.AdminPaymentSettingsRepository
 import javax.inject.Inject
 
@@ -121,16 +122,16 @@ class AdminPaymentSettingsViewModel @Inject constructor(
     }
 
     // --- Payment Terms Actions ---
-    fun savePaymentTerms(applyTo: String, terms: String, selectedAffiliateId: Int?) {
+    fun savePaymentTerms(applyTo: String, terms: String, selectedAffiliateIds: List<Int>) {
         viewModelScope.launch {
             _uiState.update { it.copy(isSaving = true, error = null) }
             val applyToVal = if (applyTo == "all") "all" else "selected"
-            val affiliateIdVal = if (applyTo == "selected") selectedAffiliateId else null
+            val affiliateIdsVal = if (applyTo == "selected") selectedAffiliateIds else null
             
             val req = PaymentTermsRequest(
                 paymentTerms = terms,
                 applyTo = applyToVal,
-                affiliateId = affiliateIdVal
+                affiliateIds = affiliateIdsVal
             )
             repository.savePaymentTerms(req).fold(
                 onSuccess = { res ->

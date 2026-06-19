@@ -72,7 +72,7 @@ data class PaymentSettingsResponse(
 data class PaymentTermsRequest(
     @SerialName("payment_terms") val paymentTerms: String,
     @SerialName("apply_to") val applyTo: String,
-    @SerialName("affiliate_id") val affiliateId: Int? = null
+    @SerialName("affiliate_ids") val affiliateIds: List<Int>? = null
 )
 
 @Serializable

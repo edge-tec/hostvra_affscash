@@ -205,50 +205,55 @@ fun ProfileTab(profile: ProfileInfo?, viewModel: SettingsViewModel) {
     var isUpdating by remember { mutableStateOf(false) }
 
     Column {
-        Text("Profile Information", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = firstName,
-            onValueChange = { firstName = it },
-            label = { Text("First Name *") },
-            modifier = Modifier.fillMaxWidth()
-        )
+        Text("Profile Information", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, fontSize = 15.sp)
         Spacer(modifier = Modifier.height(8.dp))
-        
-        OutlinedTextField(
-            value = lastName,
-            onValueChange = { lastName = it },
-            label = { Text("Last Name *") },
-            modifier = Modifier.fillMaxWidth()
-        )
+
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedTextField(
+                value = firstName,
+                onValueChange = { firstName = it },
+                label = { Text("First Name *", fontSize = 12.sp) },
+                modifier = Modifier.weight(1f).height(56.dp),
+                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+            )
+            OutlinedTextField(
+                value = lastName,
+                onValueChange = { lastName = it },
+                label = { Text("Last Name *", fontSize = 12.sp) },
+                modifier = Modifier.weight(1f).height(56.dp),
+                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+            )
+        }
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = profile?.email ?: "",
             onValueChange = { },
-            label = { Text("Email Address") },
-            modifier = Modifier.fillMaxWidth(),
+            label = { Text("Email Address", fontSize = 12.sp) },
+            modifier = Modifier.fillMaxWidth().height(56.dp),
             readOnly = true,
-            enabled = false
+            enabled = false,
+            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
         )
-        Text("Contact your manager to change your email address", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text("Contact your manager to change your email address", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
         Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = company,
-            onValueChange = { company = it },
-            label = { Text("Company") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
-            value = phone,
-            onValueChange = { phone = it },
-            label = { Text("Phone") },
-            modifier = Modifier.fillMaxWidth()
-        )
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedTextField(
+                value = company,
+                onValueChange = { company = it },
+                label = { Text("Company", fontSize = 12.sp) },
+                modifier = Modifier.weight(1f).height(56.dp),
+                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+            )
+            OutlinedTextField(
+                value = phone,
+                onValueChange = { phone = it },
+                label = { Text("Phone", fontSize = 12.sp) },
+                modifier = Modifier.weight(1f).height(56.dp),
+                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+            )
+        }
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
@@ -287,33 +292,36 @@ fun SecurityTab(viewModel: SettingsViewModel) {
     var isUpdating by remember { mutableStateOf(false) }
 
     Column {
-        Text("Change Password", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        Text("Change Password", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, fontSize = 15.sp)
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = currentPass,
             onValueChange = { currentPass = it },
-            label = { Text("Current Password *") },
-            modifier = Modifier.fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation()
+            label = { Text("Current Password *", fontSize = 12.sp) },
+            modifier = Modifier.fillMaxWidth().height(56.dp),
+            visualTransformation = PasswordVisualTransformation(),
+            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
         )
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = newPass,
             onValueChange = { newPass = it },
-            label = { Text("New Password *") },
-            modifier = Modifier.fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation()
+            label = { Text("New Password *", fontSize = 12.sp) },
+            modifier = Modifier.fillMaxWidth().height(56.dp),
+            visualTransformation = PasswordVisualTransformation(),
+            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
         )
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = confirmPass,
             onValueChange = { confirmPass = it },
-            label = { Text("Confirm New Password *") },
-            modifier = Modifier.fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation()
+            label = { Text("Confirm New Password *", fontSize = 12.sp) },
+            modifier = Modifier.fillMaxWidth().height(56.dp),
+            visualTransformation = PasswordVisualTransformation(),
+            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -393,7 +401,7 @@ fun PaymentTab(payment: PaymentInfo?, methods: List<String>, viewModel: Settings
     var isUpdating by remember { mutableStateOf(false) }
 
     Column {
-        Text("Payment Settings", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        Text("Payment Settings", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, fontSize = 15.sp)
         Spacer(modifier = Modifier.height(16.dp))
 
         ExposedDropdownMenuBox(
@@ -404,9 +412,10 @@ fun PaymentTab(payment: PaymentInfo?, methods: List<String>, viewModel: Settings
                 value = selectedMethod,
                 onValueChange = {},
                 readOnly = true,
-                label = { Text("Payment Method") },
+                label = { Text("Payment Method", fontSize = 12.sp) },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                modifier = Modifier.menuAnchor().fillMaxWidth()
+                modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable).fillMaxWidth().height(56.dp),
+                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
             )
             ExposedDropdownMenu(
                 expanded = expanded,
@@ -438,82 +447,93 @@ fun PaymentTab(payment: PaymentInfo?, methods: List<String>, viewModel: Settings
                 OutlinedTextField(
                     value = accountHolderName,
                     onValueChange = { accountHolderName = it },
-                    label = { Text("Account Holder Name *") },
-                    modifier = Modifier.fillMaxWidth()
+                    label = { Text("Account Holder Name *", fontSize = 12.sp) },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = emailId,
                     onValueChange = { emailId = it },
-                    label = { Text("Email / Account ID *") },
-                    modifier = Modifier.fillMaxWidth()
+                    label = { Text("Email / Account ID *", fontSize = 12.sp) },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                 )
             }
             "wire" -> {
                 OutlinedTextField(
                     value = accountHolderName,
                     onValueChange = { accountHolderName = it },
-                    label = { Text("Account Holder Name *") },
-                    modifier = Modifier.fillMaxWidth()
+                    label = { Text("Account Holder Name *", fontSize = 12.sp) },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = bankName,
                     onValueChange = { bankName = it },
-                    label = { Text("Bank Name *") },
-                    modifier = Modifier.fillMaxWidth()
+                    label = { Text("Bank Name *", fontSize = 12.sp) },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = accountNumber,
                     onValueChange = { accountNumber = it },
-                    label = { Text("Account Number *") },
-                    modifier = Modifier.fillMaxWidth()
+                    label = { Text("Account Number *", fontSize = 12.sp) },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = ibanSwift,
                     onValueChange = { ibanSwift = it },
-                    label = { Text("IBAN / SWIFT Code") },
-                    modifier = Modifier.fillMaxWidth()
+                    label = { Text("IBAN / SWIFT Code", fontSize = 12.sp) },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = bankAddress,
                     onValueChange = { bankAddress = it },
-                    label = { Text("Bank Address *") },
-                    modifier = Modifier.fillMaxWidth()
+                    label = { Text("Bank Address *", fontSize = 12.sp) },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                 )
             }
             "crypto" -> {
                 OutlinedTextField(
                     value = cryptoType,
                     onValueChange = { cryptoType = it },
-                    label = { Text("Cryptocurrency (e.g. USDT) *") },
-                    modifier = Modifier.fillMaxWidth()
+                    label = { Text("Cryptocurrency (e.g. USDT) *", fontSize = 12.sp) },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = networkType,
                     onValueChange = { networkType = it },
-                    label = { Text("Network Type (e.g. TRC20) *") },
-                    modifier = Modifier.fillMaxWidth()
+                    label = { Text("Network Type (e.g. TRC20) *", fontSize = 12.sp) },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = walletAddress,
                     onValueChange = { walletAddress = it },
-                    label = { Text("Wallet Address *") },
-                    modifier = Modifier.fillMaxWidth()
+                    label = { Text("Wallet Address *", fontSize = 12.sp) },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                 )
             }
             else -> {
                 OutlinedTextField(
                     value = customDetails,
                     onValueChange = { customDetails = it },
-                    label = { Text("Payment Details") },
-                    modifier = Modifier.fillMaxWidth().height(150.dp),
-                    placeholder = { Text("Enter your account numbers, crypto addresses, or emails here.") }
+                    label = { Text("Payment Details", fontSize = 12.sp) },
+                    modifier = Modifier.fillMaxWidth().height(120.dp),
+                    placeholder = { Text("Enter your account numbers, crypto addresses, or emails here.", fontSize = 12.sp) },
+                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                 )
             }
         }
@@ -592,9 +612,10 @@ fun GlobalPostbackTab(postback: GlobalPostbackInfo?, viewModel: SettingsViewMode
         OutlinedTextField(
             value = url,
             onValueChange = { url = it },
-            label = { Text("Global Postback URL") },
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("https://your-tracker.com/postback?cid={click_id}") }
+            label = { Text("Global Postback URL", fontSize = 12.sp) },
+            modifier = Modifier.fillMaxWidth().height(56.dp),
+            placeholder = { Text("https://your-tracker.com/postback?cid={click_id}", fontSize = 12.sp) },
+            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -825,8 +846,8 @@ fun TwoFactorTab(isEnabled: Boolean, viewModel: SettingsViewModel) {
     var isLoading by remember { mutableStateOf(false) }
 
     Column {
-        Text("Google Authenticator", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(16.dp))
+        Text("Google Authenticator", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+        Spacer(modifier = Modifier.height(8.dp))
 
         if (!isEnabled && pendingSecret == null) {
             Text("Protect your account with two-factor authentication.")
@@ -851,22 +872,23 @@ fun TwoFactorTab(isEnabled: Boolean, viewModel: SettingsViewModel) {
                 Text(if (isLoading) "Loading..." else "Enable 2FA")
             }
         } else if (pendingSecret != null && !isEnabled) {
-            Text("1. Scan this QR Code with Google Authenticator app:")
+            Text("1. Scan this QR Code with Google Authenticator app:", fontSize = 13.sp)
             QrCodeImage(
                 data = "otpauth://totp/Affscash?secret=$twoFaSecret&issuer=Affscash",
-                modifier = Modifier.size(200.dp).align(Alignment.CenterHorizontally)
+                modifier = Modifier.size(160.dp).align(Alignment.CenterHorizontally)
             )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text("Secret Key: $pendingSecret", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, fontSize = 13.sp)
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Secret Key: $pendingSecret", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(16.dp))
-            Text("2. Enter the 6-digit code from the app to verify.")
+            Text("2. Enter the 6-digit code from the app to verify.", fontSize = 13.sp)
             OutlinedTextField(
                 value = otpCode,
                 onValueChange = { otpCode = it },
-                label = { Text("6-digit Code") },
-                modifier = Modifier.fillMaxWidth()
+                label = { Text("6-digit Code", fontSize = 12.sp) },
+                modifier = Modifier.fillMaxWidth().height(56.dp),
+                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = {
                     isLoading = true
@@ -903,28 +925,30 @@ fun TwoFactorTab(isEnabled: Boolean, viewModel: SettingsViewModel) {
                     Text("Two-Factor Authentication is ENABLED", color = Color(0xFF10B981), fontWeight = FontWeight.Bold)
                 }
             }
-            Spacer(modifier = Modifier.height(24.dp))
-            Text("Disable 2FA", style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text("To disable, enter your account password OR a current 6-digit OTP code.")
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("Disable 2FA", style = MaterialTheme.typography.titleMedium, fontSize = 14.sp)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text("To disable, enter your account password OR a current 6-digit OTP code.", fontSize = 13.sp)
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Account Password") },
-                modifier = Modifier.fillMaxWidth(),
-                visualTransformation = PasswordVisualTransformation()
+                label = { Text("Account Password", fontSize = 12.sp) },
+                modifier = Modifier.fillMaxWidth().height(56.dp),
+                visualTransformation = PasswordVisualTransformation(),
+                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text("OR", modifier = Modifier.align(Alignment.CenterHorizontally))
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
+            Text("OR", modifier = Modifier.align(Alignment.CenterHorizontally), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(4.dp))
             OutlinedTextField(
                 value = otpCode,
                 onValueChange = { otpCode = it },
-                label = { Text("6-digit OTP Code") },
-                modifier = Modifier.fillMaxWidth()
+                label = { Text("6-digit OTP Code", fontSize = 12.sp) },
+                modifier = Modifier.fillMaxWidth().height(56.dp),
+                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = {
                     if (password.isBlank() && otpCode.isBlank()) {

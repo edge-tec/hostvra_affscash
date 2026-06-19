@@ -155,19 +155,19 @@ fun ProfileTabContent(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Card(modifier = Modifier.fillMaxWidth()) {
-            Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text("Profile Information", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("Profile Information", fontWeight = FontWeight.Bold, fontSize = 15.sp)
                 HorizontalDivider()
                 
-                Text("Profile Picture", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                Text("Profile Picture", fontWeight = FontWeight.SemiBold, fontSize = 13.sp)
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(
                         modifier = Modifier
-                            .size(64.dp)
+                            .size(50.dp)
                             .clip(CircleShape)
                             .background(Color.LightGray),
                         contentAlignment = Alignment.Center
@@ -200,69 +200,77 @@ fun ProfileTabContent(
                     OutlinedTextField(
                         value = firstName,
                         onValueChange = { firstName = it },
-                        label = { Text("First Name *") },
-                        modifier = Modifier.weight(1f),
-                        singleLine = true
+                        label = { Text("First Name *", fontSize = 12.sp) },
+                        modifier = Modifier.weight(1f).height(56.dp),
+                        singleLine = true,
+                        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                     )
                     OutlinedTextField(
                         value = lastName,
                         onValueChange = { lastName = it },
-                        label = { Text("Last Name *") },
-                        modifier = Modifier.weight(1f),
-                        singleLine = true
+                        label = { Text("Last Name *", fontSize = 12.sp) },
+                        modifier = Modifier.weight(1f).height(56.dp),
+                        singleLine = true,
+                        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                     )
                 }
 
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
-                    label = { Text("Email Address *") },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true
+                    label = { Text("Email Address *", fontSize = 12.sp) },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    singleLine = true,
+                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                 )
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedTextField(
                         value = company,
                         onValueChange = { company = it },
-                        label = { Text("Company") },
-                        modifier = Modifier.weight(1f),
-                        singleLine = true
+                        label = { Text("Company", fontSize = 12.sp) },
+                        modifier = Modifier.weight(1f).height(56.dp),
+                        singleLine = true,
+                        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                     )
                     OutlinedTextField(
                         value = phone,
                         onValueChange = { phone = it },
-                        label = { Text("Phone") },
-                        modifier = Modifier.weight(1f),
-                        singleLine = true
+                        label = { Text("Phone", fontSize = 12.sp) },
+                        modifier = Modifier.weight(1f).height(56.dp),
+                        singleLine = true,
+                        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                     )
                 }
                 
-                Spacer(modifier = Modifier.height(8.dp))
-                Text("Contact Handles", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                Spacer(modifier = Modifier.height(4.dp))
+                Text("Contact Handles", fontWeight = FontWeight.SemiBold, fontSize = 13.sp)
                 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedTextField(
                         value = skype,
                         onValueChange = { skype = it },
-                        label = { Text("Skype") },
-                        modifier = Modifier.weight(1f),
-                        singleLine = true
+                        label = { Text("Skype", fontSize = 12.sp) },
+                        modifier = Modifier.weight(1f).height(56.dp),
+                        singleLine = true,
+                        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                     )
                     OutlinedTextField(
                         value = telegram,
                         onValueChange = { telegram = it },
-                        label = { Text("Telegram") },
-                        modifier = Modifier.weight(1f),
-                        singleLine = true
+                        label = { Text("Telegram", fontSize = 12.sp) },
+                        modifier = Modifier.weight(1f).height(56.dp),
+                        singleLine = true,
+                        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                     )
                 }
                 OutlinedTextField(
                     value = discord,
                     onValueChange = { discord = it },
-                    label = { Text("Discord") },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true
+                    label = { Text("Discord", fontSize = 12.sp) },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    singleLine = true,
+                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                 )
 
                 Button(
@@ -304,39 +312,42 @@ fun SecurityTabContent(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Card(modifier = Modifier.fillMaxWidth()) {
-            Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text("Change Password", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("Change Password", fontWeight = FontWeight.Bold, fontSize = 15.sp)
                 HorizontalDivider()
 
                 OutlinedTextField(
                     value = currentPass,
                     onValueChange = { currentPass = it },
-                    label = { Text("Current Password") },
-                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text("Current Password", fontSize = 12.sp) },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
                     visualTransformation = PasswordVisualTransformation(),
-                    singleLine = true
+                    singleLine = true,
+                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                 )
 
                 OutlinedTextField(
                     value = newPass,
                     onValueChange = { newPass = it },
-                    label = { Text("New Password") },
-                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text("New Password", fontSize = 12.sp) },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
                     visualTransformation = PasswordVisualTransformation(),
-                    singleLine = true
+                    singleLine = true,
+                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                 )
 
                 OutlinedTextField(
                     value = confirmPass,
                     onValueChange = { confirmPass = it },
-                    label = { Text("Confirm New Password") },
-                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text("Confirm New Password", fontSize = 12.sp) },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
                     visualTransformation = PasswordVisualTransformation(),
-                    singleLine = true
+                    singleLine = true,
+                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                 )
 
                 Button(
@@ -390,12 +401,12 @@ fun PaymentTabContent(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Card(modifier = Modifier.fillMaxWidth()) {
-            Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text("Payment Information", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("Payment Information", fontWeight = FontWeight.Bold, fontSize = 15.sp)
                 HorizontalDivider()
 
                 ExposedDropdownMenuBox(
@@ -438,98 +449,111 @@ fun PaymentTabContent(
                         OutlinedTextField(
                             value = accountHolderName,
                             onValueChange = { accountHolderName = it },
-                            label = { Text("Account Holder Name *") },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true
+                            label = { Text("Account Holder Name *", fontSize = 12.sp) },
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
+                            singleLine = true,
+                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                         )
                         OutlinedTextField(
                             value = emailId,
                             onValueChange = { emailId = it },
-                            label = { Text("Email / Account ID *") },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true
+                            label = { Text("Email / Account ID *", fontSize = 12.sp) },
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
+                            singleLine = true,
+                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                         )
                     }
                     "wire" -> {
                         OutlinedTextField(
                             value = accountHolderName,
                             onValueChange = { accountHolderName = it },
-                            label = { Text("Account Holder Name *") },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true
+                            label = { Text("Account Holder Name *", fontSize = 12.sp) },
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
+                            singleLine = true,
+                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                         )
                         OutlinedTextField(
                             value = bankName,
                             onValueChange = { bankName = it },
-                            label = { Text("Bank Name *") },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true
+                            label = { Text("Bank Name *", fontSize = 12.sp) },
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
+                            singleLine = true,
+                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                         )
                         OutlinedTextField(
                             value = accountNumber,
                             onValueChange = { accountNumber = it },
-                            label = { Text("Account Number *") },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true
+                            label = { Text("Account Number *", fontSize = 12.sp) },
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
+                            singleLine = true,
+                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                         )
                         OutlinedTextField(
                             value = ibanSwift,
                             onValueChange = { ibanSwift = it },
-                            label = { Text("IBAN / SWIFT Code") },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true
+                            label = { Text("IBAN / SWIFT Code", fontSize = 12.sp) },
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
+                            singleLine = true,
+                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                         )
                         OutlinedTextField(
                             value = routingNumber,
                             onValueChange = { routingNumber = it },
-                            label = { Text("Routing Number") },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true
+                            label = { Text("Routing Number", fontSize = 12.sp) },
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
+                            singleLine = true,
+                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                         )
                         OutlinedTextField(
                             value = branchName,
                             onValueChange = { branchName = it },
-                            label = { Text("Branch Name") },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true
+                            label = { Text("Branch Name", fontSize = 12.sp) },
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
+                            singleLine = true,
+                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                         )
                         OutlinedTextField(
                             value = bankAddress,
                             onValueChange = { bankAddress = it },
-                            label = { Text("Bank Address *") },
-                            modifier = Modifier.fillMaxWidth()
+                            label = { Text("Bank Address *", fontSize = 12.sp) },
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
+                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                         )
                     }
                     "crypto" -> {
                         OutlinedTextField(
                             value = cryptoType,
                             onValueChange = { cryptoType = it },
-                            label = { Text("Cryptocurrency (e.g. USDT) *") },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true
+                            label = { Text("Cryptocurrency (e.g. USDT) *", fontSize = 12.sp) },
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
+                            singleLine = true,
+                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                         )
                         OutlinedTextField(
                             value = networkType,
                             onValueChange = { networkType = it },
-                            label = { Text("Network Type (e.g. TRC20) *") },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true
+                            label = { Text("Network Type (e.g. TRC20) *", fontSize = 12.sp) },
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
+                            singleLine = true,
+                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                         )
                         OutlinedTextField(
                             value = walletAddress,
                             onValueChange = { walletAddress = it },
-                            label = { Text("Wallet Address *") },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true
+                            label = { Text("Wallet Address *", fontSize = 12.sp) },
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
+                            singleLine = true,
+                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                         )
                     }
                     else -> {
                         OutlinedTextField(
                             value = customDetails,
                             onValueChange = { customDetails = it },
-                            label = { Text("Payment Details") },
-                            modifier = Modifier.fillMaxWidth().height(150.dp),
-                            placeholder = { Text("Enter your account numbers, crypto addresses, or emails here.") }
+                            label = { Text("Payment Details", fontSize = 12.sp) },
+                            modifier = Modifier.fillMaxWidth().height(120.dp),
+                            placeholder = { Text("Enter your account numbers, crypto addresses, or emails here.", fontSize = 12.sp) },
+                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                         )
                     }
                 }
@@ -590,32 +614,34 @@ fun GoogleAuthenticatorTabContent(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Card(modifier = Modifier.fillMaxWidth()) {
-            Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text("Google Authenticator (2FA)", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("Google Authenticator (2FA)", fontWeight = FontWeight.Bold, fontSize = 15.sp)
                 HorizontalDivider()
 
                 if (data.twoFactorEnabled) {
                     Text("Two-Factor Authentication is currently ENABLED.", color = Color(0xFF10B981), fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text("To disable, enter your current password and a valid 2FA code:")
+                    Text("To disable, enter your current password and a valid 2FA code:", fontSize = 13.sp)
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
-                        label = { Text("Current Password") },
+                        label = { Text("Current Password", fontSize = 12.sp) },
                         visualTransformation = PasswordVisualTransformation(),
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true
+                        modifier = Modifier.fillMaxWidth().height(56.dp),
+                        singleLine = true,
+                        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                     )
                     OutlinedTextField(
                         value = code,
                         onValueChange = { code = it },
-                        label = { Text("Authenticator Code") },
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true
+                        label = { Text("Authenticator Code", fontSize = 12.sp) },
+                        modifier = Modifier.fillMaxWidth().height(56.dp),
+                        singleLine = true,
+                        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                     )
                     Button(
                         onClick = { viewModel.disable2fa(password, code) },
@@ -630,21 +656,22 @@ fun GoogleAuthenticatorTabContent(
                             Text("Enable 2FA")
                         }
                     } else {
-                        Text("1. Scan this QR Code with Google Authenticator app:")
+                        Text("1. Scan this QR Code with Google Authenticator app:", fontSize = 13.sp)
                         QrCodeImage(
                             data = "otpauth://totp/Affscash?secret=$twoFaSecret&issuer=Affscash",
-                            modifier = Modifier.size(200.dp).align(Alignment.CenterHorizontally)
+                            modifier = Modifier.size(160.dp).align(Alignment.CenterHorizontally)
                         )
-                        Text("Or enter this secret manually: $twoFaSecret", fontWeight = FontWeight.Bold)
+                        Text("Or enter this secret manually: $twoFaSecret", fontWeight = FontWeight.Bold, fontSize = 13.sp)
                         
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text("2. Enter the 6-digit code generated by the app:")
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("2. Enter the 6-digit code generated by the app:", fontSize = 13.sp)
                         OutlinedTextField(
                             value = code,
                             onValueChange = { code = it },
-                            label = { Text("6-digit Code") },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true
+                            label = { Text("6-digit Code", fontSize = 12.sp) },
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
+                            singleLine = true,
+                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
                         )
                         Button(
                             onClick = { viewModel.verify2fa(code) },
