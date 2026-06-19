@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ContentCopy
@@ -181,8 +182,36 @@ fun SmartlinkCard(
             
             Spacer(modifier = Modifier.height(8.dp))
             
-            smartlink.description?.let {
-                Text(it, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 18.sp)
+            smartlink.description?.let { desc ->
+                var isExpanded by remember { mutableStateOf(false) }
+                var showSeeMore by remember { mutableStateOf(false) }
+
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = desc,
+                        fontSize = 13.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        lineHeight = 18.sp,
+                        maxLines = if (isExpanded) Int.MAX_VALUE else 3,
+                        overflow = TextOverflow.Ellipsis,
+                        onTextLayout = { textLayoutResult ->
+                            if (textLayoutResult.hasVisualOverflow) {
+                                showSeeMore = true
+                            }
+                        }
+                    )
+                    if (showSeeMore || isExpanded) {
+                        Text(
+                            text = if (isExpanded) "See less" else "See more",
+                            color = MaterialTheme.colorScheme.primary,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .padding(top = 4.dp, bottom = 4.dp)
+                                .clickable { isExpanded = !isExpanded }
+                        )
+                    }
+                }
                 Spacer(modifier = Modifier.height(8.dp))
             }
             

@@ -215,13 +215,34 @@ fun ManagerSmartlinkCard(
                 overflow = TextOverflow.Ellipsis
             )
             if (!smartlink.description.isNullOrEmpty()) {
-                Text(
-                    text = smartlink.description,
-                    fontSize = 13.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                var isExpanded by remember { mutableStateOf(false) }
+                var showSeeMore by remember { mutableStateOf(false) }
+
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = smartlink.description,
+                        fontSize = 13.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = if (isExpanded) Int.MAX_VALUE else 1,
+                        overflow = TextOverflow.Ellipsis,
+                        onTextLayout = { textLayoutResult ->
+                            if (textLayoutResult.hasVisualOverflow) {
+                                showSeeMore = true
+                            }
+                        }
+                    )
+                    if (showSeeMore || isExpanded) {
+                        Text(
+                            text = if (isExpanded) "See less" else "See more",
+                            color = MaterialTheme.colorScheme.primary,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .padding(top = 4.dp, bottom = 4.dp)
+                                .clickable { isExpanded = !isExpanded }
+                        )
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
