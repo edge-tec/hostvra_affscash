@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "net.affscash.android"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         applicationId = "net.affscash.android"
         minSdk = 24
