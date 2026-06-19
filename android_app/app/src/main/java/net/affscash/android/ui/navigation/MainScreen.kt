@@ -196,10 +196,10 @@ fun MainScreen(
                             showMoreSheet = false
                             navController.navigate(screen.route) {
                                 popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
+                                    saveState = (screen.route != startDest)
                                 }
                                 launchSingleTop = true
-                                restoreState = true
+                                restoreState = (screen.route != startDest)
                             }
                         },
                         modifier = Modifier.fillMaxWidth().aspectRatio(1f),
@@ -344,10 +344,10 @@ fun MainScreen(
                                 onClick = {
                                     navController.navigate(screen.route) {
                                         popUpTo(navController.graph.findStartDestination().id) {
-                                            saveState = true
+                                            saveState = (screen.route != startDest)
                                         }
                                         launchSingleTop = true
-                                        restoreState = true
+                                        restoreState = (screen.route != startDest)
                                     }
                                 },
                                 colors = NavigationBarItemDefaults.colors(
