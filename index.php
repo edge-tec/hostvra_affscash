@@ -510,6 +510,8 @@ Router::any('/api/v2/admin/chat', function() { require BASE_PATH . '/api/v2/admi
 Router::any('/api/v2/admin/shop', function() { require BASE_PATH . '/api/v2/admin/ShopController.php'; });
 Router::any('/api/v2/admin/referral', function() { require BASE_PATH . '/api/v2/admin/ReferralController.php'; });
 Router::any('/api/v2/admin/points', function() { require BASE_PATH . '/api/v2/admin/PointsController.php'; });
+Router::any('/api/v2/admin/payment-settings', function() { require BASE_PATH . '/api/v2/admin/PaymentSettingsController.php'; });
+Router::any('/api/v2/admin/vpn-logs', function() { require BASE_PATH . '/api/v2/admin/VpnLogController.php'; });
 
 // Native App API Routes (v2) - Manager
 Router::any('/api/v2/manager/dashboard', function() { require BASE_PATH . '/api/v2/manager/DashboardController.php'; });

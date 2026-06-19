@@ -403,7 +403,7 @@ interface ApiService {
     suspend fun getAdminSettings(): Response<net.affscash.android.data.model.AdminPlatformSettingsResponse>
 
     // Admin VPN Logs
-    @GET("api/v2/admin/VpnLogController.php?action=list")
+    @GET("api/v2/admin/vpn-logs?action=list")
     suspend fun getAdminVpnLogs(
         @Query("q_ip") ip: String? = null,
         @Query("q_aff") affiliate: String? = null,
@@ -412,29 +412,29 @@ interface ApiService {
         @Query("date_to") dateTo: String? = null
     ): Response<net.affscash.android.data.model.VpnLogListResponse>
 
-    @GET("api/v2/admin/VpnLogController.php?action=stats")
+    @GET("api/v2/admin/vpn-logs?action=stats")
     suspend fun getAdminVpnLogStats(): Response<net.affscash.android.data.model.VpnLogStatsResponse>
 
-    @GET("api/v2/admin/VpnLogController.php?action=clear")
+    @GET("api/v2/admin/vpn-logs?action=clear")
     suspend fun clearAdminVpnLogs(): Response<net.affscash.android.data.model.BasicResponse>
 
     // Admin Payment Settings
-    @GET("api/v2/admin/PaymentSettingsController.php?action=data")
+    @GET("api/v2/admin/payment-settings?action=data")
     suspend fun getAdminPaymentSettings(): Response<net.affscash.android.data.model.PaymentSettingsResponse>
 
-    @POST("api/v2/admin/PaymentSettingsController.php?action=save_method")
+    @POST("api/v2/admin/payment-settings?action=save_method")
     suspend fun savePaymentMethod(@Body request: Map<String, String>): Response<net.affscash.android.data.model.BasicResponse>
 
-    @POST("api/v2/admin/PaymentSettingsController.php?action=save_terms")
+    @POST("api/v2/admin/payment-settings?action=save_terms")
     suspend fun savePaymentTerms(@Body request: net.affscash.android.data.model.PaymentTermsRequest): Response<net.affscash.android.data.model.BasicResponse>
 
-    @POST("api/v2/admin/PaymentSettingsController.php?action=save_commission")
+    @POST("api/v2/admin/payment-settings?action=save_commission")
     suspend fun saveManagerCommission(@Body request: Map<String, String>): Response<net.affscash.android.data.model.BasicResponse>
 
-    @POST("api/v2/admin/PaymentSettingsController.php?action=save_offer_commission")
+    @POST("api/v2/admin/payment-settings?action=save_offer_commission")
     suspend fun saveOfferCommission(@Body request: Map<String, String>): Response<net.affscash.android.data.model.BasicResponse>
 
-    @POST("api/v2/admin/PaymentSettingsController.php?action=save_payout_info")
+    @POST("api/v2/admin/payment-settings?action=save_payout_info")
     suspend fun savePayoutInfo(@Body request: net.affscash.android.data.model.PayoutInfoRequest): Response<net.affscash.android.data.model.BasicResponse>
 
     @GET("api/v2/admin/invoices")
