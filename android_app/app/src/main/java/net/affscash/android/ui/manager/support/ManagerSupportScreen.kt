@@ -111,12 +111,12 @@ fun ConversationItem(conversation: ManagerConversation, onClick: () -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(11.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .size(50.dp)
+                    .size(35.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.primaryContainer),
                 contentAlignment = Alignment.Center
@@ -124,10 +124,11 @@ fun ConversationItem(conversation: ManagerConversation, onClick: () -> Unit) {
                 Icon(
                     imageVector = Icons.Default.Email,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.size(17.dp)
                 )
             }
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(11.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -136,7 +137,7 @@ fun ConversationItem(conversation: ManagerConversation, onClick: () -> Unit) {
                 ) {
                     Text(
                         text = "${conversation.name} (${conversation.affiliateCode})",
-                        style = MaterialTheme.typography.titleMedium,
+                        fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -145,12 +146,12 @@ fun ConversationItem(conversation: ManagerConversation, onClick: () -> Unit) {
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = conversation.lastMessageAt?.take(10) ?: "",
-                        style = MaterialTheme.typography.bodySmall,
+                        fontSize = 9.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1
                     )
                 }
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(3.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -158,7 +159,7 @@ fun ConversationItem(conversation: ManagerConversation, onClick: () -> Unit) {
                 ) {
                     Text(
                         text = conversation.lastMsg ?: "No messages yet",
-                        style = MaterialTheme.typography.bodyMedium,
+                        fontSize = 10.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -168,7 +169,7 @@ fun ConversationItem(conversation: ManagerConversation, onClick: () -> Unit) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Box(
                             modifier = Modifier
-                                .size(24.dp)
+                                .size(17.dp)
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colorScheme.error),
                             contentAlignment = Alignment.Center
@@ -176,7 +177,7 @@ fun ConversationItem(conversation: ManagerConversation, onClick: () -> Unit) {
                             Text(
                                 text = conversation.unread.toString(),
                                 color = MaterialTheme.colorScheme.onError,
-                                style = MaterialTheme.typography.labelSmall
+                                fontSize = 8.sp
                             )
                         }
                     }
