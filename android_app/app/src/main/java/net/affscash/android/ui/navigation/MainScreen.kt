@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -279,7 +280,7 @@ fun MainScreen(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(Icons.Filled.Visibility, contentDescription = "Impersonating", modifier = Modifier.size(20.dp))
                             Spacer(Modifier.width(8.dp))
-                            Text("Viewing as Affiliate", style = MaterialTheme.typography.labelMedium, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                            Text("Viewing as Affiliate", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
                         }
                         Button(
                             onClick = {
@@ -294,39 +295,104 @@ fun MainScreen(
                             contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
                             modifier = Modifier.height(32.dp)
                         ) {
-                            Text("Return", fontSize = androidx.compose.ui.unit.TextUnit(12f, androidx.compose.ui.unit.TextUnitType.Sp), fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                            Text("Return", fontSize = androidx.compose.ui.unit.TextUnit(12f, androidx.compose.ui.unit.TextUnitType.Sp), fontWeight = FontWeight.Bold)
                         }
                     }
                 }
             }
         },
         bottomBar = {
-            NavigationBar {
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentDestination = navBackStackEntry?.destination
-                mainItems.forEach { screen ->
-                    NavigationBarItem(
-                        icon = { Icon(screen.icon, contentDescription = null, modifier = Modifier.size(18.dp)) },
-                        label = { Text(screen.title, fontSize = androidx.compose.ui.unit.TextUnit(9f, androidx.compose.ui.unit.TextUnitType.Sp), maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis) },
-                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                        onClick = {
-                            navController.navigate(screen.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
+            Box(modifier = Modifier.padding(16.dp)) {
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(24.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                    shadowElevation = 8.dp
+                ) {
+                    NavigationBar(
+                        containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                        tonalElevation = 0.dp,
+                        modifier = Modifier.height(72.dp)
+                    ) {
+                        val navBackStackEntry by navController.currentBackStackEntryAsState()
+                        val currentDestination = navBackStackEntry?.destination
+                        mainItems.forEach { screen ->
+                            val isSelected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
+                            NavigationBarItem(
+                                icon = { 
+                                    Box(
+                                        contentAlignment = Alignment.Center,
+                                        modifier = Modifier.size(if (isSelected) 32.dp else 24.dp)
+                                    ) {
+                                        Icon(
+                                            screen.icon, 
+                                            contentDescription = null, 
+                                            modifier = Modifier.size(if (isSelected) 24.dp else 22.dp)
+                                        ) 
+                                    }
+                                },
+                                label = { 
+                                    Text(
+                                        screen.title, 
+                                        fontSize = androidx.compose.ui.unit.TextUnit(10f, androidx.compose.ui.unit.TextUnitType.Sp), 
+                                        fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.Medium,
+                                        maxLines = 1, 
+                                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                                    ) 
+                                },
+                                selected = isSelected,
+                                onClick = {
+                                    navController.navigate(screen.route) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                },
+                                colors = NavigationBarItemDefaults.colors(
+                                    indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                                    selectedTextColor = MaterialTheme.colorScheme.primary,
+                                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                                )
+                            )
                         }
-                    )
-                }
-                if (moreItems.isNotEmpty()) {
-                    NavigationBarItem(
-                        icon = { Icon(Icons.Filled.Menu, contentDescription = "Menu", modifier = Modifier.size(18.dp)) },
-                        label = { Text("Menu", fontSize = androidx.compose.ui.unit.TextUnit(9f, androidx.compose.ui.unit.TextUnitType.Sp)) },
-                        selected = currentDestination?.route?.let { route -> moreItems.any { it.route == route } } == true,
-                        onClick = { showMoreSheet = true }
-                    )
+                        if (moreItems.isNotEmpty()) {
+                            val isSelected = currentDestination?.route?.let { route -> moreItems.any { it.route == route } } == true
+                            NavigationBarItem(
+                                icon = { 
+                                    Box(
+                                        contentAlignment = Alignment.Center,
+                                        modifier = Modifier.size(if (isSelected) 32.dp else 24.dp)
+                                    ) {
+                                        Icon(
+                                            Icons.Filled.Menu, 
+                                            contentDescription = "Menu", 
+                                            modifier = Modifier.size(if (isSelected) 24.dp else 22.dp)
+                                        ) 
+                                    }
+                                },
+                                label = { 
+                                    Text(
+                                        "Menu", 
+                                        fontSize = androidx.compose.ui.unit.TextUnit(10f, androidx.compose.ui.unit.TextUnitType.Sp),
+                                        fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.Medium
+                                    ) 
+                                },
+                                selected = isSelected,
+                                onClick = { showMoreSheet = true },
+                                colors = NavigationBarItemDefaults.colors(
+                                    indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                                    selectedTextColor = MaterialTheme.colorScheme.primary,
+                                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                                )
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -514,9 +580,6 @@ fun MainScreen(
             }
             
             composable(Screen.AdminChat.route) { backStackEntry ->
-                val convId = backStackEntry.arguments?.getString("convId")?.toIntOrNull() ?: 0
-                val affId = backStackEntry.arguments?.getString("affId")?.toIntOrNull() ?: 0
-                val name = backStackEntry.arguments?.getString("name")?.let { java.net.URLDecoder.decode(it, "UTF-8") } ?: "Unknown"
                 // For Chat, we can pass the ViewModel if needed, but since it's scoped to the activity/navGraph,
                 // we can just retrieve the same instance using hiltViewModel() inside the ChatScreen, OR
                 // since the ViewModel is already shared via NavGraph/Activity, we can just fetch it here.
@@ -759,10 +822,11 @@ fun MainScreen(
                     navController = navController
                 )
             }
-            composable(Screen.ManagerChat.route) {
-                val viewModel: net.affscash.android.ui.manager.support.ManagerSupportViewModel = androidx.hilt.navigation.compose.hiltViewModel(
+            composable(Screen.ManagerChat.route) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
                     navController.getBackStackEntry(Screen.ManagerSupport.route)
-                )
+                }
+                val viewModel: net.affscash.android.ui.manager.support.ManagerSupportViewModel = androidx.hilt.navigation.compose.hiltViewModel(parentEntry)
                 net.affscash.android.ui.manager.support.ManagerChatScreen(
                     navController = navController,
                     viewModel = viewModel
