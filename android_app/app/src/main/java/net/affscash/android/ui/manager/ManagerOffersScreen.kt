@@ -463,22 +463,33 @@ fun ManagerOfferFilterContent(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(24.dp)
             .padding(bottom = 32.dp)
     ) {
-        Text("Filter Offers", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(16.dp))
+        Text("Filter Offers", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+        Spacer(modifier = Modifier.height(24.dp))
+
+        val textFieldColors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = Color.Transparent,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+        )
+        val textFieldShape = RoundedCornerShape(12.dp)
 
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
             label = { Text("Search Offers") },
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.primary) },
             modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            singleLine = true,
+            shape = textFieldShape,
+            colors = textFieldColors
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             // Category Dropdown
             var catExpanded by remember { mutableStateOf(false) }
             ExposedDropdownMenuBox(
@@ -492,7 +503,9 @@ fun ManagerOfferFilterContent(
                     readOnly = true,
                     label = { Text("Category") },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = catExpanded) },
-                    modifier = Modifier.menuAnchor()
+                    modifier = Modifier.menuAnchor(),
+                    shape = textFieldShape,
+                    colors = textFieldColors
                 )
                 ExposedDropdownMenu(expanded = catExpanded, onDismissRequest = { catExpanded = false }) {
                     DropdownMenuItem(text = { Text("All Categories") }, onClick = { category = null; catExpanded = false })
@@ -515,7 +528,9 @@ fun ManagerOfferFilterContent(
                     readOnly = true,
                     label = { Text("Payout Type") },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = ptExpanded) },
-                    modifier = Modifier.menuAnchor()
+                    modifier = Modifier.menuAnchor(),
+                    shape = textFieldShape,
+                    colors = textFieldColors
                 )
                 ExposedDropdownMenu(expanded = ptExpanded, onDismissRequest = { ptExpanded = false }) {
                     DropdownMenuItem(text = { Text("All") }, onClick = { payoutType = null; ptExpanded = false })
@@ -526,9 +541,9 @@ fun ManagerOfferFilterContent(
             }
         }
         
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             // Status Dropdown
             var statusExpanded by remember { mutableStateOf(false) }
             ExposedDropdownMenuBox(
@@ -542,7 +557,9 @@ fun ManagerOfferFilterContent(
                     readOnly = true,
                     label = { Text("Status") },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = statusExpanded) },
-                    modifier = Modifier.menuAnchor()
+                    modifier = Modifier.menuAnchor(),
+                    shape = textFieldShape,
+                    colors = textFieldColors
                 )
                 ExposedDropdownMenu(expanded = statusExpanded, onDismissRequest = { statusExpanded = false }) {
                     DropdownMenuItem(text = { Text("All") }, onClick = { status = null; statusExpanded = false })
@@ -565,7 +582,9 @@ fun ManagerOfferFilterContent(
                     readOnly = true,
                     label = { Text("Offer Type") },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = otExpanded) },
-                    modifier = Modifier.menuAnchor()
+                    modifier = Modifier.menuAnchor(),
+                    shape = textFieldShape,
+                    colors = textFieldColors
                 )
                 ExposedDropdownMenu(expanded = otExpanded, onDismissRequest = { otExpanded = false }) {
                     DropdownMenuItem(text = { Text("All") }, onClick = { offerType = null; otExpanded = false })
@@ -576,7 +595,7 @@ fun ManagerOfferFilterContent(
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             OutlinedButton(
@@ -584,9 +603,10 @@ fun ManagerOfferFilterContent(
                     viewModel.resetFilters()
                     onDismiss()
                 },
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f).height(56.dp),
+                shape = RoundedCornerShape(12.dp)
             ) {
-                Text("Reset")
+                Text("Reset", fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }
             Button(
                 onClick = {
@@ -600,9 +620,10 @@ fun ManagerOfferFilterContent(
                     viewModel.applyFilters()
                     onDismiss()
                 },
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f).height(56.dp),
+                shape = RoundedCornerShape(12.dp)
             ) {
-                Text("Apply Filters")
+                Text("Apply Filters", fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }
         }
     }
