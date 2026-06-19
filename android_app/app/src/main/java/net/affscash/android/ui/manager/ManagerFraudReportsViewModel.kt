@@ -16,8 +16,18 @@ data class ManagerFraudReportsUiState(
     val isLoading: Boolean = false,
     val response: ManagerFraudReportResponse? = null,
     val error: String? = null,
-    val searchQuery: String = "",
-    val statusFilter: String = "All Statuses"
+    
+    // Filters
+    val fromDate: String = "",
+    val toDate: String = "",
+    val clickId: String = "",
+    val statusFilter: String = "All Statuses",
+    val affiliate: String = "All Affiliates",
+    val affCode: String = "",
+    val offer: String = "All Offers",
+    val scoreMin: String = "",
+    val scoreMax: String = "",
+    val sortBy: String = "Date Desc"
 )
 
 @HiltViewModel
@@ -45,11 +55,24 @@ class ManagerFraudReportsViewModel @Inject constructor(
         }
     }
 
-    fun setSearchQuery(query: String) {
-        _uiState.update { it.copy(searchQuery = query) }
-    }
-
-    fun setStatusFilter(status: String) {
-        _uiState.update { it.copy(statusFilter = status) }
+    fun updateFilters(
+        fromDate: String = _uiState.value.fromDate,
+        toDate: String = _uiState.value.toDate,
+        clickId: String = _uiState.value.clickId,
+        statusFilter: String = _uiState.value.statusFilter,
+        affiliate: String = _uiState.value.affiliate,
+        affCode: String = _uiState.value.affCode,
+        offer: String = _uiState.value.offer,
+        scoreMin: String = _uiState.value.scoreMin,
+        scoreMax: String = _uiState.value.scoreMax,
+        sortBy: String = _uiState.value.sortBy
+    ) {
+        _uiState.update { 
+            it.copy(
+                fromDate = fromDate, toDate = toDate, clickId = clickId, 
+                statusFilter = statusFilter, affiliate = affiliate, affCode = affCode, 
+                offer = offer, scoreMin = scoreMin, scoreMax = scoreMax, sortBy = sortBy
+            )
+        }
     }
 }
