@@ -149,28 +149,28 @@ fun GeneralSettingsTab(config: AdminPlatformConfig) {
     Text("General Configuration", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
     Spacer(modifier = Modifier.height(16.dp))
 
-    OutlinedTextField(
+    AdminStyledTextField(
         value = app.name ?: "",
         onValueChange = { app = app.copy(name = it) },
         label = { Text("Site Name") },
         modifier = Modifier.fillMaxWidth()
     )
     Spacer(modifier = Modifier.height(8.dp))
-    OutlinedTextField(
+    AdminStyledTextField(
         value = app.url ?: "",
         onValueChange = { app = app.copy(url = it) },
         label = { Text("Site URL") },
         modifier = Modifier.fillMaxWidth()
     )
     Spacer(modifier = Modifier.height(8.dp))
-    OutlinedTextField(
+    AdminStyledTextField(
         value = app.timezone ?: "",
         onValueChange = { app = app.copy(timezone = it) },
         label = { Text("Timezone") },
         modifier = Modifier.fillMaxWidth()
     )
     Spacer(modifier = Modifier.height(8.dp))
-    OutlinedTextField(
+    AdminStyledTextField(
         value = app.contactEmail ?: "",
         onValueChange = { app = app.copy(contactEmail = it) },
         label = { Text("Contact Email") },
@@ -206,28 +206,28 @@ fun SmtpSettingsTab(config: AdminPlatformConfig) {
     Text("SMTP Configuration", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
     Spacer(modifier = Modifier.height(16.dp))
 
-    OutlinedTextField(
+    AdminStyledTextField(
         value = smtp.host ?: "",
         onValueChange = { smtp = smtp.copy(host = it) },
         label = { Text("Host") },
         modifier = Modifier.fillMaxWidth()
     )
     Spacer(modifier = Modifier.height(8.dp))
-    OutlinedTextField(
+    AdminStyledTextField(
         value = smtp.port ?: "",
         onValueChange = { smtp = smtp.copy(port = it) },
         label = { Text("Port") },
         modifier = Modifier.fillMaxWidth()
     )
     Spacer(modifier = Modifier.height(8.dp))
-    OutlinedTextField(
+    AdminStyledTextField(
         value = smtp.username ?: "",
         onValueChange = { smtp = smtp.copy(username = it) },
         label = { Text("Username") },
         modifier = Modifier.fillMaxWidth()
     )
     Spacer(modifier = Modifier.height(8.dp))
-    OutlinedTextField(
+    AdminStyledTextField(
         value = smtp.password ?: "",
         onValueChange = { smtp = smtp.copy(password = it) },
         label = { Text("Password") },
@@ -246,7 +246,7 @@ fun ConversionSettingsTab(config: AdminPlatformConfig) {
     Text("Conversion Settings", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
     Spacer(modifier = Modifier.height(16.dp))
 
-    OutlinedTextField(
+    AdminStyledTextField(
         value = conv.approvalMode ?: "",
         onValueChange = { conv = conv.copy(approvalMode = it) },
         label = { Text("Approval Mode (auto/manual)") },
@@ -271,7 +271,7 @@ fun FraudSettingsTab(config: AdminPlatformConfig) {
     SettingSwitch("Enable Fraud Reports", fraud.enabled) { fraud = fraud.copy(enabled = it) }
     SettingSwitch("Send Email Alerts", fraud.sendEmail) { fraud = fraud.copy(sendEmail = it) }
     Spacer(modifier = Modifier.height(8.dp))
-    OutlinedTextField(
+    AdminStyledTextField(
         value = fraud.intervalHours ?: "",
         onValueChange = { fraud = fraud.copy(intervalHours = it) },
         label = { Text("Interval Hours") },
@@ -292,14 +292,14 @@ fun TurnstileSettingsTab(config: AdminPlatformConfig) {
 
     SettingSwitch("Enable Turnstile", turnstile.enabled) { turnstile = turnstile.copy(enabled = it) }
     Spacer(modifier = Modifier.height(8.dp))
-    OutlinedTextField(
+    AdminStyledTextField(
         value = turnstile.siteKey ?: "",
         onValueChange = { turnstile = turnstile.copy(siteKey = it) },
         label = { Text("Site Key") },
         modifier = Modifier.fillMaxWidth()
     )
     Spacer(modifier = Modifier.height(8.dp))
-    OutlinedTextField(
+    AdminStyledTextField(
         value = turnstile.secretKey ?: "",
         onValueChange = { turnstile = turnstile.copy(secretKey = it) },
         label = { Text("Secret Key") },
@@ -320,7 +320,7 @@ fun ShortenerSettingsTab(config: AdminPlatformConfig) {
 
     SettingSwitch("Enable Shortener", shortener.enabled) { shortener = shortener.copy(enabled = it) }
     Spacer(modifier = Modifier.height(8.dp))
-    OutlinedTextField(
+    AdminStyledTextField(
         value = shortener.apiKey ?: "",
         onValueChange = { shortener = shortener.copy(apiKey = it) },
         label = { Text("API Key") },
@@ -358,4 +358,28 @@ fun SettingSwitch(label: String, value: String?, onValueChange: (String) -> Unit
             onCheckedChange = { onValueChange(if (it) "true" else "false") }
         )
     }
+}
+
+@Composable
+fun AdminStyledTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: @Composable (() -> Unit)? = null,
+    modifier: Modifier = Modifier
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = label,
+        modifier = modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.medium,
+        singleLine = true,
+        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp),
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+        )
+    )
 }

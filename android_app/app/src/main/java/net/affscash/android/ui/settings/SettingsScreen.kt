@@ -209,58 +209,54 @@ fun ProfileTab(profile: ProfileInfo?, viewModel: SettingsViewModel) {
         Spacer(modifier = Modifier.height(8.dp))
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            OutlinedTextField(
+            StyledTextField(
                 value = firstName,
                 onValueChange = { firstName = it },
-                label = { Text("First Name *", fontSize = 12.sp) },
-                modifier = Modifier.weight(1f).height(56.dp),
-                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                label = "First Name *",
+                modifier = Modifier.weight(1f)
             )
-            OutlinedTextField(
+            StyledTextField(
                 value = lastName,
                 onValueChange = { lastName = it },
-                label = { Text("Last Name *", fontSize = 12.sp) },
-                modifier = Modifier.weight(1f).height(56.dp),
-                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                label = "Last Name *",
+                modifier = Modifier.weight(1f)
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
+        StyledTextField(
             value = profile?.email ?: "",
             onValueChange = { },
-            label = { Text("Email Address", fontSize = 12.sp) },
-            modifier = Modifier.fillMaxWidth().height(56.dp),
+            label = "Email Address",
             readOnly = true,
-            enabled = false,
-            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+            enabled = false
         )
         Text("Contact your manager to change your email address", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
         Spacer(modifier = Modifier.height(8.dp))
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            OutlinedTextField(
+            StyledTextField(
                 value = company,
                 onValueChange = { company = it },
-                label = { Text("Company", fontSize = 12.sp) },
-                modifier = Modifier.weight(1f).height(56.dp),
-                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                label = "Company",
+                modifier = Modifier.weight(1f)
             )
-            OutlinedTextField(
+            StyledTextField(
                 value = phone,
                 onValueChange = { phone = it },
-                label = { Text("Phone", fontSize = 12.sp) },
-                modifier = Modifier.weight(1f).height(56.dp),
-                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                label = "Phone",
+                modifier = Modifier.weight(1f)
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
+        StyledButton(
+            text = if (isUpdating) "Saving..." else "Save Profile",
+            enabled = !isUpdating,
             onClick = {
                 if (firstName.isBlank() || lastName.isBlank()) {
                     Toast.makeText(context, "First and last name are required", Toast.LENGTH_SHORT).show()
-                    return@Button
+                    return@StyledButton
                 }
                 isUpdating = true
                 viewModel.updateProfile(
@@ -274,12 +270,8 @@ fun ProfileTab(profile: ProfileInfo?, viewModel: SettingsViewModel) {
                         Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
                     }
                 )
-            },
-            enabled = !isUpdating,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(if (isUpdating) "Saving..." else "Save Profile")
-        }
+            }
+        )
     }
 }
 
@@ -295,49 +287,45 @@ fun SecurityTab(viewModel: SettingsViewModel) {
         Text("Change Password", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, fontSize = 15.sp)
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
+        StyledTextField(
             value = currentPass,
             onValueChange = { currentPass = it },
-            label = { Text("Current Password *", fontSize = 12.sp) },
-            modifier = Modifier.fillMaxWidth().height(56.dp),
-            visualTransformation = PasswordVisualTransformation(),
-            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+            label = "Current Password *",
+            visualTransformation = PasswordVisualTransformation()
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
+        StyledTextField(
             value = newPass,
             onValueChange = { newPass = it },
-            label = { Text("New Password *", fontSize = 12.sp) },
-            modifier = Modifier.fillMaxWidth().height(56.dp),
-            visualTransformation = PasswordVisualTransformation(),
-            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+            label = "New Password *",
+            visualTransformation = PasswordVisualTransformation()
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
+        StyledTextField(
             value = confirmPass,
             onValueChange = { confirmPass = it },
-            label = { Text("Confirm New Password *", fontSize = 12.sp) },
-            modifier = Modifier.fillMaxWidth().height(56.dp),
-            visualTransformation = PasswordVisualTransformation(),
-            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+            label = "Confirm New Password *",
+            visualTransformation = PasswordVisualTransformation()
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
+        StyledButton(
+            text = if (isUpdating) "Updating..." else "Change Password",
+            enabled = !isUpdating,
             onClick = {
                 if (currentPass.isBlank() || newPass.isBlank() || confirmPass.isBlank()) {
                     Toast.makeText(context, "All fields are required", Toast.LENGTH_SHORT).show()
-                    return@Button
+                    return@StyledButton
                 }
                 if (newPass != confirmPass) {
                     Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
-                    return@Button
+                    return@StyledButton
                 }
                 if (newPass.length < 8) {
                     Toast.makeText(context, "Password must be at least 8 characters", Toast.LENGTH_SHORT).show()
-                    return@Button
+                    return@StyledButton
                 }
                 isUpdating = true
                 viewModel.updateSecurity(
@@ -354,12 +342,8 @@ fun SecurityTab(viewModel: SettingsViewModel) {
                         Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
                     }
                 )
-            },
-            enabled = !isUpdating,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(if (isUpdating) "Updating..." else "Change Password")
-        }
+            }
+        )
     }
 }
 
@@ -408,14 +392,13 @@ fun PaymentTab(payment: PaymentInfo?, methods: List<String>, viewModel: Settings
             expanded = expanded,
             onExpandedChange = { expanded = !expanded }
         ) {
-            OutlinedTextField(
+            StyledTextField(
                 value = selectedMethod,
                 onValueChange = {},
                 readOnly = true,
-                label = { Text("Payment Method", fontSize = 12.sp) },
+                label = "Payment Method",
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable).fillMaxWidth().height(56.dp),
-                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable)
             )
             ExposedDropdownMenu(
                 expanded = expanded,
@@ -444,103 +427,85 @@ fun PaymentTab(payment: PaymentInfo?, methods: List<String>, viewModel: Settings
 
         when (type) {
             "simple" -> {
-                OutlinedTextField(
+                StyledTextField(
                     value = accountHolderName,
                     onValueChange = { accountHolderName = it },
-                    label = { Text("Account Holder Name *", fontSize = 12.sp) },
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
-                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                    label = "Account Holder Name *"
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
+                StyledTextField(
                     value = emailId,
                     onValueChange = { emailId = it },
-                    label = { Text("Email / Account ID *", fontSize = 12.sp) },
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
-                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                    label = "Email / Account ID *"
                 )
             }
             "wire" -> {
-                OutlinedTextField(
+                StyledTextField(
                     value = accountHolderName,
                     onValueChange = { accountHolderName = it },
-                    label = { Text("Account Holder Name *", fontSize = 12.sp) },
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
-                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                    label = "Account Holder Name *"
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
+                StyledTextField(
                     value = bankName,
                     onValueChange = { bankName = it },
-                    label = { Text("Bank Name *", fontSize = 12.sp) },
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
-                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                    label = "Bank Name *"
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
+                StyledTextField(
                     value = accountNumber,
                     onValueChange = { accountNumber = it },
-                    label = { Text("Account Number *", fontSize = 12.sp) },
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
-                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                    label = "Account Number *"
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
+                StyledTextField(
                     value = ibanSwift,
                     onValueChange = { ibanSwift = it },
-                    label = { Text("IBAN / SWIFT Code", fontSize = 12.sp) },
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
-                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                    label = "IBAN / SWIFT Code"
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
+                StyledTextField(
                     value = bankAddress,
                     onValueChange = { bankAddress = it },
-                    label = { Text("Bank Address *", fontSize = 12.sp) },
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
-                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                    label = "Bank Address *"
                 )
             }
             "crypto" -> {
-                OutlinedTextField(
+                StyledTextField(
                     value = cryptoType,
                     onValueChange = { cryptoType = it },
-                    label = { Text("Cryptocurrency (e.g. USDT) *", fontSize = 12.sp) },
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
-                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                    label = "Cryptocurrency (e.g. USDT) *"
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
+                StyledTextField(
                     value = networkType,
                     onValueChange = { networkType = it },
-                    label = { Text("Network Type (e.g. TRC20) *", fontSize = 12.sp) },
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
-                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                    label = "Network Type (e.g. TRC20) *"
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
+                StyledTextField(
                     value = walletAddress,
                     onValueChange = { walletAddress = it },
-                    label = { Text("Wallet Address *", fontSize = 12.sp) },
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
-                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                    label = "Wallet Address *"
                 )
             }
             else -> {
-                OutlinedTextField(
+                StyledTextField(
                     value = customDetails,
                     onValueChange = { customDetails = it },
-                    label = { Text("Payment Details", fontSize = 12.sp) },
-                    modifier = Modifier.fillMaxWidth().height(120.dp),
-                    placeholder = { Text("Enter your account numbers, crypto addresses, or emails here.", fontSize = 12.sp) },
-                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                    label = "Payment Details",
+                    modifier = Modifier.height(120.dp),
+                    singleLine = false,
+                    placeholder = { Text("Enter your account numbers, crypto addresses, or emails here.", fontSize = 12.sp) }
                 )
             }
         }
         
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
+        StyledButton(
+            text = if (isUpdating) "Saving..." else "Save Payment Details",
+            enabled = !isUpdating,
             onClick = {
                 val updatedDetails = when (type) {
                     "simple" -> {
@@ -582,12 +547,8 @@ fun PaymentTab(payment: PaymentInfo?, methods: List<String>, viewModel: Settings
                         Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
                     }
                 )
-            },
-            enabled = !isUpdating,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(if (isUpdating) "Saving..." else "Save Payment Details")
-        }
+            }
+        )
     }
 }
 
@@ -609,21 +570,21 @@ fun GlobalPostbackTab(postback: GlobalPostbackInfo?, viewModel: SettingsViewMode
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
+        StyledTextField(
             value = url,
             onValueChange = { url = it },
-            label = { Text("Global Postback URL", fontSize = 12.sp) },
-            modifier = Modifier.fillMaxWidth().height(56.dp),
-            placeholder = { Text("https://your-tracker.com/postback?cid={click_id}", fontSize = 12.sp) },
-            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+            label = "Global Postback URL",
+            placeholder = { Text("https://your-tracker.com/postback?cid={click_id}", fontSize = 12.sp) }
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
+        StyledButton(
+            text = if (isUpdating) "Saving..." else "Save Postback URL",
+            enabled = !isUpdating,
             onClick = {
                 if (url.isBlank()) {
                     Toast.makeText(context, "Postback URL cannot be empty", Toast.LENGTH_SHORT).show()
-                    return@Button
+                    return@StyledButton
                 }
                 isUpdating = true
                 viewModel.updateGlobalPostback(
@@ -637,12 +598,8 @@ fun GlobalPostbackTab(postback: GlobalPostbackInfo?, viewModel: SettingsViewMode
                         Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
                     }
                 )
-            },
-            enabled = !isUpdating,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(if (isUpdating) "Saving..." else "Save Postback URL")
-        }
+            }
+        )
 
         Spacer(modifier = Modifier.height(24.dp))
         Text("📋 Example Postback URLs", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)

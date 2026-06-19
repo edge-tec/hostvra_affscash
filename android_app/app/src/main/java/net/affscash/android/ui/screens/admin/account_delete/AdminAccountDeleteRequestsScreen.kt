@@ -2,6 +2,8 @@ package net.affscash.android.ui.screens.admin.account_delete
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -63,36 +65,33 @@ fun AdminAccountDeleteRequestsScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState())
                         .padding(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     StatCard(
-                        title = "Pending",
+                        title = "PENDING",
                         value = stats.pending.toString(),
-                        color = Color(0xFFFFF3E0),
-                        textColor = Color(0xFFE65100),
-                        modifier = Modifier.weight(1f)
+                        color = Color(0xFFFEF3C7),
+                        textColor = Color(0xFFD97706)
                     )
                     StatCard(
-                        title = "Approved",
+                        title = "APPROVED",
                         value = stats.approved.toString(),
-                        color = Color(0xFFE8F5E9),
-                        textColor = Color(0xFF2E7D32),
-                        modifier = Modifier.weight(1f)
+                        color = Color(0xFFD1FAE5),
+                        textColor = Color(0xFF059669)
                     )
                     StatCard(
-                        title = "Rejected",
+                        title = "REJECTED",
                         value = stats.rejected.toString(),
-                        color = Color(0xFFFFEBEE),
-                        textColor = Color(0xFFC62828),
-                        modifier = Modifier.weight(1f)
+                        color = MaterialTheme.colorScheme.errorContainer,
+                        textColor = MaterialTheme.colorScheme.error
                     )
                     StatCard(
-                        title = "Total",
+                        title = "TOTAL",
                         value = stats.total.toString(),
-                        color = Color(0xFFE3F2FD),
-                        textColor = Color(0xFF1565C0),
-                        modifier = Modifier.weight(1f)
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        textColor = MaterialTheme.colorScheme.primary
                     )
                 }
             }
@@ -147,18 +146,19 @@ fun AdminAccountDeleteRequestsScreen(
                         Icon(
                             Icons.Filled.DeleteOutline,
                             contentDescription = "Empty",
-                            modifier = Modifier.size(64.dp),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            modifier = Modifier.size(80.dp),
+                            tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            "No pending requests",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold
+                            "All Caught Up!",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            "There are no account deletion requests to show here.",
+                            "There are no account deletion requests at the moment.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -254,27 +254,30 @@ fun StatCard(
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier.aspectRatio(1.5f),
-        colors = CardDefaults.cardColors(containerColor = color)
+        modifier = modifier.width(110.dp).height(80.dp),
+        colors = CardDefaults.cardColors(containerColor = color),
+        shape = MaterialTheme.shapes.medium
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(8.dp),
+                .padding(12.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = value,
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.ExtraBold,
                 color = textColor
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = title,
-                style = MaterialTheme.typography.labelSmall,
-                color = textColor
+                fontSize = 11.sp,
+                color = textColor.copy(alpha = 0.8f),
+                fontWeight = FontWeight.Bold,
+                maxLines = 1
             )
         }
     }

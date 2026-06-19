@@ -135,6 +135,7 @@ private fun PaymentMethodsTab(
         item {
             if (!showForm) {
                 Button(
+                    shape = MaterialTheme.shapes.medium,
                     onClick = { 
                         editId = null
                         name = ""
@@ -155,21 +156,21 @@ private fun PaymentMethodsTab(
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(if (editId == null) "Add Method" else "Edit Method", style = MaterialTheme.typography.titleMedium)
                         Spacer(modifier = Modifier.height(8.dp))
-                        OutlinedTextField(
+                AdminStyledTextField(
                             value = name,
                             onValueChange = { name = it },
                             label = { Text("Method Name") },
                             modifier = Modifier.fillMaxWidth()
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        OutlinedTextField(
+                AdminStyledTextField(
                             value = desc,
                             onValueChange = { desc = it },
                             label = { Text("Description") },
                             modifier = Modifier.fillMaxWidth()
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        OutlinedTextField(
+                AdminStyledTextField(
                             value = inst,
                             onValueChange = { inst = it },
                             label = { Text("Instructions") },
@@ -178,12 +179,12 @@ private fun PaymentMethodsTab(
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Row {
-                            Button(onClick = {
+                            Button(shape = MaterialTheme.shapes.medium, onClick = {
                                 onSave(editId, name, type, desc, inst)
                                 showForm = false
                             }) { Text("Save") }
                             Spacer(modifier = Modifier.width(8.dp))
-                            TextButton(onClick = { showForm = false }) { Text("Cancel") }
+                            TextButton(shape = MaterialTheme.shapes.medium, onClick = { showForm = false }) { Text("Cancel") }
                         }
                     }
                 }
@@ -223,7 +224,7 @@ private fun PaymentMethodsTab(
                         }) {
                             Icon(Icons.Default.Edit, contentDescription = "Edit")
                         }
-                        Button(onClick = { onToggle(pm.id) }, modifier = Modifier.padding(horizontal = 4.dp)) {
+                        Button(shape = MaterialTheme.shapes.medium, onClick = { onToggle(pm.id) }, modifier = Modifier.padding(horizontal = 4.dp)) {
                             Text(if (pm.isActive == 1) "Disable" else "Enable")
                         }
                         if (pm.isDefault == 0) {
@@ -262,7 +263,7 @@ private fun PaymentTermsTab(
                         expanded = expanded,
                         onExpandedChange = { expanded = !expanded }
                     ) {
-                        OutlinedTextField(
+                AdminStyledTextField(
                             value = termOptions.find { it.first == terms }?.second ?: terms,
                             onValueChange = {},
                             readOnly = true,
@@ -294,7 +295,7 @@ private fun PaymentTermsTab(
                         Text("Selected Only")
                     }
                     Spacer(modifier = Modifier.height(16.dp))
-                    Button(onClick = { onSaveTerms(scope, terms, selectedIds.toList()) }) {
+                    Button(shape = MaterialTheme.shapes.medium, onClick = { onSaveTerms(scope, terms, selectedIds.toList()) }) {
                         Text("Save Terms")
                     }
                 }
@@ -354,7 +355,7 @@ private fun ManagerCommissionTab(
                     Text(mgr.name, style = MaterialTheme.typography.titleSmall)
                     var locRate by remember { mutableStateOf(mgr.commissionRate.toString()) }
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        OutlinedTextField(
+                AdminStyledTextField(
                             value = locRate,
                             onValueChange = { locRate = it },
                             label = { Text("Rate (%)") },
@@ -362,7 +363,7 @@ private fun ManagerCommissionTab(
                             modifier = Modifier.weight(1f)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Button(onClick = { onSaveManagerCommission(mgr.userId, locRate.toDoubleOrNull() ?: 0.0) }) {
+                        Button(shape = MaterialTheme.shapes.medium, onClick = { onSaveManagerCommission(mgr.userId, locRate.toDoubleOrNull() ?: 0.0) }) {
                             Text("Save")
                         }
                     }
@@ -386,7 +387,7 @@ private fun ManagerCommissionTab(
                         Text("Manager ID: $selectedMgrId", style = MaterialTheme.typography.bodySmall)
                         Text("Offer ID: $selectedOfferId", style = MaterialTheme.typography.bodySmall)
                         // Note: For full UX, implement Dropdown for Managers and Offers here.
-                        OutlinedTextField(
+                AdminStyledTextField(
                             value = rateText,
                             onValueChange = { rateText = it },
                             label = { Text("Commission %") },
@@ -394,7 +395,7 @@ private fun ManagerCommissionTab(
                             modifier = Modifier.fillMaxWidth()
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Button(onClick = { 
+                        Button(shape = MaterialTheme.shapes.medium, onClick = { 
                             onSaveOfferCommission(selectedMgrId!!, selectedOfferId!!, rateText.toDoubleOrNull() ?: 0.0) 
                         }) {
                             Text("Add Override")
@@ -493,7 +494,7 @@ private fun PayoutEntityCard(
                     onExpandedChange = { expanded = !expanded }
                 ) {
                     val displayValue = paymentMethods.find { it.methodType == locPm }?.name ?: locPm
-                    OutlinedTextField(
+                    AdminStyledTextField(
                         value = displayValue.ifEmpty { "Select Payment Method" },
                         onValueChange = {},
                         readOnly = true,
@@ -524,7 +525,7 @@ private fun PayoutEntityCard(
                     }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
+                AdminStyledTextField(
                     value = locPd,
                     onValueChange = { locPd = it },
                     label = { Text("Payment Details") },
@@ -533,21 +534,53 @@ private fun PayoutEntityCard(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Row {
-                    Button(onClick = { 
+                    Button(shape = MaterialTheme.shapes.medium, onClick = { 
                         onSave(locPm, locPd)
                         editMode = false 
                     }) { Text("Save") }
                     Spacer(modifier = Modifier.width(8.dp))
-                    TextButton(onClick = { editMode = false }) { Text("Cancel") }
+                    TextButton(shape = MaterialTheme.shapes.medium, onClick = { editMode = false }) { Text("Cancel") }
                 }
             } else {
                 Text("Method: ${pm.takeIf { !it.isNullOrBlank() } ?: "Not Set"}")
                 Text("Details: ${pd.takeIf { !it.isNullOrBlank() } ?: "Not Set"}")
                 Spacer(modifier = Modifier.height(8.dp))
-                OutlinedButton(onClick = { editMode = true }) {
+                OutlinedButton(shape = MaterialTheme.shapes.medium, onClick = { editMode = true }) {
                     Text("Edit Info")
                 }
             }
         }
     }
+}
+
+@Composable
+fun AdminStyledTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: @Composable (() -> Unit)? = null,
+    modifier: Modifier = Modifier,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    minLines: Int = 1,
+    readOnly: Boolean = false,
+    trailingIcon: @Composable (() -> Unit)? = null
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = label,
+        modifier = modifier,
+        shape = MaterialTheme.shapes.medium,
+        singleLine = minLines == 1,
+        minLines = minLines,
+        readOnly = readOnly,
+        trailingIcon = trailingIcon,
+        keyboardOptions = keyboardOptions,
+        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp),
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+        )
+    )
 }
