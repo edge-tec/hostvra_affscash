@@ -35,14 +35,126 @@ fun AdminOfferApprovalsScreen(
         }
     }
 
+    var showFilters by remember { mutableStateOf(false) }
+
+    if (showFilters && uiState is AdminOfferApprovalsUiState.Success) {
+        val state = uiState as AdminOfferApprovalsUiState.Success
+        ModalBottomSheet(
+            onDismissRequest = { showFilters = false },
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+            dragHandle = { BottomSheetDefaults.DragHandle() },
+            modifier = Modifier.fillMaxHeight(0.9f)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text("Filters", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                
+                var searchQuery by remember { mutableStateOf(state.filterAff) }
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    placeholder = { Text("Search by name, email or code") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.primary) },
+                    trailingIcon = {
+                        if (searchQuery.isNotEmpty()) {
+                            IconButton(onClick = { 
+                                searchQuery = ""
+                                viewModel.loadData(aff = "") 
+                            }) {
+                                Icon(Icons.Default.Clear, contentDescription = "Clear")
+                            }
+                        }
+                    },
+                    shape = MaterialTheme.shapes.medium,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        unfocusedBorderColor = Color.Transparent,
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+                    )
+                )
+
+                var expanded by remember { mutableStateOf(false) }
+                ExposedDropdownMenuBox(
+                    expanded = expanded,
+                    onExpandedChange = { expanded = it },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    val selectedOffer = state.allOffers.find { it.id == state.filterOfferId }
+                    OutlinedTextField(
+                        value = selectedOffer?.name ?: "All Offers",
+                        onValueChange = {},
+                        readOnly = true,
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                        modifier = Modifier.menuAnchor().fillMaxWidth(),
+                        singleLine = true,
+                        shape = MaterialTheme.shapes.medium,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            unfocusedBorderColor = Color.Transparent,
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+                        )
+                    )
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("All Offers") },
+                            onClick = {
+                                viewModel.loadData(offerId = null)
+                                expanded = false
+                            }
+                        )
+                        state.allOffers.forEach { offer ->
+                            DropdownMenuItem(
+                                text = { Text(offer.name) },
+                                onClick = {
+                                    viewModel.loadData(offerId = offer.id)
+                                    expanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+
+                Button(
+                    onClick = { 
+                        viewModel.loadData(aff = searchQuery)
+                        showFilters = false
+                    },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    shape = MaterialTheme.shapes.medium
+                ) {
+                    Icon(Icons.Default.FilterList, contentDescription = "Apply Filters", modifier = Modifier.size(18.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Apply Filters")
+                }
+                
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Offer Approval Requests") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary
-                )
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                ),
+                actions = {
+                    IconButton(onClick = { showFilters = true }) {
+                        Icon(Icons.Default.FilterList, contentDescription = "Filters")
+                    }
+                }
             )
         }
     ) { padding ->
@@ -91,108 +203,7 @@ fun AdminOfferApprovalsScreen(
                         }
                     }
 
-                    // Modern Filters
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)),
-                        shape = MaterialTheme.shapes.medium
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(12.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-                            var searchQuery by remember { mutableStateOf(state.filterAff) }
-                            OutlinedTextField(
-                                value = searchQuery,
-                                onValueChange = { searchQuery = it },
-                                placeholder = { Text("Search by name, email or code") },
-                                modifier = Modifier.fillMaxWidth(),
-                                singleLine = true,
-                                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.primary) },
-                                trailingIcon = {
-                                    if (searchQuery.isNotEmpty()) {
-                                        IconButton(onClick = { 
-                                            searchQuery = ""
-                                            viewModel.loadData(aff = "") 
-                                        }) {
-                                            Icon(Icons.Default.Clear, contentDescription = "Clear")
-                                        }
-                                    }
-                                },
-                                shape = MaterialTheme.shapes.medium,
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    unfocusedBorderColor = Color.Transparent,
-                                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                                    focusedContainerColor = MaterialTheme.colorScheme.surface
-                                )
-                            )
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                var expanded by remember { mutableStateOf(false) }
-                                ExposedDropdownMenuBox(
-                                    expanded = expanded,
-                                    onExpandedChange = { expanded = it },
-                                    modifier = Modifier.weight(1f)
-                                ) {
-                                    val selectedOffer = state.allOffers.find { it.id == state.filterOfferId }
-                                    OutlinedTextField(
-                                        value = selectedOffer?.name ?: "All Offers",
-                                        onValueChange = {},
-                                        readOnly = true,
-                                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                                        modifier = Modifier.menuAnchor().fillMaxWidth(),
-                                        singleLine = true,
-                                        shape = MaterialTheme.shapes.medium,
-                                        colors = OutlinedTextFieldDefaults.colors(
-                                            unfocusedBorderColor = Color.Transparent,
-                                            focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                                            focusedContainerColor = MaterialTheme.colorScheme.surface
-                                        )
-                                    )
-                                    ExposedDropdownMenu(
-                                        expanded = expanded,
-                                        onDismissRequest = { expanded = false }
-                                    ) {
-                                        DropdownMenuItem(
-                                            text = { Text("All Offers") },
-                                            onClick = {
-                                                viewModel.loadData(offerId = null)
-                                                expanded = false
-                                            }
-                                        )
-                                        state.allOffers.forEach { offer ->
-                                            DropdownMenuItem(
-                                                text = { Text(offer.name) },
-                                                onClick = {
-                                                    viewModel.loadData(offerId = offer.id)
-                                                    expanded = false
-                                                }
-                                            )
-                                        }
-                                    }
-                                }
-
-                                Button(
-                                    onClick = { viewModel.loadData(aff = searchQuery) },
-                                    modifier = Modifier.height(56.dp),
-                                    shape = MaterialTheme.shapes.medium
-                                ) {
-                                    Icon(Icons.Default.FilterList, contentDescription = "Filter", modifier = Modifier.size(18.dp))
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text("Filter")
-                                }
-                            }
-                        }
-                    }
+                    // Filters removed and moved to BottomSheet
 
                     // List
                     if (state.requests.isEmpty()) {

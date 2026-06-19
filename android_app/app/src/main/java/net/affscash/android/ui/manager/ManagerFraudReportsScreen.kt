@@ -1,15 +1,13 @@
 package net.affscash.android.ui.manager
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -21,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.data.model.ManagerFraudConversion
-import net.affscash.android.data.model.ManagerFraudTotals
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,13 +28,30 @@ fun ManagerFraudReportsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    var showFilters by remember { mutableStateOf(false) }
+
+    if (showFilters) {
+        FraudReportFilterSheet(
+            uiState = uiState,
+            onUpdateFilters = { from, to, clickId, status, aff, affCode, offer, sMin, sMax, sort ->
+                viewModel.updateFilters(from, to, clickId, status, aff, affCode, offer, sMin, sMax, sort)
+            },
+            onDismiss = { showFilters = false }
+        )
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Fraud Reports", fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { showFilters = true }) {
+                        Icon(Icons.Default.FilterList, contentDescription = "Filters")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -45,51 +59,11 @@ fun ManagerFraudReportsScreen(
                     titleContentColor = MaterialTheme.colorScheme.onPrimary,
                     navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
                     actionIconContentColor = MaterialTheme.colorScheme.onPrimary
-                ),
-                actions = {
-                    IconButton(onClick = { viewModel.updateFilters() /* Just to touch state */ }) {
-                        Icon(Icons.Default.FilterList, contentDescription = "Filters")
-                    }
-                }
+                )
             )
         }
     ) { paddingValues ->
-        var showFilters by remember { mutableStateOf(false) }
-
-        if (showFilters) {
-            FraudReportFilterSheet(
-                uiState = uiState,
-                onUpdateFilters = { from, to, clickId, status, aff, affCode, offer, sMin, sMax, sort ->
-                    viewModel.updateFilters(from, to, clickId, status, aff, affCode, offer, sMin, sMax, sort)
-                },
-                onDismiss = { showFilters = false }
-            )
-        }
-
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text("Fraud Reports", fontSize = 18.sp) },
-                    navigationIcon = {
-                        IconButton(onClick = onNavigateBack) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                        }
-                    },
-                    actions = {
-                        IconButton(onClick = { showFilters = true }) {
-                            Icon(Icons.Default.FilterList, contentDescription = "Filters")
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                        navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                        actionIconContentColor = MaterialTheme.colorScheme.onPrimary
-                    )
-                )
-            }
-        ) { paddingValues ->
-            Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
+        Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
             // Search and Filter Bar removed to use BottomSheet
             // Loading / Error / Data
             Box(modifier = Modifier.fillMaxSize().weight(1f)) {
@@ -122,7 +96,7 @@ fun ManagerFraudReportsScreen(
                                 SummaryCard("PENDING", totals.pending.toString(), Color(0xFFF59E0B))
                                 SummaryCard("BLOCKED", totals.blocked.toString(), Color(0xFFDC2626))
                                 SummaryCard("FRAUD FLAGGED", totals.fraudFlagged.toString(), Color(0xFFDC2626))
-                                SummaryCard("PAYOUT", "$${(( totals.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", Color.Black)
+                                SummaryCard("PAYOUT", "$${"%.2f".format(totals.payout)}", Color.Black)
                             }
                         }
                         
@@ -234,7 +208,7 @@ fun ManagerFraudConversionItem(cv: ManagerFraudConversion) {
             ) {
                 Column {
                     Text("Payout", fontSize = 13.sp, color = Color.Gray)
-                    Text("$${(( cv.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    Text("$${"%.2f".format(cv.payout)}", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 }
                 
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
