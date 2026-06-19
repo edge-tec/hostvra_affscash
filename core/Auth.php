@@ -62,7 +62,7 @@ class Auth {
                     [$clientIp]
                 );
             } catch (\Throwable $e) {}
-            return ['success' => false, 'error' => 'Email address not found.'];
+            return ['success' => false, 'error' => 'Invalid email address.'];
         }
 
         if (!password_verify($password, $user['password_hash'])) {
@@ -73,7 +73,7 @@ class Auth {
                     [$clientIp]
                 );
             } catch (\Throwable $e) {}
-            return ['success' => false, 'error' => 'Invalid password. Please try again.'];
+            return ['success' => false, 'error' => 'Incorrect password. Please try again.'];
         }
         
         // Reset failures on success

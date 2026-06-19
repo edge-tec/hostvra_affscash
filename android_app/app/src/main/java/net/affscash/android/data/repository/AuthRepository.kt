@@ -47,7 +47,7 @@ class AuthRepository @Inject constructor(
             }
             Result.failure(Exception("Network error: ${response.code()}"))
         } catch (e: Exception) {
-            Result.failure(Exception("Unable to connect. Please check your internet connection and try again."))
+            Result.failure(Exception("Connection failed. Please check your internet connection and try again."))
         }
     }
 

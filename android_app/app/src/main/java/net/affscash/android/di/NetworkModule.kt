@@ -68,7 +68,10 @@ object NetworkModule {
             val request = chain.request()
             val response = chain.proceed(request)
             if (response.code == 401) {
-                userManager.triggerUnauth()
+                val path = request.url.encodedPath
+                if (!path.contains("/auth") && !path.contains("/login")) {
+                    userManager.triggerUnauth()
+                }
             }
             response
         }
