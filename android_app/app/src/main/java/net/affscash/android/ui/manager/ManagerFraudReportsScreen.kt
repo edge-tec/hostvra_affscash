@@ -94,12 +94,12 @@ fun ManagerFraudReportsScreen(
                                     .padding(horizontal = 8.dp),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                SummaryCard("TOTAL", totals.total.toString(), Color.Black)
-                                SummaryCard("APPROVED", totals.approved.toString(), Color(0xFF10B981))
-                                SummaryCard("PENDING", totals.pending.toString(), Color(0xFFF59E0B))
-                                SummaryCard("BLOCKED", totals.blocked.toString(), Color(0xFFDC2626))
-                                SummaryCard("FRAUD FLAGGED", totals.fraudFlagged.toString(), Color(0xFFDC2626))
-                                SummaryCard("PAYOUT", "$${"%.2f".format(totals.payout)}", Color.Black)
+                                SummaryCard("TOTAL", totals.total.toString(), MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.primaryContainer)
+                                SummaryCard("APPROVED", totals.approved.toString(), Color(0xFF059669), Color(0xFFD1FAE5))
+                                SummaryCard("PENDING", totals.pending.toString(), Color(0xFFD97706), Color(0xFFFEF3C7))
+                                SummaryCard("BLOCKED", totals.blocked.toString(), MaterialTheme.colorScheme.error, MaterialTheme.colorScheme.errorContainer)
+                                SummaryCard("FRAUD FLAGGED", totals.fraudFlagged.toString(), MaterialTheme.colorScheme.error, MaterialTheme.colorScheme.errorContainer)
+                                SummaryCard("PAYOUT", "$${"%.2f".format(totals.payout)}", MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.primaryContainer)
                             }
                         }
                         
@@ -160,14 +160,20 @@ fun ManagerFraudReportsScreen(
 }
 
 @Composable
-fun SummaryCard(title: String, value: String, valueColor: Color) {
-    Card(modifier = Modifier.width(100.dp)) {
+fun SummaryCard(title: String, value: String, valueColor: Color, containerColor: Color) {
+    Card(
+        modifier = Modifier.width(110.dp).height(80.dp),
+        colors = CardDefaults.cardColors(containerColor = containerColor),
+        shape = MaterialTheme.shapes.medium
+    ) {
         Column(
-            modifier = Modifier.padding(8.dp).fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.padding(12.dp).fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Text(value, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = valueColor)
-            Text(title, fontSize = 12.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
+            Text(value, fontSize = 18.sp, fontWeight = FontWeight.ExtraBold, color = valueColor)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(title, fontSize = 11.sp, color = valueColor.copy(alpha = 0.8f), fontWeight = FontWeight.Bold, maxLines = 1)
         }
     }
 }
