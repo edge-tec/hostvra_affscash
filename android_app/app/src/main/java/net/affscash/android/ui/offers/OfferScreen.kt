@@ -45,6 +45,7 @@ fun OfferScreen(
     
     var showTrackingLinkDialog by remember { mutableStateOf<String?>(null) }
     var trackingLinkLoading by remember { mutableStateOf<Int?>(null) }
+    var showFilters by remember { mutableStateOf(false) }
     
     val context = LocalContext.current
 
@@ -76,6 +77,11 @@ fun OfferScreen(
                     modifier = Modifier.fillMaxWidth().height(52.dp),
                     singleLine = true,
                     leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", modifier = Modifier.size(20.dp)) },
+                    trailingIcon = {
+                        IconButton(onClick = { showFilters = !showFilters }) {
+                            Icon(Icons.Default.FilterList, contentDescription = "Filter", modifier = Modifier.size(20.dp))
+                        }
+                    },
                     colors = OutlinedTextFieldDefaults.colors(
                         unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                         focusedContainerColor = MaterialTheme.colorScheme.surface
@@ -83,33 +89,37 @@ fun OfferScreen(
                     shape = RoundedCornerShape(12.dp)
                 )
                 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    FilterDropdown(
-                        label = "Category",
-                        options = listOf("All Categories", "Dating", "Sweepstakes", "Nutra", "Gaming", "Finance"),
-                        selected = category,
-                        onSelected = { viewModel.category.value = it; viewModel.loadOffers() },
-                        modifier = Modifier.weight(1f)
-                    )
-                    FilterDropdown(
-                        label = "Type",
-                        options = listOf("All Types", "CPA", "CPL", "CPS", "RevShare"),
-                        selected = payoutType,
-                        onSelected = { viewModel.payoutType.value = it; viewModel.loadOffers() },
-                        modifier = Modifier.weight(1f)
-                    )
-                }
+                androidx.compose.animation.AnimatedVisibility(visible = showFilters) {
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            FilterDropdown(
+                                label = "Category",
+                                options = listOf("All Categories", "Dating", "Sweepstakes", "Nutra", "Gaming", "Finance"),
+                                selected = category,
+                                onSelected = { viewModel.category.value = it; viewModel.loadOffers() },
+                                modifier = Modifier.weight(1f)
+                            )
+                            FilterDropdown(
+                                label = "Type",
+                                options = listOf("All Types", "CPA", "CPL", "CPS", "RevShare"),
+                                selected = payoutType,
+                                onSelected = { viewModel.payoutType.value = it; viewModel.loadOffers() },
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
 
-                FilterDropdown(
-                    label = "Access",
-                    options = listOf("All Offers", "Request Approval", "Instantly Approved"),
-                    selected = accessFilter,
-                    onSelected = { viewModel.accessFilter.value = it; viewModel.loadOffers() },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                        FilterDropdown(
+                            label = "Access",
+                            options = listOf("All Offers", "Request Approval", "Instantly Approved"),
+                            selected = accessFilter,
+                            onSelected = { viewModel.accessFilter.value = it; viewModel.loadOffers() },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
             }
 
             HorizontalDivider()
