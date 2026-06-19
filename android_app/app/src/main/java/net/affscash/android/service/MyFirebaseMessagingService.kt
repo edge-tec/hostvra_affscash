@@ -15,7 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.affscash.android.R
-import net.affscash.android.data.local.DataStoreManager
+import net.affscash.android.data.local.UserManager
 import net.affscash.android.data.network.ApiService
 import net.affscash.android.ui.main.MainActivity
 import javax.inject.Inject
@@ -24,7 +24,7 @@ import javax.inject.Inject
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     @Inject
-    lateinit var dataStoreManager: DataStoreManager
+    lateinit var userManager: UserManager
 
     @Inject
     lateinit var apiService: ApiService
