@@ -62,14 +62,26 @@ fun AffiliateReferralScreen(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            OutlinedTextField(
-                                value = data.referralLink,
-                                onValueChange = {},
-                                readOnly = true,
-                                modifier = Modifier.weight(1f).height(36.dp),
-                                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 9.sp),
-                                singleLine = true
-                            )
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .height(36.dp)
+                                    .androidx.compose.foundation.border(1.dp, MaterialTheme.colorScheme.outline, androidx.compose.foundation.shape.RoundedCornerShape(4.dp))
+                                    .padding(horizontal = 8.dp),
+                                contentAlignment = Alignment.CenterStart
+                            ) {
+                                androidx.compose.foundation.text.BasicTextField(
+                                    value = data.referralLink,
+                                    onValueChange = {},
+                                    readOnly = true,
+                                    singleLine = true,
+                                    textStyle = androidx.compose.ui.text.TextStyle(
+                                        fontSize = 11.sp,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    ),
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
                             Spacer(modifier = Modifier.width(6.dp))
                             Button(onClick = {
                                 val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager

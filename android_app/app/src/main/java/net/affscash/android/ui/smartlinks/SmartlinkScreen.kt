@@ -206,14 +206,26 @@ fun SmartlinkCard(
                     Spacer(modifier = Modifier.height(8.dp))
                     
                     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                        OutlinedTextField(
-                            value = smartlink.trackingLink ?: "",
-                            onValueChange = {},
-                            readOnly = true,
-                            singleLine = true,
-                            modifier = Modifier.weight(1f).height(36.dp),
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 9.sp)
-                        )
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(36.dp)
+                                .androidx.compose.foundation.border(1.dp, MaterialTheme.colorScheme.outline, androidx.compose.foundation.shape.RoundedCornerShape(4.dp))
+                                .padding(horizontal = 8.dp),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            androidx.compose.foundation.text.BasicTextField(
+                                value = smartlink.trackingLink ?: "",
+                                onValueChange = {},
+                                readOnly = true,
+                                singleLine = true,
+                                textStyle = androidx.compose.ui.text.TextStyle(
+                                    fontSize = 11.sp,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                ),
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
                         Spacer(modifier = Modifier.width(6.dp))
                         Button(
                             onClick = { smartlink.trackingLink?.let { onCopyClick(it) } },
