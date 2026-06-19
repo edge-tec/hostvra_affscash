@@ -157,19 +157,24 @@ fun ConversationItem(conv: AdminSupportConversationRow, onClick: () -> Unit) {
             .fillMaxWidth()
             .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 6.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        border = androidx.compose.foundation.BorderStroke(
+            width = 1.dp, 
+            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+        )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(11.dp),
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Avatar
             Box(
                 modifier = Modifier
-                    .size(34.dp)
+                    .size(48.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.primaryContainer),
                 contentAlignment = Alignment.Center
@@ -178,11 +183,11 @@ fun ConversationItem(conv: AdminSupportConversationRow, onClick: () -> Unit) {
                     text = conv.name.take(1).uppercase(),
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
+                    fontSize = 20.sp
                 )
             }
 
-            Spacer(modifier = Modifier.width(11.dp))
+            Spacer(modifier = Modifier.width(16.dp))
 
             // Details
             Column(modifier = Modifier.weight(1f)) {
@@ -193,22 +198,32 @@ fun ConversationItem(conv: AdminSupportConversationRow, onClick: () -> Unit) {
                 ) {
                     Text(
                         text = conv.name,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 15.sp,
+                        color = MaterialTheme.colorScheme.onSurface,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f)
                     )
                     if (conv.unread > 0) {
-                        Badge(
-                            containerColor = MaterialTheme.colorScheme.error,
-                            contentColor = MaterialTheme.colorScheme.onError
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Box(
+                            modifier = Modifier
+                                .size(22.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.error),
+                            contentAlignment = Alignment.Center
                         ) {
-                            Text(text = conv.unread.toString(), fontSize = 12.sp)
+                            Text(
+                                text = conv.unread.toString(),
+                                color = MaterialTheme.colorScheme.onError,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(3.dp))
+                Spacer(modifier = Modifier.height(2.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -217,19 +232,20 @@ fun ConversationItem(conv: AdminSupportConversationRow, onClick: () -> Unit) {
                     Text(
                         text = conv.affiliateCode,
                         fontSize = 13.sp,
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
                         text = formatDate(conv.lastMessageAt),
-                        fontSize = 13.sp,
-                        color = Color.Gray
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                Spacer(modifier = Modifier.height(3.dp))
+                Spacer(modifier = Modifier.height(6.dp))
                 Text(
                     text = conv.lastMsg.orEmpty().ifEmpty { "No messages yet." },
-                    fontSize = 10.sp,
-                    color = Color.DarkGray,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
