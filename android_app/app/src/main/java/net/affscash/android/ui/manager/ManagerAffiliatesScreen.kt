@@ -290,7 +290,10 @@ fun ManagerAffiliateCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier.weight(1f),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Surface(
                         shape = RoundedCornerShape(10.dp),
                         color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
@@ -299,27 +302,52 @@ fun ManagerAffiliateCard(
                         Icon(Icons.Outlined.Person, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(8.dp))
                     }
                     Spacer(modifier = Modifier.width(12.dp))
-                    Column {
+                    Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = "${affiliate.firstName} ${affiliate.lastName}",
                             fontWeight = FontWeight.ExtraBold,
-                            style = MaterialTheme.typography.titleMedium
+                            style = MaterialTheme.typography.titleMedium,
+                            maxLines = 1,
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                         )
-                        Text(text = affiliate.email, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                        Text(
+                            text = affiliate.email, 
+                            style = MaterialTheme.typography.bodySmall, 
+                            color = Color.Gray,
+                            maxLines = 1,
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                        )
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(text = affiliate.affiliateCode, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                            Text(
+                                text = affiliate.affiliateCode, 
+                                style = MaterialTheme.typography.labelSmall, 
+                                fontWeight = FontWeight.Bold, 
+                                color = MaterialTheme.colorScheme.primary,
+                                maxLines = 1,
+                                softWrap = false
+                            )
                             if (!affiliate.company.isNullOrBlank()) {
-                                Text(text = " • ${affiliate.company}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text(
+                                    text = " • ${affiliate.company}", 
+                                    style = MaterialTheme.typography.labelSmall, 
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    maxLines = 1,
+                                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                                    modifier = Modifier.weight(1f, fill = false)
+                                )
                             }
                         }
                     }
                 }
+                Spacer(modifier = Modifier.width(12.dp))
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
                         text = affiliate.balance ?: "$0.00",
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.titleMedium,
+                        maxLines = 1,
+                        softWrap = false
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     StatusBadge(status = affiliate.status)
@@ -452,7 +480,9 @@ fun StatusBadge(status: String) {
             text = status.uppercase(),
             color = text,
             fontSize = 10.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            maxLines = 1,
+            softWrap = false
         )
     }
 }
