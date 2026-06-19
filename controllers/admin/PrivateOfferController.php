@@ -48,6 +48,23 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
                 $ok = PrivateOffer::grant($postOffer, (int)$aff['id'], $adminId, $notes ?: null);
                 if ($ok) {
                     Helpers::flash('success', 'Granted "' . Helpers::e($aff['first_name'] . ' ' . $aff['last_name']) . '" (' . Helpers::e($aff['affiliate_code']) . ') access to this offer.');
+
+                    // Push Notification
+                    try {
+                        $uInfo = Database::fetchOne("SELECT user_id FROM affiliates WHERE id=?", [$aff['id']]);
+                        if ($uInfo && $uInfo['user_id']) {
+                            Database::insert('notifications', [
+                                'user_id' => (int)$uInfo['user_id'],
+                                'target_role' => 'affiliate',
+                                'title' => "Private Offer Access Granted",
+                                'message' => "You have been granted access to offer #{$postOffer}.",
+                                'link' => '/affiliate/offers'
+                            ]);
+                            require_once BASE_PATH . '/core/FirebaseMessaging.php';
+                            FirebaseMessaging::sendToUser((int)$uInfo['user_id'], "Private Offer Access Granted", "You have been granted access to offer #{$postOffer}.", ['type' => 'offer', 'offer_id' => (string)$postOffer]);
+                        }
+                    } catch (\Throwable $e) {}
+
                 } else {
                     Helpers::flash('error', 'Could not save the grant. Please try again.');
                 }

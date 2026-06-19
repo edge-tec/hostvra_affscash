@@ -10,6 +10,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.activity.result.contract.ActivityResultContracts
+import android.Manifest
+import android.os.Build
 import net.affscash.android.ui.navigation.AffscashNavGraph
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,8 +24,19 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var userManager: UserManager
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        // Handle the result if needed
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
         enableEdgeToEdge()
         setContent {
             LaunchedEffect(Unit) {

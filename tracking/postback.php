@@ -724,6 +724,25 @@ try {
     $_advPbLog['conversion_id'] = $convId;
     $_advPbLog['payout']        = $payout;
     if ($isAutoHidden) $_advPbLog['reject_reason'] = 'Auto-hidden: ' . $hideReason;
+
+    // Send Push Notification
+    if (!$isAutoHidden && !$isPending && $convStatus === 'approved') {
+        try {
+            require_once BASE_PATH . '/core/FirebaseMessaging.php';
+            $notifTitle = "New Conversion!";
+            $notifMsg = "You earned $" . number_format($payout, 2) . " from offer #{$click['offer_id']}.";
+            Database::insert('notifications', [
+                'user_id' => (int)$click['affiliate_id'],
+                'target_role' => 'affiliate',
+                'title' => $notifTitle,
+                'message' => $notifMsg,
+                'link' => '/affiliate/reports'
+            ]);
+            FirebaseMessaging::sendToUser((int)$click['affiliate_id'], $notifTitle, $notifMsg, ['type' => 'conversion', 'offer_id' => (string)$click['offer_id']]);
+        } catch (\Throwable $e) {
+            PostbackFirer::log('[postback.php] FCM push failed: ' . $e->getMessage());
+        }
+    }
 } catch (\Exception $e) {
     Database::rollback();
     $_advPbLog['status'] = 'error'; $_advPbLog['reject_reason'] = 'DB error recording conversion';

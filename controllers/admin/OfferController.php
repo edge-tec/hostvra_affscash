@@ -575,6 +575,22 @@ function _maybeBroadcastNewOfferEmail(int $offerId): int {
 
     try {
         $sent = _broadcastNewOfferEmail($offerId);
+        
+        // Push Notification
+        try {
+            $offerData = Database::fetchOne("SELECT name FROM offers WHERE id=?", [$offerId]);
+            if ($offerData) {
+                Database::insert('notifications', [
+                    'target_role' => 'affiliate',
+                    'title' => "New Offer Added!",
+                    'message' => "Offer '{$offerData['name']}' has been added.",
+                    'link' => '/affiliate/offers'
+                ]);
+                require_once BASE_PATH . '/core/FirebaseMessaging.php';
+                FirebaseMessaging::sendToRole('affiliate', "New Offer Added!", "Offer '{$offerData['name']}' has been added.", ['type' => 'offer', 'offer_id' => (string)$offerId]);
+            }
+        } catch (\Throwable $e) {}
+
         // Stamp regardless of recipient count — we attempted the broadcast,
         // so don't retry on every subsequent edit. Zero usually means there
         // were no active affiliates, not a transient failure.

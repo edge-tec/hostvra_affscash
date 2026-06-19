@@ -8,7 +8,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import com.google.firebase.messaging.FirebaseMessaging
+import net.affscash.android.data.network.ApiService
 
 sealed class AuthState {
     object Idle : AuthState()
@@ -19,7 +22,8 @@ sealed class AuthState {
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val apiService: ApiService
 ) : ViewModel() {
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
@@ -37,11 +41,24 @@ class AuthViewModel @Inject constructor(
             result.onSuccess { response ->
                 response.user?.let {
                     _authState.value = AuthState.Success(it)
+                    registerFcmToken()
                 } ?: run {
                     _authState.value = AuthState.Error("Invalid response from server")
                 }
             }.onFailure {
                 _authState.value = AuthState.Error(it.message ?: "An unknown error occurred")
+            }
+        }
+    }
+
+    private fun registerFcmToken() {
+        viewModelScope.launch {
+            try {
+                val token = FirebaseMessaging.getInstance().token.await()
+                val request = mapOf("token" to token, "device_id" to "android_device")
+                apiService.registerFcmToken(request)
+            } catch (e: Exception) {
+                // Ignore failures to register token
             }
         }
     }

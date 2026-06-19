@@ -4,6 +4,21 @@ $userId = Auth::id();
 $role   = Auth::role();
 $action = Helpers::get('action', 'list');
 
+if ($action === 'register_token') {
+    $token = Helpers::post('token');
+    $platform = Helpers::post('platform', 'android');
+    if ($token) {
+        Database::query(
+            "INSERT INTO user_devices (user_id, device_token, platform) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE updated_at=CURRENT_TIMESTAMP",
+            [$userId, $token, $platform]
+        );
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'error' => 'Missing token']);
+    }
+    exit;
+}
+
 if ($action === 'mark_read') {
     $id = (int)Helpers::post('id');
     if ($id) {

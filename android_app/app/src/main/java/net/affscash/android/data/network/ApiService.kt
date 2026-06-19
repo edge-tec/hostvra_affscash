@@ -682,6 +682,10 @@ interface ApiService {
 
     @POST("api/v2/notifications?action=mark_read")
     suspend fun markNotificationAsRead(@Body request: MarkNotificationRequest): Response<SimpleResponse>
+
+    @POST("api/v2/notifications?action=register_token")
+    suspend fun registerFcmToken(@Body request: Map<String, String>): Response<SimpleResponse>
+    
     // --- ADMIN: Fraud Score Report ---
     @GET("api/v2/admin/fraud-score-report")
     suspend fun getAdminFraudScoreReport(

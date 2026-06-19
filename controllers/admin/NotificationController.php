@@ -19,6 +19,17 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
             'title'       => $title,
             'message'     => $message,
         ]);
+
+        // Push Notification
+        try {
+            require_once BASE_PATH . '/core/FirebaseMessaging.php';
+            if ($userId) {
+                FirebaseMessaging::sendToUser($userId, $title, $message, ['type' => 'notification']);
+            } elseif ($targetRole) {
+                FirebaseMessaging::sendToRole($targetRole, $title, $message, ['type' => 'notification']);
+            }
+        } catch (\Throwable $e) {}
+
         Helpers::flash('success', 'Notification sent.');
     }
 

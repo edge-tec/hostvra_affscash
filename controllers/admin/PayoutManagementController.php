@@ -521,10 +521,10 @@ function _notifyAffiliatesOfPayoutChange(?int $affiliateId, string $message) {
     if ((Config::get('config', 'app.offer_link_notify') ?? '0') !== '1') return;
     $recipients = [];
     if ($affiliateId) {
-        $u = Database::fetchOne("SELECT u.email, u.first_name, u.last_name FROM users u JOIN affiliates af ON af.user_id = u.id WHERE af.id = ? AND u.status='active'", [$affiliateId]);
+        $u = Database::fetchOne("SELECT u.id, u.email, u.first_name, u.last_name FROM users u JOIN affiliates af ON af.user_id = u.id WHERE af.id = ? AND u.status='active'", [$affiliateId]);
         if ($u) $recipients[] = $u;
     } else {
-        $recipients = Database::fetchAll("SELECT DISTINCT u.email, u.first_name, u.last_name FROM users u JOIN affiliates af ON af.user_id = u.id WHERE u.role = 'affiliate' AND u.status = 'active' AND u.email IS NOT NULL AND u.email <> ''");
+        $recipients = Database::fetchAll("SELECT DISTINCT u.id, u.email, u.first_name, u.last_name FROM users u JOIN affiliates af ON af.user_id = u.id WHERE u.role = 'affiliate' AND u.status = 'active' AND u.email IS NOT NULL AND u.email <> ''");
     }
     foreach ($recipients as $r) {
         $name = trim(($r['first_name']??'').' '.($r['last_name']??''));
@@ -533,6 +533,19 @@ function _notifyAffiliatesOfPayoutChange(?int $affiliateId, string $message) {
         try {
             require_once BASE_PATH . '/core/Mailer.php';
             Mailer::sendRaw($r['email'], $name, 'Payout Rule Updated', $html, 'payout_update');
+        } catch (\Throwable $e) {}
+
+        Database::insert('notifications', [
+            'user_id' => $r['id'],
+            'target_role' => 'affiliate',
+            'title' => 'Payout Rule Updated',
+            'message' => $message,
+            'link' => '/affiliate/reports'
+        ]);
+
+        try {
+            require_once BASE_PATH . '/core/FirebaseMessaging.php';
+            FirebaseMessaging::sendToUser($r['id'], 'Payout Rule Updated', $message, ['type' => 'payout']);
         } catch (\Throwable $e) {}
     }
 }

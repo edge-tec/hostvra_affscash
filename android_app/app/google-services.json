@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "342117017820",
+    "project_id": "affscash-30f8c",
+    "storage_bucket": "affscash-30f8c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:342117017820:android:132c2bee61f82cf636ec19",
+        "android_client_info": {
+          "package_name": "net.affscash.android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHfUwNn9OSO77c_MbtkALrrndhqGm6W7g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

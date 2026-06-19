@@ -335,13 +335,19 @@ elseif ($action === 'block_offer') {
             // In-app notification
             if ($affUser) {
                 $userId = Database::fetchOne("SELECT user_id FROM affiliates WHERE id=?", [$affId]);
-                Database::insert('notifications', [
-                    'user_id' => $userId['user_id'] ?? null,
-                    'type'    => 'warning',
-                    'title'   => 'Offer Access Blocked',
-                    'message' => 'Your access to offer "' . $ao['offer_name'] . '" has been blocked.',
-                    'link'    => '/affiliate/offers',
-                ]);
+                if ($userId && $userId['user_id']) {
+                    Database::insert('notifications', [
+                        'user_id' => $userId['user_id'],
+                        'type'    => 'warning',
+                        'title'   => 'Offer Access Blocked',
+                        'message' => 'Your access to offer "' . $ao['offer_name'] . '" has been blocked.',
+                        'link'    => '/affiliate/offers',
+                    ]);
+                    try {
+                        require_once BASE_PATH . '/core/FirebaseMessaging.php';
+                        FirebaseMessaging::sendToUser($userId['user_id'], 'Offer Access Blocked', 'Your access to offer "' . $ao['offer_name'] . '" has been blocked.', ['type' => 'offer']);
+                    } catch (\Throwable $e) {}
+                }
             }
 
             Helpers::flash('success', 'Offer access blocked and affiliate notified.');
@@ -368,16 +374,21 @@ elseif ($action === 'approve_offer') {
             );
 
             // Notification + Email
-            $affUser = Database::fetchOne("SELECT u.email, u.first_name, u.last_name FROM users u JOIN affiliates af ON af.user_id=u.id WHERE af.id=?", [$affId]);
+            $affUser = Database::fetchOne("SELECT u.id as user_id, u.email, u.first_name, u.last_name FROM users u JOIN affiliates af ON af.user_id=u.id WHERE af.id=?", [$affId]);
             if ($affUser) {
                 Database::insert('notifications', [
-                    'user_id'     => null,
+                    'user_id'     => $affUser['user_id'],
                     'target_role' => null,
                     'type'        => 'success',
                     'title'       => 'Offer Access Approved',
                     'message'     => 'Your access to offer "' . $ao['offer_name'] . '" has been approved.',
                     'link'        => '/affiliate/offers',
                 ]);
+                try {
+                    require_once BASE_PATH . '/core/FirebaseMessaging.php';
+                    FirebaseMessaging::sendToUser($affUser['user_id'], 'Offer Access Approved', 'Your access to offer "' . $ao['offer_name'] . '" has been approved.', ['type' => 'offer']);
+                } catch (\Throwable $e) {}
+
                 try {
                     Mailer::sendEvent($affUser['email'], $affUser['first_name'].' '.$affUser['last_name'], 'offer_approved', [
                         'name'       => $affUser['first_name'].' '.$affUser['last_name'],
@@ -413,16 +424,20 @@ elseif ($action === 'reject_offer') {
                 [$affId, $offerId]
             );
 
-            $affUser = Database::fetchOne("SELECT u.email, u.first_name, u.last_name FROM users u JOIN affiliates af ON af.user_id=u.id WHERE af.id=?", [$affId]);
+            $affUser = Database::fetchOne("SELECT u.id as user_id, u.email, u.first_name, u.last_name FROM users u JOIN affiliates af ON af.user_id=u.id WHERE af.id=?", [$affId]);
             if ($affUser) {
                 Database::insert('notifications', [
-                    'user_id'     => null,
+                    'user_id'     => $affUser['user_id'],
                     'target_role' => null,
                     'type'        => 'warning',
                     'title'       => 'Offer Access Rejected',
                     'message'     => 'Your access request for offer "' . $ao['offer_name'] . '" was not approved.',
                     'link'        => '/affiliate/offers',
                 ]);
+                try {
+                    require_once BASE_PATH . '/core/FirebaseMessaging.php';
+                    FirebaseMessaging::sendToUser($affUser['user_id'], 'Offer Access Rejected', 'Your access request for offer "' . $ao['offer_name'] . '" was not approved.', ['type' => 'offer']);
+                } catch (\Throwable $e) {}
                 try {
                     Mailer::sendEvent($affUser['email'], $affUser['first_name'].' '.$affUser['last_name'], 'offer_rejected', [
                         'name'       => $affUser['first_name'].' '.$affUser['last_name'],
@@ -480,6 +495,10 @@ elseif ($action === 'remove_offer') {
                     'message' => 'Your approval for offer "' . $existing['offer_name'] . '" has been removed. Your tracking links for this offer are now disabled. You may submit a new approval request from the Offers page.',
                     'link'    => '/affiliate/offers',
                 ]);
+                try {
+                    require_once BASE_PATH . '/core/FirebaseMessaging.php';
+                    FirebaseMessaging::sendToUser($affUser['user_id'], 'Offer Approval Removed', 'Your approval for offer "' . $existing['offer_name'] . '" has been removed.', ['type' => 'offer']);
+                } catch (\Throwable $e) {}
                 try {
                     Mailer::sendEvent($affUser['email'], $affUser['first_name'].' '.$affUser['last_name'], 'offer_blocked', [
                         'name'       => $affUser['first_name'].' '.$affUser['last_name'],
@@ -580,6 +599,11 @@ elseif ($action === 'view' || isset($_GET['id'])) {
                 'title'    => 'Account Status Updated',
                 'message'  => 'Your account status has been changed to: ' . $newStatus,
             ]);
+
+            try {
+                require_once BASE_PATH . '/core/FirebaseMessaging.php';
+                FirebaseMessaging::sendToUser($affiliate['user_id'], 'Account Status Updated', 'Your account status has been changed to: ' . $newStatus, ['type' => 'account']);
+            } catch (\Throwable $e) {}
 
             $emailEvent = match($newStatus) {
                 'active'    => 'affiliate_approved',

@@ -184,6 +184,23 @@ try {
             'is_deleted' => 0
         ]);
 
+        if ($ownerType === 'affiliate') {
+            try {
+                $user = Database::fetchOne("SELECT user_id FROM affiliates WHERE id=?", [$ownerId]);
+                if ($user && $user['user_id']) {
+                    Database::insert('notifications', [
+                        'user_id' => (int)$user['user_id'],
+                        'target_role' => 'affiliate',
+                        'title' => 'New Support Reply',
+                        'message' => 'You received a new reply from support.',
+                        'link' => '/affiliate/support'
+                    ]);
+                    require_once BASE_PATH . '/core/FirebaseMessaging.php';
+                    FirebaseMessaging::sendToUser((int)$user['user_id'], 'New Support Reply', 'You received a new reply from support.', ['type' => 'support']);
+                }
+            } catch (\Throwable $e) {}
+        }
+
         echo json_encode(['success' => true, 'data' => ['message_id' => $msgId]]);
         exit;
     }

@@ -50,6 +50,11 @@ if (Helpers::isPost() && in_array(Helpers::post('action'), ['approve', 'reject']
                 'is_read'     => 0,
             ]);
 
+            try {
+                require_once BASE_PATH . '/core/FirebaseMessaging.php';
+                FirebaseMessaging::sendToUser((int)$req['user_id'], 'Balance Top-Up Approved', '$' . number_format((float)$req['amount'], 2) . ' has been added to your balance.', ['type' => 'billing']);
+            } catch (\Throwable $e) {}
+
             // Email confirmation (best-effort)
             try {
                 $siteName = Config::get('config','app.name') ?? 'AffsCash';
@@ -80,6 +85,11 @@ if (Helpers::isPost() && in_array(Helpers::post('action'), ['approve', 'reject']
                 'link'        => '/advertiser/billing',
                 'is_read'     => 0,
             ]);
+
+            try {
+                require_once BASE_PATH . '/core/FirebaseMessaging.php';
+                FirebaseMessaging::sendToUser((int)$req['user_id'], 'Balance Top-Up Rejected', 'Your $' . number_format((float)$req['amount'], 2) . ' top-up was rejected.', ['type' => 'billing']);
+            } catch (\Throwable $e) {}
 
             Helpers::flash('success', 'Payment request marked as rejected.');
         }

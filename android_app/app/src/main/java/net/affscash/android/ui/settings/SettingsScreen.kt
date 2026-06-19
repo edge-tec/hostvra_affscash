@@ -398,7 +398,7 @@ fun PaymentTab(payment: PaymentInfo?, methods: List<String>, viewModel: Settings
                 readOnly = true,
                 label = "Payment Method",
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable)
+                modifier = Modifier.menuAnchor()
             )
             ExposedDropdownMenu(
                 expanded = expanded,
@@ -1019,5 +1019,60 @@ fun DeleteAccountTab(deleteRequest: DeleteRequestInfo?, viewModel: SettingsViewM
                 }
             }
         }
+    }
+}
+
+@Composable
+fun StyledTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    modifier: Modifier = Modifier,
+    readOnly: Boolean = false,
+    enabled: Boolean = true,
+    singleLine: Boolean = true,
+    visualTransformation: androidx.compose.ui.text.input.VisualTransformation = androidx.compose.ui.text.input.VisualTransformation.None,
+    placeholder: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text(label, fontSize = 12.sp) },
+        modifier = modifier.fillMaxWidth(),
+        readOnly = readOnly,
+        enabled = enabled,
+        singleLine = singleLine,
+        visualTransformation = visualTransformation,
+        placeholder = placeholder,
+        trailingIcon = trailingIcon,
+        shape = MaterialTheme.shapes.medium,
+        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp),
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = Color.Transparent,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+        )
+    )
+}
+
+@Composable
+fun StyledButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
+        enabled = enabled,
+        shape = MaterialTheme.shapes.medium,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary
+        )
+    ) {
+        Text(text, fontWeight = FontWeight.Bold)
     }
 }

@@ -5,6 +5,7 @@ plugins {
   alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.hilt)
   alias(libs.plugins.ksp)
+  alias(libs.plugins.google.services)
 }
 
 android {
@@ -126,4 +127,9 @@ dependencies {
 
   // ZXing for QR Code generation
   implementation("com.google.zxing:core:3.5.2")
+
+  // Firebase
+  implementation(platform(libs.firebase.bom))
+  implementation(libs.firebase.messaging)
+  implementation(libs.kotlinx.coroutines.play.services)
 }
