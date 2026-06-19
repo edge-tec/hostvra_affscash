@@ -64,19 +64,12 @@ fun AdminVpnLogScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    StatCard("BLOCKED TODAY", uiState.stats?.todayBlocked?.toString() ?: "0", MaterialTheme.colorScheme.error, Modifier.weight(1f))
-                    StatCard("LAST 30 DAYS", uiState.stats?.totalLast30Days?.toString() ?: "0", MaterialTheme.colorScheme.primary, Modifier.weight(1f))
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    StatCard("VPN/HOSTING", uiState.stats?.vpnHostingCount?.toString() ?: "0", Color(0xFF673AB7), Modifier.weight(1f))
+                    StatCard("TODAY", uiState.stats?.todayBlocked?.toString() ?: "0", MaterialTheme.colorScheme.error, Modifier.weight(1f))
+                    StatCard("30 DAYS", uiState.stats?.totalLast30Days?.toString() ?: "0", MaterialTheme.colorScheme.primary, Modifier.weight(1f))
+                    StatCard("VPN", uiState.stats?.vpnHostingCount?.toString() ?: "0", Color(0xFF673AB7), Modifier.weight(1f))
                     StatCard("PROXY", uiState.stats?.proxyCount?.toString() ?: "0", Color(0xFF9C27B0), Modifier.weight(1f))
                 }
             } else if (uiState.isLoadingStats) {
@@ -228,10 +221,13 @@ fun StatCard(title: String, value: String, color: Color, modifier: Modifier = Mo
         modifier = modifier,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Text(title, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Color.Gray)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(value, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = color)
+        Column(
+            modifier = Modifier.padding(8.dp).fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(title, fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Color.Gray, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(value, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = color)
         }
     }
 }
