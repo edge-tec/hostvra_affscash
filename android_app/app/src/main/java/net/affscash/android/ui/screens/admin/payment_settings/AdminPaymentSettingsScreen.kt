@@ -447,6 +447,7 @@ private fun PayoutInfoTab(
                     email = aff.email,
                     pm = aff.paymentMethod,
                     pd = aff.paymentDetails,
+                    paymentMethods = paymentMethods,
                     onSave = { pm, pd -> onSavePayout("affiliate", aff.id, pm, pd) }
                 )
             }
@@ -457,6 +458,7 @@ private fun PayoutInfoTab(
                     email = mgr.email,
                     pm = mgr.paymentMethod,
                     pd = mgr.paymentDetails,
+                    paymentMethods = paymentMethods,
                     onSave = { pm, pd -> onSavePayout("manager", mgr.userId, pm, pd) }
                 )
             }
@@ -464,17 +466,20 @@ private fun PayoutInfoTab(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PayoutEntityCard(
     name: String,
     email: String,
     pm: String?,
     pd: String?,
+    paymentMethods: List<PaymentMethodItem>,
     onSave: (String, String) -> Unit
 ) {
     var editMode by remember { mutableStateOf(false) }
     var locPm by remember { mutableStateOf(pm ?: "") }
     var locPd by remember { mutableStateOf(pd ?: "") }
+    var expanded by remember { mutableStateOf(false) }
 
     Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -483,12 +488,41 @@ private fun PayoutEntityCard(
             Spacer(modifier = Modifier.height(8.dp))
             
             if (editMode) {
-                OutlinedTextField(
-                    value = locPm,
-                    onValueChange = { locPm = it },
-                    label = { Text("Payment Method") },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                ExposedDropdownMenuBox(
+                    expanded = expanded,
+                    onExpandedChange = { expanded = !expanded }
+                ) {
+                    val displayValue = paymentMethods.find { it.methodType == locPm }?.name ?: locPm
+                    OutlinedTextField(
+                        value = displayValue.ifEmpty { "Select Payment Method" },
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Payment Method") },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                        modifier = Modifier.menuAnchor().fillMaxWidth()
+                    )
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        paymentMethods.forEach { method ->
+                            DropdownMenuItem(
+                                text = { Text(method.name) },
+                                onClick = { 
+                                    locPm = method.methodType
+                                    expanded = false 
+                                }
+                            )
+                        }
+                        DropdownMenuItem(
+                            text = { Text("Custom/Other") },
+                            onClick = { 
+                                locPm = "custom"
+                                expanded = false 
+                            }
+                        )
+                    }
+                }
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = locPd,
