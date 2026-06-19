@@ -219,7 +219,7 @@ fun ManagerOfferCard(
             // Title and Details
             Text(
                 text = offer.name,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.ExtraBold,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis

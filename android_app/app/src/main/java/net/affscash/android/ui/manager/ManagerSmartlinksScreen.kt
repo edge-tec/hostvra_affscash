@@ -252,7 +252,7 @@ fun ManagerSmartlinkCard(
 
             Text(
                 text = smartlink.name,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.ExtraBold,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
