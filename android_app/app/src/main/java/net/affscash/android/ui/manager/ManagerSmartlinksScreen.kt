@@ -38,7 +38,6 @@ fun ManagerSmartlinksScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
-    Scaffold(
         topBar = {
             Surface(
                 modifier = Modifier.fillMaxWidth(),

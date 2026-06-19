@@ -53,14 +53,29 @@ fun ReportScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Reports") },
-                actions = {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 8.dp, top = 48.dp, bottom = 16.dp)
+                ) {
+                    Text(
+                        text = "Reports",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                     IconButton(onClick = onNavigateToFraudReport) {
-                        Icon(Icons.Default.Warning, contentDescription = "Fraud Report")
+                        Icon(Icons.Default.Warning, contentDescription = "Fraud Report", tint = MaterialTheme.colorScheme.onSurface)
                     }
                 }
-            )
+            }
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
@@ -68,8 +83,9 @@ fun ReportScreen(
             var filtersExpanded by remember { mutableStateOf(false) }
             Card(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 elevation = CardDefaults.cardElevation(2.dp),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
             ) {
                 Column {
                     Row(
@@ -311,8 +327,13 @@ fun SummaryCard(title: String, value: String, subtitle: String, valueColor: Colo
 
 @Composable
 fun PerformanceRowItem(row: ReportRow) {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(12.dp)) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Text(row.label, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -331,8 +352,13 @@ fun PerformanceRowItem(row: ReportRow) {
 
 @Composable
 fun ClickRowItem(click: ClickRow) {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(12.dp)) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Text(click.offerName ?: "Custom URL", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text("Click ID: ${click.clickId}", fontSize = 10.sp, color = Color.Gray)
             Spacer(modifier = Modifier.height(4.dp))
@@ -354,8 +380,13 @@ fun ClickRowItem(click: ClickRow) {
 
 @Composable
 fun ConversionRowItem(conv: ConversionRow) {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(12.dp)) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Text(conv.offerName ?: "Unknown", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text("Conv ID: ${conv.conversionId}", fontSize = 10.sp, color = Color.Gray)
             Spacer(modifier = Modifier.height(4.dp))
@@ -379,8 +410,13 @@ fun ConversionRowItem(conv: ConversionRow) {
 
 @Composable
 fun SmartlinkRowItem(sl: SmartlinkClickRow) {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(12.dp)) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Text(sl.smartlinkName ?: "Unknown Smartlink", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text("Routed to: ${sl.offerName ?: "Custom URL"}", fontSize = 12.sp)
             Spacer(modifier = Modifier.height(4.dp))

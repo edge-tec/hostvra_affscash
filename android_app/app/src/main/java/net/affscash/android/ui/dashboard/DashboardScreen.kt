@@ -299,6 +299,7 @@ fun KpiGrid(stats: DashboardAnalyticsStatsResponse) {
 fun KpiCard(title: String, value: String, trend: Double?, isInverseTrend: Boolean = false, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier,
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -341,6 +342,7 @@ fun LineChartCard(trendData: DashboardTrendChartResponse) {
 
     Card(
         modifier = Modifier.fillMaxWidth().height(250.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -377,6 +379,7 @@ fun BarChartCard(labels: List<String>, data: List<Float>) {
 
     Card(
         modifier = Modifier.fillMaxWidth().height(250.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -399,6 +402,7 @@ fun BarChartCard(labels: List<String>, data: List<Float>) {
 fun PieChartCard(labels: List<String>, data: List<Int>) {
     Card(
         modifier = Modifier.fillMaxWidth().height(200.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -456,6 +460,7 @@ fun PieChartCard(labels: List<String>, data: List<Int>) {
 fun OffersTable(offers: List<net.affscash.android.data.model.DashboardOfferRow>) {
     Card(
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -491,6 +496,7 @@ fun OffersTable(offers: List<net.affscash.android.data.model.DashboardOfferRow>)
 fun CountriesTable(countries: List<net.affscash.android.data.model.DashboardCountryRow>) {
     Card(
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {

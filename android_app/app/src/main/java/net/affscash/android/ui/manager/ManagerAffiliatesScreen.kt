@@ -37,7 +37,7 @@ fun ManagerAffiliatesScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    val userManager = net.affscash.android.data.local.UserManager(context)
+    val userManager = UserManager(context)
 
     LaunchedEffect(uiState.error, uiState.actionMessage) {
         uiState.error?.let {
@@ -50,7 +50,6 @@ fun ManagerAffiliatesScreen(
         }
     }
 
-    Scaffold(
     Scaffold(
         topBar = {
             Surface(
@@ -146,7 +145,7 @@ fun ManagerAffiliatesScreen(
                 edgePadding = 16.dp,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                tabs.forEachIndexed { index, (key, title) ->
+                tabs.forEach { (key, title) ->
                     Tab(
                         selected = uiState.statusFilter == key,
                         onClick = { viewModel.setStatusFilter(key) },
@@ -371,7 +370,7 @@ fun ManagerAffiliateCard(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-            Divider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
             Spacer(modifier = Modifier.height(12.dp))
 
             Row(
@@ -395,32 +394,36 @@ fun ManagerAffiliateCard(
                     }
                     
                     if (canApprove) {
-                        if (affiliate.status == "pending") {
-                            Button(
-                                onClick = { onUpdateStatus("active") },
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF10B981)),
-                                contentPadding = PaddingValues(horizontal = 12.dp),
-                                shape = RoundedCornerShape(8.dp)
-                            ) {
-                                Text("Approve")
+                        when (affiliate.status) {
+                            "pending" -> {
+                                Button(
+                                    onClick = { onUpdateStatus("active") },
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF10B981)),
+                                    contentPadding = PaddingValues(horizontal = 12.dp),
+                                    shape = RoundedCornerShape(8.dp)
+                                ) {
+                                    Text("Approve")
+                                }
                             }
-                        } else if (affiliate.status == "active") {
-                            Button(
-                                onClick = { onUpdateStatus("suspended") },
-                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                                contentPadding = PaddingValues(horizontal = 12.dp),
-                                shape = RoundedCornerShape(8.dp)
-                            ) {
-                                Text("Suspend")
+                            "active" -> {
+                                Button(
+                                    onClick = { onUpdateStatus("suspended") },
+                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                                    contentPadding = PaddingValues(horizontal = 12.dp),
+                                    shape = RoundedCornerShape(8.dp)
+                                ) {
+                                    Text("Suspend")
+                                }
                             }
-                        } else {
-                            Button(
-                                onClick = { onUpdateStatus("active") },
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF10B981)),
-                                contentPadding = PaddingValues(horizontal = 12.dp),
-                                shape = RoundedCornerShape(8.dp)
-                            ) {
-                                Text("Activate")
+                            else -> {
+                                Button(
+                                    onClick = { onUpdateStatus("active") },
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF10B981)),
+                                    contentPadding = PaddingValues(horizontal = 12.dp),
+                                    shape = RoundedCornerShape(8.dp)
+                                ) {
+                                    Text("Activate")
+                                }
                             }
                         }
                     }
