@@ -1,42 +1,48 @@
 package net.affscash.android.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
+@Serializable
 data class VpnLogItem(
-    @SerializedName("id") val id: Int,
-    @SerializedName("affiliate_id") val affiliateId: Int?,
-    @SerializedName("offer_id") val offerId: Int?,
-    @SerializedName("offer_name") val offerName: String?,
-    @SerializedName("ip_address") val ipAddress: String,
-    @SerializedName("detection_type") val detectionType: String,
-    @SerializedName("user_agent") val userAgent: String?,
-    @SerializedName("country") val country: String,
-    @SerializedName("blocked_at") val blockedAt: String,
-    @SerializedName("aff_name") val affName: String?,
-    @SerializedName("affiliate_code") val affiliateCode: String?
+    @SerialName("id") val id: Int,
+    @SerialName("affiliate_id") val affiliateId: Int? = null,
+    @SerialName("offer_id") val offerId: Int? = null,
+    @SerialName("offer_name") val offerName: String? = null,
+    @SerialName("ip_address") val ipAddress: String,
+    @SerialName("detection_type") val detectionType: String,
+    @SerialName("user_agent") val userAgent: String? = null,
+    @SerialName("country") val country: String,
+    @SerialName("blocked_at") val blockedAt: String,
+    @SerialName("aff_name") val affName: String? = null,
+    @SerialName("affiliate_code") val affiliateCode: String? = null
 )
 
+@Serializable
 data class VpnLogTypeCount(
-    @SerializedName("detection_type") val detectionType: String,
-    @SerializedName("cnt") val count: Int
+    @SerialName("detection_type") val detectionType: String,
+    @SerialName("cnt") val count: Int
 )
 
+@Serializable
 data class VpnLogStats(
-    @SerializedName("total_last_30_days") val totalLast30Days: Int,
-    @SerializedName("today_blocked") val todayBlocked: Int,
-    @SerializedName("vpn_hosting_count") val vpnHostingCount: Int,
-    @SerializedName("proxy_count") val proxyCount: Int,
-    @SerializedName("types") val types: List<VpnLogTypeCount>
+    @SerialName("total_last_30_days") val totalLast30Days: Int = 0,
+    @SerialName("today_blocked") val todayBlocked: Int = 0,
+    @SerialName("vpn_hosting_count") val vpnHostingCount: Int = 0,
+    @SerialName("proxy_count") val proxyCount: Int = 0,
+    @SerialName("types") val types: List<VpnLogTypeCount> = emptyList()
 )
 
+@Serializable
 data class VpnLogListResponse(
-    @SerializedName("success") val success: Boolean,
-    @SerializedName("data") val data: List<VpnLogItem>?,
-    @SerializedName("error") val error: String?
+    @SerialName("success") val success: Boolean,
+    @SerialName("data") val data: List<VpnLogItem>?,
+    @SerialName("error") val error: String? = null
 )
 
+@Serializable
 data class VpnLogStatsResponse(
-    @SerializedName("success") val success: Boolean,
-    @SerializedName("data") val data: VpnLogStats?,
-    @SerializedName("error") val error: String?
+    @SerialName("success") val success: Boolean,
+    @SerialName("data") val data: VpnLogStats?,
+    @SerialName("error") val error: String? = null
 )
