@@ -112,6 +112,7 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
         }
     }
     object AdminPlatformSettings : Screen("admin_platform_settings", "Platform Settings", Icons.Filled.Settings)
+    object AdminPaymentSettings : Screen("admin_payment_settings", "Payment Settings", Icons.Filled.ShoppingCart)
     object AdminShop : Screen("admin_shop", "Affiliate Shop", Icons.Filled.ShoppingCart)
     class AdminShopProductForm(id: Int? = null) : Screen(
         if (id == null) "admin_shop_product_form" else "admin_shop_product_form?id=$id",
@@ -162,7 +163,7 @@ fun MainScreen(
     }
 
     val allItems = when (role) {
-        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminPrivateOffers, Screen.AdminSmartlinks, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminShop, Screen.AdminAffiliateManagers, Screen.AdminSupport, Screen.AdminConversions, Screen.AdminReports, Screen.AdminAffiliateReport, Screen.AdminFraudReport, Screen.AdminVpnLogs, Screen.AdminAccountDeleteRequests, Screen.AdminPoints, Screen.AdminAutoHide, Screen.AdminInvoices, Screen.AdminPlatformSettings, Screen.AdminSettings, Screen.AdminReferral)
+        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminPrivateOffers, Screen.AdminSmartlinks, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminShop, Screen.AdminAffiliateManagers, Screen.AdminSupport, Screen.AdminConversions, Screen.AdminReports, Screen.AdminAffiliateReport, Screen.AdminFraudReport, Screen.AdminVpnLogs, Screen.AdminAccountDeleteRequests, Screen.AdminPoints, Screen.AdminAutoHide, Screen.AdminInvoices, Screen.AdminPlatformSettings, Screen.AdminPaymentSettings, Screen.AdminSettings, Screen.AdminReferral)
         "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerSupport, Screen.ManagerSmartlinks, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerReports, Screen.ManagerReferral, Screen.ManagerInvoices, Screen.ManagerSettings)
         else -> listOf(Screen.Dashboard, Screen.Offers, Screen.AffiliateInHouseOffers, Screen.Smartlinks, Screen.Reports, Screen.AffiliateDuplicateConversions, Screen.AffiliateReferral, Screen.AffiliateSettings)
     }
@@ -631,6 +632,13 @@ fun MainScreen(
             composable(Screen.AdminSettings.route) { net.affscash.android.ui.settings.SettingsScreen(role, onLogout) }
             composable(Screen.AdminPlatformSettings.route) { 
                 net.affscash.android.ui.screens.admin.settings.AdminPlatformSettingsScreen(navController = navController) 
+            }
+            composable(Screen.AdminPaymentSettings.route) {
+                val viewModel: net.affscash.android.ui.screens.admin.payment_settings.AdminPaymentSettingsViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                net.affscash.android.ui.screens.admin.payment_settings.AdminPaymentSettingsScreen(
+                    viewModel = viewModel,
+                    onNavigateBack = { navController.popBackStack() }
+                )
             }
             composable(Screen.AdminReferral.route) {
                 net.affscash.android.ui.admin.referral.AdminReferralScreen(

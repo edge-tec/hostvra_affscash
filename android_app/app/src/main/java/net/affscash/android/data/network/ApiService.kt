@@ -418,6 +418,25 @@ interface ApiService {
     @GET("api/v2/admin/VpnLogController.php?action=clear")
     suspend fun clearAdminVpnLogs(): Response<net.affscash.android.data.model.BaseResponse>
 
+    // Admin Payment Settings
+    @GET("api/v2/admin/PaymentSettingsController.php?action=data")
+    suspend fun getAdminPaymentSettings(): Response<net.affscash.android.data.model.PaymentSettingsResponse>
+
+    @POST("api/v2/admin/PaymentSettingsController.php?action=save_method")
+    suspend fun savePaymentMethod(@Body request: Map<String, String>): Response<net.affscash.android.data.model.BaseResponse>
+
+    @POST("api/v2/admin/PaymentSettingsController.php?action=save_terms")
+    suspend fun savePaymentTerms(@Body request: Map<String, Any>): Response<net.affscash.android.data.model.BaseResponse>
+
+    @POST("api/v2/admin/PaymentSettingsController.php?action=save_commission")
+    suspend fun saveManagerCommission(@Body request: Map<String, String>): Response<net.affscash.android.data.model.BaseResponse>
+
+    @POST("api/v2/admin/PaymentSettingsController.php?action=save_offer_commission")
+    suspend fun saveOfferCommission(@Body request: Map<String, String>): Response<net.affscash.android.data.model.BaseResponse>
+
+    @POST("api/v2/admin/PaymentSettingsController.php?action=save_payout_info")
+    suspend fun savePayoutInfo(@Body request: Map<String, Any>): Response<net.affscash.android.data.model.BaseResponse>
+
     @GET("api/v2/admin/invoices")
     suspend fun getAdminInvoices(): Response<InvoiceResponse>
 
