@@ -109,21 +109,28 @@ fun ForgotPasswordScreen(
                                         viewModel.clearError() 
                                     },
                                     label = { Text("Email Address") },
-                                    leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
+                                    leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                                     modifier = Modifier.fillMaxWidth(),
-                                    singleLine = true
+                                    singleLine = true,
+                                    shape = RoundedCornerShape(12.dp),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        unfocusedBorderColor = Color.Transparent,
+                                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+                                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+                                    )
                                 )
                                 Button(
                                     onClick = { viewModel.requestOtp(email) },
-                                    modifier = Modifier.fillMaxWidth().height(50.dp),
+                                    modifier = Modifier.fillMaxWidth().height(56.dp),
                                     enabled = !isLoading && email.isNotBlank(),
-                                    shape = RoundedCornerShape(8.dp)
+                                    shape = RoundedCornerShape(12.dp)
                                 ) {
                                     if (isLoading) {
-                                        CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
+                                        CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary, strokeWidth = 3.dp)
                                     } else {
-                                        Text("Send OTP", fontWeight = FontWeight.Bold)
+                                        Text("Send OTP", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                                     }
                                 }
                             }
@@ -139,18 +146,25 @@ fun ForgotPasswordScreen(
                                     label = { Text("6-Digit OTP") },
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                     modifier = Modifier.fillMaxWidth(),
-                                    singleLine = true
+                                    singleLine = true,
+                                    shape = RoundedCornerShape(12.dp),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        unfocusedBorderColor = Color.Transparent,
+                                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+                                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+                                    )
                                 )
                                 Button(
                                     onClick = { viewModel.verifyOtp(otp) },
-                                    modifier = Modifier.fillMaxWidth().height(50.dp),
+                                    modifier = Modifier.fillMaxWidth().height(56.dp),
                                     enabled = !isLoading && otp.length == 6,
-                                    shape = RoundedCornerShape(8.dp)
+                                    shape = RoundedCornerShape(12.dp)
                                 ) {
                                     if (isLoading) {
-                                        CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
+                                        CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary, strokeWidth = 3.dp)
                                     } else {
-                                        Text("Verify OTP", fontWeight = FontWeight.Bold)
+                                        Text("Verify OTP", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                                     }
                                 }
                             }
@@ -162,11 +176,18 @@ fun ForgotPasswordScreen(
                                         viewModel.clearError() 
                                     },
                                     label = { Text("New Password") },
-                                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
+                                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                                     visualTransformation = PasswordVisualTransformation(),
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                                     modifier = Modifier.fillMaxWidth(),
-                                    singleLine = true
+                                    singleLine = true,
+                                    shape = RoundedCornerShape(12.dp),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        unfocusedBorderColor = Color.Transparent,
+                                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+                                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+                                    )
                                 )
                                 OutlinedTextField(
                                     value = confirmPassword,
@@ -175,22 +196,29 @@ fun ForgotPasswordScreen(
                                         viewModel.clearError() 
                                     },
                                     label = { Text("Confirm New Password") },
-                                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
+                                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                                     visualTransformation = PasswordVisualTransformation(),
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                                     modifier = Modifier.fillMaxWidth(),
-                                    singleLine = true
+                                    singleLine = true,
+                                    shape = RoundedCornerShape(12.dp),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        unfocusedBorderColor = Color.Transparent,
+                                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+                                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+                                    )
                                 )
                                 Button(
                                     onClick = { viewModel.resetPassword(password, confirmPassword) },
-                                    modifier = Modifier.fillMaxWidth().height(50.dp),
+                                    modifier = Modifier.fillMaxWidth().height(56.dp),
                                     enabled = !isLoading && password.isNotBlank() && confirmPassword.isNotBlank(),
-                                    shape = RoundedCornerShape(8.dp)
+                                    shape = RoundedCornerShape(12.dp)
                                 ) {
                                     if (isLoading) {
-                                        CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
+                                        CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary, strokeWidth = 3.dp)
                                     } else {
-                                        Text("Reset Password", fontWeight = FontWeight.Bold)
+                                        Text("Reset Password", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                                     }
                                 }
                             }
@@ -207,10 +235,10 @@ fun ForgotPasswordScreen(
                                     )
                                     Button(
                                         onClick = onNavigateBack,
-                                        modifier = Modifier.fillMaxWidth().height(50.dp),
-                                        shape = RoundedCornerShape(8.dp)
+                                        modifier = Modifier.fillMaxWidth().height(56.dp),
+                                        shape = RoundedCornerShape(12.dp)
                                     ) {
-                                        Text("Back to Login", fontWeight = FontWeight.Bold)
+                                        Text("Back to Login", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                                     }
                                 }
                             }
