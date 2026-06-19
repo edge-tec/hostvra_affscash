@@ -3,7 +3,7 @@ package net.affscash.android.data.repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.affscash.android.data.network.ApiService
-import net.affscash.android.data.model.BaseResponse
+import net.affscash.android.data.model.BasicResponse
 import net.affscash.android.data.model.VpnLogListResponse
 import net.affscash.android.data.model.VpnLogStatsResponse
 import javax.inject.Inject
@@ -49,7 +49,7 @@ class AdminVpnLogRepository @Inject constructor(
         }
     }
 
-    suspend fun clearOldLogs(): Result<BaseResponse> = withContext(Dispatchers.IO) {
+    suspend fun clearOldLogs(): Result<BasicResponse> = withContext(Dispatchers.IO) {
         try {
             val response = apiService.clearAdminVpnLogs()
             if (response.isSuccessful) {

@@ -1,61 +1,85 @@
 package net.affscash.android.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
+@Serializable
 data class PaymentMethodItem(
-    @SerializedName("id") val id: Int,
-    @SerializedName("name") val name: String,
-    @SerializedName("description") val description: String?,
-    @SerializedName("instructions") val instructions: String?,
-    @SerializedName("method_type") val methodType: String,
-    @SerializedName("is_active") val isActive: Int,
-    @SerializedName("is_default") val isDefault: Int
+    @SerialName("id") val id: Int,
+    @SerialName("name") val name: String,
+    @SerialName("description") val description: String?,
+    @SerialName("instructions") val instructions: String?,
+    @SerialName("method_type") val methodType: String,
+    @SerialName("is_active") val isActive: Int,
+    @SerialName("is_default") val isDefault: Int
 )
 
+@Serializable
 data class AffiliatePaymentInfo(
-    @SerializedName("id") val id: Int,
-    @SerializedName("name") val name: String,
-    @SerializedName("email") val email: String,
-    @SerializedName("payment_terms") val paymentTerms: String,
-    @SerializedName("allow_email_change") val allowEmailChange: Int,
-    @SerializedName("payment_method") val paymentMethod: String?,
-    @SerializedName("payment_details") val paymentDetails: String?
+    @SerialName("id") val id: Int,
+    @SerialName("name") val name: String,
+    @SerialName("email") val email: String,
+    @SerialName("payment_terms") val paymentTerms: String,
+    @SerialName("allow_email_change") val allowEmailChange: Int,
+    @SerialName("payment_method") val paymentMethod: String?,
+    @SerialName("payment_details") val paymentDetails: String?
 )
 
+@Serializable
 data class ManagerPaymentInfo(
-    @SerializedName("mgr_id") val mgrId: Int,
-    @SerializedName("user_id") val userId: Int,
-    @SerializedName("name") val name: String,
-    @SerializedName("email") val email: String,
-    @SerializedName("commission_rate") val commissionRate: Double,
-    @SerializedName("payment_method") val paymentMethod: String?,
-    @SerializedName("payment_details") val paymentDetails: String?
+    @SerialName("mgr_id") val mgrId: Int,
+    @SerialName("user_id") val userId: Int,
+    @SerialName("name") val name: String,
+    @SerialName("email") val email: String,
+    @SerialName("commission_rate") val commissionRate: Double,
+    @SerialName("payment_method") val paymentMethod: String?,
+    @SerialName("payment_details") val paymentDetails: String?
 )
 
+@Serializable
 data class OfferCommissionInfo(
-    @SerializedName("id") val id: Int,
-    @SerializedName("commission_rate") val commissionRate: Double,
-    @SerializedName("mgr_id") val mgrId: Int,
-    @SerializedName("manager_name") val managerName: String,
-    @SerializedName("offer_id") val offerId: Int,
-    @SerializedName("offer_name") val offerName: String
+    @SerialName("id") val id: Int,
+    @SerialName("commission_rate") val commissionRate: Double,
+    @SerialName("mgr_id") val mgrId: Int,
+    @SerialName("manager_name") val managerName: String,
+    @SerialName("offer_id") val offerId: Int,
+    @SerialName("offer_name") val offerName: String
 )
 
+@Serializable
 data class OfferBasicItem(
-    @SerializedName("id") val id: Int,
-    @SerializedName("name") val name: String
+    @SerialName("id") val id: Int,
+    @SerialName("name") val name: String
 )
 
+@Serializable
 data class PaymentSettingsData(
-    @SerializedName("payment_methods") val paymentMethods: List<PaymentMethodItem>,
-    @SerializedName("affiliates") val affiliates: List<AffiliatePaymentInfo>,
-    @SerializedName("managers") val managers: List<ManagerPaymentInfo>,
-    @SerializedName("offers") val offers: List<OfferBasicItem>,
-    @SerializedName("offer_commissions") val offerCommissions: List<OfferCommissionInfo>
+    @SerialName("payment_methods") val paymentMethods: List<PaymentMethodItem>,
+    @SerialName("affiliates") val affiliates: List<AffiliatePaymentInfo>,
+    @SerialName("managers") val managers: List<ManagerPaymentInfo>,
+    @SerialName("offers") val offers: List<OfferBasicItem>,
+    @SerialName("offer_commissions") val offerCommissions: List<OfferCommissionInfo>
 )
 
+@Serializable
 data class PaymentSettingsResponse(
-    @SerializedName("success") val success: Boolean,
-    @SerializedName("data") val data: PaymentSettingsData?,
-    @SerializedName("error") val error: String?
+    @SerialName("success") val success: Boolean,
+    @SerialName("data") val data: PaymentSettingsData?,
+    @SerialName("error") val error: String?
+)
+
+@Serializable
+data class PaymentTermsRequest(
+    @SerialName("payment_terms") val paymentTerms: String,
+    @SerialName("apply_to") val applyTo: String,
+    @SerialName("affiliate_id") val affiliateId: Int? = null
+)
+
+@Serializable
+data class PayoutInfoRequest(
+    @SerialName("payout_type") val type: String,
+    @SerialName("entity_id") val id: Int,
+    @SerialName("payment_method") val paymentMethod: String,
+    @SerialName("pd_method_type") val pdMethodType: String = "custom",
+    @SerialName("payment_details") val paymentDetails: String
 )

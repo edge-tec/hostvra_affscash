@@ -121,16 +121,17 @@ class AdminPaymentSettingsViewModel @Inject constructor(
     }
 
     // --- Payment Terms Actions ---
-    fun savePaymentTerms(scope: String, terms: String, affiliateIds: List<Int>) {
+    fun savePaymentTerms(applyTo: String, terms: String, selectedAffiliateId: Int?) {
         viewModelScope.launch {
             _uiState.update { it.copy(isSaving = true, error = null) }
-            val req = mutableMapOf<String, Any>(
-                "scope" to scope,
-                "payment_terms" to terms
+            val applyToVal = if (applyTo == "all") "all" else "selected"
+            val affiliateIdVal = if (applyTo == "selected") selectedAffiliateId else null
+            
+            val req = PaymentTermsRequest(
+                paymentTerms = terms,
+                applyTo = applyToVal,
+                affiliateId = affiliateIdVal
             )
-            if (scope == "selected") {
-                req["affiliate_ids"] = affiliateIds
-            }
             repository.savePaymentTerms(req).fold(
                 onSuccess = { res ->
                     if (res.success) {
@@ -209,13 +210,13 @@ class AdminPaymentSettingsViewModel @Inject constructor(
     fun savePayoutInfo(type: String, entityId: Int, method: String, details: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isSaving = true, error = null) }
-            repository.savePayoutInfo(mapOf(
-                "payout_type" to type,
-                "entity_id" to entityId,
-                "payment_method" to method,
-                "pd_method_type" to "custom", // simplified for app
-                "payment_details" to details
-            )).fold(
+            val req = net.affscash.android.data.model.PayoutInfoRequest(
+                type = type,
+                id = entityId,
+                paymentMethod = method,
+                paymentDetails = details
+            )
+            repository.savePayoutInfo(req).fold(
                 onSuccess = { res ->
                     if (res.success) {
                         _uiState.update { it.copy(successMessage = res.message, isSaving = false) }
