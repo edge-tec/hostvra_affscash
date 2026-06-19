@@ -22,6 +22,8 @@ if (Helpers::isPost()) {
         }
     }
 
+    $isAjax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') || (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false);
+
     if (!$error) {
         $email    = Helpers::postRaw('email');
         $password = Helpers::postRaw('password');
@@ -29,13 +31,19 @@ if (Helpers::isPost()) {
         $result   = Auth::login($email, $password, $remember);
         if ($result['success']) {
             if (!empty($result['2fa_required'])) {
+                if ($isAjax) Helpers::json(['success' => true, 'redirect' => '/login/2fa']);
                 Helpers::redirect('/login/2fa');
             }
             $role = $result['role'];
+            if ($isAjax) Helpers::json(['success' => true, 'redirect' => "/$role/dashboard"]);
             Helpers::redirect("/$role/dashboard");
         } else {
             $error = $result['error'];
         }
+    }
+    
+    if ($isAjax && $error) {
+        Helpers::json(['success' => false, 'error' => $error]);
     }
 }
 

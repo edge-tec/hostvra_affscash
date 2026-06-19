@@ -32,11 +32,22 @@ class AuthRepository @Inject constructor(
                     return@withContext Result.failure(Exception(it.error ?: "Login failed"))
                 }
             } else if (response.code() == 401) {
-                return@withContext Result.failure(Exception("Email or password does not match"))
+                val errorBody = response.errorBody()?.string()
+                if (errorBody != null) {
+                    try {
+                        val jsonObject = org.json.JSONObject(errorBody)
+                        if (jsonObject.has("error")) {
+                            return@withContext Result.failure(Exception(jsonObject.getString("error")))
+                        }
+                    } catch (e: Exception) {
+                        // Fallback below
+                    }
+                }
+                return@withContext Result.failure(Exception("Invalid email or password."))
             }
             Result.failure(Exception("Network error: ${response.code()}"))
         } catch (e: Exception) {
-            Result.failure(e)
+            Result.failure(Exception("Unable to connect. Please check your internet connection and try again."))
         }
     }
 

@@ -53,7 +53,8 @@ class Auth {
         } catch (\Throwable $e) {}
 
         $user = Database::fetchOne("SELECT * FROM `users` WHERE `email` = ?", [strtolower(trim($email))]);
-        if (!$user || !password_verify($password, $user['password_hash'])) {
+        
+        if (!$user) {
             try {
                 Database::query(
                     "INSERT INTO `login_failures` (`ip_address`, `attempts`, `last_attempt`) VALUES (?, 1, NOW())
@@ -61,7 +62,18 @@ class Auth {
                     [$clientIp]
                 );
             } catch (\Throwable $e) {}
-            return ['success' => false, 'error' => 'Invalid email or password.'];
+            return ['success' => false, 'error' => 'Email address not found.'];
+        }
+
+        if (!password_verify($password, $user['password_hash'])) {
+            try {
+                Database::query(
+                    "INSERT INTO `login_failures` (`ip_address`, `attempts`, `last_attempt`) VALUES (?, 1, NOW())
+                     ON DUPLICATE KEY UPDATE `attempts` = `attempts` + 1, `last_attempt` = NOW()",
+                    [$clientIp]
+                );
+            } catch (\Throwable $e) {}
+            return ['success' => false, 'error' => 'Invalid password. Please try again.'];
         }
         
         // Reset failures on success
