@@ -19,6 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.data.model.ManagerFraudConversion
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -119,7 +122,13 @@ fun ManagerFraudReportsScreen(
                             val scoreMax = uiState.scoreMax.toIntOrNull()
                             val matchScoreMax = scoreMax == null || score <= scoreMax
                             
-                            matchStatus && matchClickId && matchAffiliate && matchAffCode && matchOffer && matchScoreMin && matchScoreMax
+                            val qFromDate = uiState.fromDate
+                            val qToDate = uiState.toDate
+                            val datePart = cv.convertedAt.take(10)
+                            val matchDate = (qFromDate.isEmpty() || datePart >= qFromDate) &&
+                                            (qToDate.isEmpty() || datePart <= qToDate)
+                            
+                            matchStatus && matchClickId && matchAffiliate && matchAffCode && matchOffer && matchScoreMin && matchScoreMax && matchDate
                         }.sortedWith { a, b ->
                             when (uiState.sortBy) {
                                 "Score High to Low" -> (b.ipqsScore ?: 0).compareTo(a.ipqsScore ?: 0)
@@ -268,7 +277,14 @@ fun FraudReportFilterSheet(
             
             Text("Date Range", style = MaterialTheme.typography.labelMedium)
             ScrollableRow(listOf("Today", "Yesterday", "Last 7 Days", "Last 15 Days", "This Month", "Last Month", "Last 90 Days", "This Year", "Last Year")) { range ->
-                FilterChip(selected = false, onClick = {}, label = { Text(range) })
+                FilterChip(
+                    selected = false,
+                    onClick = {
+                        val (from, to) = getPresetDateRange(range)
+                        onUpdateFilters(from, to, uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy)
+                    },
+                    label = { Text(range) }
+                )
             }
             
             Spacer(modifier = Modifier.height(12.dp))
@@ -388,4 +404,61 @@ fun ScrollableRow(items: List<String>, content: @Composable (String) -> Unit) {
             content(item)
         }
     }
+}
+
+fun getPresetDateRange(preset: String): Pair<String, String> {
+    val format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+    val cal = Calendar.getInstance()
+    
+    val to = format.format(cal.time)
+    var from = to
+    
+    when (preset) {
+        "Today" -> {
+            // from = to
+        }
+        "Yesterday" -> {
+            cal.add(Calendar.DAY_OF_YEAR, -1)
+            from = format.format(cal.time)
+            val toDate = format.format(cal.time)
+            return Pair(from, toDate)
+        }
+        "Last 7 Days" -> {
+            cal.add(Calendar.DAY_OF_YEAR, -7)
+            from = format.format(cal.time)
+        }
+        "Last 15 Days" -> {
+            cal.add(Calendar.DAY_OF_YEAR, -15)
+            from = format.format(cal.time)
+        }
+        "This Month" -> {
+            cal.set(Calendar.DAY_OF_MONTH, 1)
+            from = format.format(cal.time)
+        }
+        "Last Month" -> {
+            cal.add(Calendar.MONTH, -1)
+            cal.set(Calendar.DAY_OF_MONTH, 1)
+            from = format.format(cal.time)
+            cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH))
+            val toDate = format.format(cal.time)
+            return Pair(from, toDate)
+        }
+        "Last 90 Days" -> {
+            cal.add(Calendar.DAY_OF_YEAR, -90)
+            from = format.format(cal.time)
+        }
+        "This Year" -> {
+            cal.set(Calendar.DAY_OF_YEAR, 1)
+            from = format.format(cal.time)
+        }
+        "Last Year" -> {
+            cal.add(Calendar.YEAR, -1)
+            cal.set(Calendar.DAY_OF_YEAR, 1)
+            from = format.format(cal.time)
+            cal.set(Calendar.DAY_OF_YEAR, cal.getActualMaximum(Calendar.DAY_OF_YEAR))
+            val toDate = format.format(cal.time)
+            return Pair(from, toDate)
+        }
+    }
+    return Pair(from, to)
 }
