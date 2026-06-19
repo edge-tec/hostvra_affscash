@@ -165,7 +165,7 @@ fun ManagerConversionItem(conversion: Conversion) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(11.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -174,7 +174,7 @@ fun ManagerConversionItem(conversion: Conversion) {
             ) {
                 Text(
                     text = conversion.offerName ?: "Unknown Offer",
-                    style = MaterialTheme.typography.titleMedium,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f).padding(end = 8.dp)
                 )
@@ -187,25 +187,25 @@ fun ManagerConversionItem(conversion: Conversion) {
                 Box(
                     modifier = Modifier
                         .background(color = containerColor, shape = RoundedCornerShape(12.dp))
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                        .padding(horizontal = 6.dp, vertical = 2.dp)
                 ) {
                     Text(
                         text = conversion.status.uppercase(),
                         color = Color.White,
-                        fontSize = 11.sp,
+                        fontSize = 9.sp,
                         fontWeight = FontWeight.Bold
                     )
                 }
             }
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = "Affiliate: ${conversion.affName} (${conversion.affiliateCode})", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "Affiliate: ${conversion.affName} (${conversion.affiliateCode})", fontSize = 12.sp)
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = "Click ID: ${conversion.clickId.take(16)}...", style = MaterialTheme.typography.bodySmall)
+                Text(text = "Click ID: ${conversion.clickId.take(16)}...", fontSize = 11.sp)
                 val ipqsScore = conversion.fraudScore ?: 0
                 val ipqsColor = when {
                     ipqsScore > 85 -> MaterialTheme.colorScheme.error
@@ -213,15 +213,15 @@ fun ManagerConversionItem(conversion: Conversion) {
                     ipqsScore > 50 -> MaterialTheme.colorScheme.secondary
                     else -> MaterialTheme.colorScheme.primary
                 }
-                Text(text = "IPQS: $ipqsScore", style = MaterialTheme.typography.bodySmall, color = ipqsColor, fontWeight = FontWeight.Bold)
+                Text(text = "IPQS: $ipqsScore", fontSize = 11.sp, color = ipqsColor, fontWeight = FontWeight.Bold)
             }
             Spacer(modifier = Modifier.height(4.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = "Date: ${conversion.convertedAt.take(16)}", style = MaterialTheme.typography.bodySmall)
-                Text(text = "Payout: $${(( conversion.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+                Text(text = "Date: ${conversion.convertedAt.take(16)}", fontSize = 11.sp)
+                Text(text = "Payout: $${(( conversion.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 13.sp, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
             }
         }
     }
