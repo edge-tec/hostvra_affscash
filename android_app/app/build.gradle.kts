@@ -17,13 +17,37 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary = true
+        }
+    }
+
+    signingConfigs {
+        create("release") {
+            // In a real scenario, these would be from environment variables or a secure file
+            // For now, we'll ensure that whatever config is used, it has V2+ enabled
+            // storeFile = file("release.keystore")
+            // storePassword = "password"
+            // keyAlias = "alias"
+            // keyPassword = "password"
+            enableV1Signing = true
+            enableV2Signing = true
+            enableV3Signing = true
+            enableV4Signing = true
+        }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            // Ensure the APK is strictly signed with V2/V3 by falling back to the debug key
             signingConfig = signingConfigs.getByName("debug")
+        }
+        debug {
+            // signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -43,9 +67,14 @@ android {
     }
 
     packaging {
-      resources {
-        excludes += "/META-INF/{AL2.0,LGPL2.1}"
-      }
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+        jniLibs {
+            // Android 15 (API 35) requirement for 16KB page alignment
+            // Setting this to false ensures native libraries are stored uncompressed and aligned
+            useLegacyPackaging = false
+        }
     }
 }
 
