@@ -182,7 +182,7 @@ fun SmartlinkCard(
             Spacer(modifier = Modifier.height(8.dp))
             
             smartlink.description?.let {
-                Text(it, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 112.sp)
+                Text(it, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 18.sp)
                 Spacer(modifier = Modifier.height(8.dp))
             }
             

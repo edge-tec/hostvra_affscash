@@ -147,7 +147,7 @@ fun InvoiceSummaryCard(title: String, value: String, valueColor: Color) {
             modifier = Modifier.padding(12.dp).fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(value, fontSize = 112.sp, fontWeight = FontWeight.Bold, color = valueColor)
+            Text(value, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = valueColor)
             Spacer(modifier = Modifier.height(4.dp))
             Text(title, fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
         }

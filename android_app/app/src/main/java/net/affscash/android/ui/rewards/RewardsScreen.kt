@@ -111,7 +111,7 @@ fun RewardsContent(data: RewardsResponse) {
             item {
                 Text(
                     text = "Earned Rewards",
-                    fontSize = 112.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
@@ -143,7 +143,7 @@ fun RewardsContent(data: RewardsResponse) {
             item {
                 Text(
                     text = "Available Rewards",
-                    fontSize = 112.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
                 )
@@ -165,7 +165,7 @@ fun NextMilestoneCard(rule: RewardRule, earned: Double) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = "Next Milestone", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Purple40)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = rule.title, fontSize = 112.sp, fontWeight = FontWeight.Bold)
+            Text(text = rule.title, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             if (rule.description != null) {
                 Spacer(modifier = Modifier.height(4.dp))
                 HtmlText(html = rule.description)

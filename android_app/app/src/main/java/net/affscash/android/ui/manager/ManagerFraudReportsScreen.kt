@@ -33,7 +33,7 @@ fun ManagerFraudReportsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Fraud Reports", fontSize = 112.sp) },
+                title = { Text("Fraud Reports", fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")

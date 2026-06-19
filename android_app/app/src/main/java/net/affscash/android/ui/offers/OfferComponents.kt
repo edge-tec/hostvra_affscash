@@ -117,7 +117,7 @@ fun OfferListItem(offer: Offer, isLoadingLink: Boolean, onClick: () -> Unit, onA
             Spacer(modifier = Modifier.height(8.dp))
             
             offer.description?.let {
-                Text(it, fontSize = 13.sp, maxLines = 2, overflow = TextOverflow.Ellipsis, color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 112.sp)
+                Text(it, fontSize = 13.sp, maxLines = 2, overflow = TextOverflow.Ellipsis, color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 18.sp)
                 Spacer(modifier = Modifier.height(8.dp))
             }
             
