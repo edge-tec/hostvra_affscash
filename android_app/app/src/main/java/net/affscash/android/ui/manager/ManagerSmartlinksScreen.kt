@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -37,34 +38,70 @@ fun ManagerSmartlinksScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
+    Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text("Smart Links", fontWeight = FontWeight.Bold)
-                        Text(
-                            "Browse smart links and manage access requests",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                },
-                actions = {
-                    Box {
-                        TextButton(onClick = onNavigateToRequests) {
-                            Text("Requests", color = MaterialTheme.colorScheme.primary)
-                        }
-                        if (uiState.pendingRequestsCount > 0) {
-                            Badge(
-                                modifier = Modifier.align(Alignment.TopEnd).padding(end = 4.dp, top = 8.dp),
-                                containerColor = MaterialTheme.colorScheme.error
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 24.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Surface(
+                                shape = RoundedCornerShape(12.dp),
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(48.dp)
                             ) {
-                                Text(uiState.pendingRequestsCount.toString())
+                                Icon(
+                                    Icons.Default.Link,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier.padding(12.dp)
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Column {
+                                Text(
+                                    text = "Smart Links",
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                                Text(
+                                    text = "Manage smartlinks & requests",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                                )
+                            }
+                        }
+                        Box {
+                            IconButton(
+                                onClick = onNavigateToRequests,
+                                modifier = Modifier.background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
+                            ) {
+                                Icon(Icons.Outlined.Notifications, contentDescription = "Requests", tint = MaterialTheme.colorScheme.primary)
+                            }
+                            if (uiState.pendingRequestsCount > 0) {
+                                Badge(
+                                    modifier = Modifier.align(Alignment.TopEnd).padding(end = -4.dp, top = -4.dp),
+                                    containerColor = MaterialTheme.colorScheme.error
+                                ) {
+                                    Text(uiState.pendingRequestsCount.toString())
+                                }
                             }
                         }
                     }
                 }
-            )
+            }
         }
     ) { padding ->
         Column(
@@ -178,11 +215,11 @@ fun ManagerSmartlinkCard(
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(11.dp)) {
+        Column(modifier = Modifier.padding(20.dp)) {
             // Header
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -191,29 +228,37 @@ fun ManagerSmartlinkCard(
             ) {
                 Text(
                     text = "#${smartlink.id}",
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold
                 )
                 if (smartlink.status.lowercase() == "active") {
-                    Badge(containerColor = Color(0xFF4CAF50)) {
-                        Text("ACTIVE", fontSize = 11.sp, modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp))
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = Color(0xFF10B981).copy(alpha = 0.15f)
+                    ) {
+                        Text("ACTIVE", color = Color(0xFF10B981), fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp))
                     }
                 } else {
-                    Badge(containerColor = Color(0xFF9E9E9E)) {
-                        Text("PAUSED", fontSize = 11.sp, modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp))
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = Color(0xFF9E9E9E).copy(alpha = 0.15f)
+                    ) {
+                        Text("PAUSED", color = Color(0xFF757575), fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp))
                     }
                 }
             }
             
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Text(
                 text = smartlink.name,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.ExtraBold,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
+            Spacer(modifier = Modifier.height(8.dp))
             if (!smartlink.description.isNullOrEmpty()) {
                 var isExpanded by remember { mutableStateOf(false) }
                 var showSeeMore by remember { mutableStateOf(false) }
@@ -245,7 +290,7 @@ fun ManagerSmartlinkCard(
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             // Badges Row
             Row(
@@ -254,17 +299,21 @@ fun ManagerSmartlinkCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
-                    Text("My Affiliates", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Group, contentDescription = null, modifier = Modifier.size(14.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("My Affiliates", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    Spacer(modifier = Modifier.height(6.dp))
                     Box(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(12.dp))
+                            .clip(RoundedCornerShape(8.dp))
                             .background(Color(0xFFE8F5E9))
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                            .padding(horizontal = 10.dp, vertical = 6.dp)
                     ) {
                         Text(
                             text = "🟢 ${smartlink.myApproved} APPROVED",
-                            fontSize = 11.sp,
+                            fontSize = 12.sp,
                             color = Color(0xFF2E7D32),
                             fontWeight = FontWeight.Bold
                         )
@@ -273,18 +322,22 @@ fun ManagerSmartlinkCard(
 
                 if (smartlink.myPending > 0) {
                     Column {
-                        Text("Requests", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        Spacer(modifier = Modifier.height(4.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.PendingActions, contentDescription = null, modifier = Modifier.size(14.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text("Requests", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                        Spacer(modifier = Modifier.height(6.dp))
                         Box(
                             modifier = Modifier
-                                .clip(RoundedCornerShape(12.dp))
+                                .clip(RoundedCornerShape(8.dp))
                                 .background(Color(0xFFFFF3E0))
                                 .clickable { onNavigateToRequests() }
-                                .padding(horizontal = 8.dp, vertical = 4.dp)
+                                .padding(horizontal = 10.dp, vertical = 6.dp)
                         ) {
                             Text(
                                 text = "🟠 ${smartlink.myPending} PENDING",
-                                fontSize = 11.sp,
+                                fontSize = 12.sp,
                                 color = Color(0xFFEF6C00),
                                 fontWeight = FontWeight.Bold
                             )
@@ -293,10 +346,15 @@ fun ManagerSmartlinkCard(
                 }
 
                 Column(horizontalAlignment = Alignment.End) {
-                    Text("Total Appv", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.CheckCircle, contentDescription = null, modifier = Modifier.size(14.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Total Appv", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = smartlink.totalApproved.toString(),
-                        fontSize = 16.sp,
+                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
                 }

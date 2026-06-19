@@ -61,14 +61,28 @@ fun ManagerReportsScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Reports") },
-                navigationIcon = {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 8.dp, end = 24.dp, top = 48.dp, bottom = 16.dp)
+                ) {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
+                    Text(
+                        text = "Reports",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 }
-            )
+            }
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
@@ -319,23 +333,25 @@ fun ManagerReportsScreen(
 @Composable
 fun SummaryCard(title: String, value: String, subtitle: String, valueColor: Color = Color.Black) {
     Card(
-        modifier = Modifier.width(120.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+        modifier = Modifier.width(140.dp),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            Text(title, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
-            Spacer(modifier = Modifier.height(2.dp))
+        Column(modifier = Modifier.padding(12.dp)) {
+            Text(title, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = value,
-                fontSize = if (value.length > 7) 12.sp else 15.sp,
-                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.ExtraBold,
                 color = valueColor,
                 maxLines = 1,
                 overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
             )
             if (subtitle.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(2.dp))
-                Text(subtitle, fontSize = 12.sp, color = Color.Gray)
+                Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }
@@ -343,18 +359,23 @@ fun SummaryCard(title: String, value: String, subtitle: String, valueColor: Colo
 
 @Composable
 fun PerformanceRowItem(row: ReportRow) {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(12.dp)) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Text(row.label, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
-                    Text("Clicks: ${row.clicks} / Unique: ${row.uclicks}", fontSize = 12.sp)
-                    Text("Conversions: ${row.conv}", fontSize = 12.sp)
+                    Text("Clicks: ${row.clicks} / Unique: ${row.uclicks}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Conversions: ${row.conv}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text("Payout: $${"%.2f".format(row.payout)}", fontSize = 12.sp, color = Color(0xFF10B981), fontWeight = FontWeight.Bold)
-                    Text("App: ${row.approved} | Rej: ${row.rejected}", fontSize = 12.sp)
+                    Text("Payout: $${"%.2f".format(row.payout)}", style = MaterialTheme.typography.bodyMedium, color = Color(0xFF10B981), fontWeight = FontWeight.Bold)
+                    Text("App: ${row.approved} | Rej: ${row.rejected}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }
@@ -363,20 +384,37 @@ fun PerformanceRowItem(row: ReportRow) {
 
 @Composable
 fun ClickRowItem(click: ClickRow) {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(12.dp)) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Text(click.offerName ?: "Custom URL", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Text("Click ID: ${click.clickId}", fontSize = 10.sp, color = Color.Gray)
-            Spacer(modifier = Modifier.height(4.dp))
+            Text("Click ID: ${click.clickId}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Spacer(modifier = Modifier.height(8.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
-                    Text("Sub1: ${click.sub1 ?: "-"}", fontSize = 12.sp)
-                    Text("${click.country ?: "-"} | ${click.os ?: "-"} | ${click.browser ?: "-"}", fontSize = 12.sp)
+                    Text("Sub1: ${click.sub1 ?: "-"}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("${click.country ?: "-"} | ${click.os ?: "-"} | ${click.browser ?: "-"}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text(click.convStatus ?: "no conversion", fontSize = 12.sp, color = if (click.convStatus == "approved") Color(0xFF10B981) else Color.Gray)
+                    Surface(
+                        color = if (click.convStatus == "approved") Color(0xFFD1FAE5) else Color(0xFFF3F4F6),
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            click.convStatus?.uppercase() ?: "NO CONVERSION", 
+                            style = MaterialTheme.typography.labelSmall, 
+                            fontWeight = FontWeight.Bold,
+                            color = if (click.convStatus == "approved") Color(0xFF059669) else Color(0xFF6B7280),
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        )
+                    }
                     if (click.convPayout != null && click.convPayout > 0) {
-                        Text("$${"%.2f".format(click.convPayout)}", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text("$${"%.2f".format(click.convPayout)}", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = Color(0xFF10B981))
                     }
                 }
             }
@@ -386,20 +424,39 @@ fun ClickRowItem(click: ClickRow) {
 
 @Composable
 fun ConversionRowItem(conversion: ConversionRow) {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(12.dp)) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Text(conversion.offerName ?: "Unknown Offer", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Text("Click ID: ${conversion.clickId}", fontSize = 10.sp, color = Color.Gray)
-            Text("Date: ${conversion.convertedAt}", fontSize = 10.sp, color = Color.Gray)
-            Spacer(modifier = Modifier.height(4.dp))
+            Text("Click ID: ${conversion.clickId}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("Date: ${conversion.convertedAt}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Spacer(modifier = Modifier.height(8.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
-                    Text("Sub1: ${conversion.sub1 ?: "-"}", fontSize = 12.sp)
-                    Text("${conversion.country ?: "-"} | ${conversion.os ?: "-"}", fontSize = 12.sp)
+                    Text("Sub1: ${conversion.sub1 ?: "-"}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("${conversion.country ?: "-"} | ${conversion.os ?: "-"}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text(conversion.status.uppercase(), fontSize = 12.sp, color = if (conversion.status == "approved") Color(0xFF10B981) else Color(0xFFEF4444), fontWeight = FontWeight.Bold)
-                    Text("$${"%.2f".format(conversion.payout)}", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    val statusColor = if (conversion.status == "approved") Color(0xFF059669) else Color(0xFFDC2626)
+                    val statusBg = if (conversion.status == "approved") Color(0xFFD1FAE5) else Color(0xFFFEE2E2)
+                    Surface(
+                        color = statusBg,
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            conversion.status.uppercase(), 
+                            style = MaterialTheme.typography.labelSmall, 
+                            color = statusColor, 
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text("$${"%.2f".format(conversion.payout)}", style = MaterialTheme.typography.titleMedium, color = Color(0xFF10B981), fontWeight = FontWeight.ExtraBold)
                 }
             }
         }
@@ -408,21 +465,38 @@ fun ConversionRowItem(conversion: ConversionRow) {
 
 @Composable
 fun SmartlinkRowItem(click: SmartlinkClickRow) {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(12.dp)) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Text(click.smartlinkName ?: "Unknown SmartLink", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Text("Offer: ${click.offerName ?: "Custom URL"}", fontSize = 12.sp)
-            Text("Click ID: ${click.clickId}", fontSize = 10.sp, color = Color.Gray)
-            Spacer(modifier = Modifier.height(4.dp))
+            Text("Offer: ${click.offerName ?: "Custom URL"}", style = MaterialTheme.typography.bodySmall)
+            Text("Click ID: ${click.clickId}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Spacer(modifier = Modifier.height(8.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
-                    Text("Sub1: ${click.sub1 ?: "-"}", fontSize = 12.sp)
-                    Text("Country: ${click.country ?: "-"}", fontSize = 12.sp)
+                    Text("Sub1: ${click.sub1 ?: "-"}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Country: ${click.country ?: "-"}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text(click.convStatus ?: "no conversion", fontSize = 12.sp, color = if (click.convStatus == "approved") Color(0xFF10B981) else Color.Gray)
+                    Surface(
+                        color = if (click.convStatus == "approved") Color(0xFFD1FAE5) else Color(0xFFF3F4F6),
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            click.convStatus?.uppercase() ?: "NO CONVERSION", 
+                            style = MaterialTheme.typography.labelSmall, 
+                            fontWeight = FontWeight.Bold,
+                            color = if (click.convStatus == "approved") Color(0xFF059669) else Color(0xFF6B7280),
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        )
+                    }
                     if (click.convPayout != null && click.convPayout > 0) {
-                        Text("$${"%.2f".format(click.convPayout)}", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text("$${"%.2f".format(click.convPayout)}", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = Color(0xFF10B981))
                     }
                 }
             }

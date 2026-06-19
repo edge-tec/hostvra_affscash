@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -40,26 +41,60 @@ fun ManagerOffersScreen(
     Scaffold(
         topBar = {
             Column {
-                TopAppBar(
-                    title = {
-                        Column {
-                            Text("Offers", fontWeight = FontWeight.Bold)
-                            Text(
-                                "Browse all available offers and access tracking links",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    },
-                    actions = {
-                        IconButton(onClick = onNavigateToApprovals) {
-                            Icon(Icons.Default.Approval, contentDescription = "Approvals")
-                        }
-                        IconButton(onClick = { showFilterSheet = true }) {
-                            Icon(Icons.Default.FilterList, contentDescription = "Filter")
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 16.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Surface(
+                                    shape = RoundedCornerShape(12.dp),
+                                    color = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(48.dp)
+                                ) {
+                                    Icon(
+                                        Icons.Default.LocalOffer,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onPrimary,
+                                        modifier = Modifier.padding(12.dp)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(16.dp))
+                                Column {
+                                    Text(
+                                        text = "Offers",
+                                        style = MaterialTheme.typography.headlineSmall,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                                    )
+                                    Text(
+                                        text = "Browse and manage offers",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                                    )
+                                }
+                            }
+                            Row {
+                                IconButton(onClick = { showFilterSheet = true }, modifier = Modifier.background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f), RoundedCornerShape(12.dp))) {
+                                    Icon(Icons.Default.FilterList, contentDescription = "Filter", tint = MaterialTheme.colorScheme.primary)
+                                }
+                                Spacer(modifier = Modifier.width(8.dp))
+                                IconButton(onClick = onNavigateToApprovals, modifier = Modifier.background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f), RoundedCornerShape(12.dp))) {
+                                    Icon(Icons.Default.Approval, contentDescription = "Approvals", tint = MaterialTheme.colorScheme.primary)
+                                }
+                            }
                         }
                     }
-                )
+                }
                 TabRow(
                     selectedTabIndex = if (uiState.tab == "regular") 0 else 1,
                     containerColor = MaterialTheme.colorScheme.surface,
@@ -67,12 +102,12 @@ fun ManagerOffersScreen(
                     Tab(
                         selected = uiState.tab == "regular",
                         onClick = { viewModel.setTab("regular") },
-                        text = { Text("🏷️ Regular Offers") }
+                        text = { Row(verticalAlignment = Alignment.CenterVertically) { Icon(Icons.Outlined.LocalOffer, null, modifier = Modifier.size(16.dp)); Spacer(Modifier.width(4.dp)); Text("Regular") } }
                     )
                     Tab(
                         selected = uiState.tab == "inhouse",
                         onClick = { viewModel.setTab("inhouse") },
-                        text = { Text("🏠 In-House Offers") }
+                        text = { Row(verticalAlignment = Alignment.CenterVertically) { Icon(Icons.Outlined.Home, null, modifier = Modifier.size(16.dp)); Spacer(Modifier.width(4.dp)); Text("In-House") } }
                     )
                 }
             }
@@ -148,11 +183,11 @@ fun ManagerOfferCard(
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(20.dp)) {
             // Header: ID and Status
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -161,63 +196,84 @@ fun ManagerOfferCard(
             ) {
                 Text(
                     text = "#${offer.id}",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold
                 )
-                Badge(containerColor = if (offer.status == "active") Color(0xFF4CAF50) else Color(0xFF9E9E9E)) {
-                    Text(offer.status.uppercase(), modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp))
-                }
-            }
-            
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Title and Details
-            Text(
-                text = offer.name,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = offer.category ?: "Uncategorized",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                if (offer.offerType != null) {
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = if (offer.status == "active") Color(0xFF10B981).copy(alpha = 0.15f) else Color(0xFF9E9E9E).copy(alpha = 0.15f)
+                ) {
                     Text(
-                        text = " • ${offer.offerType}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-                if (offer.isInhouse) {
-                    Text(
-                        text = " • In-House",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFF7C3AED),
+                        text = offer.status.uppercase(),
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                        color = if (offer.status == "active") Color(0xFF10B981) else Color(0xFF757575),
+                        style = MaterialTheme.typography.labelSmall,
                         fontWeight = FontWeight.Bold
                     )
                 }
             }
-
+            
             Spacer(modifier = Modifier.height(12.dp))
+
+            // Title and Details
+            Text(
+                text = offer.name,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.ExtraBold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Surface(color = MaterialTheme.colorScheme.surfaceVariant, shape = RoundedCornerShape(4.dp)) {
+                    Text(
+                        text = offer.category ?: "Uncategorized",
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                if (offer.offerType != null) {
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Surface(color = MaterialTheme.colorScheme.surfaceVariant, shape = RoundedCornerShape(4.dp)) {
+                        Text(
+                            text = offer.offerType,
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+                if (offer.isInhouse) {
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Surface(color = Color(0xFF7C3AED).copy(alpha = 0.1f), shape = RoundedCornerShape(4.dp)) {
+                        Text(
+                            text = "In-House",
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                            color = Color(0xFF7C3AED),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
 
             // Stats Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                StatItem("Payout", if (offer.payoutType == "RevShare") "${offer.payout}%" else "$${(( offer.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }")
-                StatItem("Affiliates", offer.affCount.toString())
+                StatItem(Icons.Default.AttachMoney, "Payout", if (offer.payoutType == "RevShare") "${offer.payout}%" else "$${(( offer.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }")
+                StatItem(Icons.Default.Group, "Affiliates", offer.affCount.toString())
                 FraudScoreBadge(offer.fraudScore, offer.fraudLevel)
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Divider(color = MaterialTheme.colorScheme.outlineVariant)
 
@@ -343,12 +399,16 @@ fun FraudScoreBadge(score: Int, level: String) {
     }
     
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            text = "Fraud Score",
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Spacer(modifier = Modifier.height(4.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Outlined.Security, contentDescription = null, modifier = Modifier.size(12.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                text = "Fraud Score",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        Spacer(modifier = Modifier.height(6.dp))
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(12.dp))
@@ -366,17 +426,23 @@ fun FraudScoreBadge(score: Int, level: String) {
 }
 
 @Composable
-fun StatItem(label: String, value: String) {
+fun StatItem(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, value: String) {
     Column {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(icon, contentDescription = null, modifier = Modifier.size(14.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = value,
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.Bold
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }

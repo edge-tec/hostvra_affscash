@@ -37,13 +37,25 @@ fun ManagerInvoicesScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Invoices & Earnings") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            )
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp, top = 48.dp, bottom = 16.dp)
+                ) {
+                    Text(
+                        text = "Invoices & Earnings",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
@@ -160,14 +172,20 @@ fun ManagerInvoicesScreen(
 
 @Composable
 fun InvoiceSummaryCard(title: String, value: String, valueColor: Color) {
-    Card(modifier = Modifier.width(140.dp)) {
+    Card(
+        modifier = Modifier.width(160.dp).height(90.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
         Column(
-            modifier = Modifier.padding(12.dp).fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.padding(16.dp).fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Text(value, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = valueColor)
+            Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = valueColor)
             Spacer(modifier = Modifier.height(4.dp))
-            Text(title, fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
+            Text(title, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -177,50 +195,72 @@ fun ManagerInvoiceDetailedItem(invoice: Invoice) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+            .padding(horizontal = 16.dp, vertical = 6.dp),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(16.dp)) {
             // Header: Invoice Number & Status
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Text(invoice.invoiceNumber, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
+                Text(invoice.invoiceNumber, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
                 
                 val statusColor = when(invoice.status) {
-                    "paid" -> Color(0xFF10B981)
+                    "paid" -> Color(0xFF059669)
                     "sent", "pending" -> Color(0xFFF59E0B)
-                    "void", "rejected" -> Color(0xFFDC2626)
-                    else -> Color.Gray
+                    "void", "rejected" -> Color(0xFFEF4444)
+                    else -> MaterialTheme.colorScheme.onSurfaceVariant
                 }
-                Text(invoice.status.uppercase(), fontSize = 11.sp, fontWeight = FontWeight.Bold, color = statusColor)
+                val statusBg = when(invoice.status) {
+                    "paid" -> Color(0xFFD1FAE5)
+                    "sent", "pending" -> Color(0xFFFEF3C7)
+                    "void", "rejected" -> Color(0xFFFEE2E2)
+                    else -> MaterialTheme.colorScheme.surfaceVariant
+                }
+                
+                Surface(
+                    color = statusBg,
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        invoice.status.uppercase(), 
+                        style = MaterialTheme.typography.labelSmall, 
+                        fontWeight = FontWeight.Bold, 
+                        color = statusColor,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    )
+                }
             }
             
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             
             // Affiliate Name
-            Text(invoice.entityName ?: "Unknown", fontSize = 13.sp, fontWeight = FontWeight.Bold)
+            Text(invoice.entityName ?: "Unknown", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
             
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(12.dp))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+            Spacer(modifier = Modifier.height(12.dp))
             
             // Details Row
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
-                    Text("Period", fontSize = 13.sp, color = Color.Gray)
+                    Text("Period", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     val pStart = invoice.periodStart ?: "N/A"
                     val pEnd = invoice.periodEnd ?: "N/A"
-                    Text("$pStart - $pEnd", fontSize = 11.sp)
+                    Text("$pStart - $pEnd", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Medium)
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text("Amount", fontSize = 13.sp, color = Color.Gray)
-                    Text("$${"%.2f".format(invoice.total)}", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    Text("Amount", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("$${"%.2f".format(invoice.total)}", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                 }
             }
             
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             
             // Dates Row
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("Created: ${invoice.createdAt?.take(10) ?: "N/A"}", fontSize = 10.sp, color = Color.Gray)
-                Text("Due: ${invoice.dueDate?.take(10) ?: "N/A"}", fontSize = 10.sp, color = Color.Gray)
+                Text("Created: ${invoice.createdAt?.take(10) ?: "N/A"}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f))
+                Text("Due: ${invoice.dueDate?.take(10) ?: "N/A"}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f))
             }
         }
     }

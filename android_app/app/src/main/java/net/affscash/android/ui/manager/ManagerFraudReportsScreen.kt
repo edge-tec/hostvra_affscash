@@ -45,25 +45,34 @@ fun ManagerFraudReportsScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Fraud Reports", fontSize = 18.sp) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 8.dp, end = 16.dp, top = 48.dp, bottom = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        IconButton(onClick = onNavigateBack) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        }
+                        Text(
+                            text = "Fraud Reports",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
                     }
-                },
-                actions = {
                     IconButton(onClick = { showFilters = true }) {
-                        Icon(Icons.Default.FilterList, contentDescription = "Filters")
+                        Icon(Icons.Default.FilterList, contentDescription = "Filters", tint = MaterialTheme.colorScheme.primary)
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            )
+                }
+            }
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
@@ -162,18 +171,19 @@ fun ManagerFraudReportsScreen(
 @Composable
 fun SummaryCard(title: String, value: String, valueColor: Color, containerColor: Color) {
     Card(
-        modifier = Modifier.width(110.dp).height(80.dp),
+        modifier = Modifier.width(130.dp).height(90.dp),
         colors = CardDefaults.cardColors(containerColor = containerColor),
-        shape = MaterialTheme.shapes.medium
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier.padding(12.dp).fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(value, fontSize = 18.sp, fontWeight = FontWeight.ExtraBold, color = valueColor)
+            Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.ExtraBold, color = valueColor)
             Spacer(modifier = Modifier.height(4.dp))
-            Text(title, fontSize = 11.sp, color = valueColor.copy(alpha = 0.8f), fontWeight = FontWeight.Bold, maxLines = 1)
+            Text(title, style = MaterialTheme.typography.labelSmall, color = valueColor.copy(alpha = 0.8f), fontWeight = FontWeight.Bold, maxLines = 1)
         }
     }
 }
@@ -183,37 +193,41 @@ fun ManagerFraudConversionItem(cv: ManagerFraudConversion) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+            .padding(horizontal = 16.dp, vertical = 6.dp),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(16.dp)) {
             // Header: Conv ID & Date
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(cv.conversionId.take(16) + "...", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = MaterialTheme.colorScheme.primary)
-                Text(cv.convertedAt, fontSize = 10.sp, color = Color.Gray)
+                Text(cv.conversionId.take(16) + "...", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+                Text(cv.convertedAt, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             
             // Affiliate & Offer
-            Text("Affiliate: ${cv.affName} (${cv.affiliateCode})", fontSize = 12.sp, fontWeight = FontWeight.Bold)
-            Text("Offer: ${cv.offerName ?: "Unknown"}", fontSize = 11.sp)
+            Text("Affiliate: ${cv.affName} (${cv.affiliateCode})", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+            Text("Offer: ${cv.offerName ?: "Unknown"}", style = MaterialTheme.typography.bodySmall)
             
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             
             // IP & Click ID
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("IP: ${cv.ipAddress ?: "-"}", fontSize = 11.sp, color = Color.Blue)
-                Text("Click ID: ${cv.clickId.take(12)}...", fontSize = 10.sp, color = Color.Gray)
+                Text("IP: ${cv.ipAddress ?: "-"}", style = MaterialTheme.typography.bodySmall, color = Color(0xFF3B82F6))
+                Text("Click ID: ${cv.clickId.take(12)}...", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             
             Spacer(modifier = Modifier.height(4.dp))
             
             // Device info
-            Text("${cv.deviceType ?: "Unknown"} · ${cv.osVersion ?: "Unknown OS"}", fontSize = 11.sp, color = Color.DarkGray)
-            Text(cv.userAgent?.take(50) ?: "Unknown UA", fontSize = 10.sp, color = Color.Gray)
+            Text("${cv.deviceType ?: "Unknown"} · ${cv.osVersion ?: "Unknown OS"}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(cv.userAgent?.take(50) ?: "Unknown UA", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f))
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+            Spacer(modifier = Modifier.height(12.dp))
             
             // Metrics row
             Row(
@@ -222,28 +236,48 @@ fun ManagerFraudConversionItem(cv: ManagerFraudConversion) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
-                    Text("Payout", fontSize = 13.sp, color = Color.Gray)
-                    Text("$${"%.2f".format(cv.payout)}", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    Text("Payout", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("$${"%.2f".format(cv.payout)}", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
                 }
                 
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("IPQS Score", fontSize = 13.sp, color = Color.Gray)
+                    Text("IPQS Score", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     val score = cv.ipqsScore ?: 0
-                    val scoreColor = if (score > 80) Color.Red else if (score > 50) Color(0xFFF59E0B) else Color(0xFF10B981)
-                    Text("$score", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = scoreColor)
+                    val scoreColor = if (score > 80) Color(0xFFEF4444) else if (score > 50) Color(0xFFF59E0B) else Color(0xFF10B981)
+                    Text("$score", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = scoreColor)
                 }
                 
                 Column(horizontalAlignment = Alignment.End) {
-                    Text("Status", fontSize = 13.sp, color = Color.Gray)
-                    val statusColor = if (cv.status == "rejected") Color.Red else if (cv.status == "approved") Color(0xFF10B981) else Color(0xFFF59E0B)
-                    Text(cv.status.uppercase(), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = statusColor)
+                    Text("Status", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    val statusColor = if (cv.status == "rejected") Color(0xFFEF4444) else if (cv.status == "approved") Color(0xFF059669) else Color(0xFFF59E0B)
+                    val statusBg = if (cv.status == "rejected") Color(0xFFFEE2E2) else if (cv.status == "approved") Color(0xFFD1FAE5) else Color(0xFFFEF3C7)
+                    
+                    Surface(
+                        color = statusBg,
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            cv.status.uppercase(), 
+                            style = MaterialTheme.typography.labelSmall, 
+                            fontWeight = FontWeight.Bold, 
+                            color = statusColor,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        )
+                    }
                 }
             }
             
             // Rejection reason if any
             if (cv.status == "rejected" && cv.rejectionReason.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(4.dp))
-                Text("Reason: ${cv.rejectionReason}", fontSize = 10.sp, color = Color.Red)
+                Spacer(modifier = Modifier.height(8.dp))
+                Surface(
+                    color = Color(0xFFFEF2F2),
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFFECACA)),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Reason: ${cv.rejectionReason}", style = MaterialTheme.typography.labelSmall, color = Color(0xFFEF4444), modifier = Modifier.padding(8.dp))
+                }
             }
         }
     }

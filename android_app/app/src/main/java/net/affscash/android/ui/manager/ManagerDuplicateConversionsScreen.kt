@@ -32,19 +32,28 @@ fun ManagerDuplicateConversionsScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Duplicate Conversions", fontSize = 18.sp) },
-                navigationIcon = {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 8.dp, end = 16.dp, top = 48.dp, bottom = 16.dp)
+                ) {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            )
+                    Text(
+                        text = "Duplicate Conversions",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
@@ -114,19 +123,33 @@ fun ManagerDuplicateConversionsScreen(
                 } else if (uiState.response != null) {
                     Column(modifier = Modifier.fillMaxSize()) {
                         // Totals section
-                        Row(modifier = Modifier.fillMaxWidth().padding(8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Card(modifier = Modifier.weight(1f)) {
-                                Column(modifier = Modifier.padding(12.dp)) {
-                                    Text("DUPLICATE CLUSTERS", fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
-                                    Text("${uiState.response!!.totalGroups}", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                                    Text("Unique (offer + IP) groups", fontSize = 10.sp, color = Color.Gray)
+                        Row(modifier = Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                            Card(
+                                modifier = Modifier.weight(1f),
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+                                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                            ) {
+                                Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                                    Text("DUPLICATE CLUSTERS", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold)
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text("${uiState.response!!.totalGroups}", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Text("Unique (offer + IP) groups", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
                             }
-                            Card(modifier = Modifier.weight(1f)) {
-                                Column(modifier = Modifier.padding(12.dp)) {
-                                    Text("DUPLICATE CONVERSIONS", fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
-                                    Text("${uiState.response!!.totalRows}", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color(0xFFEF4444))
-                                    Text("Total flagged rows", fontSize = 10.sp, color = Color.Gray)
+                            Card(
+                                modifier = Modifier.weight(1f),
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+                                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                            ) {
+                                Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                                    Text("DUPLICATE CONVERSIONS", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold)
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text("${uiState.response!!.totalRows}", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = Color(0xFFEF4444))
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Text("Total flagged rows", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
                             }
                         }
@@ -159,52 +182,57 @@ fun DuplicateClusterView(group: DuplicateConversionGroup) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+            .padding(horizontal = 16.dp, vertical = 6.dp),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(0.dp)) {
+        Column {
             // Header
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color(0xFFFEF2F2))
-                    .padding(8.dp),
+                    .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
-                    modifier = Modifier
-                        .background(Color(0xFFDC2626), shape = MaterialTheme.shapes.small)
-                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                Surface(
+                    color = Color(0xFFEF4444),
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
                 ) {
                     Text(
                         "${group.dupCount} DUPLICATES",
                         color = Color.White,
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                     )
                 }
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(12.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         "Offer: ${group.offerName}",
-                        fontSize = 12.sp,
+                        style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF991B1B)
                     )
                     Text(
                         "IP: ${group.ipAddress}",
-                        fontSize = 11.sp,
-                        color = Color(0xFF991B1B)
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color(0xFFB91C1C)
                     )
                 }
             }
 
             // Rows
-            Column(modifier = Modifier.padding(8.dp)) {
+            Column(modifier = Modifier.padding(16.dp)) {
                 group.conversions.forEachIndexed { index, row ->
                     DuplicateRowView(row = row)
                     if (index < group.conversions.size - 1) {
-                        Divider(modifier = Modifier.padding(vertical = 4.dp))
+                        HorizontalDivider(
+                            modifier = Modifier.padding(vertical = 12.dp),
+                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                        )
                     }
                 }
             }
@@ -216,23 +244,34 @@ fun DuplicateClusterView(group: DuplicateConversionGroup) {
 fun DuplicateRowView(row: DuplicateConversionRow) {
     Column {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("Conv ID: ${row.conversionId}", fontSize = 11.sp, fontWeight = FontWeight.Bold)
-            Text(row.convertedAt, fontSize = 10.sp, color = Color.Gray)
+            Text("Conv ID: ${row.conversionId}", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+            Text(row.convertedAt, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f))
         }
-        Spacer(modifier = Modifier.height(2.dp))
+        Spacer(modifier = Modifier.height(6.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("Affiliate: ${row.affiliateName} (#${row.affiliateId})", fontSize = 12.sp)
-            Text("$${(( row.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+            Text("Affiliate: ${row.affiliateName} (#${row.affiliateId})", style = MaterialTheme.typography.bodyMedium)
+            Text("$${(( row.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
         }
-        Spacer(modifier = Modifier.height(2.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text(
-                row.status.uppercase(),
-                fontSize = 10.sp,
-                color = if (row.status == "rejected") Color(0xFFDC2626) else if (row.status == "approved") Color(0xFF10B981) else Color.Gray,
-                fontWeight = FontWeight.Bold
-            )
-            Text("Txn: ${row.transactionId ?: "-"}", fontSize = 10.sp, color = Color.Gray)
+            val (statusColor, statusBg) = when(row.status) {
+                "rejected" -> Color(0xFFEF4444) to Color(0xFFFEE2E2)
+                "approved" -> Color(0xFF059669) to Color(0xFFD1FAE5)
+                else -> MaterialTheme.colorScheme.onSurfaceVariant to MaterialTheme.colorScheme.surfaceVariant
+            }
+            Surface(
+                color = statusBg,
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(4.dp)
+            ) {
+                Text(
+                    row.status.uppercase(),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = statusColor,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                )
+            }
+            Text("Txn: ${row.transactionId ?: "-"}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }

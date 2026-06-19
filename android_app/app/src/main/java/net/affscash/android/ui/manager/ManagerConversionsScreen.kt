@@ -10,6 +10,9 @@ import androidx.compose.material.icons.filled.Assessment
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.VpnKey
+import androidx.compose.material.icons.outlined.Assessment
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -38,22 +41,66 @@ fun ManagerConversionsScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Manager Conversions") },
-                actions = {
-                    IconButton(onClick = onNavigateToFraud) {
-                        Icon(Icons.Default.Warning, contentDescription = "Fraud Reports")
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Surface(
+                                shape = RoundedCornerShape(12.dp),
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(48.dp)
+                            ) {
+                                Icon(
+                                    Icons.Outlined.Assessment,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier.padding(12.dp)
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Column {
+                                Text(
+                                    text = "Conversions",
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                                Text(
+                                    text = "All team conversions",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                                )
+                            }
+                        }
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            IconButton(
+                                onClick = onNavigateToFraud,
+                                modifier = Modifier.background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
+                            ) {
+                                Icon(Icons.Default.Warning, contentDescription = "Fraud", tint = MaterialTheme.colorScheme.primary)
+                            }
+                            IconButton(
+                                onClick = onNavigateToDuplicates,
+                                modifier = Modifier.background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
+                            ) {
+                                Icon(Icons.Default.Assessment, contentDescription = "Duplicates", tint = MaterialTheme.colorScheme.primary)
+                            }
+                        }
                     }
-                    IconButton(onClick = onNavigateToDuplicates) {
-                        Icon(Icons.Default.Assessment, contentDescription = "Duplicate Conversions")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            )
+                }
+            }
         }
     ) { paddingValues ->
         Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
@@ -179,13 +226,16 @@ fun ManagerConversionsScreen(
 fun ManagerConversionItem(conversion: Conversion) {
     Card(
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(11.dp)
+                .padding(20.dp)
         ) {
+            // Header Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -193,54 +243,98 @@ fun ManagerConversionItem(conversion: Conversion) {
             ) {
                 Text(
                     text = conversion.offerName ?: "Unknown Offer",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(1f).padding(end = 8.dp)
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.ExtraBold,
+                    modifier = Modifier.weight(1f).padding(end = 8.dp),
+                    color = MaterialTheme.colorScheme.onSurface
                 )
+                
                 val statusLower = conversion.status.lowercase()
                 val containerColor = when(statusLower) {
-                    "approved" -> Color(0xFF4CAF50)
-                    "rejected" -> MaterialTheme.colorScheme.error
-                    else -> Color(0xFFFFA500)
+                    "approved" -> Color(0xFF10B981).copy(alpha = 0.15f)
+                    "rejected" -> MaterialTheme.colorScheme.error.copy(alpha = 0.15f)
+                    else -> Color(0xFFF59E0B).copy(alpha = 0.15f)
                 }
-                Box(
-                    modifier = Modifier
-                        .background(color = containerColor, shape = RoundedCornerShape(12.dp))
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                val contentColor = when(statusLower) {
+                    "approved" -> Color(0xFF10B981)
+                    "rejected" -> MaterialTheme.colorScheme.error
+                    else -> Color(0xFFD97706)
+                }
+                
+                Surface(
+                    color = containerColor,
+                    shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
                         text = conversion.status.uppercase(),
-                        color = Color.White,
-                        fontSize = 11.sp,
+                        color = contentColor,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                        style = MaterialTheme.typography.labelSmall,
                         fontWeight = FontWeight.Bold
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = "Affiliate: ${conversion.affName} (${conversion.affiliateCode})", fontSize = 14.sp)
             
-            Spacer(modifier = Modifier.height(6.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Info Box
+            Surface(
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "Click ID: ${conversion.clickId.take(16)}...", fontSize = 12.sp)
-                val ipqsScore = conversion.fraudScore ?: 0
-                val ipqsColor = when {
-                    ipqsScore > 85 -> MaterialTheme.colorScheme.error
-                    ipqsScore > 75 -> MaterialTheme.colorScheme.error
-                    ipqsScore > 50 -> MaterialTheme.colorScheme.secondary
-                    else -> MaterialTheme.colorScheme.primary
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Person, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(text = "${conversion.affName} (${conversion.affiliateCode})", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.VpnKey, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(text = conversion.clickId.take(16) + "...", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
                 }
-                Text(text = "IPQS: $ipqsScore", fontSize = 12.sp, color = ipqsColor, fontWeight = FontWeight.Bold)
             }
-            Spacer(modifier = Modifier.height(4.dp))
+            
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Footer Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Bottom
             ) {
-                Text(text = "Date: ${conversion.convertedAt.take(16)}", fontSize = 12.sp)
-                Text(text = "Payout: $${(( conversion.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 14.sp, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+                Column {
+                    val ipqsScore = conversion.fraudScore ?: 0
+                    val (ipqsColor, ipqsBg) = when {
+                        ipqsScore > 75 -> MaterialTheme.colorScheme.error to MaterialTheme.colorScheme.errorContainer
+                        ipqsScore > 50 -> Color(0xFFD97706) to Color(0xFFFEF3C7)
+                        else -> Color(0xFF10B981) to Color(0xFFD1FAE5)
+                    }
+                    Text(text = "IPQS Score", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Surface(color = ipqsBg, shape = RoundedCornerShape(4.dp)) {
+                        Text(text = "$ipqsScore", style = MaterialTheme.typography.labelSmall, color = ipqsColor, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp))
+                    }
+                }
+                
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(text = "Date", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(text = conversion.convertedAt.take(10), style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Medium)
+                }
+
+                Column(horizontalAlignment = Alignment.End) {
+                    Text(text = "Payout", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(
+                        text = "$${(( conversion.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                }
             }
         }
     }

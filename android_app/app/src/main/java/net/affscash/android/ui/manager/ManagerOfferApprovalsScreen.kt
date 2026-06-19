@@ -142,19 +142,29 @@ fun ManagerOfferApprovalsScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Offer Approval Requests") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
-                ),
-                actions = {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp, top = 48.dp, bottom = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Offer Approvals",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                     IconButton(onClick = { showFilters = true }) {
-                        Icon(Icons.Default.FilterList, contentDescription = "Filters")
+                        Icon(Icons.Default.FilterList, contentDescription = "Filters", tint = MaterialTheme.colorScheme.primary)
                     }
                 }
-            )
+            }
         }
     ) { padding ->
         Column(
@@ -229,7 +239,9 @@ fun ApprovalRequestCard(
     onReview: (String) -> Unit
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -244,9 +256,9 @@ fun ApprovalRequestCard(
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    Text(text = "Payout: $${(( request.payoutAmount )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } } (${request.payoutType})", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                    Text(text = "Payout: $${(( request.payoutAmount )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } } (${request.payoutType})", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     if (request.offerCategory != null) {
-                        Text(text = "Category: ${request.offerCategory}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                        Text(text = "Category: ${request.offerCategory}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f))
                     }
                 }
                 Spacer(modifier = Modifier.width(8.dp))
@@ -254,24 +266,43 @@ fun ApprovalRequestCard(
             }
 
             Spacer(modifier = Modifier.height(12.dp))
-            HorizontalDivider()
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
             Spacer(modifier = Modifier.height(12.dp))
 
-            Text("Affiliate Details", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium)
-            Text(text = "${request.affiliateName} (${request.affiliateCode})", style = MaterialTheme.typography.bodySmall)
-            Text(text = request.affiliateEmail, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+            Text("Affiliate Details", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(text = "${request.affiliateName} (${request.affiliateCode})", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+            Text(text = request.affiliateEmail, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(text = "Clicks: ${request.totalClicks}", style = MaterialTheme.typography.bodySmall)
-                Text(text = "Conversions: ${request.totalConversions}", style = MaterialTheme.typography.bodySmall)
+            Row(
+                modifier = Modifier.fillMaxWidth(), 
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Column {
+                    Text(text = "Clicks", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(text = "${request.totalClicks}", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+                }
+                Column {
+                    Text(text = "Conversions", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(text = "${request.totalConversions}", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+                }
             }
 
             if (!request.promotionDescription.isNullOrBlank()) {
                 Spacer(modifier = Modifier.height(12.dp))
-                Text("Promotion Plan:", fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodySmall)
-                Text(text = request.promotionDescription, style = MaterialTheme.typography.bodySmall, color = Color.DarkGray)
+                Surface(
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.padding(12.dp)) {
+                        Text("Promotion Plan", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(text = request.promotionDescription, style = MaterialTheme.typography.bodySmall)
+                    }
+                }
             }
 
             if (request.status == "pending") {
@@ -281,17 +312,21 @@ fun ApprovalRequestCard(
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    TextButton(onClick = { onReview("reject") }, colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)) {
+                    OutlinedButton(
+                        onClick = { onReview("reject") }, 
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.error)
+                    ) {
                         Text("Reject")
                     }
                     Spacer(modifier = Modifier.width(8.dp))
-                    Button(onClick = { onReview("approve") }, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))) {
+                    Button(onClick = { onReview("approve") }, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF10B981))) {
                         Text("Approve")
                     }
                 }
             } else if (request.approvedAt != null) {
                 Spacer(modifier = Modifier.height(12.dp))
-                Text(text = "Actioned at: ${request.approvedAt}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                Text(text = "Actioned at: ${request.approvedAt}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f))
             }
         }
     }
@@ -299,23 +334,23 @@ fun ApprovalRequestCard(
 
 @Composable
 fun ApprovalStatusBadge(status: String) {
-    val (color, text) = when (status) {
-        "approved" -> Color(0xFFE8F5E9) to Color(0xFF2E7D32)
-        "pending" -> Color(0xFFFFF3E0) to Color(0xFFEF6C00)
-        "rejected" -> Color(0xFFFFEBEE) to Color(0xFFC62828)
-        else -> Color(0xFFF5F5F5) to Color(0xFF616161)
+    val (color, text, bgColor) = when (status) {
+        "approved" -> Triple(Color(0xFF059669), "APPROVED", Color(0xFFD1FAE5))
+        "pending" -> Triple(Color(0xFFF59E0B), "PENDING", Color(0xFFFEF3C7))
+        "rejected" -> Triple(Color(0xFFEF4444), "REJECTED", Color(0xFFFEE2E2))
+        else -> Triple(Color(0xFF6B7280), status.uppercase(), Color(0xFFF3F4F6))
     }
     
-    Box(
-        modifier = Modifier
-            .background(color = color, shape = MaterialTheme.shapes.small)
-            .padding(horizontal = 8.dp, vertical = 4.dp)
+    Surface(
+        color = bgColor,
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
     ) {
         Text(
-            text = status.uppercase(),
-            color = text,
-            fontSize = 10.sp,
-            fontWeight = FontWeight.Bold
+            text = text,
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.Bold,
+            color = color,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
         )
     }
 }
