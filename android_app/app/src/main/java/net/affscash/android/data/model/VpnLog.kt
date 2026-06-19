@@ -36,13 +36,13 @@ data class VpnLogStats(
 @Serializable
 data class VpnLogListResponse(
     @SerialName("success") val success: Boolean,
-    @SerialName("data") val data: List<VpnLogItem>?,
+    @SerialName("data") val data: List<VpnLogItem>? = null,
     @SerialName("error") val error: String? = null
 )
 
 @Serializable
 data class VpnLogStatsResponse(
     @SerialName("success") val success: Boolean,
-    @SerialName("data") val data: VpnLogStats?,
+    @SerialName("data") val data: VpnLogStats? = null,
     @SerialName("error") val error: String? = null
 )

@@ -7,8 +7,8 @@ import kotlinx.serialization.SerialName
 data class PaymentMethodItem(
     @SerialName("id") val id: Int,
     @SerialName("name") val name: String,
-    @SerialName("description") val description: String?,
-    @SerialName("instructions") val instructions: String?,
+    @SerialName("description") val description: String? = null,
+    @SerialName("instructions") val instructions: String? = null,
     @SerialName("method_type") val methodType: String,
     @SerialName("is_active") val isActive: Int,
     @SerialName("is_default") val isDefault: Int
@@ -21,8 +21,8 @@ data class AffiliatePaymentInfo(
     @SerialName("email") val email: String,
     @SerialName("payment_terms") val paymentTerms: String,
     @SerialName("allow_email_change") val allowEmailChange: Int,
-    @SerialName("payment_method") val paymentMethod: String?,
-    @SerialName("payment_details") val paymentDetails: String?
+    @SerialName("payment_method") val paymentMethod: String? = null,
+    @SerialName("payment_details") val paymentDetails: String? = null
 )
 
 @Serializable
@@ -32,8 +32,8 @@ data class ManagerPaymentInfo(
     @SerialName("name") val name: String,
     @SerialName("email") val email: String,
     @SerialName("commission_rate") val commissionRate: Double,
-    @SerialName("payment_method") val paymentMethod: String?,
-    @SerialName("payment_details") val paymentDetails: String?
+    @SerialName("payment_method") val paymentMethod: String? = null,
+    @SerialName("payment_details") val paymentDetails: String? = null
 )
 
 @Serializable
@@ -64,8 +64,8 @@ data class PaymentSettingsData(
 @Serializable
 data class PaymentSettingsResponse(
     @SerialName("success") val success: Boolean,
-    @SerialName("data") val data: PaymentSettingsData?,
-    @SerialName("error") val error: String?
+    @SerialName("data") val data: PaymentSettingsData? = null,
+    @SerialName("error") val error: String? = null
 )
 
 @Serializable
