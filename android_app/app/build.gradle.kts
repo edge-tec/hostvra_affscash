@@ -8,12 +8,15 @@ plugins {
   alias(libs.plugins.google.services)
 }
 
+import java.util.Properties
+import java.io.FileInputStream
+
 android {
     namespace = "net.affscash.android"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         applicationId = "net.affscash.android"
-        minSdk = 24
+        minSdk = 23
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -25,13 +28,26 @@ android {
     }
 
     signingConfigs {
+        val keystoreFile = rootProject.file("keystore.properties")
+        val properties = Properties()
+        if (keystoreFile.exists()) {
+            properties.load(FileInputStream(keystoreFile))
+        }
+
+        getByName("debug") {
+            enableV1Signing = true
+            enableV2Signing = true
+            enableV3Signing = true
+            enableV4Signing = true
+        }
+
         create("release") {
-            // In a real scenario, these would be from environment variables or a secure file
-            // For now, we'll ensure that whatever config is used, it has V2+ enabled
-            // storeFile = file("release.keystore")
-            // storePassword = "password"
-            // keyAlias = "alias"
-            // keyPassword = "password"
+            if (keystoreFile.exists()) {
+                storeFile = file(properties.getProperty("storeFile") ?: "")
+                storePassword = properties.getProperty("storePassword")
+                keyAlias = properties.getProperty("keyAlias")
+                keyPassword = properties.getProperty("keyPassword")
+            }
             enableV1Signing = true
             enableV2Signing = true
             enableV3Signing = true
@@ -43,11 +59,16 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            // Ensure the APK is strictly signed with V2/V3 by falling back to the debug key
-            signingConfig = signingConfigs.getByName("debug")
+            
+            val keystoreFile = rootProject.file("keystore.properties")
+            if (keystoreFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            } else {
+                signingConfig = signingConfigs.getByName("debug")
+            }
         }
         debug {
-            // signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
