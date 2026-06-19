@@ -69,4 +69,10 @@ class AuthViewModel @Inject constructor(
             _authState.value = AuthState.Idle
         }
     }
+
+    fun clearError() {
+        if (_authState.value is AuthState.Error) {
+            _authState.value = AuthState.Idle
+        }
+    }
 }

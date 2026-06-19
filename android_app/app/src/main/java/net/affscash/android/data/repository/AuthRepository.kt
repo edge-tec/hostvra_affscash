@@ -31,6 +31,8 @@ class AuthRepository @Inject constructor(
                     }
                     return@withContext Result.failure(Exception(it.error ?: "Login failed"))
                 }
+            } else if (response.code() == 401) {
+                return@withContext Result.failure(Exception("Email or password does not match"))
             }
             Result.failure(Exception("Network error: ${response.code()}"))
         } catch (e: Exception) {
