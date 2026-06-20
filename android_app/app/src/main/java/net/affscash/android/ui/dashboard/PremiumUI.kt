@@ -21,7 +21,11 @@ object PremiumUI {
     val PrimaryGradient = Brush.linearGradient(
         colors = listOf(Color(0xFF4F46E5), Color(0xFF7C3AED))
     )
-    val GlassPurple = Brush.linearGradient(
-        colors = listOf(Color(0xFF312E81).copy(alpha = 0.9f), Color(0xFF4F46E5).copy(alpha = 0.8f))
+    val GlassPurple = Brush.horizontalGradient(
+        colors = listOf(
+            Color(0xFF3B82F6), // Blue 500
+            Color(0xFF8B5CF6), // Violet 500
+            Color(0xFFE879F9)  // Fuchsia 400
+        )
     )
 }

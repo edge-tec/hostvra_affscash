@@ -147,7 +147,9 @@ fun DashboardScreen(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White,
+                    actionIconContentColor = Color.White
                 ),
                 modifier = Modifier.background(PremiumUI.GlassPurple)
             )
@@ -563,7 +565,7 @@ fun HeaderIconWithBadge(
         Icon(
             imageVector = icon,
             contentDescription = "Header Icon",
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
+            tint = Color.White
         )
         if (count > 0) {
             Box(
