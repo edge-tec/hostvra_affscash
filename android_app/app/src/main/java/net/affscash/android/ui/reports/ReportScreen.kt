@@ -380,6 +380,7 @@ fun ClickRowItem(click: ClickRow) {
 
 @Composable
 fun ConversionRowItem(conv: ConversionRow) {
+    var expandIds by remember { mutableStateOf(false) }
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
@@ -388,12 +389,44 @@ fun ConversionRowItem(conv: ConversionRow) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(conv.offerName ?: "Unknown", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Text("Conv ID: ${conv.conversionId}", fontSize = 10.sp, color = Color.Gray)
-            Spacer(modifier = Modifier.height(4.dp))
+            
+            Column(modifier = Modifier.clickable { expandIds = !expandIds }.fillMaxWidth()) {
+                val convIdText = if (expandIds) conv.conversionId else if (conv.conversionId.length > 12) conv.conversionId.take(12) + "..." else conv.conversionId
+                Text("Conv ID: $convIdText", fontSize = 10.sp, color = Color.Gray, fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)
+                
+                val clickIdText = if (expandIds) conv.clickId else if (conv.clickId.length > 12) conv.clickId.take(12) + "..." else conv.clickId
+                Text("Click ID: $clickIdText", fontSize = 10.sp, color = Color.Gray, fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)
+            }
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            // New Location / Device Info
+            val locInfo = listOfNotNull(
+                conv.ipAddress?.takeIf { it.isNotBlank() },
+                conv.country?.takeIf { it.isNotBlank() }
+            ).joinToString(" | ")
+            if (locInfo.isNotEmpty()) {
+                Text(locInfo, fontSize = 11.sp, color = Color.Gray)
+            }
+            
+            val devInfo = listOfNotNull(
+                conv.deviceType?.replaceFirstChar { it.uppercase() }?.takeIf { it.isNotBlank() },
+                conv.os?.takeIf { it.isNotBlank() },
+                conv.browser?.takeIf { it.isNotBlank() }
+            ).joinToString(" | ")
+            if (devInfo.isNotEmpty()) {
+                Text(devInfo, fontSize = 11.sp, color = Color.Gray)
+            }
+            if (locInfo.isNotEmpty() || devInfo.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+            
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
                     Text("Date: ${conv.convertedAt}", fontSize = 12.sp)
-                    Text("${conv.country ?: "-"} | ${conv.sub1 ?: "-"}", fontSize = 12.sp)
+                    if (!conv.sub1.isNullOrBlank()) {
+                        Text("Sub1: ${conv.sub1}", fontSize = 12.sp)
+                    }
                 }
                 Column(horizontalAlignment = Alignment.End) {
                     Text(conv.status, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = when(conv.status) {
