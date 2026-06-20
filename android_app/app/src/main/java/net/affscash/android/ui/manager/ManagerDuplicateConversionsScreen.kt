@@ -1,11 +1,13 @@
 package net.affscash.android.ui.manager
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -14,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -35,7 +38,7 @@ fun ManagerDuplicateConversionsScreen(
             Surface(
                 modifier = Modifier.fillMaxWidth(),
                 color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+                shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -127,7 +130,7 @@ fun ManagerDuplicateConversionsScreen(
                             Card(
                                 modifier = Modifier.weight(1f),
                                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+                                shape = RoundedCornerShape(16.dp),
                                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                             ) {
                                 Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -141,7 +144,7 @@ fun ManagerDuplicateConversionsScreen(
                             Card(
                                 modifier = Modifier.weight(1f),
                                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+                                shape = RoundedCornerShape(16.dp),
                                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                             ) {
                                 Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -183,7 +186,7 @@ fun DuplicateClusterView(group: DuplicateConversionGroup) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -198,7 +201,7 @@ fun DuplicateClusterView(group: DuplicateConversionGroup) {
             ) {
                 Surface(
                     color = Color(0xFFEF4444),
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(6.dp)
+                    shape = RoundedCornerShape(6.dp)
                 ) {
                     Text(
                         "${group.dupCount} DUPLICATES",
@@ -223,7 +226,7 @@ fun DuplicateClusterView(group: DuplicateConversionGroup) {
                         fontSize = 11.sp,
                         color = Color(0xFFB91C1C),
                         maxLines = 1,
-                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }
@@ -258,7 +261,7 @@ fun DuplicateRowView(row: DuplicateConversionRow) {
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .weight(1f)
-                    .androidx.compose.foundation.clickable { expandId = !expandId }
+                    .clickable { expandId = !expandId }
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
@@ -275,7 +278,7 @@ fun DuplicateRowView(row: DuplicateConversionRow) {
                 fontSize = 13.sp,
                 modifier = Modifier.weight(1f),
                 maxLines = 1,
-                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
@@ -294,7 +297,7 @@ fun DuplicateRowView(row: DuplicateConversionRow) {
             }
             Surface(
                 color = statusBg,
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(4.dp)
+                shape = RoundedCornerShape(4.dp)
             ) {
                 Text(
                     row.status.uppercase(),
@@ -309,7 +312,7 @@ fun DuplicateRowView(row: DuplicateConversionRow) {
                 fontSize = 11.sp, 
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
-                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(start = 8.dp)
             )
         }

@@ -401,10 +401,16 @@ fun ConversionRowItem(conv: ConversionRow) {
             Spacer(modifier = Modifier.height(8.dp))
             
             // New Location / Device Info
-            val locInfo = listOfNotNull(
-                conv.ipAddress?.takeIf { it.isNotBlank() },
-                conv.country?.takeIf { it.isNotBlank() }
-            ).joinToString(" | ")
+            val locParts = mutableListOf<String>()
+            conv.ipAddress?.takeIf { it.isNotBlank() }?.let { locParts.add(it) }
+            conv.country?.takeIf { it.isNotBlank() }?.let { locParts.add(it) }
+            val stateCityStr = listOfNotNull(
+                conv.region?.takeIf { it.isNotBlank() },
+                conv.city?.takeIf { it.isNotBlank() }
+            ).joinToString(", ")
+            if (stateCityStr.isNotEmpty()) locParts.add(stateCityStr)
+
+            val locInfo = locParts.joinToString(" | ")
             if (locInfo.isNotEmpty()) {
                 Text(locInfo, fontSize = 11.sp, color = Color.Gray)
             }

@@ -2,6 +2,7 @@ package net.affscash.android.ui.affiliate.duplicate_conversions
 
 import android.app.DatePickerDialog
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Layers
@@ -268,7 +270,7 @@ fun DuplicateClusterCard(cluster: AffiliateDuplicateConversionCluster) {
                                 color = MaterialTheme.colorScheme.error,
                                 modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp),
                                 maxLines = 1,
-                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
                     }
@@ -292,7 +294,7 @@ fun DuplicateClusterCard(cluster: AffiliateDuplicateConversionCluster) {
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
                                 .weight(1f)
-                                .androidx.compose.foundation.clickable { expandId = !expandId }
+                                .clickable { expandId = !expandId }
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
@@ -337,7 +339,7 @@ fun DuplicateClusterCard(cluster: AffiliateDuplicateConversionCluster) {
                             fontSize = 11.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             maxLines = 1,
-                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }

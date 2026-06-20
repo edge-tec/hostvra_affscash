@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.VpnKey
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Router
 import androidx.compose.material.icons.outlined.Assessment
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -311,9 +312,19 @@ fun ManagerConversionItem(conversion: Conversion) {
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(androidx.compose.material.icons.Icons.Default.Router, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Icon(Icons.Default.Router, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = conversion.ipAddress, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        
+                        val locParts = mutableListOf<String>()
+                        locParts.add(conversion.ipAddress)
+                        conversion.country?.takeIf { it.isNotBlank() }?.let { locParts.add(it) }
+                        val stateCityStr = listOfNotNull(
+                            conversion.region?.takeIf { it.isNotBlank() },
+                            conversion.city?.takeIf { it.isNotBlank() }
+                        ).joinToString(", ")
+                        if (stateCityStr.isNotEmpty()) locParts.add(stateCityStr)
+
+                        Text(text = locParts.joinToString(" | "), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             }

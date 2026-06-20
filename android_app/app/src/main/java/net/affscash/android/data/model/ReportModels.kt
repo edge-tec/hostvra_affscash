@@ -171,7 +171,9 @@ data class ConversionRow(
     val os: String? = null,
     val browser: String? = null,
     @SerialName("ip_address") val ipAddress: String? = null,
-    @SerialName("device_type") val deviceType: String? = null
+    @SerialName("device_type") val deviceType: String? = null,
+    val city: String? = null,
+    val region: String? = null
 )
 
 @Serializable
