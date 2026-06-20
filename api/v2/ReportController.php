@@ -230,8 +230,8 @@ if (in_array($tab, $perfTabs)) {
                 COALESCE(NULLIF(cv.device_type,''), ck.device_type) as device_type, 
                 COALESCE(NULLIF(cv.ip_address,''), ck.ip_address) as ip_address, 
                 COALESCE(NULLIF(cv.country,''), ck.country) as country, 
-                COALESCE(NULLIF(cv.city,''), ck.city) as city, 
-                COALESCE(NULLIF(cv.region,''), ck.region) as region
+                ck.city, 
+                ck.region
          FROM conversions cv
          JOIN offers o ON o.id = cv.offer_id
          LEFT JOIN clicks ck ON ck.click_id = cv.click_id

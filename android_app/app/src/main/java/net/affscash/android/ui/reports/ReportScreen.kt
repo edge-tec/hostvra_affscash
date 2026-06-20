@@ -104,40 +104,47 @@ fun ReportScreen(
                     }
 
                     androidx.compose.animation.AnimatedVisibility(visible = filtersExpanded) {
-                        Column(modifier = Modifier.padding(bottom = 12.dp)) {
-                            // Report Type Dropdown
-                            var reportTypeExpanded by remember { mutableStateOf(false) }
-                            val currentTabName = tabs.find { it.first == selectedTab }?.second ?: "Report Type"
-                            Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp)) {
-                                OutlinedButton(
-                                    onClick = { reportTypeExpanded = true },
-                                    modifier = Modifier.fillMaxWidth(),
-                                    contentPadding = PaddingValues(horizontal = 16.dp)
-                                ) {
-                                    Text(currentTabName, modifier = Modifier.weight(1f))
-                                    Icon(Icons.Default.ArrowDropDown, contentDescription = null)
-                                }
-                                DropdownMenu(expanded = reportTypeExpanded, onDismissRequest = { reportTypeExpanded = false }) {
-                                    tabs.forEach { tabInfo ->
-                                        DropdownMenuItem(
-                                            text = { Text(tabInfo.second) },
-                                            onClick = { viewModel.updateTab(tabInfo.first); reportTypeExpanded = false }
-                                        )
+                        Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 8.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            
+                            // Row 1: Report Type & Date Range
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                // Report Type
+                                var reportTypeExpanded by remember { mutableStateOf(false) }
+                                val currentTabName = tabs.find { it.first == selectedTab }?.second ?: "Report Type"
+                                Box(modifier = Modifier.weight(1f)) {
+                                    OutlinedButton(
+                                        onClick = { reportTypeExpanded = true },
+                                        modifier = Modifier.fillMaxWidth(),
+                                        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp)
+                                    ) {
+                                        Icon(Icons.Default.List, contentDescription = null, modifier = Modifier.size(18.dp))
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(currentTabName, modifier = Modifier.weight(1f), maxLines = 1, style = MaterialTheme.typography.bodyMedium)
+                                        Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                                    }
+                                    DropdownMenu(expanded = reportTypeExpanded, onDismissRequest = { reportTypeExpanded = false }) {
+                                        tabs.forEach { tabInfo ->
+                                            DropdownMenuItem(
+                                                text = { Text(tabInfo.second) },
+                                                onClick = { viewModel.updateTab(tabInfo.first); reportTypeExpanded = false }
+                                            )
+                                        }
                                     }
                                 }
-                            }
 
-                            // Filters Section
-                            Column(modifier = Modifier.padding(horizontal = 8.dp)) {
-                                // Date Range Dropdown
+                                // Date Range
                                 var dateExpanded by remember { mutableStateOf(false) }
-                                Box(modifier = Modifier.fillMaxWidth()) {
+                                Box(modifier = Modifier.weight(1f)) {
                                     OutlinedButton(
                                         onClick = { dateExpanded = true },
                                         modifier = Modifier.fillMaxWidth(),
-                                        contentPadding = PaddingValues(horizontal = 16.dp)
+                                        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp)
                                     ) {
-                                        Text("$fromDate to $toDate", modifier = Modifier.weight(1f))
+                                        Icon(Icons.Default.DateRange, contentDescription = null, modifier = Modifier.size(18.dp))
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text("$fromDate", modifier = Modifier.weight(1f), maxLines = 1, style = MaterialTheme.typography.bodyMedium)
                                         Icon(Icons.Default.ArrowDropDown, contentDescription = null)
                                     }
                                     DropdownMenu(expanded = dateExpanded, onDismissRequest = { dateExpanded = false }) {
@@ -167,65 +174,76 @@ fun ReportScreen(
                                         }
                                     }
                                 }
+                            }
 
-                                Spacer(modifier = Modifier.height(8.dp))
-
-                                // Dropdowns
-                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                    // Offer Dropdown
-                                    var offerExpanded by remember { mutableStateOf(false) }
-                                    Box(modifier = Modifier.weight(1f)) {
-                                        OutlinedButton(
-                                            onClick = { offerExpanded = true },
-                                            modifier = Modifier.fillMaxWidth(),
-                                            contentPadding = PaddingValues(horizontal = 8.dp)
-                                        ) {
-                                            Text(offers.find { it.id == selectedOfferId }?.name ?: "All My Offers", maxLines = 1)
-                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
-                                        }
-                                        DropdownMenu(expanded = offerExpanded, onDismissRequest = { offerExpanded = false }) {
-                                            DropdownMenuItem(text = { Text("All My Offers") }, onClick = { viewModel.selectedOfferId.value = null; viewModel.loadReports(); offerExpanded = false })
-                                            offers.forEach { o ->
-                                                DropdownMenuItem(text = { Text(o.name) }, onClick = { viewModel.selectedOfferId.value = o.id; viewModel.loadReports(); offerExpanded = false })
-                                            }
-                                        }
+                            // Row 2: Offer & Country
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                // Offer Dropdown
+                                var offerExpanded by remember { mutableStateOf(false) }
+                                Box(modifier = Modifier.weight(1f)) {
+                                    OutlinedButton(
+                                        onClick = { offerExpanded = true },
+                                        modifier = Modifier.fillMaxWidth(),
+                                        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp)
+                                    ) {
+                                        Icon(Icons.Default.ShoppingCart, contentDescription = null, modifier = Modifier.size(18.dp))
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(offers.find { it.id == selectedOfferId }?.name ?: "All Offers", maxLines = 1, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+                                        Icon(Icons.Default.ArrowDropDown, contentDescription = null)
                                     }
-
-                                    // Country Dropdown
-                                    var countryExpanded by remember { mutableStateOf(false) }
-                                    Box(modifier = Modifier.weight(1f)) {
-                                        OutlinedButton(
-                                            onClick = { countryExpanded = true },
-                                            modifier = Modifier.fillMaxWidth(),
-                                            contentPadding = PaddingValues(horizontal = 8.dp)
-                                        ) {
-                                            Text(selectedCountry ?: "All Countries", maxLines = 1)
-                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
-                                        }
-                                        DropdownMenu(expanded = countryExpanded, onDismissRequest = { countryExpanded = false }) {
-                                            DropdownMenuItem(text = { Text("All Countries") }, onClick = { viewModel.selectedCountry.value = null; viewModel.loadReports(); countryExpanded = false })
-                                            countries.forEach { c ->
-                                                DropdownMenuItem(text = { Text(c) }, onClick = { viewModel.selectedCountry.value = c; viewModel.loadReports(); countryExpanded = false })
-                                            }
+                                    DropdownMenu(expanded = offerExpanded, onDismissRequest = { offerExpanded = false }) {
+                                        DropdownMenuItem(text = { Text("All My Offers") }, onClick = { viewModel.selectedOfferId.value = null; viewModel.loadReports(); offerExpanded = false })
+                                        offers.forEach { o ->
+                                            DropdownMenuItem(text = { Text(o.name) }, onClick = { viewModel.selectedOfferId.value = o.id; viewModel.loadReports(); offerExpanded = false })
                                         }
                                     }
                                 }
-                                
-                                Spacer(modifier = Modifier.height(8.dp))
-                                
-                                // Sub1 Filter
-                                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                                    OutlinedTextField(
-                                        value = sub1Filter,
-                                        onValueChange = { viewModel.sub1Filter.value = it },
-                                        modifier = Modifier.weight(1f).height(50.dp),
-                                        placeholder = { Text("Aff Sub 1") },
-                                        singleLine = true
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Button(onClick = { viewModel.loadReports() }, modifier = Modifier.height(50.dp)) {
-                                        Text("Apply")
+
+                                // Country Dropdown
+                                var countryExpanded by remember { mutableStateOf(false) }
+                                Box(modifier = Modifier.weight(1f)) {
+                                    OutlinedButton(
+                                        onClick = { countryExpanded = true },
+                                        modifier = Modifier.fillMaxWidth(),
+                                        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp)
+                                    ) {
+                                        Icon(Icons.Default.Place, contentDescription = null, modifier = Modifier.size(18.dp))
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(selectedCountry ?: "All Geo", maxLines = 1, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+                                        Icon(Icons.Default.ArrowDropDown, contentDescription = null)
                                     }
+                                    DropdownMenu(expanded = countryExpanded, onDismissRequest = { countryExpanded = false }) {
+                                        DropdownMenuItem(text = { Text("All Countries") }, onClick = { viewModel.selectedCountry.value = null; viewModel.loadReports(); countryExpanded = false })
+                                        countries.forEach { c ->
+                                            DropdownMenuItem(text = { Text(c) }, onClick = { viewModel.selectedCountry.value = c; viewModel.loadReports(); countryExpanded = false })
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            // Row 3: Sub1 Filter & Apply Button
+                            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                OutlinedTextField(
+                                    value = sub1Filter,
+                                    onValueChange = { viewModel.sub1Filter.value = it },
+                                    modifier = Modifier.weight(1f).height(50.dp),
+                                    placeholder = { Text("Aff Sub 1...", style = MaterialTheme.typography.bodyMedium) },
+                                    singleLine = true,
+                                    shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                                    leadingIcon = { Icon(Icons.Default.Person, contentDescription = null, modifier = Modifier.size(18.dp)) },
+                                    textStyle = MaterialTheme.typography.bodyMedium
+                                )
+                                Button(
+                                    onClick = { viewModel.loadReports() }, 
+                                    modifier = Modifier.height(50.dp),
+                                    shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                                ) {
+                                    Icon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(18.dp))
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text("Apply", fontWeight = FontWeight.Bold)
                                 }
                             }
                         }

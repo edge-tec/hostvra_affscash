@@ -26,7 +26,7 @@ if ($hasAffiliates) {
     try {
         $conversions = Database::fetchAll(
             "SELECT cv.conversion_id, cv.click_id, cv.status, cv.payout,
-                    cv.converted_at, cv.ip_address, cv.country, cv.city, cv.region, cv.device_type, cv.os_version, cv.user_agent, cv.goal_name,
+                    cv.converted_at, cv.ip_address, cv.country, cv.device_type, cv.os_version, cv.user_agent, cv.goal_name,
                     COALESCE(cv.rejection_reason, '') AS rejection_reason,
                     cv.rejected_at,
                     af.affiliate_code, CONCAT(u.first_name,' ',u.last_name) AS aff_name, af.id AS affiliate_id,
