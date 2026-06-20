@@ -310,22 +310,23 @@ fun KpiCard(title: String, value: String, trend: Double?, isInverseTrend: Boolea
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(title, style = MaterialTheme.typography.labelMedium, color = Color.Gray)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-            
-            if (trend != null) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(title, style = MaterialTheme.typography.labelMedium, color = Color.Gray)
                 Spacer(modifier = Modifier.height(4.dp))
-                val isPositive = trend >= 0
-                val color = if ((isPositive && !isInverseTrend) || (!isPositive && isInverseTrend)) Color(0xFF16A34A) else Color(0xFFDC2626)
-                val arrow = if (isPositive) "▲" else "▼"
-                Text(
-                    text = "$arrow ${Math.abs(trend)}% vs prev",
-                    color = color,
-                    style = MaterialTheme.typography.labelSmall,
-                    fontWeight = FontWeight.Bold
-                )
+                Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                
+                if (trend != null) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    val isPositive = trend >= 0
+                    val color = if ((isPositive && !isInverseTrend) || (!isPositive && isInverseTrend)) Color(0xFF16A34A) else Color(0xFFDC2626)
+                    val arrow = if (isPositive) "▲" else "▼"
+                    Text(
+                        text = "$arrow ${Math.abs(trend)}% vs prev",
+                        color = color,
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
     }
