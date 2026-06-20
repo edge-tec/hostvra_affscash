@@ -97,7 +97,7 @@ fun DashboardScreen(
                         ) {
                             Text(
                                 "$ $balance", 
-                                color = Color(0xFF4ADE80),
+                                color = Color(0xFF059669),
                                 fontWeight = FontWeight.ExtraBold,
                                 style = MaterialTheme.typography.labelLarge
                             )
@@ -105,7 +105,7 @@ fun DashboardScreen(
                             Icon(
                                 Icons.Default.ArrowDropDown,
                                 contentDescription = "Dropdown",
-                                tint = Color(0xFF4ADE80),
+                                tint = Color(0xFF059669),
                                 modifier = Modifier.size(16.dp)
                             )
                         }

@@ -106,13 +106,13 @@ fun ManagerDashboardScreen(
                                     Icon(
                                         Icons.Outlined.MonetizationOn,
                                         contentDescription = null,
-                                        tint = Color(0xFF4ADE80),
+                                        tint = Color(0xFF059669),
                                         modifier = Modifier.size(16.dp)
                                     )
                                     Spacer(modifier = Modifier.width(4.dp))
                                     Text(
                                         "$$balance", 
-                                        color = Color(0xFF4ADE80),
+                                        color = Color(0xFF059669),
                                         fontWeight = FontWeight.ExtraBold,
                                         style = MaterialTheme.typography.labelLarge
                                     )
