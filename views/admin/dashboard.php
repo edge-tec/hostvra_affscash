@@ -670,6 +670,7 @@ html[data-theme="dark"] .loading-overlay{background:rgba(15,23,42,.55);}
                 <button class="active" data-metric="conv">Conversions</button>
                 <?php if (Auth::role() === "admin"): ?><button class="active" data-metric="revenue">Revenue</button><?php endif; ?>
                 <button class="active" data-metric="payout">Payout</button>
+                <?php if (Auth::role() === "admin"): ?><button class="active" data-metric="profit">Profit</button><?php endif; ?>
                 <button class="active" data-metric="fraud" style="color:#DC2626" title="Fraud conversions are conversions with fraud score between 60–100.">Fraud</button>
             </div>
             <div class="toggle-btns" id="trend-type-btns">
@@ -906,7 +907,7 @@ html[data-theme="dark"] .loading-overlay{background:rgba(15,23,42,.55);}
 const API = '/api/admin-analytics';
 const COLORS = ['#4F46E5','#10B981','#F59E0B','#EF4444','#3B82F6','#8B5CF6','#06B6D4','#F97316','#EC4899','#14B8A6'];
 const charts = {};
-let trendMetrics = new Set(['clicks','conv','revenue','payout','fraud']);
+let trendMetrics = new Set(['clicks','conv','revenue','payout','profit','fraud']);
 let trendType    = 'line';
 let trendData   = {};
 const SERVER_TZ = '<?= addslashes($_serverTz) ?>';
@@ -1026,15 +1027,37 @@ function loadTrend(){
 function renderTrendChart(){
     const d = trendData;
     if(!d||!d.labels) return;
+
+    let hasAnyData = false;
+    if (d.clicks_data && d.clicks_data.some(v => v !== 0)) hasAnyData = true;
+    if (d.conv_data && d.conv_data.some(v => v !== 0)) hasAnyData = true;
+    if (d.revenue_data && d.revenue_data.some(v => v !== 0)) hasAnyData = true;
+    
+    const wrap = document.getElementById('trendChart').parentElement;
+    let emptyMsg = document.getElementById('trend-empty-msg');
+    if (!hasAnyData) {
+        if (!emptyMsg) {
+            emptyMsg = document.createElement('div');
+            emptyMsg.id = 'trend-empty-msg';
+            emptyMsg.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-weight:500;z-index:5;background:transparent;backdrop-filter:blur(2px);';
+            emptyMsg.innerHTML = '<div style="text-align:center"><div style="font-size:24px;margin-bottom:8px">📊</div>No data available for the selected period.</div>';
+            wrap.appendChild(emptyMsg);
+        }
+        emptyMsg.style.display = 'flex';
+    } else {
+        if (emptyMsg) emptyMsg.style.display = 'none';
+    }
+
     const metricMap = {
         clicks:  { key:'clicks',  label:'Clicks',                  data: d.clicks_data,  color:'#4F46E5', axis:'y'  },
         conv:    { key:'conv',    label:'Conversions',             data: d.conv_data,    color:'#10B981', axis:'y'  },
         revenue: { key:'revenue', label:'Revenue ($)',             data: d.revenue_data, color:'#8B5CF6', axis:'y1', isCur:true },
         payout:  { key:'payout',  label:'Payout ($)',              data: d.payout_data,  color:'#F59E0B', axis:'y1', isCur:true },
+        profit:  { key:'profit',  label:'Profit ($)',              data: d.profit_data,  color:'#10B981', axis:'y1', isCur:true },
         fraud:   { key:'fraud',   label:'Fraud Conversions (≥60)', data: d.fraud_data,   color:'#DC2626', axis:'y'  },
     };
     // Preserve metric order matching the button order
-    const order = ['clicks','conv','revenue','payout','fraud'];
+    const order = ['clicks','conv','revenue','payout','profit','fraud'];
     const active = order.filter(k => trendMetrics.has(k));
     const isLine = trendType === 'line';
     const hasCur   = active.some(k => metricMap[k].isCur);

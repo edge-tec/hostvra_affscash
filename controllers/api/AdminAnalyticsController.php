@@ -213,8 +213,8 @@ if ($action === 'stats') {
 if ($action === 'trend') {
     // When a single day is selected, return hourly breakdown for intraday detail
     if ($from === $to) {
-        $hW = ['DATE(clicked_at)=?'];
-        $hP = [$from];
+        $hW = ['clicked_at BETWEEN ? AND ?'];
+        $hP = [$from . ' 00:00:00', $from . ' 23:59:59'];
         if ($offerId) { $hW[] = 'offer_id=?';     $hP[] = $offerId; }
         if ($affId)   { $hW[] = 'affiliate_id=?'; $hP[] = $affId; }
         if ($country) { $hW[] = 'country=?';      $hP[] = $country; }
@@ -225,8 +225,8 @@ if ($action === 'trend') {
         }
         $hWhere = implode(' AND ', $hW);
 
-        $cvW = ['DATE(converted_at)=?', 'COALESCE(is_hidden,0)=0'];
-        $cvP = [$from];
+        $cvW = ['converted_at BETWEEN ? AND ?', 'COALESCE(is_hidden,0)=0'];
+        $cvP = [$from . ' 00:00:00', $from . ' 23:59:59'];
         if ($offerId) { $cvW[] = 'offer_id=?';     $cvP[] = $offerId; }
         if ($affId)   { $cvW[] = 'affiliate_id=?'; $cvP[] = $affId; }
         if (!empty($managerAffIds)) {
@@ -267,7 +267,7 @@ if ($action === 'trend') {
         $cMap = []; foreach ($clRows as $r) $cMap[(int)$r['h']] = $r;
         $cvMap = []; foreach ($cvRows as $r) $cvMap[(int)$r['h']] = $r;
 
-        $labels = $clicks_data = $unique_data = $conv_data = $revenue_data = $payout_data = $fraud_data = [];
+        $labels = $clicks_data = $unique_data = $conv_data = $revenue_data = $payout_data = $profit_data = $fraud_data = [];
         for ($h = 0; $h < 24; $h++) {
             $cr  = $cMap[$h]  ?? [];
             $cvr = $cvMap[$h] ?? [];
@@ -277,9 +277,10 @@ if ($action === 'trend') {
             $conv_data[]    = (int)($cvr['cv'] ?? 0);
             $revenue_data[] = round((float)($cvr['r'] ?? 0), 2);
             $payout_data[]  = round((float)($cvr['p'] ?? 0), 2);
+            $profit_data[]  = round(((float)($cvr['r'] ?? 0) - (float)($cvr['p'] ?? 0)), 2);
             $fraud_data[]   = $fraudByHour[$h] ?? 0;
         }
-        echo _safe_json_encode(compact('labels','clicks_data','unique_data','conv_data','revenue_data','payout_data','fraud_data'));
+        echo _safe_json_encode(compact('labels','clicks_data','unique_data','conv_data','revenue_data','payout_data','profit_data','fraud_data'));
         exit;
     }
 
@@ -306,7 +307,7 @@ if ($action === 'trend') {
         foreach ($fraudRows as $fr) $fraudByDay[$fr['d']] = (int)($fr['fraud_cv'] ?? 0);
     } catch (\Throwable $_e) {}
 
-    $labels = $clicks_data = $unique_data = $conv_data = $revenue_data = $payout_data = $fraud_data = [];
+    $labels = $clicks_data = $unique_data = $conv_data = $revenue_data = $payout_data = $profit_data = $fraud_data = [];
     $cur = strtotime($from);
     $end = strtotime($to);
     while ($cur <= $end) {
@@ -318,10 +319,11 @@ if ($action === 'trend') {
         $conv_data[]    = (int)($r['cv'] ?? 0);
         $revenue_data[] = round((float)($r['r'] ?? 0), 2);
         $payout_data[]  = round((float)($r['p'] ?? 0), 2);
+        $profit_data[]  = round(((float)($r['r'] ?? 0) - (float)($r['p'] ?? 0)), 2);
         $fraud_data[]   = (int)($fraudByDay[$d] ?? 0);
         $cur += 86400;
     }
-    echo _safe_json_encode(compact('labels','clicks_data','unique_data','conv_data','revenue_data','payout_data','fraud_data'));
+    echo _safe_json_encode(compact('labels','clicks_data','unique_data','conv_data','revenue_data','payout_data','profit_data','fraud_data'));
     exit;
 }
 
@@ -330,8 +332,8 @@ if ($action === 'trend') {
 // ══════════════════════════════════════════════════════════════════════════
 if ($action === 'hourly') {
     $today = date('Y-m-d');
-    $hW    = 'DATE(clicked_at) = ?';
-    $hP    = [$today];
+    $hW    = 'clicked_at BETWEEN ? AND ?';
+    $hP    = [$today . ' 00:00:00', $today . ' 23:59:59'];
     if ($offerId) { $hW .= ' AND offer_id = ?'; $hP[] = $offerId; }
     if ($affId)   { $hW .= ' AND affiliate_id = ?'; $hP[] = $affId; }
     if ($country) { $hW .= ' AND country = ?'; $hP[] = $country; }

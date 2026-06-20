@@ -160,15 +160,15 @@ if ($action === 'stats') {
 if ($action === 'trend') {
     // When a single day is selected, return hourly breakdown for intraday detail
     if ($from === $to) {
-        $hW = ['affiliate_id=?', 'DATE(clicked_at)=?'];
-        $hP = [$affId, $from];
+        $hW = ['affiliate_id=?', 'clicked_at BETWEEN ? AND ?'];
+        $hP = [$affId, $from . ' 00:00:00', $from . ' 23:59:59'];
         if ($offerId) { $hW[] = 'offer_id=?';  $hP[] = $offerId; }
         if ($country) { $hW[] = 'country=?';   $hP[] = $country; }
         if ($device)  { $hW[] = 'device_type=?'; $hP[] = $device; }
         $hWhere = implode(' AND ', $hW);
 
-        $cvW = ['affiliate_id=?', 'DATE(converted_at)=?', 'COALESCE(is_hidden,0)=0'];
-        $cvP = [$affId, $from];
+        $cvW = ['affiliate_id=?', 'converted_at BETWEEN ? AND ?', 'COALESCE(is_hidden,0)=0'];
+        $cvP = [$affId, $from . ' 00:00:00', $from . ' 23:59:59'];
         if ($offerId) { $cvW[] = 'offer_id=?'; $cvP[] = $offerId; }
         $cvWhere = implode(' AND ', $cvW);
 
@@ -268,8 +268,8 @@ if ($action === 'trend') {
 // ══════════════════════════════════════════════════════════════════════════
 if ($action === 'hourly') {
     $today   = date('Y-m-d');
-    $hW      = "affiliate_id=? AND DATE(clicked_at)=?";
-    $hP      = [$affId, $today];
+    $hW      = "affiliate_id=? AND clicked_at BETWEEN ? AND ?";
+    $hP      = [$affId, $today . ' 00:00:00', $today . ' 23:59:59'];
     if ($offerId) { $hW .= " AND offer_id=?"; $hP[] = $offerId; }
     if ($country) { $hW .= " AND country=?";  $hP[] = $country; }
     if ($device)  { $hW .= " AND device_type=?"; $hP[] = $device; }
