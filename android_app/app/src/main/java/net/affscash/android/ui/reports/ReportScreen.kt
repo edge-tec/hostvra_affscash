@@ -445,19 +445,11 @@ fun ConversionRowItem(conv: ConversionRow) {
             Spacer(modifier = Modifier.height(8.dp))
             
             // New Location / Device Info
-            val locParts = mutableListOf<String>()
-            conv.ipAddress?.takeIf { it.isNotBlank() }?.let { locParts.add(it) }
-            conv.country?.takeIf { it.isNotBlank() }?.let { locParts.add(it) }
-            val stateCityStr = listOfNotNull(
-                conv.region?.takeIf { it.isNotBlank() },
-                conv.city?.takeIf { it.isNotBlank() }
-            ).joinToString(", ")
-            if (stateCityStr.isNotEmpty()) locParts.add(stateCityStr)
-
-            val locInfo = locParts.joinToString(" | ")
-            if (locInfo.isNotEmpty()) {
-                Text(locInfo, fontSize = 11.sp, color = Color.Gray)
-            }
+            val country = conv.country?.takeIf { it.isNotBlank() } ?: "Unknown"
+            val city = conv.city?.takeIf { it.isNotBlank() } ?: "Unknown"
+            val ipAddress = conv.ipAddress?.takeIf { it.isNotBlank() } ?: "Unknown IP"
+            
+            Text("$ipAddress | $country | $city", fontSize = 11.sp, color = Color.Gray)
             
             val devInfo = listOfNotNull(
                 conv.deviceType?.replaceFirstChar { it.uppercase() }?.takeIf { it.isNotBlank() },
@@ -467,9 +459,7 @@ fun ConversionRowItem(conv: ConversionRow) {
             if (devInfo.isNotEmpty()) {
                 Text(devInfo, fontSize = 11.sp, color = Color.Gray)
             }
-            if (locInfo.isNotEmpty() || devInfo.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
-            }
+            Spacer(modifier = Modifier.height(8.dp))
             
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
