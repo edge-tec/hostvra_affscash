@@ -29,5 +29,7 @@ data class Conversion(
     @SerialName("affiliate_code") val affiliateCode: String? = null,
     @SerialName("source") val source: String? = null,
     @SerialName("device_type") val deviceType: String? = null,
-    @SerialName("os") val os: String? = null
+    @SerialName("os") val os: String? = null,
+    @SerialName("city") val city: String? = null,
+    @SerialName("region") val region: String? = null
 )

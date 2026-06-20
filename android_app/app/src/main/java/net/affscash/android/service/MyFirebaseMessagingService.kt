@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import net.affscash.android.data.local.UserManager
 import net.affscash.android.data.network.ApiService
 import net.affscash.android.MainActivity
+import net.affscash.android.R
 import javax.inject.Inject
 
 @AndroidEntryPoint

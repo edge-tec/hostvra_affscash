@@ -213,11 +213,27 @@ if ($action === 'stats') {
 if ($action === 'trend') {
     // When a single day is selected, return hourly breakdown for intraday detail
     if ($from === $to) {
+        $appTz = Config::get('config', 'app.timezone') ?? 'UTC';
+        $tzApp = new DateTimeZone($appTz);
+        $tzReq = new DateTimeZone($_reqTz);
+
+        $startDt = new DateTime("$from 00:00:00", $tzReq);
+        $startDt->setTimezone($tzApp);
+        $appStart = $startDt->format('Y-m-d H:i:s');
+
+        $endDt = new DateTime("$from 23:59:59", $tzReq);
+        $endDt->setTimezone($tzApp);
+        $appEnd = $endDt->format('Y-m-d H:i:s');
+
+        $dtNow = new DateTime("now", $tzReq);
+        $offsetSeconds = $tzReq->getOffset($dtNow) - $tzApp->getOffset($dtNow);
+
         $hW = ['clicked_at BETWEEN ? AND ?'];
-        $hP = [$from . ' 00:00:00', $from . ' 23:59:59'];
+        $hP = [$appStart, $appEnd];
         if ($offerId) { $hW[] = 'offer_id=?';     $hP[] = $offerId; }
         if ($affId)   { $hW[] = 'affiliate_id=?'; $hP[] = $affId; }
         if ($country) { $hW[] = 'country=?';      $hP[] = $country; }
+        if ($device)  { $hW[] = 'device_type=?';  $hP[] = $device; }
         if (!empty($managerAffIds)) {
             $in = implode(',', array_fill(0, count($managerAffIds), '?'));
             $hW[] = "affiliate_id IN ($in)";
@@ -226,9 +242,11 @@ if ($action === 'trend') {
         $hWhere = implode(' AND ', $hW);
 
         $cvW = ['converted_at BETWEEN ? AND ?', 'COALESCE(is_hidden,0)=0'];
-        $cvP = [$from . ' 00:00:00', $from . ' 23:59:59'];
+        $cvP = [$appStart, $appEnd];
         if ($offerId) { $cvW[] = 'offer_id=?';     $cvP[] = $offerId; }
         if ($affId)   { $cvW[] = 'affiliate_id=?'; $cvP[] = $affId; }
+        if ($country) { $cvW[] = 'country=?';      $cvP[] = $country; }
+        if ($device)  { $cvW[] = 'device_type=?';  $cvP[] = $device; }
         if (!empty($managerAffIds)) {
             $in = implode(',', array_fill(0, count($managerAffIds), '?'));
             $cvW[] = "affiliate_id IN ($in)";
@@ -239,27 +257,27 @@ if ($action === 'trend') {
         $clRows = [];
         try {
             $clRows = Database::fetchAll(
-                "SELECT HOUR(clicked_at) as h, COUNT(*) as c, SUM(is_unique) as u
-                 FROM clicks WHERE $hWhere GROUP BY HOUR(clicked_at)",
-                $hP
+                "SELECT HOUR(DATE_ADD(clicked_at, INTERVAL ? SECOND)) as h, COUNT(*) as c, SUM(is_unique) as u
+                 FROM clicks WHERE $hWhere GROUP BY h",
+                array_merge([$offsetSeconds], $hP)
             );
         } catch (\Throwable $_e) {}
 
         $cvRows = [];
         try {
             $cvRows = Database::fetchAll(
-                "SELECT HOUR(converted_at) as h, COUNT(*) as cv, SUM(payout) as p, SUM(revenue) as r
-                 FROM conversions WHERE $cvWhere GROUP BY HOUR(converted_at)",
-                $cvP
+                "SELECT HOUR(DATE_ADD(converted_at, INTERVAL ? SECOND)) as h, COUNT(*) as cv, SUM(payout) as p, SUM(revenue) as r
+                 FROM conversions WHERE $cvWhere GROUP BY h",
+                array_merge([$offsetSeconds], $cvP)
             );
         } catch (\Throwable $_e) {}
         $fraudByHour = [];
         try {
             $fraudRows = Database::fetchAll(
-                "SELECT HOUR(converted_at) as h,
+                "SELECT HOUR(DATE_ADD(converted_at, INTERVAL ? SECOND)) as h,
                         SUM(CASE WHEN COALESCE(fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_cv
-                 FROM conversions WHERE $cvWhere GROUP BY HOUR(converted_at)",
-                $cvP
+                 FROM conversions WHERE $cvWhere GROUP BY h",
+                array_merge([$offsetSeconds], $cvP)
             );
             foreach ($fraudRows as $fr) $fraudByHour[(int)$fr['h']] = (int)$fr['fraud_cv'];
         } catch (\Throwable $_e) {}

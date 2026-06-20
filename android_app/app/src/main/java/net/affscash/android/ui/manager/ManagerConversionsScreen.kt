@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.VpnKey
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.outlined.Assessment
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -298,6 +299,57 @@ fun ManagerConversionItem(conversion: Conversion) {
                 }
             }
             
+            val locParts = listOfNotNull(
+                conversion.city?.takeIf { it.isNotBlank() },
+                conversion.region?.takeIf { it.isNotBlank() },
+                conversion.country?.takeIf { it.isNotBlank() }
+            )
+            
+            if (locParts.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.LocationOn, contentDescription = null, modifier = Modifier.size(14.dp), tint = Color.Gray)
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(text = "Location", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+                        }
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(text = locParts.joinToString(", "), style = MaterialTheme.typography.bodyMedium)
+                    }
+                }
+            }
+
+            if (!conversion.source.isNullOrEmpty() || !conversion.deviceType.isNullOrEmpty() || !conversion.os.isNullOrEmpty()) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    if (!conversion.source.isNullOrEmpty()) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(text = "Source", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+                            Text(text = conversion.source ?: "", style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
+                    if (!conversion.deviceType.isNullOrEmpty()) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(text = "Device", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+                            Text(text = conversion.deviceType?.replaceFirstChar { it.uppercase() } ?: "", style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
+                    if (!conversion.os.isNullOrEmpty()) {
+                        Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
+                            Text(text = "OS", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+                            Text(text = conversion.os ?: "", style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
 
             // Footer Row

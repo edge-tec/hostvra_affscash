@@ -241,6 +241,30 @@ fun AdminConversionItem(conversion: Conversion) {
                 }
             }
             
+            val locParts = listOfNotNull(
+                conversion.city?.takeIf { it.isNotBlank() },
+                conversion.region?.takeIf { it.isNotBlank() },
+                conversion.country?.takeIf { it.isNotBlank() }
+            )
+            
+            if (locParts.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.LocationOn, contentDescription = null, modifier = Modifier.size(14.dp), tint = Color.Gray)
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(text = "Location", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+                        }
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(text = locParts.joinToString(", "), style = MaterialTheme.typography.bodyMedium)
+                    }
+                }
+            }
+
             if (!conversion.source.isNullOrEmpty() || !conversion.deviceType.isNullOrEmpty() || !conversion.os.isNullOrEmpty()) {
                 Spacer(modifier = Modifier.height(12.dp))
                 Row(

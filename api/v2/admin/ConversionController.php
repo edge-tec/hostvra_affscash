@@ -10,7 +10,7 @@ try {
                 o.name as offer_name,
                 CONCAT(u.first_name,' ',u.last_name) as aff_name,
                 af.affiliate_code,
-                cl.source, cl.device_type, cl.os
+                cl.source, cl.device_type, cl.os, cl.city, cl.region
          FROM conversions c
          LEFT JOIN offers o ON o.id = c.offer_id
          JOIN affiliates af ON af.id = c.affiliate_id
