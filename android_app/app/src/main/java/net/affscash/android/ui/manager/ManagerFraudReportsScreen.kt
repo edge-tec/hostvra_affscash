@@ -9,6 +9,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.AdsClick
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.LocalOffer
+import androidx.compose.material.icons.filled.Router
+import androidx.compose.material.icons.filled.Smartphone
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -172,19 +177,19 @@ fun ManagerFraudReportsScreen(
 @Composable
 fun SummaryCard(title: String, value: String, valueColor: Color, containerColor: Color) {
     Card(
-        modifier = Modifier.width(130.dp).height(90.dp),
+        modifier = Modifier.width(110.dp).height(70.dp),
         colors = CardDefaults.cardColors(containerColor = containerColor),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(
-            modifier = Modifier.padding(12.dp).fillMaxSize(),
+            modifier = Modifier.padding(8.dp).fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.ExtraBold, color = valueColor)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(title, style = MaterialTheme.typography.labelSmall, color = valueColor.copy(alpha = 0.8f), fontWeight = FontWeight.Bold, maxLines = 1)
+            Text(value, fontSize = 18.sp, fontWeight = FontWeight.ExtraBold, color = valueColor)
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(title, fontSize = 10.sp, color = valueColor.copy(alpha = 0.8f), fontWeight = FontWeight.Bold, maxLines = 1)
         }
     }
 }
@@ -197,52 +202,95 @@ fun ManagerFraudConversionItem(cv: ManagerFraudConversion) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            // Header: Conv ID & Date
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(cv.conversionId.take(16) + "...", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
-                Text(cv.convertedAt, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            // Affiliate & Offer
-            Text("Affiliate: ${cv.affName} (${cv.affiliateCode})", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-            Text("Offer: ${cv.offerName ?: "Unknown"}", style = MaterialTheme.typography.bodySmall)
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            // IP & Location
+        Column(modifier = Modifier.padding(12.dp)) {
+            // Header
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text("IP: ${cv.ipAddress ?: "-"}", style = MaterialTheme.typography.bodySmall, color = Color(0xFF3B82F6))
-                    val city = cv.city?.takeIf { it.isNotBlank() } ?: "Unknown"
-                    val country = cv.country?.takeIf { it.isNotBlank() } ?: "Unknown"
-                    Text("$country | $city", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+                    Icon(Icons.Default.AdsClick, contentDescription = null, modifier = Modifier.size(14.dp), tint = Color.Gray)
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        cv.conversionId.take(12) + "...", 
+                        fontSize = 12.sp, 
+                        fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                Text(
+                    cv.convertedAt, 
+                    fontSize = 10.sp, 
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Spacer(modifier = Modifier.height(4.dp))
+            
+            // Affiliate
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.Person, contentDescription = null, modifier = Modifier.size(12.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    "Affiliate: ${cv.affName} (${cv.affiliateCode})", 
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                )
+            }
+            Spacer(modifier = Modifier.height(2.dp))
+            
+            // Offer
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.LocalOffer, contentDescription = null, modifier = Modifier.size(12.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    "Offer: ${cv.offerName ?: "Unknown"}", 
+                    fontSize = 11.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                )
+            }
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+            // IP & Loc
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.Router, contentDescription = null, modifier = Modifier.size(12.dp), tint = Color(0xFF3B82F6))
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text("IP: ${cv.ipAddress ?: "-"}", fontSize = 11.sp, color = Color(0xFF3B82F6))
                 }
                 
+                val city = cv.city?.takeIf { it.isNotBlank() } ?: "Unknown"
+                val country = cv.country?.takeIf { it.isNotBlank() } ?: "Unknown"
+                Text("$country | $city", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            
+            Spacer(modifier = Modifier.height(2.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.Smartphone, contentDescription = null, modifier = Modifier.size(12.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text("${cv.deviceType ?: "Unknown"} · ${cv.osVersion ?: "Unknown OS"}", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+
                 Text(
-                    text = "Click ID: " + if (expandClickId) cv.clickId else if (cv.clickId.length > 12) cv.clickId.take(12) + "..." else cv.clickId,
-                    style = MaterialTheme.typography.labelSmall,
+                    text = "Click ID: " + if (expandClickId) cv.clickId else if (cv.clickId.length > 10) cv.clickId.take(10) + "..." else cv.clickId,
+                    fontSize = 10.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.clickable { expandClickId = !expandClickId },
                     fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace
                 )
             }
             
-            Spacer(modifier = Modifier.height(4.dp))
-            
-            // Device info
-            Text("${cv.deviceType ?: "Unknown"} · ${cv.osVersion ?: "Unknown OS"}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Text(cv.userAgent?.take(50) ?: "Unknown UA", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f))
-            
-            Spacer(modifier = Modifier.height(12.dp))
-            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+            Spacer(modifier = Modifier.height(8.dp))
             
             // Metrics row
             Row(
@@ -250,48 +298,45 @@ fun ManagerFraudConversionItem(cv: ManagerFraudConversion) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column {
-                    Text("Payout", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text("$${"%.2f".format(cv.payout)}", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+                // Status
+                val statusColor = if (cv.status == "rejected") Color(0xFFEF4444) else if (cv.status == "approved") Color(0xFF059669) else Color(0xFFF59E0B)
+                val statusBg = if (cv.status == "rejected") Color(0xFFFEE2E2) else if (cv.status == "approved") Color(0xFFD1FAE5) else Color(0xFFFEF3C7)
+                
+                Surface(
+                    color = statusBg,
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(6.dp)
+                ) {
+                    Text(
+                        cv.status.uppercase(), 
+                        fontSize = 10.sp, 
+                        fontWeight = FontWeight.Bold, 
+                        color = statusColor,
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp)
+                    )
                 }
                 
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("IPQS Score", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    val score = cv.ipqsScore ?: 0
-                    val scoreColor = if (score > 80) Color(0xFFEF4444) else if (score > 50) Color(0xFFF59E0B) else Color(0xFF10B981)
-                    Text("$score", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = scoreColor)
+                // IPQS Score
+                val score = cv.ipqsScore ?: 0
+                val scoreColor = if (score > 80) Color(0xFFEF4444) else if (score > 50) Color(0xFFF59E0B) else Color(0xFF10B981)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text("IPQS Score: ", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("$score", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = scoreColor)
                 }
-                
-                Column(horizontalAlignment = Alignment.End) {
-                    Text("Status", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    val statusColor = if (cv.status == "rejected") Color(0xFFEF4444) else if (cv.status == "approved") Color(0xFF059669) else Color(0xFFF59E0B)
-                    val statusBg = if (cv.status == "rejected") Color(0xFFFEE2E2) else if (cv.status == "approved") Color(0xFFD1FAE5) else Color(0xFFFEF3C7)
-                    
-                    Surface(
-                        color = statusBg,
-                        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
-                    ) {
-                        Text(
-                            cv.status.uppercase(), 
-                            style = MaterialTheme.typography.labelSmall, 
-                            fontWeight = FontWeight.Bold, 
-                            color = statusColor,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                        )
-                    }
-                }
+
+                // Payout
+                Text("$${"%.2f".format(cv.payout)}", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
             }
             
             // Rejection reason if any
             if (cv.status == "rejected" && cv.rejectionReason.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(6.dp))
                 Surface(
                     color = Color(0xFFFEF2F2),
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(6.dp),
                     border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFFECACA)),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Reason: ${cv.rejectionReason}", style = MaterialTheme.typography.labelSmall, color = Color(0xFFEF4444), modifier = Modifier.padding(8.dp))
+                    Text("Reason: ${cv.rejectionReason}", fontSize = 10.sp, color = Color(0xFFEF4444), modifier = Modifier.padding(6.dp))
                 }
             }
         }
@@ -326,11 +371,12 @@ fun FraudReportFilterSheet(
         dragHandle = { BottomSheetDefaults.DragHandle() },
         modifier = Modifier.fillMaxHeight(0.9f)
     ) {
-        Column(modifier = Modifier.padding(16.dp).verticalScroll(rememberScrollState())) {
-            Text("Filters", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+        Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp).verticalScroll(rememberScrollState())) {
+            Text("Filters", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
             Spacer(modifier = Modifier.height(16.dp))
             
-            Text("Date Range", style = MaterialTheme.typography.labelMedium)
+            Text("Date Range", fontSize = 12.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Spacer(modifier = Modifier.height(8.dp))
             ScrollableRow(listOf("Today", "Yesterday", "Last 7 Days", "Last 15 Days", "This Month", "Last Month", "Last 90 Days", "This Year", "Last Year")) { range ->
                 FilterChip(
                     selected = false,
@@ -338,43 +384,48 @@ fun FraudReportFilterSheet(
                         val (from, to) = getPresetDateRange(range)
                         onUpdateFilters(from, to, uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy)
                     },
-                    label = { Text(range) }
+                    label = { Text(range, fontSize = 12.sp) },
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
                 )
             }
             
             Spacer(modifier = Modifier.height(12.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 StyledTextField(value = uiState.fromDate, onValueChange = { onUpdateFilters(it, uiState.toDate, uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "From Date", modifier = Modifier.weight(1f))
                 StyledTextField(value = uiState.toDate, onValueChange = { onUpdateFilters(uiState.fromDate, it, uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "To Date", modifier = Modifier.weight(1f))
             }
             
-            Spacer(modifier = Modifier.height(12.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 StyledTextField(value = uiState.clickId, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, it, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "Click ID", modifier = Modifier.weight(1f))
                 DropdownFilterField(value = uiState.statusFilter, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, uiState.clickId, it, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "Status", options = statuses, modifier = Modifier.weight(1f))
             }
             
-            Spacer(modifier = Modifier.height(12.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 DropdownFilterField(value = uiState.affiliate, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, uiState.clickId, uiState.statusFilter, it, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "Affiliate", options = affiliates, modifier = Modifier.weight(1f))
                 StyledTextField(value = uiState.affCode, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, uiState.clickId, uiState.statusFilter, uiState.affiliate, it, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "Aff Code", modifier = Modifier.weight(1f))
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             DropdownFilterField(value = uiState.offer, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, it, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "Offer", options = offers, modifier = Modifier.fillMaxWidth())
 
-            Spacer(modifier = Modifier.height(12.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 StyledTextField(value = uiState.scoreMin, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, it, uiState.scoreMax, uiState.sortBy) }, label = "Score Min", modifier = Modifier.weight(1f))
                 StyledTextField(value = uiState.scoreMax, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, it, uiState.sortBy) }, label = "Score Max", modifier = Modifier.weight(1f))
             }
             
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             DropdownFilterField(value = uiState.sortBy, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, it) }, label = "Sort By", options = sortOptions, modifier = Modifier.fillMaxWidth())
             
             Spacer(modifier = Modifier.height(24.dp))
-            Button(onClick = onDismiss, modifier = Modifier.fillMaxWidth().height(56.dp), shape = MaterialTheme.shapes.medium) {
-                Text("Apply Filters")
+            Button(
+                onClick = onDismiss, 
+                modifier = Modifier.fillMaxWidth().height(48.dp), 
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp)
+            ) {
+                Text("Apply Filters", fontSize = 14.sp, fontWeight = FontWeight.Bold)
             }
             Spacer(modifier = Modifier.height(24.dp))
         }
@@ -388,18 +439,19 @@ fun StyledTextField(
     label: String,
     modifier: Modifier = Modifier
 ) {
-    OutlinedTextField(
+    TextField(
         value = value,
         onValueChange = onValueChange,
-        label = { Text(label) },
-        modifier = modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.medium,
+        placeholder = { Text(label, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha=0.6f)) },
+        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp),
+        modifier = modifier.fillMaxWidth().height(52.dp),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
         singleLine = true,
-        colors = OutlinedTextFieldDefaults.colors(
-            unfocusedBorderColor = Color.Transparent,
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
+        colors = TextFieldDefaults.colors(
+            unfocusedIndicatorColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
             unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
         )
     )
 }
@@ -419,20 +471,23 @@ fun DropdownFilterField(
         onExpandedChange = { expanded = it },
         modifier = modifier
     ) {
-        OutlinedTextField(
-            value = value,
+        TextField(
+            value = value.ifEmpty { label },
             onValueChange = {},
             readOnly = true,
-            label = { Text(label) },
+            textStyle = androidx.compose.ui.text.TextStyle(
+                fontSize = 13.sp, 
+                color = if (value.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha=0.6f) else MaterialTheme.colorScheme.onSurface
+            ),
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier.menuAnchor().fillMaxWidth(),
-            shape = MaterialTheme.shapes.medium,
+            modifier = Modifier.menuAnchor().fillMaxWidth().height(52.dp),
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
             singleLine = true,
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = Color.Transparent,
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
+            colors = TextFieldDefaults.colors(
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
                 unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
             )
         )
         ExposedDropdownMenu(
@@ -441,7 +496,7 @@ fun DropdownFilterField(
         ) {
             options.forEach { option ->
                 DropdownMenuItem(
-                    text = { Text(option) },
+                    text = { Text(option, fontSize = 13.sp) },
                     onClick = {
                         onValueChange(option)
                         expanded = false
