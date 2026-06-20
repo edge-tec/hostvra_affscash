@@ -12,11 +12,11 @@
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <?php endif; ?>
 <style>
-body { background:linear-gradient(135deg,#EEF2FF 0%,#F0FDF4 100%); padding:40px 20px; }
-.auth-box { background:var(--card-bg); border:1px solid var(--border); border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,.08); width:100%; max-width:600px; margin:0 auto; overflow:hidden; }
-.auth-header { background:linear-gradient(135deg,#9333EA,#7E22CE); padding:28px 32px; color:#fff; }
-.auth-header h1 { font-size:20px; font-weight:700; }
-.auth-header p { font-size:13px; opacity:.85; margin-top:4px; }
+body { background:linear-gradient(135deg,#F8FAFC 0%,#E2E8F0 100%); padding:40px 20px; }
+.auth-box { background:var(--card-bg); border:1px solid var(--border); border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,.08); width:100%; max-width:600px; margin:0 auto; overflow:hidden; }
+.auth-header { padding:28px 32px 16px; color:var(--text); text-align:center; }
+.auth-header h1 { font-size:20px; font-weight:700; color:var(--text); }
+.auth-header p { font-size:13px; color:var(--text-muted); margin-top:4px; }
 .auth-body { padding:32px; }
 .auth-footer { padding:16px 32px; background:var(--bg); border-top:1px solid var(--border); text-align:center; font-size:13px; color:var(--text-muted); }
 .auth-footer a { color:var(--primary); font-weight:600; }
@@ -144,7 +144,7 @@ body { background:linear-gradient(135deg,#EEF2FF 0%,#F0FDF4 100%); padding:40px 
         $loginLogo      = Config::get('config','app.login_logo') ?: Config::get('config','app.logo');
         $loginLogoWhite = !empty(Config::get('config','app.login_logo_white'));
         if ($loginLogo): ?>
-        <img src="<?= Helpers::e($loginLogo) ?>" alt="Logo" style="max-height:40px;max-width:200px;object-fit:contain;margin-bottom:14px;display:block<?= $loginLogoWhite ? ';filter:brightness(0) invert(1)' : '' ?>">
+        <img src="<?= Helpers::e($loginLogo) ?>" alt="Logo" style="max-height:40px;max-width:200px;object-fit:contain;margin-bottom:14px;display:block;margin-left:auto;margin-right:auto">
         <?php endif; ?>
         <h1>&#128101; Affiliate Registration</h1>
         <p>Join our network and start earning. Registration is free.</p>
