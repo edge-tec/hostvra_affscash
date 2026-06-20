@@ -178,11 +178,21 @@ if ($action === 'trend') {
             $hP
         );
         $cvRows = Database::fetchAll(
-            "SELECT HOUR(converted_at) as h, COUNT(*) as cv, SUM(payout) as p,
-                    SUM(CASE WHEN COALESCE(fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_cv
+            "SELECT HOUR(converted_at) as h, COUNT(*) as cv, SUM(payout) as p
              FROM conversions WHERE $cvWhere GROUP BY HOUR(converted_at)",
             $cvP
         );
+        
+        $fraudByHour = [];
+        try {
+            $fraudRows = Database::fetchAll(
+                "SELECT HOUR(converted_at) as h,
+                        SUM(CASE WHEN COALESCE(fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_cv
+                 FROM conversions WHERE $cvWhere GROUP BY HOUR(converted_at)",
+                $cvP
+            );
+            foreach ($fraudRows as $fr) $fraudByHour[(int)$fr['h']] = (int)$fr['fraud_cv'];
+        } catch (\Throwable $_e) {}
 
         $cMap = []; foreach ($clRows as $r) $cMap[(int)$r['h']] = $r;
         $cvMap = []; foreach ($cvRows as $r) $cvMap[(int)$r['h']] = $r;
@@ -196,7 +206,7 @@ if ($action === 'trend') {
             $unique_data[]  = (int)($cr['u']   ?? 0);
             $conv_data[]    = (int)($cvr['cv'] ?? 0);
             $revenue_data[] = round((float)($cvr['p'] ?? 0), 2);
-            $fraud_data[]   = (int)($cvr['fraud_cv'] ?? 0);
+            $fraud_data[]   = $fraudByHour[$h] ?? 0;
         }
         echo json_encode(compact('labels','clicks_data','unique_data','conv_data','revenue_data','fraud_data'));
         exit;
