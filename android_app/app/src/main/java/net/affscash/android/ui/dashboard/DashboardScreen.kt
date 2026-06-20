@@ -551,16 +551,18 @@ fun HeaderIconWithBadge(
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .offset(x = 4.dp, y = (-4).dp)
-                    .size(16.dp)
-                    .background(badgeColor, CircleShape),
+                    .offset(x = 6.dp, y = (-6).dp)
+                    .defaultMinSize(minWidth = 18.dp, minHeight = 18.dp)
+                    .background(badgeColor, RoundedCornerShape(9.dp))
+                    .padding(horizontal = 4.dp, vertical = 2.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = if (count > 99) "99+" else count.toString(),
                     color = Color.White,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1
                 )
             }
         }

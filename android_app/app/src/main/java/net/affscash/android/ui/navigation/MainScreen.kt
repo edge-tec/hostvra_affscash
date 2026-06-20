@@ -202,7 +202,7 @@ fun MainScreen(
                                 restoreState = (screen.route != startDest)
                             }
                         },
-                        modifier = Modifier.fillMaxWidth().aspectRatio(1.1f),
+                        modifier = Modifier.fillMaxWidth().height(90.dp),
                         shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -222,7 +222,14 @@ fun MainScreen(
                                 }
                             }
                             Spacer(modifier = Modifier.height(6.dp))
-                            Text(screen.title, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, maxLines = 2)
+                            Text(
+                                screen.title, 
+                                style = MaterialTheme.typography.labelSmall, 
+                                fontSize = androidx.compose.ui.unit.TextUnit(11f, androidx.compose.ui.unit.TextUnitType.Sp),
+                                lineHeight = androidx.compose.ui.unit.TextUnit(14f, androidx.compose.ui.unit.TextUnitType.Sp),
+                                fontWeight = FontWeight.Bold, 
+                                textAlign = TextAlign.Center
+                            )
                         }
                     }
                 }
@@ -235,7 +242,7 @@ fun MainScreen(
                             showMoreSheet = false
                             onLogout()
                         },
-                        modifier = Modifier.fillMaxWidth().aspectRatio(1.1f),
+                        modifier = Modifier.fillMaxWidth().height(90.dp),
                         shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f)),
                         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -255,7 +262,14 @@ fun MainScreen(
                                 }
                             }
                             Spacer(modifier = Modifier.height(6.dp))
-                            Text("Logout", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, maxLines = 2, color = MaterialTheme.colorScheme.error)
+                            Text(
+                                "Logout", 
+                                style = MaterialTheme.typography.labelSmall, 
+                                fontSize = androidx.compose.ui.unit.TextUnit(11f, androidx.compose.ui.unit.TextUnitType.Sp),
+                                fontWeight = FontWeight.Bold, 
+                                textAlign = TextAlign.Center, 
+                                color = MaterialTheme.colorScheme.error
+                            )
                         }
                     }
                 }
@@ -334,10 +348,11 @@ fun MainScreen(
                                 label = { 
                                     Text(
                                         screen.title, 
-                                        fontSize = androidx.compose.ui.unit.TextUnit(10f, androidx.compose.ui.unit.TextUnitType.Sp), 
+                                        fontSize = androidx.compose.ui.unit.TextUnit(9f, androidx.compose.ui.unit.TextUnitType.Sp), 
                                         fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.Medium,
-                                        maxLines = 1, 
-                                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                                        maxLines = 2,
+                                        textAlign = TextAlign.Center,
+                                        lineHeight = androidx.compose.ui.unit.TextUnit(11f, androidx.compose.ui.unit.TextUnitType.Sp)
                                     ) 
                                 },
                                 selected = isSelected,
@@ -377,8 +392,11 @@ fun MainScreen(
                                 label = { 
                                     Text(
                                         "Menu", 
-                                        fontSize = androidx.compose.ui.unit.TextUnit(10f, androidx.compose.ui.unit.TextUnitType.Sp),
-                                        fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.Medium
+                                        fontSize = androidx.compose.ui.unit.TextUnit(9f, androidx.compose.ui.unit.TextUnitType.Sp),
+                                        fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.Medium,
+                                        maxLines = 2,
+                                        textAlign = TextAlign.Center,
+                                        lineHeight = androidx.compose.ui.unit.TextUnit(11f, androidx.compose.ui.unit.TextUnitType.Sp)
                                     ) 
                                 },
                                 selected = isSelected,
