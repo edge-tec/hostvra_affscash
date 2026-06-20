@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -89,23 +89,24 @@ fun ManagerReportsScreen(
             // Expandable Filters Section
             var filtersExpanded by remember { mutableStateOf(false) }
             Card(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
-                elevation = CardDefaults.cardElevation(2.dp),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                elevation = CardDefaults.cardElevation(0.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.Transparent)
             ) {
                 Column {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { filtersExpanded = !filtersExpanded }
-                            .padding(12.dp),
+                            .padding(vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text("Filters & Options", fontWeight = FontWeight.Bold)
+                        Text("Filters & Options", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
                         Icon(
                             if (filtersExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                            contentDescription = "Toggle Filters"
+                            contentDescription = "Toggle Filters",
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
 
@@ -114,19 +115,22 @@ fun ManagerReportsScreen(
                             // Report Filter Dropdown (By Day, Week, Month, Year)
                             var reportTypeExpanded by remember { mutableStateOf(false) }
                             val currentTabName = tabs.find { it.first == uiState.currentTab }?.second ?: "By Day"
-                            Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp)) {
-                                OutlinedButton(
+                            Box(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                                Surface(
                                     onClick = { reportTypeExpanded = true },
-                                    modifier = Modifier.fillMaxWidth(),
-                                    contentPadding = PaddingValues(horizontal = 16.dp)
+                                    modifier = Modifier.fillMaxWidth().height(48.dp),
+                                    shape = RoundedCornerShape(10.dp),
+                                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                 ) {
-                                    Text(currentTabName, modifier = Modifier.weight(1f))
-                                    Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                                    Row(modifier = Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                                        Text(currentTabName, modifier = Modifier.weight(1f), fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                        Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                    }
                                 }
                                 DropdownMenu(expanded = reportTypeExpanded, onDismissRequest = { reportTypeExpanded = false }) {
                                     tabs.forEach { tabInfo ->
                                         DropdownMenuItem(
-                                            text = { Text(tabInfo.second) },
+                                            text = { Text(tabInfo.second, fontSize = 13.sp) },
                                             onClick = { viewModel.setTab(tabInfo.first); reportTypeExpanded = false }
                                         )
                                     }
@@ -134,23 +138,26 @@ fun ManagerReportsScreen(
                             }
 
                             // Removed Metrics and View Dropdowns based on user request
-                            Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+                            Column {
                                 // Date Range Dropdown
                                 var dateExpanded by remember { mutableStateOf(false) }
-                                Box(modifier = Modifier.fillMaxWidth()) {
-                                    OutlinedButton(
+                                Box(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                                    Surface(
                                         onClick = { dateExpanded = true },
-                                        modifier = Modifier.fillMaxWidth(),
-                                        contentPadding = PaddingValues(horizontal = 16.dp)
+                                        modifier = Modifier.fillMaxWidth().height(48.dp),
+                                        shape = RoundedCornerShape(10.dp),
+                                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                     ) {
-                                        Text("${uiState.fromDate} to ${uiState.toDate}", modifier = Modifier.weight(1f))
-                                        Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                                        Row(modifier = Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                                            Text("${uiState.fromDate} to ${uiState.toDate}", modifier = Modifier.weight(1f), fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                        }
                                     }
                                     DropdownMenu(expanded = dateExpanded, onDismissRequest = { dateExpanded = false }) {
                                         val dateRanges = listOf("Today", "Yesterday", "Last 7 Days", "This Month", "Last 30 Days")
                                         dateRanges.forEach { range ->
                                             DropdownMenuItem(
-                                                text = { Text(range) },
+                                                text = { Text(range, fontSize = 13.sp) },
                                                 onClick = {
                                                     val cal = Calendar.getInstance()
                                                     val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
@@ -175,25 +182,26 @@ fun ManagerReportsScreen(
                                     }
                                 }
 
-                                Spacer(modifier = Modifier.height(8.dp))
-
                                 // Dropdowns Row 1: Affiliate & Offer
-                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                     // Affiliate Dropdown
                                     var affExpanded by remember { mutableStateOf(false) }
                                     Box(modifier = Modifier.weight(1f)) {
-                                        OutlinedButton(
+                                        Surface(
                                             onClick = { affExpanded = true },
-                                            modifier = Modifier.fillMaxWidth(),
-                                            contentPadding = PaddingValues(horizontal = 8.dp)
+                                            modifier = Modifier.fillMaxWidth().height(48.dp),
+                                            shape = RoundedCornerShape(10.dp),
+                                            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                         ) {
-                                            Text(affiliates.find { it.id == uiState.selectedAffiliateId }?.name ?: "All Managed", maxLines = 1, modifier = Modifier.weight(1f))
-                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                                            Row(modifier = Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                                                Text(affiliates.find { it.id == uiState.selectedAffiliateId }?.name ?: "All Managed", maxLines = 1, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
+                                                Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            }
                                         }
                                         DropdownMenu(expanded = affExpanded, onDismissRequest = { affExpanded = false }) {
-                                            DropdownMenuItem(text = { Text("All Managed") }, onClick = { viewModel.setFilter(uiState.selectedOfferId, 0, uiState.selectedCountry, uiState.sub1Query); affExpanded = false })
+                                            DropdownMenuItem(text = { Text("All Managed", fontSize = 13.sp) }, onClick = { viewModel.setFilter(uiState.selectedOfferId, 0, uiState.selectedCountry, uiState.sub1Query); affExpanded = false })
                                             affiliates.forEach { a ->
-                                                DropdownMenuItem(text = { Text("${a.name} (#${a.id})") }, onClick = { viewModel.setFilter(uiState.selectedOfferId, a.id, uiState.selectedCountry, uiState.sub1Query); affExpanded = false })
+                                                DropdownMenuItem(text = { Text("${a.name} (#${a.id})", fontSize = 13.sp) }, onClick = { viewModel.setFilter(uiState.selectedOfferId, a.id, uiState.selectedCountry, uiState.sub1Query); affExpanded = false })
                                             }
                                         }
                                     }
@@ -201,53 +209,65 @@ fun ManagerReportsScreen(
                                     // Offer Dropdown
                                     var offerExpanded by remember { mutableStateOf(false) }
                                     Box(modifier = Modifier.weight(1f)) {
-                                        OutlinedButton(
+                                        Surface(
                                             onClick = { offerExpanded = true },
-                                            modifier = Modifier.fillMaxWidth(),
-                                            contentPadding = PaddingValues(horizontal = 8.dp)
+                                            modifier = Modifier.fillMaxWidth().height(48.dp),
+                                            shape = RoundedCornerShape(10.dp),
+                                            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                         ) {
-                                            Text(offers.find { it.id == uiState.selectedOfferId }?.name ?: "All Offers", maxLines = 1, modifier = Modifier.weight(1f))
-                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                                            Row(modifier = Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                                                Text(offers.find { it.id == uiState.selectedOfferId }?.name ?: "All Offers", maxLines = 1, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
+                                                Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            }
                                         }
                                         DropdownMenu(expanded = offerExpanded, onDismissRequest = { offerExpanded = false }) {
-                                            DropdownMenuItem(text = { Text("All Offers") }, onClick = { viewModel.setFilter(0, uiState.selectedAffiliateId, uiState.selectedCountry, uiState.sub1Query); offerExpanded = false })
+                                            DropdownMenuItem(text = { Text("All Offers", fontSize = 13.sp) }, onClick = { viewModel.setFilter(0, uiState.selectedAffiliateId, uiState.selectedCountry, uiState.sub1Query); offerExpanded = false })
                                             offers.forEach { o ->
-                                                DropdownMenuItem(text = { Text(o.name) }, onClick = { viewModel.setFilter(o.id, uiState.selectedAffiliateId, uiState.selectedCountry, uiState.sub1Query); offerExpanded = false })
+                                                DropdownMenuItem(text = { Text(o.name, fontSize = 13.sp) }, onClick = { viewModel.setFilter(o.id, uiState.selectedAffiliateId, uiState.selectedCountry, uiState.sub1Query); offerExpanded = false })
                                             }
                                         }
                                     }
                                 }
 
-                                Spacer(modifier = Modifier.height(8.dp))
-
                                 // Dropdowns Row 2: Country & Sub1
-                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                                Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                                     // Country Dropdown
                                     var countryExpanded by remember { mutableStateOf(false) }
                                     Box(modifier = Modifier.weight(1f)) {
-                                        OutlinedButton(
+                                        Surface(
                                             onClick = { countryExpanded = true },
-                                            modifier = Modifier.fillMaxWidth(),
-                                            contentPadding = PaddingValues(horizontal = 8.dp)
+                                            modifier = Modifier.fillMaxWidth().height(48.dp),
+                                            shape = RoundedCornerShape(10.dp),
+                                            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                         ) {
-                                            Text(uiState.selectedCountry.ifEmpty { "All Countries" }, maxLines = 1, modifier = Modifier.weight(1f))
-                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                                            Row(modifier = Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                                                Text(uiState.selectedCountry.ifEmpty { "All Countries" }, maxLines = 1, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
+                                                Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            }
                                         }
                                         DropdownMenu(expanded = countryExpanded, onDismissRequest = { countryExpanded = false }) {
-                                            DropdownMenuItem(text = { Text("All Countries") }, onClick = { viewModel.setFilter(uiState.selectedOfferId, uiState.selectedAffiliateId, "", uiState.sub1Query); countryExpanded = false })
+                                            DropdownMenuItem(text = { Text("All Countries", fontSize = 13.sp) }, onClick = { viewModel.setFilter(uiState.selectedOfferId, uiState.selectedAffiliateId, "", uiState.sub1Query); countryExpanded = false })
                                             countries.forEach { c ->
-                                                DropdownMenuItem(text = { Text(c) }, onClick = { viewModel.setFilter(uiState.selectedOfferId, uiState.selectedAffiliateId, c, uiState.sub1Query); countryExpanded = false })
+                                                DropdownMenuItem(text = { Text(c, fontSize = 13.sp) }, onClick = { viewModel.setFilter(uiState.selectedOfferId, uiState.selectedAffiliateId, c, uiState.sub1Query); countryExpanded = false })
                                             }
                                         }
                                     }
 
                                     // Sub1 Filter
+                                    @OptIn(ExperimentalMaterial3Api::class)
                                     OutlinedTextField(
                                         value = uiState.sub1Query,
                                         onValueChange = { viewModel.setFilter(uiState.selectedOfferId, uiState.selectedAffiliateId, uiState.selectedCountry, it) },
-                                        modifier = Modifier.weight(1f).height(50.dp),
-                                        placeholder = { Text("Aff Sub 1") },
-                                        singleLine = true
+                                        modifier = Modifier.weight(1f).height(48.dp),
+                                        placeholder = { Text("Aff Sub 1", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha=0.7f)) },
+                                        singleLine = true,
+                                        shape = RoundedCornerShape(10.dp),
+                                        textStyle = LocalTextStyle.current.copy(fontSize = 13.sp),
+                                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                                            unfocusedBorderColor = Color.Transparent,
+                                            focusedBorderColor = MaterialTheme.colorScheme.primary
+                                        )
                                     )
                                 }
                             }
@@ -333,25 +353,27 @@ fun ManagerReportsScreen(
 @Composable
 fun SummaryCard(title: String, value: String, subtitle: String, valueColor: Color = Color.Black) {
     Card(
-        modifier = Modifier.width(140.dp),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        modifier = Modifier.width(120.dp).height(80.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
+        elevation = CardDefaults.cardElevation(0.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Text(title, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Spacer(modifier = Modifier.height(4.dp))
+        Column(
+            modifier = Modifier.padding(12.dp).fillMaxSize(),
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(title, fontSize = 9.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = value,
-                style = MaterialTheme.typography.titleLarge,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.ExtraBold,
                 color = valueColor,
                 maxLines = 1,
                 overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
             )
             if (subtitle.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(subtitle, fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }
@@ -360,22 +382,22 @@ fun SummaryCard(title: String, value: String, subtitle: String, valueColor: Colo
 @Composable
 fun PerformanceRowItem(row: ReportRow) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(row.label, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(8.dp))
+        Column(modifier = Modifier.padding(12.dp)) {
+            Text(row.label, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(6.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
-                    Text("Clicks: ${row.clicks} / Unique: ${row.uclicks}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text("Conversions: ${row.conv}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Clicks: ${row.clicks} / Unique: ${row.uclicks}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Conversions: ${row.conv}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text("Payout: $${"%.2f".format(row.payout)}", style = MaterialTheme.typography.bodyMedium, color = Color(0xFF10B981), fontWeight = FontWeight.Bold)
-                    Text("App: ${row.approved} | Rej: ${row.rejected}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Payout: $${"%.2f".format(row.payout)}", fontSize = 13.sp, color = Color(0xFF10B981), fontWeight = FontWeight.Bold)
+                    Text("App: ${row.approved} | Rej: ${row.rejected}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }

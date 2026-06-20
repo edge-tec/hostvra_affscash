@@ -7,10 +7,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -58,7 +57,7 @@ fun ReportScreen(
             Surface(
                 modifier = Modifier.fillMaxWidth(),
                 color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+                shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -81,79 +80,79 @@ fun ReportScreen(
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
-            // Expandable Filters Section
             var filtersExpanded by remember { mutableStateOf(false) }
             Card(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                elevation = CardDefaults.cardElevation(2.dp),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                elevation = CardDefaults.cardElevation(0.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.Transparent)
             ) {
                 Column {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { filtersExpanded = !filtersExpanded }
-                            .padding(12.dp),
+                            .padding(vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text("Filters & Options", fontWeight = FontWeight.Bold)
+                        Text("Filters & Options", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
                         Icon(
                             if (filtersExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                            contentDescription = "Toggle Filters"
+                            contentDescription = "Toggle Filters",
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
 
                     androidx.compose.animation.AnimatedVisibility(visible = filtersExpanded) {
-                        Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 8.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Column(modifier = Modifier.padding(bottom = 16.dp, top = 8.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                             
-                            // Row 1: Report Type & Date Range
-                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                // Report Type
+                            Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 var reportTypeExpanded by remember { mutableStateOf(false) }
                                 val currentTabName = tabs.find { it.first == selectedTab }?.second ?: "Report Type"
                                 Box(modifier = Modifier.weight(1f)) {
-                                    OutlinedButton(
+                                    Surface(
                                         onClick = { reportTypeExpanded = true },
-                                        modifier = Modifier.fillMaxWidth(),
-                                        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
-                                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp)
+                                        modifier = Modifier.fillMaxWidth().height(48.dp),
+                                        shape = RoundedCornerShape(10.dp),
+                                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                     ) {
-                                        Icon(Icons.Default.List, contentDescription = null, modifier = Modifier.size(18.dp))
-                                        Spacer(modifier = Modifier.width(8.dp))
-                                        Text(currentTabName, modifier = Modifier.weight(1f), maxLines = 1, style = MaterialTheme.typography.bodyMedium)
-                                        Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                                        Row(modifier = Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                                            Icon(Icons.Default.List, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            Spacer(modifier = Modifier.width(8.dp))
+                                            Text(currentTabName, modifier = Modifier.weight(1f), maxLines = 1, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                        }
                                     }
                                     DropdownMenu(expanded = reportTypeExpanded, onDismissRequest = { reportTypeExpanded = false }) {
                                         tabs.forEach { tabInfo ->
                                             DropdownMenuItem(
-                                                text = { Text(tabInfo.second) },
+                                                text = { Text(tabInfo.second, fontSize = 13.sp) },
                                                 onClick = { viewModel.updateTab(tabInfo.first); reportTypeExpanded = false }
                                             )
                                         }
                                     }
                                 }
 
-                                // Date Range
                                 var dateExpanded by remember { mutableStateOf(false) }
                                 Box(modifier = Modifier.weight(1f)) {
-                                    OutlinedButton(
+                                    Surface(
                                         onClick = { dateExpanded = true },
-                                        modifier = Modifier.fillMaxWidth(),
-                                        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
-                                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp)
+                                        modifier = Modifier.fillMaxWidth().height(48.dp),
+                                        shape = RoundedCornerShape(10.dp),
+                                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                     ) {
-                                        Icon(Icons.Default.DateRange, contentDescription = null, modifier = Modifier.size(18.dp))
-                                        Spacer(modifier = Modifier.width(8.dp))
-                                        Text("$fromDate", modifier = Modifier.weight(1f), maxLines = 1, style = MaterialTheme.typography.bodyMedium)
-                                        Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                                        Row(modifier = Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                                            Icon(Icons.Default.DateRange, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            Spacer(modifier = Modifier.width(8.dp))
+                                            Text("$fromDate", modifier = Modifier.weight(1f), maxLines = 1, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                        }
                                     }
                                     DropdownMenu(expanded = dateExpanded, onDismissRequest = { dateExpanded = false }) {
                                         val dateRanges = listOf("Today", "Yesterday", "Last 7 Days", "This Month")
                                         dateRanges.forEach { range ->
                                             DropdownMenuItem(
-                                                text = { Text(range) },
+                                                text = { Text(range, fontSize = 13.sp) },
                                                 onClick = {
                                                     val cal = Calendar.getInstance()
                                                     val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
@@ -178,73 +177,74 @@ fun ReportScreen(
                                 }
                             }
 
-                            // Row 2: Offer & Country
-                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                // Offer Dropdown
+                            Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 var offerExpanded by remember { mutableStateOf(false) }
                                 Box(modifier = Modifier.weight(1f)) {
-                                    OutlinedButton(
+                                    Surface(
                                         onClick = { offerExpanded = true },
-                                        modifier = Modifier.fillMaxWidth(),
-                                        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
-                                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp)
+                                        modifier = Modifier.fillMaxWidth().height(48.dp),
+                                        shape = RoundedCornerShape(10.dp),
+                                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                     ) {
-                                        Icon(Icons.Default.ShoppingCart, contentDescription = null, modifier = Modifier.size(18.dp))
-                                        Spacer(modifier = Modifier.width(8.dp))
-                                        Text(offers.find { it.id == selectedOfferId }?.name ?: "All Offers", maxLines = 1, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
-                                        Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                                        Row(modifier = Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                                            Icon(Icons.Default.ShoppingCart, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            Spacer(modifier = Modifier.width(8.dp))
+                                            Text(offers.find { it.id == selectedOfferId }?.name ?: "All Offers", maxLines = 1, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
+                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                        }
                                     }
                                     DropdownMenu(expanded = offerExpanded, onDismissRequest = { offerExpanded = false }) {
-                                        DropdownMenuItem(text = { Text("All My Offers") }, onClick = { viewModel.selectedOfferId.value = null; viewModel.loadReports(); offerExpanded = false })
+                                        DropdownMenuItem(text = { Text("All My Offers", fontSize = 13.sp) }, onClick = { viewModel.selectedOfferId.value = null; viewModel.loadReports(); offerExpanded = false })
                                         offers.forEach { o ->
-                                            DropdownMenuItem(text = { Text(o.name) }, onClick = { viewModel.selectedOfferId.value = o.id; viewModel.loadReports(); offerExpanded = false })
+                                            DropdownMenuItem(text = { Text(o.name, fontSize = 13.sp) }, onClick = { viewModel.selectedOfferId.value = o.id; viewModel.loadReports(); offerExpanded = false })
                                         }
                                     }
                                 }
 
-                                // Country Dropdown
                                 var countryExpanded by remember { mutableStateOf(false) }
                                 Box(modifier = Modifier.weight(1f)) {
-                                    OutlinedButton(
+                                    Surface(
                                         onClick = { countryExpanded = true },
-                                        modifier = Modifier.fillMaxWidth(),
-                                        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
-                                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp)
+                                        modifier = Modifier.fillMaxWidth().height(48.dp),
+                                        shape = RoundedCornerShape(10.dp),
+                                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                     ) {
-                                        Icon(Icons.Default.Place, contentDescription = null, modifier = Modifier.size(18.dp))
-                                        Spacer(modifier = Modifier.width(8.dp))
-                                        Text(selectedCountry ?: "All Geo", maxLines = 1, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
-                                        Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                                        Row(modifier = Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                                            Icon(Icons.Default.Place, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            Spacer(modifier = Modifier.width(8.dp))
+                                            Text(selectedCountry ?: "All Geo", maxLines = 1, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
+                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                        }
                                     }
                                     DropdownMenu(expanded = countryExpanded, onDismissRequest = { countryExpanded = false }) {
-                                        DropdownMenuItem(text = { Text("All Countries") }, onClick = { viewModel.selectedCountry.value = null; viewModel.loadReports(); countryExpanded = false })
+                                        DropdownMenuItem(text = { Text("All Countries", fontSize = 13.sp) }, onClick = { viewModel.selectedCountry.value = null; viewModel.loadReports(); countryExpanded = false })
                                         countries.forEach { c ->
-                                            DropdownMenuItem(text = { Text(c) }, onClick = { viewModel.selectedCountry.value = c; viewModel.loadReports(); countryExpanded = false })
+                                            DropdownMenuItem(text = { Text(c, fontSize = 13.sp) }, onClick = { viewModel.selectedCountry.value = c; viewModel.loadReports(); countryExpanded = false })
                                         }
                                     }
                                 }
                             }
                             
-                            // Row 3: City & Sub1 Filter
-                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                // City Dropdown
+                            Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 var cityExpanded by remember { mutableStateOf(false) }
                                 Box(modifier = Modifier.weight(1f)) {
-                                    OutlinedButton(
+                                    Surface(
                                         onClick = { cityExpanded = true },
-                                        modifier = Modifier.fillMaxWidth(),
-                                        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
-                                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp)
+                                        modifier = Modifier.fillMaxWidth().height(48.dp),
+                                        shape = RoundedCornerShape(10.dp),
+                                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                     ) {
-                                        Icon(Icons.Default.Place, contentDescription = null, modifier = Modifier.size(18.dp))
-                                        Spacer(modifier = Modifier.width(8.dp))
-                                        Text(selectedCity ?: "All Cities", maxLines = 1, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
-                                        Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                                        Row(modifier = Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                                            Icon(Icons.Default.Place, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            Spacer(modifier = Modifier.width(8.dp))
+                                            Text(selectedCity ?: "All Cities", maxLines = 1, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
+                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                        }
                                     }
                                     DropdownMenu(expanded = cityExpanded, onDismissRequest = { cityExpanded = false }) {
-                                        DropdownMenuItem(text = { Text("All Cities") }, onClick = { viewModel.selectedCity.value = null; viewModel.loadReports(); cityExpanded = false })
+                                        DropdownMenuItem(text = { Text("All Cities", fontSize = 13.sp) }, onClick = { viewModel.selectedCity.value = null; viewModel.loadReports(); cityExpanded = false })
                                         cities.forEach { c ->
-                                            DropdownMenuItem(text = { Text(c) }, onClick = { viewModel.selectedCity.value = c; viewModel.loadReports(); cityExpanded = false })
+                                            DropdownMenuItem(text = { Text(c, fontSize = 13.sp) }, onClick = { viewModel.selectedCity.value = c; viewModel.loadReports(); cityExpanded = false })
                                         }
                                     }
                                 }
@@ -252,24 +252,28 @@ fun ReportScreen(
                                 OutlinedTextField(
                                     value = sub1Filter,
                                     onValueChange = { viewModel.sub1Filter.value = it },
-                                    modifier = Modifier.weight(1f).height(50.dp),
-                                    placeholder = { Text("Aff Sub 1...", style = MaterialTheme.typography.bodyMedium) },
+                                    modifier = Modifier.weight(1f).height(48.dp),
+                                    placeholder = { Text("Aff Sub 1", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha=0.7f)) },
                                     singleLine = true,
-                                    shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
-                                    leadingIcon = { Icon(Icons.Default.Person, contentDescription = null, modifier = Modifier.size(18.dp)) },
-                                    textStyle = MaterialTheme.typography.bodyMedium
+                                    shape = RoundedCornerShape(10.dp),
+                                    textStyle = LocalTextStyle.current.copy(fontSize = 13.sp),
+                                    colors = TextFieldDefaults.colors(
+                                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                                        focusedIndicatorColor = Color.Transparent,
+                                        unfocusedIndicatorColor = Color.Transparent
+                                    )
                                 )
                             }
                             
-                            // Row 4: Apply Button
                             Button(
                                 onClick = { viewModel.loadReports() }, 
-                                modifier = Modifier.fillMaxWidth().height(50.dp),
-                                shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                                modifier = Modifier.fillMaxWidth().height(48.dp),
+                                shape = RoundedCornerShape(10.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                             ) {
                                 Icon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(18.dp))
-                                Spacer(modifier = Modifier.width(4.dp))
+                                Spacer(modifier = Modifier.width(8.dp))
                                 Text("Apply Filters", fontWeight = FontWeight.Bold)
                             }
                         }
@@ -296,11 +300,10 @@ fun ReportScreen(
                     }
                     is ReportState.Success -> {
                         Column {
-                            // Totals Cards (only for performance tabs)
                             if (state.response.totals != null) {
                                 val t = state.response.totals
                                 LazyRow(
-                                    contentPadding = PaddingValues(8.dp),
+                                    contentPadding = PaddingValues(16.dp),
                                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
@@ -313,9 +316,8 @@ fun ReportScreen(
                                 }
                             }
 
-                            // Dynamic Lists
                             LazyColumn(
-                                contentPadding = PaddingValues(8.dp),
+                                contentPadding = PaddingValues(bottom = 16.dp),
                                 verticalArrangement = Arrangement.spacedBy(8.dp),
                                 modifier = Modifier.fillMaxSize()
                             ) {
@@ -347,23 +349,27 @@ fun ReportScreen(
 @Composable
 fun SummaryCard(title: String, value: String, subtitle: String, valueColor: Color = Color.Black) {
     Card(
-        modifier = Modifier.width(120.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+        modifier = Modifier.width(120.dp).height(80.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
+        elevation = CardDefaults.cardElevation(0.dp)
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            Text(title, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
+        Column(
+            modifier = Modifier.padding(12.dp).fillMaxSize(),
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(title, fontSize = 9.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = value,
-                fontSize = if (value.length > 7) 12.sp else 15.sp,
-                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.ExtraBold,
                 color = valueColor,
                 maxLines = 1,
                 overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
             )
             if (subtitle.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(subtitle, fontSize = 12.sp, color = Color.Gray)
+                Text(subtitle, fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }
@@ -372,22 +378,22 @@ fun SummaryCard(title: String, value: String, subtitle: String, valueColor: Colo
 @Composable
 fun PerformanceRowItem(row: ReportRow) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(row.label, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(4.dp))
+        Column(modifier = Modifier.padding(12.dp)) {
+            Text(row.label, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(6.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
-                    Text("Clicks: ${row.clicks}", fontSize = 12.sp)
-                    Text("Conversions: ${row.conv}", fontSize = 12.sp)
+                    Text("Clicks: ${row.clicks} / Unique: ${row.uclicks}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Conversions: ${row.conv}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text("Payout: $${"%.2f".format(row.payout)}", fontSize = 12.sp, color = Color(0xFF10B981), fontWeight = FontWeight.Bold)
-                    Text("App: ${row.approved} | Rej: ${row.rejected}", fontSize = 12.sp)
+                    Text("Payout: $${"%.2f".format(row.payout)}", fontSize = 13.sp, color = Color(0xFF10B981), fontWeight = FontWeight.Bold)
+                    Text("App: ${row.approved} | Rej: ${row.rejected}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }
@@ -397,8 +403,8 @@ fun PerformanceRowItem(row: ReportRow) {
 @Composable
 fun ClickRowItem(click: ClickRow) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
