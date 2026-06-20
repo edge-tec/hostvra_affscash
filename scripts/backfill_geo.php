@@ -15,7 +15,14 @@
  *   --delay  Seconds to pause between batches (default: 2)
  */
 
-require_once __DIR__ . '/../bootstrap.php';
+define('BASE_PATH', dirname(__DIR__));
+define('CONFIG_PATH', BASE_PATH . '/config');
+
+require BASE_PATH . '/core/Config.php';
+require BASE_PATH . '/core/Database.php';
+require BASE_PATH . '/core/Helpers.php';
+
+Config::init(CONFIG_PATH);
 
 use core\Database;
 use core\Helpers;
