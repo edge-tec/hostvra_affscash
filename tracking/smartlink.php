@@ -186,7 +186,7 @@ if ($isCustomEntry) {
         $sub4    = Helpers::get('sub4') ?? '';
         $sub5    = Helpers::get('sub5') ?? '';
         $sub6    = Helpers::get('sub6') ?? '';
-        $source  = Helpers::get('source') ?? '';
+        $source  = Helpers::get('source') ?: Helpers::get('utm_source') ?: Helpers::get('traffic_source') ?: '';
         $referer = $_SERVER['HTTP_REFERER'] ?? '';
 
         try {

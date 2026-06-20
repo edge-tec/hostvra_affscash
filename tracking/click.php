@@ -63,7 +63,7 @@ $sub5 = Helpers::get('sub_id_4')
 $sub6 = Helpers::get('sub_id_5')
      ?: Helpers::get('aff_sub4')
      ?: Helpers::get('sub6');
-$source  = Helpers::get('source');   // traffic source / affiliate source name
+$source  = Helpers::get('source') ?: Helpers::get('utm_source') ?: Helpers::get('traffic_source');   // traffic source / affiliate source name
 $lpForce = Helpers::get('lp');
 
 // Hard-drop blocked / flagged / rejected traffic. By policy this NEVER

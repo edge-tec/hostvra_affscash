@@ -239,7 +239,7 @@ if (in_array($tab, $perfTabs)) {
     $convRows = Database::fetchAll(
         "SELECT cv.conversion_id, cv.click_id, cv.status, cv.payout, cv.converted_at,
                 o.name as offer_name,
-                ck.sub1, ck.os, ck.browser, 
+                ck.sub1, ck.os, ck.browser, ck.source,
                 COALESCE(NULLIF(cv.device_type,''), ck.device_type) as device_type, 
                 COALESCE(NULLIF(cv.ip_address,''), ck.ip_address) as ip_address, 
                 COALESCE(NULLIF(cv.country,''), ck.country) as country, 
