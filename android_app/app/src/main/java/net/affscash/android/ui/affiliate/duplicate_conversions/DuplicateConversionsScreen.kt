@@ -76,62 +76,73 @@ fun DuplicateConversionsScreen(
             shape = RoundedCornerShape(16.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    "Duplicate Detection",
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    "Showing conversions on the same offer from the same IP address.",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        modifier = Modifier.size(32.dp)
+                    ) {
+                        Icon(Icons.Default.Layers, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(6.dp))
+                    }
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column {
+                        Text(
+                            "Duplicate Detection",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            "Find repeat conversions from same IP/Offer",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
                 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     // From Date Button
                     Surface(
                         onClick = { fromDatePicker.show() },
-                        modifier = Modifier.weight(1f).height(42.dp),
-                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.weight(1f).height(46.dp),
+                        shape = RoundedCornerShape(10.dp),
                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                     ) {
                         Row(
-                            modifier = Modifier.padding(horizontal = 12.dp),
+                            modifier = Modifier.padding(horizontal = 10.dp),
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Icon(Icons.Default.DateRange, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
                             Column(verticalArrangement = Arrangement.Center) {
-                                Text("From", fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                Text(fromDate, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                                Text("From", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text(fromDate, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
                             }
+                            Icon(Icons.Default.DateRange, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(16.dp))
                         }
                     }
 
                     // To Date Button
                     Surface(
                         onClick = { toDatePicker.show() },
-                        modifier = Modifier.weight(1f).height(42.dp),
-                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.weight(1f).height(46.dp),
+                        shape = RoundedCornerShape(10.dp),
                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                     ) {
                         Row(
-                            modifier = Modifier.padding(horizontal = 12.dp),
+                            modifier = Modifier.padding(horizontal = 10.dp),
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Icon(Icons.Default.DateRange, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
                             Column(verticalArrangement = Arrangement.Center) {
-                                Text("To", fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                Text(toDate, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                                Text("To", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text(toDate, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
                             }
+                            Icon(Icons.Default.DateRange, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(16.dp))
                         }
                     }
                 }
@@ -140,10 +151,11 @@ fun DuplicateConversionsScreen(
                 
                 Button(
                     onClick = { viewModel.loadData() },
-                    modifier = Modifier.fillMaxWidth().height(40.dp),
-                    shape = RoundedCornerShape(12.dp)
+                    modifier = Modifier.fillMaxWidth().height(46.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
-                    Icon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(16.dp))
+                    Icon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Analyze Duplicates", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 }
@@ -173,28 +185,42 @@ fun DuplicateConversionsScreen(
                 ) {
                     Card(
                         modifier = Modifier.weight(1f),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
-                        shape = RoundedCornerShape(16.dp)
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)),
+                        shape = RoundedCornerShape(12.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                     ) {
-                        Column(modifier = Modifier.padding(12.dp)) {
-                            Icon(Icons.Default.Layers, contentDescription = null, tint = MaterialTheme.colorScheme.onSecondaryContainer, modifier = Modifier.size(20.dp))
-                            Spacer(modifier = Modifier.height(6.dp))
-                            Text("${data.totalClusters}", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSecondaryContainer)
-                            Text("Unique Clusters", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha=0.8f))
-                            Text("(offer + IP groups)", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha=0.6f))
+                        Row(
+                            modifier = Modifier.padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Surface(shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.secondaryContainer, modifier = Modifier.size(36.dp)) {
+                                Icon(Icons.Default.Layers, contentDescription = null, tint = MaterialTheme.colorScheme.onSecondaryContainer, modifier = Modifier.padding(8.dp))
+                            }
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Column {
+                                Text("${data.totalClusters}", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSecondaryContainer)
+                                Text("Clusters", fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha=0.8f))
+                            }
                         }
                     }
                     Card(
                         modifier = Modifier.weight(1f),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
-                        shape = RoundedCornerShape(16.dp)
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f)),
+                        shape = RoundedCornerShape(12.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                     ) {
-                        Column(modifier = Modifier.padding(12.dp)) {
-                            Icon(Icons.Default.Warning, contentDescription = null, tint = MaterialTheme.colorScheme.onErrorContainer, modifier = Modifier.size(20.dp))
-                            Spacer(modifier = Modifier.height(6.dp))
-                            Text("${data.totalConversions}", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onErrorContainer)
-                            Text("Flagged Rows", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha=0.8f))
-                            Text("Total duplicates", fontSize = 10.sp, color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha=0.6f))
+                        Row(
+                            modifier = Modifier.padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Surface(shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.errorContainer, modifier = Modifier.size(36.dp)) {
+                                Icon(Icons.Default.Warning, contentDescription = null, tint = MaterialTheme.colorScheme.onErrorContainer, modifier = Modifier.padding(8.dp))
+                            }
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Column {
+                                Text("${data.totalConversions}", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onErrorContainer)
+                                Text("Duplicates", fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha=0.8f))
+                            }
                         }
                     }
                 }
@@ -223,87 +249,93 @@ fun DuplicateConversionsScreen(
 
 @Composable
 fun DuplicateClusterCard(cluster: AffiliateDuplicateConversionCluster) {
-    Card(modifier = Modifier.fillMaxWidth()) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
         Column {
             // Header
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.errorContainer)
-                    .padding(8.dp),
-                verticalAlignment = Alignment.CenterVertically
+            Surface(
+                color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.4f),
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Surface(
-                    color = MaterialTheme.colorScheme.error,
-                    shape = MaterialTheme.shapes.small
+                Row(
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(
-                        "${cluster.dupCount} DUPLICATES",
-                        color = MaterialTheme.colorScheme.onError,
-                        fontSize = 11.sp,
-                        modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.width(6.dp))
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = buildAnnotatedString {
-                            append("Offer ")
-                            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append(cluster.offerName)
-                            }
-                        },
-                        color = MaterialTheme.colorScheme.onErrorContainer,
-                        fontSize = 14.sp
-                    )
-                    Spacer(modifier = Modifier.height(3.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("IP ", color = MaterialTheme.colorScheme.onErrorContainer, fontSize = 12.sp)
-                        Surface(
-                            color = MaterialTheme.colorScheme.surface,
-                            shape = MaterialTheme.shapes.small,
-                            modifier = Modifier.weight(1f, fill = false)
-                        ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = cluster.offerName,
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.Router, contentDescription = null, modifier = Modifier.size(12.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 cluster.ipAddress,
                                 fontSize = 11.sp,
-                                color = MaterialTheme.colorScheme.error,
-                                modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
                         }
+                    }
+                    
+                    Spacer(modifier = Modifier.width(8.dp))
+                    
+                    Surface(
+                        color = MaterialTheme.colorScheme.error,
+                        shape = RoundedCornerShape(6.dp)
+                    ) {
+                        Text(
+                            "${cluster.dupCount} DUPES",
+                            color = MaterialTheme.colorScheme.onError,
+                            fontSize = 9.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp)
+                        )
                     }
                 }
             }
 
             // Rows
             cluster.conversions.forEachIndexed { index, conversion ->
-                Column(modifier = Modifier.padding(8.dp)) {
+                Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
                     var expandId by remember { mutableStateOf(false) }
-                    val displayId = if (expandId || conversion.conversionId.length <= 12) conversion.conversionId else conversion.conversionId.take(12) + "..."
+                    val displayId = if (expandId) conversion.conversionId else conversion.conversionId.take(10) + "..."
                     
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            "ID: $displayId", 
-                            fontSize = 13.sp, 
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier
-                                .weight(1f)
-                                .clickable { expandId = !expandId }
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+                            Icon(Icons.Default.AdsClick, contentDescription = null, modifier = Modifier.size(14.dp), tint = Color.Gray)
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                displayId, 
+                                fontSize = 12.sp, 
+                                fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.clickable { expandId = !expandId }
+                            )
+                        }
+                        
                         Text(
                             "$${(( conversion.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", 
                             fontSize = 13.sp, 
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF10B981)
                         )
                     }
-                    Spacer(modifier = Modifier.height(3.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -311,32 +343,30 @@ fun DuplicateClusterCard(cluster: AffiliateDuplicateConversionCluster) {
                     ) {
                         Text(
                             conversion.convertedAt, 
-                            fontSize = 12.sp, 
+                            fontSize = 11.sp, 
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 1,
-                            modifier = Modifier.weight(1f)
+                            maxLines = 1
                         )
                         
                         val statusColor = when (conversion.status.lowercase()) {
-                            "approved" -> MaterialTheme.colorScheme.primary
-                            "pending" -> Color(0xFFF59E0B) // Amber
+                            "approved" -> Color(0xFF10B981)
+                            "pending" -> Color(0xFFF59E0B)
                             "rejected" -> MaterialTheme.colorScheme.error
                             else -> MaterialTheme.colorScheme.onSurfaceVariant
                         }
                         
                         Text(
                             text = conversion.status.uppercase(),
-                            fontSize = 11.sp,
+                            fontSize = 10.sp,
                             color = statusColor,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(start = 8.dp)
+                            fontWeight = FontWeight.Bold
                         )
                     }
                     if (!conversion.transactionId.isNullOrEmpty() || !conversion.goalName.isNullOrEmpty()) {
-                        Spacer(modifier = Modifier.height(3.dp))
+                        Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             "Txn: ${conversion.transactionId ?: "—"} • Goal: ${conversion.goalName ?: "—"}",
-                            fontSize = 11.sp,
+                            fontSize = 10.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -344,7 +374,7 @@ fun DuplicateClusterCard(cluster: AffiliateDuplicateConversionCluster) {
                     }
                 }
                 if (index < cluster.conversions.size - 1) {
-                    HorizontalDivider()
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha=0.3f))
                 }
             }
         }

@@ -12,7 +12,6 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.VpnKey
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Router
 import androidx.compose.material.icons.outlined.Assessment
 import androidx.compose.material3.*
@@ -330,11 +329,6 @@ fun ManagerConversionItem(conversion: Conversion) {
             Spacer(modifier = Modifier.height(12.dp))
             
             // Stats Row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-
             if (!conversion.source.isNullOrEmpty() || !conversion.deviceType.isNullOrEmpty() || !conversion.os.isNullOrEmpty()) {
                 Spacer(modifier = Modifier.height(12.dp))
                 Row(
@@ -344,19 +338,19 @@ fun ManagerConversionItem(conversion: Conversion) {
                     if (!conversion.source.isNullOrEmpty()) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(text = "Source", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
-                            Text(text = conversion.source ?: "", style = MaterialTheme.typography.bodyMedium)
+                            Text(text = conversion.source, style = MaterialTheme.typography.bodyMedium)
                         }
                     }
                     if (!conversion.deviceType.isNullOrEmpty()) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(text = "Device", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
-                            Text(text = conversion.deviceType?.replaceFirstChar { it.uppercase() } ?: "", style = MaterialTheme.typography.bodyMedium)
+                            Text(text = conversion.deviceType.replaceFirstChar { it.uppercase() }, style = MaterialTheme.typography.bodyMedium)
                         }
                     }
                     if (!conversion.os.isNullOrEmpty()) {
                         Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
                             Text(text = "OS", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
-                            Text(text = conversion.os ?: "", style = MaterialTheme.typography.bodyMedium)
+                            Text(text = conversion.os, style = MaterialTheme.typography.bodyMedium)
                         }
                     }
                 }
@@ -393,7 +387,7 @@ fun ManagerConversionItem(conversion: Conversion) {
                 Column(horizontalAlignment = Alignment.End) {
                     Text(text = "Payout", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Text(
-                        text = "$${(( conversion.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }",
+                        text = "$${"%.2f".format(conversion.payout)}",
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.ExtraBold
@@ -403,3 +397,4 @@ fun ManagerConversionItem(conversion: Conversion) {
         }
     }
 }
+
