@@ -18,6 +18,17 @@ try {
 
     if ($action === 'approve') {
         Database::query("UPDATE users SET status = 'active' WHERE id = ? AND role = 'affiliate'", [$userId]);
+        
+        require_once BASE_PATH . '/core/NotificationHelper.php';
+        NotificationHelper::notifyUser(
+            $userId, 
+            "Account Approved", 
+            "Congratulations! Your affiliate account has been approved. You can now start earning.", 
+            "success", 
+            "/affiliate/dashboard",
+            ['type' => 'account_approved']
+        );
+
         echo json_encode(['success' => true]);
         exit;
     }

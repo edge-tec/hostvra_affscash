@@ -252,33 +252,26 @@ if ($action === 'send') {
 
     chat_touch_conversation($convId);
 
-    // Notifications — preserved behaviour, but now linked to the affiliate page.
+    // Notifications — preserved behaviour, but now linked to the affiliate page + FCM Push.
     try {
+        require_once BASE_PATH . '/core/NotificationHelper.php';
         $me = Auth::currentUser();
         if ($role === 'affiliate') {
             $mgr = Database::fetchOne("SELECT am.user_id FROM affiliate_manager_affiliates ama JOIN affiliate_managers am ON am.id=ama.manager_id WHERE ama.affiliate_id=? LIMIT 1", [$affId]);
             if (!$mgr) $mgr = Database::fetchOne("SELECT am.user_id FROM affiliates af JOIN affiliate_managers am ON am.id=af.manager_id WHERE af.id=? LIMIT 1", [$affId]);
             $notifUserId = $mgr['user_id'] ?? null;
-            Database::insert('notifications', [
-                'user_id'     => $notifUserId,
-                'target_role' => $notifUserId ? null : 'admin',
-                'type'        => 'info',
-                'title'       => 'New Support Message',
-                'message'     => ($me['first_name'] ?? 'Affiliate') . ': ' . mb_substr($msg !== '' ? $msg : ($attachment['attachment_name'] ?? 'attachment'), 0, 60),
-                'link'        => '/admin/support?aff=' . $affId,
-                'is_read'     => 0,
-            ]);
+            
+            $msgPreview = ($me['first_name'] ?? 'Affiliate') . ': ' . mb_substr($msg !== '' ? $msg : ($attachment['attachment_name'] ?? 'attachment'), 0, 60);
+            
+            if ($notifUserId) {
+                NotificationHelper::notifyUser($notifUserId, 'New Support Message', $msgPreview, 'info', '/admin/support?aff=' . $affId, ['type' => 'chat']);
+            } else {
+                NotificationHelper::notifyRole('admin', 'New Support Message', $msgPreview, 'info', '/admin/support?aff=' . $affId, ['type' => 'chat']);
+            }
         } elseif ($role === 'advertiser') {
             // Advertiser-to-admin support ticket — always goes to admin queue.
-            Database::insert('notifications', [
-                'user_id'     => null,
-                'target_role' => 'admin',
-                'type'        => 'info',
-                'title'       => 'New Advertiser Support Message',
-                'message'     => ($me['first_name'] ?? 'Advertiser') . ': ' . mb_substr($msg !== '' ? $msg : ($attachment['attachment_name'] ?? 'attachment'), 0, 60),
-                'link'        => '/admin/support?owner_type=advertiser&aff=' . $affId,
-                'is_read'     => 0,
-            ]);
+            $msgPreview = ($me['first_name'] ?? 'Advertiser') . ': ' . mb_substr($msg !== '' ? $msg : ($attachment['attachment_name'] ?? 'attachment'), 0, 60);
+            NotificationHelper::notifyRole('admin', 'New Advertiser Support Message', $msgPreview, 'info', '/admin/support?owner_type=advertiser&aff=' . $affId, ['type' => 'chat']);
         } else {
             // Admin / manager → owner. Resolve the owner's user_id based on owner_type.
             $ownerUser = null;
@@ -290,15 +283,8 @@ if ($action === 'send') {
                 $link = '/affiliate/support';
             }
             if ($ownerUser) {
-                Database::insert('notifications', [
-                    'user_id'     => $ownerUser['user_id'],
-                    'target_role' => null,
-                    'type'        => 'info',
-                    'title'       => 'New Message from Support',
-                    'message'     => ($me['first_name'] ?? 'Support') . ': ' . mb_substr($msg !== '' ? $msg : ($attachment['attachment_name'] ?? 'attachment'), 0, 60),
-                    'link'        => $link,
-                    'is_read'     => 0,
-                ]);
+                $msgPreview = ($me['first_name'] ?? 'Support') . ': ' . mb_substr($msg !== '' ? $msg : ($attachment['attachment_name'] ?? 'attachment'), 0, 60);
+                NotificationHelper::notifyUser((int)$ownerUser['user_id'], 'New Message from Support', $msgPreview, 'info', $link, ['type' => 'chat']);
             }
         }
     } catch (Exception $e) {}

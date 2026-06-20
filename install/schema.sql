@@ -27,6 +27,19 @@ CREATE TABLE IF NOT EXISTS `users` (
     INDEX `idx_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- User Devices (For Push Notifications)
+CREATE TABLE IF NOT EXISTS `user_devices` (
+    `id`            INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id`       INT UNSIGNED NOT NULL,
+    `device_token`  VARCHAR(500) NOT NULL,
+    `platform`      VARCHAR(50) DEFAULT 'android',
+    `created_at`    DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`    DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY `idx_token` (`device_token`),
+    INDEX `idx_user` (`user_id`),
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Affiliates extended profile
 CREATE TABLE IF NOT EXISTS `affiliates` (
     `id`                    INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

@@ -118,18 +118,33 @@ final class FraudAutoNotify
         ], JSON_UNESCAPED_UNICODE);
 
         try {
-            Database::insert('notifications', [
-                'user_id'     => (int)$row['user_id'],
-                'target_role' => null,
-                'type'        => $risk === 'high' ? 'danger' : 'warning',
-                'title'       => 'Fraud Alert',
-                'message'     => $msg,
-                'link'        => '/affiliate/fraud-report?cid=' . urlencode($conversionId),
-                'is_read'     => 0,
-                'category'    => 'fraud',
-                'meta'        => $meta,
-                'created_at'  => (string)($row['fraud_checked_at'] ?? date('Y-m-d H:i:s')),
-            ]);
+            require_once BASE_PATH . '/core/NotificationHelper.php';
+            
+            // Notify Affiliate
+            NotificationHelper::notifyUser(
+                (int)$row['user_id'],
+                'Fraud Alert',
+                $msg,
+                $risk === 'high' ? 'danger' : 'warning',
+                '/affiliate/fraud-report?cid=' . urlencode($conversionId),
+                ['type' => 'fraud_alert', 'conversion_id' => $conversionId]
+            );
+
+            // Notify Admin
+            $adminMsg = "Fraud Alert: Conversion #{$shortId} from Affiliate #{$row['affiliate_id']} marked as {$riskTxt}.";
+            NotificationHelper::notifyRole('admin', 'Fraud Alert', $adminMsg, 'danger', '/admin/fraud-report');
+
+            // Notify Manager (if assigned)
+            $managerRow = Database::fetchOne("SELECT manager_id FROM affiliates WHERE user_id=?", [(int)$row['user_id']]);
+            if ($managerRow && !empty($managerRow['manager_id'])) {
+                NotificationHelper::notifyUser((int)$managerRow['manager_id'], 'Fraud Alert', $adminMsg, 'danger', '/manager/fraud-report');
+            }
+
+            // Still need to update the category and meta, but notifyUser creates the row.
+            // A quick fix is to update the latest notification for this user:
+            Database::query("UPDATE notifications SET category='fraud', meta=? WHERE user_id=? AND link LIKE ? ORDER BY id DESC LIMIT 1",
+                [$meta, (int)$row['user_id'], '%cid=' . urlencode($conversionId)]
+            );
         } catch (\Throwable $e) {}
     }
 

@@ -4,6 +4,22 @@ $userId = Auth::id();
 $role   = Auth::role();
 $action = Helpers::get('action', 'list');
 
+try {
+    Database::query("
+        CREATE TABLE IF NOT EXISTS `user_devices` (
+            `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            `user_id` INT UNSIGNED NOT NULL,
+            `device_token` VARCHAR(500) NOT NULL,
+            `platform` VARCHAR(50) DEFAULT 'android',
+            `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+            `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            UNIQUE KEY `idx_token` (`device_token`),
+            INDEX `idx_user` (`user_id`),
+            FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    ");
+} catch (\Throwable $e) {}
+
 if ($action === 'register_token') {
     $token = Helpers::post('token');
     $platform = Helpers::post('platform', 'android');

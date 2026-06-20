@@ -77,7 +77,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val channelId = "affscash_default_channel"
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            // .setSmallIcon(R.drawable.ic_notification) // Ensure this icon exists
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(messageBody)
             .setAutoCancel(true)
