@@ -181,11 +181,11 @@ function fmtTs(ts, opts) {
 </aside>
 
 <div class="main-content">
-<header class="topbar">
-    <button id="sidebarToggle" type="button" aria-label="Toggle menu" onclick="window.toggleSidebar&&window.toggleSidebar(event)">
+<header class="topbar" style="background: linear-gradient(90deg, #a1c4fd 0%, #eac2da 100%); border-bottom: none;">
+    <button id="sidebarToggle" type="button" aria-label="Toggle menu" onclick="window.toggleSidebar&&window.toggleSidebar(event)" style="color:#fff">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" pointer-events="none"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
-    <span class="topbar-title"><?= Helpers::e($pageTitle ?? 'Dashboard') ?></span>
+    <span class="topbar-title" style="color:#fff"><?= Helpers::e($pageTitle ?? 'Dashboard') ?></span>
     <?php
     // Pre-compute balance data for topbar dropdown — reads from manager_commissions + affiliate_managers.balance
     $_mgrBalData = ['balance'=>0.0,'earned'=>0.0,'paid'=>0.0,'pending'=>0.0];
@@ -216,7 +216,7 @@ function fmtTs(ts, opts) {
         <div style="position:relative" id="mgr-bal-wrap">
             <button onclick="toggleMgrBal()" id="mgr-bal-btn"
                 title="Commission balance — click for details"
-                style="display:flex;align-items:center;gap:6px;padding:5px 13px;border-radius:20px;background:linear-gradient(135deg,#059669,#047857);border:none;color:#fff;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(5,150,105,.28)">
+                style="display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:24px;background:rgba(255,255,255,0.25);border:1px solid rgba(255,255,255,0.3);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#4ade80;font-weight:800;font-size:13px;cursor:pointer;transition:all .2s;box-shadow:0 4px 12px rgba(0,0,0,0.05)">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                 <span id="mgr-bal-display">$<?= number_format($_mgrBalData['balance'], 2) ?></span>
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" id="mgr-bal-caret"><polyline points="6 9 12 15 18 9"/></svg>
@@ -243,7 +243,7 @@ function fmtTs(ts, opts) {
              Managers see fraud alerts for every affiliate assigned to them. -->
         <div style="position:relative" id="fa-wrap">
             <button onclick="toggleFraudAlerts()" id="fa-btn" title="Fraud Alerts" aria-label="Fraud Alerts"
-                    style="background:none;border:none;cursor:pointer;padding:6px;border-radius:6px;color:var(--text-muted);position:relative">
+                    style="background:none;border:none;cursor:pointer;padding:6px;border-radius:6px;color:#fff;opacity:0.95;position:relative" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.95'">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                      stroke-linecap="round" stroke-linejoin="round">
                     <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
@@ -268,7 +268,7 @@ function fmtTs(ts, opts) {
         </div>
         <!-- Notification Bell -->
         <div style="position:relative" id="notif-wrap">
-            <button onclick="toggleNotifDropdown()" style="background:none;border:none;cursor:pointer;padding:6px;border-radius:6px;color:var(--text-muted);position:relative" title="Notifications">
+            <button onclick="toggleNotifDropdown()" style="background:none;border:none;cursor:pointer;padding:6px;border-radius:6px;color:#fff;opacity:0.95;position:relative" title="Notifications" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.95'">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                 <span id="notif-badge" style="display:none;position:absolute;top:2px;right:2px;background:#EF4444;color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:700;align-items:center;justify-content:center;line-height:1">0</span>
             </button>
@@ -281,7 +281,7 @@ function fmtTs(ts, opts) {
             </div>
         </div>
         <!-- Support Inbox -->
-        <a href="/affiliate_manager/support" style="background:none;border:none;cursor:pointer;padding:6px;border-radius:6px;color:var(--text-muted);text-decoration:none;display:flex;align-items:center;position:relative" title="Support Inbox" id="chat-bell">
+        <a href="/affiliate_manager/support" style="background:none;border:none;cursor:pointer;padding:6px;border-radius:6px;color:#fff;opacity:0.95;text-decoration:none;display:flex;align-items:center;position:relative" title="Support Inbox" id="chat-bell" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.95'">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             <span id="chat-badge" style="display:none;position:absolute;top:2px;right:2px;background:#EF4444;color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:700;align-items:center;justify-content:center;line-height:1">0</span>
         </a>
@@ -290,8 +290,8 @@ function fmtTs(ts, opts) {
         <?php require BASE_PATH . '/views/partials/theme_toggle.php'; ?>
         <div class="user-menu" style="position:relative">
             <div class="user-avatar" style="background:#7C3AED"><?= strtoupper(substr(Auth::currentUser()['first_name']??'M',0,1)) ?></div>
-            <span><?= Helpers::e(Auth::currentUser()['first_name']??'Manager') ?></span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
+            <span style="color:#fff"><?= Helpers::e(Auth::currentUser()['first_name']??'Manager') ?></span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="color:#fff"><polyline points="6 9 12 15 18 9"/></svg>
             <div class="dropdown-menu">
                 <a href="/affiliate_manager/profile" class="dropdown-item">&#9881; My Profile</a>
                 <a href="/affiliate_manager/profile?tab=security" class="dropdown-item">&#128274; Change Password</a>

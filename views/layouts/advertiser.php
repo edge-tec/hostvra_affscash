@@ -68,31 +68,31 @@ $_advRow = Database::fetchOne("SELECT balance FROM advertisers WHERE user_id=?",
 $_advBal = (float)($_advRow['balance'] ?? 0);
 try { $_advUnread = (int)(Database::fetchOne("SELECT COUNT(*) AS c FROM notifications WHERE user_id=? AND is_read=0", [Auth::id()])['c'] ?? 0); } catch(\Throwable $_e) { $_advUnread = 0; }
 ?>
-<header class="topbar">
-    <button id="sidebarToggle" type="button" aria-label="Toggle menu" onclick="window.toggleSidebar&&window.toggleSidebar(event)">
+<header class="topbar" style="background: linear-gradient(90deg, #a1c4fd 0%, #eac2da 100%); border-bottom: none;">
+    <button id="sidebarToggle" type="button" aria-label="Toggle menu" onclick="window.toggleSidebar&&window.toggleSidebar(event)" style="color:#fff">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" pointer-events="none"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
-    <span class="topbar-title"><?= Helpers::e($pageTitle ?? 'Dashboard') ?></span>
+    <span class="topbar-title" style="color:#fff"><?= Helpers::e($pageTitle ?? 'Dashboard') ?></span>
     <div class="topbar-actions">
         <?php require BASE_PATH . '/views/partials/theme_toggle.php'; ?>
         <!-- Balance pill -->
         <a href="/advertiser/billing" id="adv-bal-pill"
            title="Available balance — click to top up"
-           style="display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:linear-gradient(135deg,#0F766E,#0891B2);color:#fff;font-size:12px;font-weight:700;text-decoration:none;box-shadow:0 2px 8px rgba(15,118,110,.25)">
+           style="display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:24px;background:rgba(255,255,255,0.25);border:1px solid rgba(255,255,255,0.3);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#4ade80;font-weight:800;font-size:13px;text-decoration:none;transition:all .2s;box-shadow:0 4px 12px rgba(0,0,0,0.05)">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
             <span id="adv-bal-display">$<?= number_format($_advBal, 2) ?></span>
         </a>
         <!-- Notifications bell -->
         <a href="/advertiser/billing" id="adv-notif-bell"
            title="Notifications"
-           style="position:relative;padding:6px;border-radius:6px;color:var(--text-muted);text-decoration:none;display:flex;align-items:center">
+           style="position:relative;padding:6px;border-radius:6px;color:#fff;opacity:0.95;text-decoration:none;display:flex;align-items:center" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.95'">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
             <span id="adv-notif-badge" style="display:<?= $_advUnread > 0 ? 'flex' : 'none' ?>;position:absolute;top:2px;right:2px;background:#EF4444;color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:700;align-items:center;justify-content:center;line-height:1"><?= $_advUnread > 9 ? '9+' : $_advUnread ?></span>
         </a>
         <div class="user-menu" style="position:relative">
             <div class="user-avatar" style="background:#0F766E"><?= strtoupper(substr(Auth::currentUser()['first_name']??'A',0,1)) ?></div>
-            <span><?= Helpers::e(Auth::currentUser()['first_name']??'Advertiser') ?></span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
+            <span style="color:#fff"><?= Helpers::e(Auth::currentUser()['first_name']??'Advertiser') ?></span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="color:#fff"><polyline points="6 9 12 15 18 9"/></svg>
             <div class="dropdown-menu">
                 <a href="/advertiser/billing" class="dropdown-item">💰 Billing &amp; Top-Up</a>
                 <hr class="dropdown-divider">

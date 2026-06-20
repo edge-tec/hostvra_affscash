@@ -652,26 +652,26 @@ function fmtTs(ts, opts) {
 
 <!-- Main -->
 <div class="main-content">
-<header class="topbar">
-    <button id="sidebarToggle" type="button" aria-label="Toggle menu" onclick="window.toggleSidebar&&window.toggleSidebar(event)">
+<header class="topbar" style="background: linear-gradient(90deg, #a1c4fd 0%, #eac2da 100%); border-bottom: none;">
+    <button id="sidebarToggle" type="button" aria-label="Toggle menu" onclick="window.toggleSidebar&&window.toggleSidebar(event)" style="color:#fff">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" pointer-events="none"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
-    <span class="topbar-title"><?= Helpers::e($pageTitle ?? 'Dashboard') ?></span>
+    <span class="topbar-title" style="color:#fff"><?= Helpers::e($pageTitle ?? 'Dashboard') ?></span>
     <div class="topbar-actions">
         <?php require BASE_PATH . '/views/partials/theme_toggle.php'; ?>
         <!-- Chat bell -->
-        <a href="/admin/support" style="position:relative;display:flex;align-items:center;padding:6px;color:var(--text-muted);text-decoration:none;border-radius:6px" title="Live Support">
+        <a href="/admin/support" style="position:relative;display:flex;align-items:center;padding:6px;color:#fff;opacity:0.95;text-decoration:none;border-radius:6px" title="Live Support" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.95'">
             <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             <span id="topbar-chat-badge" style="display:none;position:absolute;top:1px;right:1px;background:#EF4444;color:#fff;border-radius:50%;width:15px;height:15px;font-size:9px;font-weight:700;align-items:center;justify-content:center;line-height:1">0</span>
         </a>
-        <a href="/admin/notifications" class="notification-btn" style="text-decoration:none">
+        <a href="/admin/notifications" class="notification-btn" style="text-decoration:none; color:#fff; border:none; background:rgba(255,255,255,0.15);" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
             <span class="notif-badge" style="display:none">0</span>
         </a>
         <div class="user-menu" style="position:relative">
             <div class="user-avatar"><?= strtoupper(substr(Auth::currentUser()['first_name'] ?? 'A', 0, 1)) ?></div>
-            <span><?= Helpers::e(Auth::currentUser()['first_name'] ?? 'Admin') ?></span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
+            <span style="color:#fff"><?= Helpers::e(Auth::currentUser()['first_name'] ?? 'Admin') ?></span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="color:#fff"><polyline points="6 9 12 15 18 9"/></svg>
             <div class="dropdown-menu">
                 <span class="dropdown-item text-muted text-sm" style="font-size:11px;padding:8px 14px 4px;color:#94A3B8"><?= Helpers::e(Auth::currentUser()['email'] ?? '') ?></span>
                 <hr class="dropdown-divider">
