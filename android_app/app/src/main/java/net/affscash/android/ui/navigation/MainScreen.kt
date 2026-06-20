@@ -236,39 +236,34 @@ fun MainScreen(
                 
 
                 // Explicit Logout Button
-                item {
-                    Card(
+                item(span = { androidx.compose.foundation.lazy.grid.GridItemSpan(3) }) {
+                    Button(
                         onClick = {
                             showMoreSheet = false
                             onLogout()
                         },
-                        modifier = Modifier.fillMaxWidth().height(90.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp, vertical = 8.dp)
+                            .height(56.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.1f),
+                            contentColor = MaterialTheme.colorScheme.error
+                        ),
                         shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f)),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp, pressedElevation = 0.dp)
                     ) {
-                        Column(
-                            modifier = Modifier.fillMaxSize().padding(4.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            Surface(
-                                shape = androidx.compose.foundation.shape.CircleShape,
-                                color = MaterialTheme.colorScheme.error.copy(alpha = 0.1f),
-                                modifier = Modifier.size(40.dp)
-                            ) {
-                                Box(contentAlignment = Alignment.Center) {
-                                    Icon(Icons.Filled.ExitToApp, contentDescription = "Logout", modifier = Modifier.size(22.dp), tint = MaterialTheme.colorScheme.error)
-                                }
-                            }
-                            Spacer(modifier = Modifier.height(6.dp))
+                            Icon(Icons.Filled.ExitToApp, contentDescription = "Logout", modifier = Modifier.size(22.dp))
+                            Spacer(modifier = Modifier.width(12.dp))
                             Text(
                                 "Logout", 
-                                style = MaterialTheme.typography.labelSmall, 
-                                fontSize = androidx.compose.ui.unit.TextUnit(11f, androidx.compose.ui.unit.TextUnitType.Sp),
-                                fontWeight = FontWeight.Bold, 
-                                textAlign = TextAlign.Center, 
-                                color = MaterialTheme.colorScheme.error
+                                fontSize = androidx.compose.ui.unit.TextUnit(14f, androidx.compose.ui.unit.TextUnitType.Sp),
+                                fontWeight = FontWeight.Bold
                             )
                         }
                     }
@@ -333,6 +328,7 @@ fun MainScreen(
                         mainItems.forEach { screen ->
                             val isSelected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
                             NavigationBarItem(
+                                alwaysShowLabel = false,
                                 icon = { 
                                     Box(
                                         contentAlignment = Alignment.Center,
@@ -348,11 +344,10 @@ fun MainScreen(
                                 label = { 
                                     Text(
                                         screen.title, 
-                                        fontSize = androidx.compose.ui.unit.TextUnit(9f, androidx.compose.ui.unit.TextUnitType.Sp), 
-                                        fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.Medium,
-                                        maxLines = 2,
-                                        textAlign = TextAlign.Center,
-                                        lineHeight = androidx.compose.ui.unit.TextUnit(11f, androidx.compose.ui.unit.TextUnitType.Sp)
+                                        fontSize = androidx.compose.ui.unit.TextUnit(11f, androidx.compose.ui.unit.TextUnitType.Sp), 
+                                        fontWeight = FontWeight.Bold,
+                                        maxLines = 1,
+                                        textAlign = TextAlign.Center
                                     ) 
                                 },
                                 selected = isSelected,
@@ -366,7 +361,7 @@ fun MainScreen(
                                     }
                                 },
                                 colors = NavigationBarItemDefaults.colors(
-                                    indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                                    indicatorColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
                                     selectedIconColor = MaterialTheme.colorScheme.primary,
                                     unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                                     selectedTextColor = MaterialTheme.colorScheme.primary,
@@ -377,6 +372,7 @@ fun MainScreen(
                         if (moreItems.isNotEmpty()) {
                             val isSelected = currentDestination?.route?.let { route -> moreItems.any { it.route == route } } == true
                             NavigationBarItem(
+                                alwaysShowLabel = false,
                                 icon = { 
                                     Box(
                                         contentAlignment = Alignment.Center,
@@ -392,17 +388,16 @@ fun MainScreen(
                                 label = { 
                                     Text(
                                         "Menu", 
-                                        fontSize = androidx.compose.ui.unit.TextUnit(9f, androidx.compose.ui.unit.TextUnitType.Sp),
-                                        fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.Medium,
-                                        maxLines = 2,
-                                        textAlign = TextAlign.Center,
-                                        lineHeight = androidx.compose.ui.unit.TextUnit(11f, androidx.compose.ui.unit.TextUnitType.Sp)
+                                        fontSize = androidx.compose.ui.unit.TextUnit(11f, androidx.compose.ui.unit.TextUnitType.Sp),
+                                        fontWeight = FontWeight.Bold,
+                                        maxLines = 1,
+                                        textAlign = TextAlign.Center
                                     ) 
                                 },
                                 selected = isSelected,
                                 onClick = { showMoreSheet = true },
                                 colors = NavigationBarItemDefaults.colors(
-                                    indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                                    indicatorColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
                                     selectedIconColor = MaterialTheme.colorScheme.primary,
                                     unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                                     selectedTextColor = MaterialTheme.colorScheme.primary,
