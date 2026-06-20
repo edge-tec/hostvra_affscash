@@ -148,7 +148,7 @@ class Activity {
         }
 
         // Delegate to the centralised geo engine
-        $geo = \core\Helpers::getGeoInfo($ip);
+        $geo = Helpers::getGeoInfo($ip);
 
         // Map Helpers format → Activity format (Activity callers expect 'country_code' key)
         return [
