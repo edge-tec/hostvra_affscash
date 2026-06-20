@@ -263,8 +263,9 @@ fun ManagerReportsScreen(
                                         singleLine = true,
                                         shape = RoundedCornerShape(10.dp),
                                         textStyle = LocalTextStyle.current.copy(fontSize = 13.sp),
-                                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                                        colors = OutlinedTextFieldDefaults.colors(
+                                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                                            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
                                             unfocusedBorderColor = Color.Transparent,
                                             focusedBorderColor = MaterialTheme.colorScheme.primary
                                         )

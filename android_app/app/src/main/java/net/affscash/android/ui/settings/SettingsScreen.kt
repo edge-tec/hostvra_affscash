@@ -18,6 +18,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.foundation.shape.RoundedCornerShape
 import net.affscash.android.ui.components.QrCodeImage
 import net.affscash.android.data.model.*
 
@@ -204,74 +205,81 @@ fun ProfileTab(profile: ProfileInfo?, viewModel: SettingsViewModel) {
     var phone by remember { mutableStateOf(profile?.phone ?: "") }
     var isUpdating by remember { mutableStateOf(false) }
 
-    Column {
-        Text("Profile Information", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, fontSize = 15.sp)
-        Spacer(modifier = Modifier.height(8.dp))
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text("Profile Information", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+            Spacer(modifier = Modifier.height(8.dp))
 
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            StyledTextField(
-                value = firstName,
-                onValueChange = { firstName = it },
-                label = "First Name *",
-                modifier = Modifier.weight(1f)
-            )
-            StyledTextField(
-                value = lastName,
-                onValueChange = { lastName = it },
-                label = "Last Name *",
-                modifier = Modifier.weight(1f)
-            )
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-
-        StyledTextField(
-            value = profile?.email ?: "",
-            onValueChange = { },
-            label = "Email Address",
-            readOnly = true,
-            enabled = false
-        )
-        Text("Contact your manager to change your email address", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            StyledTextField(
-                value = company,
-                onValueChange = { company = it },
-                label = "Company",
-                modifier = Modifier.weight(1f)
-            )
-            StyledTextField(
-                value = phone,
-                onValueChange = { phone = it },
-                label = "Phone",
-                modifier = Modifier.weight(1f)
-            )
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-
-        StyledButton(
-            text = if (isUpdating) "Saving..." else "Save Profile",
-            enabled = !isUpdating,
-            onClick = {
-                if (firstName.isBlank() || lastName.isBlank()) {
-                    Toast.makeText(context, "First and last name are required", Toast.LENGTH_SHORT).show()
-                    return@StyledButton
-                }
-                isUpdating = true
-                viewModel.updateProfile(
-                    UpdateProfileRequest(firstName, lastName, company, phone),
-                    onSuccess = { 
-                        isUpdating = false
-                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
-                    },
-                    onError = { 
-                        isUpdating = false
-                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
-                    }
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                StyledTextField(
+                    value = firstName,
+                    onValueChange = { firstName = it },
+                    label = "First Name *",
+                    modifier = Modifier.weight(1f)
+                )
+                StyledTextField(
+                    value = lastName,
+                    onValueChange = { lastName = it },
+                    label = "Last Name *",
+                    modifier = Modifier.weight(1f)
                 )
             }
-        )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            StyledTextField(
+                value = profile?.email ?: "",
+                onValueChange = { },
+                label = "Email Address",
+                readOnly = true,
+                enabled = false
+            )
+            Text("Contact your manager to change your email address", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                StyledTextField(
+                    value = company,
+                    onValueChange = { company = it },
+                    label = "Company",
+                    modifier = Modifier.weight(1f)
+                )
+                StyledTextField(
+                    value = phone,
+                    onValueChange = { phone = it },
+                    label = "Phone",
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            StyledButton(
+                text = if (isUpdating) "Saving..." else "Save Profile",
+                enabled = !isUpdating,
+                onClick = {
+                    if (firstName.isBlank() || lastName.isBlank()) {
+                        Toast.makeText(context, "First and last name are required", Toast.LENGTH_SHORT).show()
+                        return@StyledButton
+                    }
+                    isUpdating = true
+                    viewModel.updateProfile(
+                        UpdateProfileRequest(firstName, lastName, company, phone),
+                        onSuccess = { 
+                            isUpdating = false
+                            Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
+                        },
+                        onError = { 
+                            isUpdating = false
+                            Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
+                        }
+                    )
+                }
+            )
+        }
     }
 }
 
@@ -283,67 +291,74 @@ fun SecurityTab(viewModel: SettingsViewModel) {
     var confirmPass by remember { mutableStateOf("") }
     var isUpdating by remember { mutableStateOf(false) }
 
-    Column {
-        Text("Change Password", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, fontSize = 15.sp)
-        Spacer(modifier = Modifier.height(16.dp))
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text("Change Password", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+            Spacer(modifier = Modifier.height(16.dp))
 
-        StyledTextField(
-            value = currentPass,
-            onValueChange = { currentPass = it },
-            label = "Current Password *",
-            visualTransformation = PasswordVisualTransformation()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
+            StyledTextField(
+                value = currentPass,
+                onValueChange = { currentPass = it },
+                label = "Current Password *",
+                visualTransformation = PasswordVisualTransformation()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
 
-        StyledTextField(
-            value = newPass,
-            onValueChange = { newPass = it },
-            label = "New Password *",
-            visualTransformation = PasswordVisualTransformation()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
+            StyledTextField(
+                value = newPass,
+                onValueChange = { newPass = it },
+                label = "New Password *",
+                visualTransformation = PasswordVisualTransformation()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
 
-        StyledTextField(
-            value = confirmPass,
-            onValueChange = { confirmPass = it },
-            label = "Confirm New Password *",
-            visualTransformation = PasswordVisualTransformation()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+            StyledTextField(
+                value = confirmPass,
+                onValueChange = { confirmPass = it },
+                label = "Confirm New Password *",
+                visualTransformation = PasswordVisualTransformation()
+            )
+            Spacer(modifier = Modifier.height(16.dp))
 
-        StyledButton(
-            text = if (isUpdating) "Updating..." else "Change Password",
-            enabled = !isUpdating,
-            onClick = {
-                if (currentPass.isBlank() || newPass.isBlank() || confirmPass.isBlank()) {
-                    Toast.makeText(context, "All fields are required", Toast.LENGTH_SHORT).show()
-                    return@StyledButton
-                }
-                if (newPass != confirmPass) {
-                    Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
-                    return@StyledButton
-                }
-                if (newPass.length < 8) {
-                    Toast.makeText(context, "Password must be at least 8 characters", Toast.LENGTH_SHORT).show()
-                    return@StyledButton
-                }
-                isUpdating = true
-                viewModel.updateSecurity(
-                    UpdateSecurityRequest(currentPass, newPass),
-                    onSuccess = { 
-                        isUpdating = false
-                        currentPass = ""
-                        newPass = ""
-                        confirmPass = ""
-                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
-                    },
-                    onError = { 
-                        isUpdating = false
-                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
+            StyledButton(
+                text = if (isUpdating) "Updating..." else "Change Password",
+                enabled = !isUpdating,
+                onClick = {
+                    if (currentPass.isBlank() || newPass.isBlank() || confirmPass.isBlank()) {
+                        Toast.makeText(context, "All fields are required", Toast.LENGTH_SHORT).show()
+                        return@StyledButton
                     }
-                )
-            }
-        )
+                    if (newPass != confirmPass) {
+                        Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                        return@StyledButton
+                    }
+                    if (newPass.length < 8) {
+                        Toast.makeText(context, "Password must be at least 8 characters", Toast.LENGTH_SHORT).show()
+                        return@StyledButton
+                    }
+                    isUpdating = true
+                    viewModel.updateSecurity(
+                        UpdateSecurityRequest(currentPass, newPass),
+                        onSuccess = { 
+                            isUpdating = false
+                            currentPass = ""
+                            newPass = ""
+                            confirmPass = ""
+                            Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
+                        },
+                        onError = { 
+                            isUpdating = false
+                            Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
+                        }
+                    )
+                }
+            )
+        }
     }
 }
 
@@ -384,171 +399,178 @@ fun PaymentTab(payment: PaymentInfo?, methods: List<String>, viewModel: Settings
     var expanded by remember { mutableStateOf(false) }
     var isUpdating by remember { mutableStateOf(false) }
 
-    Column {
-        Text("Payment Settings", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, fontSize = 15.sp)
-        Spacer(modifier = Modifier.height(16.dp))
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text("Payment Settings", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+            Spacer(modifier = Modifier.height(16.dp))
 
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = { expanded = !expanded }
-        ) {
-            StyledTextField(
-                value = selectedMethod,
-                onValueChange = {},
-                readOnly = true,
-                label = "Payment Method",
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                modifier = Modifier.menuAnchor()
-            )
-            ExposedDropdownMenu(
+            ExposedDropdownMenuBox(
                 expanded = expanded,
-                onDismissRequest = { expanded = false }
+                onExpandedChange = { expanded = !expanded }
             ) {
-                methods.forEach { method ->
-                    DropdownMenuItem(
-                        text = { Text(method) },
-                        onClick = {
-                            selectedMethod = method
-                            expanded = false
-                        }
+                StyledTextField(
+                    value = selectedMethod,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = "Payment Method",
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                    modifier = Modifier.menuAnchor()
+                )
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    methods.forEach { method ->
+                        DropdownMenuItem(
+                            text = { Text(method) },
+                            onClick = {
+                                selectedMethod = method
+                                expanded = false
+                            }
+                        )
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            val lowerMethod = selectedMethod.lowercase()
+            val type = when {
+                lowerMethod.contains("crypto") -> "crypto"
+                lowerMethod.contains("wire") || lowerMethod.contains("bank") -> "wire"
+                lowerMethod.contains("paypal") || lowerMethod.contains("payoneer") || lowerMethod.contains("wise") -> "simple"
+                else -> "custom"
+            }
+
+            when (type) {
+                "simple" -> {
+                    StyledTextField(
+                        value = accountHolderName,
+                        onValueChange = { accountHolderName = it },
+                        label = "Account Holder Name *"
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    StyledTextField(
+                        value = emailId,
+                        onValueChange = { emailId = it },
+                        label = "Email / Account ID *"
+                    )
+                }
+                "wire" -> {
+                    StyledTextField(
+                        value = accountHolderName,
+                        onValueChange = { accountHolderName = it },
+                        label = "Account Holder Name *"
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    StyledTextField(
+                        value = bankName,
+                        onValueChange = { bankName = it },
+                        label = "Bank Name *"
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    StyledTextField(
+                        value = accountNumber,
+                        onValueChange = { accountNumber = it },
+                        label = "Account Number *"
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    StyledTextField(
+                        value = ibanSwift,
+                        onValueChange = { ibanSwift = it },
+                        label = "IBAN / SWIFT Code"
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    StyledTextField(
+                        value = bankAddress,
+                        onValueChange = { bankAddress = it },
+                        label = "Bank Address *"
+                    )
+                }
+                "crypto" -> {
+                    StyledTextField(
+                        value = cryptoType,
+                        onValueChange = { cryptoType = it },
+                        label = "Cryptocurrency (e.g. USDT) *"
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    StyledTextField(
+                        value = networkType,
+                        onValueChange = { networkType = it },
+                        label = "Network Type (e.g. TRC20) *"
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    StyledTextField(
+                        value = walletAddress,
+                        onValueChange = { walletAddress = it },
+                        label = "Wallet Address *"
+                    )
+                }
+                else -> {
+                    StyledTextField(
+                        value = customDetails,
+                        onValueChange = { customDetails = it },
+                        label = "Payment Details",
+                        modifier = Modifier.height(120.dp),
+                        singleLine = false,
+                        placeholder = { Text("Enter your account numbers, crypto addresses, or emails here.", fontSize = 12.sp) }
                     )
                 }
             }
-        }
-        Spacer(modifier = Modifier.height(16.dp))
+            
+            Spacer(modifier = Modifier.height(16.dp))
 
-        val lowerMethod = selectedMethod.lowercase()
-        val type = when {
-            lowerMethod.contains("crypto") -> "crypto"
-            lowerMethod.contains("wire") || lowerMethod.contains("bank") -> "wire"
-            lowerMethod.contains("paypal") || lowerMethod.contains("payoneer") || lowerMethod.contains("wise") -> "simple"
-            else -> "custom"
-        }
+            StyledButton(
+                text = if (isUpdating) "Saving..." else "Save Payment Details",
+                enabled = !isUpdating,
+                onClick = {
+                    val updatedDetails = when (type) {
+                        "simple" -> {
+                            org.json.JSONObject().apply {
+                                put("account_holder_name", accountHolderName)
+                                put("email", emailId)
+                            }.toString()
+                        }
+                        "wire" -> {
+                            org.json.JSONObject().apply {
+                                put("account_holder_name", accountHolderName)
+                                put("bank_name", bankName)
+                                put("account_number", accountNumber)
+                                put("iban_swift", ibanSwift)
+                                put("routing_number", routingNumber)
+                                put("branch_name", branchName)
+                                put("bank_address", bankAddress)
+                            }.toString()
+                        }
+                        "crypto" -> {
+                            org.json.JSONObject().apply {
+                                put("crypto_type", cryptoType)
+                                put("network_type", networkType)
+                                put("wallet_address", walletAddress)
+                            }.toString()
+                        }
+                        else -> customDetails
+                    }
 
-        when (type) {
-            "simple" -> {
-                StyledTextField(
-                    value = accountHolderName,
-                    onValueChange = { accountHolderName = it },
-                    label = "Account Holder Name *"
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                StyledTextField(
-                    value = emailId,
-                    onValueChange = { emailId = it },
-                    label = "Email / Account ID *"
-                )
-            }
-            "wire" -> {
-                StyledTextField(
-                    value = accountHolderName,
-                    onValueChange = { accountHolderName = it },
-                    label = "Account Holder Name *"
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                StyledTextField(
-                    value = bankName,
-                    onValueChange = { bankName = it },
-                    label = "Bank Name *"
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                StyledTextField(
-                    value = accountNumber,
-                    onValueChange = { accountNumber = it },
-                    label = "Account Number *"
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                StyledTextField(
-                    value = ibanSwift,
-                    onValueChange = { ibanSwift = it },
-                    label = "IBAN / SWIFT Code"
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                StyledTextField(
-                    value = bankAddress,
-                    onValueChange = { bankAddress = it },
-                    label = "Bank Address *"
-                )
-            }
-            "crypto" -> {
-                StyledTextField(
-                    value = cryptoType,
-                    onValueChange = { cryptoType = it },
-                    label = "Cryptocurrency (e.g. USDT) *"
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                StyledTextField(
-                    value = networkType,
-                    onValueChange = { networkType = it },
-                    label = "Network Type (e.g. TRC20) *"
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                StyledTextField(
-                    value = walletAddress,
-                    onValueChange = { walletAddress = it },
-                    label = "Wallet Address *"
-                )
-            }
-            else -> {
-                StyledTextField(
-                    value = customDetails,
-                    onValueChange = { customDetails = it },
-                    label = "Payment Details",
-                    modifier = Modifier.height(120.dp),
-                    singleLine = false,
-                    placeholder = { Text("Enter your account numbers, crypto addresses, or emails here.", fontSize = 12.sp) }
-                )
-            }
-        }
-        
-        Spacer(modifier = Modifier.height(16.dp))
-
-        StyledButton(
-            text = if (isUpdating) "Saving..." else "Save Payment Details",
-            enabled = !isUpdating,
-            onClick = {
-                val updatedDetails = when (type) {
-                    "simple" -> {
-                        org.json.JSONObject().apply {
-                            put("account_holder_name", accountHolderName)
-                            put("email", emailId)
-                        }.toString()
-                    }
-                    "wire" -> {
-                        org.json.JSONObject().apply {
-                            put("account_holder_name", accountHolderName)
-                            put("bank_name", bankName)
-                            put("account_number", accountNumber)
-                            put("iban_swift", ibanSwift)
-                            put("routing_number", routingNumber)
-                            put("branch_name", branchName)
-                            put("bank_address", bankAddress)
-                        }.toString()
-                    }
-                    "crypto" -> {
-                        org.json.JSONObject().apply {
-                            put("crypto_type", cryptoType)
-                            put("network_type", networkType)
-                            put("wallet_address", walletAddress)
-                        }.toString()
-                    }
-                    else -> customDetails
+                    isUpdating = true
+                    viewModel.updatePayment(
+                        UpdatePaymentRequest(selectedMethod, updatedDetails),
+                        onSuccess = { 
+                            isUpdating = false
+                            Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
+                        },
+                        onError = { 
+                            isUpdating = false
+                            Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
+                        }
+                    )
                 }
-
-                isUpdating = true
-                viewModel.updatePayment(
-                    UpdatePaymentRequest(selectedMethod, updatedDetails),
-                    onSuccess = { 
-                        isUpdating = false
-                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
-                    },
-                    onError = { 
-                        isUpdating = false
-                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
-                    }
-                )
-            }
-        )
+            )
+        }
     }
 }
 
@@ -558,81 +580,88 @@ fun GlobalPostbackTab(postback: GlobalPostbackInfo?, viewModel: SettingsViewMode
     var url by remember { mutableStateOf(postback?.url ?: "") }
     var isUpdating by remember { mutableStateOf(false) }
 
-    Column {
-        Text("Global Postback Settings", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(16.dp))
-        
-        Text(
-            "The Global Postback URL is used to notify your tracking system of conversions across all offers. " +
-            "Use macros like {click_id}, {payout}, {currency}, etc. which will be replaced by our system.",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text("Global Postback Settings", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Text(
+                "The Global Postback URL is used to notify your tracking system of conversions across all offers. " +
+                "Use macros like {click_id}, {payout}, {currency}, etc. which will be replaced by our system.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(16.dp))
 
-        StyledTextField(
-            value = url,
-            onValueChange = { url = it },
-            label = "Global Postback URL",
-            placeholder = { Text("https://your-tracker.com/postback?cid={click_id}", fontSize = 12.sp) }
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+            StyledTextField(
+                value = url,
+                onValueChange = { url = it },
+                label = "Global Postback URL",
+                placeholder = { Text("https://your-tracker.com/postback?cid={click_id}", fontSize = 12.sp) }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
 
-        StyledButton(
-            text = if (isUpdating) "Saving..." else "Save Postback URL",
-            enabled = !isUpdating,
-            onClick = {
-                if (url.isBlank()) {
-                    Toast.makeText(context, "Postback URL cannot be empty", Toast.LENGTH_SHORT).show()
-                    return@StyledButton
-                }
-                isUpdating = true
-                viewModel.updateGlobalPostback(
-                    UpdateGlobalPostbackRequest(url),
-                    onSuccess = { 
-                        isUpdating = false
-                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
-                    },
-                    onError = { 
-                        isUpdating = false
-                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
+            StyledButton(
+                text = if (isUpdating) "Saving..." else "Save Postback URL",
+                enabled = !isUpdating,
+                onClick = {
+                    if (url.isBlank()) {
+                        Toast.makeText(context, "Postback URL cannot be empty", Toast.LENGTH_SHORT).show()
+                        return@StyledButton
                     }
-                )
-            }
-        )
+                    isUpdating = true
+                    viewModel.updateGlobalPostback(
+                        UpdateGlobalPostbackRequest(url),
+                        onSuccess = { 
+                            isUpdating = false
+                            Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
+                        },
+                        onError = { 
+                            isUpdating = false
+                            Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
+                        }
+                    )
+                }
+            )
 
-        Spacer(modifier = Modifier.height(24.dp))
-        Text("📋 Example Postback URLs", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(8.dp))
-        Card(
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Column(modifier = Modifier.padding(12.dp)) {
-                TrackerExample("Binom", "https://binom.example.com/postback?click_id={click_id}&payout={payout}&sub1={aff_sub1}")
-                TrackerExample("Keitaro", "https://keitaro.example.com/postback?subid={click_id}&revenue={payout}")
-                TrackerExample("RedTrack", "https://postback.redtrack.io/postback?clickid={click_id}&cost={payout}")
-                TrackerExample("FunnelFlux", "https://i.funnelflux.pro/postback?tid={click_id}&payout={payout}")
-                TrackerExample("Voluum", "https://trk.voluum.com/postback?cid={click_id}&payout={payout}")
-                TrackerExample("Any tracker", "https://yourtracker.com/postback?click_id={click_id}&payout={payout}&affid={affid}")
+            Spacer(modifier = Modifier.height(24.dp))
+            Text("📋 Example Postback URLs", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
+            Card(
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(12.dp)) {
+                    TrackerExample("Binom", "https://binom.example.com/postback?click_id={click_id}&payout={payout}&sub1={aff_sub1}")
+                    TrackerExample("Keitaro", "https://keitaro.example.com/postback?subid={click_id}&revenue={payout}")
+                    TrackerExample("RedTrack", "https://postback.redtrack.io/postback?clickid={click_id}&cost={payout}")
+                    TrackerExample("FunnelFlux", "https://i.funnelflux.pro/postback?tid={click_id}&payout={payout}")
+                    TrackerExample("Voluum", "https://trk.voluum.com/postback?cid={click_id}&payout={payout}")
+                    TrackerExample("Any tracker", "https://yourtracker.com/postback?click_id={click_id}&payout={payout}&affid={affid}")
+                }
             }
-        }
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Text("Supported Macros", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(8.dp))
-        Card(
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Column(modifier = Modifier.padding(12.dp)) {
-                MacroItem("{click_id}", "your tracker's click ID (passed as click_id= in offer link)")
-                MacroItem("{payout}", "conversion payout amount")
-                MacroItem("{sub_id_1}", "sub_id_1= from offer link (stored in sub2)")
-                MacroItem("{sub_id_2}", "sub_id_2= from offer link (stored in sub3)")
-                MacroItem("{sub_id_3}", "sub_id_3= from offer link (stored in sub4)")
-                MacroItem("{sub_id_4}", "sub_id_4= from offer link (stored in sub5)")
-                MacroItem("{sub_id_5}", "sub_id_5= from offer link (stored in sub6)")
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("Supported Macros", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
+            Card(
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(12.dp)) {
+                    MacroItem("{click_id}", "your tracker's click ID (passed as click_id= in offer link)")
+                    MacroItem("{payout}", "conversion payout amount")
+                    MacroItem("{sub_id_1}", "sub_id_1= from offer link (stored in sub2)")
+                    MacroItem("{sub_id_2}", "sub_id_2= from offer link (stored in sub3)")
+                    MacroItem("{sub_id_3}", "sub_id_3= from offer link (stored in sub4)")
+                    MacroItem("{sub_id_4}", "sub_id_4= from offer link (stored in sub5)")
+                    MacroItem("{sub_id_5}", "sub_id_5= from offer link (stored in sub6)")
+                }
             }
         }
     }
