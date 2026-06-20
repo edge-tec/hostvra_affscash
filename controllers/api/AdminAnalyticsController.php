@@ -236,16 +236,23 @@ if ($action === 'trend') {
         }
         $cvWhere = implode(' AND ', $cvW);
 
-        $clRows = Database::fetchAll(
-            "SELECT HOUR(clicked_at) as h, COUNT(*) as c, SUM(is_unique) as u
-             FROM clicks WHERE $hWhere GROUP BY HOUR(clicked_at)",
-            $hP
-        );
-        $cvRows = Database::fetchAll(
-            "SELECT HOUR(converted_at) as h, COUNT(*) as cv, SUM(payout) as p, SUM(revenue) as r
-             FROM conversions WHERE $cvWhere GROUP BY HOUR(converted_at)",
-            $cvP
-        );
+        $clRows = [];
+        try {
+            $clRows = Database::fetchAll(
+                "SELECT HOUR(clicked_at) as h, COUNT(*) as c, SUM(is_unique) as u
+                 FROM clicks WHERE $hWhere GROUP BY HOUR(clicked_at)",
+                $hP
+            );
+        } catch (\Throwable $_e) {}
+
+        $cvRows = [];
+        try {
+            $cvRows = Database::fetchAll(
+                "SELECT HOUR(converted_at) as h, COUNT(*) as cv, SUM(payout) as p, SUM(revenue) as r
+                 FROM conversions WHERE $cvWhere GROUP BY HOUR(converted_at)",
+                $cvP
+            );
+        } catch (\Throwable $_e) {}
         $fraudByHour = [];
         try {
             $fraudRows = Database::fetchAll(
