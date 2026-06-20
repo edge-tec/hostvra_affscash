@@ -76,6 +76,14 @@ object NetworkModule {
             response
         }
 
+        val platformInterceptor = Interceptor { chain ->
+            val original = chain.request()
+            val request = original.newBuilder()
+                .header("X-Platform-Source", "Android APK")
+                .build()
+            chain.proceed(request)
+        }
+
         val trustAllCerts = arrayOf<javax.net.ssl.TrustManager>(
             object : javax.net.ssl.X509TrustManager {
                 override fun checkClientTrusted(chain: Array<java.security.cert.X509Certificate>, authType: String) {}
@@ -96,6 +104,7 @@ object NetworkModule {
             .hostnameVerifier { _, _ -> true }
             .cookieJar(cookieJar)
             .addInterceptor(loggingInterceptor)
+            .addInterceptor(platformInterceptor)
             .addInterceptor(authInterceptor)
             .addInterceptor(cleanJsonResponseInterceptor)
             .connectTimeout(30, TimeUnit.SECONDS)

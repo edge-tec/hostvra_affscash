@@ -56,7 +56,7 @@ if ($action === 'live_users') {
     $rows = Database::fetchAll(
         "SELECT s.id, s.session_id, s.user_id, s.role, s.user_name, s.ip_address,
                 s.country, s.country_code, s.city,
-                s.device_type, s.browser, s.os,
+                s.device_type, s.browser, s.os, s.platform_source,
                 s.current_page, s.logged_in_at, s.last_active,
                 u.email,
                 TIMESTAMPDIFF(SECOND, s.last_active, NOW()) as idle_sec,

@@ -317,10 +317,9 @@ function fmtDt(dt){
     return typeof fmtTs==='function'
         ? fmtTs(dt, {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})
         : new Date(dt).toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-}
 function deviceIcon(d){
-    if (d==='Mobile') return '📱';
-    if (d==='Tablet') return '💊';
+    if (d === 'Mobile (App)' || d === 'Mobile') return '📱';
+    if (d === 'Tablet') return '💊';
     return '🖥️';
 }
 function roleBadge(r){
@@ -328,7 +327,9 @@ function roleBadge(r){
     return '<span class="act-badge '+(r||'')+'">'+esc(labels[r]||r)+'</span>';
 }
 function deviceBadge(d){
-    return '<span class="act-badge '+(d||'desktop').toLowerCase()+'">'+deviceIcon(d)+' '+esc(d||'Desktop')+'</span>';
+    var baseClass = (d || 'desktop').toLowerCase();
+    if (baseClass.includes('mobile')) baseClass = 'mobile';
+    return '<span class="act-badge '+baseClass+'">'+deviceIcon(d)+' '+esc(d||'Desktop')+'</span>';
 }
 
 // ── Load summary stats ─────────────────────────────────────────────────────
@@ -433,6 +434,12 @@ function renderLiveGrid(users){
         var dur   = fmtDur(parseInt(u.session_sec||0));
         var page  = u.current_page || '/';
         var initials = (u.user_name||'?').split(' ').map(function(w){return w.charAt(0).toUpperCase();}).slice(0,2).join('');
+        
+        var browserDisplay = esc(u.browser||'—');
+        if (u.platform_source === 'Android APK' || u.browser === 'Android App') {
+            browserDisplay = '<span style="color:#10B981;font-weight:700;display:inline-flex;align-items:center;gap:4px"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993.0004.5511-.4482.9997-.9993.9997zm-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997zm11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1517-.5676.4255.4255 0 00-.5753.1493l-2.029 3.5133A11.7584 11.7584 0 0012 7.7471c-1.8906 0-3.6593.4795-5.1228 1.3093L4.8482 5.5431a.426.426 0 00-.5753-.1493.415.415 0 00-.1517.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.761h24c-.3432-4.1021-2.6889-7.5743-6.1185-9.4396z"/></svg> Android App</span>';
+        }
+
         return '<div class="live-card '+(isIdle?'idle':'')+'">'+
             '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'+
                 '<div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#4F46E5,#7C3AED);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;flex-shrink:0">'+esc(initials)+'</div>'+
@@ -455,7 +462,7 @@ function renderLiveGrid(users){
                     (u.country_code?'<img src="https://flagcdn.com/16x12/'+u.country_code.toLowerCase()+'.png" style="margin-right:4px;vertical-align:middle" onerror="this.style.display=\'none\'">':'')+
                     '<span style="font-size:12px;color:#374151">'+esc(u.city&&u.city!=='Unknown'?u.city+', ':'')+''+esc(u.country||'—')+'</span>'+
                 '</div>'+
-                '<div><span style="color:#9CA3AF;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Browser</span><br><span style="color:#374151">'+esc(u.browser||'—')+'</span></div>'+
+                '<div><span style="color:#9CA3AF;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Browser</span><br><span style="color:#374151">'+browserDisplay+'</span></div>'+
                 '<div><span style="color:#9CA3AF;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Session</span><br><span style="color:#374151">'+esc(dur)+'</span></div>'+
             '</div>'+
             (u.affiliate_code?'<div style="background:#EEF2FF;border-radius:7px;padding:7px 10px;font-size:12px;margin-bottom:10px;display:flex;align-items:center;gap:7px"><span style="color:#6B7280;font-size:10px;font-weight:700;text-transform:uppercase">Aff Code</span><span style="font-weight:700;color:#4F46E5;font-family:monospace">'+esc(u.affiliate_code)+'</span></div>':'')+
@@ -530,7 +537,11 @@ window.loadHistory = function(page){
                 '</td>'+
                 '<td>'+deviceBadge(r.device_type)+'</td>'+
                 '<td>'+
-                    '<div style="font-size:13px;color:#374151">'+esc(r.browser||'—')+'</div>'+
+                    '<div style="font-size:13px;color:#374151">'+
+                        ((r.platform_source === 'Android APK' || r.browser === 'Android App')
+                            ? '<span style="color:#10B981;font-weight:700;display:inline-flex;align-items:center;gap:4px"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993.0004.5511-.4482.9997-.9993.9997zm-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997zm11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1517-.5676.4255.4255 0 00-.5753.1493l-2.029 3.5133A11.7584 11.7584 0 0012 7.7471c-1.8906 0-3.6593.4795-5.1228 1.3093L4.8482 5.5431a.426.426 0 00-.5753-.1493.415.415 0 00-.1517.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.761h24c-.3432-4.1021-2.6889-7.5743-6.1185-9.4396z"/></svg> Android App</span>'
+                            : esc(r.browser||'—'))+
+                    '</div>'+
                     '<div style="font-size:11px;color:#9CA3AF">'+esc(r.os||'')+'</div>'+
                 '</td>'+
                 '<td style="white-space:nowrap;font-size:13px">'+esc(fmtDt(r.login_time))+'</td>'+

@@ -22,6 +22,7 @@ class Activity {
                 device_type   VARCHAR(20)  DEFAULT NULL,
                 browser       VARCHAR(60)  DEFAULT NULL,
                 os            VARCHAR(60)  DEFAULT NULL,
+                platform_source VARCHAR(30) DEFAULT 'Web',
                 user_agent    TEXT         DEFAULT NULL,
                 login_time    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 logout_time   DATETIME     DEFAULT NULL,
@@ -48,6 +49,7 @@ class Activity {
                 device_type   VARCHAR(20)  DEFAULT NULL,
                 browser       VARCHAR(60)  DEFAULT NULL,
                 os            VARCHAR(60)  DEFAULT NULL,
+                platform_source VARCHAR(30) DEFAULT 'Web',
                 current_page  VARCHAR(300) DEFAULT NULL,
                 logged_in_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 last_active   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -167,6 +169,13 @@ class Activity {
         $parsed = self::parseUA($ua);
         $geo    = self::geoLookup($ip);
 
+        $platformSource = 'Web';
+        if (isset($_SERVER['HTTP_X_PLATFORM_SOURCE']) && $_SERVER['HTTP_X_PLATFORM_SOURCE'] === 'Android APK') {
+            $platformSource = 'Android APK';
+            $parsed['device']  = 'Mobile (App)';
+            $parsed['browser'] = 'Android App';
+        }
+
         // Allow multiple concurrent sessions.
         // We no longer delete previous active sessions for this user here.
         // This prevents automatic logouts when opening multiple tabs, windows, or logging in from multiple devices.
@@ -175,18 +184,19 @@ class Activity {
         $logId = 0;
         try {
             $logId = Database::insert('user_login_logs', [
-                'user_id'      => $userId,
-                'session_id'   => $sessionId,
-                'role'         => $role,
-                'ip_address'   => $ip,
-                'country'      => $geo['country'],
-                'country_code' => $geo['country_code'],
-                'city'         => $geo['city'],
-                'device_type'  => $parsed['device'],
-                'browser'      => $parsed['browser'],
-                'os'           => $parsed['os'],
-                'user_agent'   => mb_substr($ua, 0, 500),
-                'is_active'    => 1,
+                'user_id'         => $userId,
+                'session_id'      => $sessionId,
+                'role'            => $role,
+                'ip_address'      => $ip,
+                'country'         => $geo['country'],
+                'country_code'    => $geo['country_code'],
+                'city'            => $geo['city'],
+                'device_type'     => $parsed['device'],
+                'browser'         => $parsed['browser'],
+                'os'              => $parsed['os'],
+                'platform_source' => $platformSource,
+                'user_agent'      => mb_substr($ua, 0, 500),
+                'is_active'       => 1,
             ]);
         } catch (Exception $e) {}
 
@@ -194,13 +204,14 @@ class Activity {
         try {
             Database::query(
                 "INSERT INTO user_active_sessions
-                 (session_id,user_id,role,user_name,ip_address,country,country_code,city,device_type,browser,os,current_page,logged_in_at,last_active,login_log_id)
-                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW(),?)
-                 ON DUPLICATE KEY UPDATE last_active=NOW(), user_name=VALUES(user_name)",
+                 (session_id,user_id,role,user_name,ip_address,country,country_code,city,device_type,browser,os,platform_source,current_page,logged_in_at,last_active,login_log_id)
+                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW(),?)
+                 ON DUPLICATE KEY UPDATE last_active=NOW(), user_name=VALUES(user_name), platform_source=VALUES(platform_source)",
                 [
                     $sessionId, $userId, $role, $userName, $ip,
                     $geo['country'], $geo['country_code'], $geo['city'],
                     $parsed['device'], $parsed['browser'], $parsed['os'],
+                    $platformSource,
                     $_SERVER['REQUEST_URI'] ?? '/', $logId
                 ]
             );
