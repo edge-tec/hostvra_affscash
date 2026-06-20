@@ -22,6 +22,7 @@ import net.affscash.android.data.model.ManagerFraudConversion
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import androidx.compose.foundation.clickable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -190,6 +191,8 @@ fun SummaryCard(title: String, value: String, valueColor: Color, containerColor:
 
 @Composable
 fun ManagerFraudConversionItem(cv: ManagerFraudConversion) {
+    var expandClickId by remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -216,10 +219,27 @@ fun ManagerFraudConversionItem(cv: ManagerFraudConversion) {
             // IP & Click ID
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("IP: ${cv.ipAddress ?: "-"}", style = MaterialTheme.typography.bodySmall, color = Color(0xFF3B82F6))
-                Text("Click ID: ${cv.clickId.take(12)}...", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    text = "Click ID: " + if (expandClickId) cv.clickId else if (cv.clickId.length > 12) cv.clickId.take(12) + "..." else cv.clickId,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.clickable { expandClickId = !expandClickId },
+                    fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace
+                )
             }
             
             Spacer(modifier = Modifier.height(4.dp))
+            
+            // Location
+            val locParts = listOfNotNull(
+                cv.city?.takeIf { it.isNotBlank() },
+                cv.region?.takeIf { it.isNotBlank() },
+                cv.country?.takeIf { it.isNotBlank() }
+            )
+            if (locParts.isNotEmpty()) {
+                Text("Location: ${locParts.joinToString(", ")}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Spacer(modifier = Modifier.height(4.dp))
+            }
             
             // Device info
             Text("${cv.deviceType ?: "Unknown"} · ${cv.osVersion ?: "Unknown OS"}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)

@@ -39,6 +39,8 @@ data class ManagerFraudConversion(
     @SerialName("converted_at") val convertedAt: String,
     @SerialName("ip_address") val ipAddress: String?,
     val country: String?,
+    val city: String? = null,
+    val region: String? = null,
     @SerialName("device_type") val deviceType: String?,
     @SerialName("os_version") val osVersion: String?,
     @SerialName("user_agent") val userAgent: String?,
