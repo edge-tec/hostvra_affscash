@@ -18,11 +18,13 @@ try {
                 c.country, c.ip_address, c.postback_sent, c.converted_at, c.fraud_score,
                 o.name as offer_name,
                 CONCAT(u.first_name,' ',u.last_name) as aff_name,
-                af.affiliate_code
+                af.affiliate_code,
+                cl.source, cl.device_type, cl.os
          FROM conversions c
          LEFT JOIN offers o ON o.id = c.offer_id
          JOIN affiliates af ON af.id = c.affiliate_id
          JOIN users u ON u.id = af.user_id
+         LEFT JOIN clicks cl ON cl.click_id = c.click_id
          WHERE c.affiliate_id IN ($inPlaceholders)
          ORDER BY c.converted_at DESC
          LIMIT 500",

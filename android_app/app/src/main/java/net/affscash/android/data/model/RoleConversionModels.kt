@@ -26,5 +26,8 @@ data class Conversion(
     @SerialName("fraud_score") val fraudScore: Int? = null,
     @SerialName("offer_name") val offerName: String? = null,
     @SerialName("aff_name") val affName: String? = null,
-    @SerialName("affiliate_code") val affiliateCode: String? = null
+    @SerialName("affiliate_code") val affiliateCode: String? = null,
+    @SerialName("source") val source: String? = null,
+    @SerialName("device_type") val deviceType: String? = null,
+    @SerialName("os") val os: String? = null
 )

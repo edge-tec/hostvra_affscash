@@ -11,6 +11,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.foundation.clickable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -119,6 +123,8 @@ fun AdminConversionsScreen(
 
 @Composable
 fun AdminConversionItem(conversion: Conversion) {
+    var expandClickId by remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -218,9 +224,10 @@ fun AdminConversionItem(conversion: Conversion) {
                     }
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = if (conversion.clickId.length > 12) conversion.clickId.take(12) + "..." else conversion.clickId,
+                        text = if (expandClickId) conversion.clickId else if (conversion.clickId.length > 12) conversion.clickId.take(12) + "..." else conversion.clickId,
                         style = MaterialTheme.typography.bodyMedium,
-                        fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace
+                        fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
+                        modifier = Modifier.clickable { expandClickId = !expandClickId }
                     )
                 }
                 Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
@@ -234,6 +241,33 @@ fun AdminConversionItem(conversion: Conversion) {
                 }
             }
             
+            if (!conversion.source.isNullOrEmpty() || !conversion.deviceType.isNullOrEmpty() || !conversion.os.isNullOrEmpty()) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    if (!conversion.source.isNullOrEmpty()) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(text = "Source", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+                            Text(text = conversion.source ?: "", style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
+                    if (!conversion.deviceType.isNullOrEmpty()) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(text = "Device", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+                            Text(text = conversion.deviceType?.replaceFirstChar { it.uppercase() } ?: "", style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
+                    if (!conversion.os.isNullOrEmpty()) {
+                        Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
+                            Text(text = "OS", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+                            Text(text = conversion.os ?: "", style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
             Divider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
             Spacer(modifier = Modifier.height(12.dp))
