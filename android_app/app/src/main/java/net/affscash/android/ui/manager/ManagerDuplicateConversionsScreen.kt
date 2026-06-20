@@ -193,44 +193,48 @@ fun DuplicateClusterView(group: DuplicateConversionGroup) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color(0xFFFEF2F2))
-                    .padding(16.dp),
+                    .padding(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Surface(
                     color = Color(0xFFEF4444),
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(6.dp)
                 ) {
                     Text(
                         "${group.dupCount} DUPLICATES",
                         color = Color.White,
-                        style = MaterialTheme.typography.labelSmall,
+                        fontSize = 10.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp)
                     )
                 }
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(8.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         "Offer: ${group.offerName}",
-                        style = MaterialTheme.typography.titleSmall,
+                        fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF991B1B)
+                        color = Color(0xFF991B1B),
+                        lineHeight = 16.sp
                     )
+                    Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         "IP: ${group.ipAddress}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFFB91C1C)
+                        fontSize = 11.sp,
+                        color = Color(0xFFB91C1C),
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                     )
                 }
             }
 
             // Rows
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(12.dp)) {
                 group.conversions.forEachIndexed { index, row ->
                     DuplicateRowView(row = row)
                     if (index < group.conversions.size - 1) {
                         HorizontalDivider(
-                            modifier = Modifier.padding(vertical = 12.dp),
+                            modifier = Modifier.padding(vertical = 10.dp),
                             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
                         )
                     }
@@ -242,18 +246,47 @@ fun DuplicateClusterView(group: DuplicateConversionGroup) {
 
 @Composable
 fun DuplicateRowView(row: DuplicateConversionRow) {
+    var expandId by remember { mutableStateOf(false) }
+    val displayId = if (expandId || row.conversionId.length <= 12) row.conversionId else row.conversionId.take(12) + "..."
+
     Column {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("Conv ID: ${row.conversionId}", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-            Text(row.convertedAt, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f))
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                "Conv ID: $displayId", 
+                fontSize = 12.sp, 
+                fontWeight = FontWeight.Bold, 
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .weight(1f)
+                    .androidx.compose.foundation.clickable { expandId = !expandId }
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                row.convertedAt, 
+                fontSize = 11.sp, 
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                maxLines = 1
+            )
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                "Affiliate: ${row.affiliateName} (#${row.affiliateId})", 
+                fontSize = 13.sp,
+                modifier = Modifier.weight(1f),
+                maxLines = 1,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                "$${(( row.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", 
+                fontSize = 14.sp, 
+                fontWeight = FontWeight.Bold, 
+                color = MaterialTheme.colorScheme.primary
+            )
         }
         Spacer(modifier = Modifier.height(6.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("Affiliate: ${row.affiliateName} (#${row.affiliateId})", style = MaterialTheme.typography.bodyMedium)
-            Text("$${(( row.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
             val (statusColor, statusBg) = when(row.status) {
                 "rejected" -> Color(0xFFEF4444) to Color(0xFFFEE2E2)
                 "approved" -> Color(0xFF059669) to Color(0xFFD1FAE5)
@@ -265,13 +298,20 @@ fun DuplicateRowView(row: DuplicateConversionRow) {
             ) {
                 Text(
                     row.status.uppercase(),
-                    style = MaterialTheme.typography.labelSmall,
+                    fontSize = 10.sp,
                     color = statusColor,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                 )
             }
-            Text("Txn: ${row.transactionId ?: "-"}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(
+                "Txn: ${row.transactionId ?: "-"}", 
+                fontSize = 11.sp, 
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                modifier = Modifier.padding(start = 8.dp)
+            )
         }
     }
 }
