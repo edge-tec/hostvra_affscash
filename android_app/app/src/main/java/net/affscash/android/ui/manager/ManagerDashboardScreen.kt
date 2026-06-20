@@ -67,7 +67,7 @@ fun ManagerDashboardScreen(
     Scaffold(
         topBar = {
             Surface(
-                modifier = Modifier.fillMaxWidth().background(PremiumUI.GlassPurple, RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)),
+                modifier = Modifier.fillMaxWidth().background(PremiumUI.PastelHeader, RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)),
                 color = Color.Transparent,
                 shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
             ) {
@@ -93,8 +93,9 @@ fun ManagerDashboardScreen(
                             
                             // Balance Pill
                             Surface(
-                                color = Color(0xFF10B981).copy(alpha = 0.15f),
-                                shape = RoundedCornerShape(12.dp),
+                                color = Color(0x59FFFFFF),
+                                shape = RoundedCornerShape(24.dp),
+                                border = BorderStroke(1.dp, Color(0x4DFFFFFF)),
                                 modifier = Modifier.padding(end = 8.dp),
                                 onClick = onNavigateToInvoices
                             ) {
@@ -105,13 +106,13 @@ fun ManagerDashboardScreen(
                                     Icon(
                                         Icons.Outlined.MonetizationOn,
                                         contentDescription = null,
-                                        tint = Color(0xFF10B981),
+                                        tint = Color(0xFF4ADE80),
                                         modifier = Modifier.size(16.dp)
                                     )
                                     Spacer(modifier = Modifier.width(4.dp))
                                     Text(
                                         "$$balance", 
-                                        color = Color(0xFF10B981),
+                                        color = Color(0xFF4ADE80),
                                         fontWeight = FontWeight.ExtraBold,
                                         style = MaterialTheme.typography.labelLarge
                                     )

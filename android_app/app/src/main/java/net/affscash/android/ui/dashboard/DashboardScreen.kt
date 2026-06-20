@@ -85,27 +85,27 @@ fun DashboardScreen(
                     
                     // Balance Pill
                     Surface(
-                        color = Color(0xFFDCFCE7),
-                        shape = RoundedCornerShape(8.dp),
-                        border = BorderStroke(1.dp, Color(0xFF86EFAC)),
+                        color = Color(0x59FFFFFF),
+                        shape = RoundedCornerShape(24.dp),
+                        border = BorderStroke(1.dp, Color(0x4DFFFFFF)),
                         modifier = Modifier.padding(end = 8.dp),
                         onClick = onNavigateToInvoices
                     ) {
                         Row(
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
                                 "$ $balance", 
-                                color = Color(0xFF15803D),
-                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF4ADE80),
+                                fontWeight = FontWeight.ExtraBold,
                                 style = MaterialTheme.typography.labelLarge
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Icon(
                                 Icons.Default.ArrowDropDown,
                                 contentDescription = "Dropdown",
-                                tint = Color(0xFF15803D),
+                                tint = Color(0xFF4ADE80),
                                 modifier = Modifier.size(16.dp)
                             )
                         }
@@ -151,7 +151,7 @@ fun DashboardScreen(
                     navigationIconContentColor = Color.White,
                     actionIconContentColor = Color.White
                 ),
-                modifier = Modifier.background(PremiumUI.GlassPurple)
+                modifier = Modifier.background(PremiumUI.PastelHeader)
             )
         }
     ) { paddingValues ->
