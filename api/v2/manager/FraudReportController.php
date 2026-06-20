@@ -26,11 +26,12 @@ if ($hasAffiliates) {
     try {
         $conversions = Database::fetchAll(
             "SELECT cv.conversion_id, cv.click_id, cv.status, cv.payout,
-                    cv.converted_at, cv.ip_address, cv.country, cv.device_type, cv.os_version, cv.user_agent, cv.goal_name,
+                    cv.converted_at, cv.ip_address, COALESCE(cv.country, ck.country) as country, cv.device_type, cv.os_version, cv.user_agent, cv.goal_name,
                     COALESCE(cv.rejection_reason, '') AS rejection_reason,
                     cv.rejected_at,
                     af.affiliate_code, CONCAT(u.first_name,' ',u.last_name) AS aff_name, af.id AS affiliate_id,
                     o.name AS offer_name,
+                    ck.city, ck.region,
                     fl.fraud_score   AS ipqs_score,
                     fl.is_vpn        AS ipqs_is_vpn,
                     fl.is_proxy      AS ipqs_is_proxy,
@@ -44,6 +45,7 @@ if ($hasAffiliates) {
              JOIN affiliates af ON af.id = cv.affiliate_id
              JOIN users u ON u.id = af.user_id
              LEFT JOIN offers o ON o.id = cv.offer_id
+             LEFT JOIN clicks ck ON ck.click_id = cv.click_id
              LEFT JOIN fraud_logs fl ON fl.click_id = cv.click_id
              WHERE cv.affiliate_id IN ($in)
                AND COALESCE(cv.is_hidden, 0) = 0

@@ -216,9 +216,15 @@ fun ManagerFraudConversionItem(cv: ManagerFraudConversion) {
             
             Spacer(modifier = Modifier.height(8.dp))
             
-            // IP & Click ID
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("IP: ${cv.ipAddress ?: "-"}", style = MaterialTheme.typography.bodySmall, color = Color(0xFF3B82F6))
+            // IP & Location
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text("IP: ${cv.ipAddress ?: "-"}", style = MaterialTheme.typography.bodySmall, color = Color(0xFF3B82F6))
+                    val city = cv.city?.takeIf { it.isNotBlank() } ?: "Unknown"
+                    val country = cv.country?.takeIf { it.isNotBlank() } ?: "Unknown"
+                    Text("$country | $city", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                
                 Text(
                     text = "Click ID: " + if (expandClickId) cv.clickId else if (cv.clickId.length > 12) cv.clickId.take(12) + "..." else cv.clickId,
                     style = MaterialTheme.typography.labelSmall,
@@ -229,17 +235,6 @@ fun ManagerFraudConversionItem(cv: ManagerFraudConversion) {
             }
             
             Spacer(modifier = Modifier.height(4.dp))
-            
-            // Location
-            val locParts = listOfNotNull(
-                cv.city?.takeIf { it.isNotBlank() },
-                cv.region?.takeIf { it.isNotBlank() },
-                cv.country?.takeIf { it.isNotBlank() }
-            )
-            if (locParts.isNotEmpty()) {
-                Text("Location: ${locParts.joinToString(", ")}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Spacer(modifier = Modifier.height(4.dp))
-            }
             
             // Device info
             Text("${cv.deviceType ?: "Unknown"} · ${cv.osVersion ?: "Unknown OS"}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)

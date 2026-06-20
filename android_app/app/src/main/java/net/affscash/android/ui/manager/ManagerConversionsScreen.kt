@@ -315,43 +315,25 @@ fun ManagerConversionItem(conversion: Conversion) {
                         Icon(Icons.Default.Router, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         Spacer(modifier = Modifier.width(8.dp))
                         
-                        val locParts = mutableListOf<String>()
-                        locParts.add(conversion.ipAddress)
-                        conversion.country?.takeIf { it.isNotBlank() }?.let { locParts.add(it) }
-                        val stateCityStr = listOfNotNull(
-                            conversion.region?.takeIf { it.isNotBlank() },
-                            conversion.city?.takeIf { it.isNotBlank() }
-                        ).joinToString(", ")
-                        if (stateCityStr.isNotEmpty()) locParts.add(stateCityStr)
-
-                        Text(text = locParts.joinToString(" | "), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        val country = conversion.country?.takeIf { it.isNotBlank() } ?: "Unknown"
+                        val city = conversion.city?.takeIf { it.isNotBlank() } ?: "Unknown"
+                        
+                        Text(
+                            text = "${conversion.ipAddress} | $country | $city", 
+                            style = MaterialTheme.typography.bodySmall, 
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
                 }
             }
             
-            val locParts = listOfNotNull(
-                conversion.city?.takeIf { it.isNotBlank() },
-                conversion.region?.takeIf { it.isNotBlank() },
-                conversion.country?.takeIf { it.isNotBlank() }
-            )
+            Spacer(modifier = Modifier.height(12.dp))
             
-            if (locParts.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(12.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.LocationOn, contentDescription = null, modifier = Modifier.size(14.dp), tint = Color.Gray)
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(text = "Location", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
-                        }
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(text = locParts.joinToString(", "), style = MaterialTheme.typography.bodyMedium)
-                    }
-                }
-            }
+            // Stats Row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
 
             if (!conversion.source.isNullOrEmpty() || !conversion.deviceType.isNullOrEmpty() || !conversion.os.isNullOrEmpty()) {
                 Spacer(modifier = Modifier.height(12.dp))
