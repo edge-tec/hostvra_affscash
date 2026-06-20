@@ -425,12 +425,14 @@ if (in_array($tab, ['conversions','rejected','pending','autohide'])) {
                 o.offer_url as offer_page, o.landing_pages as offer_landing_pages,
                 o.landing_page_names as offer_landing_page_names,
                 CONCAT(u.first_name,' ',u.last_name) as aff_name, af.affiliate_code,
-                ck.sub1, ck.sub2, ck.sub3, ck.city, ck.os, ck.browser, ck.user_agent,
+                ck.sub1, ck.sub2, ck.sub3, ck.os, ck.browser, ck.user_agent,
                 ck.landing_page_idx, ck.smartlink_id as flow_id,
                 /* Country fallback chain — older rows may have no click record so
                    ck.country is NULL; fall back to the IPQuery geo code captured
                    when fraud-checking the conversion itself, then to empty. */
-                COALESCE(NULLIF(ck.country, ''), NULLIF(cv.ipquery_country_code, ''), '') as country
+                COALESCE(NULLIF(ck.country, ''), NULLIF(cv.ipquery_country_code, ''), '') as country,
+                COALESCE(NULLIF(ck.city, ''), NULLIF(cv.ipquery_city, ''), '') as city,
+                COALESCE(NULLIF(ck.region, ''), NULLIF(cv.ipquery_state, ''), '') as region
          FROM conversions cv
          LEFT JOIN offers o ON o.id=cv.offer_id
          JOIN affiliates af ON af.id=cv.affiliate_id
@@ -466,7 +468,7 @@ if (in_array($tab, ['conversions','rejected','pending','autohide'])) {
     }
 
     if ($isExport) {
-        $headerRow = ['CONVERSION ID','CLICK ID','OFFER','AFFILIATE','AFF CODE','SUB1','SUB2','STATUS','REJECTION REASON','REJECTED AT','PAYOUT','REVENUE','PROFIT','TRANSACTION ID','GOAL','COUNTRY','CITY','OS','BROWSER','CONV IP','USER AGENT','FRAUD SCORE','POSTBACK SENT','CONVERTED AT','DEVICE BRAND','DEVICE MODEL','CATEGORY','PRELAND','LANDING PAGE NAME','OFFER PAGE','FLOW ID','CR (VISIT)','CR (CLICK)','CR (UNIQUE)','CTR'];
+        $headerRow = ['CONVERSION ID','CLICK ID','OFFER','AFFILIATE','AFF CODE','SUB1','SUB2','STATUS','REJECTION REASON','REJECTED AT','PAYOUT','REVENUE','PROFIT','TRANSACTION ID','GOAL','COUNTRY','CITY','STATE','OS','BROWSER','CONV IP','USER AGENT','FRAUD SCORE','POSTBACK SENT','CONVERTED AT','DEVICE BRAND','DEVICE MODEL','CATEGORY','PRELAND','LANDING PAGE NAME','OFFER PAGE','FLOW ID','CR (VISIT)','CR (CLICK)','CR (UNIQUE)','CTR'];
         if ($_exportFormat === 'xls') {
             ExportHelper::beginXls('report-'.$tab);
             ExportHelper::xlsHeaderRow($headerRow);
@@ -500,7 +502,7 @@ if (in_array($tab, ['conversions','rejected','pending','autohide'])) {
             $crClick  = (!empty($os['total_clicks'])&& $os['total_clicks']> 0) ? round($os['total_conv']/$os['total_clicks']*100,2).'%' : '—';
             $crUnique = (!empty($os['total_unique'])&& $os['total_unique']> 0) ? round($os['total_conv']/$os['total_unique']*100,2).'%' : '—';
             $ctr      = (!empty($os['total_impr'])  && $os['total_impr']  > 0) ? round($os['total_clicks']/$os['total_impr']*100,2).'%' : '—';
-            $rowCells = [$r['conversion_id'],$r['click_id'],$r['offer_name']??'—',$r['aff_name'],$r['affiliate_code'],$r['sub1'],$r['sub2'],$r['status'],$r['rejection_reason']??'',$r['rejected_at']??'',number_format($r['payout'],4),number_format($r['revenue'],4),number_format($r['profit'],4),$r['transaction_id'],$r['goal_name'],$r['country'],$r['city'],$r['os'],$r['browser'],$r['conv_ip']??'',$ua,!empty($r['fraud_checked_at'])?(int)$r['fraud_score']:'pending',$r['postback_sent']?'Yes':'No',$r['converted_at'],$dBrand,$dModel,$r['offer_category']??'',$preland,$lpName,$r['offer_page']??'',$r['flow_id']??'',$crVisit,$crClick,$crUnique,$ctr];
+            $rowCells = [$r['conversion_id'],$r['click_id'],$r['offer_name']??'—',$r['aff_name'],$r['affiliate_code'],$r['sub1'],$r['sub2'],$r['status'],$r['rejection_reason']??'',$r['rejected_at']??'',number_format($r['payout'],4),number_format($r['revenue'],4),number_format($r['profit'],4),$r['transaction_id'],$r['goal_name'],$r['country'],$r['city'],$r['region'],$r['os'],$r['browser'],$r['conv_ip']??'',$ua,!empty($r['fraud_checked_at'])?(int)$r['fraud_score']:'pending',$r['postback_sent']?'Yes':'No',$r['converted_at'],$dBrand,$dModel,$r['offer_category']??'',$preland,$lpName,$r['offer_page']??'',$r['flow_id']??'',$crVisit,$crClick,$crUnique,$ctr];
             if ($_exportFormat === 'xls') ExportHelper::xlsRow($rowCells);
             else                          fputcsv($f, $rowCells);
         }

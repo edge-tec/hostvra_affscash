@@ -31,6 +31,10 @@ class FraudIQ {
         // making the IPQS URL path invalid → API returns {success:false} → score 0.
         // IPv4 and IPv6 only contain [0-9a-fA-F:.] so no encoding is needed.
         // We strip any other characters defensively.
+        // Strip CIDR block from IPv6 addresses if present
+        if (strpos($ip, '/') !== false) {
+            $ip = explode('/', $ip)[0];
+        }
         $safeIp = preg_replace('/[^0-9a-fA-F:.]/', '', $ip);
 
         if ($safeIp === '') {
@@ -296,7 +300,10 @@ class FraudIQ {
         $blockThreshold = (int)($cfg['scamalytics_block_threshold'] ?? 80);
         $flagThreshold  = (int)($cfg['scamalytics_flag_threshold']  ?? 50);
 
-        // Sanitise IP — strip everything not valid in an IPv4/IPv6 address
+        // Sanitise IP — strip CIDR and everything not valid in an IPv4/IPv6 address
+        if (strpos($ip, '/') !== false) {
+            $ip = explode('/', $ip)[0];
+        }
         $safeIp = preg_replace('/[^0-9a-fA-F:.]/', '', $ip);
         if ($safeIp === '') {
             error_log('[Scamalytics] Invalid IP address — ip=' . $ip);
@@ -510,7 +517,10 @@ class FraudIQ {
             'asn'           => '',
         ];
 
-        // Strip any characters that are not valid in an IP address
+        // Strip CIDR and any characters that are not valid in an IP address
+        if (strpos($ip, '/') !== false) {
+            $ip = explode('/', $ip)[0];
+        }
         $safeIp = preg_replace('/[^0-9a-fA-F:.]/', '', $ip);
         if ($safeIp === '') {
             error_log('[IPQuery] Invalid IP address — ip=' . $ip);
@@ -631,6 +641,9 @@ class FraudIQ {
         // Sanitise + deduplicate IPs
         $safeIps = [];
         foreach ($ips as $ip) {
+            if (strpos((string)$ip, '/') !== false) {
+                $ip = explode('/', (string)$ip)[0];
+            }
             $s = preg_replace('/[^0-9a-fA-F:.]/', '', (string)$ip);
             if ($s !== '' && filter_var($s, FILTER_VALIDATE_IP,
                     FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false) {

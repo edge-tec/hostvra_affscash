@@ -566,6 +566,7 @@ try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_mobile`    
 try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_country`     VARCHAR(60)      DEFAULT NULL"); } catch (\Throwable $_e) {}
 try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_country_code` CHAR(2)         DEFAULT NULL"); } catch (\Throwable $_e) {}
 try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_city`        VARCHAR(100)     DEFAULT NULL"); } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_state`       VARCHAR(100)     DEFAULT NULL"); } catch (\Throwable $_e) {}
 try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_isp`         VARCHAR(200)     DEFAULT NULL"); } catch (\Throwable $_e) {}
 try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_org`         VARCHAR(200)     DEFAULT NULL"); } catch (\Throwable $_e) {}
 try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_asn`         VARCHAR(30)      DEFAULT NULL"); } catch (\Throwable $_e) {}
@@ -794,6 +795,9 @@ if (!file_exists($_fraudCfgPath)) {
 }
 
 $_convIp = trim($click['ip_address'] ?? '');
+if (strpos($_convIp, '/') !== false) {
+    $_convIp = explode('/', $_convIp)[0];
+}
 
 // Classify the IP so we know whether fraud APIs can actually use it:
 //   'public'  — valid, routable, non-private → safe to send to all APIs
@@ -870,6 +874,7 @@ if ($newConvDbId > 0) {
                     `ipquery_country`      = ?,
                     `ipquery_country_code` = ?,
                     `ipquery_city`         = ?,
+                    `ipquery_state`        = ?,
                     `ipquery_isp`          = ?,
                     `ipquery_org`          = ?,
                     `ipquery_asn`          = ?
@@ -885,6 +890,7 @@ if ($newConvDbId > 0) {
                 $_ipqResult['country'],
                 $_ipqResult['country_code'],
                 $_ipqResult['city'],
+                $_ipqResult['state'],
                 $_ipqResult['isp'],
                 $_ipqResult['org'],
                 $_ipqResult['asn'],

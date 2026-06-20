@@ -571,7 +571,7 @@ if ($notSent > 0 && in_array($tab, ['conversions','pending'])):
                     <th>OFFER</th><th>AFFILIATE</th><th>CLICK ID</th><th>CONVERSION ID</th>
                     <th>AFF CLICK ID</th><th>AFF SUB 2</th><th>STATUS</th>
                     <th>PAYOUT</th><th>REVENUE</th><th>PROFIT</th>
-                    <th>GOAL</th><th>TXN ID</th><th>COUNTRY</th><th>OS</th><th>BROWSER</th>
+                    <th>GOAL</th><th>TXN ID</th><th>COUNTRY</th><th>CITY</th><th>STATE</th><th>OS</th><th>BROWSER</th>
                     <th>CONV IP</th><th>USER AGENT</th>
                     <th>DEVICE BRAND</th><th>DEVICE MODEL</th>
                     <th>CATEGORY</th><th>PRELAND</th><th>LP NAME</th><th>OFFER PAGE</th><th>FLOW ID</th>
@@ -634,6 +634,8 @@ if ($notSent > 0 && in_array($tab, ['conversions','pending'])):
                 <td><?= Helpers::e($r['goal_name']?:'—') ?></td>
                 <td class="text-sm text-muted"><?= Helpers::e($r['transaction_id']?:'—') ?></td>
                 <td><?php if (!empty($r['country'])): ?><img src="https://flagcdn.com/16x12/<?= strtolower($r['country']) ?>.png" onerror="this.style.display='none'" style="vertical-align:middle;margin-right:3px"><?= Helpers::e($r['country']) ?><?php else: ?>—<?php endif; ?></td>
+                <td><?= Helpers::e($r['city'] ?: '—') ?></td>
+                <td><?= Helpers::e($r['region'] ?: '—') ?></td>
                 <td><?= Helpers::e($r['os']?:'—') ?></td>
                 <td><?= Helpers::e($r['browser']?:'—') ?></td>
                 <td style="font-family:monospace;font-size:11px;white-space:nowrap">
