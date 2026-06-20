@@ -190,7 +190,7 @@ fun ManagerDuplicateConversionsScreen(
                                 }
                             } else {
                                 items(uiState.response!!.groups) { group ->
-                                    DuplicateClusterView(group = group)
+                                    DuplicateClusterView(cluster = group)
                                 }
                             }
                         }

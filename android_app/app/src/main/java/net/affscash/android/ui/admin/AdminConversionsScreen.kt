@@ -266,13 +266,12 @@ fun AdminConversionItem(conversion: Conversion) {
                     }
                     Spacer(modifier = Modifier.height(4.dp))
                     
-                    val locParts = listOfNotNull(
-                        conversion.city?.takeIf { it.isNotBlank() },
-                        conversion.region?.takeIf { it.isNotBlank() },
-                        conversion.country?.takeIf { it.isNotBlank() }
-                    )
+                    val country = conversion.country?.takeIf { it.isNotBlank() && it.lowercase() != "unknown" } ?: "Unknown Country"
+                    val state = conversion.region?.takeIf { it.isNotBlank() && it.lowercase() != "unknown" } ?: "Unknown State"
+                    val city = conversion.city?.takeIf { it.isNotBlank() && it.lowercase() != "unknown" }
+                    val locStr = listOfNotNull(country, state, city).joinToString(", ")
                     Text(
-                        text = if (locParts.isNotEmpty()) locParts.joinToString(", ") else "Unknown", 
+                        text = locStr, 
                         style = MaterialTheme.typography.bodyMedium,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis

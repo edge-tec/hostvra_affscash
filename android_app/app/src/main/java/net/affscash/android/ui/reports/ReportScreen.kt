@@ -445,11 +445,13 @@ fun ConversionRowItem(conv: ConversionRow) {
             Spacer(modifier = Modifier.height(8.dp))
             
             // New Location / Device Info
-            val country = conv.country?.takeIf { it.isNotBlank() } ?: "Unknown"
-            val city = conv.city?.takeIf { it.isNotBlank() } ?: "Unknown"
+            val country = conv.country?.takeIf { it.isNotBlank() && it.lowercase() != "unknown" } ?: "Unknown Country"
+            val state = conv.region?.takeIf { it.isNotBlank() && it.lowercase() != "unknown" } ?: "Unknown State"
+            val city = conv.city?.takeIf { it.isNotBlank() && it.lowercase() != "unknown" }
             val ipAddress = conv.ipAddress?.takeIf { it.isNotBlank() } ?: "Unknown IP"
             
-            Text("$ipAddress | $country | $city", fontSize = 11.sp, color = Color.Gray)
+            val locStr = listOfNotNull(country, state, city).joinToString(" | ")
+            Text("$ipAddress | $locStr", fontSize = 11.sp, color = Color.Gray)
             
             val devInfo = listOfNotNull(
                 conv.deviceType?.replaceFirstChar { it.uppercase() }?.takeIf { it.isNotBlank() },

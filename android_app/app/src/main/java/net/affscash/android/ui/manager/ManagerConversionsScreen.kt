@@ -314,11 +314,14 @@ fun ManagerConversionItem(conversion: Conversion) {
                         Icon(Icons.Default.Router, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         Spacer(modifier = Modifier.width(8.dp))
                         
-                        val country = conversion.country?.takeIf { it.isNotBlank() } ?: "Unknown"
-                        val city = conversion.city?.takeIf { it.isNotBlank() } ?: "Unknown"
+                        val country = conversion.country?.takeIf { it.isNotBlank() && it.lowercase() != "unknown" } ?: "Unknown Country"
+                        val state = conversion.region?.takeIf { it.isNotBlank() && it.lowercase() != "unknown" } ?: "Unknown State"
+                        val city = conversion.city?.takeIf { it.isNotBlank() && it.lowercase() != "unknown" }
+                        
+                        val locStr = listOfNotNull(country, state, city).joinToString(" | ")
                         
                         Text(
-                            text = "${conversion.ipAddress} | $country | $city", 
+                            text = "${conversion.ipAddress} | $locStr", 
                             style = MaterialTheme.typography.bodySmall, 
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )

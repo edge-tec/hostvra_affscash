@@ -266,9 +266,11 @@ fun ManagerFraudConversionItem(cv: ManagerFraudConversion) {
                     Text("IP: ${cv.ipAddress ?: "-"}", fontSize = 11.sp, color = Color(0xFF3B82F6))
                 }
                 
-                val city = cv.city?.takeIf { it.isNotBlank() } ?: "Unknown"
-                val country = cv.country?.takeIf { it.isNotBlank() } ?: "Unknown"
-                Text("$country | $city", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                val country = cv.country?.takeIf { it.isNotBlank() && it.lowercase() != "unknown" } ?: "Unknown Country"
+                val state = cv.region?.takeIf { it.isNotBlank() && it.lowercase() != "unknown" } ?: "Unknown State"
+                val city = cv.city?.takeIf { it.isNotBlank() && it.lowercase() != "unknown" }
+                val locStr = listOfNotNull(country, state, city).joinToString(" | ")
+                Text(locStr, fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             
             Spacer(modifier = Modifier.height(2.dp))
