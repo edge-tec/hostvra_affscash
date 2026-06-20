@@ -216,6 +216,7 @@ fun AdminConversionItem(conversion: Conversion) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
+                // Left Column: Click ID & Source
                 Column(modifier = Modifier.weight(1f)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.AdsClick, contentDescription = null, modifier = Modifier.size(14.dp), tint = Color.Gray)
@@ -229,7 +230,23 @@ fun AdminConversionItem(conversion: Conversion) {
                         fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
                         modifier = Modifier.clickable { expandClickId = !expandClickId }
                     )
+                    
+                    Spacer(modifier = Modifier.height(8.dp))
+                    
+                    // Source
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Link, contentDescription = null, modifier = Modifier.size(14.dp), tint = Color.Gray)
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(text = "Source", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = conversion.source?.takeIf { it.isNotBlank() } ?: "Direct / Unknown", 
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
+                
+                // Right Column: IP Address & Location
                 Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.Router, contentDescription = null, modifier = Modifier.size(14.dp), tint = Color.Gray)
@@ -238,45 +255,37 @@ fun AdminConversionItem(conversion: Conversion) {
                     }
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(text = conversion.ipAddress, style = MaterialTheme.typography.bodyMedium)
+                    
+                    Spacer(modifier = Modifier.height(8.dp))
+                    
+                    // Location
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.LocationOn, contentDescription = null, modifier = Modifier.size(14.dp), tint = Color.Gray)
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(text = "Location", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    
+                    val locParts = listOfNotNull(
+                        conversion.city?.takeIf { it.isNotBlank() },
+                        conversion.region?.takeIf { it.isNotBlank() },
+                        conversion.country?.takeIf { it.isNotBlank() }
+                    )
+                    Text(
+                        text = if (locParts.isNotEmpty()) locParts.joinToString(", ") else "Unknown", 
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
             }
             
-            val locParts = listOfNotNull(
-                conversion.city?.takeIf { it.isNotBlank() },
-                conversion.region?.takeIf { it.isNotBlank() },
-                conversion.country?.takeIf { it.isNotBlank() }
-            )
-            
-            if (locParts.isNotEmpty()) {
+            if (!conversion.deviceType.isNullOrEmpty() || !conversion.os.isNullOrEmpty()) {
                 Spacer(modifier = Modifier.height(12.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.LocationOn, contentDescription = null, modifier = Modifier.size(14.dp), tint = Color.Gray)
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(text = "Location", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
-                        }
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(text = locParts.joinToString(", "), style = MaterialTheme.typography.bodyMedium)
-                    }
-                }
-            }
-
-            if (!conversion.source.isNullOrEmpty() || !conversion.deviceType.isNullOrEmpty() || !conversion.os.isNullOrEmpty()) {
-                Spacer(modifier = Modifier.height(12.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    if (!conversion.source.isNullOrEmpty()) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(text = "Source", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
-                            Text(text = conversion.source ?: "", style = MaterialTheme.typography.bodyMedium)
-                        }
-                    }
                     if (!conversion.deviceType.isNullOrEmpty()) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(text = "Device", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
