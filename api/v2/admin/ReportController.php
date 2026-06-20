@@ -290,7 +290,9 @@ try {
                         COALESCE(sl.name, 'Unknown') as smartlink_name,
                         COALESCE(o.name, 'Custom') as offer_name,
                         CONCAT(u.first_name,' ',u.last_name) as aff_name, af.affiliate_code, af.id as affiliate_id,
-                        c.country
+                        COALESCE(NULLIF(c.country,''), NULLIF(cv.ipquery_country_code,'')) as country,
+                        COALESCE(NULLIF(c.city,''), NULLIF(cv.ipquery_city,'')) as city,
+                        COALESCE(NULLIF(c.region,''), NULLIF(cv.ipquery_state,'')) as region
                  FROM conversions cv
                  JOIN clicks c ON c.click_id = cv.click_id
                  LEFT JOIN smartlinks sl ON sl.id = c.smartlink_id

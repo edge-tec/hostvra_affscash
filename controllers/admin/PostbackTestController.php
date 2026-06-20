@@ -187,6 +187,10 @@ if (($_GET['action'] ?? '') === 'run_test') {
         'goal_name'      => 'Postback Test',
         'ip_address'     => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1',
         'approved_at'    => date('Y-m-d H:i:s'),
+        'country'        => 'XX',
+        'ipquery_country_code' => 'XX',
+        'ipquery_city'         => 'Test',
+        'ipquery_state'        => 'Test',
     ];
 
     // Optionally add is_hidden / hide_reason / postback_sent if columns exist

@@ -639,6 +639,23 @@ if ($_lpIdx >= 0 && !empty($click['landing_pages'])) {
 $_referrer = substr($click['referer'] ?? '', 0, 2000);
 
 $newConvDbId = 0;
+
+// ── Resolve geo data for conversion record ─────────────────────────────
+// Priority: click record geo → re-run IP geolocation on conversion IP
+$_convCountry = $click['country']  ?? '';
+$_convCity    = $click['city']     ?? '';
+$_convRegion  = $click['region']   ?? '';
+
+// If click didn't have geo data, re-run the lookup using the conversion IP
+if ($_convCountry === '' || $_convCity === '') {
+    try {
+        $_convGeo = Helpers::getGeoInfo($click['ip_address']);
+        if ($_convCountry === '') $_convCountry = $_convGeo['country'] ?? '';
+        if ($_convCity    === '') $_convCity    = $_convGeo['city']    ?? '';
+        if ($_convRegion  === '') $_convRegion  = $_convGeo['region']  ?? '';
+    } catch (\Throwable $_geoEx) {}
+}
+
 Database::begin();
 try {
     $newConvDbId = Database::insert('conversions', [
@@ -654,6 +671,10 @@ try {
         'transaction_id' => $txnId,
         'goal_name'      => $goalName,
         'ip_address'     => $click['ip_address'],
+        'country'        => $_convCountry ?: null,
+        'ipquery_country_code' => $_convCountry ?: null,
+        'ipquery_city'         => $_convCity    ?: null,
+        'ipquery_state'        => $_convRegion  ?: null,
         'is_hidden'      => $isAutoHidden ? 1 : 0,
         'hide_reason'    => $isAutoHidden ? $hideReason : '',
         'rejection_reason'=> !empty($rejectionReason) ? $rejectionReason : null,
@@ -661,6 +682,7 @@ try {
         'user_agent'     => $_ua ?: null,
         'device_brand'   => $_devBrand ?: null,
         'device_model'   => $_devModel ?: null,
+        'device_type'    => $click['device_type'] ?? null,
         'os_version'     => $_osVer ?: null,
         'landing_page'   => $_lpUrl ?: null,
         'referrer'       => $_referrer ?: null,

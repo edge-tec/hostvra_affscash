@@ -188,49 +188,97 @@ class Helpers {
 
     public static function getGeoInfo(string $ip): array {
         $default = ['country' => '', 'region' => '', 'city' => '', 'isp' => '', 'proxy' => false, 'hosting' => false];
-        if ($ip === '127.0.0.1' || $ip === '::1' || $ip === '0.0.0.0') return $default;
-        
-        $isIpv6 = filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
-        $ctx = stream_context_create(['http' => ['timeout' => 2]]);
-        
+
+        // Skip local/loopback/invalid IPs
+        if ($ip === '' || $ip === '127.0.0.1' || $ip === '::1' || $ip === '0.0.0.0') return $default;
+        if (!filter_var($ip, FILTER_VALIDATE_IP)) return $default;
+
+        // Normalise IPv6: expand compressed notation (e.g. ::ffff:1.2.3.4 → mapped IPv4)
+        $isIpv6 = filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false;
+        if ($isIpv6) {
+            // Convert IPv4-mapped IPv6 (::ffff:x.x.x.x) to plain IPv4 for better API compat
+            if (preg_match('/^::ffff:(\d+\.\d+\.\d+\.\d+)$/i', $ip, $m)) {
+                $ip = $m[1];
+                $isIpv6 = false;
+            } else {
+                // Expand compressed IPv6 to full form for API compatibility
+                $ip = inet_ntop(inet_pton($ip)) ?: $ip;
+            }
+        }
+
+        // --- Provider 1: ip-api.com (free, supports IPv4 + IPv6 batch, 45 req/min) ---
         try {
-            // ip-api.com free tier only supports IPv4
-            if (!$isIpv6) {
-                $url = "http://ip-api.com/json/{$ip}?fields=status,country,countryCode,regionName,city,isp,proxy,hosting";
-                $json = @file_get_contents($url, false, $ctx);
-                if ($json) {
-                    $data = json_decode($json, true);
-                    if ($data && isset($data['status']) && $data['status'] === 'success') {
-                        return [
-                            'country' => $data['countryCode'] ?? '',
-                            'region'  => $data['regionName'] ?? '',
-                            'city'    => $data['city'] ?? '',
-                            'isp'     => $data['isp'] ?? '',
-                            'proxy'   => (bool)($data['proxy'] ?? false),
-                            'hosting' => (bool)($data['hosting'] ?? false),
-                        ];
-                    }
+            $ctx = stream_context_create(['http' => [
+                'timeout'       => 4,
+                'ignore_errors' => true,
+            ]]);
+            $url = "http://ip-api.com/json/" . urlencode($ip)
+                 . "?fields=status,country,countryCode,regionName,city,isp,proxy,hosting";
+            $json = @file_get_contents($url, false, $ctx);
+            if ($json !== false) {
+                $data = json_decode($json, true);
+                if ($data && ($data['status'] ?? '') === 'success') {
+                    return [
+                        'country' => $data['countryCode']  ?? '',
+                        'region'  => $data['regionName']   ?? '',
+                        'city'    => $data['city']         ?? '',
+                        'isp'     => $data['isp']          ?? '',
+                        'proxy'   => (bool)($data['proxy']   ?? false),
+                        'hosting' => (bool)($data['hosting'] ?? false),
+                    ];
                 }
             }
-            
-            // Fallback to ipwho.is for IPv6 or if ip-api failed
-            $urlFallback = "http://ipwho.is/{$ip}";
-            $jsonFallback = @file_get_contents($urlFallback, false, $ctx);
-            if ($jsonFallback) {
-                $data = json_decode($jsonFallback, true);
-                if ($data && isset($data['success']) && $data['success'] === true) {
+        } catch (\Throwable $e) {
+            // silent — try fallback
+        }
+
+        // --- Provider 2: ipwho.is (supports IPv4 + IPv6, no key required) ---
+        try {
+            $ctx2 = stream_context_create(['http' => [
+                'timeout'       => 5,
+                'ignore_errors' => true,
+            ]]);
+            $json2 = @file_get_contents("https://ipwho.is/" . urlencode($ip), false, $ctx2);
+            if ($json2 !== false) {
+                $data2 = json_decode($json2, true);
+                if ($data2 && ($data2['success'] ?? false) === true) {
                     return [
-                        'country' => $data['country_code'] ?? '',
-                        'region'  => $data['region'] ?? '',
-                        'city'    => $data['city'] ?? '',
-                        'isp'     => $data['connection']['isp'] ?? '',
-                        'proxy'   => false, // free tier of ipwho.is doesn't provide proxy
+                        'country' => $data2['country_code'] ?? '',
+                        'region'  => $data2['region']       ?? '',
+                        'city'    => $data2['city']         ?? '',
+                        'isp'     => $data2['connection']['isp'] ?? '',
+                        'proxy'   => false,
                         'hosting' => false,
                     ];
                 }
             }
-        } catch (\Exception $e) {}
-        
+        } catch (\Throwable $e) {
+            // silent — try fallback
+        }
+
+        // --- Provider 3: ipapi.co (supports IPv4 + IPv6, 1000/day free) ---
+        try {
+            $ctx3 = stream_context_create(['http' => [
+                'timeout'       => 5,
+                'ignore_errors' => true,
+                'header'        => "User-Agent: AffsCash/2.0\r\n",
+            ]]);
+            $json3 = @file_get_contents("https://ipapi.co/" . urlencode($ip) . "/json/", false, $ctx3);
+            if ($json3 !== false) {
+                $data3 = json_decode($json3, true);
+                if ($data3 && !isset($data3['error'])) {
+                    return [
+                        'country' => $data3['country_code'] ?? '',
+                        'region'  => $data3['region']       ?? '',
+                        'city'    => $data3['city']         ?? '',
+                        'isp'     => $data3['org']          ?? '',
+                        'proxy'   => false,
+                        'hosting' => false,
+                    ];
+                }
+            }
+        } catch (\Throwable $e) {}
+
         return $default;
     }
 

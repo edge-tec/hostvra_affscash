@@ -743,7 +743,11 @@ if ($tab === 'sl_conversions') {
                     COALESCE(sl.name, '— Unknown —') as smartlink_name,
                     COALESCE(o.name,  '— Custom URL —') as offer_name,
                     CONCAT(u.first_name,' ',u.last_name) as aff_name, af.affiliate_code,
-                    ck.sub1, ck.sub2, ck.country, ck.os, ck.browser, ck.device_type
+                    ck.sub1, ck.sub2,
+                    COALESCE(NULLIF(ck.country,''), NULLIF(cv.ipquery_country_code,'')) as country,
+                    COALESCE(NULLIF(ck.city,''), NULLIF(cv.ipquery_city,'')) as city,
+                    COALESCE(NULLIF(ck.region,''), NULLIF(cv.ipquery_state,'')) as region,
+                    ck.os, ck.browser, ck.device_type
              FROM conversions cv
              JOIN clicks ck ON ck.click_id = cv.click_id
              LEFT JOIN smartlinks sl ON sl.id = ck.smartlink_id
@@ -761,7 +765,7 @@ if ($tab === 'sl_conversions') {
         header('Content-Disposition: attachment; filename="sl-conversion-report-'.date('Y-m-d').'.csv"');
         $f = fopen('php://output', 'w');
         fwrite($f, "\xEF\xBB\xBF");
-        fputcsv($f, ['SMARTLINK','OFFER','AFFILIATE','AFF CODE','CLICK ID','CONVERSION ID','SUB1','SUB2','STATUS','PAYOUT','REVENUE','PROFIT','GOAL','TXN ID','COUNTRY','OS','BROWSER','DEVICE','POSTBACK SENT','CONVERTED AT']);
+        fputcsv($f, ['SMARTLINK','OFFER','AFFILIATE','AFF CODE','CLICK ID','CONVERSION ID','SUB1','SUB2','STATUS','PAYOUT','REVENUE','PROFIT','GOAL','TXN ID','COUNTRY','CITY','STATE','OS','BROWSER','DEVICE','POSTBACK SENT','CONVERTED AT']);
         foreach ($slConversions as $r) {
             fputcsv($f, [
                 $r['smartlink_name'], $r['offer_name'], $r['aff_name'], $r['affiliate_code'],
@@ -769,7 +773,8 @@ if ($tab === 'sl_conversions') {
                 number_format((float)$r['payout'], 4), number_format((float)$r['revenue'], 4),
                 number_format((float)$r['profit'], 4),
                 $r['goal_name'] ?? '—', $r['transaction_id'] ?? '—',
-                $r['country'], $r['os'], $r['browser'], $r['device_type'],
+                $r['country'], $r['city'] ?? '', $r['region'] ?? '',
+                $r['os'], $r['browser'], $r['device_type'],
                 $r['postback_sent'] ? 'Yes' : 'No', $r['converted_at'],
             ]);
         }

@@ -137,44 +137,84 @@ class Activity {
     public static function geoLookup(string $ip): array {
         $local = ['127.0.0.1','::1','0.0.0.0'];
         if (in_array($ip, $local) || str_starts_with($ip,'192.168.') || str_starts_with($ip,'10.')) {
-            return ['country'=>'Local','country_code'=>'LO','city'=>'Localhost'];
+            return ['country'=>'Local','country_code'=>'LO','city'=>'Localhost','region'=>''];
         }
+
+        // Validate and normalise IPv6
+        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+            return ['country'=>'Unknown','country_code'=>'','city'=>'Unknown','region'=>''];
+        }
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            if (preg_match('/^::ffff:(\d+\.\d+\.\d+\.\d+)$/i', $ip, $m)) {
+                $ip = $m[1]; // convert mapped IPv4
+            } else {
+                $ip = inet_ntop(inet_pton($ip)) ?: $ip;
+            }
+        }
+
+        // Ensure region column exists in cache table
+        try {
+            self::ensureTables();
+            Database::query("ALTER TABLE `ip_geo_cache` ADD COLUMN `region` VARCHAR(100) DEFAULT NULL AFTER `city`");
+        } catch (\Throwable $_) {}
 
         // Check DB cache (1 week TTL)
         try {
-            self::ensureTables();
             $cached = Database::fetchOne(
-                "SELECT country,country_code,city FROM ip_geo_cache WHERE ip_address=? AND cached_at > DATE_SUB(NOW(), INTERVAL 7 DAY)",
+                "SELECT country,country_code,city,COALESCE(region,'') as region FROM ip_geo_cache WHERE ip_address=? AND cached_at > DATE_SUB(NOW(), INTERVAL 7 DAY)",
                 [$ip]
             );
             if ($cached) return $cached;
-        } catch (Exception $e) {}
+        } catch (\Throwable $e) {}
 
-        // Fetch from ip-api.com
-        $result = ['country'=>'Unknown','country_code'=>'','city'=>'Unknown'];
+        // Fetch from ip-api.com (supports IPv4 + IPv6)
+        $result = ['country'=>'Unknown','country_code'=>'','city'=>'Unknown','region'=>''];
         try {
-            $ctx = stream_context_create(['http'=>['timeout'=>3,'ignore_errors'=>true]]);
-            $raw = @file_get_contents("http://ip-api.com/json/{$ip}?fields=status,country,countryCode,city", false, $ctx);
-            if ($raw) {
+            $ctx = stream_context_create(['http'=>['timeout'=>4,'ignore_errors'=>true]]);
+            $raw = @file_get_contents(
+                "http://ip-api.com/json/" . urlencode($ip) . "?fields=status,country,countryCode,regionName,city",
+                false, $ctx
+            );
+            if ($raw !== false) {
                 $data = json_decode($raw, true);
                 if (!empty($data['status']) && $data['status'] === 'success') {
                     $result = [
                         'country'      => $data['country']     ?? 'Unknown',
                         'country_code' => $data['countryCode'] ?? '',
                         'city'         => $data['city']        ?? 'Unknown',
+                        'region'       => $data['regionName']  ?? '',
                     ];
                 }
             }
-        } catch (Exception $e) {}
+        } catch (\Throwable $e) {}
+
+        // Fallback: ipwho.is (supports IPv4 + IPv6)
+        if ($result['country_code'] === '') {
+            try {
+                $ctx2 = stream_context_create(['http'=>['timeout'=>5,'ignore_errors'=>true]]);
+                $raw2 = @file_get_contents("https://ipwho.is/" . urlencode($ip), false, $ctx2);
+                if ($raw2 !== false) {
+                    $data2 = json_decode($raw2, true);
+                    if ($data2 && ($data2['success'] ?? false) === true) {
+                        $result = [
+                            'country'      => $data2['country']      ?? 'Unknown',
+                            'country_code' => $data2['country_code'] ?? '',
+                            'city'         => $data2['city']         ?? 'Unknown',
+                            'region'       => $data2['region']       ?? '',
+                        ];
+                    }
+                }
+            } catch (\Throwable $e) {}
+        }
 
         // Cache result
         try {
             Database::query(
-                "INSERT INTO ip_geo_cache (ip_address,country,country_code,city,cached_at) VALUES (?,?,?,?,NOW())
-                 ON DUPLICATE KEY UPDATE country=VALUES(country),country_code=VALUES(country_code),city=VALUES(city),cached_at=NOW()",
-                [$ip, $result['country'], $result['country_code'], $result['city']]
+                "INSERT INTO ip_geo_cache (ip_address,country,country_code,city,region,cached_at) VALUES (?,?,?,?,?,NOW())
+                 ON DUPLICATE KEY UPDATE country=VALUES(country),country_code=VALUES(country_code),city=VALUES(city),region=VALUES(region),cached_at=NOW()",
+                [$ip, $result['country'], $result['country_code'], $result['city'], $result['region']]
             );
-        } catch (Exception $e) {}
+        } catch (\Throwable $e) {}
 
         return $result;
     }

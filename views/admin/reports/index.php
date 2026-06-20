@@ -1125,13 +1125,13 @@ $_slcPostbacks  = count(array_filter($slConversions ?? [], fn($r) => $r['postbac
                     <th>CLICK ID</th><th>CONVERSION ID</th>
                     <th>SUB1</th><th>SUB2</th><th>STATUS</th>
                     <th>PAYOUT</th><th>REVENUE</th><th>PROFIT</th>
-                    <th>GOAL</th><th>TXN ID</th><th>COUNTRY</th><th>OS</th><th>BROWSER</th><th>DEVICE</th>
+                    <th>GOAL</th><th>TXN ID</th><th>COUNTRY</th><th>CITY</th><th>STATE</th><th>OS</th><th>BROWSER</th><th>DEVICE</th>
                     <th>POSTBACK</th><th>CONVERTED AT</th>
                 </tr>
             </thead>
             <tbody>
             <?php if (empty($slConversions)): ?>
-            <tr><td colspan="19" class="text-center text-muted" style="padding:32px">No SmartLink conversions for selected filters</td></tr>
+            <tr><td colspan="21" class="text-center text-muted" style="padding:32px">No SmartLink conversions for selected filters</td></tr>
             <?php else: foreach ($slConversions as $r):
                 $profit = (float)$r['revenue'] - (float)$r['payout'];
                 $bm = ['approved'=>'success','pending'=>'warning','rejected'=>'danger','chargebacked'=>'muted'];
@@ -1156,6 +1156,8 @@ $_slcPostbacks  = count(array_filter($slConversions ?? [], fn($r) => $r['postbac
                 <td><?= Helpers::e($r['goal_name']?:'—') ?></td>
                 <td class="text-muted" style="font-size:11px"><?= Helpers::e($r['transaction_id']?:'—') ?></td>
                 <td><?php if (!empty($r['country'])): ?><img src="https://flagcdn.com/16x12/<?= strtolower($r['country']) ?>.png" onerror="this.style.display='none'" style="vertical-align:middle;margin-right:3px"><?= Helpers::e($r['country']) ?><?php else: ?>—<?php endif; ?></td>
+                <td><?= Helpers::e($r['city']??'—') ?></td>
+                <td><?= Helpers::e($r['region']??'—') ?></td>
                 <td><?= Helpers::e($r['os']?:'—') ?></td>
                 <td><?= Helpers::e($r['browser']?:'—') ?></td>
                 <td><?= Helpers::e($r['device_type']?:'—') ?></td>
@@ -1319,7 +1321,7 @@ $(function() {
     dtInit('tbl-conv',    { destroy:true, pageLength:50, order:[[17,'desc']], scrollX:true, language:{search:'Search:',lengthMenu:'Show _MENU_ entries',emptyTable:'No data for selected filters'} });
     dtInit('tbl-postback',  { destroy:true, pageLength:50, order:[[12,'desc']], scrollX:true, language:{search:'Search:',lengthMenu:'Show _MENU_ entries',emptyTable:'No postback logs found'} });
     dtInit('tbl-sl-clicks', { destroy:true, pageLength:50, order:[[17,'desc']], scrollX:true, language:{search:'Search:',lengthMenu:'Show _MENU_ entries',emptyTable:'No SmartLink clicks for selected filters'} });
-    dtInit('tbl-sl-conv',   { destroy:true, pageLength:50, order:[[18,'desc']], scrollX:true, language:{search:'Search:',lengthMenu:'Show _MENU_ entries',emptyTable:'No SmartLink conversions for selected filters'} });
+    dtInit('tbl-sl-conv',   { destroy:true, pageLength:50, order:[[20,'desc']], scrollX:true, language:{search:'Search:',lengthMenu:'Show _MENU_ entries',emptyTable:'No SmartLink conversions for selected filters'} });
     // SmartLink Affiliate Performance: only 13 columns, fits without DataTables'
     // own scroll wrapper. Letting the parent .table-wrap (overflow-x:auto)
     // handle horizontal scroll fixes the header/body column misalignment that

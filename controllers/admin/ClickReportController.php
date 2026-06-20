@@ -42,6 +42,19 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
             require_once BASE_PATH . '/core/PostbackFirer.php';
             PostbackFirer::ensurePostbackSentColumn();
             try {
+                // Resolve geo data from click, fallback to IP lookup
+                $_mCountry = $click['country']  ?? '';
+                $_mCity    = $click['city']     ?? '';
+                $_mRegion  = $click['region']   ?? '';
+                if ($_mCountry === '' || $_mCity === '') {
+                    try {
+                        $_mGeo = Helpers::getGeoInfo($click['ip_address'] ?? '');
+                        if ($_mCountry === '') $_mCountry = $_mGeo['country'] ?? '';
+                        if ($_mCity    === '') $_mCity    = $_mGeo['city']    ?? '';
+                        if ($_mRegion  === '') $_mRegion  = $_mGeo['region']  ?? '';
+                    } catch (\Throwable $_) {}
+                }
+
                 Database::insert('conversions', [
                     'conversion_id' => $newConvId,
                     'click_id'      => $clickId,
@@ -56,6 +69,10 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
                     'is_hidden'     => 0,
                     'hide_reason'   => '',
                     'ip_address'    => $click['ip_address'] ?? '',
+                    'country'              => $_mCountry ?: null,
+                    'ipquery_country_code' => $_mCountry ?: null,
+                    'ipquery_city'         => $_mCity    ?: null,
+                    'ipquery_state'        => $_mRegion  ?: null,
                     'postback_sent' => 0,
                 ]);
                 Database::query("UPDATE affiliates SET balance=balance+? WHERE id=?", [$payout, $click['affiliate_id']]);
