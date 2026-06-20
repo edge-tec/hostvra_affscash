@@ -2,6 +2,10 @@
 Auth::check('admin');
 $pageTitle = 'Reports';
 
+// Ensure required columns exist for UI fallback queries
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_city` VARCHAR(100) DEFAULT NULL"); } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_state` VARCHAR(100) DEFAULT NULL"); } catch (\Throwable $_e) {}
+
 $tab     = Helpers::get('tab') ?: 'performance';
 $from    = Helpers::get('from') ?: date('Y-m-01');
 $to      = Helpers::get('to')   ?: date('Y-m-d');
