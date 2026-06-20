@@ -18,10 +18,11 @@ class ReportRepository @Inject constructor(
         to: String?,
         offerId: Int?,
         country: String?,
+        city: String?,
         sub1: String?
     ): Result<ReportResponse> = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.getReports(tab, from, to, offerId, country, sub1)
+            val response = apiService.getReports(tab, from, to, offerId, country, city, sub1)
             if (response.isSuccessful) {
                 response.body()?.let {
                     if (it.success) return@withContext Result.success(it)

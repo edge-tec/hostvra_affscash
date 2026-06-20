@@ -12,12 +12,14 @@ try {
         $offers = Database::fetchAll("SELECT id, name FROM offers ORDER BY name");
         $affiliates = Database::fetchAll("SELECT af.id, CONCAT(u.first_name,' ',u.last_name) as name, af.affiliate_code FROM affiliates af JOIN users u ON u.id=af.user_id ORDER BY name");
         $countries = Database::fetchAll("SELECT DISTINCT country FROM clicks WHERE country != '' ORDER BY country");
+        $cities = Database::fetchAll("SELECT DISTINCT city FROM clicks WHERE city != '' AND city IS NOT NULL ORDER BY city");
         
         echo json_encode([
             'status' => 'success',
             'offers' => $offers,
             'affiliates' => $affiliates,
-            'countries' => array_column($countries, 'country')
+            'countries' => array_column($countries, 'country'),
+            'cities' => array_column($cities, 'city')
         ]);
         exit;
     }
@@ -28,6 +30,7 @@ try {
     $offerId = (int)($_GET['offer_id'] ?? 0);
     $affId   = (int)($_GET['affiliate_id'] ?? 0);
     $country = trim($_GET['country'] ?? '');
+    $city    = trim($_GET['city'] ?? '');
     $sub1    = trim($_GET['sub1'] ?? '');
     $limit   = min((int)($_GET['limit'] ?? 1000), 5000); // Mobile default
     $slId    = (int)($_GET['sl_id'] ?? 0);
@@ -85,6 +88,7 @@ try {
             $clkWhere = array_merge(['c.clicked_at BETWEEN ? AND ?'], str_replace('offer_id', 'c.offer_id', str_replace('affiliate_id', 'c.affiliate_id', $baseWhere)));
             $clkParams = array_merge([$dateFrom, $dateTo], $baseParams);
             if ($country !== '' && $groupBy !== 'country') { $clkWhere[] = 'c.country = ?'; $clkParams[] = strtoupper($country); }
+            if ($city !== '')                              { $clkWhere[] = 'c.city = ?'; $clkParams[] = $city; }
             if ($sub1    !== '' && $groupBy !== 'sub')     { $clkWhere[] = 'c.sub1 LIKE ?'; $clkParams[] = '%'.$sub1.'%'; }
             $whereStr = implode(' AND ', $clkWhere);
 
@@ -153,7 +157,8 @@ try {
         $clkWhere = array_merge(['c.clicked_at BETWEEN ? AND ?'], str_replace('offer_id', 'c.offer_id', str_replace('affiliate_id', 'c.affiliate_id', $baseWhere)));
         $clkParams = array_merge([$dateFrom, $dateTo], $baseParams);
         if ($country !== '') { $clkWhere[] = 'c.country = ?'; $clkParams[] = strtoupper($country); }
-        if ($sub1 !== '') { $clkWhere[] = 'c.sub1 LIKE ?'; $clkParams[] = '%'.$sub1.'%'; }
+        if ($city !== '')    { $clkWhere[] = 'c.city = ?';    $clkParams[] = $city; }
+        if ($sub1 !== '')    { $clkWhere[] = 'c.sub1 LIKE ?'; $clkParams[] = '%'.$sub1.'%'; }
         $whereStr = implode(' AND ', $clkWhere);
 
         $rows = Database::fetchAll(
@@ -188,7 +193,8 @@ try {
         }
         
         if ($country !== '') { $cvWhere[] = 'EXISTS(SELECT 1 FROM clicks ck WHERE ck.click_id=cv.click_id AND ck.country=?)'; $cvParams[] = strtoupper($country); }
-        if ($sub1 !== '') { $cvWhere[] = 'EXISTS(SELECT 1 FROM clicks ck WHERE ck.click_id=cv.click_id AND ck.sub1 LIKE ?)'; $cvParams[] = '%'.$sub1.'%'; }
+        if ($city !== '')    { $cvWhere[] = 'EXISTS(SELECT 1 FROM clicks ck WHERE ck.click_id=cv.click_id AND ck.city=?)'; $cvParams[] = $city; }
+        if ($sub1 !== '')    { $cvWhere[] = 'EXISTS(SELECT 1 FROM clicks ck WHERE ck.click_id=cv.click_id AND ck.sub1 LIKE ?)'; $cvParams[] = '%'.$sub1.'%'; }
         $whereStr = implode(' AND ', $cvWhere);
 
         $rows = Database::fetchAll(
@@ -256,6 +262,7 @@ try {
         if ($slId > 0) { $clkWhere[] = 'c.smartlink_id = ?'; $clkParams[] = $slId; }
         if ($affId > 0) { $clkWhere[] = 'c.affiliate_id = ?'; $clkParams[] = $affId; }
         if ($country !== '') { $clkWhere[] = 'c.country = ?'; $clkParams[] = strtoupper($country); }
+        if ($city !== '') { $clkWhere[] = 'c.city = ?'; $clkParams[] = $city; }
         $whereStr = implode(' AND ', $clkWhere);
 
         if ($tab === 'sl_clicks') {

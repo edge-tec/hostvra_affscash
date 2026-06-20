@@ -38,6 +38,12 @@ try {
             $inParams
         );
 
+        // Cities from managed affiliates' clicks
+        $cityList = Database::fetchAll(
+            "SELECT DISTINCT city FROM clicks WHERE affiliate_id IN ($inSql) AND city != '' AND city IS NOT NULL ORDER BY city",
+            $inParams
+        );
+
         // Managed affiliates
         $affiliates = Database::fetchAll(
             "SELECT af.id, CONCAT(u.first_name,' ',u.last_name) as name, af.affiliate_code
@@ -50,6 +56,7 @@ try {
             'success' => true,
             'offers' => $offers,
             'countries' => array_column($countryList, 'country'),
+            'cities' => array_column($cityList, 'city'),
             'affiliates' => $affiliates
         ]);
         exit;
@@ -61,6 +68,7 @@ try {
     $offerId     = (int)($_GET['offer_id'] ?? 0);
     $affId       = (int)($_GET['affiliate_id'] ?? 0);
     $country     = trim($_GET['country'] ?? '');
+    $city        = trim($_GET['city'] ?? '');
     $sub1        = trim($_GET['sub1'] ?? '');
     $limit       = 1000;
     
@@ -135,6 +143,7 @@ try {
             $clkParams = array_merge([$dateFrom, $dateTo], $activeAffIds);
             if ($offerId > 0) { $clkWhere[] = 'c.offer_id=?'; $clkParams[] = $offerId; }
             if ($country !== '' && $tab !== 'country') { $clkWhere[] = 'c.country=?'; $clkParams[] = strtoupper($country); }
+            if ($city !== '')                          { $clkWhere[] = 'c.city=?'; $clkParams[] = $city; }
             if ($sub1    !== '' && $tab !== 'sub')     { $clkWhere[] = 'c.sub1 LIKE ?'; $clkParams[] = '%'.$sub1.'%'; }
             $whereStr = implode(' AND ', $clkWhere);
 
@@ -186,6 +195,7 @@ try {
         $clkParams = array_merge([$dateFrom, $dateTo], $activeAffIds);
         if ($offerId > 0)    { $clkWhere[] = 'c.offer_id=?';  $clkParams[] = $offerId; }
         if ($country !== '') { $clkWhere[] = 'c.country=?';   $clkParams[] = strtoupper($country); }
+        if ($city !== '')    { $clkWhere[] = 'c.city=?';      $clkParams[] = $city; }
         if ($sub1 !== '')    { $clkWhere[] = 'c.sub1 LIKE ?'; $clkParams[] = '%'.$sub1.'%'; }
         $whereStr = implode(' AND ', $clkWhere);
 
@@ -219,6 +229,10 @@ try {
         if ($country !== '') {
             $cvWhere[] = 'EXISTS(SELECT 1 FROM clicks ck WHERE ck.click_id=cv.click_id AND ck.country=?)';
             $cvParams[] = strtoupper($country);
+        }
+        if ($city !== '') {
+            $cvWhere[] = 'EXISTS(SELECT 1 FROM clicks ck WHERE ck.click_id=cv.click_id AND ck.city=?)';
+            $cvParams[] = $city;
         }
         if ($sub1 !== '') {
             $cvWhere[] = 'EXISTS(SELECT 1 FROM clicks ck WHERE ck.click_id=cv.click_id AND ck.sub1 LIKE ?)';

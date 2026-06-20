@@ -16,16 +16,23 @@ if ($action === 'filters') {
         [$affId]
     );
 
-    // Countries from this affiliate's clicks
+    // Countries from this affiliate's conversions/clicks
     $countryList = Database::fetchAll(
         "SELECT DISTINCT country FROM clicks WHERE affiliate_id=? AND country != '' ORDER BY country",
+        [$affId]
+    );
+
+    // Cities from this affiliate's clicks
+    $cityList = Database::fetchAll(
+        "SELECT DISTINCT city FROM clicks WHERE affiliate_id=? AND city != '' AND city IS NOT NULL ORDER BY city",
         [$affId]
     );
 
     echo json_encode([
         'success' => true,
         'offers' => $myOffers,
-        'countries' => array_column($countryList, 'country')
+        'countries' => array_column($countryList, 'country'),
+        'cities' => array_column($cityList, 'city')
     ]);
     exit;
 }
@@ -35,6 +42,7 @@ $from        = $_GET['from'] ?? date('Y-m-01');
 $to          = $_GET['to']   ?? date('Y-m-d');
 $offerId     = (int)($_GET['offer_id'] ?? 0);
 $country     = trim($_GET['country'] ?? '');
+$city        = trim($_GET['city'] ?? '');
 $sub1        = trim($_GET['sub1'] ?? '');
 $limit       = 1000;
 
@@ -182,6 +190,7 @@ if (in_array($tab, $perfTabs)) {
     $clkParams = [$affId, $dateFrom, $dateTo];
     if ($offerId > 0)    { $clkWhere[] = 'c.offer_id=?';  $clkParams[] = $offerId; }
     if ($country !== '') { $clkWhere[] = 'c.country=?';   $clkParams[] = strtoupper($country); }
+    if ($city !== '')    { $clkWhere[] = 'c.city=?';      $clkParams[] = $city; }
     if ($sub1 !== '')    { $clkWhere[] = 'c.sub1 LIKE ?'; $clkParams[] = '%'.$sub1.'%'; }
     
     $whereStr = implode(' AND ', $clkWhere);
@@ -216,6 +225,10 @@ if (in_array($tab, $perfTabs)) {
     if ($country !== '') {
         $cvWhere[] = 'EXISTS(SELECT 1 FROM clicks ck WHERE ck.click_id=cv.click_id AND ck.country=?)';
         $cvParams[] = strtoupper($country);
+    }
+    if ($city !== '') {
+        $cvWhere[] = 'EXISTS(SELECT 1 FROM clicks ck WHERE ck.click_id=cv.click_id AND ck.city=?)';
+        $cvParams[] = $city;
     }
     if ($sub1 !== '') {
         $cvWhere[] = 'EXISTS(SELECT 1 FROM clicks ck WHERE ck.click_id=cv.click_id AND ck.sub1 LIKE ?)';

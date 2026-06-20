@@ -499,6 +499,7 @@ interface ApiService {
         @Query("to") to: String? = null,
         @Query("offer_id") offerId: Int? = null,
         @Query("country") country: String? = null,
+        @Query("city") city: String? = null,
         @Query("sub1") sub1: String? = null
     ): Response<ReportResponse>
 
@@ -614,6 +615,7 @@ interface ApiService {
         @Query("offer_id") offerId: Int? = null,
         @Query("affiliate_id") affiliateId: Int? = null,
         @Query("country") country: String? = null,
+        @Query("city") city: String? = null,
         @Query("sub1") sub1: String? = null
     ): Response<ReportResponse>
 
@@ -740,6 +742,7 @@ interface ApiService {
         @Query("offer_id") offerId: Int? = null,
         @Query("affiliate_id") affiliateId: Int? = null,
         @Query("country") country: String? = null,
+        @Query("city") city: String? = null,
         @Query("sub1") sub1: String? = null,
         @Query("sl_id") slId: Int? = null,
         @Query("limit") limit: Int? = null

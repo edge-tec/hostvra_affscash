@@ -36,10 +36,12 @@ fun ReportScreen(
     val toDate by viewModel.toDate.collectAsState()
     val selectedOfferId by viewModel.selectedOfferId.collectAsState()
     val selectedCountry by viewModel.selectedCountry.collectAsState()
+    val selectedCity by viewModel.selectedCity.collectAsState()
     val sub1Filter by viewModel.sub1Filter.collectAsState()
 
     val offers by viewModel.availableOffers.collectAsState()
     val countries by viewModel.availableCountries.collectAsState()
+    val cities by viewModel.availableCities.collectAsState()
 
     val tabs = listOf(
         "day" to "By Day",
@@ -223,8 +225,30 @@ fun ReportScreen(
                                 }
                             }
                             
-                            // Row 3: Sub1 Filter & Apply Button
-                            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            // Row 3: City & Sub1 Filter
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                // City Dropdown
+                                var cityExpanded by remember { mutableStateOf(false) }
+                                Box(modifier = Modifier.weight(1f)) {
+                                    OutlinedButton(
+                                        onClick = { cityExpanded = true },
+                                        modifier = Modifier.fillMaxWidth(),
+                                        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp)
+                                    ) {
+                                        Icon(Icons.Default.Place, contentDescription = null, modifier = Modifier.size(18.dp))
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(selectedCity ?: "All Cities", maxLines = 1, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+                                        Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                                    }
+                                    DropdownMenu(expanded = cityExpanded, onDismissRequest = { cityExpanded = false }) {
+                                        DropdownMenuItem(text = { Text("All Cities") }, onClick = { viewModel.selectedCity.value = null; viewModel.loadReports(); cityExpanded = false })
+                                        cities.forEach { c ->
+                                            DropdownMenuItem(text = { Text(c) }, onClick = { viewModel.selectedCity.value = c; viewModel.loadReports(); cityExpanded = false })
+                                        }
+                                    }
+                                }
+
                                 OutlinedTextField(
                                     value = sub1Filter,
                                     onValueChange = { viewModel.sub1Filter.value = it },
@@ -235,16 +259,18 @@ fun ReportScreen(
                                     leadingIcon = { Icon(Icons.Default.Person, contentDescription = null, modifier = Modifier.size(18.dp)) },
                                     textStyle = MaterialTheme.typography.bodyMedium
                                 )
-                                Button(
-                                    onClick = { viewModel.loadReports() }, 
-                                    modifier = Modifier.height(50.dp),
-                                    shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
-                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-                                ) {
-                                    Icon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(18.dp))
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text("Apply", fontWeight = FontWeight.Bold)
-                                }
+                            }
+                            
+                            // Row 4: Apply Button
+                            Button(
+                                onClick = { viewModel.loadReports() }, 
+                                modifier = Modifier.fillMaxWidth().height(50.dp),
+                                shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                            ) {
+                                Icon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(18.dp))
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text("Apply Filters", fontWeight = FontWeight.Bold)
                             }
                         }
                     }

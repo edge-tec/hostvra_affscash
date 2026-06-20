@@ -8,6 +8,7 @@ data class ReportFiltersResponse(
     val success: Boolean,
     val offers: List<OfferItem> = emptyList(),
     val countries: List<String> = emptyList(),
+    val cities: List<String> = emptyList(),
     val affiliates: List<ManagerAffiliateFilterItem> = emptyList(),
     val error: String? = null
 )

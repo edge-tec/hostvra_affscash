@@ -30,12 +30,14 @@ class ReportViewModel @Inject constructor(
 
     val availableOffers = MutableStateFlow<List<OfferItem>>(emptyList())
     val availableCountries = MutableStateFlow<List<String>>(emptyList())
+    val availableCities = MutableStateFlow<List<String>>(emptyList())
 
     val selectedTab = MutableStateFlow("day")
     val fromDate = MutableStateFlow(getFirstDayOfMonth())
     val toDate = MutableStateFlow(getCurrentDate())
     val selectedOfferId = MutableStateFlow<Int?>(null)
     val selectedCountry = MutableStateFlow<String?>(null)
+    val selectedCity = MutableStateFlow<String?>(null)
     val sub1Filter = MutableStateFlow("")
 
     init {
@@ -49,6 +51,7 @@ class ReportViewModel @Inject constructor(
             result.onSuccess { res ->
                 availableOffers.value = res.offers
                 availableCountries.value = res.countries
+                availableCities.value = res.cities
             }
         }
     }
@@ -62,6 +65,7 @@ class ReportViewModel @Inject constructor(
                 to = toDate.value,
                 offerId = selectedOfferId.value,
                 country = selectedCountry.value,
+                city = selectedCity.value,
                 sub1 = sub1Filter.value.takeIf { it.isNotBlank() }
             )
             result.onSuccess {
