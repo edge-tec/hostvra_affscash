@@ -34,6 +34,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.R
 import net.affscash.android.data.model.DashboardAnalyticsStatsResponse
@@ -141,13 +146,14 @@ fun DashboardScreen(
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
+                    containerColor = Color.Transparent,
                     titleContentColor = MaterialTheme.colorScheme.onSurface
-                )
+                ),
+                modifier = Modifier.background(PremiumUI.GlassPurple)
             )
         }
     ) { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
+        Box(modifier = Modifier.padding(paddingValues).fillMaxSize().background(PremiumUI.BackgroundGradient)) {
             when (uiState) {
                 is DashboardState.Loading -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -174,7 +180,7 @@ fun DashboardScreen(
                         item {
                             Text(
                                 "Analytics Dashboard",
-                                style = MaterialTheme.typography.headlineSmall,
+                                style = MaterialTheme.typography.headlineSmall.copy(brush = PremiumUI.PrimaryGradient),
                                 fontWeight = FontWeight.ExtraBold
                             )
                             Spacer(modifier = Modifier.height(16.dp))
@@ -299,10 +305,11 @@ fun KpiGrid(stats: DashboardAnalyticsStatsResponse) {
 fun KpiCard(title: String, value: String, trend: Double?, isInverseTrend: Boolean = false, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
+        Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(title, style = MaterialTheme.typography.labelMedium, color = Color.Gray)
             Spacer(modifier = Modifier.height(4.dp))
@@ -342,22 +349,24 @@ fun LineChartCard(trendData: DashboardTrendChartResponse) {
 
     Card(
         modifier = Modifier.fillMaxWidth().height(250.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Chart(
-            chart = lineChart(),
-            model = model,
-            startAxis = rememberStartAxis(),
-            bottomAxis = rememberBottomAxis(
-                valueFormatter = { value, _ -> 
-                    val index = value.toInt()
-                    if (index >= 0 && index < trendData.labels.size) trendData.labels[index] else ""
-                }
-            ),
-            modifier = Modifier.padding(16.dp).fillMaxSize()
-        )
+        Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
+            Chart(
+                chart = lineChart(),
+                model = model,
+                startAxis = rememberStartAxis(),
+                bottomAxis = rememberBottomAxis(
+                    valueFormatter = { value, _ -> 
+                        val index = value.toInt()
+                        if (index >= 0 && index < trendData.labels.size) trendData.labels[index] else ""
+                    }
+                ),
+                modifier = Modifier.padding(16.dp).fillMaxSize()
+            )
+        }
     }
 }
 
@@ -379,22 +388,24 @@ fun BarChartCard(labels: List<String>, data: List<Float>) {
 
     Card(
         modifier = Modifier.fillMaxWidth().height(250.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Chart(
-            chart = columnChart(),
-            model = model,
-            startAxis = rememberStartAxis(),
-            bottomAxis = rememberBottomAxis(
-                valueFormatter = { value, _ -> 
-                    val index = value.toInt()
-                    if (index >= 0 && index < labels.size) labels[index] else ""
-                }
-            ),
-            modifier = Modifier.padding(16.dp).fillMaxSize()
-        )
+        Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
+            Chart(
+                chart = columnChart(),
+                model = model,
+                startAxis = rememberStartAxis(),
+                bottomAxis = rememberBottomAxis(
+                    valueFormatter = { value, _ -> 
+                        val index = value.toInt()
+                        if (index >= 0 && index < labels.size) labels[index] else ""
+                    }
+                ),
+                modifier = Modifier.padding(16.dp).fillMaxSize()
+            )
+        }
     }
 }
 
@@ -402,10 +413,11 @@ fun BarChartCard(labels: List<String>, data: List<Float>) {
 fun PieChartCard(labels: List<String>, data: List<Int>) {
     Card(
         modifier = Modifier.fillMaxWidth().height(200.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
+        Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
         if (labels.isEmpty() || data.isEmpty() || data.sum() == 0) {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                 Text("No data available", color = Color.Gray)
@@ -452,6 +464,7 @@ fun PieChartCard(labels: List<String>, data: List<Int>) {
                     }
                 }
             }
+            }
         }
     }
 }
@@ -460,32 +473,34 @@ fun PieChartCard(labels: List<String>, data: List<Int>) {
 fun OffersTable(offers: List<net.affscash.android.data.model.DashboardOfferRow>) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
-                Text("OFFER", modifier = Modifier.weight(2f), fontWeight = FontWeight.Bold, fontSize = 12.sp)
-                Text("CLICKS", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp, textAlign = TextAlign.End)
-                Text("CONV", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp, textAlign = TextAlign.End)
-                Text("REVENUE", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp, textAlign = TextAlign.End)
-            }
-            Divider()
-            if (offers.isEmpty()) {
-                Text("No data available", modifier = Modifier.padding(16.dp), color = Color.Gray)
-            } else {
-                offers.forEach { offer ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(offer.name, modifier = Modifier.weight(2f), fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                        Text("${offer.clicks}", modifier = Modifier.weight(1f), fontSize = 12.sp, textAlign = TextAlign.End)
-                        Text("${offer.conv}", modifier = Modifier.weight(1f), fontSize = 12.sp, textAlign = TextAlign.End, color = Color(0xFF8B5CF6))
-                        Text("$${(( offer.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", modifier = Modifier.weight(1f), fontSize = 12.sp, textAlign = TextAlign.End, color = Color(0xFF16A34A))
+        Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
+            Column(modifier = Modifier.padding(8.dp)) {
+                Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
+                    Text("OFFER", modifier = Modifier.weight(2f), fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                    Text("CLICKS", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp, textAlign = TextAlign.End)
+                    Text("CONV", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp, textAlign = TextAlign.End)
+                    Text("REVENUE", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp, textAlign = TextAlign.End)
+                }
+                Divider()
+                if (offers.isEmpty()) {
+                    Text("No data available", modifier = Modifier.padding(16.dp), color = Color.Gray)
+                } else {
+                    offers.forEach { offer ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(offer.name, modifier = Modifier.weight(2f), fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            Text("${offer.clicks}", modifier = Modifier.weight(1f), fontSize = 12.sp, textAlign = TextAlign.End)
+                            Text("${offer.conv}", modifier = Modifier.weight(1f), fontSize = 12.sp, textAlign = TextAlign.End, color = Color(0xFF8B5CF6))
+                            Text("$${(( offer.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", modifier = Modifier.weight(1f), fontSize = 12.sp, textAlign = TextAlign.End, color = Color(0xFF16A34A))
+                        }
+                        Divider(color = Color.LightGray.copy(alpha = 0.5f))
                     }
-                    Divider(color = Color.LightGray.copy(alpha = 0.5f))
                 }
             }
         }
@@ -496,32 +511,34 @@ fun OffersTable(offers: List<net.affscash.android.data.model.DashboardOfferRow>)
 fun CountriesTable(countries: List<net.affscash.android.data.model.DashboardCountryRow>) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
-                Text("COUNTRY", modifier = Modifier.weight(2f), fontWeight = FontWeight.Bold, fontSize = 12.sp)
-                Text("CLICKS", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp, textAlign = TextAlign.End)
-                Text("UNIQUE", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp, textAlign = TextAlign.End)
-                Text("CONV", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp, textAlign = TextAlign.End)
-            }
-            Divider()
-            if (countries.isEmpty()) {
-                Text("No data available", modifier = Modifier.padding(16.dp), color = Color.Gray)
-            } else {
-                countries.forEach { row ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(row.country.ifEmpty { "Unknown" }, modifier = Modifier.weight(2f), fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                        Text("${row.clicks}", modifier = Modifier.weight(1f), fontSize = 12.sp, textAlign = TextAlign.End)
-                        Text("${row.unique}", modifier = Modifier.weight(1f), fontSize = 12.sp, textAlign = TextAlign.End)
-                        Text("${row.conv}", modifier = Modifier.weight(1f), fontSize = 12.sp, textAlign = TextAlign.End, color = Color(0xFF8B5CF6))
+        Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
+            Column(modifier = Modifier.padding(8.dp)) {
+                Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
+                    Text("COUNTRY", modifier = Modifier.weight(2f), fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                    Text("CLICKS", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp, textAlign = TextAlign.End)
+                    Text("UNIQUE", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp, textAlign = TextAlign.End)
+                    Text("CONV", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp, textAlign = TextAlign.End)
+                }
+                Divider()
+                if (countries.isEmpty()) {
+                    Text("No data available", modifier = Modifier.padding(16.dp), color = Color.Gray)
+                } else {
+                    countries.forEach { row ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(row.country.ifEmpty { "Unknown" }, modifier = Modifier.weight(2f), fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            Text("${row.clicks}", modifier = Modifier.weight(1f), fontSize = 12.sp, textAlign = TextAlign.End)
+                            Text("${row.unique}", modifier = Modifier.weight(1f), fontSize = 12.sp, textAlign = TextAlign.End)
+                            Text("${row.conv}", modifier = Modifier.weight(1f), fontSize = 12.sp, textAlign = TextAlign.End, color = Color(0xFF8B5CF6))
+                        }
+                        Divider(color = Color.LightGray.copy(alpha = 0.5f))
                     }
-                    Divider(color = Color.LightGray.copy(alpha = 0.5f))
                 }
             }
         }
