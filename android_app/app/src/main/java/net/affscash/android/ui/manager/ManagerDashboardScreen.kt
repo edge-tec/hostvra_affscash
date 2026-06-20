@@ -689,3 +689,4 @@ fun KpiCard(
         }
     }
 }
+}

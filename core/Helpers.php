@@ -186,69 +186,255 @@ class Helpers {
         return $out;
     }
 
+    /**
+     * One-time schema migration flag — prevents ALTER TABLE on every request.
+     */
+    private static bool $geoSchemaReady = false;
+
+    /**
+     * In-process cache — prevents duplicate API calls within the same PHP request
+     * (e.g. click.php calls getGeoInfo and then Activity::geoLookup for the same IP).
+     */
+    private static array $geoMemCache = [];
+
+    /**
+     * Rate-limit tracker file path for ip-api.com (45 req/min free tier).
+     */
+    private static function geoRateLimitFile(): string {
+        return sys_get_temp_dir() . '/affscash_ipapi_ratelimit.json';
+    }
+
+    /**
+     * Check if ip-api.com rate limit allows another request.
+     * Returns true if we can proceed, false if we should skip to fallback.
+     */
+    private static function ipApiCanRequest(): bool {
+        $file = self::geoRateLimitFile();
+        $now = time();
+        $windowStart = $now - 60; // 60-second sliding window
+        $maxRequests = 40; // stay under the 45/min hard limit
+
+        try {
+            $timestamps = [];
+            if (file_exists($file)) {
+                $raw = @file_get_contents($file);
+                if ($raw !== false) {
+                    $timestamps = json_decode($raw, true) ?: [];
+                }
+            }
+            // Prune timestamps older than 60 seconds
+            $timestamps = array_values(array_filter($timestamps, fn($t) => $t > $windowStart));
+            return count($timestamps) < $maxRequests;
+        } catch (\Throwable $e) {
+            return true; // on error, allow the request
+        }
+    }
+
+    /**
+     * Record that we made one ip-api.com request.
+     */
+    private static function ipApiRecordRequest(): void {
+        $file = self::geoRateLimitFile();
+        $now = time();
+        $windowStart = $now - 60;
+
+        try {
+            $timestamps = [];
+            if (file_exists($file)) {
+                $raw = @file_get_contents($file);
+                if ($raw !== false) {
+                    $timestamps = json_decode($raw, true) ?: [];
+                }
+            }
+            $timestamps = array_values(array_filter($timestamps, fn($t) => $t > $windowStart));
+            $timestamps[] = $now;
+            @file_put_contents($file, json_encode($timestamps), LOCK_EX);
+        } catch (\Throwable $e) {}
+    }
+
+    /**
+     * Robust HTTP fetcher using cURL with proper timeout, redirect handling,
+     * and HTTP status code extraction. Falls back to file_get_contents.
+     *
+     * @return array{body: string|false, http_code: int}
+     */
+    private static function geoHttpGet(string $url, int $timeout = 4, array $headers = []): array {
+        if (function_exists('curl_init')) {
+            $ch = curl_init();
+            curl_setopt_array($ch, [
+                CURLOPT_URL            => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT        => $timeout,
+                CURLOPT_CONNECTTIMEOUT => 3,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_MAXREDIRS      => 2,
+                CURLOPT_USERAGENT      => 'AffsCash/2.0',
+                CURLOPT_HTTPHEADER     => $headers,
+                CURLOPT_IPRESOLVE      => CURL_IPRESOLVE_V4,
+            ]);
+            $body = curl_exec($ch);
+            $httpCode = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $err = curl_error($ch);
+            curl_close($ch);
+
+            if ($body === false || $httpCode === 0) {
+                error_log("GeoIP cURL error for $url: $err (HTTP $httpCode)");
+                return ['body' => false, 'http_code' => $httpCode];
+            }
+            return ['body' => $body, 'http_code' => $httpCode];
+        }
+
+        // Fallback to file_get_contents
+        $ctx = stream_context_create(['http' => [
+            'timeout'       => $timeout,
+            'ignore_errors' => true,
+            'header'        => implode("\r\n", array_merge(["User-Agent: AffsCash/2.0"], $headers)) . "\r\n",
+        ]]);
+        $body = @file_get_contents($url, false, $ctx);
+        $httpCode = 0;
+        if (isset($http_response_header) && is_array($http_response_header)) {
+            foreach ($http_response_header as $h) {
+                if (preg_match('/^HTTP\/[\d.]+ (\d{3})/', $h, $m)) {
+                    $httpCode = (int)$m[1];
+                }
+            }
+        }
+        return ['body' => $body, 'http_code' => $httpCode];
+    }
+
+    /**
+     * Ensure ip_geo_cache schema has all required columns.
+     * Runs ALTER TABLE only once per PHP process.
+     */
+    private static function ensureGeoCacheSchema(): void {
+        if (self::$geoSchemaReady) return;
+        self::$geoSchemaReady = true;
+
+        // Create table if missing
+        try {
+            Database::query("CREATE TABLE IF NOT EXISTS ip_geo_cache (
+                ip_address   VARCHAR(45) PRIMARY KEY,
+                country_code VARCHAR(5)   DEFAULT NULL,
+                country      VARCHAR(100) DEFAULT NULL,
+                region       VARCHAR(100) DEFAULT NULL,
+                city         VARCHAR(100) DEFAULT NULL,
+                isp          VARCHAR(255) DEFAULT NULL,
+                proxy        TINYINT(1)   DEFAULT 0,
+                hosting      TINYINT(1)   DEFAULT 0,
+                lookup_ok    TINYINT(1)   DEFAULT 1,
+                cached_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                INDEX idx_gc_cached (cached_at)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+        } catch (\Throwable $_) {}
+
+        // Idempotent column additions for existing tables
+        $cols = [
+            'isp'       => "ADD COLUMN `isp` VARCHAR(255) DEFAULT NULL",
+            'proxy'     => "ADD COLUMN `proxy` TINYINT(1) DEFAULT 0",
+            'hosting'   => "ADD COLUMN `hosting` TINYINT(1) DEFAULT 0",
+            'lookup_ok' => "ADD COLUMN `lookup_ok` TINYINT(1) DEFAULT 1",
+            'region'    => "ADD COLUMN `region` VARCHAR(100) DEFAULT NULL",
+        ];
+        foreach ($cols as $col => $ddl) {
+            try { Database::query("ALTER TABLE `ip_geo_cache` $ddl"); } catch (\Throwable $_) {}
+        }
+    }
+
     public static function getGeoInfo(string $ip): array {
         $default = ['country' => '', 'region' => '', 'city' => '', 'isp' => '', 'proxy' => false, 'hosting' => false];
 
-        // Skip local/loopback/invalid IPs
-        if ($ip === '' || $ip === '127.0.0.1' || $ip === '::1' || $ip === '0.0.0.0') return $default;
-        if (!filter_var($ip, FILTER_VALIDATE_IP)) return $default;
+        // ── 1. Input Validation ─────────────────────────────────────────────────
+        // Trim whitespace and null bytes that could silently break lookups
+        $ip = trim($ip, " \t\n\r\0\x0B");
 
-        // Normalise IPv6: expand compressed notation (e.g. ::ffff:1.2.3.4 → mapped IPv4)
+        // Skip local/loopback/private/invalid IPs
+        if ($ip === '' || $ip === '127.0.0.1' || $ip === '::1' || $ip === '0.0.0.0') return $default;
+        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+            error_log("GeoIP INVALID IP rejected (pre-filter): [$ip]");
+            return $default;
+        }
+        // Reject private/reserved ranges — they'll never resolve externally
+        if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+            return $default;
+        }
+
+        // ── 2. IPv6 Normalisation ───────────────────────────────────────────────
         $isIpv6 = filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false;
         if ($isIpv6) {
-            // Convert IPv4-mapped IPv6 (::ffff:x.x.x.x) to plain IPv4 for better API compat
+            // Convert IPv4-mapped IPv6 (::ffff:x.x.x.x) to plain IPv4
             if (preg_match('/^::ffff:(\d+\.\d+\.\d+\.\d+)$/i', $ip, $m)) {
                 $ip = $m[1];
                 $isIpv6 = false;
             } else {
-                // Expand compressed IPv6 to full form for API compatibility
-                $ip = inet_ntop(inet_pton($ip)) ?: $ip;
+                // Expand compressed IPv6 to full canonical form
+                $expanded = inet_ntop(inet_pton($ip));
+                if ($expanded !== false) {
+                    $ip = $expanded;
+                }
             }
         }
 
-        // Schema migration for new columns
-        try {
-            Database::query("ALTER TABLE `ip_geo_cache` ADD COLUMN `isp` VARCHAR(255) DEFAULT NULL");
-        } catch (\Throwable $_) {}
-        try {
-            Database::query("ALTER TABLE `ip_geo_cache` ADD COLUMN `proxy` TINYINT(1) DEFAULT 0");
-        } catch (\Throwable $_) {}
-        try {
-            Database::query("ALTER TABLE `ip_geo_cache` ADD COLUMN `hosting` TINYINT(1) DEFAULT 0");
-        } catch (\Throwable $_) {}
+        // ── 3. In-Process Memory Cache ──────────────────────────────────────────
+        if (isset(self::$geoMemCache[$ip])) {
+            return self::$geoMemCache[$ip];
+        }
 
-        // Check DB cache (7 day TTL)
+        // ── 4. Schema Migration (once per process) ──────────────────────────────
+        self::ensureGeoCacheSchema();
+
+        // ── 5. DB Cache Lookup ──────────────────────────────────────────────────
+        //   - Successful lookups: 7-day TTL
+        //   - Failed lookups (lookup_ok=0): 2-minute TTL → allows quick retry
         try {
             $cached = Database::fetchOne(
-                "SELECT country_code as country, COALESCE(region,'') as region, city, COALESCE(isp,'') as isp, COALESCE(proxy,0) as proxy, COALESCE(hosting,0) as hosting FROM ip_geo_cache WHERE ip_address=? AND cached_at > DATE_SUB(NOW(), INTERVAL 7 DAY)",
+                "SELECT country_code AS country, COALESCE(region,'') AS region,
+                        COALESCE(city,'') AS city, COALESCE(isp,'') AS isp,
+                        COALESCE(proxy,0) AS proxy, COALESCE(hosting,0) AS hosting,
+                        COALESCE(lookup_ok,1) AS lookup_ok
+                 FROM ip_geo_cache
+                 WHERE ip_address = ?
+                   AND (
+                       (COALESCE(lookup_ok,1) = 1 AND cached_at > DATE_SUB(NOW(), INTERVAL 7 DAY))
+                       OR
+                       (COALESCE(lookup_ok,1) = 0 AND cached_at > DATE_SUB(NOW(), INTERVAL 2 MINUTE))
+                   )",
                 [$ip]
             );
             if ($cached) {
-                return [
+                // If it's a cached failure AND the 2-min window hasn't expired, return empty
+                // (the query already filters for this, so if we got a row, respect it)
+                $out = [
                     'country' => $cached['country'] ?? '',
                     'region'  => $cached['region'] ?? '',
                     'city'    => $cached['city'] ?? '',
                     'isp'     => $cached['isp'] ?? '',
-                    'proxy'   => (bool)$cached['proxy'],
-                    'hosting' => (bool)$cached['hosting']
+                    'proxy'   => (bool)($cached['proxy'] ?? false),
+                    'hosting' => (bool)($cached['hosting'] ?? false),
                 ];
+                self::$geoMemCache[$ip] = $out;
+                return $out;
             }
-        } catch (\Throwable $e) {}
+        } catch (\Throwable $e) {
+            error_log("GeoIP cache read error for IP $ip: " . $e->getMessage());
+        }
 
-        $result = $default;
+        // ── 6. API Lookups with Rate Limiting ───────────────────────────────────
+        $result  = $default;
         $success = false;
 
-        // --- Provider 1: ip-api.com (free, supports IPv4 + IPv6 batch, 45 req/min) ---
-        if (!$success) {
+        // --- Provider 1: ip-api.com (free tier: 45 req/min) ---
+        if (!$success && self::ipApiCanRequest()) {
             try {
-                $ctx = stream_context_create(['http' => [
-                    'timeout'       => 4,
-                    'ignore_errors' => true,
-                ]]);
-                $url = "http://ip-api.com/json/" . urlencode($ip) . "?fields=status,country,countryCode,regionName,city,isp,proxy,hosting";
-                $json = @file_get_contents($url, false, $ctx);
-                if ($json !== false) {
-                    $data = json_decode($json, true);
+                self::ipApiRecordRequest();
+                $url = "http://ip-api.com/json/" . urlencode($ip)
+                     . "?fields=status,message,country,countryCode,regionName,city,isp,proxy,hosting";
+                $resp = self::geoHttpGet($url, 4);
+
+                if ($resp['http_code'] === 429) {
+                    // Rate limited — skip to fallback, do NOT cache this failure
+                    error_log("GeoIP [ip-api.com] RATE LIMITED (HTTP 429) for IP $ip — skipping to fallback");
+                } elseif ($resp['body'] !== false && $resp['http_code'] === 200) {
+                    $data = json_decode($resp['body'], true);
                     if ($data && ($data['status'] ?? '') === 'success') {
                         $result = [
                             'country' => $data['countryCode']  ?? '',
@@ -260,26 +446,25 @@ class Helpers {
                         ];
                         $success = true;
                     } else {
-                        error_log("GeoIP [ip-api.com] failed for IP $ip: " . json_encode($data));
+                        error_log("GeoIP [ip-api.com] API error for IP $ip: " . ($data['message'] ?? json_encode($data)));
                     }
                 } else {
-                    error_log("GeoIP [ip-api.com] timeout/error for IP $ip");
+                    error_log("GeoIP [ip-api.com] HTTP {$resp['http_code']} for IP $ip");
                 }
             } catch (\Throwable $e) {
                 error_log("GeoIP [ip-api.com] exception for IP $ip: " . $e->getMessage());
             }
         }
 
-        // --- Provider 2: ipwho.is (supports IPv4 + IPv6, no key required) ---
+        // --- Provider 2: ipwho.is (no hard rate limit, supports IPv4 + IPv6) ---
         if (!$success) {
             try {
-                $ctx2 = stream_context_create(['http' => [
-                    'timeout'       => 5,
-                    'ignore_errors' => true,
-                ]]);
-                $json2 = @file_get_contents("https://ipwho.is/" . urlencode($ip), false, $ctx2);
-                if ($json2 !== false) {
-                    $data2 = json_decode($json2, true);
+                $resp2 = self::geoHttpGet("https://ipwho.is/" . urlencode($ip), 5);
+
+                if ($resp2['http_code'] === 429) {
+                    error_log("GeoIP [ipwho.is] RATE LIMITED (HTTP 429) for IP $ip");
+                } elseif ($resp2['body'] !== false && $resp2['http_code'] === 200) {
+                    $data2 = json_decode($resp2['body'], true);
                     if ($data2 && ($data2['success'] ?? false) === true) {
                         $result = [
                             'country' => $data2['country_code'] ?? '',
@@ -291,27 +476,28 @@ class Helpers {
                         ];
                         $success = true;
                     } else {
-                        error_log("GeoIP [ipwho.is] failed for IP $ip: " . json_encode($data2));
+                        error_log("GeoIP [ipwho.is] API error for IP $ip: " . json_encode($data2));
                     }
                 } else {
-                    error_log("GeoIP [ipwho.is] timeout/error for IP $ip");
+                    error_log("GeoIP [ipwho.is] HTTP {$resp2['http_code']} for IP $ip");
                 }
             } catch (\Throwable $e) {
                 error_log("GeoIP [ipwho.is] exception for IP $ip: " . $e->getMessage());
             }
         }
 
-        // --- Provider 3: ipapi.co (supports IPv4 + IPv6, 1000/day free) ---
+        // --- Provider 3: ipapi.co (1000/day free tier) ---
         if (!$success) {
             try {
-                $ctx3 = stream_context_create(['http' => [
-                    'timeout'       => 5,
-                    'ignore_errors' => true,
-                    'header'        => "User-Agent: AffsCash/2.0\r\n",
-                ]]);
-                $json3 = @file_get_contents("https://ipapi.co/" . urlencode($ip) . "/json/", false, $ctx3);
-                if ($json3 !== false) {
-                    $data3 = json_decode($json3, true);
+                $resp3 = self::geoHttpGet(
+                    "https://ipapi.co/" . urlencode($ip) . "/json/",
+                    5
+                );
+
+                if ($resp3['http_code'] === 429) {
+                    error_log("GeoIP [ipapi.co] RATE LIMITED (HTTP 429) for IP $ip");
+                } elseif ($resp3['body'] !== false && $resp3['http_code'] === 200) {
+                    $data3 = json_decode($resp3['body'], true);
                     if ($data3 && !isset($data3['error'])) {
                         $result = [
                             'country' => $data3['country_code'] ?? '',
@@ -323,26 +509,54 @@ class Helpers {
                         ];
                         $success = true;
                     } else {
-                        error_log("GeoIP [ipapi.co] failed for IP $ip: " . json_encode($data3));
+                        error_log("GeoIP [ipapi.co] API error for IP $ip: " . json_encode($data3));
                     }
                 } else {
-                    error_log("GeoIP [ipapi.co] timeout/error for IP $ip");
+                    error_log("GeoIP [ipapi.co] HTTP {$resp3['http_code']} for IP $ip");
                 }
             } catch (\Throwable $e) {
                 error_log("GeoIP [ipapi.co] exception for IP $ip: " . $e->getMessage());
             }
         }
 
-        // Cache result if successful or at least default to prevent repeated API hits for same IP
+        // ── 7. Persist to DB Cache ──────────────────────────────────────────────
+        //   - Successful lookups → lookup_ok=1, cached for 7 days
+        //   - Failed lookups    → lookup_ok=0, cached for 2 minutes only (auto-retry)
         try {
             Database::query(
-                "INSERT INTO ip_geo_cache (ip_address,country_code,region,city,isp,proxy,hosting,cached_at) VALUES (?,?,?,?,?,?,?,NOW())
-                 ON DUPLICATE KEY UPDATE country_code=VALUES(country_code),region=VALUES(region),city=VALUES(city),isp=VALUES(isp),proxy=VALUES(proxy),hosting=VALUES(hosting),cached_at=NOW()",
-                [$ip, $result['country'], $result['region'], $result['city'], $result['isp'], (int)$result['proxy'], (int)$result['hosting']]
+                "INSERT INTO ip_geo_cache
+                    (ip_address, country_code, region, city, isp, proxy, hosting, lookup_ok, cached_at)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                 ON DUPLICATE KEY UPDATE
+                    country_code = VALUES(country_code),
+                    region       = VALUES(region),
+                    city         = VALUES(city),
+                    isp          = VALUES(isp),
+                    proxy        = VALUES(proxy),
+                    hosting      = VALUES(hosting),
+                    lookup_ok    = VALUES(lookup_ok),
+                    cached_at    = NOW()",
+                [
+                    $ip,
+                    $result['country'],
+                    $result['region'],
+                    $result['city'],
+                    $result['isp'],
+                    (int)$result['proxy'],
+                    (int)$result['hosting'],
+                    $success ? 1 : 0,
+                ]
             );
         } catch (\Throwable $e) {
-            error_log("GeoIP Cache insert failed for IP $ip: " . $e->getMessage());
+            error_log("GeoIP cache write failed for IP $ip: " . $e->getMessage());
         }
+
+        if (!$success) {
+            error_log("GeoIP ALL PROVIDERS FAILED for IP $ip — will retry in 2 minutes");
+        }
+
+        // Store in memory for this request cycle
+        self::$geoMemCache[$ip] = $result;
 
         return $result;
     }
