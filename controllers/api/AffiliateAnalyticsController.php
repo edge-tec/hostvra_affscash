@@ -463,8 +463,10 @@ if ($action === 'conversions') {
                        >= 60 are flagged as high-risk in the dashboard widget. */
                     COALESCE(c.fraud_score, 0)        AS fraud_score,
                     CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END AS fraud_flag,
-                    COALESCE(NULLIF(c.country,''), ck.country) as country,
+                    COALESCE(NULLIF(c.country,''), ck.country, NULLIF(c.ipquery_country_code,'')) as country,
                     COALESCE(NULLIF(c.device_type,''), ck.device_type) as device_type,
+                    COALESCE(NULLIF(ck.city,''), NULLIF(c.ipquery_city,'')) as city,
+                    COALESCE(NULLIF(ck.region,''), NULLIF(c.ipquery_state,'')) as region,
                     o.id as offer_id, o.name as offer_name
              FROM conversions c
              LEFT JOIN clicks ck ON ck.click_id = c.click_id

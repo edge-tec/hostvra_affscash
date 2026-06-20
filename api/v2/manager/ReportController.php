@@ -243,7 +243,10 @@ try {
         $convRows = Database::fetchAll(
             "SELECT cv.conversion_id, cv.click_id, cv.status, cv.payout, cv.converted_at,
                     o.name as offer_name,
-                    ck.sub1, ck.os, ck.browser, ck.device_type, ck.ip_address, ck.country, ck.city
+                    ck.sub1, ck.os, ck.browser, ck.device_type, ck.ip_address,
+                    COALESCE(NULLIF(ck.country,''), NULLIF(cv.ipquery_country_code,'')) as country,
+                    COALESCE(NULLIF(ck.city,''), NULLIF(cv.ipquery_city,'')) as city,
+                    COALESCE(NULLIF(ck.region,''), NULLIF(cv.ipquery_state,'')) as region
              FROM conversions cv
              JOIN offers o ON o.id = cv.offer_id
              LEFT JOIN clicks ck ON ck.click_id = cv.click_id

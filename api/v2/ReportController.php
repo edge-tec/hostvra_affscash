@@ -242,9 +242,9 @@ if (in_array($tab, $perfTabs)) {
                 ck.sub1, ck.os, ck.browser, ck.source,
                 COALESCE(NULLIF(cv.device_type,''), ck.device_type) as device_type, 
                 COALESCE(NULLIF(cv.ip_address,''), ck.ip_address) as ip_address, 
-                COALESCE(NULLIF(cv.country,''), ck.country) as country, 
-                ck.city, 
-                ck.region
+                COALESCE(NULLIF(cv.country,''), NULLIF(ck.country,''), NULLIF(cv.ipquery_country_code,'')) as country, 
+                COALESCE(NULLIF(ck.city,''), NULLIF(cv.ipquery_city,'')) as city, 
+                COALESCE(NULLIF(ck.region,''), NULLIF(cv.ipquery_state,'')) as region
          FROM conversions cv
          JOIN offers o ON o.id = cv.offer_id
          LEFT JOIN clicks ck ON ck.click_id = cv.click_id

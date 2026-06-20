@@ -26,12 +26,16 @@ try {
     try {
         $conversions = Database::fetchAll(
             "SELECT cv.conversion_id, cv.click_id, cv.status, cv.payout, cv.revenue,
-                    cv.converted_at, cv.ip_address, cv.country,
+                    cv.converted_at, cv.ip_address,
+                    COALESCE(NULLIF(cv.country,''), NULLIF(ck.country,''), NULLIF(cv.ipquery_country_code,'')) as country,
+                    COALESCE(NULLIF(ck.city,''), NULLIF(cv.ipquery_city,'')) as city,
+                    COALESCE(NULLIF(ck.region,''), NULLIF(cv.ipquery_state,'')) as region,
                     COALESCE(cv.rejection_reason, '') AS rejection_reason,
                     cv.rejected_at,
                     o.name AS offer_name
              FROM conversions cv
              LEFT JOIN offers o ON o.id = cv.offer_id
+             LEFT JOIN clicks ck ON ck.click_id = cv.click_id
              WHERE cv.affiliate_id = ?
                AND $riskSql
              ORDER BY cv.converted_at DESC LIMIT 1000",

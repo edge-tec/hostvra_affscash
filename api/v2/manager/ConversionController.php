@@ -15,15 +15,15 @@ try {
 
     $conversions = Database::fetchAll(
         "SELECT c.conversion_id, c.click_id, c.offer_id, c.affiliate_id, c.payout, c.revenue, c.status, 
-                COALESCE(NULLIF(c.country,''), cl.country) as country, 
+                COALESCE(NULLIF(c.country,''), NULLIF(cl.country,''), NULLIF(c.ipquery_country_code,'')) as country, 
                 COALESCE(NULLIF(c.ip_address,''), cl.ip_address) as ip_address, 
                 c.postback_sent, c.converted_at, c.fraud_score,
                 o.name as offer_name,
                 CONCAT(u.first_name,' ',u.last_name) as aff_name,
                 af.affiliate_code,
                 cl.source, cl.device_type, cl.os, 
-                cl.city, 
-                cl.region
+                COALESCE(NULLIF(cl.city,''), NULLIF(c.ipquery_city,'')) as city, 
+                COALESCE(NULLIF(cl.region,''), NULLIF(c.ipquery_state,'')) as region
          FROM conversions c
          LEFT JOIN offers o ON o.id = c.offer_id
          JOIN affiliates af ON af.id = c.affiliate_id

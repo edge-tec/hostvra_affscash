@@ -203,7 +203,9 @@ try {
                     COALESCE(cv.rejection_reason, '') as rejection_reason,
                     o.name as offer_name,
                     CONCAT(u.first_name,' ',u.last_name) as aff_name, af.affiliate_code, af.id as affiliate_id,
-                    ck.country, ck.city
+                    COALESCE(NULLIF(ck.country,''), NULLIF(cv.ipquery_country_code,'')) as country,
+                    COALESCE(NULLIF(ck.city,''), NULLIF(cv.ipquery_city,'')) as city,
+                    COALESCE(NULLIF(ck.region,''), NULLIF(cv.ipquery_state,'')) as region
              FROM conversions cv
              LEFT JOIN offers o ON o.id=cv.offer_id
              JOIN affiliates af ON af.id=cv.affiliate_id

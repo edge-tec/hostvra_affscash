@@ -26,12 +26,13 @@ if ($hasAffiliates) {
     try {
         $conversions = Database::fetchAll(
             "SELECT cv.conversion_id, cv.click_id, cv.status, cv.payout,
-                    cv.converted_at, cv.ip_address, COALESCE(cv.country, ck.country) as country, cv.device_type, cv.os_version, cv.user_agent, cv.goal_name,
+                    cv.converted_at, cv.ip_address, COALESCE(NULLIF(cv.country,''), NULLIF(ck.country,''), NULLIF(cv.ipquery_country_code,'')) as country, cv.device_type, cv.os_version, cv.user_agent, cv.goal_name,
                     COALESCE(cv.rejection_reason, '') AS rejection_reason,
                     cv.rejected_at,
                     af.affiliate_code, CONCAT(u.first_name,' ',u.last_name) AS aff_name, af.id AS affiliate_id,
                     o.name AS offer_name,
-                    ck.city, ck.region,
+                    COALESCE(NULLIF(ck.city,''), NULLIF(cv.ipquery_city,'')) as city,
+                    COALESCE(NULLIF(ck.region,''), NULLIF(cv.ipquery_state,'')) as region,
                     fl.fraud_score   AS ipqs_score,
                     fl.is_vpn        AS ipqs_is_vpn,
                     fl.is_proxy      AS ipqs_is_proxy,

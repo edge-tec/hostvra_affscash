@@ -578,8 +578,10 @@ if ($action === 'conversions') {
     try {
         $rows = Database::fetchAll(
             "SELECT c.id, c.status, c.payout, c.revenue, c.converted_at,
-                    COALESCE(NULLIF(c.country,''), ck.country) as country,
+                    COALESCE(NULLIF(c.country,''), ck.country, NULLIF(c.ipquery_country_code,'')) as country,
                     COALESCE(NULLIF(c.device_type,''), ck.device_type) as device_type,
+                    COALESCE(NULLIF(ck.city,''), NULLIF(c.ipquery_city,'')) as city,
+                    COALESCE(NULLIF(ck.region,''), NULLIF(c.ipquery_state,'')) as region,
                     o.name as offer_name,
                     CONCAT(u.first_name,' ',u.last_name) as aff_name
              FROM conversions c
