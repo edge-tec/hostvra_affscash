@@ -197,34 +197,95 @@ if ($action === 'stats') {
 }
 
 if ($action === 'trend') {
-    $rows = Database::fetchAll(
-        "SELECT sd.stat_date as d, SUM(sd.clicks) as c, SUM(sd.unique_clicks) as u, SUM(sd.conversions) as cv
-         FROM stats_daily sd WHERE $statsW GROUP BY sd.stat_date ORDER BY sd.stat_date",
-        $statsP
-    );
-    $map = [];
-    foreach ($rows as $r) $map[$r['d']] = $r;
-
-    $fraudByDay = [];
-    $fraudRows = Database::fetchAll(
-        "SELECT DATE(c.converted_at) as d, SUM(CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_cv
-         FROM conversions c WHERE $convW GROUP BY DATE(c.converted_at)",
-        $convP
-    );
-    foreach ($fraudRows as $fr) $fraudByDay[$fr['d']] = (int)($fr['fraud_cv'] ?? 0);
-
     $labels = $clicks_data = $conv_data = $fraud_data = [];
-    $cur = strtotime($from);
-    $end = strtotime($to);
-    while ($cur <= $end) {
-        $d = date('Y-m-d', $cur);
-        $r = $map[$d] ?? [];
-        $labels[] = date('M j', $cur);
-        $clicks_data[] = (int)($r['c'] ?? 0);
-        $conv_data[] = (int)($r['cv'] ?? 0);
-        $fraud_data[] = (int)($fraudByDay[$d] ?? 0);
-        $cur += 86400;
+
+    if ($from === $to) {
+        $appTz = Config::get('config', 'app.timezone') ?? 'UTC';
+        $tzApp = new DateTimeZone($appTz);
+        $_reqTz = 'UTC';
+        $tzReq = new DateTimeZone($_reqTz);
+
+        $startDt = new DateTime("$from 00:00:00", $tzReq);
+        $startDt->setTimezone($tzApp);
+        $appStart = $startDt->format('Y-m-d H:i:s');
+
+        $endDt = new DateTime("$from 23:59:59", $tzReq);
+        $endDt->setTimezone($tzApp);
+        $appEnd = $endDt->format('Y-m-d H:i:s');
+
+        $dtNow = new DateTime("now", $tzReq);
+        $offsetSeconds = $tzReq->getOffset($dtNow) - $tzApp->getOffset($dtNow);
+
+        $clRows = [];
+        try {
+            $clRows = Database::fetchAll(
+                "SELECT HOUR(DATE_ADD(clicked_at, INTERVAL ? SECOND)) as h, COUNT(*) as c
+                 FROM clicks WHERE $clickW GROUP BY h",
+                array_merge([$offsetSeconds], $clickP)
+            );
+        } catch (\Throwable $_e) {}
+
+        $cvRows = [];
+        try {
+            $cvRows = Database::fetchAll(
+                "SELECT HOUR(DATE_ADD(converted_at, INTERVAL ? SECOND)) as h, COUNT(*) as cv
+                 FROM conversions c WHERE $convW GROUP BY h",
+                array_merge([$offsetSeconds], $convP)
+            );
+        } catch (\Throwable $_e) {}
+
+        $fraudByHour = [];
+        try {
+            $fraudRows = Database::fetchAll(
+                "SELECT HOUR(DATE_ADD(converted_at, INTERVAL ? SECOND)) as h,
+                        SUM(CASE WHEN COALESCE(fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_cv
+                 FROM conversions c WHERE $convW GROUP BY h",
+                array_merge([$offsetSeconds], $convP)
+            );
+            foreach ($fraudRows as $fr) $fraudByHour[(int)$fr['h']] = (int)$fr['fraud_cv'];
+        } catch (\Throwable $_e) {}
+
+        $cMap = []; foreach ($clRows as $r) $cMap[(int)$r['h']] = $r;
+        $cvMap = []; foreach ($cvRows as $r) $cvMap[(int)$r['h']] = $r;
+
+        for ($h = 0; $h < 24; $h++) {
+            $cr  = $cMap[$h]  ?? [];
+            $cvr = $cvMap[$h] ?? [];
+            $labels[]       = sprintf('%02d:00', $h);
+            $clicks_data[]  = (int)($cr['c']   ?? 0);
+            $conv_data[]    = (int)($cvr['cv'] ?? 0);
+            $fraud_data[]   = $fraudByHour[$h] ?? 0;
+        }
+    } else {
+        $rows = Database::fetchAll(
+            "SELECT sd.stat_date as d, SUM(sd.clicks) as c, SUM(sd.unique_clicks) as u, SUM(sd.conversions) as cv
+             FROM stats_daily sd WHERE $statsW GROUP BY sd.stat_date ORDER BY sd.stat_date",
+            $statsP
+        );
+        $map = [];
+        foreach ($rows as $r) $map[$r['d']] = $r;
+
+        $fraudByDay = [];
+        $fraudRows = Database::fetchAll(
+            "SELECT DATE(c.converted_at) as d, SUM(CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_cv
+             FROM conversions c WHERE $convW GROUP BY DATE(c.converted_at)",
+            $convP
+        );
+        foreach ($fraudRows as $fr) $fraudByDay[$fr['d']] = (int)($fr['fraud_cv'] ?? 0);
+
+        $cur = strtotime($from);
+        $end = strtotime($to);
+        while ($cur <= $end) {
+            $d = date('Y-m-d', $cur);
+            $r = $map[$d] ?? [];
+            $labels[] = date('M j', $cur);
+            $clicks_data[] = (int)($r['c'] ?? 0);
+            $conv_data[] = (int)($r['cv'] ?? 0);
+            $fraud_data[] = (int)($fraudByDay[$d] ?? 0);
+            $cur += 86400;
+        }
     }
+
     echo json_encode([
         'success' => true,
         'data' => compact('labels', 'clicks_data', 'conv_data', 'fraud_data')
