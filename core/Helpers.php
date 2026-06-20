@@ -189,24 +189,48 @@ class Helpers {
     public static function getGeoInfo(string $ip): array {
         $default = ['country' => '', 'region' => '', 'city' => '', 'isp' => '', 'proxy' => false, 'hosting' => false];
         if ($ip === '127.0.0.1' || $ip === '::1' || $ip === '0.0.0.0') return $default;
+        
+        $isIpv6 = filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
+        $ctx = stream_context_create(['http' => ['timeout' => 2]]);
+        
         try {
-            $url = "https://ip-api.com/json/{$ip}?fields=status,country,countryCode,regionName,city,isp,proxy,hosting";
-            $ctx = stream_context_create(['http' => ['timeout' => 2]]);
-            $json = @file_get_contents($url, false, $ctx);
-            if ($json) {
-                $data = json_decode($json, true);
-                if ($data && $data['status'] === 'success') {
+            // ip-api.com free tier only supports IPv4
+            if (!$isIpv6) {
+                $url = "http://ip-api.com/json/{$ip}?fields=status,country,countryCode,regionName,city,isp,proxy,hosting";
+                $json = @file_get_contents($url, false, $ctx);
+                if ($json) {
+                    $data = json_decode($json, true);
+                    if ($data && isset($data['status']) && $data['status'] === 'success') {
+                        return [
+                            'country' => $data['countryCode'] ?? '',
+                            'region'  => $data['regionName'] ?? '',
+                            'city'    => $data['city'] ?? '',
+                            'isp'     => $data['isp'] ?? '',
+                            'proxy'   => (bool)($data['proxy'] ?? false),
+                            'hosting' => (bool)($data['hosting'] ?? false),
+                        ];
+                    }
+                }
+            }
+            
+            // Fallback to ipwho.is for IPv6 or if ip-api failed
+            $urlFallback = "http://ipwho.is/{$ip}";
+            $jsonFallback = @file_get_contents($urlFallback, false, $ctx);
+            if ($jsonFallback) {
+                $data = json_decode($jsonFallback, true);
+                if ($data && isset($data['success']) && $data['success'] === true) {
                     return [
-                        'country' => $data['countryCode'] ?? '',
-                        'region'  => $data['regionName'] ?? '',
+                        'country' => $data['country_code'] ?? '',
+                        'region'  => $data['region'] ?? '',
                         'city'    => $data['city'] ?? '',
-                        'isp'     => $data['isp'] ?? '',
-                        'proxy'   => (bool)($data['proxy']   ?? false),
-                        'hosting' => (bool)($data['hosting'] ?? false),
+                        'isp'     => $data['connection']['isp'] ?? '',
+                        'proxy'   => false, // free tier of ipwho.is doesn't provide proxy
+                        'hosting' => false,
                     ];
                 }
             }
         } catch (\Exception $e) {}
+        
         return $default;
     }
 
