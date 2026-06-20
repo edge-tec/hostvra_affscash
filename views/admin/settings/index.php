@@ -307,7 +307,7 @@
             </div>
 
             <!-- Dashboard Banner Style -->
-            <?php $bannerStyle = $cfg['app']['dashboard_banner_style'] ?? (empty($cfg['app']['transparent_dashboard']) ? 'default' : 'transparent'); ?>
+            <?php $bannerStyle = $cfg['app']['dashboard_banner_style'] ?? (empty($cfg['app']['transparent_dashboard']) ? 'glass_purple' : 'transparent'); ?>
             <div class="form-group">
                 <label>Dashboard Banner Style</label>
                 <div class="form-hint" style="margin-bottom:10px">Choose the style for the top banner on all dashboards (Admin, Manager, Affiliate).</div>
@@ -320,7 +320,7 @@
             </div>
 
             <!-- Dashboard Card Style -->
-            <?php $cardStyle = $cfg['app']['dashboard_card_style'] ?? 'default'; ?>
+            <?php $cardStyle = $cfg['app']['dashboard_card_style'] ?? 'aurora'; ?>
             <div class="form-group">
                 <label>Dashboard Card Design</label>
                 <div class="form-hint" style="margin-bottom:10px">Choose the KPI stat card design for all dashboards. Changes apply to Admin, Manager, and Affiliate dashboards.</div>
@@ -333,7 +333,7 @@
                 <div id="cardStylePreview" style="margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;max-width:700px">
                 </div>
             </div>
-            <?php $trendStyle = $cfg['app']['trend_chart_style'] ?? 'default'; ?>
+            <?php $trendStyle = $cfg['app']['trend_chart_style'] ?? 'neon_glow'; ?>
             <div class="form-group" style="margin-top:24px">
                 <label>Performance Trend Style</label>
                 <div class="form-hint" style="margin-bottom:10px">Choose the design for the main Performance Trend chart.</div>

@@ -1,7 +1,7 @@
 <?php require BASE_PATH . '/views/layouts/affiliate_manager.php'; ?>
 
 <style>
-<?php $bannerStyle = Config::get('config', 'app.dashboard_banner_style') ?? (Config::get('config', 'app.transparent_dashboard') === '1' ? 'transparent' : 'default'); ?>
+<?php $bannerStyle = Config::get('config', 'app.dashboard_banner_style') ?? (Config::get('config', 'app.transparent_dashboard') === '1' ? 'transparent' : 'glass_purple'); ?>
 /* ── Dashboard Header + Filter ───────────────────────────────────────── */
 .dash-header{
     <?php if ($bannerStyle === 'transparent'): ?>
@@ -118,7 +118,7 @@ select.dash-f-input{
 @media(max-width:640px){.dash-filters{gap:6px;}.dash-f-input{min-width:0;flex:1 1 calc(50% - 4px);}.dash-period-tab{padding:5px 8px;font-size:11px;}}
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;}
 
-<?php $cardStyle = Config::get('config', 'app.dashboard_card_style') ?? 'default'; ?>
+<?php $cardStyle = Config::get('config', 'app.dashboard_card_style') ?? 'aurora'; ?>
 
 <?php if ($cardStyle === 'gradient_glow'): ?>
 .kpi-card{background:var(--card-bg);border:none;border-radius:16px;padding:22px 22px 22px 26px;position:relative;overflow:hidden;transition:box-shadow .3s,transform .3s;border-left:4px solid transparent;}
@@ -652,7 +652,7 @@ const charts = {};
 let trendMetrics = new Set(['clicks','conv','fraud']);
 let trendType    = 'line';
 let trendData   = {};
-const trendChartStyle = '<?= Config::get('config', 'app.trend_chart_style') ?? 'default' ?>';
+const trendChartStyle = '<?= Config::get('config', 'app.trend_chart_style') ?? 'neon_glow' ?>';
 
 function fmt(n, dec){ return Number(n||0).toLocaleString(undefined,{minimumFractionDigits:dec||0,maximumFractionDigits:dec||0}); }
 

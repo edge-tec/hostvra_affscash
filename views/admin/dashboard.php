@@ -87,8 +87,8 @@ $_tzOptions = [
 ?>
 
 <style>
-<?php $bannerStyle = Config::get('config', 'app.dashboard_banner_style') ?? (Config::get('config', 'app.transparent_dashboard') === '1' ? 'transparent' : 'default'); ?>
-<?php $cardStyle = Config::get('config', 'app.dashboard_card_style') ?? 'default'; ?>
+<?php $bannerStyle = Config::get('config', 'app.dashboard_banner_style') ?? (Config::get('config', 'app.transparent_dashboard') === '1' ? 'transparent' : 'glass_purple'); ?>
+<?php $cardStyle = Config::get('config', 'app.dashboard_card_style') ?? 'aurora'; ?>
 /* ── Dashboard Header + Filter ───────────────────────────────────────── */
 .dash-header{
     <?php if ($bannerStyle === 'transparent'): ?>
@@ -911,7 +911,7 @@ let trendMetrics = new Set(['clicks','conv','revenue','payout','profit','fraud']
 let trendType    = 'line';
 let trendData   = {};
 const SERVER_TZ = '<?= addslashes($_serverTz) ?>';
-const trendChartStyle = '<?= Config::get('config', 'app.trend_chart_style') ?? 'default' ?>';
+const trendChartStyle = '<?= Config::get('config', 'app.trend_chart_style') ?? 'neon_glow' ?>';
 
 function fmt(n, dec){ return Number(n||0).toLocaleString(undefined,{minimumFractionDigits:dec||0,maximumFractionDigits:dec||0}); }
 function fmtCur(n){ return '$'+fmt(n,2); }

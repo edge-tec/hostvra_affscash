@@ -73,7 +73,7 @@ $_affTzOptions = [
         'Pacific/Guam'        =>'Guam (ChST, UTC+10)',
     ],
 ];
-$bannerStyle = Config::get('config', 'app.dashboard_banner_style') ?? (Config::get('config', 'app.transparent_dashboard') === '1' ? 'transparent' : 'default');
+$bannerStyle = Config::get('config', 'app.dashboard_banner_style') ?? (Config::get('config', 'app.transparent_dashboard') === '1' ? 'transparent' : 'glass_purple');
 ?>
 <style>
 /* ── Analytics Dashboard Styles ─────────────────────────────── */
@@ -212,7 +212,7 @@ html[data-theme="dark"] .an-header {
     gap: 14px;
     margin-bottom: 20px;
 }
-<?php $cardStyle = Config::get('config', 'app.dashboard_card_style') ?? 'default'; ?>
+<?php $cardStyle = Config::get('config', 'app.dashboard_card_style') ?? 'aurora'; ?>
 
 <?php if ($cardStyle === 'gradient_glow'): ?>
 /* ── STYLE: Gradient Glow ───────────────────────────────────── */
@@ -870,7 +870,7 @@ var charts = {};
 var _trendData = {};
 var _convData  = {};
 var _statsData = {};
-var trendChartStyle = '<?= Config::get('config', 'app.trend_chart_style') ?? 'default' ?>';
+var trendChartStyle = '<?= Config::get('config', 'app.trend_chart_style') ?? 'neon_glow' ?>';
 
 // ── Timezone helpers ────────────────────────────────────────────────────────
 var SERVER_TZ = '<?= addslashes($_serverTz) ?>';
