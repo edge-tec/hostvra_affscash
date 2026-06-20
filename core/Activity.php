@@ -242,6 +242,19 @@ class Activity {
                 "UPDATE user_active_sessions SET last_active=NOW(), current_page=? WHERE session_id=? AND user_id=?",
                 [mb_substr($page, 0, 300), $sessionId, $userId]
             );
+            
+            // Auto-flag sessions hitting the native mobile API endpoints as Android APK
+            if (strpos($page, '/api/v2/') === 0 || strpos($page, '/api/v1/') === 0) {
+                Database::query(
+                    "UPDATE user_active_sessions SET platform_source='Android APK', device_type='Mobile (App)', browser='Android App' WHERE session_id=? AND user_id=?",
+                    [$sessionId, $userId]
+                );
+                Database::query(
+                    "UPDATE user_login_logs SET platform_source='Android APK', device_type='Mobile (App)', browser='Android App' WHERE session_id=? AND user_id=?",
+                    [$sessionId, $userId]
+                );
+            }
+
             // If session row missing (e.g. after Force Logout or 10 min idle),
             // do not re-insert it so the session can be killed.
             if (!Database::fetchOne("SELECT id FROM user_active_sessions WHERE session_id=?", [$sessionId])) {

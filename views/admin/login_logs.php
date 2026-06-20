@@ -437,8 +437,10 @@ function renderLiveGrid(users){
         var initials = (u.user_name||'?').split(' ').map(function(w){return w.charAt(0).toUpperCase();}).slice(0,2).join('');
         
         var browserDisplay = esc(u.browser||'—');
-        if (u.platform_source === 'Android APK' || u.browser === 'Android App') {
+        var deviceType = u.device_type;
+        if (u.platform_source === 'Android APK' || u.browser === 'Android App' || (u.current_page && (u.current_page.startsWith('/api/v2/') || u.current_page.startsWith('/api/v1/')))) {
             browserDisplay = '<span style="color:#10B981;font-weight:700;display:inline-flex;align-items:center;gap:4px"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993.0004.5511-.4482.9997-.9993.9997zm-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997zm11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1517-.5676.4255.4255 0 00-.5753.1493l-2.029 3.5133A11.7584 11.7584 0 0012 7.7471c-1.8906 0-3.6593.4795-5.1228 1.3093L4.8482 5.5431a.426.426 0 00-.5753-.1493.415.415 0 00-.1517.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.761h24c-.3432-4.1021-2.6889-7.5743-6.1185-9.4396z"/></svg> Android App</span>';
+            deviceType = 'Mobile (App)';
         }
 
         return '<div class="live-card '+(isIdle?'idle':'')+'">'+
@@ -457,7 +459,7 @@ function renderLiveGrid(users){
             '</div>'+
             '<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;font-size:12px;margin-bottom:12px">'+
                 '<div><span style="color:#9CA3AF;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Role</span><br>'+roleBadge(u.role)+'</div>'+
-                '<div><span style="color:#9CA3AF;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Device</span><br>'+deviceBadge(u.device_type)+'</div>'+
+                '<div><span style="color:#9CA3AF;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Device</span><br>'+deviceBadge(deviceType)+'</div>'+
                 '<div><span style="color:#9CA3AF;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em">IP</span><br><span style="font-weight:600;font-family:monospace;font-size:12px;color:#374151">'+esc(u.ip_address)+'</span></div>'+
                 '<div><span style="color:#9CA3AF;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Location</span><br>'+
                     (u.country_code?'<img src="https://flagcdn.com/16x12/'+u.country_code.toLowerCase()+'.png" style="margin-right:4px;vertical-align:middle" onerror="this.style.display=\'none\'">':'')+
@@ -523,6 +525,8 @@ window.loadHistory = function(page){
         }
         tbody.innerHTML = d.rows.map(function(r,i){
             var num = (currentPage-1)*25 + i + 1;
+            var isAndroid = (r.platform_source === 'Android APK' || r.browser === 'Android App' || (r.current_page && (r.current_page.startsWith('/api/v2/') || r.current_page.startsWith('/api/v1/'))));
+            var deviceType = isAndroid ? 'Mobile (App)' : r.device_type;
             return '<tr>'+
                 '<td style="color:#9CA3AF;font-size:12px">'+num+'</td>'+
                 '<td>'+
@@ -536,10 +540,10 @@ window.loadHistory = function(page){
                     (r.country_code?'<img src="https://flagcdn.com/16x12/'+r.country_code.toLowerCase()+'.png" style="margin-right:5px;vertical-align:middle" onerror="this.style.display=\'none\'">':'')+
                     '<span style="font-size:13px">'+esc(r.city&&r.city!=='Unknown'?r.city+', ':'')+''+esc(r.country||'—')+'</span>'+
                 '</td>'+
-                '<td>'+deviceBadge(r.device_type)+'</td>'+
+                '<td>'+deviceBadge(deviceType)+'</td>'+
                 '<td>'+
                     '<div style="font-size:13px;color:#374151">'+
-                        ((r.platform_source === 'Android APK' || r.browser === 'Android App')
+                        (isAndroid
                             ? '<span style="color:#10B981;font-weight:700;display:inline-flex;align-items:center;gap:4px"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993.0004.5511-.4482.9997-.9993.9997zm-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997zm11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1517-.5676.4255.4255 0 00-.5753.1493l-2.029 3.5133A11.7584 11.7584 0 0012 7.7471c-1.8906 0-3.6593.4795-5.1228 1.3093L4.8482 5.5431a.426.426 0 00-.5753-.1493.415.415 0 00-.1517.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.761h24c-.3432-4.1021-2.6889-7.5743-6.1185-9.4396z"/></svg> Android App</span>'
                             : esc(r.browser||'—'))+
                     '</div>'+
