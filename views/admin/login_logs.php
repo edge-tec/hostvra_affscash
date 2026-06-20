@@ -317,6 +317,7 @@ function fmtDt(dt){
     return typeof fmtTs==='function'
         ? fmtTs(dt, {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})
         : new Date(dt).toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+}
 function deviceIcon(d){
     if (d === 'Mobile (App)' || d === 'Mobile') return '📱';
     if (d === 'Tablet') return '💊';
