@@ -413,12 +413,26 @@ fun ClickRowItem(click: ClickRow) {
             Text("Click ID: ${click.clickId}", fontSize = 10.sp, color = Color.Gray)
             Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Column {
-                    Text("Sub1: ${click.sub1 ?: "-"}", fontSize = 12.sp)
-                    Text("${click.country ?: "-"} | ${click.os ?: "-"} | ${click.browser ?: "-"}", fontSize = 12.sp)
+                Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
+                    Text("Sub1: ${click.sub1 ?: "-"}", fontSize = 12.sp, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                    Text("${click.country ?: "-"} | ${click.os ?: "-"} | ${click.browser ?: "-"}", fontSize = 12.sp, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text((click.convStatus ?: "no conv").uppercase(), fontSize = 12.sp, color = if (click.convStatus == "approved") Color(0xFF10B981) else Color(0xFFEF4444), fontWeight = FontWeight.Bold)
+                    val statusColor = if (click.convStatus == "approved") Color(0xFF10B981) else Color(0xFFEF4444)
+                    val statusBg = statusColor.copy(alpha = 0.15f)
+                    Surface(
+                        color = statusBg,
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    ) {
+                        Text(
+                            (click.convStatus ?: "no conv").uppercase(), 
+                            fontSize = 10.sp, 
+                            fontWeight = FontWeight.Bold, 
+                            color = statusColor,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        )
+                    }
                     if (click.convPayout != null && click.convPayout > 0) {
                         Text("$${"%.2f".format(click.convPayout)}", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                     }
@@ -470,19 +484,34 @@ fun ConversionRowItem(conv: ConversionRow) {
             Spacer(modifier = Modifier.height(8.dp))
             
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Column {
+                Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
                     Text("Date: ${conv.convertedAt}", fontSize = 12.sp)
                     if (!conv.sub1.isNullOrBlank()) {
-                        Text("Sub1: ${conv.sub1}", fontSize = 12.sp)
+                        Text("Sub1: ${conv.sub1}", fontSize = 12.sp, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
                     }
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text(conv.status, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = when(conv.status) {
+                    val statusColor = when(conv.status) {
                         "approved" -> Color(0xFF10B981)
                         "rejected" -> Color(0xFFEF4444)
                         else -> Color(0xFFF59E0B)
-                    })
-                    Text("$${(( conv.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    }
+                    val statusBg = statusColor.copy(alpha = 0.15f)
+                    
+                    Surface(
+                        color = statusBg,
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    ) {
+                        Text(
+                            conv.status.uppercase(), 
+                            fontSize = 10.sp, 
+                            fontWeight = FontWeight.Bold, 
+                            color = statusColor,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        )
+                    }
+                    Text("$${(( conv.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -502,13 +531,28 @@ fun SmartlinkRowItem(sl: SmartlinkClickRow) {
             Text("Routed to: ${sl.offerName ?: "Custom URL"}", fontSize = 12.sp)
             Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Column {
-                    Text("${sl.country ?: "-"} | Sub1: ${sl.sub1 ?: "-"}", fontSize = 12.sp)
+                Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
+                    Text("${sl.country ?: "-"} | Sub1: ${sl.sub1 ?: "-"}", fontSize = 12.sp, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text(sl.convStatus?.takeIf { it.isNotBlank() } ?: "No conv", fontSize = 12.sp)
+                    val statusText = sl.convStatus?.takeIf { it.isNotBlank() } ?: "No conv"
+                    val statusColor = if (statusText.lowercase() == "approved") Color(0xFF10B981) else Color(0xFFEF4444)
+                    val statusBg = statusColor.copy(alpha = 0.15f)
+                    Surface(
+                        color = statusBg,
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    ) {
+                        Text(
+                            statusText.uppercase(), 
+                            fontSize = 10.sp, 
+                            fontWeight = FontWeight.Bold, 
+                            color = statusColor,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        )
+                    }
                     if (sl.convPayout != null && sl.convPayout > 0) {
-                        Text("$${(( sl.convPayout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        Text("$${(( sl.convPayout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }
