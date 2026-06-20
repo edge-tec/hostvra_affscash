@@ -206,80 +206,145 @@ class Helpers {
             }
         }
 
-        // --- Provider 1: ip-api.com (free, supports IPv4 + IPv6 batch, 45 req/min) ---
+        // Schema migration for new columns
         try {
-            $ctx = stream_context_create(['http' => [
-                'timeout'       => 4,
-                'ignore_errors' => true,
-            ]]);
-            $url = "http://ip-api.com/json/" . urlencode($ip)
-                 . "?fields=status,country,countryCode,regionName,city,isp,proxy,hosting";
-            $json = @file_get_contents($url, false, $ctx);
-            if ($json !== false) {
-                $data = json_decode($json, true);
-                if ($data && ($data['status'] ?? '') === 'success') {
-                    return [
-                        'country' => $data['countryCode']  ?? '',
-                        'region'  => $data['regionName']   ?? '',
-                        'city'    => $data['city']         ?? '',
-                        'isp'     => $data['isp']          ?? '',
-                        'proxy'   => (bool)($data['proxy']   ?? false),
-                        'hosting' => (bool)($data['hosting'] ?? false),
-                    ];
-                }
-            }
-        } catch (\Throwable $e) {
-            // silent — try fallback
-        }
+            Database::query("ALTER TABLE `ip_geo_cache` ADD COLUMN `isp` VARCHAR(255) DEFAULT NULL");
+        } catch (\Throwable $_) {}
+        try {
+            Database::query("ALTER TABLE `ip_geo_cache` ADD COLUMN `proxy` TINYINT(1) DEFAULT 0");
+        } catch (\Throwable $_) {}
+        try {
+            Database::query("ALTER TABLE `ip_geo_cache` ADD COLUMN `hosting` TINYINT(1) DEFAULT 0");
+        } catch (\Throwable $_) {}
 
-        // --- Provider 2: ipwho.is (supports IPv4 + IPv6, no key required) ---
+        // Check DB cache (7 day TTL)
         try {
-            $ctx2 = stream_context_create(['http' => [
-                'timeout'       => 5,
-                'ignore_errors' => true,
-            ]]);
-            $json2 = @file_get_contents("https://ipwho.is/" . urlencode($ip), false, $ctx2);
-            if ($json2 !== false) {
-                $data2 = json_decode($json2, true);
-                if ($data2 && ($data2['success'] ?? false) === true) {
-                    return [
-                        'country' => $data2['country_code'] ?? '',
-                        'region'  => $data2['region']       ?? '',
-                        'city'    => $data2['city']         ?? '',
-                        'isp'     => $data2['connection']['isp'] ?? '',
-                        'proxy'   => false,
-                        'hosting' => false,
-                    ];
-                }
-            }
-        } catch (\Throwable $e) {
-            // silent — try fallback
-        }
-
-        // --- Provider 3: ipapi.co (supports IPv4 + IPv6, 1000/day free) ---
-        try {
-            $ctx3 = stream_context_create(['http' => [
-                'timeout'       => 5,
-                'ignore_errors' => true,
-                'header'        => "User-Agent: AffsCash/2.0\r\n",
-            ]]);
-            $json3 = @file_get_contents("https://ipapi.co/" . urlencode($ip) . "/json/", false, $ctx3);
-            if ($json3 !== false) {
-                $data3 = json_decode($json3, true);
-                if ($data3 && !isset($data3['error'])) {
-                    return [
-                        'country' => $data3['country_code'] ?? '',
-                        'region'  => $data3['region']       ?? '',
-                        'city'    => $data3['city']         ?? '',
-                        'isp'     => $data3['org']          ?? '',
-                        'proxy'   => false,
-                        'hosting' => false,
-                    ];
-                }
+            $cached = Database::fetchOne(
+                "SELECT country_code as country, COALESCE(region,'') as region, city, COALESCE(isp,'') as isp, COALESCE(proxy,0) as proxy, COALESCE(hosting,0) as hosting FROM ip_geo_cache WHERE ip_address=? AND cached_at > DATE_SUB(NOW(), INTERVAL 7 DAY)",
+                [$ip]
+            );
+            if ($cached) {
+                return [
+                    'country' => $cached['country'] ?? '',
+                    'region'  => $cached['region'] ?? '',
+                    'city'    => $cached['city'] ?? '',
+                    'isp'     => $cached['isp'] ?? '',
+                    'proxy'   => (bool)$cached['proxy'],
+                    'hosting' => (bool)$cached['hosting']
+                ];
             }
         } catch (\Throwable $e) {}
 
-        return $default;
+        $result = $default;
+        $success = false;
+
+        // --- Provider 1: ip-api.com (free, supports IPv4 + IPv6 batch, 45 req/min) ---
+        if (!$success) {
+            try {
+                $ctx = stream_context_create(['http' => [
+                    'timeout'       => 4,
+                    'ignore_errors' => true,
+                ]]);
+                $url = "http://ip-api.com/json/" . urlencode($ip) . "?fields=status,country,countryCode,regionName,city,isp,proxy,hosting";
+                $json = @file_get_contents($url, false, $ctx);
+                if ($json !== false) {
+                    $data = json_decode($json, true);
+                    if ($data && ($data['status'] ?? '') === 'success') {
+                        $result = [
+                            'country' => $data['countryCode']  ?? '',
+                            'region'  => $data['regionName']   ?? '',
+                            'city'    => $data['city']         ?? '',
+                            'isp'     => $data['isp']          ?? '',
+                            'proxy'   => (bool)($data['proxy']   ?? false),
+                            'hosting' => (bool)($data['hosting'] ?? false),
+                        ];
+                        $success = true;
+                    } else {
+                        error_log("GeoIP [ip-api.com] failed for IP $ip: " . json_encode($data));
+                    }
+                } else {
+                    error_log("GeoIP [ip-api.com] timeout/error for IP $ip");
+                }
+            } catch (\Throwable $e) {
+                error_log("GeoIP [ip-api.com] exception for IP $ip: " . $e->getMessage());
+            }
+        }
+
+        // --- Provider 2: ipwho.is (supports IPv4 + IPv6, no key required) ---
+        if (!$success) {
+            try {
+                $ctx2 = stream_context_create(['http' => [
+                    'timeout'       => 5,
+                    'ignore_errors' => true,
+                ]]);
+                $json2 = @file_get_contents("https://ipwho.is/" . urlencode($ip), false, $ctx2);
+                if ($json2 !== false) {
+                    $data2 = json_decode($json2, true);
+                    if ($data2 && ($data2['success'] ?? false) === true) {
+                        $result = [
+                            'country' => $data2['country_code'] ?? '',
+                            'region'  => $data2['region']       ?? '',
+                            'city'    => $data2['city']         ?? '',
+                            'isp'     => $data2['connection']['isp'] ?? '',
+                            'proxy'   => false,
+                            'hosting' => false,
+                        ];
+                        $success = true;
+                    } else {
+                        error_log("GeoIP [ipwho.is] failed for IP $ip: " . json_encode($data2));
+                    }
+                } else {
+                    error_log("GeoIP [ipwho.is] timeout/error for IP $ip");
+                }
+            } catch (\Throwable $e) {
+                error_log("GeoIP [ipwho.is] exception for IP $ip: " . $e->getMessage());
+            }
+        }
+
+        // --- Provider 3: ipapi.co (supports IPv4 + IPv6, 1000/day free) ---
+        if (!$success) {
+            try {
+                $ctx3 = stream_context_create(['http' => [
+                    'timeout'       => 5,
+                    'ignore_errors' => true,
+                    'header'        => "User-Agent: AffsCash/2.0\r\n",
+                ]]);
+                $json3 = @file_get_contents("https://ipapi.co/" . urlencode($ip) . "/json/", false, $ctx3);
+                if ($json3 !== false) {
+                    $data3 = json_decode($json3, true);
+                    if ($data3 && !isset($data3['error'])) {
+                        $result = [
+                            'country' => $data3['country_code'] ?? '',
+                            'region'  => $data3['region']       ?? '',
+                            'city'    => $data3['city']         ?? '',
+                            'isp'     => $data3['org']          ?? '',
+                            'proxy'   => false,
+                            'hosting' => false,
+                        ];
+                        $success = true;
+                    } else {
+                        error_log("GeoIP [ipapi.co] failed for IP $ip: " . json_encode($data3));
+                    }
+                } else {
+                    error_log("GeoIP [ipapi.co] timeout/error for IP $ip");
+                }
+            } catch (\Throwable $e) {
+                error_log("GeoIP [ipapi.co] exception for IP $ip: " . $e->getMessage());
+            }
+        }
+
+        // Cache result if successful or at least default to prevent repeated API hits for same IP
+        try {
+            Database::query(
+                "INSERT INTO ip_geo_cache (ip_address,country_code,region,city,isp,proxy,hosting,cached_at) VALUES (?,?,?,?,?,?,?,NOW())
+                 ON DUPLICATE KEY UPDATE country_code=VALUES(country_code),region=VALUES(region),city=VALUES(city),isp=VALUES(isp),proxy=VALUES(proxy),hosting=VALUES(hosting),cached_at=NOW()",
+                [$ip, $result['country'], $result['region'], $result['city'], $result['isp'], (int)$result['proxy'], (int)$result['hosting']]
+            );
+        } catch (\Throwable $e) {
+            error_log("GeoIP Cache insert failed for IP $ip: " . $e->getMessage());
+        }
+
+        return $result;
     }
 
     public static function firePostback(string $url, string $method = 'GET'): array {
