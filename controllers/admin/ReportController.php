@@ -2,9 +2,76 @@
 Auth::check('admin');
 $pageTitle = 'Reports';
 
-// Ensure required columns exist for UI fallback queries
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_city` VARCHAR(100) DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_state` VARCHAR(100) DEFAULT NULL"); } catch (\Throwable $_e) {}
+// Ensure required geo columns exist on conversions table
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_country`      VARCHAR(60)  DEFAULT NULL"); } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_country_code` CHAR(2)      DEFAULT NULL"); } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_city`         VARCHAR(100) DEFAULT NULL"); } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_state`        VARCHAR(100) DEFAULT NULL"); } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_isp`          VARCHAR(200) DEFAULT NULL"); } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_org`          VARCHAR(200) DEFAULT NULL"); } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_asn`          VARCHAR(30)  DEFAULT NULL"); } catch (\Throwable $_e) {}
+
+/**
+ * Lazy geo-backfill helper.
+ * Called after fetching conversion rows. For any row where country/city/region
+ * are ALL empty but a valid conv_ip exists, call IPQuery to resolve the geo
+ * and write it back to the conversions table. Limited to $batchMax per page
+ * load to avoid timeouts. On subsequent loads the data is already cached.
+ */
+function _backfillMissingGeo(array &$rows, int $batchMax = 25): void {
+    $backfilled = 0;
+    foreach ($rows as &$r) {
+        if ($backfilled >= $batchMax) break;
+        // Skip if geo data already present
+        if (!empty($r['country']) || !empty($r['city']) || !empty($r['region'])) continue;
+        // Skip if no IP to look up
+        $ip = trim($r['conv_ip'] ?? '');
+        if ($ip === '' || $ip === '0.0.0.0') continue;
+
+        // Strip CIDR notation
+        if (strpos($ip, '/') !== false) $ip = explode('/', $ip)[0];
+
+        try {
+            $geo = FraudIQ::checkIPQuery($ip);
+            $cc    = $geo['country_code'] ?? '';
+            $city  = $geo['city']         ?? '';
+            $state = $geo['state']        ?? '';
+
+            if ($cc !== '' || $city !== '' || $state !== '') {
+                // Write back to DB so next page load is instant
+                Database::query(
+                    "UPDATE `conversions` SET
+                        `ipquery_country`      = COALESCE(`ipquery_country`, ?),
+                        `ipquery_country_code` = COALESCE(`ipquery_country_code`, ?),
+                        `ipquery_city`         = COALESCE(`ipquery_city`, ?),
+                        `ipquery_state`        = COALESCE(`ipquery_state`, ?),
+                        `ipquery_isp`          = COALESCE(`ipquery_isp`, ?),
+                        `ipquery_org`          = COALESCE(`ipquery_org`, ?),
+                        `ipquery_asn`          = COALESCE(`ipquery_asn`, ?)
+                     WHERE `conversion_id` = ?",
+                    [
+                        $geo['country']      ?? '',
+                        $cc,
+                        $city,
+                        $state,
+                        $geo['isp'] ?? '',
+                        $geo['org'] ?? '',
+                        $geo['asn'] ?? '',
+                        $r['conversion_id'],
+                    ]
+                );
+                // Patch the in-memory row so it renders immediately
+                $r['country'] = $cc;
+                $r['city']    = $city;
+                $r['region']  = $state;
+                $backfilled++;
+            }
+        } catch (\Throwable $_e) {
+            // Silently skip — next page load will retry
+        }
+    }
+    unset($r);
+}
 
 $tab     = Helpers::get('tab') ?: 'performance';
 $from    = Helpers::get('from') ?: date('Y-m-01');
@@ -446,6 +513,12 @@ if (in_array($tab, ['conversions','rejected','pending','autohide'])) {
          ORDER BY cv.converted_at DESC LIMIT $limit",
         $cvParams
     );
+
+    // Auto-backfill missing geo data (country/city/state) from IP addresses.
+    // Processes up to 25 rows per page load; results are cached in the DB.
+    if (!empty($convRows)) {
+        _backfillMissingGeo($convRows, 25);
+    }
 
     // Pre-compute CR / CTR stats per offer for the selected date range
     $offerStatMap = [];
