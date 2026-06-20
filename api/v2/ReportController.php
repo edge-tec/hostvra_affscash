@@ -188,7 +188,7 @@ if (in_array($tab, $perfTabs)) {
 
     $clicks = Database::fetchAll(
         "SELECT c.click_id, c.sub1, c.sub2, c.source,
-                c.os, c.browser, c.device_type, c.ip_address, c.country, c.city, c.clicked_at,
+                c.os, c.browser, c.device_type, c.ip_address, c.country, c.city, c.region, c.clicked_at,
                 o.name as offer_name,
                 cv.status       as conv_status,
                 cv.payout       as conv_payout,
@@ -226,7 +226,12 @@ if (in_array($tab, $perfTabs)) {
     $convRows = Database::fetchAll(
         "SELECT cv.conversion_id, cv.click_id, cv.status, cv.payout, cv.converted_at,
                 o.name as offer_name,
-                ck.sub1, ck.os, ck.browser, ck.device_type, ck.ip_address, ck.country, ck.city, ck.region
+                ck.sub1, ck.os, ck.browser, 
+                COALESCE(NULLIF(cv.device_type,''), ck.device_type) as device_type, 
+                COALESCE(NULLIF(cv.ip_address,''), ck.ip_address) as ip_address, 
+                COALESCE(NULLIF(cv.country,''), ck.country) as country, 
+                COALESCE(NULLIF(cv.city,''), ck.city) as city, 
+                COALESCE(NULLIF(cv.region,''), ck.region) as region
          FROM conversions cv
          JOIN offers o ON o.id = cv.offer_id
          LEFT JOIN clicks ck ON ck.click_id = cv.click_id
