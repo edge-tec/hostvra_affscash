@@ -338,6 +338,15 @@ class Helpers {
         foreach ($cols as $col => $ddl) {
             try { Database::query("ALTER TABLE `ip_geo_cache` $ddl"); } catch (\Throwable $_) {}
         }
+
+        // One-time purge: delete legacy poison entries where country_code is blank
+        // but lookup_ok defaulted to 1 (success). These were cached with 7-day TTL
+        // before the fix, preventing any re-lookup attempt.
+        try {
+            Database::query(
+                "DELETE FROM ip_geo_cache WHERE (country_code IS NULL OR country_code = '') AND cached_at < DATE_SUB(NOW(), INTERVAL 2 MINUTE)"
+            );
+        } catch (\Throwable $_) {}
     }
 
     public static function getGeoInfo(string $ip): array {
@@ -383,8 +392,9 @@ class Helpers {
         self::ensureGeoCacheSchema();
 
         // ── 5. DB Cache Lookup ──────────────────────────────────────────────────
-        //   - Successful lookups: 7-day TTL
-        //   - Failed lookups (lookup_ok=0): 2-minute TTL → allows quick retry
+        //   - Successful lookups (lookup_ok=1 AND country_code non-empty): 7-day TTL
+        //   - Failed lookups (lookup_ok=0 OR blank country_code): 2-minute TTL
+        //   - Legacy poison entries (lookup_ok=1 but country_code blank): treated as failed
         try {
             $cached = Database::fetchOne(
                 "SELECT country_code AS country, COALESCE(region,'') AS region,
@@ -394,25 +404,28 @@ class Helpers {
                  FROM ip_geo_cache
                  WHERE ip_address = ?
                    AND (
-                       (COALESCE(lookup_ok,1) = 1 AND cached_at > DATE_SUB(NOW(), INTERVAL 7 DAY))
+                       (COALESCE(lookup_ok,1) = 1 AND COALESCE(country_code,'') != '' AND cached_at > DATE_SUB(NOW(), INTERVAL 7 DAY))
                        OR
-                       (COALESCE(lookup_ok,1) = 0 AND cached_at > DATE_SUB(NOW(), INTERVAL 2 MINUTE))
+                       (cached_at > DATE_SUB(NOW(), INTERVAL 2 MINUTE))
                    )",
                 [$ip]
             );
             if ($cached) {
-                // If it's a cached failure AND the 2-min window hasn't expired, return empty
-                // (the query already filters for this, so if we got a row, respect it)
-                $out = [
-                    'country' => $cached['country'] ?? '',
-                    'region'  => $cached['region'] ?? '',
-                    'city'    => $cached['city'] ?? '',
-                    'isp'     => $cached['isp'] ?? '',
-                    'proxy'   => (bool)($cached['proxy'] ?? false),
-                    'hosting' => (bool)($cached['hosting'] ?? false),
-                ];
-                self::$geoMemCache[$ip] = $out;
-                return $out;
+                // If it's a cached result with empty country, treat as miss (expired)
+                if (empty($cached['country'])) {
+                    // Don't return this — fall through to API lookup below
+                } else {
+                    $out = [
+                        'country' => $cached['country'] ?? '',
+                        'region'  => $cached['region'] ?? '',
+                        'city'    => $cached['city'] ?? '',
+                        'isp'     => $cached['isp'] ?? '',
+                        'proxy'   => (bool)($cached['proxy'] ?? false),
+                        'hosting' => (bool)($cached['hosting'] ?? false),
+                    ];
+                    self::$geoMemCache[$ip] = $out;
+                    return $out;
+                }
             }
         } catch (\Throwable $e) {
             error_log("GeoIP cache read error for IP $ip: " . $e->getMessage());

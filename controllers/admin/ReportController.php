@@ -441,6 +441,33 @@ if ($tab === 'clicks') {
         $clkParams
     );
 
+    // ── Real-time GeoIP re-resolution for blank records ────────────────
+    // Patch up to 30 click rows per page load that have valid IPs but
+    // missing country/city (caused by prior API rate-limiting failures).
+    $_geoFixCount = 0;
+    $_geoFixMax   = 30;
+    foreach ($clicks as &$_c) {
+        if ($_geoFixCount >= $_geoFixMax) break;
+        $_cIp = trim($_c['ip_address'] ?? '');
+        if ($_cIp === '' || $_cIp === '127.0.0.1' || $_cIp === '::1') continue;
+        if (!empty($_c['country']) && $_c['country'] !== '' && !empty($_c['city']) && $_c['city'] !== '') continue;
+
+        $geoRetry = Helpers::getGeoInfo($_cIp);
+        if (!empty($geoRetry['country'])) {
+            $_c['country'] = $geoRetry['country'];
+            $_c['city']    = $geoRetry['city'];
+            $_c['region']  = $geoRetry['region'];
+            try {
+                Database::query(
+                    "UPDATE clicks SET country=?, city=?, region=? WHERE click_id=?",
+                    [$geoRetry['country'], $geoRetry['city'], $geoRetry['region'], $_c['click_id']]
+                );
+            } catch (\Throwable $_geoUpEx) {}
+            $_geoFixCount++;
+        }
+    }
+    unset($_c);
+
     if ($isExport) {
         header('Content-Type: text/csv');
         header('Content-Disposition: attachment; filename="report-clicks-'.date('Y-m-d').'.csv"');

@@ -297,6 +297,38 @@ foreach ($clicks as &$_c) {
 }
 unset($_c);
 
+// ── Real-time GeoIP re-resolution for blank records ────────────────────
+// If a click has a valid IP but country/city are blank (due to prior
+// rate-limit failures), re-run the geo lookup now and patch the record.
+// Cap at 30 re-lookups per page load to avoid slowing down the report.
+$_geoFixCount = 0;
+$_geoFixMax   = 30;
+foreach ($clicks as &$_c) {
+    if ($_geoFixCount >= $_geoFixMax) break;
+    $_cIp = trim($_c['ip_address'] ?? '');
+    if ($_cIp === '' || $_cIp === '127.0.0.1' || $_cIp === '::1') continue;
+    if (!empty($_c['country']) && $_c['country'] !== '' && !empty($_c['city']) && $_c['city'] !== '') continue;
+
+    // This IP's click has missing geo — attempt to re-resolve
+    $geoRetry = Helpers::getGeoInfo($_cIp);
+    if (!empty($geoRetry['country'])) {
+        $_c['country'] = $geoRetry['country'];
+        $_c['city']    = $geoRetry['city'];
+        $_c['region']  = $geoRetry['region'];
+        // Also update the database so future loads don't need to re-resolve
+        try {
+            Database::query(
+                "UPDATE clicks SET country=?, city=?, region=? WHERE click_id=?",
+                [$geoRetry['country'], $geoRetry['city'], $geoRetry['region'], $_c['click_id']]
+            );
+        } catch (\Throwable $_geoUpEx) {
+            error_log("GeoIP backfill update failed for click {$_c['click_id']}: " . $_geoUpEx->getMessage());
+        }
+        $_geoFixCount++;
+    }
+}
+unset($_c);
+
 $totalClicks  = count($clicks);
 $fraudCount   = count(array_filter($clicks, fn($r) => $r['is_fraud']));
 // Stats: only count approved conversions — use conv_revenue/conv_payout when available, else offer revenue/payout
