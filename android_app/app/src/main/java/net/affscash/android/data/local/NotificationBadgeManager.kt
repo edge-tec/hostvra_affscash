@@ -56,6 +56,17 @@ class NotificationBadgeManager @Inject constructor(
         editor.apply()
     }
 
+    fun setCount(count: Int) {
+        updateCounts(notifs = count, chats = null, alerts = null, approvals = null)
+    }
+
+    fun decrement() {
+        val current = _unreadNotifs.value
+        if (current > 0) {
+            updateCounts(notifs = current - 1, chats = null, alerts = null, approvals = null)
+        }
+    }
+
     fun reset() {
         _unreadNotifs.value = 0
         _unreadChats.value = 0

@@ -5,7 +5,7 @@ Auth::check('admin');
 
 try {
     $conversions = Database::fetchAll(
-        "SELECT c.conversion_id, c.click_id, c.offer_id, c.affiliate_id, c.payout, c.revenue, c.status, 
+        "SELECT c.id as conversion_id, c.click_id, c.offer_id, c.affiliate_id, c.payout, c.revenue, c.status, 
                 COALESCE(NULLIF(c.country,''), NULLIF(cl.country,''), NULLIF(c.ipquery_country_code,'')) as country, 
                 COALESCE(NULLIF(c.ip_address,''), cl.ip_address) as ip_address, 
                 c.postback_sent, c.converted_at, c.fraud_score,

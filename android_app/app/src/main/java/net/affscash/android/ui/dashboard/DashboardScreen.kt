@@ -281,7 +281,7 @@ fun DashboardScreen(
 
 @Composable
 fun PeriodTabs(selectedPeriod: String, onPeriodSelected: (String) -> Unit) {
-    val periods = listOf("Today", "Yesterday", "7D", "30D", "This Month", "Last Month")
+    val periods = listOf("Today", "Yesterday", "7D", "Last 15D", "30D", "This Month", "Last Month")
     Row(
         modifier = Modifier
             .fillMaxWidth()

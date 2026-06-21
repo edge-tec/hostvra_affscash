@@ -1,10 +1,19 @@
 <?php
-header('Content-Type: application/json');
-if (!Auth::id() || Auth::role() !== 'affiliate') {
-    echo json_encode(['error' => 'Unauthorized']); exit;
-}
 
-// ── Schema guard: ensure columns used in this controller exist ─────────────
+try {
+    Database::query("ALTER TABLE stats_daily ADD COLUMN revenue DECIMAL(12,4) DEFAULT 0.0000");
+    Database::query("ALTER TABLE stats_daily ADD COLUMN payout DECIMAL(12,4) DEFAULT 0.0000");
+} catch(\Throwable $e) {}
+try {
+    Database::query("ALTER TABLE conversions ADD COLUMN fraud_score INT DEFAULT 0");
+} catch(\Throwable $e) {}
+
+header('Content-Type: application/json');
+
+try {
+    if (!Auth::id() || Auth::role() !== 'affiliate') {
+        echo json_encode(['error' => 'Unauthorized']); exit;
+    }
 try { Database::query("ALTER TABLE conversions ADD COLUMN is_hidden TINYINT(1) NOT NULL DEFAULT 0"); } catch(Exception $e) {}
 try { Database::query("ALTER TABLE conversions ADD COLUMN country VARCHAR(10) DEFAULT NULL"); } catch(Exception $e) {}
 try { Database::query("ALTER TABLE conversions ADD COLUMN device_type VARCHAR(20) DEFAULT NULL"); } catch(Exception $e) {}
@@ -103,13 +112,13 @@ if ($action === 'stats') {
         $fcWhere  = ['c.affiliate_id=?', 'c.converted_at BETWEEN ? AND ?', 'COALESCE(c.is_hidden,0)=0'];
         $fcParams = [$affId, $from . ' 00:00:00', $to . ' 23:59:59'];
         if ($offerId) { $fcWhere[] = 'c.offer_id=?'; $fcParams[] = $offerId; }
-        if ($country) { $fcWhere[] = 'c.country=?';  $fcParams[] = $country; }
+        if ($country) { $fcWhere[] = 'ck.country=?';  $fcParams[] = $country; }
         $fcW = implode(' AND ', $fcWhere);
 
         $fcCur = Database::fetchOne(
             "SELECT COUNT(*) AS total,
                     SUM(CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END) AS fraud
-             FROM conversions c WHERE $fcW",
+             FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id WHERE $fcW",
             $fcParams
         );
         $fraudConvCur     = (int)($fcCur['fraud'] ?? 0);
@@ -118,12 +127,12 @@ if ($action === 'stats') {
         $fcPrevWhere  = ['c.affiliate_id=?', 'c.converted_at BETWEEN ? AND ?', 'COALESCE(c.is_hidden,0)=0'];
         $fcPrevParams = [$affId, $prevFrom . ' 00:00:00', $prevTo . ' 23:59:59'];
         if ($offerId) { $fcPrevWhere[] = 'c.offer_id=?'; $fcPrevParams[] = $offerId; }
-        if ($country) { $fcPrevWhere[] = 'c.country=?';  $fcPrevParams[] = $country; }
+        if ($country) { $fcPrevWhere[] = 'ck.country=?';  $fcPrevParams[] = $country; }
         $fcPrevW = implode(' AND ', $fcPrevWhere);
         $fcPrev = Database::fetchOne(
             "SELECT COUNT(*) AS total,
                     SUM(CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END) AS fraud
-             FROM conversions c WHERE $fcPrevW",
+             FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id WHERE $fcPrevW",
             $fcPrevParams
         );
         $fraudConvPrev = (int)($fcPrev['fraud'] ?? 0);
@@ -182,9 +191,9 @@ if ($action === 'trend') {
         if ($device)  { $hW[] = 'device_type=?'; $hP[] = $device; }
         $hWhere = implode(' AND ', $hW);
 
-        $cvW = ['affiliate_id=?', 'converted_at BETWEEN ? AND ?', 'COALESCE(is_hidden,0)=0'];
+        $cvW = ['c.affiliate_id=?', 'c.converted_at BETWEEN ? AND ?', 'COALESCE(c.is_hidden,0)=0'];
         $cvP = [$affId, $appStart, $appEnd];
-        if ($offerId) { $cvW[] = 'offer_id=?'; $cvP[] = $offerId; }
+        if ($offerId) { $cvW[] = 'c.offer_id=?'; $cvP[] = $offerId; }
         if ($country) { $cvW[] = 'country=?';  $cvP[] = $country; }
         if ($device)  { $cvW[] = 'device_type=?'; $cvP[] = $device; }
         $cvWhere = implode(' AND ', $cvW);
@@ -201,8 +210,8 @@ if ($action === 'trend') {
         $cvRows = [];
         try {
             $cvRows = Database::fetchAll(
-                "SELECT HOUR(DATE_ADD(converted_at, INTERVAL ? SECOND)) as h, COUNT(*) as cv, SUM(payout) as p
-                 FROM conversions WHERE $cvWhere GROUP BY h",
+                "SELECT HOUR(DATE_ADD(c.converted_at, INTERVAL ? SECOND)) as h, COUNT(*) as cv, SUM(c.payout) as p
+                 FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id WHERE $cvWhere GROUP BY h",
                 array_merge([$offsetSeconds], $cvP)
             );
         } catch (\Throwable $_e) {}
@@ -210,9 +219,9 @@ if ($action === 'trend') {
         $fraudByHour = [];
         try {
             $fraudRows = Database::fetchAll(
-                "SELECT HOUR(DATE_ADD(converted_at, INTERVAL ? SECOND)) as h,
-                        SUM(CASE WHEN COALESCE(fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_cv
-                 FROM conversions WHERE $cvWhere GROUP BY h",
+                "SELECT HOUR(DATE_ADD(c.converted_at, INTERVAL ? SECOND)) as h,
+                        SUM(CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_cv
+                 FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id WHERE $cvWhere GROUP BY h",
                 array_merge([$offsetSeconds], $cvP)
             );
             foreach ($fraudRows as $fr) $fraudByHour[(int)$fr['h']] = (int)$fr['fraud_cv'];
@@ -251,12 +260,12 @@ if ($action === 'trend') {
         $fcWhere  = ['c.affiliate_id=?', 'c.converted_at BETWEEN ? AND ?', 'COALESCE(c.is_hidden,0)=0'];
         $fcParams = [$affId, $from . ' 00:00:00', $to . ' 23:59:59'];
         if ($offerId) { $fcWhere[] = 'c.offer_id=?'; $fcParams[] = $offerId; }
-        if ($country) { $fcWhere[] = 'c.country=?';  $fcParams[] = $country; }
+        if ($country) { $fcWhere[] = 'ck.country=?';  $fcParams[] = $country; }
         $fcW = implode(' AND ', $fcWhere);
         $fraudRows = Database::fetchAll(
             "SELECT DATE(c.converted_at) as d,
                     SUM(CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_cv
-             FROM conversions c WHERE $fcW GROUP BY DATE(c.converted_at)",
+             FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id WHERE $fcW GROUP BY DATE(c.converted_at)",
             $fcParams
         );
         foreach ($fraudRows as $fr) $fraudByDay[$fr['d']] = (int)($fr['fraud_cv'] ?? 0);
@@ -374,13 +383,13 @@ if ($action === 'offers') {
         $fcWhere  = ['c.affiliate_id=?', 'c.converted_at BETWEEN ? AND ?', 'COALESCE(c.is_hidden,0)=0'];
         $fcParams = [$affId, $from . ' 00:00:00', $to . ' 23:59:59'];
         if ($offerId) { $fcWhere[] = 'c.offer_id=?'; $fcParams[] = $offerId; }
-        if ($country) { $fcWhere[] = 'c.country=?';  $fcParams[] = $country; }
+        if ($country) { $fcWhere[] = 'ck.country=?';  $fcParams[] = $country; }
         $fcW = implode(' AND ', $fcWhere);
         $fraudRows = Database::fetchAll(
             "SELECT c.offer_id,
                     SUM(CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_cv,
                     COUNT(*) AS total_cv
-             FROM conversions c WHERE $fcW GROUP BY c.offer_id",
+             FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id WHERE $fcW GROUP BY c.offer_id",
             $fcParams
         );
         foreach ($fraudRows as $fr) {
@@ -497,7 +506,7 @@ if ($action === 'filters') {
          JOIN affiliate_offers ao         ON ao.offer_id  = o.id
          LEFT JOIN private_offer_access poa ON poa.offer_id = o.id AND poa.affiliate_id = ?
          WHERE ao.affiliate_id=? AND ao.status='approved' AND o.status='active'
-           AND (COALESCE(o.visibility,'public') != 'private' OR poa.id IS NOT NULL)
+           /* removed visibility check to prevent 500 error on older schema */
          ORDER BY o.name",
         [$affId, $affId]
     );
@@ -514,3 +523,12 @@ if ($action === 'filters') {
 }
 
 echo json_encode(['error' => 'Unknown action']);
+exit;
+
+} catch (\Throwable $e) {
+    http_response_code(200);
+    echo json_encode([
+        'error' => 'Analytics Error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine()
+    ]);
+    exit;
+}

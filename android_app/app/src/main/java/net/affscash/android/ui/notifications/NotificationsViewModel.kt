@@ -104,7 +104,7 @@ class NotificationsViewModel @Inject constructor(
                     }
                 } else {
                     // Mark all as read
-                    badgeManager.reset()
+                    badgeManager.setCount(0)
                     allNotifications.replaceAll { it.copy(isRead = 1) }
                 }
                 val current = _uiState.value

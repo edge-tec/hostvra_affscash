@@ -80,6 +80,7 @@ class DashboardViewModel @Inject constructor(
                 return Pair(format.format(cal.time), format.format(cal.time))
             }
             "7D" -> cal.add(Calendar.DAY_OF_YEAR, -6)
+            "Last 15D" -> cal.add(Calendar.DAY_OF_YEAR, -14)
             "30D" -> cal.add(Calendar.DAY_OF_YEAR, -29)
             "This Month" -> cal.set(Calendar.DAY_OF_MONTH, 1)
             "Last Month" -> {

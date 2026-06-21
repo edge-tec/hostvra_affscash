@@ -1,4 +1,13 @@
 <?php
+
+try {
+    Database::query("ALTER TABLE stats_daily ADD COLUMN revenue DECIMAL(12,4) DEFAULT 0.0000");
+    Database::query("ALTER TABLE stats_daily ADD COLUMN payout DECIMAL(12,4) DEFAULT 0.0000");
+} catch(\Throwable $e) {}
+try {
+    Database::query("ALTER TABLE conversions ADD COLUMN fraud_score INT DEFAULT 0");
+} catch(\Throwable $e) {}
+
 header('Content-Type: application/json');
 Auth::check('affiliate_manager');
 ManagerPermissions::ensureSchema();
@@ -63,7 +72,7 @@ function adminConvWhere($from, $to, $offerId, $affId, $country, $managerAffIds) 
     $p = [$from . ' 00:00:00', $to . ' 23:59:59'];
     if ($offerId) { $w[] = 'c.offer_id = ?'; $p[] = $offerId; }
     if ($affId)   { $w[] = 'c.affiliate_id = ?'; $p[] = $affId; }
-    if ($country) { $w[] = 'c.country = ?'; $p[] = $country; }
+    if ($country) { $w[] = 'ck.country = ?'; $p[] = $country; }
     if (!empty($managerAffIds)) {
         $in  = implode(',', array_fill(0, count($managerAffIds), '?'));
         $w[] = "c.affiliate_id IN ($in)";
@@ -111,7 +120,7 @@ if ($action === 'stats') {
     // Fraud Conversion
     $fcCur = Database::fetchOne(
         "SELECT COUNT(*) AS total, SUM(CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END) AS fraud
-         FROM conversions c WHERE $convW", $convP
+         FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id WHERE $convW", $convP
     );
     $fraudConvCur = (int)($fcCur['fraud'] ?? 0);
     $totalConvForPct = (int)($fcCur['total'] ?? 0);
@@ -119,7 +128,7 @@ if ($action === 'stats') {
     [$prevConvW, $prevConvP] = adminConvWhere($prevFrom, $prevTo, $offerId, $affId, $country, $managerAffIds);
     $fcPrev = Database::fetchOne(
         "SELECT COUNT(*) AS total, SUM(CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END) AS fraud
-         FROM conversions c WHERE $prevConvW", $prevConvP
+         FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id WHERE $prevConvW", $prevConvP
     );
     $fraudConvPrev = (int)($fcPrev['fraud'] ?? 0);
     $totalConvPrevForPct = (int)($fcPrev['total'] ?? 0);
@@ -246,8 +255,8 @@ if ($action === 'trend') {
         $cvRows = [];
         try {
             $cvRows = Database::fetchAll(
-                "SELECT HOUR(DATE_ADD(converted_at, INTERVAL ? SECOND)) as h, COUNT(*) as cv
-                 FROM conversions c WHERE $convW GROUP BY h",
+                "SELECT HOUR(DATE_ADD(c.converted_at, INTERVAL ? SECOND)) as h, COUNT(*) as cv
+                 FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id WHERE $convW GROUP BY h",
                 array_merge([$offsetSeconds], $convP)
             );
         } catch (\Throwable $_e) {}
@@ -255,9 +264,9 @@ if ($action === 'trend') {
         $fraudByHour = [];
         try {
             $fraudRows = Database::fetchAll(
-                "SELECT HOUR(DATE_ADD(converted_at, INTERVAL ? SECOND)) as h,
-                        SUM(CASE WHEN COALESCE(fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_cv
-                 FROM conversions c WHERE $convW GROUP BY h",
+                "SELECT HOUR(DATE_ADD(c.converted_at, INTERVAL ? SECOND)) as h,
+                        SUM(CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_cv
+                 FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id WHERE $convW GROUP BY h",
                 array_merge([$offsetSeconds], $convP)
             );
             foreach ($fraudRows as $fr) $fraudByHour[(int)$fr['h']] = (int)$fr['fraud_cv'];
@@ -286,7 +295,7 @@ if ($action === 'trend') {
         $fraudByDay = [];
         $fraudRows = Database::fetchAll(
             "SELECT DATE(c.converted_at) as d, SUM(CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_cv
-             FROM conversions c WHERE $convW GROUP BY DATE(c.converted_at)",
+             FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id WHERE $convW GROUP BY DATE(c.converted_at)",
             $convP
         );
         foreach ($fraudRows as $fr) $fraudByDay[$fr['d']] = (int)($fr['fraud_cv'] ?? 0);
@@ -364,7 +373,7 @@ if ($action === 'extra') {
     ];
 
     // Conv Status
-    $rows = Database::fetchAll("SELECT c.status, COUNT(*) as cnt FROM conversions c WHERE $convW GROUP BY c.status ORDER BY cnt DESC", $convP);
+    $rows = Database::fetchAll("SELECT c.status, COUNT(*) as cnt FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id WHERE $convW GROUP BY c.status ORDER BY cnt DESC", $convP);
     $extra['conv_status'] = [
         'labels' => [], 'data' => [], 'colors' => []
     ];
@@ -430,7 +439,7 @@ if ($action === 'extra') {
     $cP = [$from . ' 00:00:00', $to . ' 23:59:59'];
     if ($offerId) { $cW[] = 'c.offer_id = ?'; $cP[] = $offerId; }
     if ($affId)   { $cW[] = 'c.affiliate_id = ?'; $cP[] = $affId; }
-    if ($country) { $cW[] = 'c.country = ?'; $cP[] = $country; }
+    if ($country) { $cW[] = 'ck.country = ?'; $cP[] = $country; }
     if (!empty($managerAffIds)) {
         $in  = implode(',', array_fill(0, count($managerAffIds), '?'));
         $cW[] = "c.affiliate_id IN ($in)";

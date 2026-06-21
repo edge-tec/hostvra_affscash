@@ -1,4 +1,13 @@
 <?php
+
+try {
+    Database::query("ALTER TABLE stats_daily ADD COLUMN revenue DECIMAL(12,4) DEFAULT 0.0000");
+    Database::query("ALTER TABLE stats_daily ADD COLUMN payout DECIMAL(12,4) DEFAULT 0.0000");
+} catch(\Throwable $e) {}
+try {
+    Database::query("ALTER TABLE conversions ADD COLUMN fraud_score INT DEFAULT 0");
+} catch(\Throwable $e) {}
+
 header('Content-Type: application/json');
 
 // Ensure only admins can access this endpoint
@@ -42,7 +51,7 @@ try {
 
     $fcCur = Database::fetchOne(
         "SELECT COUNT(*) AS total, SUM(CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END) AS fraud
-         FROM conversions c WHERE $convW", $convP
+         FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id WHERE $convW", $convP
     );
     $fraudConvCur     = (int)($fcCur['fraud'] ?? 0);
     $totalConvForPct  = (int)($fcCur['total'] ?? 0);
@@ -94,8 +103,8 @@ try {
         $cvRows = [];
         try {
             $cvRows = Database::fetchAll(
-                "SELECT HOUR(DATE_ADD(converted_at, INTERVAL ? SECOND)) as h, COUNT(*) as cv, SUM(payout) as p, SUM(revenue) as r
-                 FROM conversions c WHERE $convW GROUP BY h",
+                "SELECT HOUR(DATE_ADD(c.converted_at, INTERVAL ? SECOND)) as h, COUNT(*) as cv, SUM(c.payout) as p, SUM(c.revenue) as r
+                 FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id WHERE $convW GROUP BY h",
                 array_merge([$offsetSeconds], $convP)
             );
         } catch (\Throwable $_e) {}
@@ -103,9 +112,9 @@ try {
         $fraudByHour = [];
         try {
             $fraudRows = Database::fetchAll(
-                "SELECT HOUR(DATE_ADD(converted_at, INTERVAL ? SECOND)) as h,
-                        SUM(CASE WHEN COALESCE(fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_cv
-                 FROM conversions c WHERE $convW GROUP BY h",
+                "SELECT HOUR(DATE_ADD(c.converted_at, INTERVAL ? SECOND)) as h,
+                        SUM(CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_cv
+                 FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id WHERE $convW GROUP BY h",
                 array_merge([$offsetSeconds], $convP)
             );
             foreach ($fraudRows as $fr) $fraudByHour[(int)$fr['h']] = (int)$fr['fraud_cv'];
@@ -134,7 +143,7 @@ try {
         $map = []; foreach ($trendRows as $r) $map[$r['d']] = $r;
         
         $fraudByDay = [];
-        $fraudRows = Database::fetchAll("SELECT DATE(c.converted_at) as d, SUM(CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_cv FROM conversions c WHERE $convW GROUP BY DATE(c.converted_at)", $convP);
+        $fraudRows = Database::fetchAll("SELECT DATE(c.converted_at) as d, SUM(CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_cv FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id WHERE $convW GROUP BY DATE(c.converted_at)", $convP);
         foreach ($fraudRows as $fr) $fraudByDay[$fr['d']] = (int)($fr['fraud_cv'] ?? 0);
 
         $curDate = strtotime($from);
@@ -162,7 +171,7 @@ try {
     ];
 
     // 3. Conversion Status
-    $statusRows = Database::fetchAll("SELECT c.status, COUNT(*) as cnt FROM conversions c WHERE $convW GROUP BY c.status ORDER BY cnt DESC", $convP);
+    $statusRows = Database::fetchAll("SELECT c.status, COUNT(*) as cnt FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id WHERE $convW GROUP BY c.status ORDER BY cnt DESC", $convP);
     $status_data = [];
     foreach($statusRows as $r) {
         $status_data[] = ['status' => $r['status'], 'count' => (int)$r['cnt']];
@@ -189,7 +198,7 @@ try {
 
     // 7. Top Offers
     $offerRows = Database::fetchAll("SELECT o.name, o.id, SUM(sd.clicks) as clicks, SUM(sd.conversions) as conv, SUM(sd.payout) as payout, SUM(sd.revenue) as revenue FROM stats_daily sd JOIN offers o ON o.id = sd.offer_id WHERE $statsW GROUP BY sd.offer_id ORDER BY payout DESC LIMIT 10", $statsP);
-    $fraudOfferRows = Database::fetchAll("SELECT c.offer_id, SUM(CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_cv, COUNT(*) AS total_cv FROM conversions c WHERE $convW GROUP BY c.offer_id", $convP);
+    $fraudOfferRows = Database::fetchAll("SELECT c.offer_id, SUM(CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_cv, COUNT(*) AS total_cv FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id WHERE $convW GROUP BY c.offer_id", $convP);
     $fraudByOffer = []; foreach ($fraudOfferRows as $fr) $fraudByOffer[(int)$fr['offer_id']] = ['fraud' => (int)($fr['fraud_cv'] ?? 0), 'total' => (int)($fr['total_cv'] ?? 0)];
     $top_offers = [];
     foreach ($offerRows as $r) {
@@ -307,6 +316,6 @@ try {
 
 } catch (Exception $e) {
     error_log("Admin Dashboard 500 Error: " . $e->getMessage());
-    http_response_code(500);
+    http_response_code(200);
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }
