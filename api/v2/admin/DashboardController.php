@@ -170,7 +170,7 @@ try {
 
     // 4. Countries
     $countryRows = Database::fetchAll("SELECT country, COUNT(*) as clicks, SUM(is_unique) as uniq FROM clicks WHERE $clickW AND country != '' AND country IS NOT NULL GROUP BY country ORDER BY clicks DESC LIMIT 15", $clickP);
-    $cvCountryRows = Database::fetchAll("SELECT COALESCE(NULLIF(c.country,''), ck.country) as country, COUNT(*) as conv FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id WHERE $convW AND COALESCE(NULLIF(c.country,''), ck.country) != '' GROUP BY COALESCE(NULLIF(c.country,''), ck.country)", $convP);
+    $cvCountryRows = Database::fetchAll("SELECT ck.country as country, COUNT(*) as conv FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id WHERE $convW AND ck.country != '' GROUP BY ck.country", $convP);
     $cvMap = []; foreach ($cvCountryRows as $r) $cvMap[$r['country']] = (int)$r['conv'];
     $countries = [];
     foreach ($countryRows as $r) {
@@ -230,7 +230,7 @@ try {
     // 9. Recent Conversions
     $recentConversions = [];
     try {
-        $recentRows = Database::fetchAll("SELECT c.id, c.status, c.payout, c.revenue, c.converted_at, COALESCE(NULLIF(c.country,''), ck.country) as country, COALESCE(NULLIF(c.device_type,''), ck.device_type) as device_type, o.name as offer_name, CONCAT(u.first_name,' ',u.last_name) as aff_name FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id LEFT JOIN offers o ON o.id = c.offer_id LEFT JOIN affiliates af ON af.id = c.affiliate_id LEFT JOIN users u ON u.id = af.user_id WHERE $convW ORDER BY c.converted_at DESC LIMIT 15", $convP);
+        $recentRows = Database::fetchAll("SELECT c.id, c.status, c.payout, c.revenue, c.converted_at, ck.country as country, ck.device_type as device_type, o.name as offer_name, CONCAT(u.first_name,' ',u.last_name) as aff_name FROM conversions c LEFT JOIN clicks ck ON ck.click_id = c.click_id LEFT JOIN offers o ON o.id = c.offer_id LEFT JOIN affiliates af ON af.id = c.affiliate_id LEFT JOIN users u ON u.id = af.user_id WHERE $convW ORDER BY c.converted_at DESC LIMIT 15", $convP);
         foreach ($recentRows as $r) {
             $recentConversions[] = [
                 'id' => $r['id'],
@@ -306,6 +306,7 @@ try {
     ]);
 
 } catch (Exception $e) {
+    error_log("Admin Dashboard 500 Error: " . $e->getMessage());
     http_response_code(500);
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }
