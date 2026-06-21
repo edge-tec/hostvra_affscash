@@ -33,11 +33,12 @@ fun ManagerAffiliateDetailsScreen(
     Scaffold(
         topBar = {
             Surface(
-                modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top)),
+                modifier = Modifier.fillMaxWidth(),
                 color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
             ) {
-                Row(
+                Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
+                    Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -53,7 +54,8 @@ fun ManagerAffiliateDetailsScreen(
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
-            }
+                            }
+}
         }
     ) { padding ->
         if (uiState.isDetailsLoading) {

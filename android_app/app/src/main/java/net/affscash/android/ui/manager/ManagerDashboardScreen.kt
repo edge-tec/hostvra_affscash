@@ -74,10 +74,11 @@ fun ManagerDashboardScreen(
     Scaffold(
         topBar = {
             Surface(
-                modifier = Modifier.fillMaxWidth().background(PremiumUI.PastelHeader, RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)).windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top)),
+                modifier = Modifier.fillMaxWidth().background(PremiumUI.PastelHeader, RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)),
                 color = Color.Transparent,
                 shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
             ) {
+                Box(modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -152,7 +153,8 @@ fun ManagerDashboardScreen(
                         }
                     }
                 }
-            }
+                            }
+}
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues).fillMaxSize().background(PremiumUI.BackgroundGradient)) {
@@ -506,6 +508,7 @@ fun PieChartCard(labels: List<String>, data: List<Int>, customColors: List<Color
                 val colors = customColors ?: listOf(Color(0xFF4F46E5), Color(0xFF10B981), Color(0xFFF59E0B), Color(0xFFEF4444), Color(0xFF8B5CF6))
                 val total = data.sum().toFloat()
                 
+                Box(modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
                 Column(
                     modifier = Modifier.fillMaxSize().padding(4.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,

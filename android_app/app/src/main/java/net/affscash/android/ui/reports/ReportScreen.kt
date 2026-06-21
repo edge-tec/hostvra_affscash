@@ -62,11 +62,12 @@ fun ReportScreen(
     Scaffold(
         topBar = {
             Surface(
-                modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top)),
+                modifier = Modifier.fillMaxWidth(),
                 color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
                 shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
             ) {
-                Row(
+                Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
+                    Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
@@ -83,7 +84,8 @@ fun ReportScreen(
                         Icon(Icons.Default.Warning, contentDescription = "Fraud Report", tint = MaterialTheme.colorScheme.onSurface)
                     }
                 }
-            }
+                            }
+}
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
@@ -420,7 +422,8 @@ fun ClickRowItem(click: ClickRow) {
             Text("Click ID: ${click.clickId}", fontSize = 10.sp, color = Color.Gray)
             Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
+                Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
+                    Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
                     Text("Sub1: ${click.sub1 ?: "-"}", fontSize = 12.sp, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
                     Text("${click.country ?: "-"} | ${click.os ?: "-"} | ${click.browser ?: "-"}", fontSize = 12.sp, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
                 }
@@ -491,7 +494,8 @@ fun ConversionRowItem(conv: ConversionRow) {
             Spacer(modifier = Modifier.height(4.dp))
             
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
+                Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
+                    Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
                     Text("Date: ${conv.convertedAt}", fontSize = 12.sp)
                     if (!conv.sub1.isNullOrBlank()) {
                         Text("Sub1: ${conv.sub1}", fontSize = 12.sp, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
@@ -538,7 +542,8 @@ fun SmartlinkRowItem(sl: SmartlinkClickRow) {
             Text("Routed to: ${sl.offerName ?: "Custom URL"}", fontSize = 12.sp)
             Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
+                Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
+                    Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
                     Text("${sl.country ?: "-"} | Sub1: ${sl.sub1 ?: "-"}", fontSize = 12.sp, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
                 }
                 Column(horizontalAlignment = Alignment.End) {

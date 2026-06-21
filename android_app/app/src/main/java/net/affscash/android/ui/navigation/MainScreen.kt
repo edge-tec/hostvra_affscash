@@ -309,8 +309,9 @@ fun MainScreen(
                 Surface(
                     color = Color(0xFFF59E0B),
                     contentColor = Color(0xFF1F2937),
-                    modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))
+                    modifier = Modifier.fillMaxWidth()
                 ) {
+                    Box(modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically,
@@ -337,7 +338,8 @@ fun MainScreen(
                             Text("Return", fontSize = androidx.compose.ui.unit.TextUnit(12f, androidx.compose.ui.unit.TextUnitType.Sp), fontWeight = FontWeight.Bold)
                         }
                     }
-                }
+                                }
+}
             }
         },
         bottomBar = {

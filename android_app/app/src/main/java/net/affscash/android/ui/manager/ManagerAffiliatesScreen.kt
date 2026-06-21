@@ -60,11 +60,12 @@ fun ManagerAffiliatesScreen(
     Scaffold(
         topBar = {
             Surface(
-                modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top)),
+                modifier = Modifier.fillMaxWidth(),
                 color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
                 shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
             ) {
-                Column(
+                Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
+                    Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 16.dp)
@@ -110,7 +111,8 @@ fun ManagerAffiliatesScreen(
                         }
                     }
                 }
-            }
+                            }
+}
         }
     ) { padding ->
         Column(
@@ -297,7 +299,8 @@ fun ManagerAffiliateCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
-                Row(
+                Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
+                    Row(
                     modifier = Modifier.weight(1f),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -368,7 +371,8 @@ fun ManagerAffiliateCard(
                 color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Row(
+                Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
+                    Row(
                     modifier = Modifier.fillMaxWidth().padding(8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -412,7 +416,8 @@ fun ManagerAffiliateCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(onClick = onView, contentPadding = PaddingValues(horizontal = 12.dp), shape = RoundedCornerShape(8.dp)) {
                         Text("View")
                     }
