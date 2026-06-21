@@ -231,10 +231,10 @@ try {
         ]
     ]);
     exit;
+} // Close if ($action === 'stats')
 } catch (\Throwable $e) {
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
     exit;
-}
 }
 
 if ($action === 'trend') {
