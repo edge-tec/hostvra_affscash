@@ -84,7 +84,7 @@ fun DashboardScreen(
                         Image(
                             painter = painterResource(id = R.drawable.logo),
                             contentDescription = "AffsCash Logo",
-                            modifier = Modifier.height(28.dp)
+                            modifier = Modifier.height(44.dp).padding(start = 4.dp)
                         )
                         Row(
                         verticalAlignment = Alignment.CenterVertically,

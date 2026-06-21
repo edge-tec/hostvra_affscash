@@ -303,7 +303,6 @@ fun MainScreen(
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0.dp),
         topBar = {
             if (isImpersonating) {
                 Surface(

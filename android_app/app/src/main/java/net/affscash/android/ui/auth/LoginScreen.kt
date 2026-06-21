@@ -57,8 +57,8 @@ fun LoginScreen(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "AffsCash Logo",
                 modifier = Modifier
-                    .height(80.dp)
-                    .padding(bottom = 16.dp)
+                    .height(110.dp)
+                    .padding(bottom = 24.dp)
             )
 
             Text(
