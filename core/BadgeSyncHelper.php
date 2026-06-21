@@ -26,7 +26,7 @@ class BadgeSyncHelper {
                 $unreadAlerts = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM fraud_alerts WHERE is_read=0 AND resolved_at IS NULL")['c'] ?? 0);
                 try { Database::query("ALTER TABLE support_messages ADD COLUMN is_deleted TINYINT(1) NOT NULL DEFAULT 0"); } catch(\Throwable $e) {}
                 $unreadChats = (int)(Database::fetchOne("SELECT COUNT(*) c FROM support_messages WHERE owner_type IN ('affiliate', 'advertiser') AND sender_role != 'admin' AND is_read=0 AND is_deleted=0")['c'] ?? 0);
-                $pendingApprovals = (int)(Database::fetchOne("SELECT COUNT(*) c FROM offer_approvals WHERE status='pending'")['c'] ?? 0);
+                $pendingApprovals = (int)(Database::fetchOne("SELECT COUNT(*) c FROM affiliate_offers WHERE status='pending'")['c'] ?? 0);
 
                 $counts['unread_notifs'] = $unreadNotifs + $unreadBroadcast;
                 $counts['unread_alerts'] = $unreadAlerts;
@@ -58,7 +58,7 @@ class BadgeSyncHelper {
                     )['c'] ?? 0);
 
                     $pendingApprovals = (int)(Database::fetchOne(
-                        "SELECT COUNT(*) c FROM offer_approvals WHERE affiliate_id IN ($inAff) AND status='pending'",
+                        "SELECT COUNT(*) c FROM affiliate_offers WHERE affiliate_id IN ($inAff) AND status='pending'",
                         $managerAffIds
                     )['c'] ?? 0);
 

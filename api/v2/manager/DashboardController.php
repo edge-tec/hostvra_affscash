@@ -175,20 +175,28 @@ if ($action === 'stats') {
             $unreadAlerts = 0;
         }
     }
-    $unreadAdminChats = (int)(Database::fetchOne("SELECT COUNT(*) c FROM manager_messages WHERE manager_id=? AND sender_role='admin' AND read_by_manager=0", [$mgrId])['c'] ?? 0);
+    $unreadAdminChats = 0;
+    try {
+        $unreadAdminChats = (int)(Database::fetchOne("SELECT COUNT(*) c FROM manager_messages WHERE manager_id=? AND sender_role='admin' AND read_by_manager=0", [$mgrId])['c'] ?? 0);
+    } catch (\Throwable $e) {}
+
     $unreadAffiliateChats = 0;
     $pendingApprovals = 0;
     if (!empty($managerAffIds)) {
         $inAff = implode(',', array_fill(0, count($managerAffIds), '?'));
-        $unreadAffiliateChats = (int)(Database::fetchOne(
-            "SELECT COUNT(*) c FROM support_messages sm JOIN support_conversations sc ON sc.id = sm.conversation_id WHERE sc.affiliate_id IN ($inAff) AND sm.sender_role='affiliate' AND sm.is_read=0",
-            $managerAffIds
-        )['c'] ?? 0);
+        try {
+            $unreadAffiliateChats = (int)(Database::fetchOne(
+                "SELECT COUNT(*) c FROM support_messages sm JOIN support_conversations sc ON sc.id = sm.conversation_id WHERE sc.affiliate_id IN ($inAff) AND sm.sender_role='affiliate' AND sm.is_read=0",
+                $managerAffIds
+            )['c'] ?? 0);
+        } catch (\Throwable $e) {}
 
-        $pendingApprovals = (int)(Database::fetchOne(
-            "SELECT COUNT(*) c FROM offer_approvals WHERE affiliate_id IN ($inAff) AND status='pending'",
-            $managerAffIds
-        )['c'] ?? 0);
+        try {
+            $pendingApprovals = (int)(Database::fetchOne(
+                "SELECT COUNT(*) c FROM affiliate_offers WHERE affiliate_id IN ($inAff) AND status='pending'",
+                $managerAffIds
+            )['c'] ?? 0);
+        } catch (\Throwable $e) {}
     }
     $unreadChats = $unreadAdminChats + $unreadAffiliateChats;
 
