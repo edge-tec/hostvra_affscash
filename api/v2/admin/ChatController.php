@@ -241,7 +241,7 @@ try {
                 }
 
                 // Also notify the assigned manager
-                $mgr = Database::fetchOne("SELECT am.user_id FROM affiliates a JOIN affiliate_managers am ON am.id=a.affiliate_manager_id WHERE a.id=?", [$ownerId]);
+                $mgr = Database::fetchOne("SELECT am.user_id FROM affiliates a JOIN affiliate_managers am ON am.id=a.manager_id WHERE a.id=?", [$ownerId]);
                 if ($mgr && $mgr['user_id']) {
                     Database::insert('notifications', [
                         'user_id'     => (int)$mgr['user_id'],

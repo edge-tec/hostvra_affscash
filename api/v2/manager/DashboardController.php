@@ -105,9 +105,11 @@ $prevFrom = date('Y-m-d', strtotime($from) - $days * 86400);
 $prevTo = date('Y-m-d', strtotime($from) - 86400);
 [$prevStatsW, $prevStatsP] = adminStatsWhere($prevFrom, $prevTo, $offerId, $affId, $managerAffIds);
 
-if ($action === 'stats') {
-    $cur = Database::fetchOne("SELECT SUM(clicks) as c, SUM(unique_clicks) as u, SUM(conversions) as cv FROM stats_daily sd WHERE $statsW", $statsP) ?? [];
-    $prev = Database::fetchOne("SELECT SUM(clicks) as c, SUM(conversions) as cv FROM stats_daily sd WHERE $prevStatsW", $prevStatsP) ?? [];
+try {
+    if ($action === 'stats') {
+        $cur = Database::fetchOne("SELECT SUM(clicks) as c, SUM(unique_clicks) as u, SUM(conversions) as cv FROM stats_daily sd WHERE $statsW", $statsP) ?? [];
+        $prev = Database::fetchOne("SELECT SUM(clicks) as c, SUM(conversions) as cv FROM stats_daily sd WHERE $prevStatsW", $prevStatsP) ?? [];
+
 
     $clicks = (int)($cur['c'] ?? 0);
     $unique = (int)($cur['u'] ?? 0);
@@ -229,9 +231,14 @@ if ($action === 'stats') {
         ]
     ]);
     exit;
+} catch (\Throwable $e) {
+    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    exit;
+}
 }
 
 if ($action === 'trend') {
+try {
     $labels = $clicks_data = $conv_data = $fraud_data = [];
 
     if ($from === $to) {
@@ -326,9 +333,14 @@ if ($action === 'trend') {
         'data' => compact('labels', 'clicks_data', 'conv_data', 'fraud_data')
     ]);
     exit;
+} catch (\Throwable $e) {
+    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    exit;
+}
 }
 
 if ($action === 'filters') {
+try {
     $offersQ = Database::fetchAll(
         "SELECT DISTINCT o.id, o.name FROM stats_daily sd JOIN offers o ON o.id=sd.offer_id
          WHERE sd.affiliate_id IN (" . implode(',', array_fill(0, count($managerAffIds), '?')) . ") ORDER BY o.name",
@@ -354,9 +366,14 @@ if ($action === 'filters') {
         ]
     ]);
     exit;
+} catch (\Throwable $e) {
+    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    exit;
+}
 }
 
 if ($action === 'extra') {
+try {
     $extra = [];
 
     // Hourly
@@ -466,6 +483,10 @@ if ($action === 'extra') {
 
     echo json_encode(['success' => true, 'data' => $extra]);
     exit;
+} catch (\Throwable $e) {
+    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    exit;
+}
 }
 
 echo json_encode(['success' => false, 'error' => 'Unknown action']);
