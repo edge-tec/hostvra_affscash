@@ -93,8 +93,11 @@ fun InvoiceScreen(
                                             invoiceId = invoice.invoiceId,
                                             onSuccess = { url ->
                                                 isDownloading = false
-                                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                                                context.startActivity(intent)
+                                                net.affscash.android.utils.FileDownloader.downloadSecureFile(
+                                                    context = context,
+                                                    url = url,
+                                                    fileName = "Invoice_${invoice.invoiceNumber}.pdf"
+                                                )
                                             },
                                             onError = { msg ->
                                                 isDownloading = false

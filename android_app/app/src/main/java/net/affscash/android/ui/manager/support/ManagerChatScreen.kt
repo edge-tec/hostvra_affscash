@@ -282,10 +282,12 @@ fun MessageBubble(message: ManagerMessage, affiliateId: Int, onDelete: () -> Uni
                             .clip(RoundedCornerShape(8.dp))
                             .padding(bottom = if (message.message.isNotBlank()) 8.dp else 0.dp)
                             .clickable {
-                                val intent = Intent(Intent.ACTION_VIEW).apply {
-                                    data = Uri.parse(attachmentUrl)
-                                }
-                                context.startActivity(intent)
+                                val fileName = message.attachmentPath?.substringAfterLast("/") ?: "attachment_${message.id}"
+                                net.affscash.android.utils.FileDownloader.downloadSecureFile(
+                                    context = context,
+                                    url = attachmentUrl,
+                                    fileName = fileName
+                                )
                             }
                     )
                 } else {
@@ -295,10 +297,12 @@ fun MessageBubble(message: ManagerMessage, affiliateId: Int, onDelete: () -> Uni
                             .background(Color.Black.copy(alpha = 0.1f), RoundedCornerShape(8.dp))
                             .padding(8.dp)
                             .clickable {
-                                val intent = Intent(Intent.ACTION_VIEW).apply {
-                                    data = Uri.parse(attachmentUrl)
-                                }
-                                context.startActivity(intent)
+                                val fileName = message.attachmentPath?.substringAfterLast("/") ?: "attachment_${message.id}"
+                                net.affscash.android.utils.FileDownloader.downloadSecureFile(
+                                    context = context,
+                                    url = attachmentUrl,
+                                    fileName = fileName
+                                )
                             },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
