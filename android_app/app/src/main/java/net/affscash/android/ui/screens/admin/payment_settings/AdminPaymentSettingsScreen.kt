@@ -151,10 +151,10 @@ private fun PaymentMethodsTab(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Add Payment Method")
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
             } else {
                 Card(modifier = Modifier.fillMaxWidth()) {
-                    Column(modifier = Modifier.padding(16.dp)) {
+                    Column(modifier = Modifier.padding(12.dp)) {
                         Text(if (editId == null) "Add Method" else "Edit Method", style = MaterialTheme.typography.titleMedium)
                         Spacer(modifier = Modifier.height(8.dp))
                 AdminStyledTextField(
@@ -178,7 +178,7 @@ private fun PaymentMethodsTab(
                             modifier = Modifier.fillMaxWidth(),
                             minLines = 3
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
                         Row {
                             Button(shape = MaterialTheme.shapes.medium, onClick = {
                                 onSave(editId, name, type, desc, inst)
@@ -189,7 +189,7 @@ private fun PaymentMethodsTab(
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
 
@@ -203,7 +203,7 @@ private fun PaymentMethodsTab(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
             ) {
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column(modifier = Modifier.padding(12.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(pm.name, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
                         Badge(containerColor = if (pm.isActive == 1) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error) {
@@ -256,7 +256,7 @@ private fun PaymentTermsTab(
     LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         item {
             Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column(modifier = Modifier.padding(12.dp)) {
                     Text("Update Payment Terms", style = MaterialTheme.typography.titleMedium)
                     Spacer(modifier = Modifier.height(8.dp))
                     
@@ -295,20 +295,20 @@ private fun PaymentTermsTab(
                         RadioButton(selected = scope == "selected", onClick = { scope = "selected" })
                         Text("Selected Only")
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                     Button(shape = MaterialTheme.shapes.medium, onClick = { onSaveTerms(scope, terms, selectedIds.toList()) }) {
                         Text("Save Terms")
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Text("Affiliates List", style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(8.dp))
         }
 
         items(affiliates) { aff ->
             Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
                     if (scope == "selected") {
                         Checkbox(
                             checked = selectedIds.contains(aff.id),
@@ -352,7 +352,7 @@ private fun ManagerCommissionTab(
         }
         items(managers) { mgr ->
             Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column(modifier = Modifier.padding(12.dp)) {
                     Text(mgr.name, style = MaterialTheme.typography.titleSmall)
                     var locRate by remember { mutableStateOf(mgr.commissionRate.toString()) }
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -372,11 +372,11 @@ private fun ManagerCommissionTab(
             }
         }
         item {
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Text("Offer Specific Commission Overrides", style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(8.dp))
             Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column(modifier = Modifier.padding(12.dp)) {
                     Text("Add Override")
                     Spacer(modifier = Modifier.height(8.dp))
                     // Simplified: We would normally use ExposedDropdownMenu here, but for brevity we'll just allow setting.
@@ -404,11 +404,11 @@ private fun ManagerCommissionTab(
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
         }
         items(offerCommissions) { oc ->
             Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(oc.managerName, style = MaterialTheme.typography.titleSmall)
                         Text(oc.offerName, style = MaterialTheme.typography.bodyMedium)
@@ -435,11 +435,13 @@ private fun PayoutInfoTab(
     LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         item {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                FilterChip(selected = type == "affiliate", onClick = { type = "affiliate" }, label = { Text("Affiliates") })
+                FilterChip(
+modifier = Modifier.height(32.dp),selected = type == "affiliate", onClick = { type = "affiliate" }, label = { Text("Affiliates") })
                 Spacer(modifier = Modifier.width(8.dp))
-                FilterChip(selected = type == "manager", onClick = { type = "manager" }, label = { Text("Managers") })
+                FilterChip(
+modifier = Modifier.height(32.dp),selected = type == "manager", onClick = { type = "manager" }, label = { Text("Managers") })
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
         }
 
         if (type == "affiliate") {
@@ -484,7 +486,7 @@ private fun PayoutEntityCard(
     var expanded by remember { mutableStateOf(false) }
 
     Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Text(name, style = MaterialTheme.typography.titleMedium)
             Text(email, style = MaterialTheme.typography.bodySmall)
             Spacer(modifier = Modifier.height(8.dp))

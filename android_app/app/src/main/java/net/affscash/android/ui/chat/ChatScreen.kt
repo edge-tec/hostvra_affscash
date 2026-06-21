@@ -127,7 +127,7 @@ fun ChatScreen(
                     .weight(1f)
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                contentPadding = PaddingValues(vertical = 16.dp),
+                contentPadding = PaddingValues(vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(uiState.messages) { message ->
@@ -143,7 +143,7 @@ fun ChatScreen(
                 Text(
                     text = uiState.error!!,
                     color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
                     style = MaterialTheme.typography.bodySmall
                 )
             }

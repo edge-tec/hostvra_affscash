@@ -78,7 +78,7 @@ fun FraudReportScreen(
 
 @Composable
 fun FraudReportContent(count30Days: Int, conversions: List<FraudConversion>) {
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(12.dp)) {
         // Red Banner
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -86,7 +86,7 @@ fun FraudReportContent(count30Days: Int, conversions: List<FraudConversion>) {
             shape = RoundedCornerShape(8.dp)
         ) {
             Row(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(Icons.Default.Warning, contentDescription = "Warning", tint = Color.Red)
@@ -98,7 +98,7 @@ fun FraudReportContent(count30Days: Int, conversions: List<FraudConversion>) {
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         if (conversions.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -123,7 +123,7 @@ fun FraudConversionItem(conversion: FraudConversion) {
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Text(text = conversion.offerName ?: "Unknown Offer", fontWeight = FontWeight.Bold, fontSize = 16.sp)
             Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {

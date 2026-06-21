@@ -55,7 +55,7 @@ fun AdminSmartlinkRequestsScreen(
                     } else {
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(16.dp),
+                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             items(state.requests) { request ->
@@ -80,7 +80,7 @@ fun AdminSmartlinkRequestItem(
     onReject: () -> Unit
 ) {
     Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Text(
                 text = request.smartlinkName ?: "Unknown Smartlink",
                 style = MaterialTheme.typography.titleMedium,

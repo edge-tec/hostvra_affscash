@@ -79,7 +79,7 @@ fun NotificationsScreen(
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(msg, color = MaterialTheme.colorScheme.error)
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
                         Button(onClick = { viewModel.loadNotifications() }) {
                             Text("Retry")
                         }
@@ -121,7 +121,7 @@ fun NotificationsScreen(
 
                         LazyColumn(
                             state = listState,
-                            contentPadding = PaddingValues(16.dp),
+                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             items(
@@ -225,7 +225,7 @@ fun NotificationCard(
         )
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.Top
         ) {
             Box(

@@ -90,7 +90,7 @@ fun SmartlinkScreen(
                             Text("No smartlinks available.", modifier = Modifier.align(Alignment.Center))
                         } else {
                             LazyColumn(
-                                contentPadding = PaddingValues(16.dp),
+                                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                                 verticalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
                                 items(smartlinks) { smartlink ->
@@ -176,7 +176,7 @@ fun SmartlinkCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Top) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(

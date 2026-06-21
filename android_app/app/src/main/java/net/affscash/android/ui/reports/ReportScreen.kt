@@ -303,7 +303,7 @@ fun ReportScreen(
                             if (state.response.totals != null) {
                                 val t = state.response.totals
                                 LazyRow(
-                                    contentPadding = PaddingValues(16.dp),
+                                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
@@ -322,19 +322,19 @@ fun ReportScreen(
                                 modifier = Modifier.fillMaxSize()
                             ) {
                                 state.response.rows?.let { rows ->
-                                    if (rows.isEmpty()) item { Text("No data found.", modifier = Modifier.padding(16.dp)) }
+                                    if (rows.isEmpty()) item { Text("No data found.", modifier = Modifier.padding(12.dp)) }
                                     items(rows) { row -> PerformanceRowItem(row) }
                                 }
                                 state.response.clicks?.let { clicks ->
-                                    if (clicks.isEmpty()) item { Text("No clicks found.", modifier = Modifier.padding(16.dp)) }
+                                    if (clicks.isEmpty()) item { Text("No clicks found.", modifier = Modifier.padding(12.dp)) }
                                     items(clicks) { c -> ClickRowItem(c) }
                                 }
                                 state.response.conversions?.let { convs ->
-                                    if (convs.isEmpty()) item { Text("No conversions found.", modifier = Modifier.padding(16.dp)) }
+                                    if (convs.isEmpty()) item { Text("No conversions found.", modifier = Modifier.padding(12.dp)) }
                                     items(convs) { cv -> ConversionRowItem(cv) }
                                 }
                                 state.response.slClicks?.let { sls ->
-                                    if (sls.isEmpty()) item { Text("No smartlink traffic found.", modifier = Modifier.padding(16.dp)) }
+                                    if (sls.isEmpty()) item { Text("No smartlink traffic found.", modifier = Modifier.padding(12.dp)) }
                                     items(sls) { sl -> SmartlinkRowItem(sl) }
                                 }
                             }
@@ -408,7 +408,7 @@ fun ClickRowItem(click: ClickRow) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Text(click.offerName ?: "Custom URL", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text("Click ID: ${click.clickId}", fontSize = 10.sp, color = Color.Gray)
             Spacer(modifier = Modifier.height(4.dp))
@@ -451,7 +451,7 @@ fun ConversionRowItem(conv: ConversionRow) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Text(conv.offerName ?: "Unknown", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             
             Column(modifier = Modifier.clickable { expandIds = !expandIds }.fillMaxWidth()) {
@@ -526,7 +526,7 @@ fun SmartlinkRowItem(sl: SmartlinkClickRow) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Text(sl.smartlinkName ?: "Unknown Smartlink", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text("Routed to: ${sl.offerName ?: "Custom URL"}", fontSize = 12.sp)
             Spacer(modifier = Modifier.height(4.dp))

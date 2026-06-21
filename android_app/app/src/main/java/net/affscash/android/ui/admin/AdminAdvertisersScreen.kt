@@ -192,7 +192,7 @@ fun AdminAdvertiserCard(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -224,7 +224,7 @@ fun AdminAdvertiserCard(
                 Text("Joined: ${advertiser.createdAt.take(10)}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Divider()
             Spacer(modifier = Modifier.height(12.dp))
 

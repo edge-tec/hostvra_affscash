@@ -102,7 +102,7 @@ fun ManagerSmartlinkRequestsScreen(
                 }
             } else {
                 LazyColumn(
-                    contentPadding = PaddingValues(16.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier.fillMaxSize()
                 ) {
@@ -133,7 +133,7 @@ fun ManagerSmartlinkRequestCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             // Header
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -208,7 +208,7 @@ fun ManagerSmartlinkRequestCard(
             }
 
             if (!request.promotionDescription.isNullOrEmpty()) {
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 Surface(
                     color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
                     shape = RoundedCornerShape(8.dp),
@@ -246,7 +246,7 @@ fun ManagerSmartlinkRequestCard(
             }
 
             if (request.status.lowercase() == "pending") {
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 Button(
                     onClick = { showReviewDialog = true },
                     modifier = Modifier.fillMaxWidth(),
@@ -267,7 +267,7 @@ fun ManagerSmartlinkRequestCard(
             text = {
                 Column {
                     Text("You are reviewing the request for ${request.smartlinkName} by ${request.affName}.")
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = note,
                         onValueChange = { note = it },

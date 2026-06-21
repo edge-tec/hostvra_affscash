@@ -354,7 +354,7 @@ fun ManagerAffiliateCard(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             
             // Stats Grid
             Surface(
@@ -383,7 +383,7 @@ fun ManagerAffiliateCard(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             val fraudColor = if (affiliate.fraudScore > 70) Color(0xFFEF4444) else if (affiliate.fraudScore > 30) Color(0xFFF59E0B) else Color(0xFF10B981)
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -397,7 +397,7 @@ fun ManagerAffiliateCard(
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
             Spacer(modifier = Modifier.height(12.dp))
 

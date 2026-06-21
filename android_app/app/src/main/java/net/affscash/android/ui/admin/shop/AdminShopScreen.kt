@@ -62,7 +62,7 @@ fun AdminShopScreen(
                 is AdminShopUiState.Success -> {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(16.dp)
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
                     ) {
                         item {
                             Row(
@@ -87,7 +87,7 @@ fun AdminShopScreen(
                                 AdminShopOrderSummaryCard(order)
                                 Spacer(modifier = Modifier.height(8.dp))
                             }
-                            item { Spacer(modifier = Modifier.height(16.dp)) }
+                            item { Spacer(modifier = Modifier.height(8.dp)) }
                         }
 
                         item {
@@ -122,7 +122,7 @@ fun AdminShopScreen(
 fun AdminShopOrderSummaryCard(order: AdminShopOrder) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Row(
-            modifier = Modifier.padding(16.dp).fillMaxWidth(),
+            modifier = Modifier.padding(12.dp).fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
@@ -156,7 +156,7 @@ fun AdminShopProductCard(
 ) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Row(
-            modifier = Modifier.padding(16.dp).fillMaxWidth(),
+            modifier = Modifier.padding(12.dp).fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {

@@ -100,7 +100,7 @@ fun AdminPrivateOffersScreen(
 
                 LazyColumn(
                     modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
-                    contentPadding = PaddingValues(vertical = 16.dp),
+                    contentPadding = PaddingValues(vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
                     // Convert Section
@@ -117,7 +117,7 @@ fun AdminPrivateOffersScreen(
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text("Convert Offer to Private", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                                 }
-                                Spacer(modifier = Modifier.height(16.dp))
+                                Spacer(modifier = Modifier.height(8.dp))
                                 
                                 var expanded by remember { mutableStateOf(false) }
                                 var selectedOfferId by remember { mutableStateOf<Int?>(null) }
@@ -172,7 +172,7 @@ fun AdminPrivateOffersScreen(
                                     }
                                 }
                                 
-                                Spacer(modifier = Modifier.height(16.dp))
+                                Spacer(modifier = Modifier.height(8.dp))
                                 Row(verticalAlignment = Alignment.Top, modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), RoundedCornerShape(8.dp)).padding(12.dp)) {
                                     Icon(Icons.Default.Info, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(16.dp))
                                     Spacer(modifier = Modifier.width(8.dp))
@@ -194,7 +194,7 @@ fun AdminPrivateOffersScreen(
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                         ) {
-                            Column(modifier = Modifier.padding(vertical = 16.dp)) {
+                            Column(modifier = Modifier.padding(vertical = 8.dp)) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
                                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -259,7 +259,7 @@ fun AdminPrivateOffersScreen(
                                                 }
                                             }
                                             
-                                            Spacer(modifier = Modifier.height(16.dp))
+                                            Spacer(modifier = Modifier.height(8.dp))
                                             
                                             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
                                                 OutlinedButton(
@@ -302,7 +302,7 @@ fun AdminPrivateOffersScreen(
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                         ) {
-                            Column(modifier = Modifier.padding(vertical = 16.dp)) {
+                            Column(modifier = Modifier.padding(vertical = 8.dp)) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
                                     verticalAlignment = Alignment.CenterVertically

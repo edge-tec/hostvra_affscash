@@ -62,10 +62,10 @@ fun AdminShopOrdersScreen(
                 is AdminShopOrdersUiState.Success -> {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(16.dp)
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
                     ) {
                         if (state.orders.isEmpty()) {
-                            item { Text("No orders found", modifier = Modifier.padding(16.dp)) }
+                            item { Text("No orders found", modifier = Modifier.padding(12.dp)) }
                         } else {
                             items(state.orders) { order ->
                                 AdminShopOrderDetailedCard(
@@ -99,7 +99,7 @@ fun AdminShopOrderDetailedCard(
     onEditStatus: () -> Unit
 ) {
     Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
+        Column(modifier = Modifier.padding(12.dp).fillMaxWidth()) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,

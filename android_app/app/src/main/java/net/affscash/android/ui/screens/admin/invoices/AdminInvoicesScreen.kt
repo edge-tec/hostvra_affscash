@@ -160,7 +160,7 @@ fun AdminInvoiceDetailView(
         else -> Color(0xFFF57C00)
     }
 
-    LazyColumn(contentPadding = PaddingValues(16.dp)) {
+    LazyColumn(contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)) {
         item {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Text(detail.invoice_number, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)

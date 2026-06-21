@@ -104,13 +104,13 @@ fun AdminConversionsScreen(
                             Box(modifier = Modifier.fillMaxWidth().height(300.dp), contentAlignment = Alignment.Center) {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     Icon(Icons.Outlined.Analytics, contentDescription = null, modifier = Modifier.size(64.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
-                                    Spacer(modifier = Modifier.height(16.dp))
+                                    Spacer(modifier = Modifier.height(8.dp))
                                     Text("No conversions found", color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
                             }
                         }
                     } else {
-                        item { Spacer(modifier = Modifier.height(16.dp)) }
+                        item { Spacer(modifier = Modifier.height(8.dp)) }
                         items(conversions) { conversion ->
                             AdminConversionItem(conversion = conversion)
                         }
@@ -179,7 +179,7 @@ fun AdminConversionItem(conversion: Conversion) {
                 }
             }
             
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             
             // Affiliate Info
             Surface(
@@ -209,7 +209,7 @@ fun AdminConversionItem(conversion: Conversion) {
                 }
             }
             
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             
             // Details Row: Click ID & IP Address
             Row(
@@ -300,7 +300,7 @@ fun AdminConversionItem(conversion: Conversion) {
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Divider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
             Spacer(modifier = Modifier.height(12.dp))
             

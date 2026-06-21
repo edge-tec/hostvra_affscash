@@ -104,7 +104,7 @@ fun AdminReferralScreen(
 @Composable
 fun AdminReferralDashboardCards(data: AdminReferralDashboardData) {
     val numberFormat = NumberFormat.getCurrencyInstance(Locale.US)
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(12.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -158,7 +158,7 @@ fun StatCard(
         modifier = modifier,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Text(
                 text = title.uppercase(),
                 fontSize = 11.sp,
@@ -190,7 +190,7 @@ fun SignupsTab(viewModel: AdminReferralViewModel) {
             Text("No signups found.")
         }
     } else {
-        LazyColumn(contentPadding = PaddingValues(16.dp)) {
+        LazyColumn(contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)) {
             items(signups) { signup ->
                 SignupItem(signup)
                 Divider(modifier = Modifier.padding(vertical = 8.dp))
@@ -326,7 +326,7 @@ fun CodesTab(viewModel: AdminReferralViewModel) {
             Text("No referral codes found.")
         }
     } else {
-        LazyColumn(contentPadding = PaddingValues(16.dp)) {
+        LazyColumn(contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)) {
             items(codes) { code ->
                 CodeItem(code)
                 Divider(modifier = Modifier.padding(vertical = 8.dp))

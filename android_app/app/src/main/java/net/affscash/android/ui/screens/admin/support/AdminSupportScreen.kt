@@ -94,12 +94,14 @@ fun AdminSupportScreen(
                 horizontalArrangement = Arrangement.Center
             ) {
                 FilterChip(
+modifier = Modifier.height(32.dp),
                     selected = uiState.selectedFilter == "open",
                     onClick = { viewModel.setFilter("open") },
                     label = { Text("Open") },
                     modifier = Modifier.padding(end = 8.dp)
                 )
                 FilterChip(
+modifier = Modifier.height(32.dp),
                     selected = uiState.selectedFilter == "closed",
                     onClick = { viewModel.setFilter("closed") },
                     label = { Text("Closed") }
@@ -115,7 +117,7 @@ fun AdminSupportScreen(
                         .padding(16.dp)
                 ) {
                     Row(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(Icons.Filled.Warning, contentDescription = null, tint = MaterialTheme.colorScheme.error)

@@ -125,7 +125,7 @@ fun AdminAccountDeleteRequestsScreen(
                             modifier = Modifier.size(64.dp),
                             tint = MaterialTheme.colorScheme.error
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
                         Text(text = "Error loading requests", style = MaterialTheme.typography.titleMedium)
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
@@ -135,7 +135,7 @@ fun AdminAccountDeleteRequestsScreen(
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(horizontal = 32.dp)
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
                         Button(onClick = { viewModel.loadData() }) {
                             Text("Retry")
                         }
@@ -150,7 +150,7 @@ fun AdminAccountDeleteRequestsScreen(
                             modifier = Modifier.size(80.dp),
                             tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             "All Caught Up!",
                             style = MaterialTheme.typography.titleLarge,
@@ -168,7 +168,7 @@ fun AdminAccountDeleteRequestsScreen(
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(uiState.requests) { request ->
@@ -202,7 +202,7 @@ fun AdminAccountDeleteRequestsScreen(
                         } else {
                             Text("Are you sure you want to reject this request?")
                         }
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
                         OutlinedTextField(
                             value = adminNote,
                             onValueChange = { adminNote = it },
@@ -384,7 +384,7 @@ fun RequestCard(
             }
 
             if (request.status == "pending") {
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)

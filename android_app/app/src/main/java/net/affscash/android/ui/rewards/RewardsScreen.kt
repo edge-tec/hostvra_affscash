@@ -93,7 +93,7 @@ fun RewardsScreen(
 @Composable
 fun RewardsContent(data: RewardsResponse) {
     LazyColumn(
-        modifier = Modifier.padding(16.dp),
+        modifier = Modifier.padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         // Next Milestone
@@ -123,7 +123,7 @@ fun RewardsContent(data: RewardsResponse) {
                     colors = CardDefaults.cardColors(containerColor = Color.White)
                 ) {
                     Row(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(Icons.Default.CheckCircle, contentDescription = "Earned", tint = Color(0xFF4CAF50))
@@ -162,7 +162,7 @@ fun NextMilestoneCard(rule: RewardRule, earned: Double) {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Text(text = "Next Milestone", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Purple40)
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = rule.title, fontSize = 18.sp, fontWeight = FontWeight.Bold)
@@ -170,7 +170,7 @@ fun NextMilestoneCard(rule: RewardRule, earned: Double) {
                 Spacer(modifier = Modifier.height(4.dp))
                 HtmlText(html = rule.description)
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             val progress = if (rule.thresholdUsd > 0) (earned / rule.thresholdUsd).toFloat().coerceIn(0f, 1f) else 0f
             LinearProgressIndicator(
                 progress = { progress },
@@ -197,7 +197,7 @@ fun AvailableRewardItem(rule: RewardRule) {
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (rule.imagePath != null) {

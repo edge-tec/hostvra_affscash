@@ -413,7 +413,7 @@ fun ClickRowItem(click: ClickRow) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Text(click.offerName ?: "Custom URL", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text("Click ID: ${click.clickId}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(modifier = Modifier.height(8.dp))
@@ -453,7 +453,7 @@ fun ConversionRowItem(conversion: ConversionRow) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Text(conversion.offerName ?: "Unknown Offer", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text("Click ID: ${conversion.clickId}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Text("Date: ${conversion.convertedAt}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -494,7 +494,7 @@ fun SmartlinkRowItem(click: SmartlinkClickRow) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Text(click.smartlinkName ?: "Unknown SmartLink", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text("Offer: ${click.offerName ?: "Custom URL"}", style = MaterialTheme.typography.bodySmall)
             Text("Click ID: ${click.clickId}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)

@@ -157,7 +157,7 @@ fun ManagerFraudReportsScreen(
                                 item {
                                     Text(
                                         "No conversions match the filters.",
-                                        modifier = Modifier.padding(16.dp),
+                                        modifier = Modifier.padding(12.dp),
                                         color = Color.Gray
                                     )
                                 }
@@ -375,12 +375,13 @@ fun FraudReportFilterSheet(
     ) {
         Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp).verticalScroll(rememberScrollState())) {
             Text("Filters", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             
             Text("Date Range", fontSize = 12.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(modifier = Modifier.height(8.dp))
             ScrollableRow(listOf("Today", "Yesterday", "Last 7 Days", "Last 15 Days", "This Month", "Last Month", "Last 90 Days", "This Year", "Last Year")) { range ->
                 FilterChip(
+modifier = Modifier.height(32.dp),
                     selected = false,
                     onClick = {
                         val (from, to) = getPresetDateRange(range)
@@ -421,7 +422,7 @@ fun FraudReportFilterSheet(
             Spacer(modifier = Modifier.height(8.dp))
             DropdownFilterField(value = uiState.sortBy, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, it) }, label = "Sort By", options = sortOptions, modifier = Modifier.fillMaxWidth())
             
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = onDismiss, 
                 modifier = Modifier.fillMaxWidth().height(48.dp), 
@@ -429,7 +430,7 @@ fun FraudReportFilterSheet(
             ) {
                 Text("Apply Filters", fontSize = 14.sp, fontWeight = FontWeight.Bold)
             }
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }

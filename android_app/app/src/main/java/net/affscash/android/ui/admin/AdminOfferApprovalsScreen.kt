@@ -46,7 +46,7 @@ fun AdminOfferApprovalsScreen(
             modifier = Modifier.fillMaxHeight(0.9f)
         ) {
             Column(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(12.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text("Filters", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
@@ -136,7 +136,7 @@ fun AdminOfferApprovalsScreen(
                     Text("Apply Filters")
                 }
                 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
@@ -210,7 +210,7 @@ fun AdminOfferApprovalsScreen(
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Icon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(64.dp), tint = Color.Gray)
-                                Spacer(modifier = Modifier.height(16.dp))
+                                Spacer(modifier = Modifier.height(8.dp))
                                 Text("No requests found", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                                 Text("No approval requests at this time.", color = Color.Gray)
                             }
@@ -243,7 +243,7 @@ fun AdminApprovalRequestCard(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -286,7 +286,7 @@ fun AdminApprovalRequestCard(
             }
 
             if (request.status == "pending") {
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End,

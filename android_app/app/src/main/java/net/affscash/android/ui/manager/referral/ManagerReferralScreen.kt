@@ -116,7 +116,7 @@ fun ManagerReferralScreen(
                                     }
                                 }
                             )
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                             Surface(
                                 color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
                                 shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
@@ -180,14 +180,14 @@ fun ManagerReferralScreen(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     // Section Title
                     Text(
                         text = "Team Members (${data.referredAffiliates.size})",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
                     )
 
                     // Content List
@@ -202,7 +202,7 @@ fun ManagerReferralScreen(
                     } else {
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(16.dp),
+                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             items(data.referredAffiliates) { aff ->

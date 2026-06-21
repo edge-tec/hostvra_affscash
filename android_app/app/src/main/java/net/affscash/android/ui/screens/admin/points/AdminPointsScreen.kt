@@ -80,7 +80,7 @@ fun AdminPointsScreen(
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(uiState.error!!, color = MaterialTheme.colorScheme.error)
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
                         Button(onClick = { viewModel.loadData() }) {
                             Text("Retry")
                         }
@@ -130,7 +130,7 @@ fun BalancesList(balances: List<AdminPointsBalance>) {
     val numberFormat = java.text.NumberFormat.getNumberInstance(java.util.Locale.US)
     
     LazyColumn(
-        contentPadding = PaddingValues(16.dp),
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(balances) { balance ->
@@ -197,7 +197,7 @@ fun TransactionsList(transactions: List<AdminPointsTransaction>) {
         return
     }
     LazyColumn(
-        contentPadding = PaddingValues(16.dp),
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(transactions) { tx ->
@@ -277,7 +277,7 @@ fun ToolsSection(
         var usdPerPointStr by remember(uiState.config) { mutableStateOf(uiState.config?.usdPerPoint?.toString() ?: "1") }
 
         Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)) {
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(12.dp)) {
                 Text("Conversion Rule", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -317,7 +317,7 @@ fun ToolsSection(
         var adjustReason by remember { mutableStateOf("") }
 
         Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)) {
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(12.dp)) {
                 Text("Manual Adjustment", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -373,7 +373,7 @@ fun ToolsSection(
         var dryRun by remember { mutableStateOf(true) }
 
         Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)) {
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(12.dp)) {
                 Text("Auto-Points Sync", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
                 Text("Scans all approved conversions and automatically credits missing points following the active rule.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)

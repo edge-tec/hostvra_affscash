@@ -55,12 +55,12 @@ fun AdminCreateInvoiceScreen(
                 item {
                     if (uiState.error != null) {
                         Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)) {
-                            Text(text = uiState.error!!, color = MaterialTheme.colorScheme.onErrorContainer, modifier = Modifier.padding(16.dp))
+                            Text(text = uiState.error!!, color = MaterialTheme.colorScheme.onErrorContainer, modifier = Modifier.padding(12.dp))
                         }
                     }
                     if (uiState.successMessage != null) {
                         Card(colors = CardDefaults.cardColors(containerColor = Color(0xFFD4EDDA))) {
-                            Text(text = uiState.successMessage!!, color = Color(0xFF155724), modifier = Modifier.padding(16.dp))
+                            Text(text = uiState.successMessage!!, color = Color(0xFF155724), modifier = Modifier.padding(12.dp))
                         }
                     }
                 }
@@ -68,7 +68,7 @@ fun AdminCreateInvoiceScreen(
                 item {
                     Text("Step 1: Settings", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                     Card(modifier = Modifier.fillMaxWidth()) {
-                        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                             InvoiceTypeDropdown(
                                 selectedType = uiState.invoiceType,
                                 onTypeSelected = { viewModel.setInvoiceType(it) }
@@ -113,7 +113,7 @@ fun AdminCreateInvoiceScreen(
                 item {
                     Text("Step 2: Line Items", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                     Card(modifier = Modifier.fillMaxWidth()) {
-                        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             if (uiState.editableItems.isEmpty()) {
                                 Text("No items added yet.")
                             }
@@ -123,7 +123,7 @@ fun AdminCreateInvoiceScreen(
 
                 itemsIndexed(uiState.editableItems) { index, item ->
                     Card(modifier = Modifier.fillMaxWidth()) {
-                        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             OutlinedTextField(
                                 value = item.description,
                                 onValueChange = { viewModel.updateLineItem(index, it, item.qty, item.rate) },
@@ -166,7 +166,7 @@ fun AdminCreateInvoiceScreen(
                 item {
                     Text("Step 3: Extras & Generate", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                     Card(modifier = Modifier.fillMaxWidth()) {
-                        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                             OutlinedTextField(
                                 value = uiState.taxRate,
                                 onValueChange = { viewModel.setTaxRate(it) },

@@ -182,7 +182,7 @@ fun ProductsGrid(
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
-        contentPadding = PaddingValues(16.dp),
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.fillMaxSize()
@@ -356,7 +356,7 @@ fun OrdersList(orders: List<ShopOrder>) {
         }
     } else {
         LazyColumn(
-            contentPadding = PaddingValues(16.dp),
+            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(orders) { order ->
@@ -381,7 +381,7 @@ fun OrderCard(order: ShopOrder) {
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -432,7 +432,7 @@ fun PlaceOrderDialog(
         text = {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text("Cost: ${String.format("%,d", product.pricePoints)} pts", fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 
                 OutlinedTextField(
                     value = name,

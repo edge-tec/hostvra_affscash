@@ -78,6 +78,7 @@ fun ManagerDuplicateConversionsScreen(
                 val dateRanges = listOf("Today", "Yesterday", "Last 7 Days", "This Month", "Last 30 Days")
                 dateRanges.forEach { range ->
                     FilterChip(
+modifier = Modifier.height(32.dp),
                         selected = false,
                         onClick = {
                             val cal = Calendar.getInstance()
@@ -175,7 +176,7 @@ fun ManagerDuplicateConversionsScreen(
                                     }
                                 }
                             }
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
 
                         // List of clusters
@@ -184,7 +185,7 @@ fun ManagerDuplicateConversionsScreen(
                                 item {
                                     Text(
                                         "No duplicate conversions found for this date range.",
-                                        modifier = Modifier.padding(16.dp),
+                                        modifier = Modifier.padding(12.dp),
                                         color = Color.Gray
                                     )
                                 }

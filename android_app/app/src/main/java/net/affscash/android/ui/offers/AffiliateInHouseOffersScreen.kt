@@ -160,7 +160,7 @@ fun AffiliateInHouseOffersScreen(
                             Text("No offers available.", modifier = Modifier.align(Alignment.Center))
                         } else {
                             LazyColumn(
-                                contentPadding = PaddingValues(16.dp),
+                                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
                                 items(offers) { offer ->

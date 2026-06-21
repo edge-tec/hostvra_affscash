@@ -69,7 +69,7 @@ fun AdminDashboardScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(horizontal = 16.dp),
-                        contentPadding = PaddingValues(vertical = 16.dp)
+                        contentPadding = PaddingValues(vertical = 8.dp)
                     ) {
                         item {
                             Text(
@@ -83,11 +83,12 @@ fun AdminDashboardScreen(
                         // Date Filters Row
                         item {
                             LazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
                                 modifier = Modifier.padding(bottom = 16.dp)
                             ) {
                                 items(DateFilter.values()) { filter ->
                                     FilterChip(
+modifier = Modifier.height(32.dp),
                                         selected = filter == selectedFilter,
                                         onClick = { viewModel.setFilter(filter) },
                                         label = { Text(filter.label) }
@@ -99,13 +100,13 @@ fun AdminDashboardScreen(
                         // KPI Grid
                         item {
                             AdminKpiGrid(data)
-                            Spacer(modifier = Modifier.height(24.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
 
                         // Trend Chart
                         item {
-                            Text(text = "Performance Trend", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(text = "Performance Trend", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(8.dp))
                             
                             val trendData = data.trend
                             if (trendData.labels.isNotEmpty() && trendData.clicks.isNotEmpty()) {
@@ -114,7 +115,7 @@ fun AdminDashboardScreen(
                                 }
                                 val model = entryModelOf(entries)
                                 Card(
-                                    modifier = Modifier.fillMaxWidth().height(300.dp),
+                                    modifier = Modifier.fillMaxWidth().height(180.dp),
                                     shape = RoundedCornerShape(20.dp),
                                     colors = CardDefaults.cardColors(containerColor = Color.Transparent),
                                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -130,20 +131,20 @@ fun AdminDashboardScreen(
                                                     if (index >= 0 && index < trendData.labels.size) trendData.labels[index] else ""
                                                 }
                                             ),
-                                            modifier = Modifier.fillMaxSize().padding(16.dp)
+                                            modifier = Modifier.fillMaxSize().padding(12.dp)
                                         )
                                     }
                                 }
                             } else {
                                 Text("No trend data available for this period.")
                             }
-                            Spacer(modifier = Modifier.height(24.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
 
                         // Top Offers
                         if (data.topOffers.isNotEmpty()) {
                             item {
-                                Text(text = "Top Offers", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                                Text(text = "Top Offers", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Card(
                                     modifier = Modifier.fillMaxWidth(),
@@ -152,7 +153,7 @@ fun AdminDashboardScreen(
                                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                                 ) {
                                     Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                                        Column(modifier = Modifier.padding(16.dp)) {
+                                        Column(modifier = Modifier.padding(12.dp)) {
                                             data.topOffers.take(5).forEach { o ->
                                                 Row(
                                                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
@@ -166,14 +167,14 @@ fun AdminDashboardScreen(
                                         }
                                     }
                                 }
-                                Spacer(modifier = Modifier.height(24.dp))
+                                Spacer(modifier = Modifier.height(8.dp))
                             }
                         }
 
                         // Top Affiliates
                         if (data.topAffiliates.isNotEmpty()) {
                             item {
-                                Text(text = "Top Affiliates", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                                Text(text = "Top Affiliates", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Card(
                                     modifier = Modifier.fillMaxWidth(),
@@ -182,7 +183,7 @@ fun AdminDashboardScreen(
                                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                                 ) {
                                     Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                                        Column(modifier = Modifier.padding(16.dp)) {
+                                        Column(modifier = Modifier.padding(12.dp)) {
                                             data.topAffiliates.take(5).forEach { a ->
                                                 Row(
                                                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
@@ -196,14 +197,14 @@ fun AdminDashboardScreen(
                                         }
                                     }
                                 }
-                                Spacer(modifier = Modifier.height(24.dp))
+                                Spacer(modifier = Modifier.height(8.dp))
                             }
                         }
 
                         // Recent Conversions
                         if (data.recentConversions.isNotEmpty()) {
                             item {
-                                Text(text = "Recent Conversions", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                                Text(text = "Recent Conversions", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Card(
                                     modifier = Modifier.fillMaxWidth(),
@@ -212,7 +213,7 @@ fun AdminDashboardScreen(
                                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                                 ) {
                                     Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                                        Column(modifier = Modifier.padding(16.dp)) {
+                                        Column(modifier = Modifier.padding(12.dp)) {
                                             data.recentConversions.take(15).forEach { rc ->
                                                 Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
                                                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -233,7 +234,7 @@ fun AdminDashboardScreen(
                                         }
                                     }
                                 }
-                                Spacer(modifier = Modifier.height(24.dp))
+                                Spacer(modifier = Modifier.height(8.dp))
                             }
                         }
                     }
@@ -250,7 +251,7 @@ fun AdminKpiGrid(data: AdminDashboardData) {
     val kpis = data.kpis
     val summary = data.summary
     Column {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             AdminKpiCard(
                 title = "Total Clicks",
                 value = kpis.clicks.toString(),
@@ -267,7 +268,7 @@ fun AdminKpiGrid(data: AdminDashboardData) {
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             AdminKpiCard(
                 title = "Revenue",
                 value = "$${(( kpis.revenue )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }",
@@ -284,7 +285,7 @@ fun AdminKpiGrid(data: AdminDashboardData) {
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             AdminKpiCard(
                 title = "Platform Affiliates",
                 value = summary.totalAffiliates.toString(),
@@ -318,10 +319,10 @@ fun AdminKpiCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(12.dp)) {
                 Text(title, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(value, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
+                Text(value, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(subTitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }

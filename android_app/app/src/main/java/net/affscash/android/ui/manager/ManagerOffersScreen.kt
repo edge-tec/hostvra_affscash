@@ -135,7 +135,7 @@ fun ManagerOffersScreen(
                 )
             } else {
                 LazyColumn(
-                    contentPadding = PaddingValues(16.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     item {
@@ -467,7 +467,7 @@ fun ManagerOfferFilterContent(
             .padding(bottom = 32.dp)
     ) {
         Text("Filter Offers", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         val textFieldColors = OutlinedTextFieldDefaults.colors(
             unfocusedBorderColor = Color.Transparent,
@@ -487,7 +487,7 @@ fun ManagerOfferFilterContent(
             shape = textFieldShape,
             colors = textFieldColors
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             // Category Dropdown
@@ -541,7 +541,7 @@ fun ManagerOfferFilterContent(
             }
         }
         
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             // Status Dropdown

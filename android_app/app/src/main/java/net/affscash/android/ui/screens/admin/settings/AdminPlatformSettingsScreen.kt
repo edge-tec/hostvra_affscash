@@ -148,7 +148,7 @@ fun GeneralSettingsTab(config: AdminPlatformConfig) {
     }
 
     Text("General Configuration", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(8.dp))
 
     AdminStyledTextField(
         value = app.name ?: "",
@@ -188,7 +188,7 @@ fun SecuritySettingsTab(config: AdminPlatformConfig) {
     }
 
     Text("Security & Registration", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(8.dp))
 
     SettingSwitch("Enable 2FA", app.twoFaEnabled) { app = app.copy(twoFaEnabled = it) }
     SettingSwitch("Email Verification", app.emailVerification) { app = app.copy(emailVerification = it) }
@@ -205,7 +205,7 @@ fun SmtpSettingsTab(config: AdminPlatformConfig) {
     }
 
     Text("SMTP Configuration", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(8.dp))
 
     AdminStyledTextField(
         value = smtp.host ?: "",
@@ -245,7 +245,7 @@ fun ConversionSettingsTab(config: AdminPlatformConfig) {
     }
 
     Text("Conversion Settings", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(8.dp))
 
     AdminStyledTextField(
         value = conv.approvalMode ?: "",
@@ -267,7 +267,7 @@ fun FraudSettingsTab(config: AdminPlatformConfig) {
     }
 
     Text("Fraud Reports", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(8.dp))
 
     SettingSwitch("Enable Fraud Reports", fraud.enabled) { fraud = fraud.copy(enabled = it) }
     SettingSwitch("Send Email Alerts", fraud.sendEmail) { fraud = fraud.copy(sendEmail = it) }
@@ -289,7 +289,7 @@ fun TurnstileSettingsTab(config: AdminPlatformConfig) {
     }
 
     Text("Cloudflare Turnstile", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(8.dp))
 
     SettingSwitch("Enable Turnstile", turnstile.enabled) { turnstile = turnstile.copy(enabled = it) }
     Spacer(modifier = Modifier.height(8.dp))
@@ -317,7 +317,7 @@ fun ShortenerSettingsTab(config: AdminPlatformConfig) {
     }
 
     Text("URL Shortener", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(8.dp))
 
     SettingSwitch("Enable Shortener", shortener.enabled) { shortener = shortener.copy(enabled = it) }
     Spacer(modifier = Modifier.height(8.dp))
@@ -338,7 +338,7 @@ fun VpnSettingsTab(config: AdminPlatformConfig) {
     }
 
     Text("VPN Detection", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(8.dp))
 
     SettingSwitch("Enable VPN Detection", vpn.enabled) { vpn = vpn.copy(enabled = it) }
 }

@@ -107,7 +107,7 @@ fun NewsScreen(
             } else {
                 LazyVerticalGrid(
                     columns = GridCells.Adaptive(minSize = 300.dp),
-                    contentPadding = PaddingValues(16.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier.fillMaxSize()
@@ -167,7 +167,7 @@ fun NewsScreen(
                                 }
                             }
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
                     }
                     
                     val contentHtml = news.body ?: news.summary ?: ""
@@ -293,7 +293,7 @@ fun NewsCard(newsItem: NewsItem, onClick: () -> Unit) {
             }
 
             // Content
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(12.dp)) {
                 Text(
                     text = "🚀 " + newsItem.title,
                     style = MaterialTheme.typography.titleMedium,
@@ -321,7 +321,7 @@ fun NewsCard(newsItem: NewsItem, onClick: () -> Unit) {
                     modifier = Modifier.weight(1f, fill = false)
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),

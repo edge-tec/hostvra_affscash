@@ -76,7 +76,7 @@ fun AdminVpnLogScreen(
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             // Filters
             var isFiltersExpanded by remember { mutableStateOf(false) }
@@ -161,7 +161,7 @@ fun AdminVpnLogScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             // Title & Clear Button
             Row(
@@ -203,7 +203,7 @@ fun AdminVpnLogScreen(
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(uiState.logs) { log ->
@@ -239,7 +239,7 @@ fun VpnLogCard(log: VpnLogItem) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,

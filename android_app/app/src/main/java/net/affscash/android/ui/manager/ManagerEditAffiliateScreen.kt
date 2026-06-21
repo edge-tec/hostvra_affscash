@@ -100,7 +100,7 @@ fun ManagerEditAffiliateScreen(
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             Button(
                 onClick = {

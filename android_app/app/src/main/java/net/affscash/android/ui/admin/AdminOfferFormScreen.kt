@@ -209,7 +209,7 @@ fun AdminOfferFormScreen(
                             minLines = 3
                         )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
 
                         Button(
                             onClick = { viewModel.submit(offerId) },

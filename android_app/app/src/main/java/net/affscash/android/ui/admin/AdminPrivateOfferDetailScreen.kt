@@ -65,7 +65,7 @@ fun AdminPrivateOfferDetailScreen(
                     ) {
                         item {
                             Card(modifier = Modifier.fillMaxWidth()) {
-                                Column(modifier = Modifier.padding(16.dp)) {
+                                Column(modifier = Modifier.padding(12.dp)) {
                                     Text("Offer Details", style = MaterialTheme.typography.titleMedium)
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Text("Name: OFF-${data.offer.id} · ${data.offer.name}")
@@ -78,7 +78,7 @@ fun AdminPrivateOfferDetailScreen(
                         // Grant Access Form
                         item {
                             Card(modifier = Modifier.fillMaxWidth()) {
-                                Column(modifier = Modifier.padding(16.dp)) {
+                                Column(modifier = Modifier.padding(12.dp)) {
                                     Text("Grant Access", style = MaterialTheme.typography.titleMedium)
                                     Spacer(modifier = Modifier.height(8.dp))
                                     
@@ -117,7 +117,7 @@ fun AdminPrivateOfferDetailScreen(
                         // Granted Affiliates List
                         item {
                             Card(modifier = Modifier.fillMaxWidth()) {
-                                Column(modifier = Modifier.padding(16.dp)) {
+                                Column(modifier = Modifier.padding(12.dp)) {
                                     Row(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -162,7 +162,7 @@ fun AdminPrivateOfferDetailScreen(
                         // Recent Activity (Offer Specific)
                         item {
                             Card(modifier = Modifier.fillMaxWidth()) {
-                                Column(modifier = Modifier.padding(16.dp)) {
+                                Column(modifier = Modifier.padding(12.dp)) {
                                     Text("Recent Activity", style = MaterialTheme.typography.titleMedium)
                                     Spacer(modifier = Modifier.height(8.dp))
 

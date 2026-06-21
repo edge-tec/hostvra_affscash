@@ -87,7 +87,7 @@ fun AdminShopProductFormScreen(
                         label = { Text("Product Name *") },
                         modifier = Modifier.fillMaxWidth()
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     OutlinedTextField(
                         value = formData.description,
@@ -96,7 +96,7 @@ fun AdminShopProductFormScreen(
                         modifier = Modifier.fillMaxWidth(),
                         minLines = 3
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     OutlinedTextField(
                         value = formData.pricePoints,
@@ -105,7 +105,7 @@ fun AdminShopProductFormScreen(
                         modifier = Modifier.fillMaxWidth(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     OutlinedTextField(
                         value = formData.stock,
@@ -114,7 +114,7 @@ fun AdminShopProductFormScreen(
                         modifier = Modifier.fillMaxWidth(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     // Status Dropdown
                     var expanded by remember { mutableStateOf(false) }
@@ -146,7 +146,7 @@ fun AdminShopProductFormScreen(
                             }
                         }
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     // Image Upload
                     Text("Product Image")

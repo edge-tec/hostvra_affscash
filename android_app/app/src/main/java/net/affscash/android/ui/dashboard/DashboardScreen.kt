@@ -8,7 +8,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -121,8 +120,6 @@ fun DashboardScreen(
                         }
                     }
 
-                    val context = androidx.compose.ui.platform.LocalContext.current
-
                     // News Icon
                     HeaderIconWithBadge(
                         icon = Icons.Outlined.Article,
@@ -160,12 +157,11 @@ fun DashboardScreen(
                         badgeColor = Color(0xFFEF4444),
                         onClick = onNavigateToChat
                     )
-                },
-                    }
                 }
             }
         }
-    ) { paddingValues ->
+    }
+) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues).fillMaxSize().background(PremiumUI.BackgroundGradient)) {
             when (uiState) {
                 is DashboardState.Loading -> {
@@ -378,7 +374,7 @@ fun LineChartCard(trendData: DashboardTrendChartResponse) {
                         if (index >= 0 && index < trendData.labels.size) trendData.labels[index] else ""
                     }
                 ),
-                modifier = Modifier.padding(16.dp).fillMaxSize()
+                modifier = Modifier.padding(12.dp).fillMaxSize()
             )
         }
     }
@@ -417,7 +413,7 @@ fun BarChartCard(labels: List<String>, data: List<Float>) {
                         if (index >= 0 && index < labels.size) labels[index] else ""
                     }
                 ),
-                modifier = Modifier.padding(16.dp).fillMaxSize()
+                modifier = Modifier.padding(12.dp).fillMaxSize()
             )
         }
     }
@@ -464,7 +460,7 @@ fun PieChartCard(labels: List<String>, data: List<Int>) {
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             // Legend
             Row(
                 modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
@@ -501,7 +497,7 @@ fun OffersTable(offers: List<net.affscash.android.data.model.DashboardOfferRow>)
                 }
                 Divider()
                 if (offers.isEmpty()) {
-                    Text("No data available", modifier = Modifier.padding(16.dp), color = Color.Gray)
+                    Text("No data available", modifier = Modifier.padding(12.dp), color = Color.Gray)
                 } else {
                     offers.forEach { offer ->
                         Row(
@@ -539,7 +535,7 @@ fun CountriesTable(countries: List<net.affscash.android.data.model.DashboardCoun
                 }
                 Divider()
                 if (countries.isEmpty()) {
-                    Text("No data available", modifier = Modifier.padding(16.dp), color = Color.Gray)
+                    Text("No data available", modifier = Modifier.padding(12.dp), color = Color.Gray)
                 } else {
                     countries.forEach { row ->
                         Row(

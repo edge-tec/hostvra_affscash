@@ -121,7 +121,7 @@ fun SettingsScreen(
 
                             // General Actions (Invoices, Impersonate, Logout)
                             if (selectedTabIndex == 0) { // Show general actions at bottom of Profile tab
-                                Divider(modifier = Modifier.padding(vertical = 16.dp))
+                                Divider(modifier = Modifier.padding(vertical = 8.dp))
                                 
                                 if (role == "affiliate") {
                                     Button(
@@ -133,7 +133,7 @@ fun SettingsScreen(
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Text("My Invoices")
                                     }
-                                    Spacer(modifier = Modifier.height(16.dp))
+                                    Spacer(modifier = Modifier.height(8.dp))
 
                                     Button(
                                         onClick = onNavigateToRewards,
@@ -144,7 +144,7 @@ fun SettingsScreen(
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Text("My Rewards (Milestones)")
                                     }
-                                    Spacer(modifier = Modifier.height(16.dp))
+                                    Spacer(modifier = Modifier.height(8.dp))
 
                                     Button(
                                         onClick = onNavigateToShop,
@@ -155,7 +155,7 @@ fun SettingsScreen(
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Text("Rewards Shop")
                                     }
-                                    Spacer(modifier = Modifier.height(16.dp))
+                                    Spacer(modifier = Modifier.height(8.dp))
                                 }
 
                                 if (state.isImpersonating) {
@@ -175,7 +175,7 @@ fun SettingsScreen(
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Text("Return to Dashboard")
                                     }
-                                    Spacer(modifier = Modifier.height(16.dp))
+                                    Spacer(modifier = Modifier.height(8.dp))
                                 }
 
                                 OutlinedButton(
@@ -211,7 +211,7 @@ fun ProfileTab(profile: ProfileInfo?, viewModel: SettingsViewModel) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Text("Profile Information", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, fontSize = 15.sp)
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -255,7 +255,7 @@ fun ProfileTab(profile: ProfileInfo?, viewModel: SettingsViewModel) {
                     modifier = Modifier.weight(1f)
                 )
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             StyledButton(
                 text = if (isUpdating) "Saving..." else "Save Profile",
@@ -297,9 +297,9 @@ fun SecurityTab(viewModel: SettingsViewModel) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Text("Change Password", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, fontSize = 15.sp)
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             StyledTextField(
                 value = currentPass,
@@ -323,7 +323,7 @@ fun SecurityTab(viewModel: SettingsViewModel) {
                 label = "Confirm New Password *",
                 visualTransformation = PasswordVisualTransformation()
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             StyledButton(
                 text = if (isUpdating) "Updating..." else "Change Password",
@@ -405,9 +405,9 @@ fun PaymentTab(payment: PaymentInfo?, methods: List<String>, viewModel: Settings
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Text("Payment Settings", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, fontSize = 15.sp)
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             ExposedDropdownMenuBox(
                 expanded = expanded,
@@ -436,7 +436,7 @@ fun PaymentTab(payment: PaymentInfo?, methods: List<String>, viewModel: Settings
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             val lowerMethod = selectedMethod.lowercase()
             val type = when {
@@ -522,7 +522,7 @@ fun PaymentTab(payment: PaymentInfo?, methods: List<String>, viewModel: Settings
                 }
             }
             
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             StyledButton(
                 text = if (isUpdating) "Saving..." else "Save Payment Details",
@@ -586,9 +586,9 @@ fun GlobalPostbackTab(postback: GlobalPostbackInfo?, viewModel: SettingsViewMode
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Text("Global Postback Settings", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             
             Text(
                 "The Global Postback URL is used to notify your tracking system of conversions across all offers. " +
@@ -596,7 +596,7 @@ fun GlobalPostbackTab(postback: GlobalPostbackInfo?, viewModel: SettingsViewMode
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             StyledTextField(
                 value = url,
@@ -604,7 +604,7 @@ fun GlobalPostbackTab(postback: GlobalPostbackInfo?, viewModel: SettingsViewMode
                 label = "Global Postback URL",
                 placeholder = { Text("https://your-tracker.com/postback?cid={click_id}", fontSize = 12.sp) }
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             StyledButton(
                 text = if (isUpdating) "Saving..." else "Save Postback URL",
@@ -629,7 +629,7 @@ fun GlobalPostbackTab(postback: GlobalPostbackInfo?, viewModel: SettingsViewMode
                 }
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Text("📋 Example Postback URLs", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
             Card(
@@ -646,7 +646,7 @@ fun GlobalPostbackTab(postback: GlobalPostbackInfo?, viewModel: SettingsViewMode
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Text("Supported Macros", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
             Card(
@@ -687,7 +687,7 @@ fun MacroItem(macro: String, desc: String) {
 fun ManagerTab(manager: ManagerInfo?) {
     Column {
         Text("Your Affiliate Manager", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         if (manager == null) {
             Text("No manager assigned to your account.")
@@ -707,7 +707,7 @@ fun ManagerTab(manager: ManagerInfo?) {
                             fontWeight = FontWeight.Bold,
                             letterSpacing = 1.5.sp
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
                         Box(
                             modifier = Modifier
                                 .size(64.dp)
@@ -737,7 +737,7 @@ fun ManagerTab(manager: ManagerInfo?) {
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             // Contact Cards
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -764,7 +764,7 @@ fun ManagerTab(manager: ManagerInfo?) {
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             // Info Box
             Card(
@@ -772,7 +772,7 @@ fun ManagerTab(manager: ManagerInfo?) {
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFEEF2FF)),
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
             ) {
-                Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.Top) {
+                Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.Top) {
                     Icon(
                         imageVector = Icons.Default.Info,
                         contentDescription = "Help",
@@ -837,7 +837,7 @@ fun TwoFactorTab(isEnabled: Boolean, viewModel: SettingsViewModel) {
 
         if (!isEnabled && pendingSecret == null) {
             Text("Protect your account with two-factor authentication.")
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = {
                     isLoading = true
@@ -903,7 +903,7 @@ fun TwoFactorTab(isEnabled: Boolean, viewModel: SettingsViewModel) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.padding(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(Icons.Default.CheckCircle, contentDescription = "Enabled", tint = Color(0xFF10B981))
@@ -911,7 +911,7 @@ fun TwoFactorTab(isEnabled: Boolean, viewModel: SettingsViewModel) {
                     Text("Two-Factor Authentication is ENABLED", color = Color(0xFF10B981), fontWeight = FontWeight.Bold)
                 }
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Text("Disable 2FA", style = MaterialTheme.typography.titleMedium, fontSize = 14.sp)
             Spacer(modifier = Modifier.height(4.dp))
             Text("To disable, enter your account password OR a current 6-digit OTP code.", fontSize = 13.sp)
@@ -974,14 +974,14 @@ fun DeleteAccountTab(deleteRequest: DeleteRequestInfo?, viewModel: SettingsViewM
 
     Column {
         Text("Delete Account", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error)
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         if (deleteRequest != null) {
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column(modifier = Modifier.padding(12.dp)) {
                     Text("Account Deletion Status", fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(8.dp))
                     Text("Status: ${deleteRequest.status.uppercase()}", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
@@ -997,7 +997,7 @@ fun DeleteAccountTab(deleteRequest: DeleteRequestInfo?, viewModel: SettingsViewM
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column(modifier = Modifier.padding(12.dp)) {
                     Text(
                         "Warning: This action is permanent and cannot be undone. " +
                         "If you submit an account deletion request, an administrator will review it. " +
@@ -1008,7 +1008,7 @@ fun DeleteAccountTab(deleteRequest: DeleteRequestInfo?, viewModel: SettingsViewM
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedTextField(
                 value = reason,
@@ -1017,7 +1017,7 @@ fun DeleteAccountTab(deleteRequest: DeleteRequestInfo?, viewModel: SettingsViewM
                 modifier = Modifier.fillMaxWidth().height(120.dp),
                 maxLines = 4
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             Button(
                 onClick = {

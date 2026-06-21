@@ -206,7 +206,7 @@ fun MainScreen(
         ) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
-                contentPadding = PaddingValues(16.dp),
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.padding(bottom = 32.dp)
@@ -246,7 +246,7 @@ fun MainScreen(
                             Text(
                                 screen.title, 
                                 style = MaterialTheme.typography.labelSmall, 
-                                fontSize = androidx.compose.ui.unit.TextUnit(11f, androidx.compose.ui.unit.TextUnitType.Sp),
+                                fontSize = androidx.compose.ui.unit.TextUnit(9f, androidx.compose.ui.unit.TextUnitType.Sp),
                                 lineHeight = androidx.compose.ui.unit.TextUnit(14f, androidx.compose.ui.unit.TextUnitType.Sp),
                                 fontWeight = FontWeight.Bold, 
                                 textAlign = TextAlign.Center
@@ -332,7 +332,7 @@ fun MainScreen(
             }
         },
         bottomBar = {
-            Box(modifier = Modifier.padding(16.dp)) {
+            Box(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
                     shape = androidx.compose.foundation.shape.RoundedCornerShape(24.dp),
@@ -342,7 +342,7 @@ fun MainScreen(
                     NavigationBar(
                         containerColor = androidx.compose.ui.graphics.Color.Transparent,
                         tonalElevation = 0.dp,
-                        modifier = Modifier.height(72.dp)
+                        modifier = Modifier.height(56.dp)
                     ) {
                         val navBackStackEntry by navController.currentBackStackEntryAsState()
                         val currentDestination = navBackStackEntry?.destination
@@ -353,19 +353,19 @@ fun MainScreen(
                                 icon = { 
                                     Box(
                                         contentAlignment = Alignment.Center,
-                                        modifier = Modifier.size(if (isSelected) 32.dp else 24.dp)
+                                        modifier = Modifier.size(if (isSelected) 24.dp else 20.dp)
                                     ) {
                                         Icon(
                                             screen.icon, 
                                             contentDescription = null, 
-                                            modifier = Modifier.size(if (isSelected) 24.dp else 22.dp)
+                                            modifier = Modifier.size(if (isSelected) 20.dp else 18.dp)
                                         ) 
                                     }
                                 },
                                 label = { 
                                     Text(
                                         screen.title, 
-                                        fontSize = androidx.compose.ui.unit.TextUnit(11f, androidx.compose.ui.unit.TextUnitType.Sp), 
+                                        fontSize = androidx.compose.ui.unit.TextUnit(9f, androidx.compose.ui.unit.TextUnitType.Sp), 
                                         fontWeight = FontWeight.Bold,
                                         maxLines = 1,
                                         textAlign = TextAlign.Center
@@ -397,19 +397,19 @@ fun MainScreen(
                                 icon = { 
                                     Box(
                                         contentAlignment = Alignment.Center,
-                                        modifier = Modifier.size(if (isSelected) 32.dp else 24.dp)
+                                        modifier = Modifier.size(if (isSelected) 24.dp else 20.dp)
                                     ) {
                                         Icon(
                                             Icons.Filled.Menu, 
                                             contentDescription = "Menu", 
-                                            modifier = Modifier.size(if (isSelected) 24.dp else 22.dp)
+                                            modifier = Modifier.size(if (isSelected) 20.dp else 18.dp)
                                         ) 
                                     }
                                 },
                                 label = { 
                                     Text(
                                         "Menu", 
-                                        fontSize = androidx.compose.ui.unit.TextUnit(11f, androidx.compose.ui.unit.TextUnitType.Sp),
+                                        fontSize = androidx.compose.ui.unit.TextUnit(9f, androidx.compose.ui.unit.TextUnitType.Sp),
                                         fontWeight = FontWeight.Bold,
                                         maxLines = 1,
                                         textAlign = TextAlign.Center

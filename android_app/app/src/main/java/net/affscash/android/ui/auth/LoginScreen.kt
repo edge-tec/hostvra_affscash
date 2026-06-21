@@ -91,7 +91,7 @@ fun LoginScreen(
                 )
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedTextField(
                 value = password,
@@ -162,7 +162,7 @@ fun LoginScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             TextButton(onClick = onForgotPasswordClick) {
                 Text("Forgot Password?")

@@ -173,7 +173,7 @@ fun AdminInHouseOffersFilterSection(
             .padding(horizontal = 16.dp, vertical = 8.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             OutlinedTextField(
                 value = filters.query,
                 onValueChange = { q -> onUpdateFilters { it.copy(query = q) } },
@@ -196,7 +196,7 @@ fun AdminInHouseOffersFilterSection(
                     modifier = Modifier.weight(1f)
                 )
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 TextButton(onClick = onClear) {
                     Text("Clear")
