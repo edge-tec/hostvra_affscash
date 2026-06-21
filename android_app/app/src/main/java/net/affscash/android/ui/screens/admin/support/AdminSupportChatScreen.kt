@@ -167,7 +167,11 @@ fun AdminSupportChatScreen(
                         contentPadding = PaddingValues(vertical = 8.dp)
                     ) {
                         items(uiState.messages) { message ->
-                            MessageBubble(message = message, onDelete = { viewModel.deleteMessage(message.id) })
+                            MessageBubble(
+                                message = message,
+                                onDelete = { viewModel.deleteMessage(message.id) },
+                                onEdit = { newText -> viewModel.editMessage(message.id, newText) }
+                            )
                             Spacer(modifier = Modifier.height(4.dp))
                         }
                     }
@@ -248,7 +252,7 @@ fun AdminSupportChatScreen(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MessageBubble(message: AdminSupportMessage, onDelete: () -> Unit = {}) {
+fun MessageBubble(message: AdminSupportMessage, onDelete: () -> Unit = {}, onEdit: (String) -> Unit = {}) {
     val isAdmin = message.senderRole == "admin"
     val alignment = if (isAdmin) Alignment.CenterEnd else Alignment.CenterStart
     val bgColor = if (isAdmin) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer
@@ -256,6 +260,8 @@ fun MessageBubble(message: AdminSupportMessage, onDelete: () -> Unit = {}) {
     val context = LocalContext.current
     var showMenu by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showEditDialog by remember { mutableStateOf(false) }
+    var editText by remember { mutableStateOf(message.message) }
 
     if (showDeleteDialog) {
         AlertDialog(
@@ -272,6 +278,35 @@ fun MessageBubble(message: AdminSupportMessage, onDelete: () -> Unit = {}) {
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+
+    if (showEditDialog) {
+        AlertDialog(
+            onDismissRequest = { showEditDialog = false },
+            title = { Text("Edit Message") },
+            text = {
+                OutlinedTextField(
+                    value = editText,
+                    onValueChange = { editText = it },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    showEditDialog = false
+                    if (editText.isNotBlank() && editText != message.message) {
+                        onEdit(editText)
+                    }
+                }) {
+                    Text("Save")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showEditDialog = false }) {
                     Text("Cancel")
                 }
             }
@@ -372,22 +407,42 @@ fun MessageBubble(message: AdminSupportMessage, onDelete: () -> Unit = {}) {
                         expanded = showMenu,
                         onDismissRequest = { showMenu = false }
                     ) {
-                        DropdownMenuItem(
-                            text = { Text("Delete") },
-                            onClick = {
-                                showMenu = false
-                                showDeleteDialog = true
-                            }
-                        )
+                        if (isAdmin) {
+                            DropdownMenuItem(
+                                text = { Text("Edit") },
+                                onClick = {
+                                    showMenu = false
+                                    editText = message.message
+                                    showEditDialog = true
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Delete") },
+                                onClick = {
+                                    showMenu = false
+                                    showDeleteDialog = true
+                                }
+                            )
+                        }
                     }
                 }
             }
-            Text(
-                text = formatTime(message.createdAt),
-                fontSize = 10.sp,
-                color = Color.Gray,
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (message.isEdited == 1) {
+                    Text(
+                        text = "(Edited) ",
+                        fontSize = 10.sp,
+                        color = Color.Gray,
+                        modifier = Modifier.padding(vertical = 2.dp)
+                    )
+                }
+                Text(
+                    text = formatTime(message.createdAt),
+                    fontSize = 10.sp,
+                    color = Color.Gray,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                )
+            }
         }
     }
 }

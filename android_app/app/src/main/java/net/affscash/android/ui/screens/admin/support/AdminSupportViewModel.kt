@@ -258,6 +258,21 @@ class AdminSupportViewModel @Inject constructor(
         }
     }
 
+    fun editMessage(messageId: Int, newText: String) {
+        viewModelScope.launch {
+            try {
+                val response = apiService.editAdminChatMessage(messageId = messageId, message = newText)
+                if (response.isSuccessful && response.body()?.success == true) {
+                    loadMessages()
+                } else {
+                    _uiState.update { it.copy(error = response.body()?.error ?: "Failed to edit message") }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(error = e.localizedMessage) }
+            }
+        }
+    }
+
     fun closeConversation() {
         val convId = _uiState.value.selectedConversationId ?: return
         viewModelScope.launch {

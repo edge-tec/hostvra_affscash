@@ -196,4 +196,22 @@ class ManagerSupportViewModel @Inject constructor(
             }
         }
     }
+
+    fun editMessage(messageId: Int, newText: String) {
+        viewModelScope.launch {
+            try {
+                val response = repository.editMessage(messageId, newText)
+                if (response.isSuccess) {
+                    val selected = _uiState.value.selectedConversation
+                    if (selected != null) {
+                        loadMessages(selected.conversationId ?: 0, selected.affiliateId)
+                    }
+                } else {
+                    _uiState.update { it.copy(error = response.exceptionOrNull()?.message ?: "Failed to edit message") }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(error = e.localizedMessage) }
+            }
+        }
+    }
 }

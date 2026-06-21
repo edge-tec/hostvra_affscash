@@ -102,7 +102,13 @@ fun ManagerChatScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(uiState.messages) { message ->
-                        MessageBubble(message = message, affiliateId = selectedConv?.affiliateId ?: 0, onDelete = { viewModel.deleteMessage(message.id) })
+                        MessageBubble(
+                            message = message, 
+                            affiliateId = selectedConv?.affiliateId ?: 0, 
+                            onDelete = { viewModel.deleteMessage(message.id) },
+                            onEdit = { newText -> viewModel.editMessage(message.id, newText) }
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
                     }
                 }
             }
@@ -166,9 +172,11 @@ fun ManagerChatScreen(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MessageBubble(message: ManagerMessage, affiliateId: Int, onDelete: () -> Unit = {}) {
+fun MessageBubble(message: ManagerMessage, affiliateId: Int, onDelete: () -> Unit = {}, onEdit: (String) -> Unit = {}) {
     var showMenu by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showEditDialog by remember { mutableStateOf(false) }
+    var editText by remember { mutableStateOf(message.message) }
 
     if (showDeleteDialog) {
         AlertDialog(
@@ -185,6 +193,35 @@ fun MessageBubble(message: ManagerMessage, affiliateId: Int, onDelete: () -> Uni
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+
+    if (showEditDialog) {
+        AlertDialog(
+            onDismissRequest = { showEditDialog = false },
+            title = { Text("Edit Message") },
+            text = {
+                OutlinedTextField(
+                    value = editText,
+                    onValueChange = { editText = it },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    showEditDialog = false
+                    if (editText.isNotBlank() && editText != message.message) {
+                        onEdit(editText)
+                    }
+                }) {
+                    Text("Save")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showEditDialog = false }) {
                     Text("Cancel")
                 }
             }
@@ -292,26 +329,47 @@ fun MessageBubble(message: ManagerMessage, affiliateId: Int, onDelete: () -> Uni
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
-            Text(
-                text = message.createdAt.takeLast(8),
-                color = textColor.copy(alpha = 0.7f),
-                style = MaterialTheme.typography.labelSmall,
+            Row(
                 modifier = Modifier
                     .align(Alignment.End)
-                    .padding(top = 4.dp)
-            )
+                    .padding(top = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (message.isEdited == 1) {
+                    Text(
+                        text = "(Edited) ",
+                        color = textColor.copy(alpha = 0.7f),
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                }
+                Text(
+                    text = message.createdAt.takeLast(8),
+                    color = textColor.copy(alpha = 0.7f),
+                    style = MaterialTheme.typography.labelSmall
+                )
+            }
             
             DropdownMenu(
                 expanded = showMenu,
                 onDismissRequest = { showMenu = false }
             ) {
-                DropdownMenuItem(
-                    text = { Text("Delete") },
-                    onClick = {
-                        showMenu = false
-                        showDeleteDialog = true
-                    }
-                )
+                if (isMine) {
+                    DropdownMenuItem(
+                        text = { Text("Edit") },
+                        onClick = {
+                            showMenu = false
+                            editText = message.message
+                            showEditDialog = true
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Delete") },
+                        onClick = {
+                            showMenu = false
+                            showDeleteDialog = true
+                        }
+                    )
+                }
             }
         }
     }

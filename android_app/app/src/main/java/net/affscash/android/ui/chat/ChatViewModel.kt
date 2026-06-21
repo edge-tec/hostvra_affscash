@@ -183,6 +183,21 @@ class ChatViewModel @Inject constructor(
             }
         }
     }
+
+    fun editMessage(messageId: Int, newText: String) {
+        viewModelScope.launch {
+            val result = chatRepository.editMessage(messageId, newText)
+            result.onSuccess { response ->
+                if (!response.success) {
+                    _uiState.value = _uiState.value.copy(error = response.error ?: "Failed to edit message")
+                }
+                fetchMessagesSilently()
+            }.onFailure {
+                _uiState.value = _uiState.value.copy(error = it.message ?: "Failed to edit message")
+                fetchMessagesSilently()
+            }
+        }
+    }
 }
 
 data class ChatUiState(

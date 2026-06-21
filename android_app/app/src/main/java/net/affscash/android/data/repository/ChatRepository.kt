@@ -79,4 +79,19 @@ class ChatRepository @Inject constructor(
             Result.failure(e)
         }
     }
+
+    suspend fun editMessage(messageId: Int, newText: String): Result<net.affscash.android.data.model.SendChatMessageResponse> {
+        return try {
+            val response = apiService.editChatMessage(messageId = messageId, message = newText)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    Result.success(it)
+                } ?: Result.failure(Exception("Empty response"))
+            } else {
+                Result.failure(Exception(response.message()))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

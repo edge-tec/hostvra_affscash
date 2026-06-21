@@ -59,6 +59,8 @@ data class AdminSupportMessage(
     @SerialName("attachment_name") val attachmentName: String? = null,
     @SerialName("attachment_type") val attachmentType: String? = null,
     @SerialName("attachment_size") val attachmentSize: Int? = null,
+    @SerialName("is_edited") val isEdited: Int = 0,
+    @SerialName("updated_at") val updatedAt: String? = null,
     @SerialName("edited_at") val editedAt: String? = null
 )
 

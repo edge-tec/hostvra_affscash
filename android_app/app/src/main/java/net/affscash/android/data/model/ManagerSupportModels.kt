@@ -40,7 +40,9 @@ data class ManagerMessage(
     @SerialName("attachment_name") val attachmentName: String? = null,
     @SerialName("attachment_type") val attachmentType: String? = null,
     @SerialName("attachment_size") val attachmentSize: Int? = null,
-    @SerialName("sender_name") val senderName: String? = null
+    @SerialName("sender_name") val senderName: String? = null,
+    @SerialName("is_edited") val isEdited: Int = 0,
+    @SerialName("updated_at") val updatedAt: String? = null
 )
 
 @Serializable

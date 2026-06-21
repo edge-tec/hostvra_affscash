@@ -97,4 +97,17 @@ class ManagerSupportRepository @Inject constructor(
             Result.failure(e)
         }
     }
+
+    suspend fun editMessage(messageId: Int, newText: String): Result<net.affscash.android.data.model.SendChatMessageResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.editManagerChatMessage(messageId = messageId, message = newText)
+            if (response.isSuccessful && response.body() != null) {
+                Result.success(response.body()!!)
+            } else {
+                Result.failure(Exception("Failed to edit message: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }
