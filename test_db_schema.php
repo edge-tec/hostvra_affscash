@@ -1,11 +1,6 @@
 <?php
+require 'core/Config.php';
 require 'core/Database.php';
-
-$conversions = Database::fetchAll("SELECT * FROM conversions ORDER BY conversion_id DESC LIMIT 5");
-$clicks = Database::fetchAll("SELECT * FROM clicks ORDER BY id DESC LIMIT 5");
-
-echo "Conversions:\n";
-print_r($conversions);
-
-echo "\nClicks:\n";
-print_r($clicks);
+Config::init(__DIR__ . '/config');
+$rows = Database::fetchAll("SHOW CREATE TABLE support_messages");
+print_r($rows[0]['Create Table']);

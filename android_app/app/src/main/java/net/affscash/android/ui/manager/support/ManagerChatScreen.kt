@@ -228,11 +228,14 @@ fun MessageBubble(message: ManagerMessage, affiliateId: Int, onDelete: () -> Uni
             }
             if (message.attachmentPath != null) {
                 val isImage = message.attachmentType?.startsWith("image/") == true
-                val attachmentUrl = "https://affscash.net/api/v2/manager/ChatController.php?action=download&id=${message.id}&affiliate_id=$affiliateId"
+                val attachmentUrl = "https://affscash.net/api/v2/manager/chat?action=download&id=${message.id}&affiliate_id=$affiliateId"
                 
                 if (isImage) {
                     AsyncImage(
-                        model = attachmentUrl,
+                        model = ImageRequest.Builder(context)
+                            .data(attachmentUrl)
+                            .crossfade(true)
+                            .build(),
                         contentDescription = "Attachment",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier

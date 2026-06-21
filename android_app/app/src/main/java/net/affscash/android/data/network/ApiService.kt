@@ -688,6 +688,14 @@ interface ApiService {
         @Field("message_id") messageId: Int
     ): Response<GenericResponse>
 
+    @POST("api/v2/chat")
+    @FormUrlEncoded
+    suspend fun editChatMessage(
+        @Field("action") action: String = "edit_message",
+        @Field("message_id") messageId: Int,
+        @Field("message") message: String
+    ): Response<SendChatMessageResponse>
+
     @POST("api/v2/manager/chat")
     @FormUrlEncoded
     suspend fun deleteManagerChatMessage(
@@ -695,12 +703,28 @@ interface ApiService {
         @Field("message_id") messageId: Int
     ): Response<GenericResponse>
 
+    @POST("api/v2/manager/chat")
+    @FormUrlEncoded
+    suspend fun editManagerChatMessage(
+        @Field("action") action: String = "edit_message",
+        @Field("message_id") messageId: Int,
+        @Field("message") message: String
+    ): Response<SendChatMessageResponse>
+
     @POST("api/v2/admin/chat")
     @FormUrlEncoded
     suspend fun deleteAdminChatMessage(
         @Field("action") action: String = "delete_message",
         @Field("message_id") messageId: Int
     ): Response<GenericResponse>
+
+    @POST("api/v2/admin/chat")
+    @FormUrlEncoded
+    suspend fun editAdminChatMessage(
+        @Field("action") action: String = "edit_message",
+        @Field("message_id") messageId: Int,
+        @Field("message") message: String
+    ): Response<SendChatMessageResponse>
 
     @POST("api/v2/manager/offer-approvals?action=review")
     suspend fun reviewOfferApproval(@Body request: ReviewOfferApprovalRequest): DefaultResponse

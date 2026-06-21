@@ -1,4 +1,8 @@
 <?php
+if (!defined('BASE_PATH')) {
+    http_response_code(403);
+    die(json_encode(['success' => false, 'error' => 'Direct access forbidden.']));
+}
 Auth::check('affiliate');
 $userId = Auth::id();
 

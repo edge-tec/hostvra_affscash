@@ -248,6 +248,35 @@ try {
         exit;
     }
 
+    if ($action === 'edit_message') {
+        $msgId = (int)($input['message_id'] ?? $_POST['message_id'] ?? 0);
+        $newText = trim($input['message'] ?? $_POST['message'] ?? '');
+        
+        if ($msgId > 0 && !empty($newText)) {
+            $msg = Database::fetchOne("SELECT id FROM support_messages WHERE id=? AND sender_role='admin'", [$msgId]);
+            if ($msg) {
+                Database::query(
+                    "UPDATE support_messages SET message=?, is_edited=1, updated_at=NOW() WHERE id=?", 
+                    [$newText, $msgId]
+                );
+                
+                $updatedMsg = Database::fetchOne(
+                    "SELECT sm.id, sm.sender_id, sm.sender_role, sm.message, sm.created_at, sm.is_read, sm.is_edited, sm.updated_at, sm.is_deleted,
+                            sm.attachment_path, sm.attachment_name, sm.attachment_type, sm.attachment_size,
+                            CONCAT(u.first_name,' ',u.last_name) as sender_name
+                     FROM support_messages sm JOIN users u ON u.id=sm.sender_id
+                     WHERE sm.id=?",
+                    [$msgId]
+                );
+                
+                echo json_encode(['success' => true, 'message' => $updatedMsg]);
+                exit;
+            }
+        }
+        echo json_encode(['success' => false, 'error' => 'Unauthorized, message not found, or empty text']);
+        exit;
+    }
+
     echo json_encode(['success' => false, 'error' => 'Unknown action']);
 
 } catch (Throwable $e) {
