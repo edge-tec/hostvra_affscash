@@ -72,12 +72,12 @@ fun DuplicateConversionsScreen(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(8.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             shape = RoundedCornerShape(16.dp)
         ) {
-            Column(modifier = Modifier.padding(12.dp)) {
+            Column(modifier = Modifier.padding(8.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Surface(
                         shape = RoundedCornerShape(8.dp),
@@ -86,11 +86,11 @@ fun DuplicateConversionsScreen(
                     ) {
                         Icon(Icons.Default.Layers, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(6.dp))
                     }
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                     Column {
                         Text(
                             "Duplicate Detection",
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
                         )
@@ -102,7 +102,7 @@ fun DuplicateConversionsScreen(
                     }
                 }
                 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -122,7 +122,7 @@ fun DuplicateConversionsScreen(
                         ) {
                             Column(verticalArrangement = Arrangement.Center) {
                                 Text("From", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                Text(fromDate, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+                                Text(fromDate, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
                             }
                             Icon(Icons.Default.DateRange, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(16.dp))
                         }
@@ -142,14 +142,14 @@ fun DuplicateConversionsScreen(
                         ) {
                             Column(verticalArrangement = Arrangement.Center) {
                                 Text("To", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                Text(toDate, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+                                Text(toDate, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
                             }
                             Icon(Icons.Default.DateRange, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(16.dp))
                         }
                     }
                 }
                 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 
                 Button(
                     onClick = { viewModel.loadData() },
@@ -158,8 +158,8 @@ fun DuplicateConversionsScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Icon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(18.dp))
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Analyze Duplicates", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text("Analyze Duplicates", fontSize = 13.sp, fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -182,7 +182,7 @@ fun DuplicateConversionsScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                        .padding(horizontal = 8.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Card(
@@ -192,7 +192,7 @@ fun DuplicateConversionsScreen(
                         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                     ) {
                         Row(
-                            modifier = Modifier.padding(12.dp),
+                            modifier = Modifier.padding(8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Surface(shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.secondaryContainer, modifier = Modifier.size(36.dp)) {
@@ -212,7 +212,7 @@ fun DuplicateConversionsScreen(
                         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                     ) {
                         Row(
-                            modifier = Modifier.padding(12.dp),
+                            modifier = Modifier.padding(8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Surface(shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.errorContainer, modifier = Modifier.size(36.dp)) {
@@ -227,7 +227,7 @@ fun DuplicateConversionsScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
                 if (data.clusters.isEmpty()) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -240,7 +240,7 @@ fun DuplicateConversionsScreen(
                     ) {
                         items(data.clusters) { cluster ->
                             DuplicateClusterCard(cluster)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
                     }
                 }
@@ -290,7 +290,7 @@ fun DuplicateClusterCard(cluster: AffiliateDuplicateConversionCluster) {
                         }
                     }
                     
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                     
                     Surface(
                         color = MaterialTheme.colorScheme.error,
@@ -332,7 +332,7 @@ fun DuplicateClusterCard(cluster: AffiliateDuplicateConversionCluster) {
                         
                         Text(
                             "$${(( conversion.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", 
-                            fontSize = 13.sp, 
+                            fontSize = 12.sp, 
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF10B981)
                         )

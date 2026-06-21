@@ -65,14 +65,14 @@ fun AdminShopOrdersScreen(
                         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
                     ) {
                         if (state.orders.isEmpty()) {
-                            item { Text("No orders found", modifier = Modifier.padding(12.dp)) }
+                            item { Text("No orders found", modifier = Modifier.padding(8.dp)) }
                         } else {
                             items(state.orders) { order ->
                                 AdminShopOrderDetailedCard(
                                     order = order,
                                     onEditStatus = { orderToEdit = order }
                                 )
-                                Spacer(modifier = Modifier.height(8.dp))
+                                Spacer(modifier = Modifier.height(4.dp))
                             }
                         }
                     }
@@ -99,13 +99,13 @@ fun AdminShopOrderDetailedCard(
     onEditStatus: () -> Unit
 ) {
     Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(12.dp).fillMaxWidth()) {
+        Column(modifier = Modifier.padding(8.dp).fillMaxWidth()) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(order.productName ?: "Unknown Product", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+                Text(order.productName ?: "Unknown Product", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleSmall)
                 Text("${order.pointsSpent} PTS", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
             }
             Spacer(modifier = Modifier.height(4.dp))
@@ -113,7 +113,7 @@ fun AdminShopOrderDetailedCard(
             Text("Affiliate: ${order.affiliateName}", style = MaterialTheme.typography.bodyMedium)
             Text("Date: ${order.createdAt ?: ""}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -193,7 +193,7 @@ fun AdminUpdateOrderDialog(
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 
                 OutlinedTextField(
                     value = trackingCode,
@@ -201,7 +201,7 @@ fun AdminUpdateOrderDialog(
                     label = { Text("Tracking Code") },
                     modifier = Modifier.fillMaxWidth()
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 
                 OutlinedTextField(
                     value = adminNote,

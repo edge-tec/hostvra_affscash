@@ -76,23 +76,23 @@ fun AdminVpnLogScreen(
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             // Filters
             var isFiltersExpanded by remember { mutableStateOf(false) }
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 8.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
             ) {
-                Column(modifier = Modifier.padding(12.dp)) {
+                Column(modifier = Modifier.padding(8.dp)) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Filters", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+                        Text("Filters", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleSmall)
                         IconButton(onClick = { isFiltersExpanded = !isFiltersExpanded }) {
                             Icon(if (isFiltersExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown, "Toggle Filters")
                         }
@@ -161,19 +161,19 @@ fun AdminVpnLogScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             // Title & Clear Button
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "Blocked Attempts",
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
                 TextButton(
@@ -225,7 +225,7 @@ fun StatCard(title: String, value: String, color: Color, modifier: Modifier = Mo
             modifier = Modifier.padding(8.dp).fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(title, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color.Gray, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(title, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.Gray, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Spacer(modifier = Modifier.height(2.dp))
             Text(value, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = color)
         }
@@ -239,7 +239,7 @@ fun VpnLogCard(log: VpnLogItem) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -258,30 +258,30 @@ fun VpnLogCard(log: VpnLogItem) {
                     Text(log.detectionType, fontSize = 12.sp, modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp))
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text("DATE & TIME", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
-                    Text(log.blockedAt, fontSize = 13.sp)
+                    Text(log.blockedAt, fontSize = 12.sp)
                 }
                 Column(modifier = Modifier.weight(1f)) {
                     Text("COUNTRY", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
-                    Text(log.country.ifEmpty { "Unknown" }, fontSize = 13.sp)
+                    Text(log.country.ifEmpty { "Unknown" }, fontSize = 12.sp)
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             if (log.affName != null || log.affiliateCode != null) {
                 Text("AFFILIATE", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
-                Text("${log.affName ?: "Unknown"} (${log.affiliateCode ?: "N/A"})", fontSize = 14.sp, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
-                Spacer(modifier = Modifier.height(8.dp))
+                Text("${log.affName ?: "Unknown"} (${log.affiliateCode ?: "N/A"})", fontSize = 13.sp, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
+                Spacer(modifier = Modifier.height(4.dp))
             }
 
             if (log.offerName != null) {
                 Text("OFFER", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
-                Text("${log.offerName} (ID: ${log.offerId})", fontSize = 13.sp)
-                Spacer(modifier = Modifier.height(8.dp))
+                Text("${log.offerName} (ID: ${log.offerId})", fontSize = 12.sp)
+                Spacer(modifier = Modifier.height(4.dp))
             }
             
             Text("USER AGENT", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color.Gray)

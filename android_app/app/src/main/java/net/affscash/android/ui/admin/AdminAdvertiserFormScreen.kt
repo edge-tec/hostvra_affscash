@@ -64,7 +64,7 @@ fun AdminAdvertiserFormScreen(
                     .fillMaxSize()
                     .padding(padding)
                     .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
+                    .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 OutlinedTextField(
@@ -124,7 +124,7 @@ fun AdminAdvertiserFormScreen(
                     Text("Budget Exempt")
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
                 Button(
                     onClick = { viewModel.saveAdvertiser() },

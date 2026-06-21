@@ -61,7 +61,7 @@ fun AdminSmartlinkFormScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp)
+                            .padding(8.dp)
                             .verticalScroll(rememberScrollState()),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
@@ -126,7 +126,7 @@ fun AdminSmartlinkFormScreen(
                             Text("Require Approval (Affiliates must request access)")
                         }
 
-                        Text("Offers & Custom URLs", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                        Text("Offers & Custom URLs", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
 
                         state.offers.forEachIndexed { index, offer ->
                             AdminSmartlinkOfferRow(
@@ -143,7 +143,7 @@ fun AdminSmartlinkFormScreen(
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
                         ) {
                             Icon(Icons.Default.Add, contentDescription = "Add")
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Spacer(modifier = Modifier.width(4.dp))
                             Text("Add Offer/URL Entry")
                         }
 
@@ -178,7 +178,7 @@ fun AdminSmartlinkOfferRow(
     onRemove: () -> Unit
 ) {
     Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Text("Offer Entry", fontWeight = FontWeight.Bold)
                 IconButton(onClick = onRemove) {

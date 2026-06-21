@@ -80,7 +80,7 @@ fun AdminPointsScreen(
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(uiState.error!!, color = MaterialTheme.colorScheme.error)
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         Button(onClick = { viewModel.loadData() }) {
                             Text("Retry")
                         }
@@ -104,7 +104,7 @@ fun AdminPointsScreen(
                     LazyColumn {
                         items(uiState.syncLog) { log ->
                             Text(log, style = MaterialTheme.typography.bodySmall)
-                            Divider(modifier = Modifier.padding(vertical = 4.dp))
+                            Divider(modifier = Modifier.padding(vertical = 2.dp))
                         }
                     }
                 },
@@ -142,7 +142,7 @@ fun BalancesList(balances: List<AdminPointsBalance>) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -150,7 +150,7 @@ fun BalancesList(balances: List<AdminPointsBalance>) {
                         Text(
                             text = "#${balance.affiliateId} · ${balance.name ?: ""}",
                             fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.titleMedium
+                            style = MaterialTheme.typography.titleSmall
                         )
                         Text(
                             text = balance.email ?: "N/A",
@@ -209,7 +209,7 @@ fun TransactionsList(transactions: List<AdminPointsTransaction>) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -228,7 +228,7 @@ fun TransactionsList(transactions: List<AdminPointsTransaction>) {
                                     fontWeight = FontWeight.Bold
                                 )
                             }
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 text = "Affiliate #${tx.affiliateId}",
                                 style = MaterialTheme.typography.labelMedium,
@@ -250,7 +250,7 @@ fun TransactionsList(transactions: List<AdminPointsTransaction>) {
                     Text(
                         text = if (tx.amount > 0) "+${tx.amount}" else tx.amount.toString(),
                         fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleSmall,
                         color = if (tx.amount > 0) Color(0xFF388E3C) else Color(0xFFD32F2F)
                     )
                 }
@@ -268,7 +268,7 @@ fun ToolsSection(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(8.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -277,15 +277,15 @@ fun ToolsSection(
         var usdPerPointStr by remember(uiState.config) { mutableStateOf(uiState.config?.usdPerPoint?.toString() ?: "1") }
 
         Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)) {
-            Column(modifier = Modifier.padding(12.dp)) {
-                Text("Conversion Rule", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(8.dp))
+            Column(modifier = Modifier.padding(8.dp)) {
+                Text("Conversion Rule", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Switch(checked = enabled, onCheckedChange = { enabled = it })
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text("Points module enabled")
                 }
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 OutlinedTextField(
                     value = usdPerPointStr,
                     onValueChange = { usdPerPointStr = it },
@@ -293,7 +293,7 @@ fun ToolsSection(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.fillMaxWidth()
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Button(
                     onClick = {
                         val usd = usdPerPointStr.toIntOrNull() ?: 1
@@ -317,9 +317,9 @@ fun ToolsSection(
         var adjustReason by remember { mutableStateOf("") }
 
         Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)) {
-            Column(modifier = Modifier.padding(12.dp)) {
-                Text("Manual Adjustment", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(8.dp))
+            Column(modifier = Modifier.padding(8.dp)) {
+                Text("Manual Adjustment", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(4.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedTextField(
                         value = adjustAffId,
@@ -336,14 +336,14 @@ fun ToolsSection(
                         modifier = Modifier.weight(1f)
                     )
                 }
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 OutlinedTextField(
                     value = adjustReason,
                     onValueChange = { adjustReason = it },
                     label = { Text("Reason") },
                     modifier = Modifier.fillMaxWidth()
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Button(
                     onClick = {
                         val affId = adjustAffId.toIntOrNull() ?: 0
@@ -373,11 +373,11 @@ fun ToolsSection(
         var dryRun by remember { mutableStateOf(true) }
 
         Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)) {
-            Column(modifier = Modifier.padding(12.dp)) {
-                Text("Auto-Points Sync", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(8.dp))
+            Column(modifier = Modifier.padding(8.dp)) {
+                Text("Auto-Points Sync", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(4.dp))
                 Text("Scans all approved conversions and automatically credits missing points following the active rule.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 var showDatePicker by remember { mutableStateOf(false) }
 
                 if (showDatePicker) {
@@ -407,12 +407,12 @@ fun ToolsSection(
                         }
                     }
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(checked = dryRun, onCheckedChange = { dryRun = it })
                     Text("Dry Run (preview only)")
                 }
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Button(
                     onClick = {
                         viewModel.syncPoints(

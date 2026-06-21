@@ -52,7 +52,7 @@ fun AffiliateReferralScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(8.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f)),
                     elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
@@ -61,7 +61,7 @@ fun AffiliateReferralScreen(
                         Text("Your Referral Link", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
                         Text(
                             "Share this link with other affiliates. When they sign up and earn, you get a ${data.stats.commissionRate}% commission on their payouts!",
-                            fontSize = 13.sp,
+                            fontSize = 12.sp,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier.padding(top = 3.dp, bottom = 8.dp)
                         )
@@ -83,7 +83,7 @@ fun AffiliateReferralScreen(
                                     readOnly = true,
                                     singleLine = true,
                                     textStyle = TextStyle(
-                                        fontSize = 13.sp,
+                                        fontSize = 12.sp,
                                         color = MaterialTheme.colorScheme.onSurface
                                     ),
                                     modifier = Modifier.fillMaxWidth()
@@ -96,11 +96,11 @@ fun AffiliateReferralScreen(
                                 clipboardManager.setPrimaryClip(clipData)
                                 Toast.makeText(context, "Link copied to clipboard", Toast.LENGTH_SHORT).show()
                             }, modifier = Modifier.height(36.dp), contentPadding = PaddingValues(horizontal = 12.dp)) {
-                                Text("Copy Link", fontSize = 13.sp)
+                                Text("Copy Link", fontSize = 12.sp)
                             }
                         }
                         Spacer(modifier = Modifier.height(6.dp))
-                        Text("Your referral code: ${data.referralCode}", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                        Text("Your referral code: ${data.referralCode}", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
                     }
                 }
 
@@ -108,7 +108,7 @@ fun AffiliateReferralScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                        .padding(horizontal = 8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Card(
@@ -149,7 +149,7 @@ fun AffiliateReferralScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
                 // Tabs
                 TabRow(selectedTabIndex = selectedTab) {
@@ -202,7 +202,7 @@ fun AffiliateReferralScreen(
 fun ReferredAffiliateItem(aff: ReferredAffiliate) {
     Column(modifier = Modifier.fillMaxWidth().padding(11.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text(aff.name, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+            Text(aff.name, fontSize = 13.sp, fontWeight = FontWeight.Bold)
             Text(aff.status.uppercase(), fontSize = 12.sp, color = if (aff.status == "active") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant)
         }
         Spacer(modifier = Modifier.height(4.dp))
@@ -215,8 +215,8 @@ fun ReferredAffiliateItem(aff: ReferredAffiliate) {
 fun CommissionItem(comm: ReferralCommission) {
     Column(modifier = Modifier.fillMaxWidth().padding(11.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("From: ${comm.referredName}", fontSize = 14.sp, fontWeight = FontWeight.Bold)
-            Text("+$${comm.commissionAmount}", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+            Text("From: ${comm.referredName}", fontSize = 13.sp, fontWeight = FontWeight.Bold)
+            Text("+$${comm.commissionAmount}", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
         }
         Text("Conv ID: ${comm.conversionId} • Date: ${comm.createdAt}", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(modifier = Modifier.height(4.dp))

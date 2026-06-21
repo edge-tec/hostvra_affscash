@@ -167,7 +167,7 @@ fun NewsScreen(
                                 }
                             }
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                     }
                     
                     val contentHtml = news.body ?: news.summary ?: ""
@@ -293,16 +293,16 @@ fun NewsCard(newsItem: NewsItem, onClick: () -> Unit) {
             }
 
             // Content
-            Column(modifier = Modifier.padding(12.dp)) {
+            Column(modifier = Modifier.padding(8.dp)) {
                 Text(
                     text = "🚀 " + newsItem.title,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
                 val summaryHtml = newsItem.summary ?: ""
                 AndroidView(
@@ -321,7 +321,7 @@ fun NewsCard(newsItem: NewsItem, onClick: () -> Unit) {
                     modifier = Modifier.weight(1f, fill = false)
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),

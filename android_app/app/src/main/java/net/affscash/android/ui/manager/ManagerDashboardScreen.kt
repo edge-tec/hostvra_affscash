@@ -159,19 +159,19 @@ fun ManagerDashboardScreen(
                         style = MaterialTheme.typography.headlineMedium.copy(brush = PremiumUI.PrimaryGradient),
                         fontWeight = FontWeight.ExtraBold
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
 
                 item {
                     PeriodTabs(uiState.selectedPeriod) { period ->
                         viewModel.setPeriod(period)
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
 
                 if (uiState.isLoadingStats) {
                     item {
-                        CircularProgressIndicator(modifier = Modifier.padding(12.dp))
+                        CircularProgressIndicator(modifier = Modifier.padding(8.dp))
                     }
                 } else if (uiState.error != null) {
                     item {
@@ -184,7 +184,7 @@ fun ManagerDashboardScreen(
                     uiState.stats?.let { stats ->
                         item {
                             KpiGrid(stats)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
                     }
                 }
@@ -192,10 +192,10 @@ fun ManagerDashboardScreen(
                 item {
                     Text(
                         text = "Performance Trend",
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
 
                 item {
@@ -225,7 +225,7 @@ fun ManagerDashboardScreen(
                                                 if (index >= 0 && index < trendData.labels.size) trendData.labels[index] else ""
                                             }
                                         ),
-                                        modifier = Modifier.fillMaxSize().padding(12.dp)
+                                        modifier = Modifier.fillMaxSize().padding(8.dp)
                                     )
                                 }
                             }
@@ -243,27 +243,27 @@ fun ManagerDashboardScreen(
                         
                         // Hourly Traffic
                         if (extra.hourly?.labels?.isNotEmpty() == true) {
-                            Text("Hourly Traffic", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Text("Hourly Traffic", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(4.dp))
                             BarChartCard(extra.hourly.labels, extra.hourly.data.map { it.toFloat() })
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
 
                         // Conversion Status
                         if (extra.convStatus?.labels?.isNotEmpty() == true) {
-                            Text("Conversion Status", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Text("Conversion Status", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(4.dp))
                             val customColors = extra.convStatus.colors.map { 
                                 try { Color(android.graphics.Color.parseColor(it)) } catch(e: Exception) { Color.Gray } 
                             }
                             PieChartCard(extra.convStatus.labels, extra.convStatus.data, customColors)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
 
                         // Top Countries
                         if (extra.countries.isNotEmpty()) {
-                            Text("Top Countries", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Text("Top Countries", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(4.dp))
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(20.dp),
@@ -271,7 +271,7 @@ fun ManagerDashboardScreen(
                                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                             ) {
                                 Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                                    Column(modifier = Modifier.padding(12.dp)) {
+                                    Column(modifier = Modifier.padding(8.dp)) {
                                         extra.countries.take(5).forEach { c ->
                                             Row(
                                                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
@@ -285,12 +285,12 @@ fun ManagerDashboardScreen(
                                     }
                                 }
                             }
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
 
                         // Breakdowns (Device, Browser, OS)
-                        Text("Traffic Breakdown", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("Traffic Breakdown", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(4.dp))
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                             if (extra.devices?.labels?.isNotEmpty() == true) {
                                 Column(modifier = Modifier.weight(1f)) {
@@ -305,7 +305,7 @@ fun ManagerDashboardScreen(
                                 }
                             }
                         }
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         Row(modifier = Modifier.fillMaxWidth()) {
                             if (extra.os?.labels?.isNotEmpty() == true) {
                                 Column(modifier = Modifier.fillMaxWidth(0.5f)) {
@@ -314,12 +314,12 @@ fun ManagerDashboardScreen(
                                 }
                             }
                         }
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         
                         // Top Offers & Top Affiliates
                         if (extra.offers.isNotEmpty()) {
-                            Text("Top Offers", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Text("Top Offers", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(4.dp))
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(20.dp),
@@ -327,7 +327,7 @@ fun ManagerDashboardScreen(
                                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                             ) {
                                 Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                                    Column(modifier = Modifier.padding(12.dp)) {
+                                    Column(modifier = Modifier.padding(8.dp)) {
                                         extra.offers.take(5).forEach { o ->
                                             Row(
                                                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
@@ -341,12 +341,12 @@ fun ManagerDashboardScreen(
                                     }
                                 }
                             }
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
 
                         if (extra.affiliates.isNotEmpty()) {
-                            Text("Top Affiliates", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Text("Top Affiliates", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(4.dp))
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(20.dp),
@@ -354,7 +354,7 @@ fun ManagerDashboardScreen(
                                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                             ) {
                                 Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                                    Column(modifier = Modifier.padding(12.dp)) {
+                                    Column(modifier = Modifier.padding(8.dp)) {
                                         extra.affiliates.take(5).forEach { a ->
                                             Row(
                                                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
@@ -368,13 +368,13 @@ fun ManagerDashboardScreen(
                                     }
                                 }
                             }
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
 
                         // High Risk Fraud Conversions
                         if (extra.fraudConvs.isNotEmpty()) {
-                            Text("High Risk Fraud Conversions", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color(0xFFEF4444))
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Text("High Risk Fraud Conversions", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Color(0xFFEF4444))
+                            Spacer(modifier = Modifier.height(4.dp))
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(20.dp),
@@ -383,7 +383,7 @@ fun ManagerDashboardScreen(
                                 border = BorderStroke(1.dp, Color(0xFFFCA5A5))
                             ) {
                                 Box(modifier = Modifier.background(Color(0xFFFEF2F2).copy(alpha = 0.9f)).fillMaxSize()) {
-                                    Column(modifier = Modifier.padding(12.dp)) {
+                                    Column(modifier = Modifier.padding(8.dp)) {
                                         extra.fraudConvs.forEach { fc ->
                                             Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
                                                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -399,13 +399,13 @@ fun ManagerDashboardScreen(
                                     }
                                 }
                             }
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
 
                         // Recent Conversions
                         if (extra.recentConvs.isNotEmpty()) {
-                            Text("Recent Conversions", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Text("Recent Conversions", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(4.dp))
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(20.dp),
@@ -413,7 +413,7 @@ fun ManagerDashboardScreen(
                                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                             ) {
                                 Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                                    Column(modifier = Modifier.padding(12.dp)) {
+                                    Column(modifier = Modifier.padding(8.dp)) {
                                         extra.recentConvs.forEach { rc ->
                                             Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
                                                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -434,7 +434,7 @@ fun ManagerDashboardScreen(
                                     }
                                 }
                             }
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
                     }
                 }
@@ -476,7 +476,7 @@ fun BarChartCard(labels: List<String>, data: List<Float>) {
                         if (index >= 0 && index < labels.size) labels[index] else ""
                     }
                 ),
-                modifier = Modifier.padding(12.dp).fillMaxSize()
+                modifier = Modifier.padding(8.dp).fillMaxSize()
             )
         }
     }
@@ -521,7 +521,7 @@ fun PieChartCard(labels: List<String>, data: List<Int>, customColors: List<Color
                             }
                         }
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
                         horizontalArrangement = Arrangement.Center
@@ -530,7 +530,7 @@ fun PieChartCard(labels: List<String>, data: List<Int>, customColors: List<Color
                             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 4.dp)) {
                                 Box(modifier = Modifier.size(6.dp).background(colors[index % colors.size], CircleShape))
                                 Spacer(modifier = Modifier.width(2.dp))
-                                Text(label, fontSize = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                Text(label, fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
                             }
                         }
                     }
@@ -590,7 +590,7 @@ fun KpiGrid(stats: net.affscash.android.data.model.ManagerDashboardData) {
                 color = Color(0xFF8B5CF6)
             )
         }
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(4.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             KpiCard(
                 title = "Conversions",
@@ -611,7 +611,7 @@ fun KpiGrid(stats: net.affscash.android.data.model.ManagerDashboardData) {
                 color = Color(0xFFEF4444)
             )
         }
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(4.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             val scoreColor = when {
                 stats.fraudScoreAverage >= 75 -> Color(0xFFEF4444)
@@ -647,7 +647,7 @@ fun KpiCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-            Column(modifier = Modifier.padding(12.dp)) {
+            Column(modifier = Modifier.padding(8.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Surface(
                     shape = RoundedCornerShape(8.dp),
@@ -661,16 +661,16 @@ fun KpiCard(
                         modifier = Modifier.padding(6.dp)
                     )
                 }
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(4.dp))
                 Text(title, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(value, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(value, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
             Spacer(modifier = Modifier.height(4.dp))
             Text(subTitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             
             trend?.let {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 val trendColor = if (it > 0) Color(0xFF059669) else if (it < 0) Color(0xFFDC2626) else Color.Gray
                 val trendBg = if (it > 0) Color(0xFFD1FAE5) else if (it < 0) Color(0xFFFEE2E2) else Color(0xFFF3F4F6)
                 val trendText = if (it > 0) "▲ ${abs(it)}% vs prev" else if (it < 0) "▼ ${abs(it)}% vs prev" else "—"

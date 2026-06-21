@@ -44,7 +44,7 @@ fun AdminConversionsScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(text = "Error: ${state.message}", color = MaterialTheme.colorScheme.error)
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     Button(onClick = { viewModel.loadConversions() }) {
                         Text("Retry")
                     }
@@ -77,10 +77,10 @@ fun AdminConversionsScreen(
                                             Icons.Default.TrendingUp,
                                             contentDescription = null,
                                             tint = MaterialTheme.colorScheme.onPrimary,
-                                            modifier = Modifier.padding(12.dp)
+                                            modifier = Modifier.padding(8.dp)
                                         )
                                     }
-                                    Spacer(modifier = Modifier.width(16.dp))
+                                    Spacer(modifier = Modifier.width(4.dp))
                                     Column {
                                         Text(
                                             text = "All Conversions",
@@ -104,13 +104,13 @@ fun AdminConversionsScreen(
                             Box(modifier = Modifier.fillMaxWidth().height(300.dp), contentAlignment = Alignment.Center) {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     Icon(Icons.Outlined.Analytics, contentDescription = null, modifier = Modifier.size(64.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
-                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Spacer(modifier = Modifier.height(4.dp))
                                     Text("No conversions found", color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
                             }
                         }
                     } else {
-                        item { Spacer(modifier = Modifier.height(8.dp)) }
+                        item { Spacer(modifier = Modifier.height(4.dp)) }
                         items(conversions) { conversion ->
                             AdminConversionItem(conversion = conversion)
                         }
@@ -151,7 +151,7 @@ fun AdminConversionItem(conversion: Conversion) {
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(20.dp)
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = conversion.offerName ?: "Unknown Offer",
                         style = MaterialTheme.typography.titleSmall,
@@ -160,7 +160,7 @@ fun AdminConversionItem(conversion: Conversion) {
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(4.dp))
                 
                 val statusColor = if (conversion.status.lowercase() == "approved") Color(0xFF10B981) else Color(0xFFEF4444)
                 val statusBg = statusColor.copy(alpha = 0.15f)
@@ -179,7 +179,7 @@ fun AdminConversionItem(conversion: Conversion) {
                 }
             }
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             // Affiliate Info
             Surface(
@@ -188,11 +188,11 @@ fun AdminConversionItem(conversion: Conversion) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row(
-                    modifier = Modifier.padding(12.dp),
+                    modifier = Modifier.padding(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(Icons.Default.Person, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(18.dp))
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "Affiliate:",
                         style = MaterialTheme.typography.labelMedium,
@@ -209,7 +209,7 @@ fun AdminConversionItem(conversion: Conversion) {
                 }
             }
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             // Details Row: Click ID & IP Address
             Row(
@@ -231,7 +231,7 @@ fun AdminConversionItem(conversion: Conversion) {
                         modifier = Modifier.clickable { expandClickId = !expandClickId }
                     )
                     
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     
                     // Source
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -256,7 +256,7 @@ fun AdminConversionItem(conversion: Conversion) {
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(text = conversion.ipAddress, style = MaterialTheme.typography.bodyMedium)
                     
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     
                     // Location
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -280,7 +280,7 @@ fun AdminConversionItem(conversion: Conversion) {
             }
             
             if (!conversion.deviceType.isNullOrEmpty() || !conversion.os.isNullOrEmpty()) {
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -300,9 +300,9 @@ fun AdminConversionItem(conversion: Conversion) {
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Divider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             // Footer: Date & Financials
             Row(
@@ -330,7 +330,7 @@ fun AdminConversionItem(conversion: Conversion) {
                         Text(text = "Payout", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
                         Text(
                             text = "$${((conversion.payout)?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) }}",
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF10B981)
                         )

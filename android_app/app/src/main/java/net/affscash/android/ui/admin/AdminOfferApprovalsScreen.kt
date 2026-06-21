@@ -46,7 +46,7 @@ fun AdminOfferApprovalsScreen(
             modifier = Modifier.fillMaxHeight(0.9f)
         ) {
             Column(
-                modifier = Modifier.padding(12.dp),
+                modifier = Modifier.padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text("Filters", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
@@ -132,11 +132,11 @@ fun AdminOfferApprovalsScreen(
                     shape = MaterialTheme.shapes.medium
                 ) {
                     Icon(Icons.Default.FilterList, contentDescription = "Apply Filters", modifier = Modifier.size(18.dp))
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text("Apply Filters")
                 }
                 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
             }
         }
     }
@@ -210,8 +210,8 @@ fun AdminOfferApprovalsScreen(
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Icon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(64.dp), tint = Color.Gray)
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Text("No requests found", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text("No requests found", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                                 Text("No approval requests at this time.", color = Color.Gray)
                             }
                         }
@@ -243,7 +243,7 @@ fun AdminApprovalRequestCard(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -253,26 +253,26 @@ fun AdminApprovalRequestCard(
                     Text(
                         text = request.offerName,
                         fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.titleSmall
                     )
                     Text(text = "Payout: $${(( request.payoutAmount )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } } (${request.payoutType})", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                     if (request.offerCategory != null) {
                         Text(text = "Category: ${request.offerCategory}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                     }
                 }
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(4.dp))
                 AdminApprovalStatusBadge(status = request.status)
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             HorizontalDivider()
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Text("Affiliate Details", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium)
             Text(text = "${request.affiliateName} (${request.affiliateCode})", style = MaterialTheme.typography.bodySmall)
             Text(text = request.affiliateEmail, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(text = "Clicks: ${request.totalClicks}", style = MaterialTheme.typography.bodySmall)
@@ -280,13 +280,13 @@ fun AdminApprovalRequestCard(
             }
 
             if (!request.promotionDescription.isNullOrBlank()) {
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Text("Promotion Plan:", fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodySmall)
                 Text(text = request.promotionDescription, style = MaterialTheme.typography.bodySmall, color = Color.DarkGray)
             }
 
             if (request.status == "pending") {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End,
@@ -295,13 +295,13 @@ fun AdminApprovalRequestCard(
                     TextButton(onClick = { onReview("reject") }, colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)) {
                         Text("Reject")
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                     Button(onClick = { onReview("approve") }, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))) {
                         Text("Approve")
                     }
                 }
             } else if (request.approvedAt != null) {
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(text = "Actioned at: ${request.approvedAt}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
             }
         }

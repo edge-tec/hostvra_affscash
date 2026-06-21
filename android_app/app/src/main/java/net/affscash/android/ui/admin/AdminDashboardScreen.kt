@@ -56,7 +56,7 @@ fun AdminDashboardScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(text = "Error: ${state.message}", color = MaterialTheme.colorScheme.error)
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     Button(onClick = { viewModel.loadDashboardData() }) {
                         Text("Retry")
                     }
@@ -68,7 +68,7 @@ fun AdminDashboardScreen(
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(horizontal = 16.dp),
+                            .padding(horizontal = 8.dp),
                         contentPadding = PaddingValues(vertical = 8.dp)
                     ) {
                         item {
@@ -100,13 +100,13 @@ modifier = Modifier.height(32.dp),
                         // KPI Grid
                         item {
                             AdminKpiGrid(data)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
 
                         // Trend Chart
                         item {
-                            Text(text = "Performance Trend", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(text = "Performance Trend", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(4.dp))
                             
                             val trendData = data.trend
                             if (trendData.labels.isNotEmpty() && trendData.clicks.isNotEmpty()) {
@@ -131,21 +131,21 @@ modifier = Modifier.height(32.dp),
                                                     if (index >= 0 && index < trendData.labels.size) trendData.labels[index] else ""
                                                 }
                                             ),
-                                            modifier = Modifier.fillMaxSize().padding(12.dp)
+                                            modifier = Modifier.fillMaxSize().padding(8.dp)
                                         )
                                     }
                                 }
                             } else {
                                 Text("No trend data available for this period.")
                             }
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
 
                         // Top Offers
                         if (data.topOffers.isNotEmpty()) {
                             item {
-                                Text(text = "Top Offers", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(text = "Top Offers", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                                Spacer(modifier = Modifier.height(4.dp))
                                 Card(
                                     modifier = Modifier.fillMaxWidth(),
                                     shape = RoundedCornerShape(20.dp),
@@ -153,7 +153,7 @@ modifier = Modifier.height(32.dp),
                                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                                 ) {
                                     Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                                        Column(modifier = Modifier.padding(12.dp)) {
+                                        Column(modifier = Modifier.padding(8.dp)) {
                                             data.topOffers.take(5).forEach { o ->
                                                 Row(
                                                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
@@ -167,15 +167,15 @@ modifier = Modifier.height(32.dp),
                                         }
                                     }
                                 }
-                                Spacer(modifier = Modifier.height(8.dp))
+                                Spacer(modifier = Modifier.height(4.dp))
                             }
                         }
 
                         // Top Affiliates
                         if (data.topAffiliates.isNotEmpty()) {
                             item {
-                                Text(text = "Top Affiliates", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(text = "Top Affiliates", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                                Spacer(modifier = Modifier.height(4.dp))
                                 Card(
                                     modifier = Modifier.fillMaxWidth(),
                                     shape = RoundedCornerShape(20.dp),
@@ -183,7 +183,7 @@ modifier = Modifier.height(32.dp),
                                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                                 ) {
                                     Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                                        Column(modifier = Modifier.padding(12.dp)) {
+                                        Column(modifier = Modifier.padding(8.dp)) {
                                             data.topAffiliates.take(5).forEach { a ->
                                                 Row(
                                                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
@@ -197,15 +197,15 @@ modifier = Modifier.height(32.dp),
                                         }
                                     }
                                 }
-                                Spacer(modifier = Modifier.height(8.dp))
+                                Spacer(modifier = Modifier.height(4.dp))
                             }
                         }
 
                         // Recent Conversions
                         if (data.recentConversions.isNotEmpty()) {
                             item {
-                                Text(text = "Recent Conversions", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(text = "Recent Conversions", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                                Spacer(modifier = Modifier.height(4.dp))
                                 Card(
                                     modifier = Modifier.fillMaxWidth(),
                                     shape = RoundedCornerShape(20.dp),
@@ -213,7 +213,7 @@ modifier = Modifier.height(32.dp),
                                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                                 ) {
                                     Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                                        Column(modifier = Modifier.padding(12.dp)) {
+                                        Column(modifier = Modifier.padding(8.dp)) {
                                             data.recentConversions.take(15).forEach { rc ->
                                                 Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
                                                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -234,7 +234,7 @@ modifier = Modifier.height(32.dp),
                                         }
                                     }
                                 }
-                                Spacer(modifier = Modifier.height(8.dp))
+                                Spacer(modifier = Modifier.height(4.dp))
                             }
                         }
                     }
@@ -267,7 +267,7 @@ fun AdminKpiGrid(data: AdminDashboardData) {
                 color = Color(0xFF10B981)
             )
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             AdminKpiCard(
                 title = "Revenue",
@@ -284,7 +284,7 @@ fun AdminKpiGrid(data: AdminDashboardData) {
                 color = Color(0xFF10B981)
             )
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             AdminKpiCard(
                 title = "Platform Affiliates",
@@ -319,10 +319,10 @@ fun AdminKpiCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-            Column(modifier = Modifier.padding(12.dp)) {
+            Column(modifier = Modifier.padding(8.dp)) {
                 Text(title, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(value, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
+                Text(value, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(subTitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }

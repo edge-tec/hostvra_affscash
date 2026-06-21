@@ -79,7 +79,7 @@ fun AdminShopProductFormScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
-                        .padding(16.dp)
+                        .padding(8.dp)
                 ) {
                     OutlinedTextField(
                         value = formData.name,
@@ -87,7 +87,7 @@ fun AdminShopProductFormScreen(
                         label = { Text("Product Name *") },
                         modifier = Modifier.fillMaxWidth()
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
 
                     OutlinedTextField(
                         value = formData.description,
@@ -96,7 +96,7 @@ fun AdminShopProductFormScreen(
                         modifier = Modifier.fillMaxWidth(),
                         minLines = 3
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
 
                     OutlinedTextField(
                         value = formData.pricePoints,
@@ -105,7 +105,7 @@ fun AdminShopProductFormScreen(
                         modifier = Modifier.fillMaxWidth(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
 
                     OutlinedTextField(
                         value = formData.stock,
@@ -114,7 +114,7 @@ fun AdminShopProductFormScreen(
                         modifier = Modifier.fillMaxWidth(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
 
                     // Status Dropdown
                     var expanded by remember { mutableStateOf(false) }
@@ -146,16 +146,16 @@ fun AdminShopProductFormScreen(
                             }
                         }
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
 
                     // Image Upload
                     Text("Product Image")
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Button(onClick = { imagePickerLauncher.launch("image/*") }) {
                             Text("Select Image")
                         }
-                        Spacer(modifier = Modifier.width(16.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         if (formData.imageBase64 != null) {
                             Text("Image selected", color = MaterialTheme.colorScheme.primary)
                         } else if (formData.existingImagePath != null) {

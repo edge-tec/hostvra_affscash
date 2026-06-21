@@ -89,10 +89,10 @@ fun AdminAffiliateManagerCard(
     }
 
     Card(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Column {
-                    Text(manager.name, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+                    Text(manager.name, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleSmall)
                     Text(manager.email, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                 }
                 Box {

@@ -57,7 +57,7 @@ fun ManagerEditAffiliateScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp),
+                .padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             OutlinedTextField(
@@ -100,7 +100,7 @@ fun ManagerEditAffiliateScreen(
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Button(
                 onClick = {
@@ -122,7 +122,7 @@ fun ManagerEditAffiliateScreen(
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
                 enabled = firstName.isNotBlank() && lastName.isNotBlank()
             ) {
-                Text("Save Changes", style = MaterialTheme.typography.titleMedium, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                Text("Save Changes", style = MaterialTheme.typography.titleSmall, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
             }
         }
     }

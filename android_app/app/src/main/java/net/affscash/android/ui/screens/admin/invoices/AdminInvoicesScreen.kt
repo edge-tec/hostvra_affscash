@@ -102,10 +102,10 @@ fun AdminInvoiceCard(
         else -> Color(0xFFF57C00)
     }
 
-    Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-        Column(modifier = Modifier.padding(12.dp)) {
+    Card(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Text(invoice.invoice_number, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+                Text(invoice.invoice_number, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleSmall)
                 Box {
                     IconButton(onClick = { menuExpanded = true }) {
                         Icon(Icons.Default.MoreVert, "More Options")
@@ -182,12 +182,12 @@ fun AdminInvoiceDetailView(
             }
             
             Spacer(Modifier.height(16.dp))
-            Text("Line Items", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text("Line Items", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
             Divider(modifier = Modifier.padding(vertical = 8.dp))
         }
 
         items(detail.items) { item ->
-            Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+            Row(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(item.description, fontWeight = FontWeight.Medium)
                     Text("Qty: ${item.qty} @ $${(( item.rate )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
@@ -210,8 +210,8 @@ fun AdminInvoiceDetailView(
                 }
             }
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                Text("Total: ", style = MaterialTheme.typography.titleMedium)
-                Text("$${(( detail.total )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color(0xFF1976D2))
+                Text("Total: ", style = MaterialTheme.typography.titleSmall)
+                Text("$${(( detail.total )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Color(0xFF1976D2))
             }
 
             Spacer(Modifier.height(32.dp))

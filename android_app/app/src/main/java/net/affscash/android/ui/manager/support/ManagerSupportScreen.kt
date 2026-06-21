@@ -117,7 +117,7 @@ fun ConversationItem(conversation: ManagerConversation, onClick: () -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
@@ -134,7 +134,7 @@ fun ConversationItem(conversation: ManagerConversation, onClick: () -> Unit) {
                     modifier = Modifier.size(24.dp)
                 )
             }
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(4.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -150,7 +150,7 @@ fun ConversationItem(conversation: ManagerConversation, onClick: () -> Unit) {
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f)
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = conversation.lastMessageAt?.take(10) ?: "",
                         fontSize = 12.sp,
@@ -167,14 +167,14 @@ fun ConversationItem(conversation: ManagerConversation, onClick: () -> Unit) {
                 ) {
                     Text(
                         text = conversation.lastMsg ?: "No messages yet",
-                        fontSize = 14.sp,
+                        fontSize = 13.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f)
                     )
                     if (conversation.unread > 0) {
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         Box(
                             modifier = Modifier
                                 .size(22.dp)

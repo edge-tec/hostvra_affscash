@@ -76,7 +76,7 @@ fun OfferListItem(offer: Offer, isLoadingLink: Boolean, onClick: () -> Unit, onA
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Top) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
@@ -121,7 +121,7 @@ fun OfferListItem(offer: Offer, isLoadingLink: Boolean, onClick: () -> Unit, onA
                 }
             }
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             offer.description?.let { desc ->
                 var isDescExpanded by remember { mutableStateOf(false) }
@@ -130,7 +130,7 @@ fun OfferListItem(offer: Offer, isLoadingLink: Boolean, onClick: () -> Unit, onA
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         text = desc,
-                        fontSize = 13.sp,
+                        fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         lineHeight = 18.sp,
                         maxLines = if (isDescExpanded) Int.MAX_VALUE else 2,
@@ -145,7 +145,7 @@ fun OfferListItem(offer: Offer, isLoadingLink: Boolean, onClick: () -> Unit, onA
                         Text(
                             text = if (isDescExpanded) "See less" else "See more",
                             color = MaterialTheme.colorScheme.primary,
-                            fontSize = 13.sp,
+                            fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
                                 .padding(top = 4.dp, bottom = 4.dp)
@@ -153,7 +153,7 @@ fun OfferListItem(offer: Offer, isLoadingLink: Boolean, onClick: () -> Unit, onA
                         )
                     }
                 }
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
             }
             
             Divider(color = MaterialTheme.colorScheme.surfaceVariant)
@@ -212,7 +212,7 @@ fun OfferListItem(offer: Offer, isLoadingLink: Boolean, onClick: () -> Unit, onA
                         Text(statusText, fontSize = 10.sp, fontWeight = FontWeight.Bold, color = statusColor)
                     }
                     
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     
                     if (offer.accessStatus == "approved") {
                         Button(

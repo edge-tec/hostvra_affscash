@@ -95,7 +95,7 @@ fun ReportScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text("Filters & Options", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+                        Text("Filters & Options", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleSmall)
                         Icon(
                             if (filtersExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                             contentDescription = "Toggle Filters",
@@ -106,7 +106,7 @@ fun ReportScreen(
                     androidx.compose.animation.AnimatedVisibility(visible = filtersExpanded) {
                         Column(modifier = Modifier.padding(bottom = 16.dp, top = 8.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                             
-                            Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Row(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 var reportTypeExpanded by remember { mutableStateOf(false) }
                                 val currentTabName = tabs.find { it.first == selectedTab }?.second ?: "Report Type"
                                 Box(modifier = Modifier.weight(1f)) {
@@ -116,17 +116,17 @@ fun ReportScreen(
                                         shape = RoundedCornerShape(10.dp),
                                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                     ) {
-                                        Row(modifier = Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                                        Row(modifier = Modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                                             Icon(Icons.Default.List, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                                            Spacer(modifier = Modifier.width(8.dp))
-                                            Text(currentTabName, modifier = Modifier.weight(1f), maxLines = 1, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            Spacer(modifier = Modifier.width(4.dp))
+                                            Text(currentTabName, modifier = Modifier.weight(1f), maxLines = 1, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                             Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                         }
                                     }
                                     DropdownMenu(expanded = reportTypeExpanded, onDismissRequest = { reportTypeExpanded = false }) {
                                         tabs.forEach { tabInfo ->
                                             DropdownMenuItem(
-                                                text = { Text(tabInfo.second, fontSize = 13.sp) },
+                                                text = { Text(tabInfo.second, fontSize = 12.sp) },
                                                 onClick = { viewModel.updateTab(tabInfo.first); reportTypeExpanded = false }
                                             )
                                         }
@@ -141,10 +141,10 @@ fun ReportScreen(
                                         shape = RoundedCornerShape(10.dp),
                                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                     ) {
-                                        Row(modifier = Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                                        Row(modifier = Modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                                             Icon(Icons.Default.DateRange, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                                            Spacer(modifier = Modifier.width(8.dp))
-                                            Text("$fromDate", modifier = Modifier.weight(1f), maxLines = 1, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            Spacer(modifier = Modifier.width(4.dp))
+                                            Text("$fromDate", modifier = Modifier.weight(1f), maxLines = 1, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                             Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                         }
                                     }
@@ -152,7 +152,7 @@ fun ReportScreen(
                                         val dateRanges = listOf("Today", "Yesterday", "Last 7 Days", "This Month")
                                         dateRanges.forEach { range ->
                                             DropdownMenuItem(
-                                                text = { Text(range, fontSize = 13.sp) },
+                                                text = { Text(range, fontSize = 12.sp) },
                                                 onClick = {
                                                     val cal = Calendar.getInstance()
                                                     val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
@@ -177,7 +177,7 @@ fun ReportScreen(
                                 }
                             }
 
-                            Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Row(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 var offerExpanded by remember { mutableStateOf(false) }
                                 Box(modifier = Modifier.weight(1f)) {
                                     Surface(
@@ -186,17 +186,17 @@ fun ReportScreen(
                                         shape = RoundedCornerShape(10.dp),
                                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                     ) {
-                                        Row(modifier = Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                                        Row(modifier = Modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                                             Icon(Icons.Default.ShoppingCart, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                                            Spacer(modifier = Modifier.width(8.dp))
-                                            Text(offers.find { it.id == selectedOfferId }?.name ?: "All Offers", maxLines = 1, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
+                                            Spacer(modifier = Modifier.width(4.dp))
+                                            Text(offers.find { it.id == selectedOfferId }?.name ?: "All Offers", maxLines = 1, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
                                             Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                         }
                                     }
                                     DropdownMenu(expanded = offerExpanded, onDismissRequest = { offerExpanded = false }) {
-                                        DropdownMenuItem(text = { Text("All My Offers", fontSize = 13.sp) }, onClick = { viewModel.selectedOfferId.value = null; viewModel.loadReports(); offerExpanded = false })
+                                        DropdownMenuItem(text = { Text("All My Offers", fontSize = 12.sp) }, onClick = { viewModel.selectedOfferId.value = null; viewModel.loadReports(); offerExpanded = false })
                                         offers.forEach { o ->
-                                            DropdownMenuItem(text = { Text(o.name, fontSize = 13.sp) }, onClick = { viewModel.selectedOfferId.value = o.id; viewModel.loadReports(); offerExpanded = false })
+                                            DropdownMenuItem(text = { Text(o.name, fontSize = 12.sp) }, onClick = { viewModel.selectedOfferId.value = o.id; viewModel.loadReports(); offerExpanded = false })
                                         }
                                     }
                                 }
@@ -209,23 +209,23 @@ fun ReportScreen(
                                         shape = RoundedCornerShape(10.dp),
                                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                     ) {
-                                        Row(modifier = Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                                        Row(modifier = Modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                                             Icon(Icons.Default.Place, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                                            Spacer(modifier = Modifier.width(8.dp))
-                                            Text(selectedCountry ?: "All Geo", maxLines = 1, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
+                                            Spacer(modifier = Modifier.width(4.dp))
+                                            Text(selectedCountry ?: "All Geo", maxLines = 1, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
                                             Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                         }
                                     }
                                     DropdownMenu(expanded = countryExpanded, onDismissRequest = { countryExpanded = false }) {
-                                        DropdownMenuItem(text = { Text("All Countries", fontSize = 13.sp) }, onClick = { viewModel.selectedCountry.value = null; viewModel.loadReports(); countryExpanded = false })
+                                        DropdownMenuItem(text = { Text("All Countries", fontSize = 12.sp) }, onClick = { viewModel.selectedCountry.value = null; viewModel.loadReports(); countryExpanded = false })
                                         countries.forEach { c ->
-                                            DropdownMenuItem(text = { Text(c, fontSize = 13.sp) }, onClick = { viewModel.selectedCountry.value = c; viewModel.loadReports(); countryExpanded = false })
+                                            DropdownMenuItem(text = { Text(c, fontSize = 12.sp) }, onClick = { viewModel.selectedCountry.value = c; viewModel.loadReports(); countryExpanded = false })
                                         }
                                     }
                                 }
                             }
                             
-                            Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Row(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 var cityExpanded by remember { mutableStateOf(false) }
                                 Box(modifier = Modifier.weight(1f)) {
                                     Surface(
@@ -234,17 +234,17 @@ fun ReportScreen(
                                         shape = RoundedCornerShape(10.dp),
                                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                     ) {
-                                        Row(modifier = Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                                        Row(modifier = Modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                                             Icon(Icons.Default.Place, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                                            Spacer(modifier = Modifier.width(8.dp))
-                                            Text(selectedCity ?: "All Cities", maxLines = 1, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
+                                            Spacer(modifier = Modifier.width(4.dp))
+                                            Text(selectedCity ?: "All Cities", maxLines = 1, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
                                             Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                         }
                                     }
                                     DropdownMenu(expanded = cityExpanded, onDismissRequest = { cityExpanded = false }) {
-                                        DropdownMenuItem(text = { Text("All Cities", fontSize = 13.sp) }, onClick = { viewModel.selectedCity.value = null; viewModel.loadReports(); cityExpanded = false })
+                                        DropdownMenuItem(text = { Text("All Cities", fontSize = 12.sp) }, onClick = { viewModel.selectedCity.value = null; viewModel.loadReports(); cityExpanded = false })
                                         cities.forEach { c ->
-                                            DropdownMenuItem(text = { Text(c, fontSize = 13.sp) }, onClick = { viewModel.selectedCity.value = c; viewModel.loadReports(); cityExpanded = false })
+                                            DropdownMenuItem(text = { Text(c, fontSize = 12.sp) }, onClick = { viewModel.selectedCity.value = c; viewModel.loadReports(); cityExpanded = false })
                                         }
                                     }
                                 }
@@ -253,10 +253,10 @@ fun ReportScreen(
                                     value = sub1Filter,
                                     onValueChange = { viewModel.sub1Filter.value = it },
                                     modifier = Modifier.weight(1f).height(48.dp),
-                                    placeholder = { Text("Aff Sub 1", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha=0.7f)) },
+                                    placeholder = { Text("Aff Sub 1", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha=0.7f)) },
                                     singleLine = true,
                                     shape = RoundedCornerShape(10.dp),
-                                    textStyle = LocalTextStyle.current.copy(fontSize = 13.sp),
+                                    textStyle = LocalTextStyle.current.copy(fontSize = 12.sp),
                                     colors = TextFieldDefaults.colors(
                                         focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
                                         unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
@@ -273,7 +273,7 @@ fun ReportScreen(
                                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                             ) {
                                 Icon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(18.dp))
-                                Spacer(modifier = Modifier.width(8.dp))
+                                Spacer(modifier = Modifier.width(4.dp))
                                 Text("Apply Filters", fontWeight = FontWeight.Bold)
                             }
                         }
@@ -292,7 +292,7 @@ fun ReportScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(state.message, color = MaterialTheme.colorScheme.error)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                             Button(onClick = { viewModel.loadReports() }) {
                                 Text("Retry")
                             }
@@ -322,19 +322,19 @@ fun ReportScreen(
                                 modifier = Modifier.fillMaxSize()
                             ) {
                                 state.response.rows?.let { rows ->
-                                    if (rows.isEmpty()) item { Text("No data found.", modifier = Modifier.padding(12.dp)) }
+                                    if (rows.isEmpty()) item { Text("No data found.", modifier = Modifier.padding(8.dp)) }
                                     items(rows) { row -> PerformanceRowItem(row) }
                                 }
                                 state.response.clicks?.let { clicks ->
-                                    if (clicks.isEmpty()) item { Text("No clicks found.", modifier = Modifier.padding(12.dp)) }
+                                    if (clicks.isEmpty()) item { Text("No clicks found.", modifier = Modifier.padding(8.dp)) }
                                     items(clicks) { c -> ClickRowItem(c) }
                                 }
                                 state.response.conversions?.let { convs ->
-                                    if (convs.isEmpty()) item { Text("No conversions found.", modifier = Modifier.padding(12.dp)) }
+                                    if (convs.isEmpty()) item { Text("No conversions found.", modifier = Modifier.padding(8.dp)) }
                                     items(convs) { cv -> ConversionRowItem(cv) }
                                 }
                                 state.response.slClicks?.let { sls ->
-                                    if (sls.isEmpty()) item { Text("No smartlink traffic found.", modifier = Modifier.padding(12.dp)) }
+                                    if (sls.isEmpty()) item { Text("No smartlink traffic found.", modifier = Modifier.padding(8.dp)) }
                                     items(sls) { sl -> SmartlinkRowItem(sl) }
                                 }
                             }
@@ -355,7 +355,7 @@ fun SummaryCard(title: String, value: String, subtitle: String, valueColor: Colo
         elevation = CardDefaults.cardElevation(0.dp)
     ) {
         Column(
-            modifier = Modifier.padding(12.dp).fillMaxSize(),
+            modifier = Modifier.padding(8.dp).fillMaxSize(),
             verticalArrangement = Arrangement.Center
         ) {
             Text(title, fontSize = 9.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -378,13 +378,13 @@ fun SummaryCard(title: String, value: String, subtitle: String, valueColor: Colo
 @Composable
 fun PerformanceRowItem(row: ReportRow) {
     Card(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Text(row.label, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+        Column(modifier = Modifier.padding(8.dp)) {
+            Text(row.label, fontSize = 13.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(6.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
@@ -392,7 +392,7 @@ fun PerformanceRowItem(row: ReportRow) {
                     Text("Conversions: ${row.conv}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text("Payout: $${"%.2f".format(row.payout)}", fontSize = 13.sp, color = Color(0xFF10B981), fontWeight = FontWeight.Bold)
+                    Text("Payout: $${"%.2f".format(row.payout)}", fontSize = 12.sp, color = Color(0xFF10B981), fontWeight = FontWeight.Bold)
                     Text("App: ${row.approved} | Rej: ${row.rejected}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
@@ -403,13 +403,13 @@ fun PerformanceRowItem(row: ReportRow) {
 @Composable
 fun ClickRowItem(click: ClickRow) {
     Card(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Text(click.offerName ?: "Custom URL", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        Column(modifier = Modifier.padding(8.dp)) {
+            Text(click.offerName ?: "Custom URL", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
             Text("Click ID: ${click.clickId}", fontSize = 10.sp, color = Color.Gray)
             Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -434,7 +434,7 @@ fun ClickRowItem(click: ClickRow) {
                         )
                     }
                     if (click.convPayout != null && click.convPayout > 0) {
-                        Text("$${"%.2f".format(click.convPayout)}", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                        Text("$${"%.2f".format(click.convPayout)}", fontSize = 13.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -451,8 +451,8 @@ fun ConversionRowItem(conv: ConversionRow) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Text(conv.offerName ?: "Unknown", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        Column(modifier = Modifier.padding(8.dp)) {
+            Text(conv.offerName ?: "Unknown", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
             
             Column(modifier = Modifier.clickable { expandIds = !expandIds }.fillMaxWidth()) {
                 val convIdText = if (expandIds) conv.conversionId else if (conv.conversionId.length > 12) conv.conversionId.take(12) + "..." else conv.conversionId
@@ -462,7 +462,7 @@ fun ConversionRowItem(conv: ConversionRow) {
                 Text("Click ID: $clickIdText", fontSize = 10.sp, color = Color.Gray, fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)
             }
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             // New Location / Device Info
             val country = conv.country?.takeIf { it.isNotBlank() && it.lowercase() != "unknown" } ?: "Unknown Country"
@@ -481,7 +481,7 @@ fun ConversionRowItem(conv: ConversionRow) {
             if (devInfo.isNotEmpty()) {
                 Text(devInfo, fontSize = 11.sp, color = Color.Gray)
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
@@ -511,7 +511,7 @@ fun ConversionRowItem(conv: ConversionRow) {
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                         )
                     }
-                    Text("$${(( conv.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    Text("$${(( conv.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 13.sp, fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -526,8 +526,8 @@ fun SmartlinkRowItem(sl: SmartlinkClickRow) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Text(sl.smartlinkName ?: "Unknown Smartlink", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        Column(modifier = Modifier.padding(8.dp)) {
+            Text(sl.smartlinkName ?: "Unknown Smartlink", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
             Text("Routed to: ${sl.offerName ?: "Custom URL"}", fontSize = 12.sp)
             Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -552,7 +552,7 @@ fun SmartlinkRowItem(sl: SmartlinkClickRow) {
                         )
                     }
                     if (sl.convPayout != null && sl.convPayout > 0) {
-                        Text("$${(( sl.convPayout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                        Text("$${(( sl.convPayout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 13.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }

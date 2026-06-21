@@ -75,7 +75,7 @@ fun RewardsScreen(
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(text = state.message, color = Color.Red)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                             Button(onClick = { viewModel.loadData() }) {
                                 Text("Retry")
                             }
@@ -93,7 +93,7 @@ fun RewardsScreen(
 @Composable
 fun RewardsContent(data: RewardsResponse) {
     LazyColumn(
-        modifier = Modifier.padding(12.dp),
+        modifier = Modifier.padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         // Next Milestone
@@ -123,14 +123,14 @@ fun RewardsContent(data: RewardsResponse) {
                     colors = CardDefaults.cardColors(containerColor = Color.White)
                 ) {
                     Row(
-                        modifier = Modifier.padding(12.dp),
+                        modifier = Modifier.padding(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(Icons.Default.CheckCircle, contentDescription = "Earned", tint = Color(0xFF4CAF50))
-                        Spacer(modifier = Modifier.width(16.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         Column {
                             Text("Reward Unlocked!", fontWeight = FontWeight.Bold)
-                            Text("Status: ${grant.status}", fontSize = 14.sp, color = Color.Gray)
+                            Text("Status: ${grant.status}", fontSize = 13.sp, color = Color.Gray)
                             Text("Date: ${grant.grantedAt}", fontSize = 12.sp, color = Color.Gray)
                         }
                     }
@@ -162,15 +162,15 @@ fun NextMilestoneCard(rule: RewardRule, earned: Double) {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             Text(text = "Next Milestone", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Purple40)
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Text(text = rule.title, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             if (rule.description != null) {
                 Spacer(modifier = Modifier.height(4.dp))
                 HtmlText(html = rule.description)
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             val progress = if (rule.thresholdUsd > 0) (earned / rule.thresholdUsd).toFloat().coerceIn(0f, 1f) else 0f
             LinearProgressIndicator(
                 progress = { progress },
@@ -180,7 +180,7 @@ fun NextMilestoneCard(rule: RewardRule, earned: Double) {
                 color = Purple40,
                 trackColor = Color(0xFFE0E0E0),
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(text = "$${String.format(Locale.US, "%.2f", earned)} earned", fontSize = 12.sp, color = Color.Gray)
                 Text(text = "$${String.format(Locale.US, "%.2f", rule.thresholdUsd)} goal", fontSize = 12.sp, color = Color.Gray)
@@ -197,7 +197,7 @@ fun AvailableRewardItem(rule: RewardRule) {
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Row(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (rule.imagePath != null) {
@@ -224,7 +224,7 @@ fun AvailableRewardItem(rule: RewardRule) {
                         }
                     }
                 )
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(4.dp))
             }
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = rule.title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
@@ -243,7 +243,7 @@ fun AvailableRewardItem(rule: RewardRule) {
                     }
                 }
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "Threshold: $${(( rule.thresholdUsd )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 14.sp, color = Purple40, fontWeight = FontWeight.Bold)
+                Text(text = "Threshold: $${(( rule.thresholdUsd )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 13.sp, color = Purple40, fontWeight = FontWeight.Bold)
                 if (rule.isUnlocked) {
                     Text(text = "Unlocked", fontSize = 12.sp, color = Color(0xFF4CAF50), fontWeight = FontWeight.Bold)
                 }

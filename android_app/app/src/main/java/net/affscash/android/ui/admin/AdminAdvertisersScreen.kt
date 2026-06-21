@@ -101,7 +101,7 @@ fun AdminAdvertisersScreen(
                     onValueChange = { viewModel.updateSearchQuery(it) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(12.dp),
+                        .padding(8.dp),
                     placeholder = { Text("Search advertisers...") },
                     leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.primary) },
                     trailingIcon = {
@@ -192,7 +192,7 @@ fun AdminAdvertiserCard(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -202,7 +202,7 @@ fun AdminAdvertiserCard(
                     Text(
                         text = "${advertiser.firstName} ${advertiser.lastName}",
                         fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.titleSmall
                     )
                     Text(text = advertiser.email, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                     Text(text = advertiser.advertiserCode, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold)
@@ -212,21 +212,21 @@ fun AdminAdvertiserCard(
                 }
                 Column(horizontalAlignment = Alignment.End) {
                     StatusBadgeAdv(status = advertiser.status)
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     BudgetBadge(isExempt = advertiser.budgetExempt == 1)
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.DateRange, contentDescription = null, modifier = Modifier.size(16.dp), tint = Color.Gray)
                 Spacer(modifier = Modifier.width(4.dp))
                 Text("Joined: ${advertiser.createdAt.take(10)}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Divider()
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),

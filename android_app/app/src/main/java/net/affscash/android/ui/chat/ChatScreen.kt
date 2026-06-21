@@ -127,7 +127,7 @@ fun ChatScreen(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 8.dp),
                 contentPadding = PaddingValues(vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
@@ -168,7 +168,7 @@ fun ChatScreen(
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(24.dp)
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = uiState.selectedFileName!!,
                             modifier = Modifier.weight(1f),
@@ -191,7 +191,7 @@ fun ChatScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(
@@ -335,7 +335,7 @@ fun ChatMessageBubble(
                 )
             ) {
                 Box {
-                    Column(modifier = Modifier.padding(12.dp)) {
+                    Column(modifier = Modifier.padding(8.dp)) {
                         // Attachment Handling
                         if (message.attachmentPath != null) {
                             val isImage = message.attachmentType?.startsWith("image/") == true
@@ -386,7 +386,7 @@ fun ChatMessageBubble(
                                         tint = textColor,
                                         modifier = Modifier.size(24.dp)
                                     )
-                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Spacer(modifier = Modifier.width(4.dp))
                                     Text(
                                         text = message.attachmentName ?: "File",
                                         color = textColor,
@@ -396,7 +396,7 @@ fun ChatMessageBubble(
                                     )
                                 }
                                 if (message.message.isNotBlank()) {
-                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Spacer(modifier = Modifier.height(4.dp))
                                 }
                             }
                         }

@@ -59,7 +59,7 @@ fun ManagerCreateAffiliateScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp),
+                .padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             OutlinedTextField(
@@ -119,7 +119,7 @@ fun ManagerCreateAffiliateScreen(
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Button(
                 onClick = {
@@ -143,7 +143,7 @@ fun ManagerCreateAffiliateScreen(
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
                 enabled = firstName.isNotBlank() && lastName.isNotBlank() && email.isNotBlank() && password.length >= 8
             ) {
-                Text("Create Affiliate", style = MaterialTheme.typography.titleMedium, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                Text("Create Affiliate", style = MaterialTheme.typography.titleSmall, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
             }
         }
     }

@@ -112,7 +112,7 @@ modifier = Modifier.height(32.dp),
                 Text(text = "To: ${uiState.toDate}", fontSize = 12.sp, color = Color.Gray)
             }
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             // Loading / Error / Data
             Box(modifier = Modifier.fillMaxSize().weight(1f)) {
@@ -124,7 +124,7 @@ modifier = Modifier.height(32.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(uiState.error!!, color = MaterialTheme.colorScheme.error)
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         Button(onClick = { viewModel.loadReport() }) {
                             Text("Retry")
                         }
@@ -133,7 +133,7 @@ modifier = Modifier.height(32.dp),
                     Column(modifier = Modifier.fillMaxSize()) {
                         // Totals section
                         if (uiState.response != null) {
-                            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                                 Card(
                                     modifier = Modifier.weight(1f),
                                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)),
@@ -141,7 +141,7 @@ modifier = Modifier.height(32.dp),
                                     elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                                 ) {
                                     Row(
-                                        modifier = Modifier.padding(12.dp),
+                                        modifier = Modifier.padding(8.dp),
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Surface(shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.secondaryContainer, modifier = Modifier.size(36.dp)) {
@@ -162,7 +162,7 @@ modifier = Modifier.height(32.dp),
                                     elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                                 ) {
                                     Row(
-                                        modifier = Modifier.padding(12.dp),
+                                        modifier = Modifier.padding(8.dp),
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Surface(shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.errorContainer, modifier = Modifier.size(36.dp)) {
@@ -176,7 +176,7 @@ modifier = Modifier.height(32.dp),
                                     }
                                 }
                             }
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
 
                         // List of clusters
@@ -185,7 +185,7 @@ modifier = Modifier.height(32.dp),
                                 item {
                                     Text(
                                         "No duplicate conversions found for this date range.",
-                                        modifier = Modifier.padding(12.dp),
+                                        modifier = Modifier.padding(8.dp),
                                         color = Color.Gray
                                     )
                                 }
@@ -243,7 +243,7 @@ fun DuplicateClusterView(cluster: DuplicateConversionGroup) {
                         }
                     }
                     
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                     
                     Surface(
                         color = MaterialTheme.colorScheme.error,
@@ -285,7 +285,7 @@ fun DuplicateClusterView(cluster: DuplicateConversionGroup) {
                         
                         Text(
                             "$${(( conversion.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", 
-                            fontSize = 13.sp, 
+                            fontSize = 12.sp, 
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF10B981)
                         )

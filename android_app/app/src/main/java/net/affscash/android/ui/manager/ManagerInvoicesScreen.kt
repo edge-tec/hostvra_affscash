@@ -70,7 +70,7 @@ fun ManagerInvoicesScreen(
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(text = state.message, color = MaterialTheme.colorScheme.error)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                             Button(onClick = { viewModel.loadInvoices() }) {
                                 Text("Retry")
                             }
@@ -90,7 +90,7 @@ fun ManagerInvoicesScreen(
                             Tab(
                                 selected = selectedTab == index,
                                 onClick = { viewModel.setTab(index) },
-                                text = { Text(title, fontSize = 13.sp) }
+                                text = { Text(title, fontSize = 12.sp) }
                             )
                         }
                     }
@@ -121,7 +121,7 @@ fun ManagerInvoicesScreen(
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp, vertical = 8.dp)
                             .height(48.dp),
-                        placeholder = { Text("Search invoice, affiliate...", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)) },
+                        placeholder = { Text("Search invoice, affiliate...", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)) },
                         leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(18.dp)) },
                         trailingIcon = {
                             if (searchQuery.isNotEmpty()) {
@@ -132,7 +132,7 @@ fun ManagerInvoicesScreen(
                         },
                         singleLine = true,
                         shape = RoundedCornerShape(24.dp),
-                        textStyle = LocalTextStyle.current.copy(fontSize = 13.sp),
+                        textStyle = LocalTextStyle.current.copy(fontSize = 12.sp),
                         colors = TextFieldDefaults.colors(
                             focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
                             unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
@@ -141,7 +141,7 @@ fun ManagerInvoicesScreen(
                         )
                     )
                     
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     
                     // Invoice List
                     val filteredInvoices = invoices.filter { inv ->
@@ -181,7 +181,7 @@ fun InvoiceSummaryCard(title: String, value: String, valueColor: Color) {
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(
-            modifier = Modifier.padding(12.dp).fillMaxSize(),
+            modifier = Modifier.padding(8.dp).fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -202,7 +202,7 @@ fun ManagerInvoiceDetailedItem(invoice: Invoice) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             // Header: Invoice Number & Status
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Text(invoice.invoiceNumber, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
@@ -234,14 +234,14 @@ fun ManagerInvoiceDetailedItem(invoice: Invoice) {
                 }
             }
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             // Affiliate Name
             Text(invoice.entityName ?: "Unknown", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
             
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             // Details Row
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -253,11 +253,11 @@ fun ManagerInvoiceDetailedItem(invoice: Invoice) {
                 }
                 Column(horizontalAlignment = Alignment.End) {
                     Text("Amount", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text("$${"%.2f".format(invoice.total)}", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                    Text("$${"%.2f".format(invoice.total)}", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                 }
             }
             
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             // Dates Row
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {

@@ -167,7 +167,7 @@ fun StatCard(label: String, value: String, modifier: Modifier = Modifier, valueC
             Text(label, style = MaterialTheme.typography.labelSmall)
             Text(
                 value,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 color = valueColor ?: Color.Unspecified
             )
@@ -186,13 +186,13 @@ fun ConversionFraudCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(vertical = 2.dp),
         colors = CardDefaults.cardColors(
             containerColor = if (conversion.fraudScore != null && conversion.fraudScore >= 75) 
                 Color(0xFFFFEBEE) else MaterialTheme.colorScheme.surfaceVariant
         )
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween

@@ -63,7 +63,7 @@ fun AdminAdvertiserDetailsScreen(
                 Text(
                     text = uiState.error ?: "Failed to load details",
                     color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.align(Alignment.Center).padding(16.dp)
+                    modifier = Modifier.align(Alignment.Center).padding(8.dp)
                 )
             } else {
                 uiState.selectedAdvertiserDetails?.advertiser?.let { advertiser ->
@@ -71,7 +71,7 @@ fun AdminAdvertiserDetailsScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())
-                            .padding(16.dp),
+                            .padding(8.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         AdvertiserProfileHeader(advertiser)
@@ -90,7 +90,7 @@ fun AdvertiserProfileHeader(advertiser: AdminAdvertiserListModel) {
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -99,7 +99,7 @@ fun AdvertiserProfileHeader(advertiser: AdminAdvertiserListModel) {
                 fontWeight = FontWeight.Bold
             )
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -119,12 +119,12 @@ fun AdvertiserDetailsSection(advertiser: AdminAdvertiserListModel) {
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
                 text = "Contact Information",
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold
             )
             Divider()
@@ -140,10 +140,10 @@ fun AdvertiserDetailsSection(advertiser: AdminAdvertiserListModel) {
                 DetailItem(Icons.Default.LocationOn, "Country", advertiser.country)
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "Account Information",
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold
             )
             Divider()
@@ -166,7 +166,7 @@ private fun DetailItem(icon: ImageVector, label: String, value: String) {
             modifier = Modifier.size(20.dp),
             tint = MaterialTheme.colorScheme.primary
         )
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(4.dp))
         Column {
             Text(text = label, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Text(text = value, style = MaterialTheme.typography.bodyLarge)

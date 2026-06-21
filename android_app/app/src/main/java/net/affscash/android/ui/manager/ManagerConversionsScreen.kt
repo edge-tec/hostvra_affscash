@@ -71,10 +71,10 @@ fun ManagerConversionsScreen(
                                     Icons.Outlined.Assessment,
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.onPrimary,
-                                    modifier = Modifier.padding(12.dp)
+                                    modifier = Modifier.padding(8.dp)
                                 )
                             }
-                            Spacer(modifier = Modifier.width(16.dp))
+                            Spacer(modifier = Modifier.width(4.dp))
                             Column {
                                 Text(
                                     text = "Conversions",
@@ -137,7 +137,7 @@ fun ManagerConversionsScreen(
                     color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
                     shape = RoundedCornerShape(22.dp)
                 )
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 8.dp),
             contentAlignment = Alignment.CenterStart
         ) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
@@ -147,25 +147,25 @@ fun ManagerConversionsScreen(
                     modifier = Modifier.size(20.dp),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(4.dp))
                 androidx.compose.foundation.text.BasicTextField(
                     value = searchQuery,
                     onValueChange = { viewModel.setSearchQuery(it) },
                     singleLine = true,
                     textStyle = androidx.compose.ui.text.TextStyle(
-                        fontSize = 14.sp,
+                        fontSize = 13.sp,
                         color = MaterialTheme.colorScheme.onSurface
                     ),
                     modifier = Modifier.weight(1f),
                     decorationBox = { innerTextField ->
                         if (searchQuery.isEmpty()) {
-                            Text("Search by Click ID...", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f))
+                            Text("Search by Click ID...", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f))
                         }
                         innerTextField()
                     }
                 )
                 if (searchQuery.isNotEmpty()) {
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                     IconButton(
                         onClick = { viewModel.setSearchQuery("") },
                         modifier = Modifier.size(24.dp)
@@ -192,7 +192,7 @@ fun ManagerConversionsScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(text = "Error: ${state.message}", color = MaterialTheme.colorScheme.error)
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         Button(onClick = { viewModel.loadConversions() }) {
                             Text("Retry")
                         }
@@ -209,7 +209,7 @@ fun ManagerConversionsScreen(
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(horizontal = 16.dp),
+                                .padding(horizontal = 8.dp),
                             contentPadding = PaddingValues(vertical = 8.dp),
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
@@ -283,7 +283,7 @@ fun ManagerConversionItem(conversion: Conversion) {
                 }
             }
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             // Info Box
             Surface(
@@ -291,16 +291,16 @@ fun ManagerConversionItem(conversion: Conversion) {
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Column(modifier = Modifier.padding(12.dp)) {
+                Column(modifier = Modifier.padding(8.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.Person, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         Text(text = "${conversion.affName} (${conversion.affiliateCode})", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.VpnKey, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = if (expandClickId) conversion.clickId else if (conversion.clickId.length > 16) conversion.clickId.take(16) + "..." else conversion.clickId,
                             style = MaterialTheme.typography.bodySmall,
@@ -309,10 +309,10 @@ fun ManagerConversionItem(conversion: Conversion) {
                             modifier = Modifier.clickable { expandClickId = !expandClickId }
                         )
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.Router, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         
                         val country = conversion.country?.takeIf { it.isNotBlank() && it.lowercase() != "unknown" } ?: "Unknown Country"
                         val state = conversion.region?.takeIf { it.isNotBlank() && it.lowercase() != "unknown" } ?: "Unknown State"
@@ -329,11 +329,11 @@ fun ManagerConversionItem(conversion: Conversion) {
                 }
             }
             
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             // Stats Row
             if (!conversion.source.isNullOrEmpty() || !conversion.deviceType.isNullOrEmpty() || !conversion.os.isNullOrEmpty()) {
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -359,7 +359,7 @@ fun ManagerConversionItem(conversion: Conversion) {
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             // Footer Row
             Row(
@@ -391,7 +391,7 @@ fun ManagerConversionItem(conversion: Conversion) {
                     Text(text = "Payout", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Text(
                         text = "$${"%.2f".format(conversion.payout)}",
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.ExtraBold
                     )

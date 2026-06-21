@@ -1,17 +1,20 @@
 package net.affscash.android.ui.auth
 
+import android.content.Context
+import android.provider.Settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import net.affscash.android.data.model.User
-import net.affscash.android.data.repository.AuthRepository
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import javax.inject.Inject
-import com.google.firebase.messaging.FirebaseMessaging
+import net.affscash.android.data.model.User
 import net.affscash.android.data.network.ApiService
+import net.affscash.android.data.repository.AuthRepository
+import javax.inject.Inject
 
 sealed class AuthState {
     object Idle : AuthState()
@@ -19,10 +22,6 @@ sealed class AuthState {
     data class Success(val user: User) : AuthState()
     data class Error(val message: String) : AuthState()
 }
-
-import android.content.Context
-import android.provider.Settings
-import dagger.hilt.android.qualifiers.ApplicationContext
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(

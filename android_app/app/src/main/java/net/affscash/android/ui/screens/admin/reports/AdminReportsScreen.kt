@@ -167,13 +167,13 @@ fun Button(
 fun StatCard(label: String, value: String, valueColor: Color = Color.Unspecified) {
     Card {
         Column(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(label, style = MaterialTheme.typography.labelSmall)
             Text(
                 value,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 color = valueColor
             )
@@ -183,8 +183,8 @@ fun StatCard(label: String, value: String, valueColor: Color = Color.Unspecified
 
 @Composable
 fun ReportRowCard(tab: String, row: JsonObject) {
-    Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-        Column(modifier = Modifier.padding(12.dp)) {
+    Card(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             when (tab) {
                 "performance" -> {
                     Text(row["label"].asString("Unknown"), fontWeight = FontWeight.Bold)

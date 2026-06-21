@@ -77,9 +77,9 @@ fun NotificationsScreen(
                             modifier = Modifier.size(48.dp),
                             tint = MaterialTheme.colorScheme.error
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         Text(msg, color = MaterialTheme.colorScheme.error)
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         Button(onClick = { viewModel.loadNotifications() }) {
                             Text("Retry")
                         }
@@ -99,7 +99,7 @@ fun NotificationsScreen(
                                 modifier = Modifier.size(64.dp),
                                 tint = Color.Gray.copy(alpha = 0.5f)
                             )
-                            Spacer(modifier = Modifier.height(12.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                             Text(
                                 "No notifications yet",
                                 color = Color.Gray,
@@ -143,7 +143,7 @@ fun NotificationsScreen(
                             if (state.isLoadingMore) {
                                 item {
                                     Box(
-                                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                        modifier = Modifier.fillMaxWidth().padding(8.dp),
                                         contentAlignment = Alignment.Center
                                     ) {
                                         CircularProgressIndicator(modifier = Modifier.size(24.dp))
@@ -225,7 +225,7 @@ fun NotificationCard(
         )
     ) {
         Row(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(8.dp),
             verticalAlignment = Alignment.Top
         ) {
             Box(
@@ -261,7 +261,7 @@ fun NotificationCard(
                         modifier = Modifier.weight(1f)
                     )
                     if (isUnread) {
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         Box(
                             modifier = Modifier
                                 .size(8.dp)
@@ -272,7 +272,7 @@ fun NotificationCard(
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = notification.message,
-                    fontSize = 14.sp,
+                    fontSize = 13.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis

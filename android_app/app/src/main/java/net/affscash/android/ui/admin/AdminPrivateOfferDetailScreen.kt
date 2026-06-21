@@ -60,14 +60,14 @@ fun AdminPrivateOfferDetailScreen(
                 is AdminPrivateOfferDetailUiState.Success -> {
                     val data = state.data
                     LazyColumn(
-                        modifier = Modifier.fillMaxSize().padding(16.dp),
+                        modifier = Modifier.fillMaxSize().padding(8.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         item {
                             Card(modifier = Modifier.fillMaxWidth()) {
-                                Column(modifier = Modifier.padding(12.dp)) {
-                                    Text("Offer Details", style = MaterialTheme.typography.titleMedium)
-                                    Spacer(modifier = Modifier.height(8.dp))
+                                Column(modifier = Modifier.padding(8.dp)) {
+                                    Text("Offer Details", style = MaterialTheme.typography.titleSmall)
+                                    Spacer(modifier = Modifier.height(4.dp))
                                     Text("Name: OFF-${data.offer.id} · ${data.offer.name}")
                                     Text("Payout: ${data.offer.payout_type} ${data.offer.payout ?: "0"}")
                                     Text("Status: ${data.offer.status}")
@@ -78,9 +78,9 @@ fun AdminPrivateOfferDetailScreen(
                         // Grant Access Form
                         item {
                             Card(modifier = Modifier.fillMaxWidth()) {
-                                Column(modifier = Modifier.padding(12.dp)) {
-                                    Text("Grant Access", style = MaterialTheme.typography.titleMedium)
-                                    Spacer(modifier = Modifier.height(8.dp))
+                                Column(modifier = Modifier.padding(8.dp)) {
+                                    Text("Grant Access", style = MaterialTheme.typography.titleSmall)
+                                    Spacer(modifier = Modifier.height(4.dp))
                                     
                                     var identifier by remember { mutableStateOf("") }
                                     var notes by remember { mutableStateOf("") }
@@ -91,14 +91,14 @@ fun AdminPrivateOfferDetailScreen(
                                         label = { Text("Affiliate ID, Code, or Email *") },
                                         modifier = Modifier.fillMaxWidth()
                                     )
-                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Spacer(modifier = Modifier.height(4.dp))
                                     OutlinedTextField(
                                         value = notes,
                                         onValueChange = { notes = it },
                                         label = { Text("Notes (Optional)") },
                                         modifier = Modifier.fillMaxWidth()
                                     )
-                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Spacer(modifier = Modifier.height(4.dp))
                                     Button(
                                         onClick = {
                                             viewModel.grantAccess(identifier, notes)
@@ -117,16 +117,16 @@ fun AdminPrivateOfferDetailScreen(
                         // Granted Affiliates List
                         item {
                             Card(modifier = Modifier.fillMaxWidth()) {
-                                Column(modifier = Modifier.padding(12.dp)) {
+                                Column(modifier = Modifier.padding(8.dp)) {
                                     Row(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.SpaceBetween,
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        Text("Granted Affiliates", style = MaterialTheme.typography.titleMedium)
+                                        Text("Granted Affiliates", style = MaterialTheme.typography.titleSmall)
                                         Badge { Text("${data.grants.size} TOTAL") }
                                     }
-                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Spacer(modifier = Modifier.height(4.dp))
 
                                     if (data.grants.isEmpty()) {
                                         Text("No affiliates have access.", modifier = Modifier.padding(8.dp))
@@ -162,15 +162,15 @@ fun AdminPrivateOfferDetailScreen(
                         // Recent Activity (Offer Specific)
                         item {
                             Card(modifier = Modifier.fillMaxWidth()) {
-                                Column(modifier = Modifier.padding(12.dp)) {
-                                    Text("Recent Activity", style = MaterialTheme.typography.titleMedium)
-                                    Spacer(modifier = Modifier.height(8.dp))
+                                Column(modifier = Modifier.padding(8.dp)) {
+                                    Text("Recent Activity", style = MaterialTheme.typography.titleSmall)
+                                    Spacer(modifier = Modifier.height(4.dp))
 
                                     if (data.log.isEmpty()) {
                                         Text("No recent activity.", modifier = Modifier.padding(8.dp))
                                     } else {
                                         data.log.forEach { log ->
-                                            Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                                            Column(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
                                                 Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
                                                     Text(log.created_at, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                                     Badge(

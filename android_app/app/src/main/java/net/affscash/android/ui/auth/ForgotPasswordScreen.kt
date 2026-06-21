@@ -58,7 +58,7 @@ fun ForgotPasswordScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .background(MaterialTheme.colorScheme.background)
-                .padding(24.dp),
+                .padding(16.dp),
             contentAlignment = Alignment.TopCenter
         ) {
             Column(
@@ -92,7 +92,7 @@ fun ForgotPasswordScreen(
                                 MaterialTheme.colorScheme.errorContainer,
                                 RoundedCornerShape(8.dp)
                             )
-                            .padding(12.dp)
+                            .padding(8.dp)
                     )
                 }
 

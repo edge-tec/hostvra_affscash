@@ -85,7 +85,7 @@ fun AdminReferralScreen(
                             color = MaterialTheme.colorScheme.error,
                             modifier = Modifier
                                 .align(Alignment.Center)
-                                .padding(16.dp)
+                                .padding(8.dp)
                         )
                     }
                     is AdminReferralUiState.Success -> {
@@ -104,7 +104,7 @@ fun AdminReferralScreen(
 @Composable
 fun AdminReferralDashboardCards(data: AdminReferralDashboardData) {
     val numberFormat = NumberFormat.getCurrencyInstance(Locale.US)
-    Column(modifier = Modifier.padding(12.dp)) {
+    Column(modifier = Modifier.padding(8.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -122,7 +122,7 @@ fun AdminReferralDashboardCards(data: AdminReferralDashboardData) {
                 modifier = Modifier.weight(1f)
             )
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -158,7 +158,7 @@ fun StatCard(
         modifier = modifier,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             Text(
                 text = title.uppercase(),
                 fontSize = 11.sp,
@@ -212,8 +212,8 @@ fun SignupItem(signup: AdminReferralSignup) {
             }
         }
         Text(signup.referrerEmail ?: "", fontSize = 12.sp, color = Color.Gray)
-        Spacer(modifier = Modifier.height(8.dp))
-        Text("Referred: ${signup.referredName}", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+        Spacer(modifier = Modifier.height(4.dp))
+        Text("Referred: ${signup.referredName}", fontWeight = FontWeight.SemiBold, fontSize = 13.sp)
         Text("${signup.referredEmail} • Code: ${signup.referredAffCode}", fontSize = 12.sp, color = Color.Gray)
         Spacer(modifier = Modifier.height(4.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -239,7 +239,7 @@ fun CommissionsTab(viewModel: AdminReferralViewModel) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text("Approved: ${it.approved}", color = Color(0xFF10B981), fontWeight = FontWeight.Bold)
@@ -274,11 +274,11 @@ fun CommissionItem(commission: AdminReferralCommission, onApprove: (Int) -> Unit
                 Text(commission.referredAffCode ?: "", fontSize = 12.sp, color = Color.Gray)
             }
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("Base: $${commission.basePayout}", fontSize = 13.sp)
+            Text("Base: $${commission.basePayout}", fontSize = 12.sp)
             val typeStr = if (commission.commissionType == "percent") "%" else " USD"
-            Text("Rate: ${commission.commissionRate}$typeStr", fontSize = 13.sp)
+            Text("Rate: ${commission.commissionRate}$typeStr", fontSize = 12.sp)
         }
         Spacer(modifier = Modifier.height(4.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
@@ -293,7 +293,7 @@ fun CommissionItem(commission: AdminReferralCommission, onApprove: (Int) -> Unit
         }
         
         if (commission.status == "pending") {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 OutlinedButton(
                     onClick = { onReject(commission.id) },
@@ -348,17 +348,17 @@ fun CodeItem(code: AdminReferralCode) {
             }
         }
         Text(code.email ?: "", fontSize = 12.sp, color = Color.Gray)
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
             Text(code.code ?: "", modifier = Modifier
                 .background(Color(0xFFF1F5F9), RoundedCornerShape(4.dp))
                 .padding(horizontal = 8.dp, vertical = 4.dp),
-                fontSize = 14.sp,
+                fontSize = 13.sp,
                 fontWeight = FontWeight.Bold
             )
             Column(horizontalAlignment = Alignment.End) {
-                Text("Signups: ${code.signupCount}", fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
-                Text("Earned: $${code.totalEarned}", fontSize = 13.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF10B981))
+                Text("Signups: ${code.signupCount}", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                Text("Earned: $${code.totalEarned}", fontSize = 12.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF10B981))
             }
         }
         Text(code.createdAt ?: "", fontSize = 10.sp, color = Color.LightGray, modifier = Modifier.padding(top = 4.dp))

@@ -78,7 +78,7 @@ fun SmartlinkScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(msg, color = MaterialTheme.colorScheme.error)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                             Button(onClick = { viewModel.loadSmartlinks() }) {
                                 Text("Retry")
                             }
@@ -121,7 +121,7 @@ fun SmartlinkScreen(
                     Column {
                         if (sl.requireApproval == 1) {
                             Text("This smartlink requires approval. Please describe how you plan to promote it:", style = MaterialTheme.typography.bodyMedium)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                             OutlinedTextField(
                                 value = promoDesc,
                                 onValueChange = { promoDesc = it },
@@ -176,7 +176,7 @@ fun SmartlinkCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Top) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
@@ -194,7 +194,7 @@ fun SmartlinkCard(
                 }
             }
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             smartlink.description?.let { desc ->
                 var isExpanded by remember { mutableStateOf(false) }
@@ -203,7 +203,7 @@ fun SmartlinkCard(
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         text = desc,
-                        fontSize = 13.sp,
+                        fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         lineHeight = 18.sp,
                         maxLines = if (isExpanded) Int.MAX_VALUE else 3,
@@ -218,7 +218,7 @@ fun SmartlinkCard(
                         Text(
                             text = if (isExpanded) "See less" else "See more",
                             color = MaterialTheme.colorScheme.primary,
-                            fontSize = 13.sp,
+                            fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
                                 .padding(top = 4.dp, bottom = 4.dp)
@@ -226,10 +226,10 @@ fun SmartlinkCard(
                         )
                     }
                 }
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
             }
             
-            Text("${smartlink.offerCount} active offers in rotation", fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+            Text("${smartlink.offerCount} active offers in rotation", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
             
             Spacer(modifier = Modifier.height(11.dp))
             
@@ -249,7 +249,7 @@ fun SmartlinkCard(
                         }
                     }
                     
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     
                     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         Box(
@@ -313,7 +313,7 @@ fun SmartlinkCard(
                         modifier = Modifier.fillMaxWidth().height(40.dp),
                         contentPadding = PaddingValues(0.dp)
                     ) {
-                        Text("Request Access", fontSize = 13.sp)
+                        Text("Request Access", fontSize = 12.sp)
                     }
                 }
             }

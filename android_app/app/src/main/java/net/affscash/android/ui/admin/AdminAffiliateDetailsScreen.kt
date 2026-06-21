@@ -50,12 +50,12 @@ fun AdminAffiliateDetailsScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .padding(16.dp),
+                    .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Card(modifier = Modifier.fillMaxWidth()) {
-                    Column(modifier = Modifier.padding(12.dp)) {
-                        Text("Profile Information", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Column(modifier = Modifier.padding(8.dp)) {
+                        Text("Profile Information", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                         Divider(modifier = Modifier.padding(vertical = 8.dp))
                         Text("Name: ${details.affiliate.firstName} ${details.affiliate.lastName}")
                         Text("Email: ${details.affiliate.email}")
@@ -69,8 +69,8 @@ fun AdminAffiliateDetailsScreen(
 
                 if (details.stats != null) {
                     Card(modifier = Modifier.fillMaxWidth()) {
-                        Column(modifier = Modifier.padding(12.dp)) {
-                            Text("All-Time Stats", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                        Column(modifier = Modifier.padding(8.dp)) {
+                            Text("All-Time Stats", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                             Divider(modifier = Modifier.padding(vertical = 8.dp))
                             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                                 Column {

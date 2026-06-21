@@ -63,7 +63,7 @@ fun InvoiceScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(state.message, color = MaterialTheme.colorScheme.error)
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         Button(onClick = { viewModel.loadInvoices() }) {
                             Text("Retry")
                         }
@@ -129,11 +129,11 @@ fun InvoiceCard(invoice: Invoice, onPdfClick: () -> Unit) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(
                     text = invoice.invoiceNumber,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
                 
@@ -158,7 +158,7 @@ fun InvoiceCard(invoice: Invoice, onPdfClick: () -> Unit) {
                 }
             }
             
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
@@ -167,7 +167,7 @@ fun InvoiceCard(invoice: Invoice, onPdfClick: () -> Unit) {
                         text = if (invoice.periodStart != null && invoice.periodEnd != null) 
                             "${invoice.periodStart} to ${invoice.periodEnd}" 
                         else "-", 
-                        fontSize = 14.sp
+                        fontSize = 13.sp
                     )
                 }
                 Column(horizontalAlignment = Alignment.End) {
@@ -181,20 +181,20 @@ fun InvoiceCard(invoice: Invoice, onPdfClick: () -> Unit) {
                 }
             }
             
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
                     Text("Issued On", fontSize = 12.sp, color = Color.Gray)
-                    Text(text = invoice.createdAt?.take(10) ?: "-", fontSize = 14.sp)
+                    Text(text = invoice.createdAt?.take(10) ?: "-", fontSize = 13.sp)
                 }
                 Column(horizontalAlignment = Alignment.End) {
                     Text("Due Date", fontSize = 12.sp, color = Color.Gray)
-                    Text(text = invoice.dueDate ?: "-", fontSize = 14.sp)
+                    Text(text = invoice.dueDate ?: "-", fontSize = 13.sp)
                 }
             }
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 OutlinedButton(

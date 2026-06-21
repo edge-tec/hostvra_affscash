@@ -80,13 +80,13 @@ fun ManagerReferralScreen(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(8.dp),
                         shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f)),
                         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                     ) {
                         Column(modifier = Modifier.padding(20.dp)) {
-                            Text("Your Manager Referral Link", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                            Text("Your Manager Referral Link", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onPrimaryContainer)
                             Text(
                                 "When a new affiliate registers using your link, they are automatically assigned to your team — no manual assignment needed.",
                                 style = MaterialTheme.typography.bodySmall,
@@ -99,7 +99,7 @@ fun ManagerReferralScreen(
                                 readOnly = true,
                                 modifier = Modifier.fillMaxWidth(),
                                 singleLine = true,
-                                textStyle = LocalTextStyle.current.copy(fontSize = 14.sp),
+                                textStyle = LocalTextStyle.current.copy(fontSize = 13.sp),
                                 colors = OutlinedTextFieldDefaults.colors(
                                     focusedBorderColor = MaterialTheme.colorScheme.primary,
                                     unfocusedBorderColor = MaterialTheme.colorScheme.outline
@@ -116,7 +116,7 @@ fun ManagerReferralScreen(
                                     }
                                 }
                             )
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                             Surface(
                                 color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
                                 shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
@@ -136,7 +136,7 @@ fun ManagerReferralScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
+                            .padding(horizontal = 8.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         Card(
@@ -145,9 +145,9 @@ fun ManagerReferralScreen(
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
                             elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                         ) {
-                            Column(modifier = Modifier.padding(12.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                            Column(modifier = Modifier.padding(8.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                                 Icon(Icons.Outlined.Group, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(24.dp))
-                                Spacer(modifier = Modifier.height(8.dp))
+                                Spacer(modifier = Modifier.height(4.dp))
                                 Text("${data.stats.totalReferrals}", style = MaterialTheme.typography.headlineMedium, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
                                 Text("Total Team", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
@@ -158,9 +158,9 @@ fun ManagerReferralScreen(
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
                             elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                         ) {
-                            Column(modifier = Modifier.padding(12.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                            Column(modifier = Modifier.padding(8.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                                 Icon(Icons.Outlined.CheckCircle, contentDescription = null, tint = Color(0xFF10B981), modifier = Modifier.size(24.dp))
-                                Spacer(modifier = Modifier.height(8.dp))
+                                Spacer(modifier = Modifier.height(4.dp))
                                 Text("${data.stats.activeReferrals}", style = MaterialTheme.typography.headlineMedium, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF10B981))
                                 Text("Active", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
@@ -171,28 +171,28 @@ fun ManagerReferralScreen(
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
                             elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                         ) {
-                            Column(modifier = Modifier.padding(12.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                            Column(modifier = Modifier.padding(8.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                                 Icon(Icons.Outlined.MonetizationOn, contentDescription = null, tint = Color(0xFF8B5CF6), modifier = Modifier.size(24.dp))
-                                Spacer(modifier = Modifier.height(8.dp))
+                                Spacer(modifier = Modifier.height(4.dp))
                                 Text("$${data.stats.totalEarned}", style = MaterialTheme.typography.headlineMedium, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF8B5CF6))
                                 Text("Earned", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
 
                     // Section Title
                     Text(
                         text = "Team Members (${data.referredAffiliates.size})",
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
                     )
 
                     // Content List
                     if (data.referredAffiliates.isEmpty()) {
-                        Box(modifier = Modifier.fillMaxSize().padding(16.dp), contentAlignment = Alignment.Center) {
+                        Box(modifier = Modifier.fillMaxSize().padding(8.dp), contentAlignment = Alignment.Center) {
                             Text(
                                 text = "No referrals yet. Share your referral link to grow your team automatically!",
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,

@@ -115,14 +115,14 @@ fun AdminSupportScreen(
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
+                        .padding(8.dp)
                 ) {
                     Row(
-                        modifier = Modifier.padding(12.dp),
+                        modifier = Modifier.padding(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(Icons.Filled.Warning, contentDescription = null, tint = MaterialTheme.colorScheme.error)
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         Text(uiState.error ?: "", color = MaterialTheme.colorScheme.onErrorContainer)
                     }
                 }
@@ -172,7 +172,7 @@ fun ConversationItem(conv: AdminSupportConversationRow, onClick: () -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Avatar
@@ -191,7 +191,7 @@ fun ConversationItem(conv: AdminSupportConversationRow, onClick: () -> Unit) {
                 )
             }
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(4.dp))
 
             // Details
             Column(modifier = Modifier.weight(1f)) {
@@ -210,7 +210,7 @@ fun ConversationItem(conv: AdminSupportConversationRow, onClick: () -> Unit) {
                         modifier = Modifier.weight(1f)
                     )
                     if (conv.unread > 0) {
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         Box(
                             modifier = Modifier
                                 .size(22.dp)
@@ -235,7 +235,7 @@ fun ConversationItem(conv: AdminSupportConversationRow, onClick: () -> Unit) {
                 ) {
                     Text(
                         text = conv.affiliateCode,
-                        fontSize = 13.sp,
+                        fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
@@ -248,7 +248,7 @@ fun ConversationItem(conv: AdminSupportConversationRow, onClick: () -> Unit) {
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
                     text = conv.lastMsg.orEmpty().ifEmpty { "No messages yet." },
-                    fontSize = 14.sp,
+                    fontSize = 13.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis

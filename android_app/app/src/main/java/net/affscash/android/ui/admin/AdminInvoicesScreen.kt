@@ -33,7 +33,7 @@ fun AdminInvoicesScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(text = "Error: ${state.message}", color = MaterialTheme.colorScheme.error)
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     Button(onClick = { viewModel.loadInvoices() }) {
                         Text("Retry")
                     }
@@ -45,7 +45,7 @@ fun AdminInvoicesScreen(
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(horizontal = 16.dp),
+                            .padding(horizontal = 8.dp),
                         contentPadding = PaddingValues(vertical = 8.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
@@ -77,7 +77,7 @@ fun AdminInvoiceItem(invoice: Invoice) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(8.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -86,7 +86,7 @@ fun AdminInvoiceItem(invoice: Invoice) {
             ) {
                 Text(
                     text = invoice.invoiceNumber,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
                 Badge(
@@ -103,7 +103,7 @@ fun AdminInvoiceItem(invoice: Invoice) {
             Spacer(modifier = Modifier.height(4.dp))
             Text(text = "To: ${invoice.entityName ?: "Unknown"} (${invoice.type?.replace('_', ' ') ?: "N/A"})", style = MaterialTheme.typography.bodyMedium)
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -116,7 +116,7 @@ fun AdminInvoiceItem(invoice: Invoice) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ) {
-                Text(text = "Total: $${(( invoice.total )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+                Text(text = "Total: $${(( invoice.total )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
             }
         }
     }

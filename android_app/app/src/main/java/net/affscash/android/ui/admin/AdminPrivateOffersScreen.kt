@@ -78,10 +78,10 @@ fun AdminPrivateOffersScreen(
                                 Icons.Default.VpnKey,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier.padding(12.dp)
+                                modifier = Modifier.padding(8.dp)
                             )
                         }
-                        Spacer(modifier = Modifier.width(16.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         Column {
                             Text(
                                 text = "Private Offers",
@@ -99,7 +99,7 @@ fun AdminPrivateOffersScreen(
                 }
 
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+                    modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp),
                     contentPadding = PaddingValues(vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
@@ -114,10 +114,10 @@ fun AdminPrivateOffersScreen(
                             Column(modifier = Modifier.padding(20.dp)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(Icons.Default.Security, contentDescription = null, tint = MaterialTheme.colorScheme.secondary)
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text("Convert Offer to Private", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text("Convert Offer to Private", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
                                 }
-                                Spacer(modifier = Modifier.height(8.dp))
+                                Spacer(modifier = Modifier.height(4.dp))
                                 
                                 var expanded by remember { mutableStateOf(false) }
                                 var selectedOfferId by remember { mutableStateOf<Int?>(null) }
@@ -167,15 +167,15 @@ fun AdminPrivateOffersScreen(
                                         shape = RoundedCornerShape(12.dp)
                                     ) {
                                         Icon(Icons.Default.Lock, contentDescription = null, modifier = Modifier.size(18.dp))
-                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Spacer(modifier = Modifier.width(4.dp))
                                         Text("Mark as Private")
                                     }
                                 }
                                 
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Row(verticalAlignment = Alignment.Top, modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), RoundedCornerShape(8.dp)).padding(12.dp)) {
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Row(verticalAlignment = Alignment.Top, modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), RoundedCornerShape(8.dp)).padding(8.dp)) {
                                     Icon(Icons.Default.Info, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(16.dp))
-                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Spacer(modifier = Modifier.width(4.dp))
                                     Text(
                                         "Once private, the offer is hidden from all affiliates. You must manually grant access from the offer's manage page.",
                                         style = MaterialTheme.typography.bodySmall,
@@ -202,8 +202,8 @@ fun AdminPrivateOffersScreen(
                                 ) {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         Icon(Icons.Default.VerifiedUser, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                                        Spacer(modifier = Modifier.width(8.dp))
-                                        Text("Active Private Offers", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Text("Active Private Offers", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
                                     }
                                     Surface(
                                         shape = RoundedCornerShape(16.dp),
@@ -218,14 +218,14 @@ fun AdminPrivateOffersScreen(
                                         )
                                     }
                                 }
-                                Spacer(modifier = Modifier.height(12.dp))
+                                Spacer(modifier = Modifier.height(4.dp))
                                 Divider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
 
                                 if (data.privateOffers.isEmpty()) {
                                     Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
                                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                             Icon(Icons.Outlined.VisibilityOff, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f), modifier = Modifier.size(48.dp))
-                                            Spacer(modifier = Modifier.height(8.dp))
+                                            Spacer(modifier = Modifier.height(4.dp))
                                             Text("No private offers currently.", color = MaterialTheme.colorScheme.onSurfaceVariant)
                                         }
                                     }
@@ -243,7 +243,7 @@ fun AdminPrivateOffersScreen(
                                                         ) {
                                                             Text("OFF-${offer.id}", modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSecondaryContainer)
                                                         }
-                                                        Spacer(modifier = Modifier.width(8.dp))
+                                                        Spacer(modifier = Modifier.width(4.dp))
                                                         Text(offer.name, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
                                                     }
                                                     Spacer(modifier = Modifier.height(6.dp))
@@ -251,7 +251,7 @@ fun AdminPrivateOffersScreen(
                                                         Icon(Icons.Default.MonetizationOn, contentDescription = null, modifier = Modifier.size(14.dp), tint = Color.Gray)
                                                         Spacer(modifier = Modifier.width(4.dp))
                                                         Text("${offer.payout_type} ${offer.payout ?: "0"}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                                                        Spacer(modifier = Modifier.width(16.dp))
+                                                        Spacer(modifier = Modifier.width(4.dp))
                                                         Icon(Icons.Default.People, contentDescription = null, modifier = Modifier.size(14.dp), tint = MaterialTheme.colorScheme.tertiary)
                                                         Spacer(modifier = Modifier.width(4.dp))
                                                         Text("${offer.access_count ?: 0} Granted", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.tertiary, fontWeight = FontWeight.Medium)
@@ -259,7 +259,7 @@ fun AdminPrivateOffersScreen(
                                                 }
                                             }
                                             
-                                            Spacer(modifier = Modifier.height(8.dp))
+                                            Spacer(modifier = Modifier.height(4.dp))
                                             
                                             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
                                                 OutlinedButton(
@@ -270,9 +270,9 @@ fun AdminPrivateOffersScreen(
                                                 ) {
                                                     Icon(Icons.Default.Public, contentDescription = null, modifier = Modifier.size(16.dp))
                                                     Spacer(modifier = Modifier.width(6.dp))
-                                                    Text("Make Public", fontSize = 13.sp)
+                                                    Text("Make Public", fontSize = 12.sp)
                                                 }
-                                                Spacer(modifier = Modifier.width(8.dp))
+                                                Spacer(modifier = Modifier.width(4.dp))
                                                 Button(
                                                     onClick = { onNavigateToDetail(offer.id) },
                                                     shape = RoundedCornerShape(20.dp),
@@ -281,7 +281,7 @@ fun AdminPrivateOffersScreen(
                                                 ) {
                                                     Icon(Icons.Default.ManageAccounts, contentDescription = null, modifier = Modifier.size(16.dp))
                                                     Spacer(modifier = Modifier.width(6.dp))
-                                                    Text("Manage Access", fontSize = 13.sp)
+                                                    Text("Manage Access", fontSize = 12.sp)
                                                 }
                                             }
                                         }
@@ -308,10 +308,10 @@ fun AdminPrivateOffersScreen(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Icon(Icons.Default.History, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text("Recent Activity Log", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text("Recent Activity Log", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
                                 }
-                                Spacer(modifier = Modifier.height(12.dp))
+                                Spacer(modifier = Modifier.height(4.dp))
                                 Divider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
                                 
                                 if (data.recentLog.isEmpty()) {
@@ -337,7 +337,7 @@ fun AdminPrivateOffersScreen(
                                                 }
                                             }
                                             
-                                            Spacer(modifier = Modifier.width(16.dp))
+                                            Spacer(modifier = Modifier.width(4.dp))
                                             
                                             Column(modifier = Modifier.weight(1f)) {
                                                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {

@@ -76,10 +76,10 @@ fun AdminOffersScreen(
                                 Icons.Default.LocalOffer,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier.padding(12.dp)
+                                modifier = Modifier.padding(8.dp)
                             )
                         }
-                        Spacer(modifier = Modifier.width(16.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         Column {
                             Text(
                                 text = "Manage Offers",
@@ -122,7 +122,7 @@ fun AdminOffersScreen(
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(text = "Error: ${state.message}", color = MaterialTheme.colorScheme.error)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                             Button(onClick = { viewModel.loadOffers() }) {
                                 Text("Retry")
                             }
@@ -135,7 +135,7 @@ fun AdminOffersScreen(
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(horizontal = 16.dp),
+                                .padding(horizontal = 8.dp),
                             contentPadding = PaddingValues(bottom = 80.dp),
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
@@ -175,7 +175,7 @@ fun AdminOffersFilterSection(
             .padding(horizontal = 16.dp, vertical = 8.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             OutlinedTextField(
                 value = filters.query,
                 onValueChange = { q -> onUpdateFilters { it.copy(query = q) } },
@@ -183,7 +183,7 @@ fun AdminOffersFilterSection(
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
                     value = filters.status,
@@ -198,12 +198,12 @@ fun AdminOffersFilterSection(
                     modifier = Modifier.weight(1f)
                 )
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 TextButton(onClick = onClear) {
                     Text("Clear")
                 }
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(4.dp))
                 Button(onClick = onApply) {
                     Text("Apply Filters")
                 }
@@ -228,7 +228,7 @@ fun AdminOfferItem(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(8.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -237,7 +237,7 @@ fun AdminOfferItem(
             ) {
                 Text(
                     text = "#${offer.id} - ${offer.name}", 
-                    style = MaterialTheme.typography.titleMedium, 
+                    style = MaterialTheme.typography.titleSmall, 
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f)
                 )
@@ -251,7 +251,7 @@ fun AdminOfferItem(
                     Text(offer.status.uppercase(), modifier = Modifier.padding(horizontal = 4.dp))
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             Text(text = "Advertiser: ${offer.advName}", style = MaterialTheme.typography.bodyMedium)
             
@@ -259,9 +259,9 @@ fun AdminOfferItem(
                 Text(text = "Category: $it", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.secondary)
             }
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Divider()
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -279,11 +279,11 @@ fun AdminOfferItem(
             }
             
             if (offer.geoTargeting.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(text = "GEOs: ${offer.geoTargeting.joinToString(", ")}", style = MaterialTheme.typography.bodySmall)
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             Row(
                 modifier = Modifier.fillMaxWidth(),

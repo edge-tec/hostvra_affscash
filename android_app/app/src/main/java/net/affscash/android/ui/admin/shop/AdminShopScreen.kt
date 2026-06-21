@@ -75,7 +75,7 @@ fun AdminShopScreen(
                                     Text("View all ->")
                                 }
                             }
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
                         
                         if (state.data.recentOrders.isEmpty()) {
@@ -85,14 +85,14 @@ fun AdminShopScreen(
                         } else {
                             items(state.data.recentOrders) { order ->
                                 AdminShopOrderSummaryCard(order)
-                                Spacer(modifier = Modifier.height(8.dp))
+                                Spacer(modifier = Modifier.height(4.dp))
                             }
-                            item { Spacer(modifier = Modifier.height(8.dp)) }
+                            item { Spacer(modifier = Modifier.height(4.dp)) }
                         }
 
                         item {
                             Text("Products", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
 
                         if (state.data.products.isEmpty()) {
@@ -106,7 +106,7 @@ fun AdminShopScreen(
                                     onEdit = { onNavigateToEditProduct(product.id) },
                                     onDelete = { viewModel.deleteProduct(product.id) }
                                 )
-                                Spacer(modifier = Modifier.height(8.dp))
+                                Spacer(modifier = Modifier.height(4.dp))
                             }
                         }
                         
@@ -122,7 +122,7 @@ fun AdminShopScreen(
 fun AdminShopOrderSummaryCard(order: AdminShopOrder) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Row(
-            modifier = Modifier.padding(12.dp).fillMaxWidth(),
+            modifier = Modifier.padding(8.dp).fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
@@ -156,7 +156,7 @@ fun AdminShopProductCard(
 ) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Row(
-            modifier = Modifier.padding(12.dp).fillMaxWidth(),
+            modifier = Modifier.padding(8.dp).fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -179,7 +179,7 @@ fun AdminShopProductCard(
                         contentScale = androidx.compose.ui.layout.ContentScale.Crop,
                         modifier = Modifier.size(50.dp)
                     )
-                    Spacer(modifier = Modifier.width(16.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                 }
                 Column {
                     Text(product.name, fontWeight = FontWeight.Bold)

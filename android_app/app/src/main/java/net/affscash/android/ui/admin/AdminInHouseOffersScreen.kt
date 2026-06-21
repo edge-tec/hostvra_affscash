@@ -74,10 +74,10 @@ fun AdminInHouseOffersScreen(
                                 Icons.Default.HomeRepairService,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier.padding(12.dp)
+                                modifier = Modifier.padding(8.dp)
                             )
                         }
-                        Spacer(modifier = Modifier.width(16.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         Column {
                             Text(
                                 text = "In-House Offers",
@@ -120,7 +120,7 @@ fun AdminInHouseOffersScreen(
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(text = "Error: ${state.message}", color = MaterialTheme.colorScheme.error)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                             Button(onClick = { viewModel.loadOffers() }) {
                                 Text("Retry")
                             }
@@ -133,7 +133,7 @@ fun AdminInHouseOffersScreen(
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(horizontal = 16.dp),
+                                .padding(horizontal = 8.dp),
                             contentPadding = PaddingValues(bottom = 80.dp),
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
@@ -173,7 +173,7 @@ fun AdminInHouseOffersFilterSection(
             .padding(horizontal = 16.dp, vertical = 8.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             OutlinedTextField(
                 value = filters.query,
                 onValueChange = { q -> onUpdateFilters { it.copy(query = q) } },
@@ -181,7 +181,7 @@ fun AdminInHouseOffersFilterSection(
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
                     value = filters.status,
@@ -196,12 +196,12 @@ fun AdminInHouseOffersFilterSection(
                     modifier = Modifier.weight(1f)
                 )
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 TextButton(onClick = onClear) {
                     Text("Clear")
                 }
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(4.dp))
                 Button(onClick = onApply) {
                     Text("Apply Filters")
                 }

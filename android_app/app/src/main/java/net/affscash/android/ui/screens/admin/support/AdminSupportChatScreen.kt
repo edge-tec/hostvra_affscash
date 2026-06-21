@@ -144,7 +144,7 @@ fun AdminSupportChatScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(Icons.Filled.Warning, contentDescription = null, tint = MaterialTheme.colorScheme.error)
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         Text(uiState.error ?: "", color = MaterialTheme.colorScheme.onErrorContainer)
                         Spacer(modifier = Modifier.weight(1f))
                         TextButton(onClick = { viewModel.clearError() }) {
@@ -168,7 +168,7 @@ fun AdminSupportChatScreen(
                     ) {
                         items(uiState.messages) { message ->
                             MessageBubble(message = message, onDelete = { viewModel.deleteMessage(message.id) })
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
                     }
                 }
@@ -236,7 +236,7 @@ fun AdminSupportChatScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .padding(16.dp),
+                        .padding(8.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text("This conversation is closed.", color = Color.Gray, fontWeight = FontWeight.Bold)
@@ -311,7 +311,7 @@ fun MessageBubble(message: AdminSupportMessage, onDelete: () -> Unit = {}) {
                 )
             ) {
                 Box {
-                    Column(modifier = Modifier.padding(12.dp)) {
+                    Column(modifier = Modifier.padding(8.dp)) {
                         if (message.attachmentPath != null) {
                             val isImage = message.attachmentType?.startsWith("image/") == true
                             val attachmentUrl = "https://affscash.net/api/v2/chat?action=download&id=${message.id}"
@@ -344,7 +344,7 @@ fun MessageBubble(message: AdminSupportMessage, onDelete: () -> Unit = {}) {
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Icon(Icons.Default.InsertDriveFile, contentDescription = "File", tint = textColor, modifier = Modifier.size(24.dp))
-                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Spacer(modifier = Modifier.width(4.dp))
                                     Text(
                                         text = message.attachmentName ?: "File",
                                         color = textColor,
@@ -354,7 +354,7 @@ fun MessageBubble(message: AdminSupportMessage, onDelete: () -> Unit = {}) {
                                     )
                                 }
                                 if (message.message.isNotBlank()) {
-                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Spacer(modifier = Modifier.height(4.dp))
                                 }
                             }
                         }

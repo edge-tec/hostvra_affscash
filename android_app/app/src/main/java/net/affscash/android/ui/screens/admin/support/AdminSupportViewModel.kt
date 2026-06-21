@@ -246,11 +246,11 @@ class AdminSupportViewModel @Inject constructor(
     fun deleteMessage(messageId: Int) {
         viewModelScope.launch {
             try {
-                val response = apiService.deleteChatMessage(messageId)
-                if (response.isSuccessful && response.body()?.success == true) {
+                val response = apiService.deleteAdminChatMessage(messageId = messageId)
+                if (response.isSuccessful && response.body()?.status == "success") {
                     loadMessages()
                 } else {
-                    _uiState.update { it.copy(error = response.body()?.error ?: "Failed to delete message") }
+                    _uiState.update { it.copy(error = response.body()?.message ?: "Failed to delete message") }
                 }
             } catch (e: Exception) {
                 _uiState.update { it.copy(error = e.localizedMessage) }

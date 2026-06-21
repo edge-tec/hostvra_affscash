@@ -64,10 +64,10 @@ fun ManagerSmartlinksScreen(
                                     Icons.Default.Link,
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.onPrimary,
-                                    modifier = Modifier.padding(12.dp)
+                                    modifier = Modifier.padding(8.dp)
                                 )
                             }
-                            Spacer(modifier = Modifier.width(16.dp))
+                            Spacer(modifier = Modifier.width(4.dp))
                             Column {
                                 Text(
                                     text = "Smart Links",
@@ -118,7 +118,7 @@ fun ManagerSmartlinksScreen(
                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
                         shape = RoundedCornerShape(22.dp)
                     )
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 8.dp),
                 contentAlignment = Alignment.CenterStart
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
@@ -128,25 +128,25 @@ fun ManagerSmartlinksScreen(
                         modifier = Modifier.size(20.dp),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                     androidx.compose.foundation.text.BasicTextField(
                         value = uiState.searchQuery,
                         onValueChange = { viewModel.updateSearchQuery(it) },
                         singleLine = true,
                         textStyle = androidx.compose.ui.text.TextStyle(
-                            fontSize = 14.sp,
+                            fontSize = 13.sp,
                             color = MaterialTheme.colorScheme.onSurface
                         ),
                         modifier = Modifier.weight(1f),
                         decorationBox = { innerTextField ->
                             if (uiState.searchQuery.isEmpty()) {
-                                Text("Search smartlinks...", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f))
+                                Text("Search smartlinks...", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f))
                             }
                             innerTextField()
                         }
                     )
                     if (uiState.searchQuery.isNotEmpty()) {
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         IconButton(
                             onClick = { viewModel.updateSearchQuery("") },
                             modifier = Modifier.size(24.dp)
@@ -183,7 +183,7 @@ fun ManagerSmartlinksScreen(
                     item {
                         Text(
                             text = "Available Smart Links (${uiState.smartlinks.size})",
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -248,7 +248,7 @@ fun ManagerSmartlinkCard(
                 }
             }
             
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Text(
                 text = smartlink.name,
@@ -257,7 +257,7 @@ fun ManagerSmartlinkCard(
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             if (!smartlink.description.isNullOrEmpty()) {
                 var isExpanded by remember { mutableStateOf(false) }
                 var showSeeMore by remember { mutableStateOf(false) }
@@ -265,7 +265,7 @@ fun ManagerSmartlinkCard(
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         text = smartlink.description,
-                        fontSize = 13.sp,
+                        fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = if (isExpanded) Int.MAX_VALUE else 1,
                         overflow = TextOverflow.Ellipsis,
@@ -279,7 +279,7 @@ fun ManagerSmartlinkCard(
                         Text(
                             text = if (isExpanded) "See less" else "See more",
                             color = MaterialTheme.colorScheme.primary,
-                            fontSize = 13.sp,
+                            fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
                                 .padding(top = 4.dp, bottom = 4.dp)
@@ -353,13 +353,13 @@ fun ManagerSmartlinkCard(
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = smartlink.totalApproved.toString(),
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Divider(color = MaterialTheme.colorScheme.outlineVariant)
 
             // Tracking Link Generator
@@ -367,7 +367,7 @@ fun ManagerSmartlinkCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { showLinkGenerator = !showLinkGenerator }
-                    .padding(vertical = 12.dp),
+                    .padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -388,7 +388,7 @@ fun ManagerSmartlinkCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
-                        .padding(12.dp)
+                        .padding(8.dp)
                 ) {
                     if (managedAffiliates.isEmpty()) {
                         Text(
@@ -432,7 +432,7 @@ fun ManagerSmartlinkCard(
                             ""
                         }
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             OutlinedTextField(
@@ -443,7 +443,7 @@ fun ManagerSmartlinkCard(
                                 modifier = Modifier.weight(1f),
                                 singleLine = true
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Spacer(modifier = Modifier.width(4.dp))
                             Button(
                                 onClick = {
                                     if (generatedUrl.isNotEmpty()) {

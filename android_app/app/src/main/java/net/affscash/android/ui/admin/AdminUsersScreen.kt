@@ -61,7 +61,7 @@ fun AdminUsersScreen(
                 onValueChange = { viewModel.setSearchQuery(it) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(12.dp),
+                    .padding(8.dp),
                 placeholder = { Text("Search by name, email, code") },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.primary) },
                 trailingIcon = {
@@ -103,7 +103,7 @@ fun AdminUsersScreen(
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 16.dp),
+                        .padding(horizontal = 8.dp),
                     contentPadding = PaddingValues(vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
@@ -146,7 +146,7 @@ fun AdminAffiliateItem(affiliate: AdminAffiliate, onAction: (String) -> Unit, on
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(8.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -155,7 +155,7 @@ fun AdminAffiliateItem(affiliate: AdminAffiliate, onAction: (String) -> Unit, on
             ) {
                 Text(
                     text = "${affiliate.firstName} ${affiliate.lastName}",
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
                 Badge(containerColor = if (affiliate.status == "active") MaterialTheme.colorScheme.primary else if (affiliate.status == "pending") MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.error) {
@@ -165,7 +165,7 @@ fun AdminAffiliateItem(affiliate: AdminAffiliate, onAction: (String) -> Unit, on
             Spacer(modifier = Modifier.height(4.dp))
             Text(text = affiliate.email, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.secondary)
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -182,9 +182,9 @@ fun AdminAffiliateItem(affiliate: AdminAffiliate, onAction: (String) -> Unit, on
                 Text(text = "Balance: $${(( affiliate.balance )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
             }
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             HorizontalDivider()
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             Row(
                 modifier = Modifier.fillMaxWidth(),

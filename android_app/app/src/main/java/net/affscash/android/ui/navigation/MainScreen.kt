@@ -282,7 +282,7 @@ fun MainScreen(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Icon(Icons.Filled.ExitToApp, contentDescription = "Logout", modifier = Modifier.size(22.dp))
-                            Spacer(modifier = Modifier.width(12.dp))
+                            Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 "Logout", 
                                 fontSize = androidx.compose.ui.unit.TextUnit(14f, androidx.compose.ui.unit.TextUnitType.Sp),
@@ -342,13 +342,13 @@ fun MainScreen(
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(0.dp),
-                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
-                    shadowElevation = 8.dp
+                    color = MaterialTheme.colorScheme.surface,
+                    shadowElevation = 0.dp
                 ) {
                     NavigationBar(
-                        containerColor = Color.Transparent,
+                        containerColor = MaterialTheme.colorScheme.surface,
                         tonalElevation = 0.dp,
-                        modifier = Modifier.height(54.dp),
+                        modifier = Modifier.height(48.dp),
                         windowInsets = WindowInsets(0.dp)
                     ) {
                         val navBackStackEntry by navController.currentBackStackEntryAsState()

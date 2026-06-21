@@ -174,7 +174,7 @@ fun DashboardScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(msg, color = MaterialTheme.colorScheme.error)
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         Button(onClick = { viewModel.loadDashboardData() }) {
                             Text("Retry")
                         }
@@ -192,71 +192,71 @@ fun DashboardScreen(
                                 style = MaterialTheme.typography.headlineSmall.copy(brush = PremiumUI.PrimaryGradient),
                                 fontWeight = FontWeight.ExtraBold
                             )
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
                         
                         item {
                             PeriodTabs(filterOption) { period ->
                                 viewModel.setFilterOption(period)
                             }
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
 
                         item {
                             KpiGrid(data.stats)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
 
                         item {
-                            Text("Performance Trend", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Text("Performance Trend", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(4.dp))
                             LineChartCard(data.trend)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
 
                         item {
                             Row(modifier = Modifier.fillMaxWidth()) {
                                 Column(modifier = Modifier.weight(1f)) {
-                                    Text("Devices", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text("Devices", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                                    Spacer(modifier = Modifier.height(4.dp))
                                     PieChartCard(data.devices.labels, data.devices.data)
                                 }
-                                Spacer(modifier = Modifier.width(16.dp))
+                                Spacer(modifier = Modifier.width(4.dp))
                                 Column(modifier = Modifier.weight(1f)) {
-                                    Text("Browsers", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text("Browsers", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                                    Spacer(modifier = Modifier.height(4.dp))
                                     PieChartCard(data.browsers.labels, data.browsers.data)
                                 }
                             }
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
 
                         item {
-                            Text("Hourly Traffic", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Text("Hourly Traffic", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(4.dp))
                             BarChartCard(data.hourly.labels, data.hourly.data.map { it.toFloat() })
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
 
                         item {
-                            Text("Traffic Sources", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Text("Traffic Sources", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(4.dp))
                             BarChartCard(data.sources.labels, data.sources.data.map { it.toFloat() })
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
 
                         item {
-                            Text("Top Offers Ranking", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Text("Top Offers Ranking", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(4.dp))
                             OffersTable(data.offers.rows)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
 
                         item {
-                            Text("Top Countries", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Text("Top Countries", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(4.dp))
                             CountriesTable(data.countries.rows)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
                     }
                 }
@@ -319,10 +319,10 @@ fun KpiCard(title: String, value: String, trend: Double?, isInverseTrend: Boolea
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-            Column(modifier = Modifier.padding(12.dp)) {
+            Column(modifier = Modifier.padding(8.dp)) {
                 Text(title, style = MaterialTheme.typography.labelMedium, color = Color.Gray)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(value, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Text(value, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                 
                 if (trend != null) {
                     Spacer(modifier = Modifier.height(4.dp))
@@ -374,7 +374,7 @@ fun LineChartCard(trendData: DashboardTrendChartResponse) {
                         if (index >= 0 && index < trendData.labels.size) trendData.labels[index] else ""
                     }
                 ),
-                modifier = Modifier.padding(12.dp).fillMaxSize()
+                modifier = Modifier.padding(8.dp).fillMaxSize()
             )
         }
     }
@@ -413,7 +413,7 @@ fun BarChartCard(labels: List<String>, data: List<Float>) {
                         if (index >= 0 && index < labels.size) labels[index] else ""
                     }
                 ),
-                modifier = Modifier.padding(12.dp).fillMaxSize()
+                modifier = Modifier.padding(8.dp).fillMaxSize()
             )
         }
     }
@@ -439,7 +439,7 @@ fun PieChartCard(labels: List<String>, data: List<Int>) {
         val total = data.sum().toFloat()
         
         Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
+            modifier = Modifier.fillMaxSize().padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -460,7 +460,7 @@ fun PieChartCard(labels: List<String>, data: List<Int>) {
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             // Legend
             Row(
                 modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
@@ -497,11 +497,11 @@ fun OffersTable(offers: List<net.affscash.android.data.model.DashboardOfferRow>)
                 }
                 Divider()
                 if (offers.isEmpty()) {
-                    Text("No data available", modifier = Modifier.padding(12.dp), color = Color.Gray)
+                    Text("No data available", modifier = Modifier.padding(8.dp), color = Color.Gray)
                 } else {
                     offers.forEach { offer ->
                         Row(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(offer.name, modifier = Modifier.weight(2f), fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
@@ -535,11 +535,11 @@ fun CountriesTable(countries: List<net.affscash.android.data.model.DashboardCoun
                 }
                 Divider()
                 if (countries.isEmpty()) {
-                    Text("No data available", modifier = Modifier.padding(12.dp), color = Color.Gray)
+                    Text("No data available", modifier = Modifier.padding(8.dp), color = Color.Gray)
                 } else {
                     countries.forEach { row ->
                         Row(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(row.country.ifEmpty { "Unknown" }, modifier = Modifier.weight(2f), fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)

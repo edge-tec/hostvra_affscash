@@ -81,7 +81,7 @@ fun ShopScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(8.dp),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Box(
@@ -92,7 +92,7 @@ fun ShopScreen(
                                     colors = listOf(Color(0xFF6C43E8), Color(0xFF8B5CF6))
                                 )
                             )
-                            .padding(16.dp)
+                            .padding(8.dp)
                     ) {
                         Column {
                             Text(
@@ -100,7 +100,7 @@ fun ShopScreen(
                                 color = Color.White.copy(alpha = 0.8f),
                                 style = MaterialTheme.typography.labelMedium
                             )
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -210,7 +210,7 @@ fun ProductCard(
         shape = RoundedCornerShape(12.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(12.dp)
+            modifier = Modifier.fillMaxWidth().padding(8.dp)
         ) {
             val rawPath = product.imagePath?.trim() ?: ""
             val imageUrl = (if (rawPath.isEmpty()) {
@@ -249,11 +249,11 @@ fun ProductCard(
                 }
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Text(
                 text = product.name,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
@@ -289,7 +289,7 @@ fun ProductCard(
                 )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -311,7 +311,7 @@ fun ProductCard(
                 )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             if (product.stock == 0) {
                 Button(
@@ -381,14 +381,14 @@ fun OrderCard(order: ShopOrder) {
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
                     text = "Order #${order.id}",
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
                 Surface(
@@ -404,7 +404,7 @@ fun OrderCard(order: ShopOrder) {
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Text("Product: ${order.productName}", style = MaterialTheme.typography.bodyMedium)
             Text("Cost: ${String.format("%,d", order.pricePoints)} pts", style = MaterialTheme.typography.bodyMedium)
             Text("Date: ${order.createdAt}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
@@ -432,7 +432,7 @@ fun PlaceOrderDialog(
         text = {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text("Cost: ${String.format("%,d", product.pricePoints)} pts", fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 
                 OutlinedTextField(
                     value = name,
@@ -441,7 +441,7 @@ fun PlaceOrderDialog(
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 OutlinedTextField(
                     value = phone,
                     onValueChange = { phone = it },
@@ -449,7 +449,7 @@ fun PlaceOrderDialog(
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
@@ -457,7 +457,7 @@ fun PlaceOrderDialog(
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 OutlinedTextField(
                     value = address,
                     onValueChange = { address = it },
@@ -465,7 +465,7 @@ fun PlaceOrderDialog(
                     modifier = Modifier.fillMaxWidth(),
                     minLines = 2
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 OutlinedTextField(
                     value = notes,
                     onValueChange = { notes = it },

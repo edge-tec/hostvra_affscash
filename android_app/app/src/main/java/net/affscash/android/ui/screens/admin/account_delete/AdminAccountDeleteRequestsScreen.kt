@@ -67,7 +67,7 @@ fun AdminAccountDeleteRequestsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .horizontalScroll(rememberScrollState())
-                        .padding(16.dp),
+                        .padding(8.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     StatCard(
@@ -125,9 +125,9 @@ fun AdminAccountDeleteRequestsScreen(
                             modifier = Modifier.size(64.dp),
                             tint = MaterialTheme.colorScheme.error
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = "Error loading requests", style = MaterialTheme.typography.titleMedium)
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(text = "Error loading requests", style = MaterialTheme.typography.titleSmall)
+                        Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = errorText,
                             style = MaterialTheme.typography.bodyMedium,
@@ -135,7 +135,7 @@ fun AdminAccountDeleteRequestsScreen(
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(horizontal = 32.dp)
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         Button(onClick = { viewModel.loadData() }) {
                             Text("Retry")
                         }
@@ -150,14 +150,14 @@ fun AdminAccountDeleteRequestsScreen(
                             modifier = Modifier.size(80.dp),
                             tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             "All Caught Up!",
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             "There are no account deletion requests at the moment.",
                             style = MaterialTheme.typography.bodyMedium,
@@ -202,7 +202,7 @@ fun AdminAccountDeleteRequestsScreen(
                         } else {
                             Text("Are you sure you want to reject this request?")
                         }
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         OutlinedTextField(
                             value = adminNote,
                             onValueChange = { adminNote = it },
@@ -262,7 +262,7 @@ fun StatCard(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp),
+                .padding(8.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -297,7 +297,7 @@ fun RequestCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(8.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -306,7 +306,7 @@ fun RequestCard(
             ) {
                 Text(
                     text = "ID: #${request.id} • Affiliate: #${request.affiliateId}",
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
                 val statusColor = when (request.status) {
@@ -326,7 +326,7 @@ fun RequestCard(
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Text(
                 text = "Name: ${request.firstName ?: ""} ${request.lastName ?: ""}",
@@ -343,7 +343,7 @@ fun RequestCard(
                 )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Text(
                 text = "Reason for Deletion:",
@@ -359,7 +359,7 @@ fun RequestCard(
                     .padding(8.dp)
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "Requested: ${formatDate(request.requestedAt)}",
                 style = MaterialTheme.typography.labelSmall,
@@ -384,7 +384,7 @@ fun RequestCard(
             }
 
             if (request.status == "pending") {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)

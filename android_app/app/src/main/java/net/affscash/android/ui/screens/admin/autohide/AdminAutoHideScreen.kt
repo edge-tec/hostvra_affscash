@@ -82,8 +82,8 @@ fun AdminAutoHideScreen(
                 "rules" -> {
                     LazyColumn(contentPadding = PaddingValues(8.dp)) {
                         items(uiState.rules) { rule ->
-                            Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                                Column(modifier = Modifier.padding(12.dp)) {
+                            Card(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
+                                Column(modifier = Modifier.padding(8.dp)) {
                                     Text(rule.name, fontWeight = FontWeight.Bold)
                                     Text("Type: ${rule.type.uppercase()}", style = MaterialTheme.typography.bodySmall)
                                     val target = when(rule.type) {
@@ -118,8 +118,8 @@ fun AdminAutoHideScreen(
                 "hidden" -> {
                     LazyColumn(contentPadding = PaddingValues(8.dp)) {
                         items(uiState.hiddenConversions) { conv ->
-                            Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                                Column(modifier = Modifier.padding(12.dp)) {
+                            Card(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
+                                Column(modifier = Modifier.padding(8.dp)) {
                                     Text("Conv ID: ${conv.conversion_id}", fontWeight = FontWeight.Bold)
                                     Text("Offer: ${conv.offer_name}", style = MaterialTheme.typography.bodySmall)
                                     Text("Affiliate: ${conv.aff_name} (${conv.affiliate_code})", style = MaterialTheme.typography.bodySmall)
@@ -155,7 +155,7 @@ fun CreateRuleForm(uiState: AdminAutoHideState, viewModel: AdminAutoHideViewMode
     var reason by remember { mutableStateOf("") }
     var applyExisting by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp).horizontalScroll(rememberScrollState())) {
+    Column(modifier = Modifier.fillMaxSize().padding(8.dp).horizontalScroll(rememberScrollState())) {
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
@@ -258,13 +258,13 @@ fun CreateRuleForm(uiState: AdminAutoHideState, viewModel: AdminAutoHideViewMode
 fun StatCard(label: String, value: String) {
     Card {
         Column(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(label, style = MaterialTheme.typography.labelSmall)
             Text(
                 value,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold
             )
         }

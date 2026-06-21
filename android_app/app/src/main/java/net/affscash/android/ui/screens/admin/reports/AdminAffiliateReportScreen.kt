@@ -67,7 +67,7 @@ fun AdminAffiliateReportScreen(
             // Expandable Filters
             AnimatedVisibility(visible = uiState.isFiltersExpanded && uiState.viewingAffiliateId == null) {
                 Card(modifier = Modifier.fillMaxWidth().padding(8.dp), elevation = CardDefaults.cardElevation(4.dp)) {
-                    Column(modifier = Modifier.padding(12.dp)) {
+                    Column(modifier = Modifier.padding(8.dp)) {
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             OutlinedTextField(
                                 value = uiState.fromDate,
@@ -135,8 +135,8 @@ fun AdminAffiliateReportScreen(
                 // Traffic Detail List
                 LazyColumn(contentPadding = PaddingValues(8.dp)) {
                     items(uiState.trafficDetail) { row ->
-                        Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                            Column(modifier = Modifier.padding(12.dp)) {
+                        Card(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
+                            Column(modifier = Modifier.padding(8.dp)) {
                                 Text("Click ID: ${row.click_id}", fontWeight = FontWeight.Bold)
                                 Text("Offer: ${row.offer_name ?: "N/A"}", style = MaterialTheme.typography.bodySmall)
                                 Text("IP: ${row.ip_address} (${row.country})", style = MaterialTheme.typography.bodySmall)
@@ -175,11 +175,11 @@ fun AdminAffiliateReportScreen(
                             else -> "High Quality"
                         }
 
-                        Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                            Column(modifier = Modifier.padding(12.dp)) {
+                        Card(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
+                            Column(modifier = Modifier.padding(8.dp)) {
                                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                                     Column {
-                                        Text(row.aff_name, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+                                        Text(row.aff_name, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleSmall)
                                         Text("#${row.affiliate_code} | ${row.email}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                                     }
                                     Badge(containerColor = if (row.user_status == "active") Color(0xFF388E3C) else Color.Red) {

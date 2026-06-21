@@ -65,10 +65,10 @@ fun ManagerOffersScreen(
                                         Icons.Default.LocalOffer,
                                         contentDescription = null,
                                         tint = MaterialTheme.colorScheme.onPrimary,
-                                        modifier = Modifier.padding(12.dp)
+                                        modifier = Modifier.padding(8.dp)
                                     )
                                 }
-                                Spacer(modifier = Modifier.width(16.dp))
+                                Spacer(modifier = Modifier.width(4.dp))
                                 Column {
                                     Text(
                                         text = "Offers",
@@ -87,7 +87,7 @@ fun ManagerOffersScreen(
                                 IconButton(onClick = { showFilterSheet = true }, modifier = Modifier.background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f), RoundedCornerShape(12.dp))) {
                                     Icon(Icons.Default.FilterList, contentDescription = "Filter", tint = MaterialTheme.colorScheme.primary)
                                 }
-                                Spacer(modifier = Modifier.width(8.dp))
+                                Spacer(modifier = Modifier.width(4.dp))
                                 IconButton(onClick = onNavigateToApprovals, modifier = Modifier.background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f), RoundedCornerShape(12.dp))) {
                                     Icon(Icons.Default.Approval, contentDescription = "Approvals", tint = MaterialTheme.colorScheme.primary)
                                 }
@@ -124,7 +124,7 @@ fun ManagerOffersScreen(
                 Text(
                     text = uiState.error ?: "Unknown error",
                     color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.align(Alignment.Center).padding(16.dp)
+                    modifier = Modifier.align(Alignment.Center).padding(8.dp)
                 )
             } else if (uiState.offers.isEmpty()) {
                 Text(
@@ -214,7 +214,7 @@ fun ManagerOfferCard(
                 }
             }
             
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             // Title and Details
             Text(
@@ -225,7 +225,7 @@ fun ManagerOfferCard(
                 overflow = TextOverflow.Ellipsis
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Surface(color = MaterialTheme.colorScheme.surfaceVariant, shape = RoundedCornerShape(4.dp)) {
@@ -282,7 +282,7 @@ fun ManagerOfferCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { showLinkGenerator = !showLinkGenerator }
-                    .padding(vertical = 12.dp),
+                    .padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -304,7 +304,7 @@ fun ManagerOfferCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
-                        .padding(12.dp)
+                        .padding(8.dp)
                 ) {
                     if (managedAffiliates.isEmpty()) {
                         Text(
@@ -355,7 +355,7 @@ fun ManagerOfferCard(
                             ""
                         }
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             OutlinedTextField(
@@ -366,7 +366,7 @@ fun ManagerOfferCard(
                                 modifier = Modifier.weight(1f),
                                 singleLine = true
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Spacer(modifier = Modifier.width(4.dp))
                             Button(
                                 onClick = {
                                     if (generatedUrl.isNotEmpty()) {
@@ -440,7 +440,7 @@ fun StatItem(icon: androidx.compose.ui.graphics.vector.ImageVector, label: Strin
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = value,
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurface
         )
@@ -463,11 +463,11 @@ fun ManagerOfferFilterContent(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(24.dp)
+            .padding(16.dp)
             .padding(bottom = 32.dp)
     ) {
         Text("Filter Offers", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         val textFieldColors = OutlinedTextFieldDefaults.colors(
             unfocusedBorderColor = Color.Transparent,
@@ -487,7 +487,7 @@ fun ManagerOfferFilterContent(
             shape = textFieldShape,
             colors = textFieldColors
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             // Category Dropdown
@@ -541,7 +541,7 @@ fun ManagerOfferFilterContent(
             }
         }
         
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             // Status Dropdown

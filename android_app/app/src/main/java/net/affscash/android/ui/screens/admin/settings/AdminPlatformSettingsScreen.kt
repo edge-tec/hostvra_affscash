@@ -122,7 +122,7 @@ fun SettingsContent(config: AdminPlatformConfig) {
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp)
+                .padding(8.dp)
         ) {
             when (selectedTabIndex) {
                 0 -> GeneralSettingsTab(config)
@@ -148,7 +148,7 @@ fun GeneralSettingsTab(config: AdminPlatformConfig) {
     }
 
     Text("General Configuration", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(4.dp))
 
     AdminStyledTextField(
         value = app.name ?: "",
@@ -156,21 +156,21 @@ fun GeneralSettingsTab(config: AdminPlatformConfig) {
         label = { Text("Site Name") },
         modifier = Modifier.fillMaxWidth()
     )
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(4.dp))
     AdminStyledTextField(
         value = app.url ?: "",
         onValueChange = { app = app.copy(url = it) },
         label = { Text("Site URL") },
         modifier = Modifier.fillMaxWidth()
     )
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(4.dp))
     AdminStyledTextField(
         value = app.timezone ?: "",
         onValueChange = { app = app.copy(timezone = it) },
         label = { Text("Timezone") },
         modifier = Modifier.fillMaxWidth()
     )
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(4.dp))
     AdminStyledTextField(
         value = app.contactEmail ?: "",
         onValueChange = { app = app.copy(contactEmail = it) },
@@ -188,7 +188,7 @@ fun SecuritySettingsTab(config: AdminPlatformConfig) {
     }
 
     Text("Security & Registration", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(4.dp))
 
     SettingSwitch("Enable 2FA", app.twoFaEnabled) { app = app.copy(twoFaEnabled = it) }
     SettingSwitch("Email Verification", app.emailVerification) { app = app.copy(emailVerification = it) }
@@ -205,7 +205,7 @@ fun SmtpSettingsTab(config: AdminPlatformConfig) {
     }
 
     Text("SMTP Configuration", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(4.dp))
 
     AdminStyledTextField(
         value = smtp.host ?: "",
@@ -213,21 +213,21 @@ fun SmtpSettingsTab(config: AdminPlatformConfig) {
         label = { Text("Host") },
         modifier = Modifier.fillMaxWidth()
     )
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(4.dp))
     AdminStyledTextField(
         value = smtp.port ?: "",
         onValueChange = { smtp = smtp.copy(port = it) },
         label = { Text("Port") },
         modifier = Modifier.fillMaxWidth()
     )
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(4.dp))
     AdminStyledTextField(
         value = smtp.username ?: "",
         onValueChange = { smtp = smtp.copy(username = it) },
         label = { Text("Username") },
         modifier = Modifier.fillMaxWidth()
     )
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(4.dp))
     AdminStyledTextField(
         value = smtp.password ?: "",
         onValueChange = { smtp = smtp.copy(password = it) },
@@ -245,7 +245,7 @@ fun ConversionSettingsTab(config: AdminPlatformConfig) {
     }
 
     Text("Conversion Settings", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(4.dp))
 
     AdminStyledTextField(
         value = conv.approvalMode ?: "",
@@ -253,7 +253,7 @@ fun ConversionSettingsTab(config: AdminPlatformConfig) {
         label = { Text("Approval Mode (auto/manual)") },
         modifier = Modifier.fillMaxWidth()
     )
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(4.dp))
     SettingSwitch("One Lead Per IP", conv.onePerIpEnabled) { conv = conv.copy(onePerIpEnabled = it) }
     SettingSwitch("Hide Fraud Rejected Reports", conv.hideFraudRejectedReports) { conv = conv.copy(hideFraudRejectedReports = it) }
 }
@@ -267,11 +267,11 @@ fun FraudSettingsTab(config: AdminPlatformConfig) {
     }
 
     Text("Fraud Reports", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(4.dp))
 
     SettingSwitch("Enable Fraud Reports", fraud.enabled) { fraud = fraud.copy(enabled = it) }
     SettingSwitch("Send Email Alerts", fraud.sendEmail) { fraud = fraud.copy(sendEmail = it) }
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(4.dp))
     AdminStyledTextField(
         value = fraud.intervalHours ?: "",
         onValueChange = { fraud = fraud.copy(intervalHours = it) },
@@ -289,17 +289,17 @@ fun TurnstileSettingsTab(config: AdminPlatformConfig) {
     }
 
     Text("Cloudflare Turnstile", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(4.dp))
 
     SettingSwitch("Enable Turnstile", turnstile.enabled) { turnstile = turnstile.copy(enabled = it) }
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(4.dp))
     AdminStyledTextField(
         value = turnstile.siteKey ?: "",
         onValueChange = { turnstile = turnstile.copy(siteKey = it) },
         label = { Text("Site Key") },
         modifier = Modifier.fillMaxWidth()
     )
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(4.dp))
     AdminStyledTextField(
         value = turnstile.secretKey ?: "",
         onValueChange = { turnstile = turnstile.copy(secretKey = it) },
@@ -317,10 +317,10 @@ fun ShortenerSettingsTab(config: AdminPlatformConfig) {
     }
 
     Text("URL Shortener", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(4.dp))
 
     SettingSwitch("Enable Shortener", shortener.enabled) { shortener = shortener.copy(enabled = it) }
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(4.dp))
     AdminStyledTextField(
         value = shortener.apiKey ?: "",
         onValueChange = { shortener = shortener.copy(apiKey = it) },
@@ -338,7 +338,7 @@ fun VpnSettingsTab(config: AdminPlatformConfig) {
     }
 
     Text("VPN Detection", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(4.dp))
 
     SettingSwitch("Enable VPN Detection", vpn.enabled) { vpn = vpn.copy(enabled = it) }
 }
@@ -375,7 +375,7 @@ fun AdminStyledTextField(
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.medium,
         singleLine = true,
-        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp),
+        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 12.sp),
         colors = OutlinedTextFieldDefaults.colors(
             unfocusedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
             focusedBorderColor = MaterialTheme.colorScheme.primary,

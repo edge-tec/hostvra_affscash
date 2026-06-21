@@ -61,7 +61,7 @@ fun AdminOfferFormScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp)
+                            .padding(8.dp)
                             .verticalScroll(rememberScrollState()),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
@@ -209,7 +209,7 @@ fun AdminOfferFormScreen(
                             minLines = 3
                         )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
 
                         Button(
                             onClick = { viewModel.submit(offerId) },

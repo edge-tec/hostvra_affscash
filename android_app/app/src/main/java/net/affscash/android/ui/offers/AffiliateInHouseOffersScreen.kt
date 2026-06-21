@@ -78,7 +78,7 @@ fun AffiliateInHouseOffersScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(12.dp),
+                    .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 OutlinedTextField(
@@ -148,7 +148,7 @@ fun AffiliateInHouseOffersScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(msg, color = MaterialTheme.colorScheme.error)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                             Button(onClick = { viewModel.loadOffers() }) {
                                 Text("Retry")
                             }
@@ -197,7 +197,7 @@ fun AffiliateInHouseOffersScreen(
                     Column {
                         if (offer.requireApproval == 1) {
                             Text("This offer requires approval. Please describe how you plan to promote it:", style = MaterialTheme.typography.bodyMedium)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                             OutlinedTextField(
                                 value = promoDesc,
                                 onValueChange = { promoDesc = it },

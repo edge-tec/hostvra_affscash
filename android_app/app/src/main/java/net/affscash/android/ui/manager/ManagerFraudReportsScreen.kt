@@ -93,7 +93,7 @@ fun ManagerFraudReportsScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(uiState.error!!, color = MaterialTheme.colorScheme.error)
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         Button(onClick = { viewModel.loadReport() }) {
                             Text("Retry")
                         }
@@ -118,7 +118,7 @@ fun ManagerFraudReportsScreen(
                             }
                         }
                         
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
 
                         // Filtered conversions
                         val filteredConversions = uiState.response!!.conversions.filter { cv ->
@@ -157,7 +157,7 @@ fun ManagerFraudReportsScreen(
                                 item {
                                     Text(
                                         "No conversions match the filters.",
-                                        modifier = Modifier.padding(12.dp),
+                                        modifier = Modifier.padding(8.dp),
                                         color = Color.Gray
                                     )
                                 }
@@ -206,7 +206,7 @@ fun ManagerFraudConversionItem(cv: ManagerFraudConversion) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             // Header
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
@@ -290,9 +290,9 @@ fun ManagerFraudConversionItem(cv: ManagerFraudConversion) {
                 )
             }
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             // Metrics row
             Row(
@@ -326,7 +326,7 @@ fun ManagerFraudConversionItem(cv: ManagerFraudConversion) {
                 }
 
                 // Payout
-                Text("$${"%.2f".format(cv.payout)}", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                Text("$${"%.2f".format(cv.payout)}", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
             }
             
             // Rejection reason if any
@@ -375,10 +375,10 @@ fun FraudReportFilterSheet(
     ) {
         Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp).verticalScroll(rememberScrollState())) {
             Text("Filters", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             Text("Date Range", fontSize = 12.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             ScrollableRow(listOf("Today", "Yesterday", "Last 7 Days", "Last 15 Days", "This Month", "Last Month", "Last 90 Days", "This Year", "Last Year")) { range ->
                 FilterChip(
 modifier = Modifier.height(32.dp),
@@ -392,45 +392,45 @@ modifier = Modifier.height(32.dp),
                 )
             }
             
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 StyledTextField(value = uiState.fromDate, onValueChange = { onUpdateFilters(it, uiState.toDate, uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "From Date", modifier = Modifier.weight(1f))
                 StyledTextField(value = uiState.toDate, onValueChange = { onUpdateFilters(uiState.fromDate, it, uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "To Date", modifier = Modifier.weight(1f))
             }
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 StyledTextField(value = uiState.clickId, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, it, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "Click ID", modifier = Modifier.weight(1f))
                 DropdownFilterField(value = uiState.statusFilter, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, uiState.clickId, it, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "Status", options = statuses, modifier = Modifier.weight(1f))
             }
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 DropdownFilterField(value = uiState.affiliate, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, uiState.clickId, uiState.statusFilter, it, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "Affiliate", options = affiliates, modifier = Modifier.weight(1f))
                 StyledTextField(value = uiState.affCode, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, uiState.clickId, uiState.statusFilter, uiState.affiliate, it, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "Aff Code", modifier = Modifier.weight(1f))
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             DropdownFilterField(value = uiState.offer, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, it, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "Offer", options = offers, modifier = Modifier.fillMaxWidth())
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 StyledTextField(value = uiState.scoreMin, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, it, uiState.scoreMax, uiState.sortBy) }, label = "Score Min", modifier = Modifier.weight(1f))
                 StyledTextField(value = uiState.scoreMax, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, it, uiState.sortBy) }, label = "Score Max", modifier = Modifier.weight(1f))
             }
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             DropdownFilterField(value = uiState.sortBy, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, it) }, label = "Sort By", options = sortOptions, modifier = Modifier.fillMaxWidth())
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Button(
                 onClick = onDismiss, 
                 modifier = Modifier.fillMaxWidth().height(48.dp), 
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp)
             ) {
-                Text("Apply Filters", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                Text("Apply Filters", fontSize = 13.sp, fontWeight = FontWeight.Bold)
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
         }
     }
 }
@@ -445,8 +445,8 @@ fun StyledTextField(
     TextField(
         value = value,
         onValueChange = onValueChange,
-        placeholder = { Text(label, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha=0.6f)) },
-        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp),
+        placeholder = { Text(label, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha=0.6f)) },
+        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 12.sp),
         modifier = modifier.fillMaxWidth().height(52.dp),
         shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
         singleLine = true,
@@ -479,7 +479,7 @@ fun DropdownFilterField(
             onValueChange = {},
             readOnly = true,
             textStyle = androidx.compose.ui.text.TextStyle(
-                fontSize = 13.sp, 
+                fontSize = 12.sp, 
                 color = if (value.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha=0.6f) else MaterialTheme.colorScheme.onSurface
             ),
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
@@ -499,7 +499,7 @@ fun DropdownFilterField(
         ) {
             options.forEach { option ->
                 DropdownMenuItem(
-                    text = { Text(option, fontSize = 13.sp) },
+                    text = { Text(option, fontSize = 12.sp) },
                     onClick = {
                         onValueChange(option)
                         expanded = false

@@ -80,10 +80,10 @@ fun AdminSmartlinkRequestItem(
     onReject: () -> Unit
 ) {
     Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             Text(
                 text = request.smartlinkName ?: "Unknown Smartlink",
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(4.dp))
@@ -91,7 +91,7 @@ fun AdminSmartlinkRequestItem(
             Text(text = "Email: ${request.affEmail ?: "N/A"}", style = MaterialTheme.typography.bodySmall)
             Text(text = "Date: ${request.createdAt}", style = MaterialTheme.typography.bodySmall)
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             val badgeColor = when (request.status) {
                 "approved" -> Color(0xFF4CAF50)
                 "rejected" -> MaterialTheme.colorScheme.error
@@ -102,7 +102,7 @@ fun AdminSmartlinkRequestItem(
             }
 
             if (request.status == "pending") {
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
@@ -112,7 +112,7 @@ fun AdminSmartlinkRequestItem(
                         Spacer(modifier = Modifier.width(4.dp))
                         Text("Reject", color = MaterialTheme.colorScheme.error)
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                     Button(onClick = onApprove, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))) {
                         Icon(Icons.Default.Check, contentDescription = "Approve")
                         Spacer(modifier = Modifier.width(4.dp))

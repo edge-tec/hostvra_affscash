@@ -77,10 +77,10 @@ fun ManagerAffiliatesScreen(
                                     Icons.Outlined.People,
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.onPrimary,
-                                    modifier = Modifier.padding(12.dp)
+                                    modifier = Modifier.padding(8.dp)
                                 )
                             }
-                            Spacer(modifier = Modifier.width(16.dp))
+                            Spacer(modifier = Modifier.width(4.dp))
                             Column {
                                 Text(
                                     text = "My Affiliates",
@@ -167,21 +167,21 @@ fun ManagerAffiliatesScreen(
                         .weight(1f)
                         .height(36.dp)
                         .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), androidx.compose.foundation.shape.RoundedCornerShape(18.dp))
-                        .padding(horizontal = 12.dp),
+                        .padding(horizontal = 8.dp),
                     contentAlignment = Alignment.CenterStart
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(16.dp), tint = Color.Gray)
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         androidx.compose.foundation.text.BasicTextField(
                             value = uiState.searchQuery,
                             onValueChange = { viewModel.updateSearchQuery(it) },
                             singleLine = true,
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface),
+                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface),
                             modifier = Modifier.fillMaxWidth(),
                             decorationBox = { innerTextField ->
                                 if (uiState.searchQuery.isEmpty()) {
-                                    Text("Search affiliates...", fontSize = 13.sp, color = Color.Gray)
+                                    Text("Search affiliates...", fontSize = 12.sp, color = Color.Gray)
                                 }
                                 innerTextField()
                             }
@@ -189,7 +189,7 @@ fun ManagerAffiliatesScreen(
                     }
                 }
                 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(4.dp))
                 
                 // Filter Dropdown
                 var expanded by remember { mutableStateOf(false) }
@@ -199,7 +199,7 @@ fun ManagerAffiliatesScreen(
                             .height(36.dp)
                             .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), androidx.compose.foundation.shape.RoundedCornerShape(18.dp))
                             .clickable { expanded = true }
-                            .padding(horizontal = 12.dp),
+                            .padding(horizontal = 8.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -210,7 +210,7 @@ fun ManagerAffiliatesScreen(
                                     "high" -> "High Score"
                                     else -> "All scores"
                                 },
-                                fontSize = 13.sp,
+                                fontSize = 12.sp,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                             Spacer(modifier = Modifier.width(4.dp))
@@ -223,7 +223,7 @@ fun ManagerAffiliatesScreen(
                     ) {
                         listOf("all" to "All scores", "low" to "Low (< 30)", "medium" to "Medium (30-70)", "high" to "High (> 70)").forEach { (key, label) ->
                             DropdownMenuItem(
-                                text = { Text(label, fontSize = 13.sp) },
+                                text = { Text(label, fontSize = 12.sp) },
                                 onClick = {
                                     viewModel.setFraudScoreFilter(key)
                                     expanded = false
@@ -301,12 +301,12 @@ fun ManagerAffiliateCard(
                     ) {
                         Icon(Icons.Outlined.Person, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(8.dp))
                     }
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = "${affiliate.firstName} ${affiliate.lastName}",
                             fontWeight = FontWeight.ExtraBold,
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.titleSmall,
                             maxLines = 1,
                             overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                         )
@@ -339,13 +339,13 @@ fun ManagerAffiliateCard(
                         }
                     }
                 }
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(4.dp))
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
                         text = affiliate.balance ?: "$0.00",
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleSmall,
                         maxLines = 1,
                         softWrap = false
                     )
@@ -354,7 +354,7 @@ fun ManagerAffiliateCard(
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             // Stats Grid
             Surface(
@@ -362,7 +362,7 @@ fun ManagerAffiliateCard(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                    modifier = Modifier.fillMaxWidth().padding(8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -383,7 +383,7 @@ fun ManagerAffiliateCard(
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             val fraudColor = if (affiliate.fraudScore > 70) Color(0xFFEF4444) else if (affiliate.fraudScore > 30) Color(0xFFF59E0B) else Color(0xFF10B981)
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -397,9 +397,9 @@ fun ManagerAffiliateCard(
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),

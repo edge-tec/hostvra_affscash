@@ -102,7 +102,7 @@ fun ManagerReportsScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text("Filters & Options", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+                        Text("Filters & Options", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleSmall)
                         Icon(
                             if (filtersExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                             contentDescription = "Toggle Filters",
@@ -115,22 +115,22 @@ fun ManagerReportsScreen(
                             // Report Filter Dropdown (By Day, Week, Month, Year)
                             var reportTypeExpanded by remember { mutableStateOf(false) }
                             val currentTabName = tabs.find { it.first == uiState.currentTab }?.second ?: "By Day"
-                            Box(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                            Box(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
                                 Surface(
                                     onClick = { reportTypeExpanded = true },
                                     modifier = Modifier.fillMaxWidth().height(48.dp),
                                     shape = RoundedCornerShape(10.dp),
                                     color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                 ) {
-                                    Row(modifier = Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-                                        Text(currentTabName, modifier = Modifier.weight(1f), fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                    Row(modifier = Modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                                        Text(currentTabName, modifier = Modifier.weight(1f), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                         Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                     }
                                 }
                                 DropdownMenu(expanded = reportTypeExpanded, onDismissRequest = { reportTypeExpanded = false }) {
                                     tabs.forEach { tabInfo ->
                                         DropdownMenuItem(
-                                            text = { Text(tabInfo.second, fontSize = 13.sp) },
+                                            text = { Text(tabInfo.second, fontSize = 12.sp) },
                                             onClick = { viewModel.setTab(tabInfo.first); reportTypeExpanded = false }
                                         )
                                     }
@@ -141,15 +141,15 @@ fun ManagerReportsScreen(
                             Column {
                                 // Date Range Dropdown
                                 var dateExpanded by remember { mutableStateOf(false) }
-                                Box(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                                Box(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
                                     Surface(
                                         onClick = { dateExpanded = true },
                                         modifier = Modifier.fillMaxWidth().height(48.dp),
                                         shape = RoundedCornerShape(10.dp),
                                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                     ) {
-                                        Row(modifier = Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-                                            Text("${uiState.fromDate} to ${uiState.toDate}", modifier = Modifier.weight(1f), fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                        Row(modifier = Modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                                            Text("${uiState.fromDate} to ${uiState.toDate}", modifier = Modifier.weight(1f), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                             Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                         }
                                     }
@@ -157,7 +157,7 @@ fun ManagerReportsScreen(
                                         val dateRanges = listOf("Today", "Yesterday", "Last 7 Days", "This Month", "Last 30 Days")
                                         dateRanges.forEach { range ->
                                             DropdownMenuItem(
-                                                text = { Text(range, fontSize = 13.sp) },
+                                                text = { Text(range, fontSize = 12.sp) },
                                                 onClick = {
                                                     val cal = Calendar.getInstance()
                                                     val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
@@ -183,7 +183,7 @@ fun ManagerReportsScreen(
                                 }
 
                                 // Dropdowns Row 1: Affiliate & Offer
-                                Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Row(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                     // Affiliate Dropdown
                                     var affExpanded by remember { mutableStateOf(false) }
                                     Box(modifier = Modifier.weight(1f)) {
@@ -193,15 +193,15 @@ fun ManagerReportsScreen(
                                             shape = RoundedCornerShape(10.dp),
                                             color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                         ) {
-                                            Row(modifier = Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-                                                Text(affiliates.find { it.id == uiState.selectedAffiliateId }?.name ?: "All Managed", maxLines = 1, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
+                                            Row(modifier = Modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                                                Text(affiliates.find { it.id == uiState.selectedAffiliateId }?.name ?: "All Managed", maxLines = 1, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
                                                 Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                             }
                                         }
                                         DropdownMenu(expanded = affExpanded, onDismissRequest = { affExpanded = false }) {
-                                            DropdownMenuItem(text = { Text("All Managed", fontSize = 13.sp) }, onClick = { viewModel.setFilter(uiState.selectedOfferId, 0, uiState.selectedCountry, uiState.sub1Query); affExpanded = false })
+                                            DropdownMenuItem(text = { Text("All Managed", fontSize = 12.sp) }, onClick = { viewModel.setFilter(uiState.selectedOfferId, 0, uiState.selectedCountry, uiState.sub1Query); affExpanded = false })
                                             affiliates.forEach { a ->
-                                                DropdownMenuItem(text = { Text("${a.name} (#${a.id})", fontSize = 13.sp) }, onClick = { viewModel.setFilter(uiState.selectedOfferId, a.id, uiState.selectedCountry, uiState.sub1Query); affExpanded = false })
+                                                DropdownMenuItem(text = { Text("${a.name} (#${a.id})", fontSize = 12.sp) }, onClick = { viewModel.setFilter(uiState.selectedOfferId, a.id, uiState.selectedCountry, uiState.sub1Query); affExpanded = false })
                                             }
                                         }
                                     }
@@ -215,22 +215,22 @@ fun ManagerReportsScreen(
                                             shape = RoundedCornerShape(10.dp),
                                             color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                         ) {
-                                            Row(modifier = Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-                                                Text(offers.find { it.id == uiState.selectedOfferId }?.name ?: "All Offers", maxLines = 1, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
+                                            Row(modifier = Modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                                                Text(offers.find { it.id == uiState.selectedOfferId }?.name ?: "All Offers", maxLines = 1, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
                                                 Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                             }
                                         }
                                         DropdownMenu(expanded = offerExpanded, onDismissRequest = { offerExpanded = false }) {
-                                            DropdownMenuItem(text = { Text("All Offers", fontSize = 13.sp) }, onClick = { viewModel.setFilter(0, uiState.selectedAffiliateId, uiState.selectedCountry, uiState.sub1Query); offerExpanded = false })
+                                            DropdownMenuItem(text = { Text("All Offers", fontSize = 12.sp) }, onClick = { viewModel.setFilter(0, uiState.selectedAffiliateId, uiState.selectedCountry, uiState.sub1Query); offerExpanded = false })
                                             offers.forEach { o ->
-                                                DropdownMenuItem(text = { Text(o.name, fontSize = 13.sp) }, onClick = { viewModel.setFilter(o.id, uiState.selectedAffiliateId, uiState.selectedCountry, uiState.sub1Query); offerExpanded = false })
+                                                DropdownMenuItem(text = { Text(o.name, fontSize = 12.sp) }, onClick = { viewModel.setFilter(o.id, uiState.selectedAffiliateId, uiState.selectedCountry, uiState.sub1Query); offerExpanded = false })
                                             }
                                         }
                                     }
                                 }
 
                                 // Dropdowns Row 2: Country & Sub1
-                                Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                                Row(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                                     // Country Dropdown
                                     var countryExpanded by remember { mutableStateOf(false) }
                                     Box(modifier = Modifier.weight(1f)) {
@@ -240,15 +240,15 @@ fun ManagerReportsScreen(
                                             shape = RoundedCornerShape(10.dp),
                                             color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                         ) {
-                                            Row(modifier = Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-                                                Text(uiState.selectedCountry.ifEmpty { "All Countries" }, maxLines = 1, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
+                                            Row(modifier = Modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                                                Text(uiState.selectedCountry.ifEmpty { "All Countries" }, maxLines = 1, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
                                                 Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                             }
                                         }
                                         DropdownMenu(expanded = countryExpanded, onDismissRequest = { countryExpanded = false }) {
-                                            DropdownMenuItem(text = { Text("All Countries", fontSize = 13.sp) }, onClick = { viewModel.setFilter(uiState.selectedOfferId, uiState.selectedAffiliateId, "", uiState.sub1Query); countryExpanded = false })
+                                            DropdownMenuItem(text = { Text("All Countries", fontSize = 12.sp) }, onClick = { viewModel.setFilter(uiState.selectedOfferId, uiState.selectedAffiliateId, "", uiState.sub1Query); countryExpanded = false })
                                             countries.forEach { c ->
-                                                DropdownMenuItem(text = { Text(c, fontSize = 13.sp) }, onClick = { viewModel.setFilter(uiState.selectedOfferId, uiState.selectedAffiliateId, c, uiState.sub1Query); countryExpanded = false })
+                                                DropdownMenuItem(text = { Text(c, fontSize = 12.sp) }, onClick = { viewModel.setFilter(uiState.selectedOfferId, uiState.selectedAffiliateId, c, uiState.sub1Query); countryExpanded = false })
                                             }
                                         }
                                     }
@@ -259,10 +259,10 @@ fun ManagerReportsScreen(
                                         value = uiState.sub1Query,
                                         onValueChange = { viewModel.setFilter(uiState.selectedOfferId, uiState.selectedAffiliateId, uiState.selectedCountry, it) },
                                         modifier = Modifier.weight(1f).height(48.dp),
-                                        placeholder = { Text("Aff Sub 1", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha=0.7f)) },
+                                        placeholder = { Text("Aff Sub 1", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha=0.7f)) },
                                         singleLine = true,
                                         shape = RoundedCornerShape(10.dp),
-                                        textStyle = LocalTextStyle.current.copy(fontSize = 13.sp),
+                                        textStyle = LocalTextStyle.current.copy(fontSize = 12.sp),
                                         colors = OutlinedTextFieldDefaults.colors(
                                             unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
                                             focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
@@ -286,7 +286,7 @@ fun ManagerReportsScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(uiState.reportError!!, color = MaterialTheme.colorScheme.error)
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         Button(onClick = { viewModel.loadReport() }) {
                             Text("Retry")
                         }
@@ -320,7 +320,7 @@ fun ManagerReportsScreen(
                                 item { 
                                     Text(
                                         text = "Performance ${tabs.find { it.first == uiState.currentTab }?.second?.replace("Performance", "") ?: ""}".trim(), 
-                                        style = MaterialTheme.typography.titleMedium, 
+                                        style = MaterialTheme.typography.titleSmall, 
                                         fontWeight = FontWeight.Bold, 
                                         modifier = Modifier.padding(vertical = 8.dp)
                                     ) 
@@ -329,17 +329,17 @@ fun ManagerReportsScreen(
                                 items(rows) { row -> PerformanceRowItem(row) }
                             }
                             uiState.reportResponse!!.clicks?.let { clicks ->
-                                item { Text("Click Log", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)) }
+                                item { Text("Click Log", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)) }
                                 if (clicks.isEmpty()) item { Text("No clicks found.", modifier = Modifier.padding(start = 8.dp, bottom = 16.dp)) }
                                 items(clicks) { c -> ClickRowItem(c) }
                             }
                             uiState.reportResponse!!.conversions?.let { convs ->
-                                item { Text("Conversion Log", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)) }
+                                item { Text("Conversion Log", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)) }
                                 if (convs.isEmpty()) item { Text("No conversions found.", modifier = Modifier.padding(start = 8.dp, bottom = 16.dp)) }
                                 items(convs) { cv -> ConversionRowItem(cv) }
                             }
                             uiState.reportResponse!!.slClicks?.let { sls ->
-                                item { Text("Smartlink Click Log", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)) }
+                                item { Text("Smartlink Click Log", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)) }
                                 if (sls.isEmpty()) item { Text("No smartlink traffic found.", modifier = Modifier.padding(start = 8.dp, bottom = 16.dp)) }
                                 items(sls) { sl -> SmartlinkRowItem(sl) }
                             }
@@ -360,7 +360,7 @@ fun SummaryCard(title: String, value: String, subtitle: String, valueColor: Colo
         elevation = CardDefaults.cardElevation(0.dp)
     ) {
         Column(
-            modifier = Modifier.padding(12.dp).fillMaxSize(),
+            modifier = Modifier.padding(8.dp).fillMaxSize(),
             verticalArrangement = Arrangement.Center
         ) {
             Text(title, fontSize = 9.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -388,8 +388,8 @@ fun PerformanceRowItem(row: ReportRow) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Text(row.label, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+        Column(modifier = Modifier.padding(8.dp)) {
+            Text(row.label, fontSize = 13.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(6.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
@@ -397,7 +397,7 @@ fun PerformanceRowItem(row: ReportRow) {
                     Text("Conversions: ${row.conv}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text("Payout: $${"%.2f".format(row.payout)}", fontSize = 13.sp, color = Color(0xFF10B981), fontWeight = FontWeight.Bold)
+                    Text("Payout: $${"%.2f".format(row.payout)}", fontSize = 12.sp, color = Color(0xFF10B981), fontWeight = FontWeight.Bold)
                     Text("App: ${row.approved} | Rej: ${row.rejected}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
@@ -413,10 +413,10 @@ fun ClickRowItem(click: ClickRow) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Text(click.offerName ?: "Custom URL", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        Column(modifier = Modifier.padding(8.dp)) {
+            Text(click.offerName ?: "Custom URL", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
             Text("Click ID: ${click.clickId}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
                     Text("Sub1: ${click.sub1 ?: "-"}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -453,11 +453,11 @@ fun ConversionRowItem(conversion: ConversionRow) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Text(conversion.offerName ?: "Unknown Offer", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        Column(modifier = Modifier.padding(8.dp)) {
+            Text(conversion.offerName ?: "Unknown Offer", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
             Text("Click ID: ${conversion.clickId}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Text("Date: ${conversion.convertedAt}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
                     Text("Sub1: ${conversion.sub1 ?: "-"}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -479,7 +479,7 @@ fun ConversionRowItem(conversion: ConversionRow) {
                         )
                     }
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text("$${"%.2f".format(conversion.payout)}", style = MaterialTheme.typography.titleMedium, color = Color(0xFF10B981), fontWeight = FontWeight.ExtraBold)
+                    Text("$${"%.2f".format(conversion.payout)}", style = MaterialTheme.typography.titleSmall, color = Color(0xFF10B981), fontWeight = FontWeight.ExtraBold)
                 }
             }
         }
@@ -494,11 +494,11 @@ fun SmartlinkRowItem(click: SmartlinkClickRow) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Text(click.smartlinkName ?: "Unknown SmartLink", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        Column(modifier = Modifier.padding(8.dp)) {
+            Text(click.smartlinkName ?: "Unknown SmartLink", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
             Text("Offer: ${click.offerName ?: "Custom URL"}", style = MaterialTheme.typography.bodySmall)
             Text("Click ID: ${click.clickId}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
                     Text("Sub1: ${click.sub1 ?: "-"}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)

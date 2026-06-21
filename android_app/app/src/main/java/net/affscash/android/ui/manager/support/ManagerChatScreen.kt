@@ -216,7 +216,7 @@ fun MessageBubble(message: ManagerMessage, affiliateId: Int, onDelete: () -> Uni
                 Column(
                     modifier = Modifier
                         .widthIn(max = 280.dp)
-                        .padding(12.dp)
+                        .padding(8.dp)
                 ) {
             if (!isMine) {
                 Text(
@@ -267,7 +267,7 @@ fun MessageBubble(message: ManagerMessage, affiliateId: Int, onDelete: () -> Uni
                             tint = textColor,
                             modifier = Modifier.size(24.dp)
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = message.attachmentName ?: "File",
                             color = textColor,
@@ -277,7 +277,7 @@ fun MessageBubble(message: ManagerMessage, affiliateId: Int, onDelete: () -> Uni
                         )
                     }
                     if (message.message.isNotBlank()) {
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                     }
                 }
             }

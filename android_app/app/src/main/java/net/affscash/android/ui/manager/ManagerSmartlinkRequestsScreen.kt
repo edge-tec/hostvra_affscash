@@ -133,7 +133,7 @@ fun ManagerSmartlinkRequestCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             // Header
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -165,17 +165,17 @@ fun ManagerSmartlinkRequestCard(
                 }
             }
             
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Text(
                 text = request.smartlinkName,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold
             )
             
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             
             // Affiliate Info
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -208,13 +208,13 @@ fun ManagerSmartlinkRequestCard(
             }
 
             if (!request.promotionDescription.isNullOrEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Surface(
                     color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Column(modifier = Modifier.padding(12.dp)) {
+                    Column(modifier = Modifier.padding(8.dp)) {
                         Text("Promotion Strategy", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
@@ -226,14 +226,14 @@ fun ManagerSmartlinkRequestCard(
             }
 
             if (!request.adminNote.isNullOrEmpty()) {
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Surface(
                     color = Color(0xFFFEF2F2),
                     shape = RoundedCornerShape(8.dp),
                     border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFFECACA)),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Column(modifier = Modifier.padding(12.dp)) {
+                    Column(modifier = Modifier.padding(8.dp)) {
                         Text("Manager Note", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelSmall, color = Color(0xFFEF4444))
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
@@ -246,7 +246,7 @@ fun ManagerSmartlinkRequestCard(
             }
 
             if (request.status.lowercase() == "pending") {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Button(
                     onClick = { showReviewDialog = true },
                     modifier = Modifier.fillMaxWidth(),
@@ -267,7 +267,7 @@ fun ManagerSmartlinkRequestCard(
             text = {
                 Column {
                     Text("You are reviewing the request for ${request.smartlinkName} by ${request.affName}.")
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     OutlinedTextField(
                         value = note,
                         onValueChange = { note = it },

@@ -122,7 +122,7 @@ fun AdminSmartlinkItem(
     }
 
     Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -130,7 +130,7 @@ fun AdminSmartlinkItem(
             ) {
                 Text(
                     text = smartlink.name,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
                 Badge(
@@ -145,7 +145,7 @@ fun AdminSmartlinkItem(
             Text(text = "Slug: ${smartlink.slug}", style = MaterialTheme.typography.bodySmall)
             Text(text = "Rotation: ${smartlink.rotationType.uppercase()}", style = MaterialTheme.typography.bodySmall)
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -155,7 +155,7 @@ fun AdminSmartlinkItem(
                 Text(text = "Convs: ${smartlink.totalConvs ?: 0}", style = MaterialTheme.typography.bodySmall)
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End

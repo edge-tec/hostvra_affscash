@@ -61,7 +61,7 @@ fun FraudReportScreen(
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(text = state.message, color = Color.Red)
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                             Button(onClick = { viewModel.loadData() }) {
                                 Text("Retry")
                             }
@@ -78,7 +78,7 @@ fun FraudReportScreen(
 
 @Composable
 fun FraudReportContent(count30Days: Int, conversions: List<FraudConversion>) {
-    Column(modifier = Modifier.padding(12.dp)) {
+    Column(modifier = Modifier.padding(8.dp)) {
         // Red Banner
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -86,11 +86,11 @@ fun FraudReportContent(count30Days: Int, conversions: List<FraudConversion>) {
             shape = RoundedCornerShape(8.dp)
         ) {
             Row(
-                modifier = Modifier.padding(12.dp),
+                modifier = Modifier.padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(Icons.Default.Warning, contentDescription = "Warning", tint = Color.Red)
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(4.dp))
                 Column {
                     Text("Only High Risk Fraud Conversions are listed here.", color = Color.Red, fontWeight = FontWeight.Bold)
                     Text("Recent 30 Days: $count30Days", color = Color.Red, fontSize = 12.sp)
@@ -98,7 +98,7 @@ fun FraudReportContent(count30Days: Int, conversions: List<FraudConversion>) {
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         if (conversions.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -123,7 +123,7 @@ fun FraudConversionItem(conversion: FraudConversion) {
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             Text(text = conversion.offerName ?: "Unknown Offer", fontWeight = FontWeight.Bold, fontSize = 16.sp)
             Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -133,7 +133,7 @@ fun FraudConversionItem(conversion: FraudConversion) {
             Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(text = "IP: ${conversion.ipAddress ?: "N/A"}", fontSize = 12.sp)
-                Text(text = "$${(( conversion.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Purple40)
+                Text(text = "$${(( conversion.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Purple40)
             }
             Spacer(modifier = Modifier.height(4.dp))
             Text(text = "Date: ${conversion.convertedAt}", fontSize = 12.sp, color = Color.Gray)
