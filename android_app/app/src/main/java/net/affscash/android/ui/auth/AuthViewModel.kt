@@ -20,8 +20,13 @@ sealed class AuthState {
     data class Error(val message: String) : AuthState()
 }
 
+import android.content.Context
+import android.provider.Settings
+import dagger.hilt.android.qualifiers.ApplicationContext
+
 @HiltViewModel
 class AuthViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val authRepository: AuthRepository,
     private val apiService: ApiService
 ) : ViewModel() {
@@ -55,7 +60,8 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val token = FirebaseMessaging.getInstance().token.await()
-                val request = mapOf("token" to token, "device_id" to "android_device")
+                val androidId = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID) ?: "unknown"
+                val request = mapOf("token" to token, "platform" to "android", "device_id" to androidId)
                 apiService.registerFcmToken(request)
             } catch (e: Exception) {
                 // Ignore failures to register token

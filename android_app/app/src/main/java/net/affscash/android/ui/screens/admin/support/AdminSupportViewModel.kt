@@ -16,6 +16,8 @@ import net.affscash.android.data.model.AdminSupportConversationRow
 import net.affscash.android.data.model.AdminSupportMessage
 import net.affscash.android.data.model.AdminSupportSendRequest
 import net.affscash.android.data.network.ApiService
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 
 data class AdminSupportUiState(
@@ -204,12 +206,12 @@ class AdminSupportViewModel @Inject constructor(
             try {
                 // Read file bytes
                 val bytes = file.readBytes()
-                val requestBody = okhttp3.RequestBody.create(okhttp3.MediaType.parse(mimeType), bytes)
+                val requestBody = bytes.toRequestBody(mimeType.toMediaTypeOrNull())
                 val part = okhttp3.MultipartBody.Part.createFormData("file", file.name, requestBody)
                 
                 val response = apiService.uploadAdminSupportFile(
-                    affiliateId = okhttp3.RequestBody.create(okhttp3.MediaType.parse("text/plain"), affId.toString()),
-                    ownerType = okhttp3.RequestBody.create(okhttp3.MediaType.parse("text/plain"), ownerType),
+                    affiliateId = affId.toString().toRequestBody("text/plain".toMediaTypeOrNull()),
+                    ownerType = ownerType.toRequestBody("text/plain".toMediaTypeOrNull()),
                     file = part
                 )
                 

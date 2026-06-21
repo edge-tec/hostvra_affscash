@@ -30,8 +30,13 @@ import net.affscash.android.ui.admin.AdminEditAffiliateScreen
 import net.affscash.android.ui.admin.AdminAdvertiserDetailsScreen
 import androidx.navigation.navArgument
 import androidx.navigation.NavType
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.hilt.navigation.compose.hiltViewModel
 
-sealed class Screen(val route: String, val title: String, val icon: androidx.compose.ui.graphics.vector.ImageVector) {
+sealed class Screen(val route: String, val title: String, val icon: ImageVector) {
     // Affiliate Screens
     object Dashboard : Screen("dashboard", "Dashboard", Icons.Filled.Home)
     object Offers : Screen("offers", "Offers", Icons.Filled.LocalOffer)
@@ -154,7 +159,7 @@ fun MainScreen(
     onLogout: () -> Unit,
     onRoleChange: (String) -> Unit = {},
     initialDeepLink: String? = null,
-    viewModel: MainViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+    viewModel: MainViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController()
     val isImpersonating by viewModel.isImpersonating.collectAsState()
@@ -212,11 +217,11 @@ fun MainScreen(
                 modifier = Modifier.padding(bottom = 32.dp)
             ) {
                 items(moreItems) { screen ->
-                    androidx.compose.foundation.layout.Box(
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(80.dp)
-                            .androidx.compose.foundation.clickable {
+                            .clickable {
                                 showMoreSheet = false
                                 navController.navigate(screen.route) {
                                     popUpTo(navController.graph.findStartDestination().id) {
@@ -268,7 +273,7 @@ fun MainScreen(
                             containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.1f),
                             contentColor = MaterialTheme.colorScheme.error
                         ),
-                        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+                        shape = RoundedCornerShape(16.dp),
                         elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp, pressedElevation = 0.dp)
                     ) {
                         Row(
@@ -295,8 +300,8 @@ fun MainScreen(
         topBar = {
             if (isImpersonating) {
                 Surface(
-                    color = androidx.compose.ui.graphics.Color(0xFFF59E0B),
-                    contentColor = androidx.compose.ui.graphics.Color(0xFF1F2937),
+                    color = Color(0xFFF59E0B),
+                    contentColor = Color(0xFF1F2937),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
@@ -318,7 +323,7 @@ fun MainScreen(
                                     onError = { android.widget.Toast.makeText(context, it, android.widget.Toast.LENGTH_SHORT).show() }
                                 )
                             },
-                            colors = ButtonDefaults.buttonColors(containerColor = androidx.compose.ui.graphics.Color(0xFF1F2937), contentColor = androidx.compose.ui.graphics.Color.White),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1F2937), contentColor = Color.White),
                             contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
                             modifier = Modifier.height(32.dp)
                         ) {
@@ -336,12 +341,12 @@ fun MainScreen(
             ) {
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(0.dp),
+                    shape = RoundedCornerShape(0.dp),
                     color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
                     shadowElevation = 8.dp
                 ) {
                     NavigationBar(
-                        containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                        containerColor = Color.Transparent,
                         tonalElevation = 0.dp,
                         modifier = Modifier.height(54.dp),
                         windowInsets = WindowInsets(0.dp)
@@ -384,7 +389,7 @@ fun MainScreen(
                                     }
                                 },
                                 colors = NavigationBarItemDefaults.colors(
-                                    indicatorColor = androidx.compose.ui.graphics.Color.Transparent,
+                                    indicatorColor = Color.Transparent,
                                     selectedIconColor = MaterialTheme.colorScheme.primary,
                                     unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                                     selectedTextColor = MaterialTheme.colorScheme.primary,
@@ -420,7 +425,7 @@ fun MainScreen(
                                 selected = isSelected,
                                 onClick = { showMoreSheet = true },
                                 colors = NavigationBarItemDefaults.colors(
-                                    indicatorColor = androidx.compose.ui.graphics.Color.Transparent,
+                                    indicatorColor = Color.Transparent,
                                     selectedIconColor = MaterialTheme.colorScheme.primary,
                                     unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                                     selectedTextColor = MaterialTheme.colorScheme.primary,
@@ -565,7 +570,7 @@ fun MainScreen(
             }
             
             composable(Screen.AdminSmartlinks.route) {
-                val viewModel: net.affscash.android.ui.screens.admin.smartlinks.AdminSmartlinksViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                val viewModel: net.affscash.android.ui.screens.admin.smartlinks.AdminSmartlinksViewModel = hiltViewModel()
                 net.affscash.android.ui.screens.admin.smartlinks.AdminSmartlinksScreen(
                     viewModel = viewModel,
                     navController = navController
@@ -573,7 +578,7 @@ fun MainScreen(
             }
             
             composable(Screen.AdminSmartlinkRequests.route) {
-                val viewModel: net.affscash.android.ui.screens.admin.smartlinks.AdminSmartlinkRequestsViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                val viewModel: net.affscash.android.ui.screens.admin.smartlinks.AdminSmartlinkRequestsViewModel = hiltViewModel()
                 net.affscash.android.ui.screens.admin.smartlinks.AdminSmartlinkRequestsScreen(
                     viewModel = viewModel,
                     navController = navController
@@ -581,7 +586,7 @@ fun MainScreen(
             }
             
             composable(Screen.AdminSmartlinkCreate.route) {
-                val viewModel: net.affscash.android.ui.screens.admin.smartlinks.AdminSmartlinkFormViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                val viewModel: net.affscash.android.ui.screens.admin.smartlinks.AdminSmartlinkFormViewModel = hiltViewModel()
                 net.affscash.android.ui.screens.admin.smartlinks.AdminSmartlinkFormScreen(
                     viewModel = viewModel,
                     navController = navController,
@@ -591,7 +596,7 @@ fun MainScreen(
             
             composable(Screen.AdminSmartlinkEdit.route) { backStackEntry ->
                 val id = backStackEntry.arguments?.getString("smartlinkId")?.toIntOrNull()
-                val viewModel: net.affscash.android.ui.screens.admin.smartlinks.AdminSmartlinkFormViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                val viewModel: net.affscash.android.ui.screens.admin.smartlinks.AdminSmartlinkFormViewModel = hiltViewModel()
                 net.affscash.android.ui.screens.admin.smartlinks.AdminSmartlinkFormScreen(
                     viewModel = viewModel,
                     navController = navController,
@@ -622,7 +627,7 @@ fun MainScreen(
                 val parentEntry = remember(backStackEntry) {
                     navController.getBackStackEntry(Screen.AdminSupport.route)
                 }
-                val viewModel: net.affscash.android.ui.screens.admin.support.AdminSupportViewModel = androidx.hilt.navigation.compose.hiltViewModel(parentEntry)
+                val viewModel: net.affscash.android.ui.screens.admin.support.AdminSupportViewModel = hiltViewModel(parentEntry)
                 
                 net.affscash.android.ui.screens.admin.support.AdminSupportChatScreen(
                     onNavigateBack = { navController.popBackStack() },
@@ -683,21 +688,21 @@ fun MainScreen(
             }
             composable(Screen.AdminConversions.route) { net.affscash.android.ui.admin.AdminConversionsScreen() }
             composable(Screen.AdminReports.route) {
-                val viewModel: net.affscash.android.ui.screens.admin.reports.AdminReportsViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                val viewModel: net.affscash.android.ui.screens.admin.reports.AdminReportsViewModel = hiltViewModel()
                 net.affscash.android.ui.screens.admin.reports.AdminReportsScreen(
                     viewModel = viewModel,
                     onNavigateBack = { navController.popBackStack() }
                 )
             }
             composable(Screen.AdminAffiliateReport.route) {
-                val viewModel: net.affscash.android.ui.screens.admin.reports.AdminAffiliateReportViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                val viewModel: net.affscash.android.ui.screens.admin.reports.AdminAffiliateReportViewModel = hiltViewModel()
                 net.affscash.android.ui.screens.admin.reports.AdminAffiliateReportScreen(
                     viewModel = viewModel,
                     onNavigateBack = { navController.popBackStack() }
                 )
             }
             composable(Screen.AdminAutoHide.route) {
-                val viewModel: net.affscash.android.ui.screens.admin.autohide.AdminAutoHideViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                val viewModel: net.affscash.android.ui.screens.admin.autohide.AdminAutoHideViewModel = hiltViewModel()
                 net.affscash.android.ui.screens.admin.autohide.AdminAutoHideScreen(
                     viewModel = viewModel,
                     onNavigateBack = { navController.popBackStack() }
@@ -714,21 +719,21 @@ fun MainScreen(
                 )
             }
             composable(Screen.AdminAccountDeleteRequests.route) {
-                val viewModel: net.affscash.android.ui.screens.admin.account_delete.AdminAccountDeleteRequestsViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                val viewModel: net.affscash.android.ui.screens.admin.account_delete.AdminAccountDeleteRequestsViewModel = hiltViewModel()
                 net.affscash.android.ui.screens.admin.account_delete.AdminAccountDeleteRequestsScreen(
                     viewModel = viewModel,
                     onNavigateBack = { navController.popBackStack() }
                 )
             }
             composable(Screen.AdminPoints.route) {
-                val viewModel: net.affscash.android.ui.screens.admin.points.AdminPointsViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                val viewModel: net.affscash.android.ui.screens.admin.points.AdminPointsViewModel = hiltViewModel()
                 net.affscash.android.ui.screens.admin.points.AdminPointsScreen(
                     viewModel = viewModel,
                     onNavigateBack = { navController.popBackStack() }
                 )
             }
             composable(Screen.AdminInvoices.route) {
-                val viewModel: net.affscash.android.ui.screens.admin.invoices.AdminInvoicesViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                val viewModel: net.affscash.android.ui.screens.admin.invoices.AdminInvoicesViewModel = hiltViewModel()
                 net.affscash.android.ui.screens.admin.invoices.AdminInvoicesScreen(
                     viewModel = viewModel,
                     onNavigateBack = { navController.popBackStack() },
@@ -741,7 +746,7 @@ fun MainScreen(
                 )
             }
             composable(Screen.AdminAffiliateManagers.route) {
-                val viewModel: net.affscash.android.ui.screens.admin.managers.AdminAffiliateManagersViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                val viewModel: net.affscash.android.ui.screens.admin.managers.AdminAffiliateManagersViewModel = hiltViewModel()
                 net.affscash.android.ui.screens.admin.managers.AdminAffiliateManagersScreen(
                     viewModel = viewModel,
                     onNavigateBack = { navController.popBackStack() },
@@ -753,7 +758,7 @@ fun MainScreen(
                 net.affscash.android.ui.screens.admin.settings.AdminPlatformSettingsScreen(navController = navController) 
             }
             composable(Screen.AdminPaymentSettings.route) {
-                val viewModel: net.affscash.android.ui.screens.admin.payment_settings.AdminPaymentSettingsViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                val viewModel: net.affscash.android.ui.screens.admin.payment_settings.AdminPaymentSettingsViewModel = hiltViewModel()
                 net.affscash.android.ui.screens.admin.payment_settings.AdminPaymentSettingsScreen(
                     viewModel = viewModel,
                     onNavigateBack = { navController.popBackStack() }
@@ -801,7 +806,7 @@ fun MainScreen(
                 ) 
             }
             composable("manager_create_affiliate") {
-                val viewModel: net.affscash.android.ui.manager.ManagerAffiliatesViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                val viewModel: net.affscash.android.ui.manager.ManagerAffiliatesViewModel = hiltViewModel()
                 net.affscash.android.ui.manager.ManagerCreateAffiliateScreen(
                     onNavigateBack = { navController.popBackStack() },
                     viewModel = viewModel
@@ -809,7 +814,7 @@ fun MainScreen(
             }
             composable("manager_edit_affiliate/{affId}") { backStackEntry ->
                 val affId = backStackEntry.arguments?.getString("affId")?.toIntOrNull() ?: 0
-                val viewModel: net.affscash.android.ui.manager.ManagerAffiliatesViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                val viewModel: net.affscash.android.ui.manager.ManagerAffiliatesViewModel = hiltViewModel()
                 val uiState by viewModel.uiState.collectAsState()
                 val affiliate = uiState.affiliates.find { it.affId == affId }
                 if (affiliate != null) {
@@ -822,7 +827,7 @@ fun MainScreen(
             }
             composable("manager_view_affiliate/{affId}") { backStackEntry ->
                 val affId = backStackEntry.arguments?.getString("affId")?.toIntOrNull() ?: 0
-                val viewModel: net.affscash.android.ui.manager.ManagerAffiliatesViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+                val viewModel: net.affscash.android.ui.manager.ManagerAffiliatesViewModel = hiltViewModel()
                 net.affscash.android.ui.manager.ManagerAffiliateDetailsScreen(
                     affId = affId,
                     onNavigateBack = { navController.popBackStack() },
@@ -862,7 +867,7 @@ fun MainScreen(
                 val parentEntry = remember(backStackEntry) {
                     navController.getBackStackEntry(Screen.ManagerSupport.route)
                 }
-                val viewModel: net.affscash.android.ui.manager.support.ManagerSupportViewModel = androidx.hilt.navigation.compose.hiltViewModel(parentEntry)
+                val viewModel: net.affscash.android.ui.manager.support.ManagerSupportViewModel = hiltViewModel(parentEntry)
                 net.affscash.android.ui.manager.support.ManagerChatScreen(
                     navController = navController,
                     viewModel = viewModel

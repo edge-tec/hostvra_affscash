@@ -13,8 +13,13 @@ import javax.inject.Inject
 import com.google.firebase.messaging.FirebaseMessaging
 import net.affscash.android.data.network.ApiService
 
+import android.content.Context
+import android.provider.Settings
+import dagger.hilt.android.qualifiers.ApplicationContext
+
 @HiltViewModel
 class MainViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val userManager: UserManager,
     private val affiliateRepository: AffiliateRepository,
     private val apiService: ApiService
@@ -33,7 +38,8 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val token = FirebaseMessaging.getInstance().token.await()
-                val request = mapOf("token" to token, "device_id" to "android_device")
+                val androidId = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID) ?: "unknown"
+                val request = mapOf("token" to token, "platform" to "android", "device_id" to androidId)
                 apiService.registerFcmToken(request)
             } catch (e: Exception) {
                 // Ignore failures to register token

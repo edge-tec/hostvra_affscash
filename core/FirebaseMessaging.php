@@ -86,23 +86,12 @@ class FirebaseMessaging {
         $message = [
             'message' => [
                 'token' => $deviceToken,
-                // Notification payload for system tray when app is in background
-                'notification' => [
-                    'title' => $title,
-                    'body'  => $body,
-                ],
-                // Data payload — always delivered to the app
+                // Data payload — always delivered to the app natively without OS interference
                 'data' => (object)$stringData,
                 // Android-specific configuration
                 'android' => [
                     'priority' => 'high',          // Bypass Doze mode
                     'ttl'      => '86400s',        // 24h TTL
-                    'notification' => [
-                        'channel_id'         => $channelId,
-                        'notification_priority' => 'PRIORITY_HIGH',
-                        'default_sound'      => true,
-                        'default_vibrate_timings' => true,
-                    ],
                 ],
             ]
         ];
