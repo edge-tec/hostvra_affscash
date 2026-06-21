@@ -211,9 +211,8 @@ interface ApiService {
     ): Response<net.affscash.android.data.model.ManagerSendMessageResponse>
 
     @Multipart
-    @POST("api/v2/manager/chat")
+    @POST("api/v2/manager/chat?action=upload")
     suspend fun uploadManagerAttachment(
-        @Part("action") action: okhttp3.RequestBody,
         @Part("affiliate_id") affiliateId: okhttp3.RequestBody,
         @Part file: okhttp3.MultipartBody.Part
     ): Response<net.affscash.android.data.model.ManagerUploadResponse>

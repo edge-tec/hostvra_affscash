@@ -66,11 +66,9 @@ class ManagerSupportRepository @Inject constructor(
         try {
             val requestFile = file.asRequestBody(mimeType.toMediaTypeOrNull())
             val filePart = MultipartBody.Part.createFormData("file", file.name, requestFile)
-            val actionBody = "upload".toRequestBody("text/plain".toMediaTypeOrNull())
             val affiliateIdBody = affiliateId.toString().toRequestBody("text/plain".toMediaTypeOrNull())
 
             val response = apiService.uploadManagerAttachment(
-                action = actionBody,
                 affiliateId = affiliateIdBody,
                 file = filePart
             )

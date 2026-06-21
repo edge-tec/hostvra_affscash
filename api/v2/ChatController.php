@@ -74,9 +74,15 @@ try {
             'image/webp'      => 'webp',
             'application/pdf' => 'pdf',
             'text/csv'        => 'csv',
+            'application/msword' => 'doc',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'docx',
+            'application/vnd.ms-excel' => 'xls',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => 'xlsx',
+            'text/plain'      => 'txt',
+            'application/zip' => 'zip',
         ];
         if (!isset($allowed[$detected])) {
-            throw new Exception("File type not allowed. Use JPG, PNG, WEBP, PDF or CSV.");
+            throw new Exception("File type not allowed. Use JPG, PNG, WEBP, PDF, CSV, DOC, DOCX, XLS, XLSX, TXT, or ZIP.");
         }
 
         $rawName = (string)($file['name'] ?? 'file');

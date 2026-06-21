@@ -174,19 +174,33 @@ try {
             ]);
         }
 
-        // Just handling text message for now, attachment handling from Android is a bit more complex (multipart)
-        // so we'll support basic text message to start, or if attachmentId is provided.
-        $msgId = Database::insert('support_messages', [
-            'conversation_id' => $convId,
-            'affiliate_id' => $ownerId,
-            'owner_type' => $ownerType,
-            'sender_id' => $adminId,
-            'sender_role' => 'admin',
-            'message' => $messageText,
-            'created_at' => date('Y-m-d H:i:s'),
-            'is_read' => 0,
-            'is_deleted' => 0
-        ]);
+        $attachment = null;
+        if ($attachmentId > 0) {
+            $attachment = Database::fetchOne(
+                "SELECT * FROM support_messages WHERE id=? AND is_deleted=1 AND attachment_path IS NOT NULL AND affiliate_id=?",
+                [$attachmentId, $ownerId]
+            );
+        }
+
+        if ($attachment) {
+            Database::query(
+                "UPDATE support_messages SET conversation_id=?, message=?, is_deleted=0, created_at=NOW() WHERE id=?",
+                [$convId, $messageText, $attachmentId]
+            );
+            $msgId = $attachmentId;
+        } else {
+            $msgId = Database::insert('support_messages', [
+                'conversation_id' => $convId,
+                'affiliate_id' => $ownerId,
+                'owner_type' => $ownerType,
+                'sender_id' => $adminId,
+                'sender_role' => 'admin',
+                'message' => $messageText,
+                'created_at' => date('Y-m-d H:i:s'),
+                'is_read' => 0,
+                'is_deleted' => 0
+            ]);
+        }
 
         // ── Notify the recipient about the admin's reply ──
         try {
@@ -282,9 +296,15 @@ try {
             'image/webp'      => 'webp',
             'application/pdf' => 'pdf',
             'text/csv'        => 'csv',
+            'application/msword' => 'doc',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'docx',
+            'application/vnd.ms-excel' => 'xls',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => 'xlsx',
+            'text/plain'      => 'txt',
+            'application/zip' => 'zip',
         ];
         if (!isset($allowed[$detected])) {
-            throw new Exception("File type not allowed. Use JPG, PNG, WEBP, PDF or CSV.");
+            throw new Exception("File type not allowed. Use JPG, PNG, WEBP, PDF, CSV, DOC, DOCX, XLS, XLSX, TXT, or ZIP.");
         }
 
         $rawName = (string)($file['name'] ?? 'file');

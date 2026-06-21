@@ -121,9 +121,10 @@ class ChatViewModel @Inject constructor(
                         }
                     }
                 } catch (e: Exception) {
+                    val errorMsg = if (e.message.isNullOrBlank()) "Unknown error (HTTP or Network)" else e.message
                     _uiState.value = _uiState.value.copy(
                         isSending = false,
-                        error = "Upload failed: ${e.message}"
+                        error = "Upload failed: $errorMsg"
                     )
                     return@launch
                 }

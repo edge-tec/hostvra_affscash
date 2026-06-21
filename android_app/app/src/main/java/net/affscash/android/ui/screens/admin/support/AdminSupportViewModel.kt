@@ -236,7 +236,8 @@ class AdminSupportViewModel @Inject constructor(
                     _uiState.update { it.copy(error = response.body()?.error ?: "Failed to upload file") }
                 }
             } catch (e: Exception) {
-                _uiState.update { it.copy(error = e.localizedMessage) }
+                val errorMsg = if (e.localizedMessage.isNullOrBlank()) "Unknown error (HTTP or Network)" else e.localizedMessage
+                _uiState.update { it.copy(error = "Upload error: $errorMsg") }
             } finally {
                 _uiState.update { it.copy(isUploading = false) }
             }

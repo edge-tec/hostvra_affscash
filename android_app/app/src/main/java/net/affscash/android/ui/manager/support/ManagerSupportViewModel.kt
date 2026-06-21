@@ -164,11 +164,13 @@ class ManagerSupportViewModel @Inject constructor(
                     }
                 }
             } else {
+                val exMsg = uploadResult.exceptionOrNull()?.localizedMessage
+                val finalMsg = if (exMsg.isNullOrBlank()) "Unknown error (HTTP or Network)" else exMsg
                 _uiState.update {
                     it.copy(
                         isUploading = false,
                         isSending = false,
-                        error = uploadResult.exceptionOrNull()?.message ?: "Failed to upload file"
+                        error = "Upload error: $finalMsg"
                     )
                 }
             }
