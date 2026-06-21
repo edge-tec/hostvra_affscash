@@ -680,10 +680,16 @@ interface ApiService {
     suspend fun markAllNewsAsRead(): Response<SimpleResponse>
 
     @GET("api/v2/notifications?action=list")
-    suspend fun getNotifications(): Response<NotificationsResponse>
+    suspend fun getNotifications(@Query("page") page: Int = 1, @Query("per_page") perPage: Int = 20): Response<NotificationsResponse>
+
+    @GET("api/v2/notifications?action=unread_count")
+    suspend fun getUnreadCount(): Response<UnreadCountResponse>
 
     @POST("api/v2/notifications?action=mark_read")
     suspend fun markNotificationAsRead(@Body request: MarkNotificationRequest): Response<SimpleResponse>
+
+    @POST("api/v2/notifications?action=delete")
+    suspend fun deleteNotification(@Body request: NotificationDeleteRequest): Response<SimpleResponse>
 
     @POST("api/v2/notifications?action=register_token")
     suspend fun registerFcmToken(@Body request: Map<String, String>): Response<SimpleResponse>

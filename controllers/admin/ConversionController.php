@@ -334,8 +334,9 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
                 }
             }
 
-            // ── 4. Notify affiliate ───────────────────────────────────────
+            // ── 4. Notify affiliate via push + in-app ───────────────────
             try {
+                require_once BASE_PATH . '/core/NotificationHelper.php';
                 $affUser = Database::fetchOne(
                     "SELECT user_id FROM affiliates WHERE id = ?",
                     [$conv['affiliate_id']]
@@ -343,15 +344,17 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
                 if ($affUser) {
                     $statusLabel = ucfirst($newStatus);
                     $notifType   = $newStatus === 'approved' ? 'success' : 'warning';
-                    Database::insert('notifications', [
-                        'user_id'     => $affUser['user_id'],
-                        'target_role' => 'affiliate',
-                        'type'        => $notifType,
-                        'title'       => "Conversion {$statusLabel}",
-                        'message'     => "A conversion has been {$newStatus}. Payout: $"
-                                       . number_format((float)$conv['payout'], 2),
-                        'link'        => '/affiliate/reports?tab=conversion',
-                    ]);
+                    $notificationEventType = $newStatus === 'approved' ? 'conversion_approved' : 'conversion_rejected';
+                    NotificationHelper::notifyUser(
+                        (int)$affUser['user_id'],
+                        "Conversion {$statusLabel}",
+                        "A conversion has been {$newStatus}. Payout: $" . number_format((float)$conv['payout'], 2),
+                        $notifType,
+                        '/affiliate/reports?tab=conversion',
+                        ['type' => 'conversion', 'conversion_id' => (string)$convId],
+                        $notificationEventType,
+                        'conversion_details/' . $convId
+                    );
                 }
             } catch (\Throwable $e) {}
 

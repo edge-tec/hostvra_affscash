@@ -1,5 +1,6 @@
 <?php
 Auth::check('admin');
+require_once BASE_PATH . '/core/NotificationHelper.php';
 
 // Auto-create tables
 try {
@@ -98,10 +99,12 @@ if ($action === 'create' || ($action === 'edit' && isset($_GET['id']))) {
                     'published_at' => $publishedAt ?? $newsItem['published_at'],
                 ], 'id=?', [$newsId]);
 
-                // Send emails if newly published
+                // Send emails + push if newly published
                 if (!$wasPublished && $status === 'published' && !$newsItem['email_sent']) {
                     _sendNewsEmail($newsId, $title, $summary, $image, $isHot);
                     Database::update('news', ['email_sent' => 1], 'id=?', [$newsId]);
+                    $prefix = $isHot ? '🔥 ' : '📰 ';
+                    NotificationHelper::notifyRole('affiliate', $prefix . $title, $summary ?: 'New post published.', 'news', '/affiliate/news/' . $newsId, [], 'news_published', 'news');
                 }
                 Helpers::flash('success', 'News updated.');
             } else {
@@ -120,20 +123,9 @@ if ($action === 'create' || ($action === 'edit' && isset($_GET['id']))) {
                 if ($status === 'published') {
                     _sendNewsEmail($id, $title, $summary, $image, $isHot);
                     Database::update('news', ['email_sent' => 1], 'id=?', [$id]);
-                    // Add in-app notification for all affiliates
-                    $affiliateUsers = Database::fetchAll(
-                        "SELECT u.id FROM users u WHERE u.role='affiliate' AND u.status='active'"
-                    );
-                    foreach ($affiliateUsers as $au) {
-                        Database::insert('notifications', [
-                            'user_id'     => $au['id'],
-                            'target_role' => null,
-                            'type'        => 'info',
-                            'title'       => ($isHot ? '🔥 Hot News: ' : '📰 News: ') . $title,
-                            'message'     => $summary ?: 'New post published. Click to read.',
-                            'link'        => '/affiliate/news/' . $id,
-                        ]);
-                    }
+                    // Broadcast push notification to all affiliates
+                    $prefix = $isHot ? '🔥 ' : '📰 ';
+                    NotificationHelper::notifyRole('affiliate', $prefix . $title, $summary ?: 'New post published. Click to read.', 'news', '/affiliate/news/' . $id, [], 'news_published', 'news');
                 }
                 Helpers::flash('success', 'News published!' . ($status === 'published' ? ' Email sent to all affiliates.' : ''));
             }

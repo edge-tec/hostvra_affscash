@@ -142,23 +142,24 @@ class AdminOfferApprovalController {
     }
     
     private static function sendNotification($affId, $offerName, $isApproved) {
+        require_once BASE_PATH . '/core/NotificationHelper.php';
         $affUser = Database::fetchOne(
-            "SELECT u.email, u.first_name, u.last_name FROM affiliates af JOIN users u ON u.id=af.user_id WHERE af.id=?",
+            "SELECT u.id as user_id, u.email, u.first_name, u.last_name FROM affiliates af JOIN users u ON u.id=af.user_id WHERE af.id=?",
             [$affId]
         );
         if ($affUser) {
-            $type = $isApproved ? 'success' : 'warning';
             $title = $isApproved ? 'Offer Access Approved' : 'Offer Access Rejected';
-            $message = $isApproved ? 'Your access to offer "' . $offerName . '" has been approved.' : 'Your access request for offer "' . $offerName . '" was not approved.';
-            
-            Database::insert('notifications', [
-                'user_id'     => null, // Should it be affiliate user_id? Ah, wait, I will look at how the manager did it.
-                'target_role' => null,
-                'type'        => $type,
-                'title'       => $title,
-                'message'     => $message,
-                'link'        => '/affiliate/offers',
-            ]);
+            $message = $isApproved
+                ? 'Your access to offer "' . $offerName . '" has been approved.'
+                : 'Your access request for offer "' . $offerName . '" was not approved.';
+            $notifType = $isApproved ? 'offer_approved' : 'offer_rejected';
+
+            NotificationHelper::notifyUser(
+                (int)$affUser['user_id'], $title, $message,
+                'offer', '/affiliate/offers', [],
+                $notifType, 'offers'
+            );
+
             try {
                 $emailEvent = $isApproved ? 'offer_approved' : 'offer_rejected';
                 Mailer::sendEvent($affUser['email'], $affUser['first_name'].' '.$affUser['last_name'], $emailEvent, [

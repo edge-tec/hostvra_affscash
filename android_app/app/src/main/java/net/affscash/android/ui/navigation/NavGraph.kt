@@ -14,7 +14,8 @@ import net.affscash.android.data.local.UserManager
 @Composable
 fun AffscashNavGraph(
     startDestination: String = "login",
-    userManager: UserManager
+    userManager: UserManager,
+    initialDeepLink: String? = null
 ) {
     val navController = rememberNavController()
     var currentRole by androidx.compose.runtime.remember { 
@@ -48,6 +49,7 @@ fun AffscashNavGraph(
             val role = currentRole ?: "affiliate"
             MainScreen(
                 role = role,
+                initialDeepLink = initialDeepLink,
                 onLogout = {
                     currentRole = null
                     navController.navigate("login") {

@@ -153,6 +153,7 @@ fun MainScreen(
     role: String,
     onLogout: () -> Unit,
     onRoleChange: (String) -> Unit = {},
+    initialDeepLink: String? = null,
     viewModel: MainViewModel = androidx.hilt.navigation.compose.hiltViewModel()
 ) {
     val navController = rememberNavController()
@@ -161,6 +162,26 @@ fun MainScreen(
 
     LaunchedEffect(role) {
         viewModel.refreshImpersonatingState()
+    }
+
+    // Handle deep link navigation from notification taps
+    LaunchedEffect(initialDeepLink) {
+        if (!initialDeepLink.isNullOrEmpty()) {
+            val route = when {
+                initialDeepLink == "notifications" -> Screen.Notifications.route
+                initialDeepLink.startsWith("admin_conversions") -> Screen.AdminConversions.route
+                initialDeepLink.startsWith("manager_conversions") -> Screen.ManagerConversions.route
+                initialDeepLink.startsWith("conversion_details") -> Screen.Notifications.route
+                initialDeepLink.startsWith("admin_invoices") -> Screen.AdminInvoices.route
+                initialDeepLink.startsWith("affiliate_invoices") -> Screen.AffiliateInvoices.route
+                initialDeepLink == "news" -> Screen.News.route
+                initialDeepLink == "chat" -> Screen.Chat.route
+                else -> Screen.Notifications.route
+            }
+            navController.navigate(route) {
+                launchSingleTop = true
+            }
+        }
     }
 
     val allItems = when (role) {

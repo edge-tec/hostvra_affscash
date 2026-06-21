@@ -1,5 +1,6 @@
 <?php
 Auth::check('admin');
+require_once BASE_PATH . '/core/NotificationHelper.php';
 AdvBudget::ensureSchema();
 
 $pageTitle = 'Payment Requests';
@@ -39,21 +40,14 @@ if (Helpers::isPost() && in_array(Helpers::post('action'), ['approve', 'reject']
                 'reviewed_by' => (int)Auth::id(),
             ], 'id=?', [$reqId]);
 
-            // Notify advertiser instantly
-            Database::insert('notifications', [
-                'user_id'     => (int)$req['user_id'],
-                'target_role' => null,
-                'type'        => 'success',
-                'title'       => 'Balance Top-Up Approved',
-                'message'     => '$' . number_format((float)$req['amount'], 2) . ' has been added to your balance.',
-                'link'        => '/advertiser/billing',
-                'is_read'     => 0,
-            ]);
-
-            try {
-                require_once BASE_PATH . '/core/FirebaseMessaging.php';
-                FirebaseMessaging::sendToUser((int)$req['user_id'], 'Balance Top-Up Approved', '$' . number_format((float)$req['amount'], 2) . ' has been added to your balance.', ['type' => 'billing']);
-            } catch (\Throwable $e) {}
+            // Notify advertiser instantly via NotificationHelper (push + DB)
+            NotificationHelper::notifyUser(
+                (int)$req['user_id'],
+                'Balance Top-Up Approved',
+                '$' . number_format((float)$req['amount'], 2) . ' has been added to your balance.',
+                'billing', '/advertiser/billing', [],
+                'topup_approved', 'notifications'
+            );
 
             // Email confirmation (best-effort)
             try {
@@ -76,20 +70,14 @@ if (Helpers::isPost() && in_array(Helpers::post('action'), ['approve', 'reject']
                 'reviewed_by' => (int)Auth::id(),
             ], 'id=?', [$reqId]);
 
-            Database::insert('notifications', [
-                'user_id'     => (int)$req['user_id'],
-                'target_role' => null,
-                'type'        => 'warning',
-                'title'       => 'Balance Top-Up Rejected',
-                'message'     => 'Your $' . number_format((float)$req['amount'], 2) . ' top-up was rejected.' . ($note !== '' ? ' Reason: ' . $note : ''),
-                'link'        => '/advertiser/billing',
-                'is_read'     => 0,
-            ]);
-
-            try {
-                require_once BASE_PATH . '/core/FirebaseMessaging.php';
-                FirebaseMessaging::sendToUser((int)$req['user_id'], 'Balance Top-Up Rejected', 'Your $' . number_format((float)$req['amount'], 2) . ' top-up was rejected.', ['type' => 'billing']);
-            } catch (\Throwable $e) {}
+            // Notify advertiser via push + DB
+            NotificationHelper::notifyUser(
+                (int)$req['user_id'],
+                'Balance Top-Up Rejected',
+                'Your $' . number_format((float)$req['amount'], 2) . ' top-up was rejected.' . ($note !== '' ? ' Reason: ' . $note : ''),
+                'billing', '/advertiser/billing', [],
+                'topup_rejected', 'notifications'
+            );
 
             Helpers::flash('success', 'Payment request marked as rejected.');
         }

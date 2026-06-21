@@ -11,6 +11,7 @@ import coil.decode.SvgDecoder
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import dagger.hilt.android.HiltAndroidApp
+import net.affscash.android.data.local.NotificationBadgeManager
 import okhttp3.OkHttpClient
 import javax.inject.Inject
 
@@ -20,8 +21,20 @@ class AffscashApp : Application(), ImageLoaderFactory {
     @Inject
     lateinit var okHttpClient: OkHttpClient
 
+    @Inject
+    lateinit var notificationBadgeManager: NotificationBadgeManager
+
     override fun onCreate() {
         super.onCreate()
+        instance = this
+    }
+
+    companion object {
+        private var instance: AffscashApp? = null
+
+        fun getBadgeManager(): NotificationBadgeManager? {
+            return instance?.notificationBadgeManager
+        }
     }
 
     override fun newImageLoader(): ImageLoader {

@@ -161,15 +161,18 @@ if (Helpers::isPost()) {
                 // Clear referral code from session after use
                 unset($_SESSION['referral_code']);
 
-                // Notify admin
-                Database::insert('notifications', [
-                    'user_id'     => null,
-                    'target_role' => 'admin',
-                    'type'        => 'info',
-                    'title'       => 'New Affiliate Registration',
-                    'message'     => "$fname $lname has registered as an affiliate and is pending approval.",
-                    'link'        => '/admin/affiliates',
-                ]);
+                // Notify admin via push + in-app
+                require_once BASE_PATH . '/core/NotificationHelper.php';
+                NotificationHelper::notifyRole(
+                    'admin',
+                    'New Affiliate Registration',
+                    "$fname $lname has registered as an affiliate and is pending approval.",
+                    'info',
+                    '/admin/affiliates',
+                    ['type' => 'account'],
+                    'affiliate_registered',
+                    'affiliate_details/' . $userId
+                );
 
                 // Email verification
                 $emailVerifyEnabled = (Config::get('config','app.email_verification') === '1');

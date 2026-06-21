@@ -756,16 +756,16 @@ try {
             // Notify Affiliate
             $notifTitle = "New Conversion!";
             $notifMsg = "You earned $" . number_format($payout, 2) . " from offer #{$click['offer_id']}.";
-            NotificationHelper::notifyUser((int)$click['affiliate_id'], $notifTitle, $notifMsg, 'conversion', '/affiliate/reports', ['offer_id' => (string)$click['offer_id']]);
+            NotificationHelper::notifyUser((int)$click['affiliate_id'], $notifTitle, $notifMsg, 'conversion', '/affiliate/reports', ['offer_id' => (string)$click['offer_id']], 'conversion_new', 'conversion_details/' . $convId);
 
             // Notify Admin
             $adminMsg = "Affiliate #{$click['affiliate_id']} generated a conversion on offer #{$click['offer_id']} for $" . number_format($revenue, 2) . " revenue.";
-            NotificationHelper::notifyRole('admin', "New Conversion", $adminMsg, 'conversion', '/admin/reports/conversions');
+            NotificationHelper::notifyRole('admin', "New Conversion", $adminMsg, 'conversion', '/admin/reports/conversions', [], 'conversion_new', 'admin_conversions');
 
             // Notify Manager (if assigned)
             $managerRow = Database::fetchOne("SELECT manager_id FROM affiliates WHERE user_id=?", [(int)$click['affiliate_id']]);
             if ($managerRow && !empty($managerRow['manager_id'])) {
-                NotificationHelper::notifyUser((int)$managerRow['manager_id'], "New Conversion", $adminMsg, 'conversion', '/manager/reports/conversions');
+                NotificationHelper::notifyUser((int)$managerRow['manager_id'], "New Conversion", $adminMsg, 'conversion', '/manager/reports/conversions', [], 'conversion_new', 'manager_conversions');
             }
 
         } catch (\Throwable $e) {

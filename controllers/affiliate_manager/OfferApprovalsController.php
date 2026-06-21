@@ -1,5 +1,6 @@
 <?php
 Auth::check('affiliate_manager');
+require_once BASE_PATH . '/core/NotificationHelper.php';
 
 if (!Auth::hasPermission('view_affiliates')) {
     Helpers::flash('error', 'You do not have permission to view offer approvals.');
@@ -51,18 +52,17 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
                     [$affId, $offerId]
                 );
                 $affUser = Database::fetchOne(
-                    "SELECT u.email, u.first_name, u.last_name FROM affiliates af JOIN users u ON u.id=af.user_id WHERE af.id=?",
+                    "SELECT u.id as user_id, u.email, u.first_name, u.last_name FROM affiliates af JOIN users u ON u.id=af.user_id WHERE af.id=?",
                     [$affId]
                 );
                 if ($affUser) {
-                    Database::insert('notifications', [
-                        'user_id'     => null,
-                        'target_role' => null,
-                        'type'        => 'success',
-                        'title'       => 'Offer Access Approved',
-                        'message'     => 'Your access to offer "' . $ao['offer_name'] . '" has been approved.',
-                        'link'        => '/affiliate/offers',
-                    ]);
+                    NotificationHelper::notifyUser(
+                        (int)$affUser['user_id'],
+                        'Offer Access Approved',
+                        'Your access to offer "' . $ao['offer_name'] . '" has been approved.',
+                        'offer', '/affiliate/offers', [],
+                        'offer_approved', 'offers'
+                    );
                     try {
                         Mailer::sendEvent($affUser['email'], $affUser['first_name'].' '.$affUser['last_name'], 'offer_approved', [
                             'name'       => $affUser['first_name'].' '.$affUser['last_name'],
@@ -80,18 +80,17 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
                     [$affId, $offerId]
                 );
                 $affUser = Database::fetchOne(
-                    "SELECT u.email, u.first_name, u.last_name FROM affiliates af JOIN users u ON u.id=af.user_id WHERE af.id=?",
+                    "SELECT u.id as user_id, u.email, u.first_name, u.last_name FROM affiliates af JOIN users u ON u.id=af.user_id WHERE af.id=?",
                     [$affId]
                 );
                 if ($affUser) {
-                    Database::insert('notifications', [
-                        'user_id'     => null,
-                        'target_role' => null,
-                        'type'        => 'warning',
-                        'title'       => 'Offer Access Rejected',
-                        'message'     => 'Your access request for offer "'.$ao['offer_name'].'" was not approved.',
-                        'link'        => '/affiliate/offers',
-                    ]);
+                    NotificationHelper::notifyUser(
+                        (int)$affUser['user_id'],
+                        'Offer Access Rejected',
+                        'Your access request for offer "'.$ao['offer_name'].'" was not approved.',
+                        'offer', '/affiliate/offers', [],
+                        'offer_rejected', 'offers'
+                    );
                     try {
                         Mailer::sendEvent($affUser['email'], $affUser['first_name'].' '.$affUser['last_name'], 'offer_rejected', [
                             'name'       => $affUser['first_name'].' '.$affUser['last_name'],

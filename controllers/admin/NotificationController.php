@@ -6,29 +6,35 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
     $action = Helpers::post('action');
 
     if ($action === 'send') {
+        require_once BASE_PATH . '/core/NotificationHelper.php';
         $title      = Helpers::post('title');
         $message    = Helpers::postRaw('message');
         $targetRole = Helpers::post('target_role');
         $type       = Helpers::post('type');
         $userId     = Helpers::postRaw('user_id') ? (int)Helpers::postRaw('user_id') : null;
 
-        Database::insert('notifications', [
-            'user_id'     => $userId,
-            'target_role' => $userId ? null : $targetRole,
-            'type'        => $type,
-            'title'       => $title,
-            'message'     => $message,
-        ]);
-
-        // Push Notification
-        try {
-            require_once BASE_PATH . '/core/FirebaseMessaging.php';
-            if ($userId) {
-                FirebaseMessaging::sendToUser($userId, $title, $message, ['type' => 'notification']);
-            } elseif ($targetRole) {
-                FirebaseMessaging::sendToRole($targetRole, $title, $message, ['type' => 'notification']);
+        if ($userId) {
+            NotificationHelper::notifyUser(
+                $userId, $title, $message,
+                $type ?: 'info', '', [],
+                'admin_notification', 'notifications'
+            );
+        } elseif ($targetRole) {
+            NotificationHelper::notifyRole(
+                $targetRole, $title, $message,
+                $type ?: 'info', '', [],
+                'admin_notification', 'notifications'
+            );
+        } else {
+            // Broadcast to all roles
+            foreach (['admin', 'affiliate_manager', 'affiliate', 'advertiser'] as $role) {
+                NotificationHelper::notifyRole(
+                    $role, $title, $message,
+                    $type ?: 'info', '', [],
+                    'admin_notification', 'notifications'
+                );
             }
-        } catch (\Throwable $e) {}
+        }
 
         Helpers::flash('success', 'Notification sent.');
     }

@@ -54,6 +54,7 @@ import com.patrykandpatrick.vico.core.chart.line.LineChart
 import com.patrykandpatrick.vico.core.entry.ChartEntryModel
 import com.patrykandpatrick.vico.core.entry.FloatEntry
 import com.patrykandpatrick.vico.core.entry.entryModelOf
+import net.affscash.android.data.local.NotificationBadgeManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -121,10 +122,16 @@ fun DashboardScreen(
                         onClick = onNavigateToNews
                     )
 
-                    // Notifications Icon
+                    // Notifications Icon — use live badge manager count
+                    val badgeManager = remember { net.affscash.android.AffscashApp.getBadgeManager() }
+                    val liveBadgeCount = if (badgeManager != null) {
+                        badgeManager.unreadCount.collectAsState().value
+                    } else {
+                        counts?.unreadNotifs ?: 0
+                    }
                     HeaderIconWithBadge(
                         icon = Icons.Outlined.Notifications,
-                        count = counts?.unreadNotifs ?: 0,
+                        count = liveBadgeCount,
                         badgeColor = Color(0xFFEF4444),
                         onClick = onNavigateToNotifications
                     )

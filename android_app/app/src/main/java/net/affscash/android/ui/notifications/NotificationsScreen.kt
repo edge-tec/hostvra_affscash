@@ -1,31 +1,32 @@
 package net.affscash.android.ui.notifications
 
-import android.content.Intent
-import android.net.Uri
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.data.model.NotificationItem
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,7 +35,6 @@ fun NotificationsScreen(
     onNavigateBack: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -71,6 +71,13 @@ fun NotificationsScreen(
                         modifier = Modifier.align(Alignment.Center),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        Icon(
+                            Icons.Default.Warning,
+                            contentDescription = null,
+                            modifier = Modifier.size(48.dp),
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
                         Text(msg, color = MaterialTheme.colorScheme.error)
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(onClick = { viewModel.loadNotifications() }) {
@@ -79,36 +86,69 @@ fun NotificationsScreen(
                     }
                 }
                 is NotificationsState.Success -> {
-                    val notifications = (uiState as NotificationsState.Success).notifications
+                    val state = uiState as NotificationsState.Success
+                    val notifications = state.notifications
                     if (notifications.isEmpty()) {
-                        Text(
-                            "No notifications found",
-                            color = Color.Gray,
-                            modifier = Modifier.align(Alignment.Center)
-                        )
-                    } else {
-                        LazyColumn(
-                            contentPadding = PaddingValues(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        Column(
+                            modifier = Modifier.align(Alignment.Center),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            items(notifications) { notif ->
-                                NotificationCard(
+                            Icon(
+                                Icons.Default.Notifications,
+                                contentDescription = null,
+                                modifier = Modifier.size(64.dp),
+                                tint = Color.Gray.copy(alpha = 0.5f)
+                            )
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Text(
+                                "No notifications yet",
+                                color = Color.Gray,
+                                fontSize = 16.sp
+                            )
+                        }
+                    } else {
+                        val listState = rememberLazyListState()
+
+                        // Load more when reaching the end
+                        LaunchedEffect(listState) {
+                            snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
+                                .collect { lastVisible ->
+                                    if (lastVisible != null && lastVisible >= notifications.size - 3 && state.hasMore && !state.isLoadingMore) {
+                                        viewModel.loadMore()
+                                    }
+                                }
+                        }
+
+                        LazyColumn(
+                            state = listState,
+                            contentPadding = PaddingValues(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(
+                                items = notifications,
+                                key = { it.id }
+                            ) { notif ->
+                                SwipeToDismissNotification(
                                     notification = notif,
+                                    onDismiss = { viewModel.deleteNotification(notif.id) },
                                     onClick = {
                                         if (notif.isRead == 0) {
                                             viewModel.markAsRead(notif.id)
                                         }
-                                        if (!notif.link.isNullOrEmpty()) {
-                                            try {
-                                                val fullLink = if (notif.link.startsWith("/")) "https://affscash.net${notif.link}" else notif.link
-                                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(fullLink))
-                                                context.startActivity(intent)
-                                            } catch (e: Exception) {
-                                                // ignore invalid link
-                                            }
-                                        }
                                     }
                                 )
+                            }
+
+                            // Loading more indicator
+                            if (state.isLoadingMore) {
+                                item {
+                                    Box(
+                                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                                    }
+                                }
                             }
                         }
                     }
@@ -118,19 +158,70 @@ fun NotificationsScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SwipeToDismissNotification(
+    notification: NotificationItem,
+    onDismiss: () -> Unit,
+    onClick: () -> Unit
+) {
+    val dismissState = rememberSwipeToDismissBoxState(
+        confirmValueChange = { value ->
+            if (value == SwipeToDismissBoxValue.EndToStart) {
+                onDismiss()
+                true
+            } else false
+        }
+    )
+
+    SwipeToDismissBox(
+        state = dismissState,
+        backgroundContent = {
+            val color by animateColorAsState(
+                when (dismissState.targetValue) {
+                    SwipeToDismissBoxValue.EndToStart -> MaterialTheme.colorScheme.error
+                    else -> Color.Transparent
+                }
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color, RoundedCornerShape(12.dp))
+                    .padding(horizontal = 20.dp),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                Icon(
+                    Icons.Default.Delete,
+                    contentDescription = "Delete",
+                    tint = Color.White
+                )
+            }
+        },
+        enableDismissFromStartToEnd = false,
+        enableDismissFromEndToStart = true
+    ) {
+        NotificationCard(notification = notification, onClick = onClick)
+    }
+}
+
 @Composable
 fun NotificationCard(
     notification: NotificationItem,
     onClick: () -> Unit
 ) {
     val isUnread = notification.isRead == 0
+    val (icon, iconColor) = getNotificationIcon(notification.notificationType)
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isUnread) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f) else MaterialTheme.colorScheme.surfaceVariant
+            containerColor = if (isUnread)
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+            else
+                MaterialTheme.colorScheme.surfaceVariant
         )
     ) {
         Row(
@@ -141,19 +232,19 @@ fun NotificationCard(
                 modifier = Modifier
                     .size(40.dp)
                     .background(
-                        color = if (isUnread) MaterialTheme.colorScheme.primary else Color.Gray,
+                        color = if (isUnread) iconColor else Color.Gray,
                         shape = CircleShape
                     ),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    Icons.Default.Notifications,
+                    icon,
                     contentDescription = null,
                     tint = Color.White,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(22.dp)
                 )
             }
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(14.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -163,10 +254,14 @@ fun NotificationCard(
                     Text(
                         text = notification.title,
                         fontWeight = if (isUnread) FontWeight.Bold else FontWeight.Medium,
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onSurface
+                        fontSize = 15.sp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
                     )
                     if (isUnread) {
+                        Spacer(modifier = Modifier.width(8.dp))
                         Box(
                             modifier = Modifier
                                 .size(8.dp)
@@ -178,11 +273,13 @@ fun NotificationCard(
                 Text(
                     text = notification.message,
                     fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(6.dp))
                 Text(
-                    text = formatNotificationDate(notification.createdAt),
+                    text = formatRelativeTime(notification.createdAt),
                     fontSize = 12.sp,
                     color = Color.Gray
                 )
@@ -191,12 +288,36 @@ fun NotificationCard(
     }
 }
 
-fun formatNotificationDate(dateString: String): String {
+private fun getNotificationIcon(notificationType: String?): Pair<ImageVector, Color> {
+    return when {
+        notificationType == null -> Icons.Default.Notifications to Color(0xFF6366F1)
+        notificationType.contains("conversion") -> Icons.Default.ShoppingCart to Color(0xFF10B981)
+        notificationType.contains("withdrawal") || notificationType.contains("invoice") -> Icons.Default.AccountBalance to Color(0xFF3B82F6)
+        notificationType.contains("news") || notificationType.contains("announcement") -> Icons.Default.Article to Color(0xFFF59E0B)
+        notificationType.contains("offer") -> Icons.Default.LocalOffer to Color(0xFF8B5CF6)
+        notificationType.contains("account") || notificationType.contains("affiliate") -> Icons.Default.Person to Color(0xFFEF4444)
+        notificationType.contains("support") || notificationType.contains("chat") -> Icons.Default.Chat to Color(0xFF06B6D4)
+        else -> Icons.Default.Notifications to Color(0xFF6366F1)
+    }
+}
+
+fun formatRelativeTime(dateString: String): String {
     return try {
         val formatIn = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        val date = formatIn.parse(dateString)
-        val formatOut = SimpleDateFormat("MMM dd, yyyy 'at' hh:mm a", Locale.getDefault())
-        date?.let { formatOut.format(it) } ?: dateString
+        val date = formatIn.parse(dateString) ?: return dateString
+        val now = Date()
+        val diff = now.time - date.time
+
+        when {
+            diff < TimeUnit.MINUTES.toMillis(1) -> "Just now"
+            diff < TimeUnit.HOURS.toMillis(1) -> "${TimeUnit.MILLISECONDS.toMinutes(diff)}m ago"
+            diff < TimeUnit.DAYS.toMillis(1) -> "${TimeUnit.MILLISECONDS.toHours(diff)}h ago"
+            diff < TimeUnit.DAYS.toMillis(7) -> "${TimeUnit.MILLISECONDS.toDays(diff)}d ago"
+            else -> {
+                val formatOut = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+                formatOut.format(date)
+            }
+        }
     } catch (e: Exception) {
         dateString
     }

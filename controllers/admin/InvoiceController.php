@@ -552,6 +552,40 @@ elseif ($action === 'create') {
                 // PDF/email failure is non-fatal; invoice is still created
             }
 
+            // ── Push notification for invoice creation ─────────────────────
+            try {
+                require_once BASE_PATH . '/core/NotificationHelper.php';
+                if ($type === 'affiliate_payout' && $entityId) {
+                    $affUserId = Database::fetchOne("SELECT user_id FROM affiliates WHERE id=?", [$entityId]);
+                    if ($affUserId) {
+                        NotificationHelper::notifyUser(
+                            (int)$affUserId['user_id'],
+                            'New Invoice Created',
+                            "Invoice {$invNum} for \${$total} has been created for your account.",
+                            'billing',
+                            '/affiliate/invoices',
+                            ['type' => 'withdrawal', 'invoice_id' => (string)$newId],
+                            'invoice_created',
+                            'withdrawal_details/' . $newId
+                        );
+                    }
+                } elseif ($type === 'manager_fee' && $entityId) {
+                    $mgrUserId = Database::fetchOne("SELECT user_id FROM affiliate_managers WHERE id=?", [$entityId]);
+                    if ($mgrUserId) {
+                        NotificationHelper::notifyUser(
+                            (int)$mgrUserId['user_id'],
+                            'New Invoice Created',
+                            "Invoice {$invNum} for \${$total} has been created.",
+                            'billing',
+                            '/manager/invoices',
+                            ['type' => 'withdrawal'],
+                            'invoice_created',
+                            'withdrawal_details/' . $newId
+                        );
+                    }
+                }
+            } catch (\Throwable $e) {}
+
             Helpers::flash('success', "Invoice {$invNum} created and sent to {$entityEmail}.");
             Helpers::redirect('/admin/invoices/' . $newId);
         }
@@ -718,7 +752,7 @@ elseif ($action === 'view') {
 
             if ($newStatus === 'paid' && $invoice['affiliate_id']) {
                 $affUser = Database::fetchOne(
-                    "SELECT u.email, u.first_name, u.last_name FROM affiliates af JOIN users u ON u.id=af.user_id WHERE af.id=?",
+                    "SELECT u.email, u.first_name, u.last_name, af.user_id FROM affiliates af JOIN users u ON u.id=af.user_id WHERE af.id=?",
                     [$invoice['affiliate_id']]
                 );
                 if ($affUser) {
@@ -730,7 +764,66 @@ elseif ($action === 'view') {
                         'invoice_number' => $invoice['invoice_number'],
                         'total'          => '$' . number_format($invoice['total'], 2),
                     ]);
+                    // Push notification for withdrawal paid
+                    try {
+                        require_once BASE_PATH . '/core/NotificationHelper.php';
+                        NotificationHelper::notifyUser(
+                            (int)$affUser['user_id'],
+                            'Withdrawal Paid',
+                            "Your invoice {$invoice['invoice_number']} for \$" . number_format($invoice['total'], 2) . " has been paid.",
+                            'withdrawal',
+                            '/affiliate/invoices',
+                            ['type' => 'withdrawal', 'invoice_id' => (string)$id],
+                            'withdrawal_approved',
+                            'withdrawal_details/' . $id
+                        );
+                    } catch (\Throwable $e) {}
                 }
+            }
+            // Push notification for manager invoice paid
+            if ($newStatus === 'paid' && !empty($invoice['manager_id'])) {
+                try {
+                    require_once BASE_PATH . '/core/NotificationHelper.php';
+                    $mgrUser = Database::fetchOne("SELECT user_id FROM affiliate_managers WHERE id=?", [$invoice['manager_id']]);
+                    if ($mgrUser) {
+                        NotificationHelper::notifyUser(
+                            (int)$mgrUser['user_id'],
+                            'Invoice Paid',
+                            "Invoice {$invoice['invoice_number']} for \$" . number_format($invoice['total'], 2) . " has been paid.",
+                            'withdrawal',
+                            '/manager/invoices',
+                            ['type' => 'withdrawal'],
+                            'withdrawal_approved',
+                            'withdrawal_details/' . $id
+                        );
+                    }
+                } catch (\Throwable $e) {}
+            }
+            // Push notification for void
+            if ($newStatus === 'void') {
+                try {
+                    require_once BASE_PATH . '/core/NotificationHelper.php';
+                    $notifUserId = null;
+                    if ($invoice['affiliate_id']) {
+                        $r = Database::fetchOne("SELECT user_id FROM affiliates WHERE id=?", [$invoice['affiliate_id']]);
+                        $notifUserId = $r ? (int)$r['user_id'] : null;
+                    } elseif (!empty($invoice['manager_id'])) {
+                        $r = Database::fetchOne("SELECT user_id FROM affiliate_managers WHERE id=?", [$invoice['manager_id']]);
+                        $notifUserId = $r ? (int)$r['user_id'] : null;
+                    }
+                    if ($notifUserId) {
+                        NotificationHelper::notifyUser(
+                            $notifUserId,
+                            'Invoice Voided',
+                            "Invoice {$invoice['invoice_number']} has been voided.",
+                            'withdrawal',
+                            '/affiliate/invoices',
+                            ['type' => 'withdrawal'],
+                            'withdrawal_rejected',
+                            'withdrawal_details/' . $id
+                        );
+                    }
+                } catch (\Throwable $e) {}
             }
 
             Helpers::flash('success', 'Invoice status updated.');
