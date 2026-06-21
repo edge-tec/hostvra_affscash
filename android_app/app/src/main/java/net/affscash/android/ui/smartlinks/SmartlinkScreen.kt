@@ -45,7 +45,7 @@ fun SmartlinkScreen(
     Scaffold(
         topBar = {
             Surface(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().statusBarsPadding(),
                 color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
                 shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
             ) {
@@ -53,7 +53,7 @@ fun SmartlinkScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, top = 28.dp, bottom = 10.dp)
+                        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
                 ) {
                     Text(
                         text = "Smartlinks",

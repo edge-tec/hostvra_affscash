@@ -62,7 +62,7 @@ fun ManagerReportsScreen(
     Scaffold(
         topBar = {
             Surface(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().statusBarsPadding(),
                 color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
             ) {
@@ -70,7 +70,7 @@ fun ManagerReportsScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 8.dp, end = 24.dp, top = 28.dp, bottom = 10.dp)
+                        .padding(start = 8.dp, end = 24.dp, top = 8.dp, bottom = 8.dp)
                 ) {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")

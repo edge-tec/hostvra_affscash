@@ -71,15 +71,24 @@ fun DashboardScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { 
+            Surface(
+                modifier = Modifier.fillMaxWidth().background(PremiumUI.PastelHeader).statusBarsPadding(),
+                color = Color.Transparent
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     Image(
                         painter = painterResource(id = R.drawable.logo),
                         contentDescription = "AffsCash Logo",
-                        modifier = Modifier.height(32.dp)
+                        modifier = Modifier.height(24.dp)
                     )
-                },
-                actions = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
                     val data = (uiState as? DashboardState.Success)?.data
                     val balance = data?.stats?.balance ?: 0.0
                     val counts = data?.dashboardResponse?.headerCounts
@@ -89,25 +98,25 @@ fun DashboardScreen(
                         color = Color(0x59FFFFFF),
                         shape = RoundedCornerShape(24.dp),
                         border = BorderStroke(1.dp, Color(0x4DFFFFFF)),
-                        modifier = Modifier.padding(end = 8.dp),
+                        modifier = Modifier.padding(end = 4.dp),
                         onClick = onNavigateToInvoices
                     ) {
                         Row(
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
                                 "$ $balance", 
                                 color = Color(0xFF059669),
                                 fontWeight = FontWeight.ExtraBold,
-                                style = MaterialTheme.typography.labelLarge
+                                fontSize = 12.sp
                             )
-                            Spacer(modifier = Modifier.width(4.dp))
+                            Spacer(modifier = Modifier.width(2.dp))
                             Icon(
                                 Icons.Default.ArrowDropDown,
                                 contentDescription = "Dropdown",
                                 tint = Color(0xFF059669),
-                                modifier = Modifier.size(16.dp)
+                                modifier = Modifier.size(14.dp)
                             )
                         }
                     }
@@ -152,14 +161,9 @@ fun DashboardScreen(
                         onClick = onNavigateToChat
                     )
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White,
-                    actionIconContentColor = Color.White
-                ),
-                modifier = Modifier.background(PremiumUI.PastelHeader)
-            )
+                    }
+                }
+            }
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues).fillMaxSize().background(PremiumUI.BackgroundGradient)) {
@@ -184,7 +188,7 @@ fun DashboardScreen(
                     val data = (uiState as DashboardState.Success).data
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(16.dp)
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
                     ) {
                         item {
                             Text(
@@ -192,26 +196,26 @@ fun DashboardScreen(
                                 style = MaterialTheme.typography.headlineSmall.copy(brush = PremiumUI.PrimaryGradient),
                                 fontWeight = FontWeight.ExtraBold
                             )
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
                         
                         item {
                             PeriodTabs(filterOption) { period ->
                                 viewModel.setFilterOption(period)
                             }
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
 
                         item {
                             KpiGrid(data.stats)
-                            Spacer(modifier = Modifier.height(24.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
 
                         item {
-                            Text("Performance Trend", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            Text("Performance Trend", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.height(8.dp))
                             LineChartCard(data.trend)
-                            Spacer(modifier = Modifier.height(24.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
 
                         item {
@@ -228,35 +232,35 @@ fun DashboardScreen(
                                     PieChartCard(data.browsers.labels, data.browsers.data)
                                 }
                             }
-                            Spacer(modifier = Modifier.height(24.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
 
                         item {
-                            Text("Hourly Traffic", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            Text("Hourly Traffic", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.height(8.dp))
                             BarChartCard(data.hourly.labels, data.hourly.data.map { it.toFloat() })
-                            Spacer(modifier = Modifier.height(24.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
 
                         item {
-                            Text("Traffic Sources", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            Text("Traffic Sources", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.height(8.dp))
                             BarChartCard(data.sources.labels, data.sources.data.map { it.toFloat() })
-                            Spacer(modifier = Modifier.height(24.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
 
                         item {
-                            Text("Top Offers Ranking", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            Text("Top Offers Ranking", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.height(8.dp))
                             OffersTable(data.offers.rows)
-                            Spacer(modifier = Modifier.height(24.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
 
                         item {
-                            Text("Top Countries", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            Text("Top Countries", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.height(8.dp))
                             CountriesTable(data.countries.rows)
-                            Spacer(modifier = Modifier.height(24.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
                     }
                 }
@@ -283,7 +287,7 @@ fun PeriodTabs(selectedPeriod: String, onPeriodSelected: (String) -> Unit) {
             ) {
                 Text(
                     text = period,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp), fontSize = 12.sp,
                     color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                 )
@@ -319,10 +323,10 @@ fun KpiCard(title: String, value: String, trend: Double?, isInverseTrend: Boolea
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(12.dp)) {
                 Text(title, style = MaterialTheme.typography.labelMedium, color = Color.Gray)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                Text(value, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 
                 if (trend != null) {
                     Spacer(modifier = Modifier.height(4.dp))
@@ -344,7 +348,7 @@ fun KpiCard(title: String, value: String, trend: Double?, isInverseTrend: Boolea
 @Composable
 fun LineChartCard(trendData: DashboardTrendChartResponse) {
     if (trendData.labels.isEmpty() || trendData.clicksData.isEmpty()) {
-        Card(modifier = Modifier.fillMaxWidth().height(250.dp)) {
+        Card(modifier = Modifier.fillMaxWidth().height(180.dp)) {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                 Text("No data available", color = Color.Gray)
             }
@@ -358,7 +362,7 @@ fun LineChartCard(trendData: DashboardTrendChartResponse) {
     val model = entryModelOf(entries)
 
     Card(
-        modifier = Modifier.fillMaxWidth().height(250.dp),
+        modifier = Modifier.fillMaxWidth().height(180.dp),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -383,7 +387,7 @@ fun LineChartCard(trendData: DashboardTrendChartResponse) {
 @Composable
 fun BarChartCard(labels: List<String>, data: List<Float>) {
     if (labels.isEmpty() || data.isEmpty()) {
-        Card(modifier = Modifier.fillMaxWidth().height(200.dp)) {
+        Card(modifier = Modifier.fillMaxWidth().height(160.dp)) {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                 Text("No data available", color = Color.Gray)
             }
@@ -397,7 +401,7 @@ fun BarChartCard(labels: List<String>, data: List<Float>) {
     val model = entryModelOf(entries)
 
     Card(
-        modifier = Modifier.fillMaxWidth().height(250.dp),
+        modifier = Modifier.fillMaxWidth().height(180.dp),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -422,7 +426,7 @@ fun BarChartCard(labels: List<String>, data: List<Float>) {
 @Composable
 fun PieChartCard(labels: List<String>, data: List<Int>) {
     Card(
-        modifier = Modifier.fillMaxWidth().height(200.dp),
+        modifier = Modifier.fillMaxWidth().height(160.dp),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -565,7 +569,7 @@ fun HeaderIconWithBadge(
     Box(
         modifier = Modifier
             .padding(horizontal = 4.dp)
-            .size(36.dp)
+            .size(30.dp)
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
@@ -578,7 +582,7 @@ fun HeaderIconWithBadge(
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .offset(x = 6.dp, y = (-6).dp)
+                    .offset(x = 4.dp, y = (-4).dp)
                     .defaultMinSize(minWidth = 18.dp, minHeight = 18.dp)
                     .background(badgeColor, RoundedCornerShape(9.dp))
                     .padding(horizontal = 4.dp, vertical = 2.dp),
