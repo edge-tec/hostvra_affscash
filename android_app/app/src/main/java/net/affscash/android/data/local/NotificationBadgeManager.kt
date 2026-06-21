@@ -8,9 +8,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Singleton managing the unread notification count as a StateFlow.
+ * Singleton managing exact badge counts synced via FCM.
  * Persists in SharedPreferences for offline access.
- * Incremented by MyFirebaseMessagingService, decremented by mark-as-read actions.
  */
 @Singleton
 class NotificationBadgeManager @Inject constructor(
@@ -18,29 +17,56 @@ class NotificationBadgeManager @Inject constructor(
 ) {
     private val prefs = context.getSharedPreferences("notification_badge", Context.MODE_PRIVATE)
     
-    private val _unreadCount = MutableStateFlow(prefs.getInt("unread_count", 0))
-    val unreadCount: StateFlow<Int> = _unreadCount
+    private val _unreadNotifs = MutableStateFlow(prefs.getInt("unread_notifs", 0))
+    val unreadNotifs: StateFlow<Int> = _unreadNotifs
 
-    fun increment() {
-        val newCount = _unreadCount.value + 1
-        _unreadCount.value = newCount
-        prefs.edit().putInt("unread_count", newCount).apply()
-    }
+    private val _unreadChats = MutableStateFlow(prefs.getInt("unread_chats", 0))
+    val unreadChats: StateFlow<Int> = _unreadChats
 
-    fun decrement() {
-        val newCount = maxOf(0, _unreadCount.value - 1)
-        _unreadCount.value = newCount
-        prefs.edit().putInt("unread_count", newCount).apply()
-    }
+    private val _unreadAlerts = MutableStateFlow(prefs.getInt("unread_alerts", 0))
+    val unreadAlerts: StateFlow<Int> = _unreadAlerts
 
-    fun setCount(count: Int) {
-        val safeCount = maxOf(0, count)
-        _unreadCount.value = safeCount
-        prefs.edit().putInt("unread_count", safeCount).apply()
+    private val _pendingApprovals = MutableStateFlow(prefs.getInt("pending_approvals", 0))
+    val pendingApprovals: StateFlow<Int> = _pendingApprovals
+
+    fun updateCounts(notifs: Int?, chats: Int?, alerts: Int?, approvals: Int?) {
+        val editor = prefs.edit()
+        
+        notifs?.let {
+            val safe = maxOf(0, it)
+            _unreadNotifs.value = safe
+            editor.putInt("unread_notifs", safe)
+        }
+        chats?.let {
+            val safe = maxOf(0, it)
+            _unreadChats.value = safe
+            editor.putInt("unread_chats", safe)
+        }
+        alerts?.let {
+            val safe = maxOf(0, it)
+            _unreadAlerts.value = safe
+            editor.putInt("unread_alerts", safe)
+        }
+        approvals?.let {
+            val safe = maxOf(0, it)
+            _pendingApprovals.value = safe
+            editor.putInt("pending_approvals", safe)
+        }
+        
+        editor.apply()
     }
 
     fun reset() {
-        _unreadCount.value = 0
-        prefs.edit().putInt("unread_count", 0).apply()
+        _unreadNotifs.value = 0
+        _unreadChats.value = 0
+        _unreadAlerts.value = 0
+        _pendingApprovals.value = 0
+        
+        prefs.edit()
+            .putInt("unread_notifs", 0)
+            .putInt("unread_chats", 0)
+            .putInt("unread_alerts", 0)
+            .putInt("pending_approvals", 0)
+            .apply()
     }
 }

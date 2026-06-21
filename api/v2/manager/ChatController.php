@@ -81,11 +81,15 @@ try {
             );
 
             // Mark unread messages from affiliate as read
-            Database::query(
+            $updated = Database::query(
                 "UPDATE support_messages SET is_read=1
                  WHERE conversation_id=? AND sender_role='affiliate' AND is_read=0",
                 [$convId]
             );
+            if ($updated > 0) {
+                require_once __DIR__ . '/../../../core/BadgeSyncHelper.php';
+                BadgeSyncHelper::emitReadSync(Auth::id());
+            }
         }
 
         echo json_encode([

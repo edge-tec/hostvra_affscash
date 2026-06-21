@@ -6,7 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.material3.MaterialTheme
@@ -67,7 +67,7 @@ class MainActivity : ComponentActivity() {
             }
             MaterialTheme {
                 Surface(
-                    modifier = Modifier.fillMaxSize().androidx.compose.foundation.layout.safeDrawingPadding(),
+                    modifier = Modifier.fillMaxSize().safeDrawingPadding(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val role = userManager.getRole()

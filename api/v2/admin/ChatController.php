@@ -104,11 +104,15 @@ try {
             $messages = Database::fetchAll($sql, [$convId, $since]);
 
             // Mark unread messages as read
-            Database::query(
-                "UPDATE support_messages SET is_read=1
+            $updated = Database::query(
+                "UPDATE support_messages SET is_read=1, read_by_admin=1
                  WHERE conversation_id=? AND sender_role = ? AND is_read=0",
                 [$convId, $ownerType]
             );
+            if ($updated > 0) {
+                require_once __DIR__ . '/../../../core/BadgeSyncHelper.php';
+                BadgeSyncHelper::emitReadSync(Auth::id());
+            }
         }
 
         // Format for JSON

@@ -136,12 +136,13 @@ class FirebaseMessaging {
      */
     public static function sendToUsers($userIds, $title, $body, $data = []) {
         require_once __DIR__ . '/Database.php';
+        require_once __DIR__ . '/BadgeSyncHelper.php';
 
         if (empty($userIds)) return 0;
 
         $placeholders = implode(',', array_fill(0, count($userIds), '?'));
         $rows = Database::fetchAll(
-            "SELECT device_token FROM user_devices WHERE user_id IN ($placeholders)",
+            "SELECT ud.device_token, ud.user_id, u.role FROM user_devices ud JOIN users u ON u.id = ud.user_id WHERE ud.user_id IN ($placeholders)",
             $userIds
         );
 
@@ -150,7 +151,16 @@ class FirebaseMessaging {
         $sent = 0;
         $batchCount = 0;
         foreach ($rows as $row) {
-            $result = self::send($row['device_token'], $title, $body, $data);
+            // Calculate exact counts for this specific user
+            $counts = BadgeSyncHelper::getCountsForUser($row['user_id'], $row['role']);
+            $userData = array_merge($data, [
+                'unread_notifs' => (string)$counts['unread_notifs'],
+                'unread_chats' => (string)$counts['unread_chats'],
+                'unread_alerts' => (string)$counts['unread_alerts'],
+                'pending_approvals' => (string)$counts['pending_approvals'],
+            ]);
+
+            $result = self::send($row['device_token'], $title, $body, $userData);
             if ($result !== false) $sent++;
             $batchCount++;
 

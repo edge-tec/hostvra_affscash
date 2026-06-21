@@ -128,34 +128,56 @@ fun ManagerDashboardScreen(
                                 }
                             }
 
+                            val badgeManager = remember { net.affscash.android.AffscashApp.getBadgeManager() }
+
                             // Notifications Icon
+                            val liveNotifsCount = if (badgeManager != null) {
+                                badgeManager.unreadNotifs.collectAsState(initial = counts?.unreadNotifs ?: 0).value
+                            } else {
+                                counts?.unreadNotifs ?: 0
+                            }
                             HeaderIconWithBadge(
                                 icon = Icons.Outlined.Notifications,
-                                count = counts?.unreadNotifs ?: 0,
+                                count = liveNotifsCount,
                                 badgeColor = Color(0xFFEF4444),
                                 onClick = onNavigateToNotifications
                             )
 
                             // Fraud Alerts Icon
+                            val liveAlertsCount = if (badgeManager != null) {
+                                badgeManager.unreadAlerts.collectAsState(initial = counts?.unreadAlerts ?: 0).value
+                            } else {
+                                counts?.unreadAlerts ?: 0
+                            }
                             HeaderIconWithBadge(
                                 icon = Icons.Outlined.WarningAmber,
-                                count = counts?.unreadAlerts ?: 0,
+                                count = liveAlertsCount,
                                 badgeColor = Color(0xFFEF4444),
                                 onClick = onNavigateToFraudAlerts
                             )
 
                             // Chat Icon
+                            val liveChatsCount = if (badgeManager != null) {
+                                badgeManager.unreadChats.collectAsState(initial = counts?.unreadChats ?: 0).value
+                            } else {
+                                counts?.unreadChats ?: 0
+                            }
                             HeaderIconWithBadge(
                                 icon = Icons.Outlined.ChatBubbleOutline,
-                                count = counts?.unreadChats ?: 0,
+                                count = liveChatsCount,
                                 badgeColor = Color(0xFFEF4444),
                                 onClick = onNavigateToChat
                             )
 
                             // Approvals Icon
+                            val liveApprovalsCount = if (badgeManager != null) {
+                                badgeManager.pendingApprovals.collectAsState(initial = counts?.pendingApprovals ?: 0).value
+                            } else {
+                                counts?.pendingApprovals ?: 0
+                            }
                             HeaderIconWithBadge(
                                 icon = Icons.Outlined.CheckCircle,
-                                count = counts?.pendingApprovals ?: 0,
+                                count = liveApprovalsCount,
                                 badgeColor = Color(0xFF10B981),
                                 onClick = onNavigateToOfferApprovals
                             )

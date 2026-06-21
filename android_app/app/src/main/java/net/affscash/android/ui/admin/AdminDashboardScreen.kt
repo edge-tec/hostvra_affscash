@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
@@ -17,10 +18,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -107,32 +110,43 @@ fun AdminDashboardScreen(
                                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                                 ) {
                                     val counts = data.headerCounts
-                                    // Notifications Icon
                                     val badgeManager = remember { net.affscash.android.AffscashApp.getBadgeManager() }
-                                    val liveBadgeCount = if (badgeManager != null) {
-                                        badgeManager.unreadCount.collectAsState().value
+                                    
+                                    // Notifications Icon
+                                    val liveNotifsCount = if (badgeManager != null) {
+                                        badgeManager.unreadNotifs.collectAsState(initial = counts?.unreadNotifs ?: 0).value
                                     } else {
                                         counts?.unreadNotifs ?: 0
                                     }
                                     HeaderIconWithBadge(
                                         icon = Icons.Outlined.Notifications,
-                                        count = liveBadgeCount,
+                                        count = liveNotifsCount,
                                         badgeColor = Color(0xFFEF4444),
                                         onClick = onNavigateToNotifications
                                     )
 
                                     // Chat Icon
+                                    val liveChatsCount = if (badgeManager != null) {
+                                        badgeManager.unreadChats.collectAsState(initial = counts?.unreadChats ?: 0).value
+                                    } else {
+                                        counts?.unreadChats ?: 0
+                                    }
                                     HeaderIconWithBadge(
                                         icon = Icons.Outlined.Email,
-                                        count = counts?.unreadChats ?: 0,
+                                        count = liveChatsCount,
                                         badgeColor = Color(0xFF3B82F6),
                                         onClick = onNavigateToChat
                                     )
 
                                     // Approvals Icon
+                                    val liveApprovalsCount = if (badgeManager != null) {
+                                        badgeManager.pendingApprovals.collectAsState(initial = counts?.pendingApprovals ?: 0).value
+                                    } else {
+                                        counts?.pendingApprovals ?: 0
+                                    }
                                     HeaderIconWithBadge(
                                         icon = Icons.Outlined.CheckCircle,
-                                        count = counts?.pendingApprovals ?: 0,
+                                        count = liveApprovalsCount,
                                         badgeColor = Color(0xFF10B981),
                                         onClick = onNavigateToOfferApprovals
                                     )

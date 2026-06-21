@@ -48,22 +48,43 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        Log.d(TAG, "From: ${remoteMessage.from}")
+        Log.d(TAG, "From: \${remoteMessage.from}")
 
         val data = remoteMessage.data
 
+        // Extract exact counts from payload (if provided)
+        val notifs = data["unread_notifs"]?.toIntOrNull()
+        val chats = data["unread_chats"]?.toIntOrNull()
+        val alerts = data["unread_alerts"]?.toIntOrNull()
+        val approvals = data["pending_approvals"]?.toIntOrNull()
+
+        // Update exact badge counts immediately
+        if (notifs != null || chats != null || alerts != null || approvals != null) {
+            badgeManager.updateCounts(notifs, chats, alerts, approvals)
+        } else {
+            // Fallback for legacy generic payloads
+            badgeManager.updateCounts(
+                notifs = (badgeManager.unreadNotifs.value + 1),
+                chats = null, alerts = null, approvals = null
+            )
+        }
+
+        // Silent sync push: only meant to update badges, no system notification shown
+        val type = data["type"] ?: ""
+        if (type == "silent_sync") {
+            Log.d(TAG, "Received silent sync push. Badges updated.")
+            return
+        }
+
         // Data-only payload (backend sends these for reliable delivery when killed)
         if (data.isNotEmpty()) {
-            Log.d(TAG, "Message data payload: $data")
+            Log.d(TAG, "Message data payload: \$data")
 
             val title = data["title"] ?: remoteMessage.notification?.title ?: "AffsCash"
             val body = data["body"] ?: remoteMessage.notification?.body ?: ""
-            val notificationType = data["notification_type"] ?: ""
+            val notificationType = data["notification_type"] ?: type
             val deepLinkRoute = data["deep_link_route"] ?: ""
             val notificationId = data["notification_id"] ?: ""
-
-            // Increment badge counter
-            badgeManager.increment()
 
             // Show system notification with deep link data
             showNotification(title, body, notificationType, deepLinkRoute, notificationId)
@@ -72,8 +93,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         // Notification payload (foreground only — shown by system when in background)
         remoteMessage.notification?.let {
-            Log.d(TAG, "Message Notification Body: ${it.body}")
-            badgeManager.increment()
+            Log.d(TAG, "Message Notification Body: \${it.body}")
             showNotification(
                 it.title ?: "AffsCash",
                 it.body ?: "",

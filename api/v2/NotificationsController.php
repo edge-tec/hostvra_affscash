@@ -139,6 +139,11 @@ if ($action === 'mark_read') {
             }
         } catch (\Throwable $e) {}
     }
+    
+    // Emit silent push to Android app to decrement the badge count
+    require_once __DIR__ . '/../../core/BadgeSyncHelper.php';
+    BadgeSyncHelper::emitReadSync($userId);
+    
     echo json_encode(['success' => true]);
     exit;
 }

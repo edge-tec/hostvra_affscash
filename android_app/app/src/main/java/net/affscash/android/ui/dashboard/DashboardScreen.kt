@@ -122,7 +122,9 @@ fun DashboardScreen(
                         }
                     }
 
-                    // News Icon
+                    val badgeManager = remember { net.affscash.android.AffscashApp.getBadgeManager() }
+
+                    // News Icon (no live sync yet)
                     HeaderIconWithBadge(
                         icon = Icons.Outlined.Article,
                         count = counts?.unreadNews ?: 0,
@@ -130,32 +132,41 @@ fun DashboardScreen(
                         onClick = onNavigateToNews
                     )
 
-                    // Notifications Icon — use live badge manager count
-                    val badgeManager = remember { net.affscash.android.AffscashApp.getBadgeManager() }
-                    val liveBadgeCount = if (badgeManager != null) {
-                        badgeManager.unreadCount.collectAsState().value
+                    // Notifications Icon
+                    val liveNotifsCount = if (badgeManager != null) {
+                        badgeManager.unreadNotifs.collectAsState().value
                     } else {
                         counts?.unreadNotifs ?: 0
                     }
                     HeaderIconWithBadge(
                         icon = Icons.Outlined.Notifications,
-                        count = liveBadgeCount,
+                        count = liveNotifsCount,
                         badgeColor = Color(0xFFEF4444),
                         onClick = onNavigateToNotifications
                     )
 
                     // Fraud Alerts Icon
+                    val liveAlertsCount = if (badgeManager != null) {
+                        badgeManager.unreadAlerts.collectAsState().value
+                    } else {
+                        counts?.unreadAlerts ?: 0
+                    }
                     HeaderIconWithBadge(
                         icon = Icons.Outlined.WarningAmber,
-                        count = counts?.unreadAlerts ?: 0,
+                        count = liveAlertsCount,
                         badgeColor = Color(0xFFEF4444),
                         onClick = onNavigateToFraudAlerts
                     )
 
                     // Chat Icon
+                    val liveChatsCount = if (badgeManager != null) {
+                        badgeManager.unreadChats.collectAsState().value
+                    } else {
+                        counts?.unreadChats ?: 0
+                    }
                     HeaderIconWithBadge(
                         icon = Icons.Outlined.ChatBubbleOutline,
-                        count = counts?.unreadChats ?: 0,
+                        count = liveChatsCount,
                         badgeColor = Color(0xFFEF4444),
                         onClick = onNavigateToChat
                     )

@@ -18,7 +18,8 @@ data class DashboardHeaderCounts(
     @SerialName("unread_news") val unreadNews: Int = 0,
     @SerialName("unread_notifs") val unreadNotifs: Int = 0,
     @SerialName("unread_alerts") val unreadAlerts: Int = 0,
-    @SerialName("unread_chats") val unreadChats: Int = 0
+    @SerialName("unread_chats") val unreadChats: Int = 0,
+    @SerialName("pending_approvals") val pendingApprovals: Int = 0
 )
 
 @Serializable
