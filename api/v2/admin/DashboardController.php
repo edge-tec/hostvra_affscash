@@ -264,7 +264,8 @@ try {
     $unreadNotifs = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM notifications WHERE user_id=? AND is_read=0", [$adminUserId])['c'] ?? 0);
     $unreadBroadcast = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM notifications n WHERE n.user_id IS NULL AND n.target_role IN ('admin', 'all') AND NOT EXISTS (SELECT 1 FROM notification_reads nr WHERE nr.notification_id=n.id AND nr.user_id=?)", [$adminUserId])['c'] ?? 0);
     $unreadAlerts = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM fraud_alerts WHERE is_read=0 AND resolved_at IS NULL")['c'] ?? 0);
-    $unreadChats = (int)(Database::fetchOne("SELECT COUNT(*) c FROM chat_messages WHERE sender_role IN ('affiliate', 'manager', 'advertiser') AND read_by_admin=0")['c'] ?? 0);
+    try { Database::query("ALTER TABLE support_messages ADD COLUMN is_deleted TINYINT(1) NOT NULL DEFAULT 0"); } catch(\Throwable $e) {}
+    $unreadChats = (int)(Database::fetchOne("SELECT COUNT(*) c FROM support_messages WHERE owner_type IN ('affiliate', 'advertiser') AND sender_role != 'admin' AND is_read=0 AND is_deleted=0")['c'] ?? 0);
     $pendingApprovals = (int)(Database::fetchOne("SELECT COUNT(*) c FROM offer_approvals WHERE status='pending'")['c'] ?? 0);
 
     $header_counts = [
