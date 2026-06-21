@@ -84,4 +84,17 @@ class ManagerSupportRepository @Inject constructor(
             Result.failure(e)
         }
     }
+
+    suspend fun deleteMessage(messageId: Int): Result<net.affscash.android.data.model.GenericResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.deleteManagerMessage(messageId = messageId)
+            if (response.isSuccessful && response.body() != null) {
+                Result.success(response.body()!!)
+            } else {
+                Result.failure(Exception("Failed to delete message: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

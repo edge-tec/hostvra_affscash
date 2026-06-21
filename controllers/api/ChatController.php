@@ -516,19 +516,26 @@ if ($action === 'edit_message') {
     exit;
 }
 
-// ─── ACTION: delete a message (admin only) ───────────────────────────────
+// ─── ACTION: delete a message (admin, manager, affiliate) ───────────────────────────────
 if ($action === 'delete_message') {
-    if ($role !== 'admin') { echo json_encode(['error' => 'Forbidden']); exit; }
     if (!Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         echo json_encode(['error' => 'Invalid form submission.']); exit;
     }
     $msgId = (int)Helpers::postRaw('message_id');
     if ($msgId <= 0) { echo json_encode(['error' => 'Missing id.']); exit; }
+
+    $row = Database::fetchOne("SELECT * FROM support_messages WHERE id=?", [$msgId]);
+    if (!$row) { echo json_encode(['error' => 'Not found.']); exit; }
+
+    // Users can only delete their own messages. Admin can delete any.
+    if ($role !== 'admin' && (int)$row['sender_id'] !== (int)Auth::id()) {
+        echo json_encode(['error' => 'Forbidden']); exit;
+    }
+
     // Soft-delete so audit history remains intact. The attachment file is also
     // removed from disk to free space.
-    $row = Database::fetchOne("SELECT attachment_path FROM support_messages WHERE id=?", [$msgId]);
     Database::update('support_messages', ['is_deleted' => 1], 'id=?', [$msgId]);
-    if ($row && !empty($row['attachment_path'])) {
+    if (!empty($row['attachment_path'])) {
         @unlink(BASE_PATH . '/uploads/support/' . $row['attachment_path']);
     }
     echo json_encode(['ok' => true]);

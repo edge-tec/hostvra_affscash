@@ -66,7 +66,8 @@ data class AdminSupportMessage(
 data class AdminSupportSendRequest(
     @SerialName("affiliate_id") val affiliateId: Int,
     @SerialName("owner_type") val ownerType: String,
-    @SerialName("message") val message: String
+    @SerialName("message") val message: String,
+    @SerialName("attachment_id") val attachmentId: Int? = null
 )
 
 @Serializable
@@ -89,5 +90,12 @@ data class AdminSupportActionRequest(
 @Serializable
 data class AdminSupportActionResponse(
     @SerialName("success") val success: Boolean,
+    @SerialName("error") val error: String? = null
+)
+
+@Serializable
+data class AdminUploadResponse(
+    @SerialName("success") val success: Boolean,
+    @SerialName("attachment_id") val attachmentId: Int? = null,
     @SerialName("error") val error: String? = null
 )

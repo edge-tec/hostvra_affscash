@@ -119,6 +119,7 @@ fun ChatScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .background(MaterialTheme.colorScheme.background)
+                .imePadding()
         ) {
             // Messages List
             LazyColumn(

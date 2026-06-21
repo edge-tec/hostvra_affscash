@@ -37,6 +37,14 @@ interface ApiService {
         @Body request: AdminSupportActionRequest
     ): Response<AdminSupportActionResponse>
 
+    @Multipart
+    @POST("api/v2/admin/chat?action=upload")
+    suspend fun uploadAdminSupportFile(
+        @Part("affiliate_id") affiliateId: okhttp3.RequestBody,
+        @Part("owner_type") ownerType: okhttp3.RequestBody,
+        @Part file: okhttp3.MultipartBody.Part
+    ): Response<net.affscash.android.data.model.AdminUploadResponse>
+
     @POST("api/v2/admin/chat")
     @FormUrlEncoded
     suspend fun deleteAdminMessage(

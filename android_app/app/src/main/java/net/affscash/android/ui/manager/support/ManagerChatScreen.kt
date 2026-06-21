@@ -29,7 +29,14 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import net.affscash.android.data.model.ManagerMessage
 import java.io.File
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.ui.layout.ContentScale
+import android.content.Intent
+import android.net.Uri
+import java.io.File
 import java.io.FileOutputStream
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,6 +89,7 @@ fun ManagerChatScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .imePadding()
         ) {
             if (uiState.isLoadingMessages && uiState.messages.isEmpty()) {
                 Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -95,7 +103,7 @@ fun ManagerChatScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(uiState.messages) { message ->
-                        MessageBubble(message = message, affiliateId = selectedConv?.affiliateId ?: 0)
+                        MessageBubble(message = message, affiliateId = selectedConv?.affiliateId ?: 0, onDelete = { viewModel.deleteMessage(message.id) })
                     }
                 }
             }
@@ -157,8 +165,32 @@ fun ManagerChatScreen(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MessageBubble(message: ManagerMessage, affiliateId: Int) {
+fun MessageBubble(message: ManagerMessage, affiliateId: Int, onDelete: () -> Unit = {}) {
+    var showMenu by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Delete Message") },
+            text = { Text("Are you sure you want to delete this message?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showDeleteDialog = false
+                    onDelete()
+                }) {
+                    Text("Delete", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
     val isMine = message.senderRole == "admin" || message.senderRole == "affiliate_manager"
     val alignment = if (isMine) Alignment.CenterEnd else Alignment.CenterStart
     val bgColor = if (isMine) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
@@ -174,13 +206,20 @@ fun MessageBubble(message: ManagerMessage, affiliateId: Int) {
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = alignment
     ) {
-        Column(
-            modifier = Modifier
-                .widthIn(max = 280.dp)
-                .clip(shape)
-                .background(bgColor)
-                .padding(12.dp)
+        Surface(
+            color = bgColor,
+            shape = shape,
+            modifier = Modifier.combinedClickable(
+                onClick = {},
+                onLongClick = { showMenu = true }
+            )
         ) {
+            Box {
+                Column(
+                    modifier = Modifier
+                        .widthIn(max = 280.dp)
+                        .padding(12.dp)
+                ) {
             if (!isMine) {
                 Text(
                     text = message.senderName ?: "Affiliate",
@@ -259,7 +298,21 @@ fun MessageBubble(message: ManagerMessage, affiliateId: Int) {
                     .align(Alignment.End)
                     .padding(top = 4.dp)
             )
+            
+            DropdownMenu(
+                expanded = showMenu,
+                onDismissRequest = { showMenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text("Delete") },
+                    onClick = {
+                        showMenu = false
+                        showDeleteDialog = true
+                    }
+                )
+            }
         }
+    }
     }
 }
 

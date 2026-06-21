@@ -8,7 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -43,7 +43,7 @@ fun AdminSupportScreen(
                 title = { Text("Live Support") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -94,17 +94,18 @@ fun AdminSupportScreen(
                 horizontalArrangement = Arrangement.Center
             ) {
                 FilterChip(
-modifier = Modifier.height(32.dp),
                     selected = uiState.selectedFilter == "open",
                     onClick = { viewModel.setFilter("open") },
                     label = { Text("Open") },
-                    modifier = Modifier.padding(end = 8.dp)
+                    modifier = Modifier
+                        .height(32.dp)
+                        .padding(end = 8.dp)
                 )
                 FilterChip(
-modifier = Modifier.height(32.dp),
                     selected = uiState.selectedFilter == "closed",
                     onClick = { viewModel.setFilter("closed") },
-                    label = { Text("Closed") }
+                    label = { Text("Closed") },
+                    modifier = Modifier.height(32.dp)
                 )
             }
 
@@ -266,7 +267,7 @@ private fun formatDate(dateStr: String?): String {
         val outFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
         outFormat.timeZone = TimeZone.getDefault()
         date?.let { outFormat.format(it) } ?: ""
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         ""
     }
 }

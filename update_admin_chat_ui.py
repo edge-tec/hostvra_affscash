@@ -1,30 +1,11 @@
-package net.affscash.android.ui.screens.admin.support
+import os
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.LockOpen
-import androidx.compose.material.icons.filled.Send
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import net.affscash.android.data.model.AdminSupportMessage
-import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.TimeZone
-import androidx.activity.compose.rememberLauncherForActivityResult
+filepath = "android_app/app/src/main/java/net/affscash/android/ui/screens/admin/support/AdminSupportChatScreen.kt"
+with open(filepath, "r") as f:
+    content = f.read()
+
+# Add necessary imports
+imports = """import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
@@ -41,15 +22,33 @@ import java.io.FileOutputStream
 import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.InsertDriveFile
+"""
+content = content.replace("import java.util.TimeZone", "import java.util.TimeZone\n" + imports)
 
+# Get File From Uri logic
+get_file_fun = """
+private fun getFileFromUri(context: android.content.Context, uri: Uri): File? {
+    return try {
+        val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+        val tempFile = File(context.cacheDir, "upload_admin_${System.currentTimeMillis()}.jpg")
+        val outputStream = FileOutputStream(tempFile)
+        inputStream.copyTo(outputStream)
+        inputStream.close()
+        outputStream.close()
+        tempFile
+    } catch (e: Exception) {
+        null
+    }
+}
+"""
+content = content + "\n" + get_file_fun
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AdminSupportChatScreen(
-    onNavigateBack: () -> Unit,
-    viewModel: AdminSupportViewModel
-) {
-    val uiState by viewModel.uiState.collectAsState()
+# Add UI state for file picker
+old_ui_state = """    val uiState by viewModel.uiState.collectAsState()
+    var messageText by remember { mutableStateOf("") }
+    val listState = rememberLazyListState()"""
+
+new_ui_state = """    val uiState by viewModel.uiState.collectAsState()
     var messageText by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
     val context = LocalContext.current
@@ -76,104 +75,58 @@ fun AdminSupportChatScreen(
                 viewModel.uploadAndSendMessage(file, mimeType, "Sent an image")
             }
         }
-    }
+    }"""
+content = content.replace(old_ui_state, new_ui_state)
 
-    // Scroll to bottom when new messages arrive
-    LaunchedEffect(uiState.messages.size) {
-        if (uiState.messages.isNotEmpty()) {
-            listState.animateScrollToItem(uiState.messages.size - 1)
-        }
-    }
+# Add imePadding to Column
+content = content.replace("modifier = Modifier\n                .fillMaxSize()\n                .padding(paddingValues)", "modifier = Modifier\n                .fillMaxSize()\n                .padding(paddingValues)\n                .imePadding()")
 
-    val isClosed = uiState.selectedFilter == "closed"
+# Update Message Bubble call
+content = content.replace("MessageBubble(message = message)", "MessageBubble(message = message, onDelete = { viewModel.deleteMessage(message.id) })")
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text(uiState.selectedName, maxLines = 1, fontSize = 18.sp)
-                        Text(if (isClosed) "Closed" else "Active", fontSize = 12.sp, color = Color.LightGray)
-                    }
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        viewModel.clearSelection()
-                        onNavigateBack()
-                    }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                actions = {
-                    if (isClosed) {
-                        IconButton(onClick = { viewModel.reopenConversation() }) {
-                            Icon(Icons.Filled.LockOpen, contentDescription = "Reopen")
-                        }
-                    } else {
-                        IconButton(onClick = { viewModel.closeConversation() }) {
-                            Icon(Icons.Filled.Lock, contentDescription = "Close")
-                        }
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            )
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .imePadding()
-        ) {
-            // Error display
-            if (uiState.error != null) {
-                Card(
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
+# Replace Input Area
+old_input = """            // Input Area
+            if (!isClosed) {
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .padding(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        modifier = Modifier.padding(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                    OutlinedTextField(
+                        value = messageText,
+                        onValueChange = { messageText = it },
+                        modifier = Modifier.weight(1f),
+                        placeholder = { Text("Type a message...") },
+                        maxLines = 4,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = MaterialTheme.colorScheme.surface,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surface
+                        )
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    FloatingActionButton(
+                        onClick = {
+                            if (messageText.isNotBlank()) {
+                                viewModel.sendMessage(messageText)
+                                messageText = ""
+                            }
+                        },
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(48.dp)
                     ) {
-                        Icon(Icons.Filled.Warning, contentDescription = null, tint = MaterialTheme.colorScheme.error)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(uiState.error ?: "", color = MaterialTheme.colorScheme.onErrorContainer)
-                        Spacer(modifier = Modifier.weight(1f))
-                        TextButton(onClick = { viewModel.clearError() }) {
-                            Text("Dismiss")
+                        if (uiState.isSendingMessage) {
+                            CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(24.dp))
+                        } else {
+                            Icon(Icons.Filled.Send, contentDescription = "Send")
                         }
                     }
                 }
-            }
+            }"""
 
-            // Message List
-            Box(modifier = Modifier.weight(1f)) {
-                if (uiState.isLoadingMessages && uiState.messages.isEmpty()) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                } else {
-                    LazyColumn(
-                        state = listState,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 8.dp),
-                        contentPadding = PaddingValues(vertical = 8.dp)
-                    ) {
-                        items(uiState.messages) { message ->
-                            MessageBubble(message = message, onDelete = { viewModel.deleteMessage(message.id) })
-                            Spacer(modifier = Modifier.height(8.dp))
-                        }
-                    }
-                }
-            }
-
-            // Input Area
+new_input = """            // Input Area
             if (!isClosed) {
                 Surface(
                     color = MaterialTheme.colorScheme.surface,
@@ -230,22 +183,61 @@ fun AdminSupportChatScreen(
                         }
                     }
                 }
-            } else {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .padding(16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("This conversation is closed.", color = Color.Gray, fontWeight = FontWeight.Bold)
-                }
+            }"""
+content = content.replace(old_input, new_input)
+
+# Update MessageBubble to support Coil and Delete
+old_bubble = """@Composable
+fun MessageBubble(message: AdminSupportMessage) {
+    val isAdmin = message.senderRole == "admin"
+    val alignment = if (isAdmin) Alignment.CenterEnd else Alignment.CenterStart
+    val bgColor = if (isAdmin) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer
+    val textColor = if (isAdmin) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondaryContainer
+
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = alignment
+    ) {
+        Column(
+            horizontalAlignment = if (isAdmin) Alignment.End else Alignment.Start,
+            modifier = Modifier.fillMaxWidth(0.8f) // Max width 80%
+        ) {
+            Text(
+                text = message.senderName,
+                fontSize = 12.sp,
+                color = Color.Gray,
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+            )
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = bgColor,
+                        shape = RoundedCornerShape(
+                            topStart = 16.dp,
+                            topEnd = 16.dp,
+                            bottomStart = if (isAdmin) 16.dp else 4.dp,
+                            bottomEnd = if (isAdmin) 4.dp else 16.dp
+                        )
+                    )
+                    .padding(12.dp)
+            ) {
+                Text(
+                    text = message.message,
+                    color = textColor,
+                    fontSize = 16.sp
+                )
             }
+            Text(
+                text = formatTime(message.createdAt),
+                fontSize = 10.sp,
+                color = Color.Gray,
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+            )
         }
     }
-}
+}"""
 
-@OptIn(ExperimentalFoundationApi::class)
+new_bubble = """@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MessageBubble(message: AdminSupportMessage, onDelete: () -> Unit = {}) {
     val isAdmin = message.senderRole == "admin"
@@ -389,33 +381,9 @@ fun MessageBubble(message: AdminSupportMessage, onDelete: () -> Unit = {}) {
             )
         }
     }
-}
+}"""
+content = content.replace(old_bubble, new_bubble)
 
-private fun formatTime(dateStr: String?): String {
-    if (dateStr.isNullOrEmpty()) return ""
-    return try {
-        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        format.timeZone = TimeZone.getTimeZone("UTC")
-        val date = format.parse(dateStr)
-        val outFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-        outFormat.timeZone = TimeZone.getDefault()
-        date?.let { outFormat.format(it) } ?: ""
-    } catch (e: Exception) {
-        ""
-    }
-}
-
-
-private fun getFileFromUri(context: android.content.Context, uri: Uri): File? {
-    return try {
-        val inputStream = context.contentResolver.openInputStream(uri) ?: return null
-        val tempFile = File(context.cacheDir, "upload_admin_${System.currentTimeMillis()}.jpg")
-        val outputStream = FileOutputStream(tempFile)
-        inputStream.copyTo(outputStream)
-        inputStream.close()
-        outputStream.close()
-        tempFile
-    } catch (e: Exception) {
-        null
-    }
-}
+with open(filepath, "w") as f:
+    f.write(content)
+print("Updated AdminSupportChatScreen.kt!")

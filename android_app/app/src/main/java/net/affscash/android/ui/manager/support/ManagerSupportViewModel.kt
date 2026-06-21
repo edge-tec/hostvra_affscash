@@ -178,4 +178,22 @@ class ManagerSupportViewModel @Inject constructor(
     fun clearError() {
         _uiState.update { it.copy(error = null) }
     }
+
+    fun deleteMessage(messageId: Int) {
+        viewModelScope.launch {
+            try {
+                val response = repository.deleteMessage(messageId)
+                if (response.isSuccess) {
+                    val selected = _uiState.value.selectedConversation
+                    if (selected != null) {
+                        loadMessages(selected.conversationId ?: 0, selected.affiliateId)
+                    }
+                } else {
+                    _uiState.update { it.copy(error = response.exceptionOrNull()?.message ?: "Failed to delete message") }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(error = e.localizedMessage) }
+            }
+        }
+    }
 }
