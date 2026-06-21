@@ -1,5 +1,7 @@
 package net.affscash.android.ui.manager.support
 
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,7 +26,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import net.affscash.android.data.model.ManagerMessage
@@ -32,9 +33,6 @@ import java.io.File
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.ui.layout.ContentScale
-import android.content.Intent
-import android.net.Uri
-import java.io.File
 import java.io.FileOutputStream
 
 
@@ -70,7 +68,7 @@ fun ManagerChatScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            net.affscash.android.ui.components.CompactTopBar(
                 title = { Text(selectedConv?.name ?: "Chat") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
@@ -236,15 +234,15 @@ fun MessageBubble(message: ManagerMessage, affiliateId: Int, onDelete: () -> Uni
                     AsyncImage(
                         model = attachmentUrl,
                         contentDescription = "Attachment",
-                        contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(200.dp)
                             .clip(RoundedCornerShape(8.dp))
                             .padding(bottom = if (message.message.isNotBlank()) 8.dp else 0.dp)
                             .clickable {
-                                val intent = android.content.Intent(android.content.Intent.ACTION_VIEW).apply {
-                                    data = android.net.Uri.parse(attachmentUrl)
+                                val intent = Intent(Intent.ACTION_VIEW).apply {
+                                    data = Uri.parse(attachmentUrl)
                                 }
                                 context.startActivity(intent)
                             }
@@ -256,8 +254,8 @@ fun MessageBubble(message: ManagerMessage, affiliateId: Int, onDelete: () -> Uni
                             .background(Color.Black.copy(alpha = 0.1f), RoundedCornerShape(8.dp))
                             .padding(8.dp)
                             .clickable {
-                                val intent = android.content.Intent(android.content.Intent.ACTION_VIEW).apply {
-                                    data = android.net.Uri.parse(attachmentUrl)
+                                val intent = Intent(Intent.ACTION_VIEW).apply {
+                                    data = Uri.parse(attachmentUrl)
                                 }
                                 context.startActivity(intent)
                             },
@@ -313,10 +311,11 @@ fun MessageBubble(message: ManagerMessage, affiliateId: Int, onDelete: () -> Uni
             }
         }
     }
-    }
+}
+}
 }
 
-private fun getFileFromUri(context: android.content.Context, uri: Uri): File? {
+private fun getFileFromUri(context: Context, uri: Uri): File? {
     return try {
         val inputStream = context.contentResolver.openInputStream(uri) ?: return null
         val tempFile = File(context.cacheDir, "upload_image_${System.currentTimeMillis()}.jpg")

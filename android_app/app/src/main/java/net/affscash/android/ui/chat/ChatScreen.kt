@@ -92,7 +92,7 @@ fun ChatScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            net.affscash.android.ui.components.CompactTopBar(
                 title = { 
                     Column {
                         Text(if (role == "affiliate_manager") "Messages with Admin" else "Live Support")

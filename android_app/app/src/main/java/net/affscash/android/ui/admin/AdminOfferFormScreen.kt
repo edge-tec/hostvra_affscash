@@ -42,7 +42,7 @@ fun AdminOfferFormScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            net.affscash.android.ui.components.CompactTopBar(
                 title = { Text(if (offerId == null) "Create Offer" else "Edit Offer") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {

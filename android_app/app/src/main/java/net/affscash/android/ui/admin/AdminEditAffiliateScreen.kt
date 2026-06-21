@@ -48,7 +48,7 @@ fun AdminEditAffiliateScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            net.affscash.android.ui.components.CompactTopBar(
                 title = { Text("Edit Affiliate") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {

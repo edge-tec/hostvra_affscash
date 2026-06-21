@@ -39,7 +39,7 @@ fun AdminSupportScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            net.affscash.android.ui.components.CompactTopBar(
                 title = { Text("Live Support") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {

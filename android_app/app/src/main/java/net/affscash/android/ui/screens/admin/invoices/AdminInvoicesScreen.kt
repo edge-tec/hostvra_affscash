@@ -35,7 +35,7 @@ fun AdminInvoicesScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            net.affscash.android.ui.components.CompactTopBar(
                 title = { Text(if (uiState.invoiceDetail != null) "Invoice Details" else "Invoices") },
                 navigationIcon = {
                     IconButton(onClick = {

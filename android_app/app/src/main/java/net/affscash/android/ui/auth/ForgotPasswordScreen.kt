@@ -40,7 +40,7 @@ fun ForgotPasswordScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            net.affscash.android.ui.components.CompactTopBar(
                 title = { Text("Forgot Password") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {

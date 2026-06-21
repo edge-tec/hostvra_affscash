@@ -37,7 +37,7 @@ fun InvoiceScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            net.affscash.android.ui.components.CompactTopBar(
                 title = { Text("My Invoices") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {

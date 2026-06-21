@@ -30,7 +30,7 @@ fun FraudReportScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            net.affscash.android.ui.components.CompactTopBar(
                 title = { Text("Fraud Report") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {

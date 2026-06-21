@@ -31,7 +31,7 @@ fun AdminSmartlinksScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            net.affscash.android.ui.components.CompactTopBar(
                 title = { Text("Smartlinks") },
                 actions = {
                     if (uiState is AdminSmartlinksUiState.Success) {

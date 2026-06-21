@@ -37,7 +37,7 @@ fun AdminAdvertiserDetailsScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            net.affscash.android.ui.components.CompactTopBar(
                 title = { Text("Advertiser Details") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {

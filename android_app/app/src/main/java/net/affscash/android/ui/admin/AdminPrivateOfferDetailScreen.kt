@@ -39,7 +39,7 @@ fun AdminPrivateOfferDetailScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            net.affscash.android.ui.components.CompactTopBar(
                 title = { Text("Private Offer Details") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {

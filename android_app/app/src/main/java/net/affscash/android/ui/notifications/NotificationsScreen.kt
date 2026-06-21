@@ -38,7 +38,7 @@ fun NotificationsScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            net.affscash.android.ui.components.CompactTopBar(
                 title = { Text("Notifications") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {

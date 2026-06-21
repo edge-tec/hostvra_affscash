@@ -39,7 +39,7 @@ fun AdminVpnLogScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            net.affscash.android.ui.components.CompactTopBar(
                 title = { Text("VPN & Proxy Blocked Log") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {

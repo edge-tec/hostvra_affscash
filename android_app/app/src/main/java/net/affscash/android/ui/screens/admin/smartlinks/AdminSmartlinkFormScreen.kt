@@ -35,7 +35,7 @@ fun AdminSmartlinkFormScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            net.affscash.android.ui.components.CompactTopBar(
                 title = { Text(if (smartlinkId == null || smartlinkId == 0) "Create Smartlink" else "Edit Smartlink") },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {

@@ -49,7 +49,7 @@ fun AdminPaymentSettingsScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            net.affscash.android.ui.components.CompactTopBar(
                 title = { Text("Payment Settings") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {

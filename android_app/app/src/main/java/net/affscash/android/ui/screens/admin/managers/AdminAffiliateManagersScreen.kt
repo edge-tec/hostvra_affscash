@@ -37,7 +37,7 @@ fun AdminAffiliateManagersScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            net.affscash.android.ui.components.CompactTopBar(
                 title = { Text("Affiliate Managers") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {

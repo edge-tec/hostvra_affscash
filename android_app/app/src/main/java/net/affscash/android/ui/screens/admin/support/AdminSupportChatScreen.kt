@@ -89,7 +89,7 @@ fun AdminSupportChatScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            net.affscash.android.ui.components.CompactTopBar(
                 title = {
                     Column {
                         Text(uiState.selectedName, maxLines = 1, fontSize = 18.sp)

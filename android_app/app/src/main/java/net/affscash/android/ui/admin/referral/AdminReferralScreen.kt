@@ -40,7 +40,7 @@ fun AdminReferralScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            net.affscash.android.ui.components.CompactTopBar(
                 title = { Text("Referral System") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {

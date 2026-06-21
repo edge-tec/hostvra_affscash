@@ -74,7 +74,7 @@ fun ManagerDashboardScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 16.dp)
+                        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -84,7 +84,7 @@ fun ManagerDashboardScreen(
                         Image(
                             painter = painterResource(id = R.drawable.logo),
                             contentDescription = "AffsCash Logo",
-                            modifier = Modifier.height(36.dp)
+                            modifier = Modifier.height(24.dp)
                         )
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             val stats = uiState.stats

@@ -38,7 +38,7 @@ fun AdminAffiliateReportScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            net.affscash.android.ui.components.CompactTopBar(
                 title = { Text(if (uiState.viewingAffiliateId != null) "Traffic Detail" else "Affiliate Report") },
                 navigationIcon = {
                     IconButton(onClick = {

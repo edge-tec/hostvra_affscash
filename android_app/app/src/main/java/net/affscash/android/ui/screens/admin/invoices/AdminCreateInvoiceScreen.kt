@@ -33,7 +33,7 @@ fun AdminCreateInvoiceScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            net.affscash.android.ui.components.CompactTopBar(
                 title = { Text("Create Invoice") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {

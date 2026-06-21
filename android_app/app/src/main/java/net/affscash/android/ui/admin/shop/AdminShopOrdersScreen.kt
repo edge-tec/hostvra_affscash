@@ -37,7 +37,7 @@ fun AdminShopOrdersScreen(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            TopAppBar(
+            net.affscash.android.ui.components.CompactTopBar(
                 title = { Text("Shop Orders") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
