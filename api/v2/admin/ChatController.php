@@ -8,6 +8,16 @@ header('Content-Type: application/json');
 try {
     Auth::check('admin');
     
+
+    try { Database::query("ALTER TABLE support_messages ADD COLUMN is_deleted TINYINT(1) NOT NULL DEFAULT 0"); } catch(\Throwable $e) {}
+    try { Database::query("ALTER TABLE support_messages ADD COLUMN is_read TINYINT(1) NOT NULL DEFAULT 0"); } catch(\Throwable $e) {}
+    try { Database::query("ALTER TABLE support_messages ADD COLUMN owner_type VARCHAR(20) NOT NULL DEFAULT 'affiliate'"); } catch(\Throwable $e) {}
+    try { Database::query("ALTER TABLE support_conversations ADD COLUMN owner_type VARCHAR(20) NOT NULL DEFAULT 'affiliate'"); } catch(\Throwable $e) {}
+    try { Database::query("ALTER TABLE support_messages ADD COLUMN edited_at DATETIME NULL"); } catch(\Throwable $e) {}
+    try { Database::query("ALTER TABLE support_messages ADD COLUMN attachment_path VARCHAR(500) NULL"); } catch(\Throwable $e) {}
+    try { Database::query("ALTER TABLE support_messages ADD COLUMN attachment_name VARCHAR(255) NULL"); } catch(\Throwable $e) {}
+    try { Database::query("ALTER TABLE support_messages ADD COLUMN attachment_type VARCHAR(50) NULL"); } catch(\Throwable $e) {}
+    try { Database::query("ALTER TABLE support_messages ADD COLUMN attachment_size INT NULL"); } catch(\Throwable $e) {}
     $action = $_GET['action'] ?? 'list';
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $input = json_decode(file_get_contents('php://input'), true) ?: [];

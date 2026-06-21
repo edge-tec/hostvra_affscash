@@ -175,6 +175,10 @@ function loadMessages(since) {
             if (m.id > _lastId) _lastId = m.id;
         });
         if (!since || atBottom) box.scrollTop = box.scrollHeight;
+    })
+    .catch(function(e){
+        var loadEl = document.getElementById('chat-loading'); if (loadEl) loadEl.style.display = 'none';
+        console.error("Chat load error:", e);
     });
 }
 

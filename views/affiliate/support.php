@@ -153,7 +153,7 @@ function renderMsg(m) {
 }
 
 function loadMessages(since) {
-    fetch('/api/chat?action=messages&affiliate_id='+_affId+(since?'&since='+since:''))
+    fetch('/api/chat?action=messages&affiliate_id='+_affId+(since?'&since='+since:'')+'&_t='+Date.now())
     .then(function(r){return r.json();})
     .then(function(data){
         var box = document.getElementById('chat-messages');
@@ -185,6 +185,10 @@ function loadMessages(since) {
             if (m.id > _lastId) _lastId = m.id;
         });
         if (!since || atBottom) box.scrollTop = box.scrollHeight;
+    })
+    .catch(function(e){
+        var loadEl = document.getElementById('chat-loading'); if (loadEl) loadEl.style.display = 'none';
+        console.error("Chat load error:", e);
     });
 }
 

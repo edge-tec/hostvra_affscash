@@ -341,6 +341,7 @@ function loadMessages(since) {
     var url = '/api/chat?action=messages&affiliate_id='+_selAffId+'&owner_type='+_ownerType;
     if (_selConvId) url += '&conversation_id='+_selConvId;
     if (since)      url += '&since='+since;
+    url += '&_t=' + Date.now();
     fetch(url)
     .then(function(r){return r.json();})
     .then(function(data){
