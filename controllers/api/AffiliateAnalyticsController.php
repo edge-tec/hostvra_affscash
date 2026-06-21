@@ -331,13 +331,13 @@ if ($action === 'countries') {
     $cvJoinW = "cv.affiliate_id=? AND cv.converted_at BETWEEN ? AND ? AND COALESCE(cv.is_hidden,0)=0";
     $cvJoinP = [$affId, $from . ' 00:00:00', $to . ' 23:59:59'];
     if ($offerId) { $cvJoinW .= " AND cv.offer_id=?"; $cvJoinP[] = $offerId; }
-    if ($country) { $cvJoinW .= " AND COALESCE(NULLIF(cv.country,''), ck.country)=?"; $cvJoinP[] = $country; }
+    if ($country) { $cvJoinW .= " AND ck.country=?"; $cvJoinP[] = $country; }
     $cvRows = Database::fetchAll(
-        "SELECT COALESCE(NULLIF(cv.country,''), ck.country) as country, COUNT(*) as conv
+        "SELECT ck.country as country, COUNT(*) as conv
          FROM conversions cv
          LEFT JOIN clicks ck ON ck.click_id = cv.click_id
-         WHERE $cvJoinW AND COALESCE(NULLIF(cv.country,''), ck.country) != ''
-         GROUP BY COALESCE(NULLIF(cv.country,''), ck.country)",
+         WHERE $cvJoinW AND ck.country != ''
+         GROUP BY ck.country",
         $cvJoinP
     );
     $cvMap = [];
@@ -463,8 +463,8 @@ if ($action === 'conversions') {
                        >= 60 are flagged as high-risk in the dashboard widget. */
                     COALESCE(c.fraud_score, 0)        AS fraud_score,
                     CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END AS fraud_flag,
-                    COALESCE(NULLIF(c.country,''), ck.country, NULLIF(c.ipquery_country_code,'')) as country,
-                    COALESCE(NULLIF(c.device_type,''), ck.device_type) as device_type,
+                    COALESCE(ck.country, NULLIF(c.ipquery_country_code,'')) as country,
+                    ck.device_type as device_type,
                     COALESCE(NULLIF(ck.city,''), NULLIF(c.ipquery_city,'')) as city,
                     COALESCE(NULLIF(ck.region,''), NULLIF(c.ipquery_state,'')) as region,
                     o.id as offer_id, o.name as offer_name

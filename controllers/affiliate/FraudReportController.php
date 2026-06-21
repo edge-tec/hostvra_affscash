@@ -14,9 +14,10 @@ if (Helpers::get('export') === 'csv') {
     try {
         $rows = Database::fetchAll(
             "SELECT cv.conversion_id, cv.click_id, cv.status, cv.payout, cv.converted_at,
-                    cv.ip_address, cv.country,
+                    cv.ip_address, ck.country,
                     o.name AS offer_name
              FROM conversions cv
+             LEFT JOIN clicks ck ON ck.click_id = cv.click_id
              LEFT JOIN offers o ON o.id = cv.offer_id
              WHERE cv.affiliate_id = ?
                AND $riskSql
@@ -39,11 +40,12 @@ if (Helpers::get('export') === 'csv') {
 try {
     $conversions = Database::fetchAll(
         "SELECT cv.conversion_id, cv.click_id, cv.status, cv.payout, cv.revenue,
-                cv.converted_at, cv.ip_address, cv.country,
+                cv.converted_at, cv.ip_address, ck.country,
                 COALESCE(cv.rejection_reason, '') AS rejection_reason,
                 cv.rejected_at,
                 o.name AS offer_name
          FROM conversions cv
+         LEFT JOIN clicks ck ON ck.click_id = cv.click_id
          LEFT JOIN offers o ON o.id = cv.offer_id
          WHERE cv.affiliate_id = ?
            AND $riskSql

@@ -380,11 +380,11 @@ if ($action === 'countries') {
         $clickP
     );
     $cvRows = Database::fetchAll(
-        "SELECT COALESCE(NULLIF(c.country,''), ck.country) as country, COUNT(*) as conv
+        "SELECT ck.country as country, COUNT(*) as conv
          FROM conversions c
          LEFT JOIN clicks ck ON ck.click_id = c.click_id
-         WHERE $convW AND COALESCE(NULLIF(c.country,''), ck.country) != ''
-         GROUP BY COALESCE(NULLIF(c.country,''), ck.country)",
+         WHERE $convW AND ck.country != ''
+         GROUP BY ck.country",
         $convP
     );
     // Note: $convW from adminConvWhere() already uses the 'c.' table alias,
@@ -463,8 +463,8 @@ if ($action === 'offers') {
         );
         foreach ($fraudRows as $fr) {
             $fraudByOffer[(int)$fr['offer_id']] = [
-                'fraud' => (int)($fr['fraud_cv'] ?? 0),
-                'total' => (int)($fr['total_cv'] ?? 0),
+                'fraud' => (int)$fr['fraud_cv'] ?? 0,
+                'total' => (int)$fr['total_cv'] ?? 0,
             ];
         }
     } catch (\Throwable $_e) {}

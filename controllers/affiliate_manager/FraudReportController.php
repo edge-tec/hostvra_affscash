@@ -82,12 +82,13 @@ if (!empty($affIds)) {
         try {
             $rows = Database::fetchAll(
                 "SELECT cv.conversion_id, cv.click_id, cv.status, cv.payout, cv.converted_at,
-                        cv.ip_address, cv.country,
+                        cv.ip_address, ck.country,
                         af.affiliate_code, CONCAT(u.first_name,' ',u.last_name) AS aff_name,
                         o.name AS offer_name
                  FROM conversions cv
                  JOIN affiliates af ON af.id = cv.affiliate_id
                  JOIN users u ON u.id = af.user_id
+                 LEFT JOIN clicks ck ON ck.click_id = cv.click_id
                  LEFT JOIN offers o ON o.id = cv.offer_id
                  WHERE cv.affiliate_id IN ($in)
                    AND cv.is_hidden = 0
@@ -111,7 +112,7 @@ if (!empty($affIds)) {
     try {
         $conversions = Database::fetchAll(
             "SELECT cv.conversion_id, cv.click_id, cv.status, cv.payout,
-                    cv.converted_at, cv.ip_address, cv.country,
+                    cv.converted_at, cv.ip_address, ck.country,
                     COALESCE(cv.rejection_reason, '') AS rejection_reason,
                     cv.rejected_at,
                     af.affiliate_code, CONCAT(u.first_name,' ',u.last_name) AS aff_name,
@@ -128,6 +129,7 @@ if (!empty($affIds)) {
              FROM conversions cv
              JOIN affiliates af ON af.id = cv.affiliate_id
              JOIN users u ON u.id = af.user_id
+             LEFT JOIN clicks ck ON ck.click_id = cv.click_id
              LEFT JOIN offers o ON o.id = cv.offer_id
              LEFT JOIN fraud_logs fl ON fl.click_id = cv.click_id
              WHERE cv.affiliate_id IN ($in)
