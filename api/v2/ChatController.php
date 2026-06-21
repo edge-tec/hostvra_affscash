@@ -207,7 +207,7 @@ try {
         }
 
         $newMessage = Database::fetchOne(
-            "SELECT sm.id, sm.sender_id, sm.sender_role, sm.message, sm.created_at, sm.is_read, sm.is_edited, sm.updated_at, sm.is_deleted,
+            "SELECT sm.id, sm.sender_id, sm.sender_role, sm.message, sm.created_at, sm.is_read, sm.edited_at, sm.is_deleted,
                     sm.attachment_path, sm.attachment_name, sm.attachment_type, sm.attachment_size,
                     CONCAT(u.first_name,' ',u.last_name) as sender_name
              FROM support_messages sm JOIN users u ON u.id=sm.sender_id
@@ -323,12 +323,12 @@ try {
             $msg = Database::fetchOne("SELECT id FROM support_messages WHERE id=? AND affiliate_id=? AND sender_role=?", [$msgId, $affId, $role]);
             if ($msg) {
                 Database::query(
-                    "UPDATE support_messages SET message=?, is_edited=1, updated_at=NOW() WHERE id=?", 
+                    "UPDATE support_messages SET message=?, edited_at=NOW() WHERE id=?", 
                     [$newText, $msgId]
                 );
                 
                 $updatedMsg = Database::fetchOne(
-                    "SELECT sm.id, sm.sender_id, sm.sender_role, sm.message, sm.created_at, sm.is_read, sm.is_edited, sm.updated_at, sm.is_deleted,
+                    "SELECT sm.id, sm.sender_id, sm.sender_role, sm.message, sm.created_at, sm.is_read, sm.edited_at, sm.is_deleted,
                             sm.attachment_path, sm.attachment_name, sm.attachment_type, sm.attachment_size,
                             CONCAT(u.first_name,' ',u.last_name) as sender_name
                      FROM support_messages sm JOIN users u ON u.id=sm.sender_id
