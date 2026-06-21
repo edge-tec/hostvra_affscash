@@ -195,6 +195,56 @@ try {
             [$msgId]
         );
 
+        // ── Notify admin and assigned manager about the new affiliate message ──
+        try {
+            $affUser = Database::fetchOne("SELECT u.first_name FROM affiliates a JOIN users u ON u.id=a.user_id WHERE a.id=?", [$affId]);
+            $affName = $affUser['first_name'] ?? 'Affiliate';
+            $preview = mb_substr($messageText !== '' ? $messageText : 'Sent an attachment', 0, 60);
+
+            // Notify all admin users
+            $adminUsers = Database::fetchAll("SELECT id FROM users WHERE role='admin'");
+            foreach ($adminUsers as $au) {
+                Database::insert('notifications', [
+                    'user_id'     => (int)$au['id'],
+                    'target_role' => 'admin',
+                    'type'        => 'info',
+                    'title'       => 'New Support Message',
+                    'message'     => $affName . ': ' . $preview,
+                    'link'        => '/admin/support',
+                    'is_read'     => 0,
+                    'notification_type' => 'support_message',
+                    'deep_link_route'   => 'admin_support'
+                ]);
+            }
+
+            // Notify assigned manager
+            $mgr = Database::fetchOne("SELECT am.user_id FROM affiliates a JOIN affiliate_managers am ON am.id=a.affiliate_manager_id WHERE a.id=?", [$affId]);
+            if ($mgr && $mgr['user_id']) {
+                Database::insert('notifications', [
+                    'user_id'     => (int)$mgr['user_id'],
+                    'target_role' => 'affiliate_manager',
+                    'type'        => 'info',
+                    'title'       => 'New Message from Affiliate',
+                    'message'     => $affName . ': ' . $preview,
+                    'link'        => '/manager/support',
+                    'is_read'     => 0,
+                    'notification_type' => 'support_message',
+                    'deep_link_route'   => 'manager_support'
+                ]);
+            }
+
+            // Send FCM push if available
+            if (file_exists(BASE_PATH . '/core/FirebaseMessaging.php')) {
+                require_once BASE_PATH . '/core/FirebaseMessaging.php';
+                foreach ($adminUsers as $au) {
+                    FirebaseMessaging::sendToUser((int)$au['id'], 'New Support Message', $affName . ': ' . $preview, ['type' => 'support']);
+                }
+                if ($mgr && $mgr['user_id']) {
+                    FirebaseMessaging::sendToUser((int)$mgr['user_id'], 'New Message from Affiliate', $affName . ': ' . $preview, ['type' => 'support']);
+                }
+            }
+        } catch (\Throwable $e) {}
+
         echo json_encode([
             'success' => true,
             'message' => $newMessage

@@ -322,7 +322,15 @@ fun MessageBubble(message: ManagerMessage, affiliateId: Int, onDelete: () -> Uni
 private fun getFileFromUri(context: Context, uri: Uri): File? {
     return try {
         val inputStream = context.contentResolver.openInputStream(uri) ?: return null
-        val tempFile = File(context.cacheDir, "upload_image_${System.currentTimeMillis()}.jpg")
+        // Get original filename to preserve the extension
+        var fileName = "upload_mgr_${System.currentTimeMillis()}"
+        context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+            val nameIndex = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+            if (cursor.moveToFirst() && nameIndex != -1) {
+                fileName = cursor.getString(nameIndex) ?: fileName
+            }
+        }
+        val tempFile = File(context.cacheDir, fileName)
         val outputStream = FileOutputStream(tempFile)
         inputStream.copyTo(outputStream)
         inputStream.close()

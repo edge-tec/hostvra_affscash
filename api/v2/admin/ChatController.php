@@ -188,24 +188,178 @@ try {
             'is_deleted' => 0
         ]);
 
-        if ($ownerType === 'affiliate') {
-            try {
+        // ── Notify the recipient about the admin's reply ──
+        try {
+            $preview = mb_substr($messageText !== '' ? $messageText : 'Sent an attachment', 0, 60);
+
+            if ($ownerType === 'affiliate') {
                 $user = Database::fetchOne("SELECT user_id FROM affiliates WHERE id=?", [$ownerId]);
                 if ($user && $user['user_id']) {
                     Database::insert('notifications', [
-                        'user_id' => (int)$user['user_id'],
+                        'user_id'     => (int)$user['user_id'],
                         'target_role' => 'affiliate',
-                        'title' => 'New Support Reply',
-                        'message' => 'You received a new reply from support.',
-                        'link' => '/affiliate/support'
+                        'type'        => 'info',
+                        'title'       => 'New Support Reply',
+                        'message'     => 'Admin: ' . $preview,
+                        'link'        => '/affiliate/support',
+                        'is_read'     => 0,
+                        'notification_type' => 'support_message',
+                        'deep_link_route'   => 'chat'
                     ]);
-                    require_once BASE_PATH . '/core/FirebaseMessaging.php';
-                    FirebaseMessaging::sendToUser((int)$user['user_id'], 'New Support Reply', 'You received a new reply from support.', ['type' => 'support']);
+                    if (file_exists(BASE_PATH . '/core/FirebaseMessaging.php')) {
+                        require_once BASE_PATH . '/core/FirebaseMessaging.php';
+                        FirebaseMessaging::sendToUser((int)$user['user_id'], 'New Support Reply', 'Admin: ' . $preview, ['type' => 'support']);
+                    }
                 }
-            } catch (\Throwable $e) {}
-        }
+
+                // Also notify the assigned manager
+                $mgr = Database::fetchOne("SELECT am.user_id FROM affiliates a JOIN affiliate_managers am ON am.id=a.affiliate_manager_id WHERE a.id=?", [$ownerId]);
+                if ($mgr && $mgr['user_id']) {
+                    Database::insert('notifications', [
+                        'user_id'     => (int)$mgr['user_id'],
+                        'target_role' => 'affiliate_manager',
+                        'type'        => 'info',
+                        'title'       => 'Admin Replied to Affiliate',
+                        'message'     => 'Admin: ' . $preview,
+                        'link'        => '/manager/support',
+                        'is_read'     => 0,
+                        'notification_type' => 'support_message',
+                        'deep_link_route'   => 'manager_support'
+                    ]);
+                }
+            } elseif ($ownerType === 'manager') {
+                $user = Database::fetchOne("SELECT user_id FROM affiliate_managers WHERE id=?", [$ownerId]);
+                if ($user && $user['user_id']) {
+                    Database::insert('notifications', [
+                        'user_id'     => (int)$user['user_id'],
+                        'target_role' => 'affiliate_manager',
+                        'type'        => 'info',
+                        'title'       => 'New Message from Admin',
+                        'message'     => 'Admin: ' . $preview,
+                        'link'        => '/manager/support',
+                        'is_read'     => 0,
+                        'notification_type' => 'support_message',
+                        'deep_link_route'   => 'manager_support'
+                    ]);
+                    if (file_exists(BASE_PATH . '/core/FirebaseMessaging.php')) {
+                        require_once BASE_PATH . '/core/FirebaseMessaging.php';
+                        FirebaseMessaging::sendToUser((int)$user['user_id'], 'New Message from Admin', 'Admin: ' . $preview, ['type' => 'support']);
+                    }
+                }
+            }
+        } catch (\Throwable $e) {}
 
         echo json_encode(['success' => true, 'data' => ['message_id' => $msgId]]);
+        exit;
+    }
+
+    // ─── ACTION: upload ──────────────────────────────────────────────────────
+    if ($action === 'upload') {
+        if (empty($_FILES['file']) || !is_uploaded_file($_FILES['file']['tmp_name'] ?? '')) {
+            throw new Exception("No file uploaded.");
+        }
+
+        $file = $_FILES['file'];
+        $ownerId = (int)($_POST['affiliate_id'] ?? 0);
+        $ownerType = $_POST['owner_type'] ?? 'affiliate';
+
+        if (!$ownerId) {
+            throw new Exception("Missing affiliate_id for upload.");
+        }
+
+        $maxBytes = 10 * 1024 * 1024; // 10 MB cap
+        if (($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+            throw new Exception("Upload failed (code " . (int)$file['error'] . ").");
+        }
+        if ((int)$file['size'] > $maxBytes) {
+            throw new Exception("File is larger than 10 MB.");
+        }
+
+        $detected = (new finfo(FILEINFO_MIME_TYPE))->file($file['tmp_name']) ?: '';
+        $allowed = [
+            'image/jpeg'      => 'jpg',
+            'image/png'       => 'png',
+            'image/webp'      => 'webp',
+            'application/pdf' => 'pdf',
+            'text/csv'        => 'csv',
+        ];
+        if (!isset($allowed[$detected])) {
+            throw new Exception("File type not allowed. Use JPG, PNG, WEBP, PDF or CSV.");
+        }
+
+        $rawName = (string)($file['name'] ?? 'file');
+        $rawExt = strtolower(pathinfo($rawName, PATHINFO_EXTENSION));
+        $canonExt = $allowed[$detected];
+        $okExts = ($canonExt === 'jpg') ? ['jpg','jpeg'] : [$canonExt];
+        if (!in_array($rawExt, $okExts, true)) {
+            throw new Exception("Filename extension does not match the file type.");
+        }
+
+        $folder = (string)$ownerId;
+        $dir = BASE_PATH . '/uploads/support/' . $folder;
+        if (!is_dir($dir)) @mkdir($dir, 0755, true);
+        @file_put_contents($dir . '/index.html', '');
+        
+        $stored = bin2hex(random_bytes(16)) . '.' . $canonExt;
+        $dest = $dir . '/' . $stored;
+        if (!@move_uploaded_file($file['tmp_name'], $dest)) {
+            throw new Exception("Could not store the file.");
+        }
+        @chmod($dest, 0644);
+
+        $relPath = $folder . '/' . $stored;
+        $safeName = preg_replace('/[^a-zA-Z0-9._-]+/', '_', $rawName);
+
+        $msgId = Database::insert('support_messages', [
+            'affiliate_id'    => $ownerId,
+            'owner_type'      => $ownerType,
+            'sender_id'       => $adminId,
+            'sender_role'     => 'admin',
+            'message'         => '',
+            'conversation_id' => null,
+            'attachment_path' => $relPath,
+            'attachment_name' => mb_substr($safeName, 0, 255),
+            'attachment_type' => $detected,
+            'attachment_size' => (int)$file['size'],
+            'is_deleted'      => 1,
+            'created_at'      => date('Y-m-d H:i:s')
+        ]);
+
+        echo json_encode([
+            'success'         => true,
+            'attachment_id'   => (int)$msgId,
+            'attachment_name' => $safeName,
+            'attachment_size' => (int)$file['size'],
+            'attachment_type' => $detected,
+        ]);
+        exit;
+    }
+
+    // ─── ACTION: download ───────────────────────────────────────────────────
+    if ($action === 'download') {
+        $msgId = (int)($_GET['id'] ?? 0);
+        $row = Database::fetchOne("SELECT * FROM support_messages WHERE id=? AND attachment_path IS NOT NULL", [$msgId]);
+        
+        if (!$row) {
+            http_response_code(404);
+            die('Not found');
+        }
+
+        $abs = BASE_PATH . '/uploads/support/' . $row['attachment_path'];
+        if (!is_file($abs)) {
+            http_response_code(404);
+            die('File missing');
+        }
+
+        $type = (string)($row['attachment_type'] ?? 'application/octet-stream');
+        $name = (string)($row['attachment_name'] ?? 'file');
+        
+        $inline = (strpos($type, 'image/') === 0 || $type === 'application/pdf');
+        
+        header('Content-Type: ' . $type);
+        header('Content-Length: ' . filesize($abs));
+        header('Content-Disposition: ' . ($inline ? 'inline' : 'attachment') . '; filename="' . addslashes(basename($name)) . '"');
+        readfile($abs);
         exit;
     }
 

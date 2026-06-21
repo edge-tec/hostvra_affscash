@@ -239,17 +239,51 @@ try {
         // Trigger notification
         $ownerUser = Database::fetchOne("SELECT user_id FROM affiliates WHERE id=?", [$affId]);
         $me = Database::fetchOne("SELECT first_name FROM users WHERE id=?", [$mgrUserId]);
+        $mgrName = $me['first_name'] ?? 'Manager';
+        $preview = mb_substr($messageText !== '' ? $messageText : 'Attachment', 0, 60);
+
+        // Notify the affiliate
         if ($ownerUser) {
             Database::insert('notifications', [
                 'user_id'     => $ownerUser['user_id'],
-                'target_role' => null,
+                'target_role' => 'affiliate',
                 'type'        => 'info',
                 'title'       => 'New Message from Manager',
-                'message'     => ($me['first_name'] ?? 'Manager') . ': ' . mb_substr($messageText !== '' ? $messageText : 'Attachment', 0, 60),
+                'message'     => $mgrName . ': ' . $preview,
                 'link'        => '/affiliate/support',
                 'is_read'     => 0,
+                'notification_type' => 'support_message',
+                'deep_link_route'   => 'chat'
             ]);
         }
+
+        // Notify all admin users
+        try {
+            $adminUsers = Database::fetchAll("SELECT id FROM users WHERE role='admin'");
+            foreach ($adminUsers as $au) {
+                Database::insert('notifications', [
+                    'user_id'     => (int)$au['id'],
+                    'target_role' => 'admin',
+                    'type'        => 'info',
+                    'title'       => 'Manager Message Sent',
+                    'message'     => $mgrName . ' → Affiliate #' . $affId . ': ' . $preview,
+                    'link'        => '/admin/support',
+                    'is_read'     => 0,
+                    'notification_type' => 'support_message',
+                    'deep_link_route'   => 'admin_support'
+                ]);
+            }
+        } catch (\Throwable $e) {}
+
+        // Send FCM push notifications
+        try {
+            if (file_exists(BASE_PATH . '/core/FirebaseMessaging.php')) {
+                require_once BASE_PATH . '/core/FirebaseMessaging.php';
+                if ($ownerUser && $ownerUser['user_id']) {
+                    FirebaseMessaging::sendToUser((int)$ownerUser['user_id'], 'New Message from Manager', $mgrName . ': ' . $preview, ['type' => 'support']);
+                }
+            }
+        } catch (\Throwable $e) {}
 
         $newMessage = Database::fetchOne(
             "SELECT sm.id, sm.sender_id, sm.sender_role, sm.message, sm.created_at, sm.is_read, sm.is_edited, sm.updated_at, sm.is_deleted,

@@ -410,7 +410,15 @@ private fun formatTime(dateStr: String?): String {
 private fun getFileFromUri(context: android.content.Context, uri: Uri): File? {
     return try {
         val inputStream = context.contentResolver.openInputStream(uri) ?: return null
-        val tempFile = File(context.cacheDir, "upload_admin_${System.currentTimeMillis()}.jpg")
+        // Get original filename to preserve the extension
+        var fileName = "upload_admin_${System.currentTimeMillis()}"
+        context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+            val nameIndex = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+            if (cursor.moveToFirst() && nameIndex != -1) {
+                fileName = cursor.getString(nameIndex) ?: fileName
+            }
+        }
+        val tempFile = File(context.cacheDir, fileName)
         val outputStream = FileOutputStream(tempFile)
         inputStream.copyTo(outputStream)
         inputStream.close()
