@@ -64,55 +64,68 @@ fun ManagerAffiliatesScreen(
                 color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
                 shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
             ) {
-                Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
-                    Column(
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 16.dp)
+                        .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 16.dp)
                     ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Surface(
-                                shape = RoundedCornerShape(12.dp),
-                                color = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(48.dp)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Surface(
+                                    shape = RoundedCornerShape(12.dp),
+                                    color = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(48.dp)
+                                ) {
+                                    Icon(
+                                        Icons.Outlined.People,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onPrimary,
+                                        modifier = Modifier.padding(8.dp)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Column {
+                                    Text(
+                                        text = "My Affiliates",
+                                        style = MaterialTheme.typography.headlineSmall,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                                    )
+                                    Text(
+                                        text = "Manage your affiliate network",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(
+                                            alpha = 0.8f
+                                        )
+                                    )
+                                }
+                            }
+                            IconButton(
+                                onClick = onNavigateToCreate,
+                                modifier = Modifier.background(
+                                    MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+                                    RoundedCornerShape(12.dp)
+                                )
                             ) {
                                 Icon(
-                                    Icons.Outlined.People,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onPrimary,
-                                    modifier = Modifier.padding(8.dp)
+                                    Icons.Default.Add,
+                                    contentDescription = "Create Affiliate",
+                                    tint = MaterialTheme.colorScheme.primary
                                 )
                             }
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Column {
-                                Text(
-                                    text = "My Affiliates",
-                                    style = MaterialTheme.typography.headlineSmall,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                                )
-                                Text(
-                                    text = "Manage your affiliate network",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
-                                )
-                            }
-                        }
-                        IconButton(
-                            onClick = onNavigateToCreate,
-                            modifier = Modifier.background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
-                        ) {
-                            Icon(Icons.Default.Add, contentDescription = "Create Affiliate", tint = MaterialTheme.colorScheme.primary)
                         }
                     }
                 }
-                            }
-}
+            }
         }
     ) { padding ->
         Column(
@@ -299,8 +312,7 @@ fun ManagerAffiliateCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
-                Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
-                    Row(
+                Row(
                     modifier = Modifier.weight(1f),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -309,9 +321,14 @@ fun ManagerAffiliateCard(
                         color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
                         modifier = Modifier.size(40.dp)
                     ) {
-                        Icon(Icons.Outlined.Person, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(8.dp))
+                        Icon(
+                            Icons.Outlined.Person,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(8.dp)
+                        )
                     }
-                    Spacer(modifier = Modifier.width(4.dp))
+                    Spacer(modifier = Modifier.width(12.dp))
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = "${affiliate.firstName} ${affiliate.lastName}",
@@ -321,25 +338,25 @@ fun ManagerAffiliateCard(
                             overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                         )
                         Text(
-                            text = affiliate.email, 
-                            style = MaterialTheme.typography.bodySmall, 
+                            text = affiliate.email,
+                            style = MaterialTheme.typography.bodySmall,
                             color = Color.Gray,
                             maxLines = 1,
                             overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                         )
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                text = affiliate.affiliateCode, 
-                                style = MaterialTheme.typography.labelSmall, 
-                                fontWeight = FontWeight.Bold, 
+                                text = affiliate.affiliateCode,
+                                style = MaterialTheme.typography.labelSmall,
+                                fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.primary,
                                 maxLines = 1,
                                 softWrap = false
                             )
                             if (!affiliate.company.isNullOrBlank()) {
                                 Text(
-                                    text = " • ${affiliate.company}", 
-                                    style = MaterialTheme.typography.labelSmall, 
+                                    text = " • ${affiliate.company}",
+                                    style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     maxLines = 1,
                                     overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
@@ -349,7 +366,7 @@ fun ManagerAffiliateCard(
                         }
                     }
                 }
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(16.dp))
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
                         text = affiliate.balance ?: "$0.00",
@@ -364,41 +381,62 @@ fun ManagerAffiliateCard(
                 }
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
-            
+            Spacer(modifier = Modifier.height(16.dp))
+
             // Stats Grid
             Surface(
                 color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
-                    Row(
-                    modifier = Modifier.fillMaxWidth().padding(8.dp),
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text("Joined", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
                         Spacer(modifier = Modifier.height(4.dp))
-                        Text(affiliate.createdAt.take(10), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+                        Text(
+                            affiliate.createdAt.take(10),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text("Last Login", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
                         Spacer(modifier = Modifier.height(4.dp))
-                        Text(affiliate.lastLogin?.take(16) ?: "Never", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+                        Text(
+                            affiliate.lastLogin?.take(16) ?: "Never",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text("Inactive", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
                         Spacer(modifier = Modifier.height(4.dp))
-                        Text(affiliate.daysInactive?.let { "$it DAYS" } ?: "-", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+                        Text(
+                            affiliate.daysInactive?.let { "$it DAYS" } ?: "-",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-            val fraudColor = if (affiliate.fraudScore > 70) Color(0xFFEF4444) else if (affiliate.fraudScore > 30) Color(0xFFF59E0B) else Color(0xFF10B981)
+            val fraudColor =
+                if (affiliate.fraudScore > 70) Color(0xFFEF4444) else if (affiliate.fraudScore > 30) Color(
+                    0xFFF59E0B
+                ) else Color(0xFF10B981)
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Outlined.Security, contentDescription = null, modifier = Modifier.size(16.dp), tint = fraudColor)
+                Icon(
+                    Icons.Outlined.Security,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp),
+                    tint = fraudColor
+                )
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     text = "Fraud Score: ${affiliate.fraudScore.toInt()} (${affiliate.fraudCheckedCount} checks)",
@@ -408,31 +446,46 @@ fun ManagerAffiliateCard(
                 )
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedButton(onClick = onView, contentPadding = PaddingValues(horizontal = 12.dp), shape = RoundedCornerShape(8.dp)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedButton(
+                        onClick = onView,
+                        contentPadding = PaddingValues(horizontal = 12.dp),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
                         Text("View")
                     }
-                    OutlinedButton(onClick = onEdit, contentPadding = PaddingValues(horizontal = 12.dp), shape = RoundedCornerShape(8.dp)) {
+                    OutlinedButton(
+                        onClick = onEdit,
+                        contentPadding = PaddingValues(horizontal = 12.dp),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
                         Text("Edit")
                     }
                 }
-                
+
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(onClick = onImpersonate, contentPadding = PaddingValues(horizontal = 12.dp), shape = RoundedCornerShape(8.dp)) {
-                        Icon(Icons.Default.VpnKey, contentDescription = null, modifier = Modifier.size(16.dp))
+                    Button(
+                        onClick = onImpersonate,
+                        contentPadding = PaddingValues(horizontal = 12.dp),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.VpnKey,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp)
+                        )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text("Login")
                     }
-                    
+
                     if (canApprove) {
                         when (affiliate.status) {
                             "pending" -> {
@@ -445,6 +498,7 @@ fun ManagerAffiliateCard(
                                     Text("Approve")
                                 }
                             }
+
                             "active" -> {
                                 Button(
                                     onClick = { onUpdateStatus("suspended") },
@@ -455,6 +509,7 @@ fun ManagerAffiliateCard(
                                     Text("Suspend")
                                 }
                             }
+
                             else -> {
                                 Button(
                                     onClick = { onUpdateStatus("active") },
@@ -482,7 +537,7 @@ fun StatusBadge(status: String) {
         "rejected" -> Color(0xFFF5F5F5) to Color(0xFF616161)
         else -> Color(0xFFF5F5F5) to Color(0xFF616161)
     }
-    
+
     Box(
         modifier = Modifier
             .background(color = color, shape = MaterialTheme.shapes.small)
@@ -498,3 +553,4 @@ fun StatusBadge(status: String) {
         )
     }
 }
+

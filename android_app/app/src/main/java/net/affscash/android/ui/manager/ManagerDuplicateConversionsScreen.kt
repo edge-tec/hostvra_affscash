@@ -69,10 +69,10 @@ fun ManagerDuplicateConversionsScreen(
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
-                            }
-}
+            }
         }
-    ) { paddingValues ->
+    }
+) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
             
             // Date Range Picker Strip
@@ -269,8 +269,9 @@ fun DuplicateClusterView(cluster: DuplicateConversionGroup) {
                     }
                 }
             }
+        }
 
-            // Rows
+        // Rows
             cluster.conversions.forEachIndexed { index, conversion ->
                 Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
                     var expandId by remember { mutableStateOf(false) }

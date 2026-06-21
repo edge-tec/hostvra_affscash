@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.WarningAmber
@@ -67,7 +66,7 @@ fun ManagerDashboardScreen(
     onNavigateToInvoices: () -> Unit = {},
     onNavigateToFraudAlerts: () -> Unit = {},
     onNavigateToChat: () -> Unit = {},
-    onNavigateToNotifications: () -> Unit = {}
+    onNavigateToNotifications: () -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -231,7 +230,7 @@ fun ManagerDashboardScreen(
                                         bottomAxis = rememberBottomAxis(
                                             valueFormatter = { value, _ -> 
                                                 val index = value.toInt()
-                                                if (index >= 0 && index < trendData.labels.size) trendData.labels[index] else ""
+                                                if ((index >= 0) && (index < trendData.labels.size)) trendData.labels[index] else ""
                                             }
                                         ),
                                         modifier = Modifier.fillMaxSize().padding(4.dp)
@@ -549,6 +548,7 @@ fun PieChartCard(labels: List<String>, data: List<Int>, customColors: List<Color
         }
     }
 }
+}
 
 @Composable
 fun PeriodTabs(selectedPeriod: String, onSelect: (String) -> Unit) {
@@ -646,9 +646,9 @@ fun KpiCard(
     value: String,
     subTitle: String,
     icon: androidx.compose.ui.graphics.vector.ImageVector,
-    trend: Double? = null,
     color: Color,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    trend: Double? = null
 ) {
     Card(
         modifier = modifier,
