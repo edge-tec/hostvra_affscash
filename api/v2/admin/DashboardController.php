@@ -259,9 +259,26 @@ try {
         'total_advertisers' => (int)($totAdv['cnt'] ?? 0)
     ];
 
+    // 11. Header Counts
+    $adminUserId = Auth::id();
+    $unreadNotifs = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM notifications WHERE user_id=? AND is_read=0", [$adminUserId])['c'] ?? 0);
+    $unreadBroadcast = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM notifications n WHERE n.user_id IS NULL AND n.target_role IN ('admin', 'all') AND NOT EXISTS (SELECT 1 FROM notification_reads nr WHERE nr.notification_id=n.id AND nr.user_id=?)", [$adminUserId])['c'] ?? 0);
+    $unreadAlerts = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM fraud_alerts WHERE is_read=0 AND resolved_at IS NULL")['c'] ?? 0);
+    $unreadChats = (int)(Database::fetchOne("SELECT COUNT(*) c FROM chat_messages WHERE sender_role IN ('affiliate', 'manager', 'advertiser') AND read_by_admin=0")['c'] ?? 0);
+    $pendingApprovals = (int)(Database::fetchOne("SELECT COUNT(*) c FROM offer_approvals WHERE status='pending'")['c'] ?? 0);
+
+    $header_counts = [
+        'unread_news' => 0,
+        'unread_notifs' => $unreadNotifs + $unreadBroadcast,
+        'unread_alerts' => $unreadAlerts,
+        'unread_chats' => $unreadChats,
+        'pending_approvals' => $pendingApprovals
+    ];
+
     echo json_encode([
         'success' => true,
         'data' => [
+            'header_counts' => $header_counts,
             'summary' => $summary,
             'kpis' => $kpis,
             'trend' => $trend,

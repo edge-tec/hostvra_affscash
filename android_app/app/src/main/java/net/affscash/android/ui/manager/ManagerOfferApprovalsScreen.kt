@@ -156,24 +156,24 @@ fun ManagerOfferApprovalsScreen(
             ) {
                 Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
                     Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "Offer Approvals",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    IconButton(onClick = { showFilters = true }) {
-                        Icon(Icons.Default.FilterList, contentDescription = "Filters", tint = MaterialTheme.colorScheme.primary)
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "Offer Approvals",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        IconButton(onClick = { showFilters = true }) {
+                            Icon(Icons.Default.FilterList, contentDescription = "Filters", tint = MaterialTheme.colorScheme.primary)
+                        }
                     }
                 }
-                            }
-}
+            }
         }
     ) { padding ->
         Column(
@@ -259,16 +259,23 @@ fun ApprovalRequestCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
-                Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
-                    Column(modifier = Modifier.weight(1f)) {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = request.offerName,
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleSmall
                     )
-                    Text(text = "Payout: $${(( request.payoutAmount )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } } (${request.payoutType})", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(
+                        text = "Payout: $${"%.2f".format(request.payoutAmount)} (${request.payoutType})",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                     if (request.offerCategory != null) {
-                        Text(text = "Category: ${request.offerCategory}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f))
+                        Text(
+                            text = "Category: ${request.offerCategory}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                        )
                     }
                 }
                 Spacer(modifier = Modifier.width(4.dp))
@@ -344,7 +351,7 @@ fun ApprovalRequestCard(
 
 @Composable
 fun ApprovalStatusBadge(status: String) {
-    val (color, text, bgColor) = when (status) {
+    val (statusColor, statusLabel, statusBg) = when (status) {
         "approved" -> Triple(Color(0xFF059669), "APPROVED", Color(0xFFD1FAE5))
         "pending" -> Triple(Color(0xFFF59E0B), "PENDING", Color(0xFFFEF3C7))
         "rejected" -> Triple(Color(0xFFEF4444), "REJECTED", Color(0xFFFEE2E2))
@@ -352,14 +359,14 @@ fun ApprovalStatusBadge(status: String) {
     }
     
     Surface(
-        color = bgColor,
+        color = statusBg,
         shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
     ) {
         Text(
-            text = text,
+            text = statusLabel,
             style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Bold,
-            color = color,
+            color = statusColor,
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
         )
     }

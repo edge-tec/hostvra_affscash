@@ -62,7 +62,7 @@ fun AdminSupportChatScreen(
             val file = getFileFromUri(context, it)
             if (file != null) {
                 val mimeType = context.contentResolver.getType(it) ?: "application/octet-stream"
-                viewModel.uploadAndSendMessage(file, mimeType, "Sent an attachment")
+                viewModel.uploadAndSendMessage(file, mimeType, "")
             }
         }
     }
@@ -74,7 +74,7 @@ fun AdminSupportChatScreen(
             val file = getFileFromUri(context, it)
             if (file != null) {
                 val mimeType = context.contentResolver.getType(it) ?: "image/jpeg"
-                viewModel.uploadAndSendMessage(file, mimeType, "Sent an image")
+                viewModel.uploadAndSendMessage(file, mimeType, "")
             }
         }
     }

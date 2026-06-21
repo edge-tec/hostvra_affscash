@@ -56,11 +56,11 @@ fun SmartlinkScreen(
                 color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
                 shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
             ) {
-                Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
-                    Row(
+                Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))
                         .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
                 ) {
                     Text(
@@ -70,8 +70,7 @@ fun SmartlinkScreen(
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
-                            }
-}
+            }
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
@@ -186,9 +185,14 @@ fun SmartlinkCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Top) {
-                Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
-                    Column(modifier = Modifier.weight(1f)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top)),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = "#${smartlink.id}",
                         color = MaterialTheme.colorScheme.onSurfaceVariant,

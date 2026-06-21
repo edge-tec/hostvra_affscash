@@ -552,7 +552,13 @@ fun MainScreen(
             }
 
             // Admin Screens
-            composable(Screen.AdminDashboard.route) { net.affscash.android.ui.admin.AdminDashboardScreen() }
+            composable(Screen.AdminDashboard.route) { 
+                net.affscash.android.ui.admin.AdminDashboardScreen(
+                    onNavigateToNotifications = { navController.navigate(Screen.Notifications.route) },
+                    onNavigateToChat = { navController.navigate(Screen.AdminSupport.route) },
+                    onNavigateToOfferApprovals = { navController.navigate(Screen.AdminOfferApprovals.route) }
+                ) 
+            }
             composable(Screen.AdminOfferApprovals.route) { net.affscash.android.ui.admin.AdminOfferApprovalsScreen() }
             composable(Screen.AdminInHouseOffers.route) {
                 net.affscash.android.ui.admin.AdminInHouseOffersScreen(
@@ -784,7 +790,8 @@ fun MainScreen(
                     onNavigateToInvoices = { navController.navigate(Screen.ManagerInvoices.route) },
                     onNavigateToFraudAlerts = { navController.navigate("manager_fraud_reports") },
                     onNavigateToChat = { navController.navigate(Screen.Chat.route) },
-                    onNavigateToNotifications = { navController.navigate(Screen.Notifications.route) }
+                    onNavigateToNotifications = { navController.navigate(Screen.Notifications.route) },
+                    onNavigateToOfferApprovals = { navController.navigate("manager_offer_approvals") }
                 ) 
             }
             composable(Screen.ManagerOffers.route) { 

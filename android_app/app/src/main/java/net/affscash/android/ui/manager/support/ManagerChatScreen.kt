@@ -56,7 +56,7 @@ fun ManagerChatScreen(
             val file = getFileFromUri(context, it)
             if (file != null) {
                 val mimeType = context.contentResolver.getType(it) ?: "application/octet-stream"
-                viewModel.uploadAndSendMessage(file, mimeType, "Sent an attachment")
+                viewModel.uploadAndSendMessage(file, mimeType, "")
             }
         }
     }

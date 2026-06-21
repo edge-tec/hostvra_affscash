@@ -17,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
+import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.WarningAmber
 import androidx.compose.material.icons.outlined.Analytics
@@ -67,6 +68,7 @@ fun ManagerDashboardScreen(
     onNavigateToFraudAlerts: () -> Unit = {},
     onNavigateToChat: () -> Unit = {},
     onNavigateToNotifications: () -> Unit = {},
+    onNavigateToOfferApprovals: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -148,6 +150,14 @@ fun ManagerDashboardScreen(
                                 count = counts?.unreadChats ?: 0,
                                 badgeColor = Color(0xFFEF4444),
                                 onClick = onNavigateToChat
+                            )
+
+                            // Approvals Icon
+                            HeaderIconWithBadge(
+                                icon = Icons.Outlined.CheckCircle,
+                                count = counts?.pendingApprovals ?: 0,
+                                badgeColor = Color(0xFF10B981),
+                                onClick = onNavigateToOfferApprovals
                             )
                         }
                     }

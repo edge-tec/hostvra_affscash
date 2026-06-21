@@ -12,6 +12,7 @@ data class AdminDashboardResponse(
 
 @Serializable
 data class AdminDashboardData(
+    @SerialName("header_counts") val headerCounts: DashboardHeaderCounts? = null,
     val summary: AdminSummaryData = AdminSummaryData(),
     val kpis: AdminKpiData = AdminKpiData(),
     val trend: AdminTrendData = AdminTrendData(),

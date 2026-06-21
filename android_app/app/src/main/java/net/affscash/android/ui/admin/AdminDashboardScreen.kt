@@ -44,10 +44,23 @@ import com.patrykandpatrick.vico.compose.chart.line.lineChart
 import com.patrykandpatrick.vico.core.entry.entryModelOf
 import com.patrykandpatrick.vico.core.entry.FloatEntry
 
+import net.affscash.android.ui.dashboard.HeaderIconWithBadge
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.WarningAmber
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.ui.res.painterResource
+import net.affscash.android.R
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminDashboardScreen(
-    viewModel: AdminDashboardViewModel = hiltViewModel()
+    viewModel: AdminDashboardViewModel = hiltViewModel(),
+    onNavigateToNotifications: () -> Unit = {},
+    onNavigateToChat: () -> Unit = {},
+    onNavigateToOfferApprovals: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val selectedFilter by viewModel.selectedFilter.collectAsState()
@@ -79,12 +92,52 @@ fun AdminDashboardScreen(
                         contentPadding = PaddingValues(vertical = 8.dp)
                     ) {
                         item {
-                            Text(
-                                text = "Admin Analytics",
-                                style = MaterialTheme.typography.headlineMedium.copy(brush = PremiumUI.PrimaryGradient),
-                                fontWeight = FontWeight.ExtraBold,
-                                modifier = Modifier.padding(bottom = 8.dp)
-                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp, top = 8.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.logo),
+                                    contentDescription = "AffsCash Logo",
+                                    modifier = Modifier.height(40.dp).padding(start = 4.dp)
+                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    val counts = data.headerCounts
+                                    // Notifications Icon
+                                    val badgeManager = remember { net.affscash.android.AffscashApp.getBadgeManager() }
+                                    val liveBadgeCount = if (badgeManager != null) {
+                                        badgeManager.unreadCount.collectAsState().value
+                                    } else {
+                                        counts?.unreadNotifs ?: 0
+                                    }
+                                    HeaderIconWithBadge(
+                                        icon = Icons.Outlined.Notifications,
+                                        count = liveBadgeCount,
+                                        badgeColor = Color(0xFFEF4444),
+                                        onClick = onNavigateToNotifications
+                                    )
+
+                                    // Chat Icon
+                                    HeaderIconWithBadge(
+                                        icon = Icons.Outlined.Email,
+                                        count = counts?.unreadChats ?: 0,
+                                        badgeColor = Color(0xFF3B82F6),
+                                        onClick = onNavigateToChat
+                                    )
+
+                                    // Approvals Icon
+                                    HeaderIconWithBadge(
+                                        icon = Icons.Outlined.CheckCircle,
+                                        count = counts?.pendingApprovals ?: 0,
+                                        badgeColor = Color(0xFF10B981),
+                                        onClick = onNavigateToOfferApprovals
+                                    )
+                                }
+                            }
                         }
 
                         // Date Filters Row

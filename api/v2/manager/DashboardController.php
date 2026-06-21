@@ -13,7 +13,8 @@ if (empty($managerAffIds)) {
     $commBalance = (float)($mgrRow['balance'] ?? 0);
     $mgrId = $mgrRow['id'] ?? 0;
     $unreadNotifs = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM notifications WHERE user_id=? AND is_read=0", [$mgrUserId])['c'] ?? 0);
-    $unreadChats = (int)(Database::fetchOne("SELECT COUNT(*) c FROM manager_messages WHERE manager_id=? AND sender_role='admin' AND read_by_manager=0", [$mgrId])['c'] ?? 0);
+    $unreadAdminChats = (int)(Database::fetchOne("SELECT COUNT(*) c FROM manager_messages WHERE manager_id=? AND sender_role='admin' AND read_by_manager=0", [$mgrId])['c'] ?? 0);
+    $unreadChats = $unreadAdminChats;
 
     echo json_encode([
         'success' => true,
@@ -24,7 +25,8 @@ if (empty($managerAffIds)) {
                 'unread_news' => 0,
                 'unread_notifs' => $unreadNotifs,
                 'unread_alerts' => 0,
-                'unread_chats' => $unreadChats
+                'unread_chats' => $unreadChats,
+                'pending_approvals' => 0
             ],
             'fraud_score_average' => 0,
             'fraud_score_counts' => ['high' => 0, 'medium' => 0, 'low' => 0],
@@ -164,13 +166,29 @@ if ($action === 'stats') {
             $unreadAlerts = 0;
         }
     }
-    $unreadChats = (int)(Database::fetchOne("SELECT COUNT(*) c FROM manager_messages WHERE manager_id=? AND sender_role='admin' AND read_by_manager=0", [$mgrId])['c'] ?? 0);
+    $unreadAdminChats = (int)(Database::fetchOne("SELECT COUNT(*) c FROM manager_messages WHERE manager_id=? AND sender_role='admin' AND read_by_manager=0", [$mgrId])['c'] ?? 0);
+    $unreadAffiliateChats = 0;
+    $pendingApprovals = 0;
+    if (!empty($managerAffIds)) {
+        $inAff = implode(',', array_fill(0, count($managerAffIds), '?'));
+        $unreadAffiliateChats = (int)(Database::fetchOne(
+            "SELECT COUNT(*) c FROM support_messages sm JOIN support_conversations sc ON sc.id = sm.conversation_id WHERE sc.affiliate_id IN ($inAff) AND sm.sender_role='affiliate' AND sm.is_read=0",
+            $managerAffIds
+        )['c'] ?? 0);
+
+        $pendingApprovals = (int)(Database::fetchOne(
+            "SELECT COUNT(*) c FROM offer_approvals WHERE affiliate_id IN ($inAff) AND status='pending'",
+            $managerAffIds
+        )['c'] ?? 0);
+    }
+    $unreadChats = $unreadAdminChats + $unreadAffiliateChats;
 
     $header_counts = [
         'unread_news' => $unreadNews,
         'unread_notifs' => $unreadNotifs,
         'unread_alerts' => $unreadAlerts,
-        'unread_chats' => $unreadChats
+        'unread_chats' => $unreadChats,
+        'pending_approvals' => $pendingApprovals
     ];
 
     echo json_encode([
