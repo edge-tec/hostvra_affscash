@@ -67,14 +67,14 @@ fun ManagerDashboardScreen(
     Scaffold(
         topBar = {
             Surface(
-                modifier = Modifier.fillMaxWidth().background(PremiumUI.PastelHeader, RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)),
+                modifier = Modifier.fillMaxWidth().background(PremiumUI.PastelHeader, RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)).statusBarsPadding(),
                 color = Color.Transparent,
-                shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+                shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
+                        .padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 8.dp)
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -84,7 +84,7 @@ fun ManagerDashboardScreen(
                         Image(
                             painter = painterResource(id = R.drawable.logo),
                             contentDescription = "AffsCash Logo",
-                            modifier = Modifier.height(24.dp)
+                            modifier = Modifier.height(16.dp)
                         )
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             val stats = uiState.stats
@@ -94,20 +94,20 @@ fun ManagerDashboardScreen(
                             // Balance Pill
                             Surface(
                                 color = Color(0x59FFFFFF),
-                                shape = RoundedCornerShape(24.dp),
+                                shape = RoundedCornerShape(16.dp),
                                 border = BorderStroke(1.dp, Color(0x4DFFFFFF)),
                                 modifier = Modifier.padding(end = 8.dp),
                                 onClick = onNavigateToInvoices
                             ) {
                                 Row(
-                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Icon(
                                         Icons.Outlined.MonetizationOn,
                                         contentDescription = null,
                                         tint = Color(0xFF059669),
-                                        modifier = Modifier.size(16.dp)
+                                        modifier = Modifier.size(8.dp)
                                     )
                                     Spacer(modifier = Modifier.width(4.dp))
                                     Text(
@@ -171,7 +171,7 @@ fun ManagerDashboardScreen(
 
                 if (uiState.isLoadingStats) {
                     item {
-                        CircularProgressIndicator(modifier = Modifier.padding(8.dp))
+                        CircularProgressIndicator(modifier = Modifier.padding(4.dp))
                     }
                 } else if (uiState.error != null) {
                     item {
@@ -209,8 +209,8 @@ fun ManagerDashboardScreen(
                             }
                             val model = entryModelOf(entries)
                             Card(
-                                modifier = Modifier.fillMaxWidth().height(180.dp),
-                                shape = RoundedCornerShape(20.dp),
+                                modifier = Modifier.fillMaxWidth().height(140.dp),
+                                shape = RoundedCornerShape(12.dp),
                                 colors = CardDefaults.cardColors(containerColor = Color.Transparent),
                                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                             ) {
@@ -225,7 +225,7 @@ fun ManagerDashboardScreen(
                                                 if (index >= 0 && index < trendData.labels.size) trendData.labels[index] else ""
                                             }
                                         ),
-                                        modifier = Modifier.fillMaxSize().padding(8.dp)
+                                        modifier = Modifier.fillMaxSize().padding(4.dp)
                                     )
                                 }
                             }
@@ -237,7 +237,7 @@ fun ManagerDashboardScreen(
 
                 item {
                     if (uiState.isLoadingExtra) {
-                        CircularProgressIndicator(modifier = Modifier.padding(vertical = 8.dp))
+                        CircularProgressIndicator(modifier = Modifier.padding(vertical = 4.dp))
                     } else if (uiState.extraData != null) {
                         val extra = uiState.extraData!!
                         
@@ -266,15 +266,15 @@ fun ManagerDashboardScreen(
                             Spacer(modifier = Modifier.height(4.dp))
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(20.dp),
+                                shape = RoundedCornerShape(12.dp),
                                 colors = CardDefaults.cardColors(containerColor = Color.Transparent),
                                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                             ) {
                                 Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                                    Column(modifier = Modifier.padding(8.dp)) {
+                                    Column(modifier = Modifier.padding(4.dp)) {
                                         extra.countries.take(5).forEach { c ->
                                             Row(
-                                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                                                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                                                 horizontalArrangement = Arrangement.SpaceBetween
                                             ) {
                                                 Text(c.country.ifBlank { "Unknown" }, fontWeight = FontWeight.Medium)
@@ -322,15 +322,15 @@ fun ManagerDashboardScreen(
                             Spacer(modifier = Modifier.height(4.dp))
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(20.dp),
+                                shape = RoundedCornerShape(12.dp),
                                 colors = CardDefaults.cardColors(containerColor = Color.Transparent),
                                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                             ) {
                                 Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                                    Column(modifier = Modifier.padding(8.dp)) {
+                                    Column(modifier = Modifier.padding(4.dp)) {
                                         extra.offers.take(5).forEach { o ->
                                             Row(
-                                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                                                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                                                 horizontalArrangement = Arrangement.SpaceBetween
                                             ) {
                                                 Text(o.name.ifBlank { "Offer #${o.id}" }, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
@@ -349,15 +349,15 @@ fun ManagerDashboardScreen(
                             Spacer(modifier = Modifier.height(4.dp))
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(20.dp),
+                                shape = RoundedCornerShape(12.dp),
                                 colors = CardDefaults.cardColors(containerColor = Color.Transparent),
                                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                             ) {
                                 Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                                    Column(modifier = Modifier.padding(8.dp)) {
+                                    Column(modifier = Modifier.padding(4.dp)) {
                                         extra.affiliates.take(5).forEach { a ->
                                             Row(
-                                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                                                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                                                 horizontalArrangement = Arrangement.SpaceBetween
                                             ) {
                                                 Text(a.name.ifBlank { "Affiliate #${a.id}" }, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
@@ -377,15 +377,15 @@ fun ManagerDashboardScreen(
                             Spacer(modifier = Modifier.height(4.dp))
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(20.dp),
+                                shape = RoundedCornerShape(12.dp),
                                 colors = CardDefaults.cardColors(containerColor = Color.Transparent),
                                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                                 border = BorderStroke(1.dp, Color(0xFFFCA5A5))
                             ) {
                                 Box(modifier = Modifier.background(Color(0xFFFEF2F2).copy(alpha = 0.9f)).fillMaxSize()) {
-                                    Column(modifier = Modifier.padding(8.dp)) {
+                                    Column(modifier = Modifier.padding(4.dp)) {
                                         extra.fraudConvs.forEach { fc ->
-                                            Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+                                            Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
                                                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                                                     Text("ID: ${fc.conversionId}", fontWeight = FontWeight.Bold, color = Color(0xFFB91C1C))
                                                     Text("$${(( fc.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontWeight = FontWeight.Bold, color = Color(0xFF15803D))
@@ -408,14 +408,14 @@ fun ManagerDashboardScreen(
                             Spacer(modifier = Modifier.height(4.dp))
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(20.dp),
+                                shape = RoundedCornerShape(12.dp),
                                 colors = CardDefaults.cardColors(containerColor = Color.Transparent),
                                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                             ) {
                                 Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                                    Column(modifier = Modifier.padding(8.dp)) {
+                                    Column(modifier = Modifier.padding(4.dp)) {
                                         extra.recentConvs.forEach { rc ->
-                                            Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+                                            Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
                                                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                                                     val statusColor = when (rc.status.lowercase()) {
                                                         "approved" -> Color(0xFF10B981)
@@ -461,7 +461,7 @@ fun BarChartCard(labels: List<String>, data: List<Float>) {
 
     Card(
         modifier = Modifier.fillMaxWidth().height(160.dp),
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -476,7 +476,7 @@ fun BarChartCard(labels: List<String>, data: List<Float>) {
                         if (index >= 0 && index < labels.size) labels[index] else ""
                     }
                 ),
-                modifier = Modifier.padding(8.dp).fillMaxSize()
+                modifier = Modifier.padding(4.dp).fillMaxSize()
             )
         }
     }
@@ -486,7 +486,7 @@ fun BarChartCard(labels: List<String>, data: List<Float>) {
 fun PieChartCard(labels: List<String>, data: List<Int>, customColors: List<Color>? = null) {
     Card(
         modifier = Modifier.fillMaxWidth().height(200.dp),
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -500,7 +500,7 @@ fun PieChartCard(labels: List<String>, data: List<Int>, customColors: List<Color
                 val total = data.sum().toFloat()
                 
                 Column(
-                    modifier = Modifier.fillMaxSize().padding(8.dp),
+                    modifier = Modifier.fillMaxSize().padding(4.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -559,7 +559,7 @@ fun PeriodTabs(selectedPeriod: String, onSelect: (String) -> Unit) {
     ) {
         periods.forEach { (key, label) ->
             FilterChip(
-modifier = Modifier.height(32.dp),
+modifier = Modifier.height(28.dp),
                 selected = key == selectedPeriod,
                 onClick = { onSelect(key) },
                 label = { Text(label) }
@@ -642,17 +642,17 @@ fun KpiCard(
 ) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-            Column(modifier = Modifier.padding(8.dp)) {
+            Column(modifier = Modifier.padding(4.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Surface(
                     shape = RoundedCornerShape(8.dp),
                     color = color.copy(alpha = 0.15f),
-                    modifier = Modifier.size(32.dp)
+                    modifier = Modifier.size(28.dp)
                 ) {
                     Icon(
                         icon,

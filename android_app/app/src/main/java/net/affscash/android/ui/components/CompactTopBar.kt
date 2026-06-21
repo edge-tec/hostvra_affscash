@@ -24,22 +24,44 @@ fun CompactTopBar(
     ),
     scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
-    TopAppBar(
-        title = {
-            ProvideTextStyle(
-                value = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                    fontSize = 18.sp
-                )
-            ) {
-                title()
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        color = colors.containerColor,
+        shadowElevation = 2.dp
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsPadding()
+                .height(44.dp)
+                .padding(horizontal = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(modifier = Modifier.wrapContentWidth()) {
+                navigationIcon()
             }
-        },
-        modifier = modifier.height(48.dp),
-        navigationIcon = navigationIcon,
-        actions = actions,
-        windowInsets = windowInsets,
-        colors = colors,
-        scrollBehavior = scrollBehavior
-    )
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 8.dp),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                ProvideTextStyle(
+                    value = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = colors.titleContentColor
+                    )
+                ) {
+                    title()
+                }
+            }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+            ) {
+                actions()
+            }
+        }
+    }
 }

@@ -45,7 +45,7 @@ fun AdminDashboardScreen(
     val uiState by viewModel.uiState.collectAsState()
     val selectedFilter by viewModel.selectedFilter.collectAsState()
 
-    Box(modifier = Modifier.fillMaxSize().background(PremiumUI.BackgroundGradient)) {
+    Box(modifier = Modifier.fillMaxSize().background(PremiumUI.BackgroundGradient).statusBarsPadding()) {
         when (val state = uiState) {
             is AdminDashboardUiState.Loading -> {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -84,11 +84,11 @@ fun AdminDashboardScreen(
                         item {
                             LazyRow(
                                 horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                modifier = Modifier.padding(bottom = 16.dp)
+                                modifier = Modifier.padding(bottom = 8.dp)
                             ) {
                                 items(DateFilter.values()) { filter ->
                                     FilterChip(
-modifier = Modifier.height(32.dp),
+modifier = Modifier.height(28.dp),
                                         selected = filter == selectedFilter,
                                         onClick = { viewModel.setFilter(filter) },
                                         label = { Text(filter.label) }
@@ -115,8 +115,8 @@ modifier = Modifier.height(32.dp),
                                 }
                                 val model = entryModelOf(entries)
                                 Card(
-                                    modifier = Modifier.fillMaxWidth().height(180.dp),
-                                    shape = RoundedCornerShape(20.dp),
+                                    modifier = Modifier.fillMaxWidth().height(140.dp),
+                                    shape = RoundedCornerShape(12.dp),
                                     colors = CardDefaults.cardColors(containerColor = Color.Transparent),
                                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                                 ) {
@@ -131,7 +131,7 @@ modifier = Modifier.height(32.dp),
                                                     if (index >= 0 && index < trendData.labels.size) trendData.labels[index] else ""
                                                 }
                                             ),
-                                            modifier = Modifier.fillMaxSize().padding(8.dp)
+                                            modifier = Modifier.fillMaxSize().padding(4.dp)
                                         )
                                     }
                                 }
@@ -148,15 +148,15 @@ modifier = Modifier.height(32.dp),
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Card(
                                     modifier = Modifier.fillMaxWidth(),
-                                    shape = RoundedCornerShape(20.dp),
+                                    shape = RoundedCornerShape(12.dp),
                                     colors = CardDefaults.cardColors(containerColor = Color.Transparent),
                                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                                 ) {
                                     Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                                        Column(modifier = Modifier.padding(8.dp)) {
+                                        Column(modifier = Modifier.padding(4.dp)) {
                                             data.topOffers.take(5).forEach { o ->
                                                 Row(
-                                                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                                                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                                                     horizontalArrangement = Arrangement.SpaceBetween
                                                 ) {
                                                     Text(o.name.ifBlank { "Offer #${o.id}" }, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
@@ -178,15 +178,15 @@ modifier = Modifier.height(32.dp),
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Card(
                                     modifier = Modifier.fillMaxWidth(),
-                                    shape = RoundedCornerShape(20.dp),
+                                    shape = RoundedCornerShape(12.dp),
                                     colors = CardDefaults.cardColors(containerColor = Color.Transparent),
                                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                                 ) {
                                     Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                                        Column(modifier = Modifier.padding(8.dp)) {
+                                        Column(modifier = Modifier.padding(4.dp)) {
                                             data.topAffiliates.take(5).forEach { a ->
                                                 Row(
-                                                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                                                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                                                     horizontalArrangement = Arrangement.SpaceBetween
                                                 ) {
                                                     Text(a.name.ifBlank { "Affiliate #${a.id}" }, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
@@ -208,14 +208,14 @@ modifier = Modifier.height(32.dp),
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Card(
                                     modifier = Modifier.fillMaxWidth(),
-                                    shape = RoundedCornerShape(20.dp),
+                                    shape = RoundedCornerShape(12.dp),
                                     colors = CardDefaults.cardColors(containerColor = Color.Transparent),
                                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                                 ) {
                                     Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                                        Column(modifier = Modifier.padding(8.dp)) {
+                                        Column(modifier = Modifier.padding(4.dp)) {
                                             data.recentConversions.take(15).forEach { rc ->
-                                                Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+                                                Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
                                                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                                                         val statusColor = when (rc.status.lowercase()) {
                                                             "approved" -> Color(0xFF10B981)
@@ -314,12 +314,12 @@ fun AdminKpiCard(
 ) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-            Column(modifier = Modifier.padding(8.dp)) {
+            Column(modifier = Modifier.padding(4.dp)) {
                 Text(title, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(value, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)

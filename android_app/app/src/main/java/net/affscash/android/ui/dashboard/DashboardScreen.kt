@@ -75,14 +75,14 @@ fun DashboardScreen(
                 color = Color.Transparent
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.logo),
                         contentDescription = "AffsCash Logo",
-                        modifier = Modifier.height(24.dp)
+                        modifier = Modifier.height(16.dp)
                     )
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -95,7 +95,7 @@ fun DashboardScreen(
                     // Balance Pill
                     Surface(
                         color = Color(0x59FFFFFF),
-                        shape = RoundedCornerShape(24.dp),
+                        shape = RoundedCornerShape(16.dp),
                         border = BorderStroke(1.dp, Color(0x4DFFFFFF)),
                         modifier = Modifier.padding(end = 4.dp),
                         onClick = onNavigateToInvoices
@@ -277,13 +277,13 @@ fun PeriodTabs(selectedPeriod: String, onPeriodSelected: (String) -> Unit) {
         periods.forEach { period ->
             val isSelected = selectedPeriod == period
             Surface(
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(8.dp),
                 color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,
                 modifier = Modifier.clickable { onPeriodSelected(period) }
             ) {
                 Text(
                     text = period,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp), fontSize = 12.sp,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp), fontSize = 12.sp,
                     color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                 )
@@ -314,12 +314,12 @@ fun KpiGrid(stats: DashboardAnalyticsStatsResponse) {
 fun KpiCard(title: String, value: String, trend: Double?, isInverseTrend: Boolean = false, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-            Column(modifier = Modifier.padding(8.dp)) {
+            Column(modifier = Modifier.padding(4.dp)) {
                 Text(title, style = MaterialTheme.typography.labelMedium, color = Color.Gray)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(value, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
@@ -344,7 +344,7 @@ fun KpiCard(title: String, value: String, trend: Double?, isInverseTrend: Boolea
 @Composable
 fun LineChartCard(trendData: DashboardTrendChartResponse) {
     if (trendData.labels.isEmpty() || trendData.clicksData.isEmpty()) {
-        Card(modifier = Modifier.fillMaxWidth().height(180.dp)) {
+        Card(modifier = Modifier.fillMaxWidth().height(140.dp)) {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                 Text("No data available", color = Color.Gray)
             }
@@ -358,8 +358,8 @@ fun LineChartCard(trendData: DashboardTrendChartResponse) {
     val model = entryModelOf(entries)
 
     Card(
-        modifier = Modifier.fillMaxWidth().height(180.dp),
-        shape = RoundedCornerShape(20.dp),
+        modifier = Modifier.fillMaxWidth().height(140.dp),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -374,7 +374,7 @@ fun LineChartCard(trendData: DashboardTrendChartResponse) {
                         if (index >= 0 && index < trendData.labels.size) trendData.labels[index] else ""
                     }
                 ),
-                modifier = Modifier.padding(8.dp).fillMaxSize()
+                modifier = Modifier.padding(4.dp).fillMaxSize()
             )
         }
     }
@@ -397,8 +397,8 @@ fun BarChartCard(labels: List<String>, data: List<Float>) {
     val model = entryModelOf(entries)
 
     Card(
-        modifier = Modifier.fillMaxWidth().height(180.dp),
-        shape = RoundedCornerShape(20.dp),
+        modifier = Modifier.fillMaxWidth().height(140.dp),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -413,7 +413,7 @@ fun BarChartCard(labels: List<String>, data: List<Float>) {
                         if (index >= 0 && index < labels.size) labels[index] else ""
                     }
                 ),
-                modifier = Modifier.padding(8.dp).fillMaxSize()
+                modifier = Modifier.padding(4.dp).fillMaxSize()
             )
         }
     }
@@ -423,7 +423,7 @@ fun BarChartCard(labels: List<String>, data: List<Float>) {
 fun PieChartCard(labels: List<String>, data: List<Int>) {
     Card(
         modifier = Modifier.fillMaxWidth().height(160.dp),
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -439,7 +439,7 @@ fun PieChartCard(labels: List<String>, data: List<Int>) {
         val total = data.sum().toFloat()
         
         Column(
-            modifier = Modifier.fillMaxSize().padding(8.dp),
+            modifier = Modifier.fillMaxSize().padding(4.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -483,12 +483,12 @@ fun PieChartCard(labels: List<String>, data: List<Int>) {
 fun OffersTable(offers: List<net.affscash.android.data.model.DashboardOfferRow>) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-            Column(modifier = Modifier.padding(8.dp)) {
+            Column(modifier = Modifier.padding(4.dp)) {
                 Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
                     Text("OFFER", modifier = Modifier.weight(2f), fontWeight = FontWeight.Bold, fontSize = 12.sp)
                     Text("CLICKS", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp, textAlign = TextAlign.End)
@@ -497,11 +497,11 @@ fun OffersTable(offers: List<net.affscash.android.data.model.DashboardOfferRow>)
                 }
                 Divider()
                 if (offers.isEmpty()) {
-                    Text("No data available", modifier = Modifier.padding(8.dp), color = Color.Gray)
+                    Text("No data available", modifier = Modifier.padding(4.dp), color = Color.Gray)
                 } else {
                     offers.forEach { offer ->
                         Row(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(offer.name, modifier = Modifier.weight(2f), fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
@@ -521,12 +521,12 @@ fun OffersTable(offers: List<net.affscash.android.data.model.DashboardOfferRow>)
 fun CountriesTable(countries: List<net.affscash.android.data.model.DashboardCountryRow>) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-            Column(modifier = Modifier.padding(8.dp)) {
+            Column(modifier = Modifier.padding(4.dp)) {
                 Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
                     Text("COUNTRY", modifier = Modifier.weight(2f), fontWeight = FontWeight.Bold, fontSize = 12.sp)
                     Text("CLICKS", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp, textAlign = TextAlign.End)
@@ -535,11 +535,11 @@ fun CountriesTable(countries: List<net.affscash.android.data.model.DashboardCoun
                 }
                 Divider()
                 if (countries.isEmpty()) {
-                    Text("No data available", modifier = Modifier.padding(8.dp), color = Color.Gray)
+                    Text("No data available", modifier = Modifier.padding(4.dp), color = Color.Gray)
                 } else {
                     countries.forEach { row ->
                         Row(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(row.country.ifEmpty { "Unknown" }, modifier = Modifier.weight(2f), fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)

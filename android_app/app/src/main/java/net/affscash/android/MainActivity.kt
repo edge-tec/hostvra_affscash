@@ -67,7 +67,7 @@ class MainActivity : ComponentActivity() {
             }
             MaterialTheme {
                 Surface(
-                    modifier = Modifier.fillMaxSize().systemBarsPadding(),
+                    modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val role = userManager.getRole()
