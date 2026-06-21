@@ -246,7 +246,7 @@ fun MainScreen(
                             Text(
                                 screen.title, 
                                 style = MaterialTheme.typography.labelSmall, 
-                                fontSize = androidx.compose.ui.unit.TextUnit(9f, androidx.compose.ui.unit.TextUnitType.Sp),
+                                fontSize = androidx.compose.ui.unit.TextUnit(10f, androidx.compose.ui.unit.TextUnitType.Sp),
                                 lineHeight = androidx.compose.ui.unit.TextUnit(14f, androidx.compose.ui.unit.TextUnitType.Sp),
                                 fontWeight = FontWeight.Bold, 
                                 textAlign = TextAlign.Center
@@ -332,17 +332,23 @@ fun MainScreen(
             }
         },
         bottomBar = {
-            Box(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .navigationBarsPadding()
+                    .padding(start = 16.dp, end = 16.dp, bottom = 12.dp)
+            ) {
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(24.dp),
-                    color = MaterialTheme.colorScheme.surface,
-                    shadowElevation = 8.dp
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(32.dp),
+                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
+                    shadowElevation = 4.dp
                 ) {
                     NavigationBar(
                         containerColor = androidx.compose.ui.graphics.Color.Transparent,
                         tonalElevation = 0.dp,
-                        modifier = Modifier.height(56.dp)
+                        modifier = Modifier.height(54.dp),
+                        windowInsets = WindowInsets(0.dp)
                     ) {
                         val navBackStackEntry by navController.currentBackStackEntryAsState()
                         val currentDestination = navBackStackEntry?.destination
@@ -353,19 +359,19 @@ fun MainScreen(
                                 icon = { 
                                     Box(
                                         contentAlignment = Alignment.Center,
-                                        modifier = Modifier.size(if (isSelected) 24.dp else 20.dp)
+                                        modifier = Modifier.size(if (isSelected) 22.dp else 20.dp)
                                     ) {
                                         Icon(
                                             screen.icon, 
                                             contentDescription = null, 
-                                            modifier = Modifier.size(if (isSelected) 20.dp else 18.dp)
+                                            modifier = Modifier.size(if (isSelected) 22.dp else 20.dp)
                                         ) 
                                     }
                                 },
                                 label = { 
                                     Text(
                                         screen.title, 
-                                        fontSize = androidx.compose.ui.unit.TextUnit(9f, androidx.compose.ui.unit.TextUnitType.Sp), 
+                                        fontSize = androidx.compose.ui.unit.TextUnit(10f, androidx.compose.ui.unit.TextUnitType.Sp), 
                                         fontWeight = FontWeight.Bold,
                                         maxLines = 1,
                                         textAlign = TextAlign.Center
@@ -382,7 +388,7 @@ fun MainScreen(
                                     }
                                 },
                                 colors = NavigationBarItemDefaults.colors(
-                                    indicatorColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                                    indicatorColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f),
                                     selectedIconColor = MaterialTheme.colorScheme.primary,
                                     unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                                     selectedTextColor = MaterialTheme.colorScheme.primary,
@@ -397,19 +403,19 @@ fun MainScreen(
                                 icon = { 
                                     Box(
                                         contentAlignment = Alignment.Center,
-                                        modifier = Modifier.size(if (isSelected) 24.dp else 20.dp)
+                                        modifier = Modifier.size(if (isSelected) 22.dp else 20.dp)
                                     ) {
                                         Icon(
                                             Icons.Filled.Menu, 
                                             contentDescription = "Menu", 
-                                            modifier = Modifier.size(if (isSelected) 20.dp else 18.dp)
+                                            modifier = Modifier.size(if (isSelected) 22.dp else 20.dp)
                                         ) 
                                     }
                                 },
                                 label = { 
                                     Text(
                                         "Menu", 
-                                        fontSize = androidx.compose.ui.unit.TextUnit(9f, androidx.compose.ui.unit.TextUnitType.Sp),
+                                        fontSize = androidx.compose.ui.unit.TextUnit(10f, androidx.compose.ui.unit.TextUnitType.Sp),
                                         fontWeight = FontWeight.Bold,
                                         maxLines = 1,
                                         textAlign = TextAlign.Center
@@ -418,7 +424,7 @@ fun MainScreen(
                                 selected = isSelected,
                                 onClick = { showMoreSheet = true },
                                 colors = NavigationBarItemDefaults.colors(
-                                    indicatorColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                                    indicatorColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f),
                                     selectedIconColor = MaterialTheme.colorScheme.primary,
                                     unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                                     selectedTextColor = MaterialTheme.colorScheme.primary,
