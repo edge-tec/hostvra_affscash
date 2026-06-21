@@ -151,7 +151,7 @@ fun ManagerOfferApprovalsScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, top = 48.dp, bottom = 16.dp),
+                        .padding(start = 16.dp, end = 16.dp, top = 28.dp, bottom = 10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(

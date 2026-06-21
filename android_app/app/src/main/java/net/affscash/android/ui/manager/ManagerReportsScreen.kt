@@ -70,7 +70,7 @@ fun ManagerReportsScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 8.dp, end = 24.dp, top = 48.dp, bottom = 16.dp)
+                        .padding(start = 8.dp, end = 24.dp, top = 28.dp, bottom = 10.dp)
                 ) {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")

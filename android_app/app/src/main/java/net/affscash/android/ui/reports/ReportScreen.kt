@@ -64,7 +64,7 @@ fun ReportScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 16.dp, end = 8.dp, top = 48.dp, bottom = 16.dp)
+                        .padding(start = 16.dp, end = 8.dp, top = 28.dp, bottom = 10.dp)
                 ) {
                     Text(
                         text = "Reports",

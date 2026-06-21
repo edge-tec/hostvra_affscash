@@ -268,13 +268,13 @@ fun ChatMessageBubble(
     val context = LocalContext.current
     var showMenu by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
-    
+
     val bubbleColor = if (isUser) {
         Color(0xFF6200EE) // Purple for user
     } else {
         Color(0xFFE0E0E0) // Gray for admin
     }
-    
+
     val textColor = if (isUser) Color.White else Color.Black
 
     if (showDeleteDialog) {
@@ -336,99 +336,103 @@ fun ChatMessageBubble(
                 Box {
                     Column(modifier = Modifier.padding(12.dp)) {
                         // Attachment Handling
-                    if (message.attachmentPath != null) {
-                        val isImage = message.attachmentType?.startsWith("image/") == true
-                        val attachmentUrl = "https://affscash.net/api/v2/chat?action=download&id=${message.id}"
-                        
-                        if (isImage) {
-                            AsyncImage(
-                                model = ImageRequest.Builder(context)
-                                    .data(attachmentUrl)
-                                    .crossfade(true)
-                                    .build(),
-                                contentDescription = "Image attachment",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(200.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .padding(bottom = if (message.message.isNotBlank()) 8.dp else 0.dp)
-                                    .clickable {
-                                        val intent = Intent(Intent.ACTION_VIEW).apply {
-                                            data = Uri.parse(attachmentUrl)
+                        if (message.attachmentPath != null) {
+                            val isImage = message.attachmentType?.startsWith("image/") == true
+                            val attachmentUrl =
+                                "https://affscash.net/api/v2/chat?action=download&id=${message.id}"
+
+                            if (isImage) {
+                                AsyncImage(
+                                    model = ImageRequest.Builder(context)
+                                        .data(attachmentUrl)
+                                        .crossfade(true)
+                                        .build(),
+                                    contentDescription = "Image attachment",
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(200.dp)
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .padding(bottom = if (message.message.isNotBlank()) 8.dp else 0.dp)
+                                        .clickable {
+                                            val intent = Intent(Intent.ACTION_VIEW).apply {
+                                                data = Uri.parse(attachmentUrl)
+                                            }
+                                            context.startActivity(intent)
                                         }
-                                        context.startActivity(intent)
-                                    }
-                            )
-                        } else {
-                            // File attachment (PDF, CSV)
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(Color.Black.copy(alpha = 0.1f), RoundedCornerShape(8.dp))
-                                    .padding(8.dp)
-                                    .clickable {
-                                        val intent = Intent(Intent.ACTION_VIEW).apply {
-                                            data = Uri.parse(attachmentUrl)
-                                        }
-                                        context.startActivity(intent)
-                                    },
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    Icons.Default.InsertDriveFile,
-                                    contentDescription = "File",
-                                    tint = textColor,
-                                    modifier = Modifier.size(24.dp)
                                 )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = message.attachmentName ?: "File",
-                                    color = textColor,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
-                            if (message.message.isNotBlank()) {
-                                Spacer(modifier = Modifier.height(8.dp))
+                            } else {
+                                // File attachment (PDF, CSV)
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(
+                                            Color.Black.copy(alpha = 0.1f),
+                                            RoundedCornerShape(8.dp)
+                                        )
+                                        .padding(8.dp)
+                                        .clickable {
+                                            val intent = Intent(Intent.ACTION_VIEW).apply {
+                                                data = Uri.parse(attachmentUrl)
+                                            }
+                                            context.startActivity(intent)
+                                        },
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        Icons.Default.InsertDriveFile,
+                                        contentDescription = "File",
+                                        tint = textColor,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = message.attachmentName ?: "File",
+                                        color = textColor,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                }
+                                if (message.message.isNotBlank()) {
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                }
                             }
                         }
-                    }
 
-                    if (message.message.isNotBlank()) {
+                        if (message.message.isNotBlank()) {
+                            Text(
+                                text = message.message,
+                                color = textColor,
+                                fontSize = 16.sp,
+                                lineHeight = 22.sp
+                            )
+                        }
+
                         Text(
-                            text = message.message,
-                            color = textColor,
-                            fontSize = 16.sp,
-                            lineHeight = 22.sp
+                            text = message.createdAt,
+                            color = textColor.copy(alpha = 0.7f),
+                            fontSize = 10.sp,
+                            modifier = Modifier
+                                .align(Alignment.End)
+                                .padding(top = 4.dp)
                         )
                     }
 
-                    Text(
-                        text = message.createdAt,
-                        color = textColor.copy(alpha = 0.7f),
-                        fontSize = 10.sp,
-                        modifier = Modifier
-                            .align(Alignment.End)
-                            .padding(top = 4.dp)
-                    )
-                }
-
-                DropdownMenu(
-                    expanded = showMenu,
-                    onDismissRequest = { showMenu = false }
-                ) {
-                    DropdownMenuItem(
-                        text = { Text("Delete") },
-                        onClick = {
-                            showMenu = false
-                            showDeleteDialog = true
-                        }
-                    )
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Delete") },
+                            onClick = {
+                                showMenu = false
+                                showDeleteDialog = true
+                            }
+                        )
+                    }
                 }
             }
         }
     }
-}
 }

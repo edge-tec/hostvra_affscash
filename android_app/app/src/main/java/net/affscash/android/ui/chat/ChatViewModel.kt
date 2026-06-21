@@ -172,9 +172,9 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             val result = chatRepository.deleteMessage(messageId)
             result.onSuccess { response ->
-                if (!response.success) {
+                if (response.status != "success") {
                     // Revert or show error if needed, but we fetch anyway to sync
-                    _uiState.value = _uiState.value.copy(error = response.error ?: "Failed to delete message")
+                    _uiState.value = _uiState.value.copy(error = response.message ?: "Failed to delete message")
                 }
                 fetchMessagesSilently()
             }.onFailure {
