@@ -29,17 +29,18 @@ fun CompactTopBar(
         color = colors.containerColor,
         shadowElevation = 2.dp
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .statusBarsPadding()
-                .height(44.dp)
-                .padding(horizontal = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(modifier = Modifier.wrapContentWidth()) {
-                navigationIcon()
-            }
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Spacer(modifier = Modifier.statusBarsPadding())
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .padding(horizontal = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(modifier = Modifier.wrapContentWidth()) {
+                    navigationIcon()
+                }
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -62,6 +63,7 @@ fun CompactTopBar(
             ) {
                 actions()
             }
+        }
         }
     }
 }

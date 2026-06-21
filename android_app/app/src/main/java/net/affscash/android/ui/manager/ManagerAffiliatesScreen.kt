@@ -53,7 +53,7 @@ fun ManagerAffiliatesScreen(
     Scaffold(
         topBar = {
             Surface(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().statusBarsPadding(),
                 color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
                 shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
             ) {

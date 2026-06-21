@@ -302,7 +302,7 @@ fun MainScreen(
                 Surface(
                     color = Color(0xFFF59E0B),
                     contentColor = Color(0xFF1F2937),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().statusBarsPadding()
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
@@ -441,7 +441,7 @@ fun MainScreen(
         NavHost(
             navController = navController,
             startDestination = startDest,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding).consumeWindowInsets(innerPadding)
         ) {
             // Affiliate Screens
             composable(Screen.Dashboard.route) { 

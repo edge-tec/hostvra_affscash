@@ -134,6 +134,7 @@ fun ChatScreen(
                 items(uiState.messages) { message ->
                     ChatMessageBubble(
                         message = message,
+                        role = role,
                         onDelete = { viewModel.deleteMessage(message.id) }
                     )
                 }
@@ -263,6 +264,7 @@ fun ChatScreen(
 @Composable
 fun ChatMessageBubble(
     message: ChatMessage,
+    role: String = "affiliate",
     onDelete: () -> Unit = {}
 ) {
     val isUser = message.senderRole == "affiliate"
