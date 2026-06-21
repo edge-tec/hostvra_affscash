@@ -30,7 +30,7 @@ fun CompactTopBar(
         shadowElevation = 2.dp
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            Spacer(modifier = Modifier.statusBarsPadding())
+            Spacer(modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top)))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

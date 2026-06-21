@@ -1,5 +1,12 @@
 package net.affscash.android.ui.manager
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
+
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -67,7 +74,7 @@ fun ManagerDashboardScreen(
     Scaffold(
         topBar = {
             Surface(
-                modifier = Modifier.fillMaxWidth().background(PremiumUI.PastelHeader, RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)).statusBarsPadding(),
+                modifier = Modifier.fillMaxWidth().background(PremiumUI.PastelHeader, RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)).windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top)),
                 color = Color.Transparent,
                 shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
             ) {
@@ -84,7 +91,7 @@ fun ManagerDashboardScreen(
                         Image(
                             painter = painterResource(id = R.drawable.logo),
                             contentDescription = "AffsCash Logo",
-                            modifier = Modifier.height(16.dp)
+                            modifier = Modifier.height(28.dp)
                         )
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             val stats = uiState.stats
@@ -562,7 +569,7 @@ fun PeriodTabs(selectedPeriod: String, onSelect: (String) -> Unit) {
 modifier = Modifier.height(28.dp),
                 selected = key == selectedPeriod,
                 onClick = { onSelect(key) },
-                label = { Text(label) }
+                label = { Text(label, fontSize = 11.sp) }
             )
         }
     }
@@ -647,7 +654,7 @@ fun KpiCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-            Column(modifier = Modifier.padding(4.dp)) {
+            Column(modifier = Modifier.padding(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Surface(
                     shape = RoundedCornerShape(8.dp),

@@ -1,5 +1,12 @@
 package net.affscash.android.ui.admin
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
+
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -45,7 +52,7 @@ fun AdminDashboardScreen(
     val uiState by viewModel.uiState.collectAsState()
     val selectedFilter by viewModel.selectedFilter.collectAsState()
 
-    Box(modifier = Modifier.fillMaxSize().background(PremiumUI.BackgroundGradient).statusBarsPadding()) {
+    Box(modifier = Modifier.fillMaxSize().background(PremiumUI.BackgroundGradient).windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
         when (val state = uiState) {
             is AdminDashboardUiState.Loading -> {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))

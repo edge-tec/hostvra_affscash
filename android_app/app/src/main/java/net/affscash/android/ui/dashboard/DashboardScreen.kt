@@ -71,20 +71,22 @@ fun DashboardScreen(
     Scaffold(
         topBar = {
             Surface(
-                modifier = Modifier.fillMaxWidth().background(PremiumUI.PastelHeader).statusBarsPadding(),
+                modifier = Modifier.fillMaxWidth().background(PremiumUI.PastelHeader),
                 color = Color.Transparent
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.logo),
-                        contentDescription = "AffsCash Logo",
-                        modifier = Modifier.height(16.dp)
-                    )
+                Column {
+                    Spacer(modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top)))
                     Row(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.logo),
+                            contentDescription = "AffsCash Logo",
+                            modifier = Modifier.height(28.dp)
+                        )
+                        Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
@@ -158,6 +160,7 @@ fun DashboardScreen(
                         onClick = onNavigateToChat
                     )
                 }
+                } // Close Column
             }
         }
     }
@@ -283,7 +286,7 @@ fun PeriodTabs(selectedPeriod: String, onPeriodSelected: (String) -> Unit) {
             ) {
                 Text(
                     text = period,
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp), fontSize = 12.sp,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp), fontSize = 11.sp,
                     color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                 )
@@ -319,7 +322,7 @@ fun KpiCard(title: String, value: String, trend: Double?, isInverseTrend: Boolea
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-            Column(modifier = Modifier.padding(4.dp)) {
+            Column(modifier = Modifier.padding(12.dp)) {
                 Text(title, style = MaterialTheme.typography.labelMedium, color = Color.Gray)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(value, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)

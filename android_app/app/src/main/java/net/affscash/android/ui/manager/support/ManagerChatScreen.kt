@@ -28,6 +28,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import net.affscash.android.data.model.ManagerMessage
 import java.io.File
 import androidx.compose.foundation.ExperimentalFoundationApi
