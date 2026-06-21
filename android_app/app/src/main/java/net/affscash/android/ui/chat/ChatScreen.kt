@@ -339,8 +339,11 @@ fun ChatMessageBubble(
                         // Attachment Handling
                         if (message.attachmentPath != null) {
                             val isImage = message.attachmentType?.startsWith("image/") == true
-                            val attachmentUrl =
-                                "https://affscash.net/api/v2/chat?action=download&id=${message.id}"
+                            val attachmentUrl = when (role) {
+                                "admin" -> "https://affscash.net/api/v2/admin/chat?action=download&id=${message.id}"
+                                "manager" -> "https://affscash.net/api/v2/manager/chat?action=download&id=${message.id}"
+                                else -> "https://affscash.net/api/v2/chat?action=download&id=${message.id}"
+                            }
 
                             if (isImage) {
                                 AsyncImage(
