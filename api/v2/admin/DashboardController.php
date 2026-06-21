@@ -259,22 +259,34 @@ try {
         'total_advertisers' => (int)($totAdv['cnt'] ?? 0)
     ];
 
-    // 11. Header Counts
-    $adminUserId = Auth::id();
-    $unreadNotifs = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM notifications WHERE user_id=? AND is_read=0", [$adminUserId])['c'] ?? 0);
-    $unreadBroadcast = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM notifications n WHERE n.user_id IS NULL AND n.target_role IN ('admin', 'all') AND NOT EXISTS (SELECT 1 FROM notification_reads nr WHERE nr.notification_id=n.id AND nr.user_id=?)", [$adminUserId])['c'] ?? 0);
-    $unreadAlerts = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM fraud_alerts WHERE is_read=0 AND resolved_at IS NULL")['c'] ?? 0);
-    try { Database::query("ALTER TABLE support_messages ADD COLUMN is_deleted TINYINT(1) NOT NULL DEFAULT 0"); } catch(\Throwable $e) {}
-    $unreadChats = (int)(Database::fetchOne("SELECT COUNT(*) c FROM support_messages WHERE owner_type IN ('affiliate', 'advertiser') AND sender_role != 'admin' AND is_read=0 AND is_deleted=0")['c'] ?? 0);
-    $pendingApprovals = (int)(Database::fetchOne("SELECT COUNT(*) c FROM offer_approvals WHERE status='pending'")['c'] ?? 0);
-
     $header_counts = [
         'unread_news' => 0,
-        'unread_notifs' => $unreadNotifs + $unreadBroadcast,
-        'unread_alerts' => $unreadAlerts,
-        'unread_chats' => $unreadChats,
-        'pending_approvals' => $pendingApprovals
+        'unread_notifs' => 0,
+        'unread_alerts' => 0,
+        'unread_chats' => 0,
+        'pending_approvals' => 0
     ];
+
+    try {
+        $adminUserId = Auth::id();
+        $unreadNotifs = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM notifications WHERE user_id=? AND is_read=0", [$adminUserId])['c'] ?? 0);
+        $unreadBroadcast = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM notifications n WHERE n.user_id IS NULL AND n.target_role IN ('admin', 'all') AND NOT EXISTS (SELECT 1 FROM notification_reads nr WHERE nr.notification_id=n.id AND nr.user_id=?)", [$adminUserId])['c'] ?? 0);
+        $unreadAlerts = (int)(Database::fetchOne("SELECT COUNT(*) as c FROM fraud_alerts WHERE is_read=0 AND resolved_at IS NULL")['c'] ?? 0);
+        
+        try { Database::query("ALTER TABLE support_messages ADD COLUMN is_deleted TINYINT(1) NOT NULL DEFAULT 0"); } catch(\Throwable $e) {}
+        try { Database::query("ALTER TABLE support_messages ADD COLUMN owner_type VARCHAR(20) NOT NULL DEFAULT 'affiliate'"); } catch(\Throwable $e) {}
+        try { Database::query("ALTER TABLE support_messages ADD COLUMN is_read TINYINT(1) NOT NULL DEFAULT 0"); } catch(\Throwable $e) {}
+        
+        $unreadChats = (int)(Database::fetchOne("SELECT COUNT(*) c FROM support_messages WHERE owner_type IN ('affiliate', 'advertiser') AND sender_role != 'admin' AND is_read=0 AND is_deleted=0")['c'] ?? 0);
+        $pendingApprovals = (int)(Database::fetchOne("SELECT COUNT(*) c FROM offer_approvals WHERE status='pending'")['c'] ?? 0);
+
+        $header_counts['unread_notifs'] = $unreadNotifs + $unreadBroadcast;
+        $header_counts['unread_alerts'] = $unreadAlerts;
+        $header_counts['unread_chats'] = $unreadChats;
+        $header_counts['pending_approvals'] = $pendingApprovals;
+    } catch (\Throwable $e) {
+        error_log("Dashboard Header Counts Error: " . $e->getMessage());
+    }
 
     echo json_encode([
         'success' => true,
