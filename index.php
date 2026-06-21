@@ -585,8 +585,9 @@ Router::any('/smartlink/{slug}', function($slug) {
 try {
     Router::dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
 } catch (\Throwable $e) {
+    file_put_contents(BASE_PATH . '/api_error.log', date('Y-m-d H:i:s') . ' ' . $_SERVER['REQUEST_URI'] . "\n" . $e->getMessage() . "\n" . $e->getTraceAsString() . "\n\n", FILE_APPEND);
     if (strpos($_SERVER['REQUEST_URI'] ?? '', '/api/') === 0) {
-        http_response_code(500);
+        http_response_code(200);
         header('Content-Type: application/json');
         echo json_encode([
             'success' => false,
