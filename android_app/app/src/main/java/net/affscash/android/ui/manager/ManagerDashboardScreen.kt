@@ -615,7 +615,7 @@ fun KpiGrid(stats: net.affscash.android.data.model.ManagerDashboardData) {
     Column {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             KpiCard(
-                title = "Managed Affiliates",
+                title = "MANAGED AFFILIATES",
                 value = stats.totalAffiliates.toString(),
                 subTitle = "Under your management",
                 icon = Icons.Outlined.People,
@@ -623,19 +623,19 @@ fun KpiGrid(stats: net.affscash.android.data.model.ManagerDashboardData) {
                 color = Color(0xFF3B82F6)
             )
             KpiCard(
-                title = "Total Clicks",
+                title = "TOTAL CLICKS",
                 value = stats.clicks.toString(),
                 subTitle = "Unique: ${stats.unique}",
                 trend = stats.trend?.clicks,
                 icon = Icons.Outlined.AdsClick,
                 modifier = Modifier.weight(1f),
-                color = Color(0xFF8B5CF6)
+                color = Color(0xFF3B82F6)
             )
         }
         Spacer(modifier = Modifier.height(4.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             KpiCard(
-                title = "Conversions",
+                title = "CONVERSIONS",
                 value = stats.conv.toString(),
                 subTitle = "CR: ${stats.cr}%",
                 trend = stats.trend?.conv,
@@ -644,7 +644,18 @@ fun KpiGrid(stats: net.affscash.android.data.model.ManagerDashboardData) {
                 color = Color(0xFF10B981)
             )
             KpiCard(
-                title = "Fraud Conversion %",
+                title = "CONVERSION RATE",
+                value = "${stats.cr}%",
+                subTitle = "Overall CR%",
+                icon = Icons.Outlined.Analytics,
+                modifier = Modifier.weight(1f),
+                color = Color(0xFF10B981)
+            )
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            KpiCard(
+                title = "FRAUD CONVERSION %",
                 value = "${stats.fraudConvPct}%",
                 subTitle = "${stats.fraudConv} Fraud Conversions",
                 trend = stats.trend?.fraudConvPct,
@@ -652,16 +663,13 @@ fun KpiGrid(stats: net.affscash.android.data.model.ManagerDashboardData) {
                 modifier = Modifier.weight(1f),
                 color = Color(0xFFEF4444)
             )
-        }
-        Spacer(modifier = Modifier.height(4.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             val scoreColor = when {
                 stats.fraudScoreAverage >= 75 -> Color(0xFFEF4444)
                 stats.fraudScoreAverage >= 40 -> Color(0xFFF59E0B)
                 else -> Color(0xFF10B981)
             }
             KpiCard(
-                title = "IPQS Fraud Score",
+                title = "IPQS FRAUD SCORE",
                 value = "${stats.fraudScoreAverage} /100",
                 subTitle = "Real-time average",
                 icon = Icons.Outlined.Security,
