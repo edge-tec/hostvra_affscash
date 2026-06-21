@@ -64,4 +64,19 @@ class ChatRepository @Inject constructor(
             Result.failure(e)
         }
     }
+
+    suspend fun deleteMessage(messageId: Int): Result<net.affscash.android.data.model.GenericResponse> {
+        return try {
+            val response = apiService.deleteChatMessage(messageId = messageId)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    Result.success(it)
+                } ?: Result.failure(Exception("Empty response"))
+            } else {
+                Result.failure(Exception(response.message()))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

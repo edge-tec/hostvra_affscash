@@ -226,6 +226,21 @@ try {
         exit;
     }
 
+    if ($action === 'delete_message') {
+        $msgId = (int)($input['message_id'] ?? $_POST['message_id'] ?? 0);
+        if ($msgId > 0) {
+            // Ensure the message belongs to this affiliate and they are the sender
+            $msg = Database::fetchOne("SELECT id FROM support_messages WHERE id=? AND affiliate_id=? AND sender_role=?", [$msgId, $affId, $role]);
+            if ($msg) {
+                Database::query("UPDATE support_messages SET is_deleted=1 WHERE id=?", [$msgId]);
+                echo json_encode(['success' => true]);
+                exit;
+            }
+        }
+        echo json_encode(['success' => false, 'error' => 'Unauthorized or message not found']);
+        exit;
+    }
+
     echo json_encode(['success' => false, 'error' => 'Unknown action']);
 
 } catch (Throwable $e) {

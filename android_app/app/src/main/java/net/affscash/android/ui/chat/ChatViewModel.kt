@@ -159,6 +159,30 @@ class ChatViewModel @Inject constructor(
     fun clearError() {
         _uiState.value = _uiState.value.copy(error = null)
     }
+
+    fun deleteMessage(messageId: Int) {
+        // Optimistic UI update: instantly remove it from the list
+        val currentMessages = _uiState.value.messages.toMutableList()
+        val index = currentMessages.indexOfFirst { it.id == messageId }
+        if (index != -1) {
+            currentMessages.removeAt(index)
+            _uiState.value = _uiState.value.copy(messages = currentMessages)
+        }
+
+        viewModelScope.launch {
+            val result = chatRepository.deleteMessage(messageId)
+            result.onSuccess { response ->
+                if (!response.success) {
+                    // Revert or show error if needed, but we fetch anyway to sync
+                    _uiState.value = _uiState.value.copy(error = response.error ?: "Failed to delete message")
+                }
+                fetchMessagesSilently()
+            }.onFailure {
+                _uiState.value = _uiState.value.copy(error = it.message ?: "Failed to delete message")
+                fetchMessagesSilently()
+            }
+        }
+    }
 }
 
 data class ChatUiState(

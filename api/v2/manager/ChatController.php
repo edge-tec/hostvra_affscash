@@ -297,6 +297,21 @@ try {
         exit;
     }
 
+    if ($action === 'delete_message') {
+        $msgId = (int)($input['message_id'] ?? $_POST['message_id'] ?? 0);
+        if ($msgId > 0) {
+            $msg = Database::fetchOne("SELECT id, sender_id FROM support_messages WHERE id=?", [$msgId]);
+            // Manager can delete messages they sent themselves
+            if ($msg && (int)$msg['sender_id'] === (int)$mgrUserId) {
+                Database::query("UPDATE support_messages SET is_deleted=1 WHERE id=?", [$msgId]);
+                echo json_encode(['success' => true]);
+                exit;
+            }
+        }
+        echo json_encode(['success' => false, 'error' => 'Unauthorized or invalid message_id']);
+        exit;
+    }
+
     echo json_encode(['success' => false, 'error' => 'Unknown action']);
 
 } catch (Throwable $e) {

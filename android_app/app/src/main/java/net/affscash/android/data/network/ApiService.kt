@@ -37,6 +37,13 @@ interface ApiService {
         @Body request: AdminSupportActionRequest
     ): Response<AdminSupportActionResponse>
 
+    @POST("api/v2/admin/chat")
+    @FormUrlEncoded
+    suspend fun deleteAdminMessage(
+        @Field("action") action: String = "delete_message",
+        @Field("message_id") messageId: Int
+    ): Response<GenericResponse>
+
     @POST("api/v2/auth")
     suspend fun login(@Body request: AuthRequest): Response<AuthResponse>
 
@@ -203,6 +210,12 @@ interface ApiService {
         @Part file: okhttp3.MultipartBody.Part
     ): Response<net.affscash.android.data.model.ManagerUploadResponse>
 
+    @POST("api/v2/manager/chat")
+    @FormUrlEncoded
+    suspend fun deleteManagerMessage(
+        @Field("action") action: String = "delete_message",
+        @Field("message_id") messageId: Int
+    ): Response<GenericResponse>
 
     @GET("api/v2/admin/offers")
     suspend fun getAdminOffers(
@@ -659,6 +672,27 @@ interface ApiService {
     @Multipart
     @POST("api/v2/chat?action=upload")
     suspend fun uploadFile(@Part file: MultipartBody.Part): Response<UploadFileResponse>
+
+    @POST("api/v2/chat")
+    @FormUrlEncoded
+    suspend fun deleteChatMessage(
+        @Field("action") action: String = "delete_message",
+        @Field("message_id") messageId: Int
+    ): Response<GenericResponse>
+
+    @POST("api/v2/manager/chat")
+    @FormUrlEncoded
+    suspend fun deleteManagerChatMessage(
+        @Field("action") action: String = "delete_message",
+        @Field("message_id") messageId: Int
+    ): Response<GenericResponse>
+
+    @POST("api/v2/admin/chat")
+    @FormUrlEncoded
+    suspend fun deleteAdminChatMessage(
+        @Field("action") action: String = "delete_message",
+        @Field("message_id") messageId: Int
+    ): Response<GenericResponse>
 
     @POST("api/v2/manager/offer-approvals?action=review")
     suspend fun reviewOfferApproval(@Body request: ReviewOfferApprovalRequest): DefaultResponse

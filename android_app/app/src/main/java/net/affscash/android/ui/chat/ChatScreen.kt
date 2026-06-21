@@ -5,8 +5,10 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
@@ -61,6 +64,23 @@ fun ChatScreen(
                 }
             }
             viewModel.selectFile(it, name, mimeType)
+        }
+    }
+
+    val imageLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
+        uri?.let {
+            val contentResolver = context.contentResolver
+            val mimeType = contentResolver.getType(it)
+            var name: String? = null
+            contentResolver.query(it, null, null, null, null)?.use { cursor ->
+                val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (cursor.moveToFirst() && nameIndex != -1) {
+                    name = cursor.getString(nameIndex)
+                }
+            }
+            viewModel.selectFile(it, name ?: "image.jpg", mimeType ?: "image/jpeg")
         }
     }
 
@@ -111,7 +131,10 @@ fun ChatScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(uiState.messages) { message ->
-                    ChatMessageBubble(message = message)
+                    ChatMessageBubble(
+                        message = message,
+                        onDelete = { viewModel.deleteMessage(message.id) }
+                    )
                 }
             }
 
@@ -181,6 +204,17 @@ fun ChatScreen(
                         )
                     }
 
+                    IconButton(
+                        onClick = { imageLauncher.launch(androidx.activity.result.PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
+                        enabled = !uiState.isSending
+                    ) {
+                        Icon(
+                            Icons.Default.Image,
+                            contentDescription = "Attach Image",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+
                     OutlinedTextField(
                         value = messageText,
                         onValueChange = { messageText = it },
@@ -224,10 +258,16 @@ fun ChatScreen(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ChatMessageBubble(message: ChatMessage) {
+fun ChatMessageBubble(
+    message: ChatMessage,
+    onDelete: () -> Unit = {}
+) {
     val isUser = message.senderRole == "affiliate"
     val context = LocalContext.current
+    var showMenu by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
     
     val bubbleColor = if (isUser) {
         Color(0xFF6200EE) // Purple for user
@@ -236,6 +276,27 @@ fun ChatMessageBubble(message: ChatMessage) {
     }
     
     val textColor = if (isUser) Color.White else Color.Black
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Delete Message") },
+            text = { Text("Are you sure you want to delete this message?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showDeleteDialog = false
+                    onDelete()
+                }) {
+                    Text("Delete", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -262,10 +323,19 @@ fun ChatMessageBubble(message: ChatMessage) {
                     bottomStart = if (isUser) 16.dp else 4.dp,
                     bottomEnd = if (isUser) 4.dp else 16.dp
                 ),
-                shadowElevation = 1.dp
+                shadowElevation = 1.dp,
+                modifier = Modifier.combinedClickable(
+                    onClick = {},
+                    onLongClick = {
+                        if (isUser) {
+                            showMenu = true
+                        }
+                    }
+                )
             ) {
-                Column(modifier = Modifier.padding(12.dp)) {
-                    // Attachment Handling
+                Box {
+                    Column(modifier = Modifier.padding(12.dp)) {
+                        // Attachment Handling
                     if (message.attachmentPath != null) {
                         val isImage = message.attachmentType?.startsWith("image/") == true
                         val attachmentUrl = "https://affscash.net/api/v2/chat?action=download&id=${message.id}"
@@ -342,6 +412,19 @@ fun ChatMessageBubble(message: ChatMessage) {
                         modifier = Modifier
                             .align(Alignment.End)
                             .padding(top = 4.dp)
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = showMenu,
+                    onDismissRequest = { showMenu = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Delete") },
+                        onClick = {
+                            showMenu = false
+                            showDeleteDialog = true
+                        }
                     )
                 }
             }
