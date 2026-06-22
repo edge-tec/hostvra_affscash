@@ -7,9 +7,11 @@ import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -28,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.data.model.ManagedAffiliate
 import net.affscash.android.data.model.ManagerOffer
+import net.affscash.android.ui.dashboard.PremiumUI
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,75 +43,73 @@ fun ManagerOffersScreen(
 
     Scaffold(
         topBar = {
-            Column {
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f)
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 16.dp)
-                    ) {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.background,
+                shadowElevation = 2.dp
+            ) {
+                Column {
+                    Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 12.dp),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Surface(
-                                    shape = RoundedCornerShape(12.dp),
-                                    color = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(48.dp)
+                            Text(
+                                text = "Offers",
+                                style = PremiumUI.HeaderStyle,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                IconButton(
+                                    onClick = { showFilterSheet = true },
+                                    modifier = Modifier.size(36.dp)
                                 ) {
-                                    Icon(
-                                        Icons.Default.LocalOffer,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onPrimary,
-                                        modifier = Modifier.padding(8.dp)
-                                    )
+                                    Icon(Icons.Default.FilterList, contentDescription = "Filter", modifier = Modifier.size(20.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Column {
-                                    Text(
-                                        text = "Offers",
-                                        style = MaterialTheme.typography.headlineSmall,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                                    )
-                                    Text(
-                                        text = "Browse and manage offers",
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
-                                    )
-                                }
-                            }
-                            Row {
-                                IconButton(onClick = { showFilterSheet = true }, modifier = Modifier.background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f), RoundedCornerShape(12.dp))) {
-                                    Icon(Icons.Default.FilterList, contentDescription = "Filter", tint = MaterialTheme.colorScheme.primary)
-                                }
-                                Spacer(modifier = Modifier.width(4.dp))
-                                IconButton(onClick = onNavigateToApprovals, modifier = Modifier.background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f), RoundedCornerShape(12.dp))) {
-                                    Icon(Icons.Default.Approval, contentDescription = "Approvals", tint = MaterialTheme.colorScheme.primary)
+                                IconButton(
+                                    onClick = onNavigateToApprovals,
+                                    modifier = Modifier.size(36.dp)
+                                ) {
+                                    Icon(Icons.Default.Approval, contentDescription = "Approvals", modifier = Modifier.size(20.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
                             }
                         }
                     }
-                }
-                TabRow(
-                    selectedTabIndex = if (uiState.tab == "regular") 0 else 1,
-                    containerColor = MaterialTheme.colorScheme.surface,
-                ) {
-                    Tab(
-                        selected = uiState.tab == "regular",
-                        onClick = { viewModel.setTab("regular") },
-                        text = { Row(verticalAlignment = Alignment.CenterVertically) { Icon(Icons.Outlined.LocalOffer, null, modifier = Modifier.size(16.dp)); Spacer(Modifier.width(4.dp)); Text("Regular") } }
-                    )
-                    Tab(
-                        selected = uiState.tab == "inhouse",
-                        onClick = { viewModel.setTab("inhouse") },
-                        text = { Row(verticalAlignment = Alignment.CenterVertically) { Icon(Icons.Outlined.Home, null, modifier = Modifier.size(16.dp)); Spacer(Modifier.width(4.dp)); Text("In-House") } }
-                    )
+                    // Chip tabs
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 8.dp)
+                            .horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        listOf("regular" to "Regular", "inhouse" to "In-House").forEach { (key, label) ->
+                            val isSelected = uiState.tab == key
+                            val icon = if (key == "regular") Icons.Outlined.LocalOffer else Icons.Outlined.Home
+                            Surface(
+                                shape = RoundedCornerShape(8.dp),
+                                color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                                modifier = Modifier.clickable { viewModel.setTab(key) }
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
+                                ) {
+                                    Icon(icon, contentDescription = null, modifier = Modifier.size(16.dp), tint = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant)
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(
+                                        text = label,
+                                        fontSize = 13.sp,
+                                        color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
+                                        fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -117,6 +118,7 @@ fun ManagerOffersScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
+                .background(PremiumUI.PageBackground)
         ) {
             if (uiState.isLoading && uiState.offers.isEmpty()) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -127,22 +129,27 @@ fun ManagerOffersScreen(
                     modifier = Modifier.align(Alignment.Center).padding(8.dp)
                 )
             } else if (uiState.offers.isEmpty()) {
-                Text(
-                    text = "No offers match your filters.",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.align(Alignment.Center)
-                )
+                Column(
+                    modifier = Modifier.align(Alignment.Center),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(Icons.Outlined.SearchOff, contentDescription = null, modifier = Modifier.size(48.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "No offers match your filters.",
+                        style = PremiumUI.SecondaryText,
+                        fontSize = 14.sp
+                    )
+                }
             } else {
                 LazyColumn(
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     item {
                         Text(
                             text = "${uiState.offers.size} offers found",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            style = PremiumUI.LabelSmall
                         )
                     }
                     items(uiState.offers) { offer ->
@@ -183,203 +190,208 @@ fun ManagerOfferCard(
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        shape = PremiumUI.CardShape,
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(20.dp)) {
-            // Header: ID and Status
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "#${offer.id}",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold
-                )
-                Surface(
-                    shape = RoundedCornerShape(8.dp),
-                    color = if (offer.status == "active") Color(0xFF10B981).copy(alpha = 0.15f) else Color(0xFF9E9E9E).copy(alpha = 0.15f)
+        Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxWidth()) {
+            Column(modifier = Modifier.padding(14.dp)) {
+                // Header: ID and Status
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = offer.status.uppercase(),
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                        color = if (offer.status == "active") Color(0xFF10B981) else Color(0xFF757575),
-                        style = MaterialTheme.typography.labelSmall,
+                        text = "#${offer.id}",
+                        style = PremiumUI.LabelSmall,
+                        color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold
                     )
-                }
-            }
-            
-            Spacer(modifier = Modifier.height(4.dp))
-
-            // Title and Details
-            Text(
-                text = offer.name,
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.ExtraBold,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Surface(color = MaterialTheme.colorScheme.surfaceVariant, shape = RoundedCornerShape(4.dp)) {
-                    Text(
-                        text = offer.category ?: "Uncategorized",
-                        style = MaterialTheme.typography.labelSmall,
-                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-                if (offer.offerType != null) {
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Surface(color = MaterialTheme.colorScheme.surfaceVariant, shape = RoundedCornerShape(4.dp)) {
+                    Surface(
+                        shape = RoundedCornerShape(6.dp),
+                        color = if (offer.status == "active") PremiumUI.StatusApprovedBg else Color(0xFFF3F4F6)
+                    ) {
                         Text(
-                            text = offer.offerType,
-                            style = MaterialTheme.typography.labelSmall,
-                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-                if (offer.isInhouse) {
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Surface(color = Color(0xFF7C3AED).copy(alpha = 0.1f), shape = RoundedCornerShape(4.dp)) {
-                        Text(
-                            text = "In-House",
-                            style = MaterialTheme.typography.labelSmall,
-                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                            color = Color(0xFF7C3AED),
+                            text = offer.status.uppercase(),
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+                            color = if (offer.status == "active") PremiumUI.StatusApproved else Color(0xFF6B7280),
+                            fontSize = 10.sp,
                             fontWeight = FontWeight.Bold
                         )
                     }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
-            // Stats Row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                StatItem(Icons.Default.AttachMoney, "Payout", if (offer.payoutType == "RevShare") "${offer.payout}%" else "$${(( offer.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }")
-                StatItem(Icons.Default.Group, "Affiliates", offer.affCount.toString())
-                FraudScoreBadge(offer.fraudScore, offer.fraudLevel)
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Divider(color = MaterialTheme.colorScheme.outlineVariant)
-
-            // Affiliate Link Generator Toggle
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { showLinkGenerator = !showLinkGenerator }
-                    .padding(vertical = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+                // Title
                 Text(
-                    "Affiliate Link Generator",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary
+                    text = offer.name,
+                    style = PremiumUI.DataBold,
+                    fontSize = 14.sp,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
-                Icon(
-                    imageVector = if (showLinkGenerator) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                    contentDescription = "Expand",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
 
-            // Expanded Link Generator
-            AnimatedVisibility(visible = showLinkGenerator) {
-                Column(
+                Spacer(modifier = Modifier.height(6.dp))
+
+                // Tags row
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Surface(color = MaterialTheme.colorScheme.surfaceVariant, shape = RoundedCornerShape(4.dp)) {
+                        Text(
+                            text = offer.category ?: "Uncategorized",
+                            fontSize = 10.sp,
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    if (offer.offerType != null) {
+                        Surface(color = MaterialTheme.colorScheme.surfaceVariant, shape = RoundedCornerShape(4.dp)) {
+                            Text(
+                                text = offer.offerType,
+                                fontSize = 10.sp,
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                    if (offer.isInhouse) {
+                        Surface(color = Color(0xFF7C3AED).copy(alpha = 0.1f), shape = RoundedCornerShape(4.dp)) {
+                            Text(
+                                text = "In-House",
+                                fontSize = 10.sp,
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                                color = Color(0xFF7C3AED),
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Stats Row
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    StatItem(Icons.Default.AttachMoney, "Payout", if (offer.payoutType == "RevShare") "${offer.payout}%" else "$${(( offer.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }")
+                    StatItem(Icons.Default.Group, "Affiliates", offer.affCount.toString())
+                    FraudScoreBadge(offer.fraudScore, offer.fraudLevel)
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+
+                // Affiliate Link Generator Toggle
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
-                        .padding(8.dp)
+                        .clickable { showLinkGenerator = !showLinkGenerator }
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (managedAffiliates.isEmpty()) {
-                        Text(
-                            "No managed affiliates available.",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    } else {
-                        Text(
-                            "Select Affiliate",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        
-                        var expanded by remember { mutableStateOf(false) }
-                        
-                        Box {
-                            OutlinedButton(
-                                onClick = { expanded = true },
-                                modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(8.dp)
-                            ) {
-                                Text(
-                                    text = selectedAffiliate?.name ?: "— Select affiliate —",
-                                    color = if (selectedAffiliate == null) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                            DropdownMenu(
-                                expanded = expanded,
-                                onDismissRequest = { expanded = false }
-                            ) {
-                                managedAffiliates.forEach { affiliate ->
-                                    DropdownMenuItem(
-                                        text = { Text("${affiliate.name} (${affiliate.affiliateCode})") },
-                                        onClick = {
-                                            selectedAffiliate = affiliate
-                                            expanded = false
-                                        }
+                    Text(
+                        "Affiliate Link Generator",
+                        style = PremiumUI.TitleMedium,
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Icon(
+                        imageVector = if (showLinkGenerator) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                        contentDescription = "Expand",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+
+                // Expanded Link Generator
+                AnimatedVisibility(visible = showLinkGenerator) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
+                            .padding(10.dp)
+                    ) {
+                        if (managedAffiliates.isEmpty()) {
+                            Text(
+                                "No managed affiliates available.",
+                                style = PremiumUI.SecondaryText
+                            )
+                        } else {
+                            Text(
+                                "Select Affiliate",
+                                style = PremiumUI.LabelSmall
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+
+                            var expanded by remember { mutableStateOf(false) }
+
+                            Box {
+                                OutlinedButton(
+                                    onClick = { expanded = true },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = RoundedCornerShape(8.dp),
+                                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
+                                ) {
+                                    Text(
+                                        text = selectedAffiliate?.name ?: "— Select affiliate —",
+                                        fontSize = 12.sp,
+                                        color = if (selectedAffiliate == null) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface
                                     )
                                 }
-                            }
-                        }
-
-                        val generatedUrl = if (selectedAffiliate != null) {
-                            "$trackingUrlBase${offer.id}?aff=${selectedAffiliate!!.affiliateCode}&sub1="
-                        } else {
-                            ""
-                        }
-
-                        Spacer(modifier = Modifier.height(4.dp))
-                        
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            OutlinedTextField(
-                                value = generatedUrl.ifEmpty { "Select affiliate above..." },
-                                onValueChange = {},
-                                readOnly = true,
-                                textStyle = LocalTextStyle.current.copy(fontSize = 12.sp),
-                                modifier = Modifier.weight(1f),
-                                singleLine = true
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Button(
-                                onClick = {
-                                    if (generatedUrl.isNotEmpty()) {
-                                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                                        val clip = ClipData.newPlainText("Tracking Link", generatedUrl)
-                                        clipboard.setPrimaryClip(clip)
-                                        Toast.makeText(context, "Link Copied!", Toast.LENGTH_SHORT).show()
+                                DropdownMenu(
+                                    expanded = expanded,
+                                    onDismissRequest = { expanded = false }
+                                ) {
+                                    managedAffiliates.forEach { affiliate ->
+                                        DropdownMenuItem(
+                                            text = { Text("${affiliate.name} (${affiliate.affiliateCode})", fontSize = 13.sp) },
+                                            onClick = {
+                                                selectedAffiliate = affiliate
+                                                expanded = false
+                                            }
+                                        )
                                     }
-                                },
-                                enabled = generatedUrl.isNotEmpty(),
-                                shape = RoundedCornerShape(8.dp)
-                            ) {
-                                Text("Copy")
+                                }
+                            }
+
+                            val generatedUrl = if (selectedAffiliate != null) {
+                                "$trackingUrlBase${offer.id}?aff=${selectedAffiliate!!.affiliateCode}&sub1="
+                            } else {
+                                ""
+                            }
+
+                            Spacer(modifier = Modifier.height(6.dp))
+
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                OutlinedTextField(
+                                    value = generatedUrl.ifEmpty { "Select affiliate above..." },
+                                    onValueChange = {},
+                                    readOnly = true,
+                                    textStyle = LocalTextStyle.current.copy(fontSize = 11.sp),
+                                    modifier = Modifier.weight(1f),
+                                    singleLine = true,
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Button(
+                                    onClick = {
+                                        if (generatedUrl.isNotEmpty()) {
+                                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                            val clip = ClipData.newPlainText("Tracking Link", generatedUrl)
+                                            clipboard.setPrimaryClip(clip)
+                                            Toast.makeText(context, "Link Copied!", Toast.LENGTH_SHORT).show()
+                                        }
+                                    },
+                                    enabled = generatedUrl.isNotEmpty(),
+                                    shape = RoundedCornerShape(8.dp),
+                                    contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp)
+                                ) {
+                                    Text("Copy", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                }
                             }
                         }
                     }
@@ -429,20 +441,17 @@ fun FraudScoreBadge(score: Int, level: String) {
 fun StatItem(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, value: String) {
     Column {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(icon, contentDescription = null, modifier = Modifier.size(14.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
-            Spacer(modifier = Modifier.width(4.dp))
+            Icon(icon, contentDescription = null, modifier = Modifier.size(12.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+            Spacer(modifier = Modifier.width(3.dp))
             Text(
                 text = label,
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                style = PremiumUI.LabelSmall
             )
         }
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = value,
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface
+            style = PremiumUI.DataBold
         )
     }
 }
@@ -466,7 +475,7 @@ fun ManagerOfferFilterContent(
             .padding(16.dp)
             .padding(bottom = 32.dp)
     ) {
-        Text("Filter Offers", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+        Text("Filter Offers", style = PremiumUI.HeaderStyle, color = MaterialTheme.colorScheme.primary)
         Spacer(modifier = Modifier.height(4.dp))
 
         val textFieldColors = OutlinedTextFieldDefaults.colors(

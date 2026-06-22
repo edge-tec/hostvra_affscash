@@ -32,6 +32,12 @@ object PremiumUI {
         )
     )
 
+    // Page background
+    val PageBackground = Color(0xFFF8FAFC)
+
+    // Standard card shape
+    val CardShape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp)
+
     // Status Colors
     val StatusApproved = Color(0xFF10B981)
     val StatusApprovedBg = Color(0xFFD1FAE5)
@@ -41,6 +47,11 @@ object PremiumUI {
     val StatusPendingBg = Color(0xFFFEF3C7)
 
     // Typography Tokens
+    val HeaderStyle = TextStyle(
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 18.sp,
+        letterSpacing = 0.sp
+    )
     val TitleMedium = TextStyle(
         fontWeight = FontWeight.SemiBold,
         fontSize = 14.sp,
@@ -54,6 +65,11 @@ object PremiumUI {
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
         color = Color.Gray
+    )
+    val LabelSmall = TextStyle(
+        fontWeight = FontWeight.Medium,
+        fontSize = 11.sp,
+        color = Color(0xFF9CA3AF)
     )
 }
 
