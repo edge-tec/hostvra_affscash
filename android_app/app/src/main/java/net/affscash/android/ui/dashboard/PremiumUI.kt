@@ -11,6 +11,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.unit.dp
+
 object PremiumUI {
     val BackgroundGradient = Brush.verticalGradient(
         colors = listOf(Color(0xFFF8FAFC), Color(0xFFEEF2FF), Color(0xFFE0E7FF))
@@ -28,4 +31,52 @@ object PremiumUI {
             Color(0xFFD5B4B8)  // Pale blush rose
         )
     )
+
+    // Status Colors
+    val StatusApproved = Color(0xFF10B981)
+    val StatusApprovedBg = Color(0xFFD1FAE5)
+    val StatusRejected = Color(0xFFEF4444)
+    val StatusRejectedBg = Color(0xFFFEE2E2)
+    val StatusPending = Color(0xFFF59E0B)
+    val StatusPendingBg = Color(0xFFFEF3C7)
+
+    // Typography Tokens
+    val TitleMedium = TextStyle(
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 14.sp,
+        letterSpacing = 0.1.sp
+    )
+    val DataBold = TextStyle(
+        fontWeight = FontWeight.Bold,
+        fontSize = 13.sp
+    )
+    val SecondaryText = TextStyle(
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp,
+        color = Color.Gray
+    )
+}
+
+@Composable
+fun StatusBadge(status: String, modifier: Modifier = Modifier) {
+    val lowerStatus = status.lowercase()
+    val (textColor, bgColor) = when {
+        lowerStatus.contains("approve") -> PremiumUI.StatusApproved to PremiumUI.StatusApprovedBg
+        lowerStatus.contains("reject") || lowerStatus.contains("chargeback") -> PremiumUI.StatusRejected to PremiumUI.StatusRejectedBg
+        else -> PremiumUI.StatusPending to PremiumUI.StatusPendingBg
+    }
+
+    androidx.compose.material3.Surface(
+        color = bgColor,
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(6.dp),
+        modifier = modifier
+    ) {
+        androidx.compose.material3.Text(
+            text = status.uppercase(),
+            color = textColor,
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+        )
+    }
 }

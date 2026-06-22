@@ -249,10 +249,10 @@ fun ManagerDashboardScreen(
                             }
                             val model = entryModelOf(entries)
                             Card(
-                                modifier = Modifier.fillMaxWidth().height(140.dp),
-                                shape = RoundedCornerShape(12.dp),
+                                modifier = Modifier.fillMaxWidth().height(130.dp),
+                                shape = RoundedCornerShape(10.dp),
                                 colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-                                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                             ) {
                                 Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
                                     Chart(
@@ -302,25 +302,26 @@ fun ManagerDashboardScreen(
 
                         // Top Countries
                         if (extra.countries.isNotEmpty()) {
-                            Text("Top Countries", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-                            Spacer(modifier = Modifier.height(4.dp))
+                            Text("Top Countries", style = PremiumUI.TitleMedium)
+                            Spacer(modifier = Modifier.height(2.dp))
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(12.dp),
+                                shape = RoundedCornerShape(10.dp),
                                 colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-                                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                             ) {
                                 Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                                    Column(modifier = Modifier.padding(4.dp)) {
-                                        extra.countries.take(5).forEach { c ->
+                                    Column(modifier = Modifier.padding(8.dp)) {
+                                        extra.countries.take(5).forEachIndexed { index, c ->
                                             Row(
-                                                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                                                horizontalArrangement = Arrangement.SpaceBetween
+                                                modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                                verticalAlignment = Alignment.CenterVertically
                                             ) {
-                                                Text(c.country.ifBlank { "Unknown" }, fontWeight = FontWeight.Medium)
-                                                Text("C: ${c.clicks} | Cv: ${c.conv}", color = Color.Gray)
+                                                Text(c.country.ifBlank { "Unknown" }, style = PremiumUI.DataBold)
+                                                Text("C: ${c.clicks} | Cv: ${c.conv}", style = PremiumUI.SecondaryText)
                                             }
-                                            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.5f))
+                                            if (index < 4) HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.5f))
                                         }
                                     }
                                 }
@@ -358,123 +359,119 @@ fun ManagerDashboardScreen(
                         
                         // Top Offers & Top Affiliates
                         if (extra.offers.isNotEmpty()) {
-                            Text("Top Offers", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-                            Spacer(modifier = Modifier.height(4.dp))
+                            Text("Top Offers", style = PremiumUI.TitleMedium)
+                            Spacer(modifier = Modifier.height(2.dp))
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(12.dp),
+                                shape = RoundedCornerShape(10.dp),
                                 colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-                                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                             ) {
                                 Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                                    Column(modifier = Modifier.padding(4.dp)) {
-                                        extra.offers.take(5).forEach { o ->
+                                    Column(modifier = Modifier.padding(8.dp)) {
+                                        extra.offers.take(5).forEachIndexed { index, o ->
                                             Row(
-                                                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                                                horizontalArrangement = Arrangement.SpaceBetween
+                                                modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                                verticalAlignment = Alignment.CenterVertically
                                             ) {
-                                                Text(o.name.ifBlank { "Offer #${o.id}" }, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
-                                                Text("C: ${o.clicks} | Cv: ${o.conv}", color = Color.Gray, modifier = Modifier.padding(start = 8.dp))
+                                                Text(o.name.ifBlank { "Offer #${o.id}" }, style = PremiumUI.DataBold, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
+                                                Text("C: ${o.clicks} | Cv: ${o.conv}", style = PremiumUI.SecondaryText, modifier = Modifier.padding(start = 8.dp))
                                             }
-                                            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.5f))
+                                            if (index < 4) HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.5f))
                                         }
                                     }
                                 }
                             }
-                            Spacer(modifier = Modifier.height(4.dp))
+                            Spacer(modifier = Modifier.height(6.dp))
                         }
 
                         if (extra.affiliates.isNotEmpty()) {
-                            Text("Top Affiliates", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-                            Spacer(modifier = Modifier.height(4.dp))
+                            Text("Top Affiliates", style = PremiumUI.TitleMedium)
+                            Spacer(modifier = Modifier.height(2.dp))
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(12.dp),
+                                shape = RoundedCornerShape(10.dp),
                                 colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-                                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                             ) {
                                 Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                                    Column(modifier = Modifier.padding(4.dp)) {
-                                        extra.affiliates.take(5).forEach { a ->
+                                    Column(modifier = Modifier.padding(8.dp)) {
+                                        extra.affiliates.take(5).forEachIndexed { index, a ->
                                             Row(
-                                                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                                                horizontalArrangement = Arrangement.SpaceBetween
+                                                modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                                verticalAlignment = Alignment.CenterVertically
                                             ) {
-                                                Text(a.name.ifBlank { "Affiliate #${a.id}" }, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
-                                                Text("C: ${a.clicks} | Cv: ${a.conv}", color = Color.Gray, modifier = Modifier.padding(start = 8.dp))
+                                                Text(a.name.ifBlank { "Affiliate #${a.id}" }, style = PremiumUI.DataBold, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
+                                                Text("C: ${a.clicks} | Cv: ${a.conv}", style = PremiumUI.SecondaryText, modifier = Modifier.padding(start = 8.dp))
                                             }
-                                            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.5f))
+                                            if (index < 4) HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.5f))
                                         }
                                     }
                                 }
                             }
-                            Spacer(modifier = Modifier.height(4.dp))
+                            Spacer(modifier = Modifier.height(6.dp))
                         }
 
                         // High Risk Fraud Conversions
                         if (extra.fraudConvs.isNotEmpty()) {
-                            Text("High Risk Fraud Conversions", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Color(0xFFEF4444))
-                            Spacer(modifier = Modifier.height(4.dp))
+                            Text("High Risk Fraud Conversions", style = PremiumUI.TitleMedium, color = Color(0xFFEF4444))
+                            Spacer(modifier = Modifier.height(2.dp))
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(12.dp),
+                                shape = RoundedCornerShape(10.dp),
                                 colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-                                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                                 border = BorderStroke(1.dp, Color(0xFFFCA5A5))
                             ) {
                                 Box(modifier = Modifier.background(Color(0xFFFEF2F2).copy(alpha = 0.9f)).fillMaxSize()) {
-                                    Column(modifier = Modifier.padding(4.dp)) {
-                                        extra.fraudConvs.forEach { fc ->
-                                            Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                                    Text("ID: ${fc.conversionId}", fontWeight = FontWeight.Bold, color = Color(0xFFB91C1C))
+                                    Column(modifier = Modifier.padding(8.dp)) {
+                                        extra.fraudConvs.forEachIndexed { index, fc ->
+                                            Column(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
+                                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                                                    Text("ID: ${fc.conversionId}", style = PremiumUI.DataBold, color = Color(0xFFB91C1C))
                                                     Text("$${(( fc.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontWeight = FontWeight.Bold, color = Color(0xFF15803D))
                                                 }
-                                                Text("${fc.affName ?: "Unknown"} (${fc.affiliateCode ?: "-"})", style = MaterialTheme.typography.bodyMedium)
-                                                Text("IP: ${fc.ipAddress ?: "N/A"}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                                                Text(fc.convertedAt, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                                                Text("${fc.affName ?: "Unknown"} (${fc.affiliateCode ?: "-"})", style = PremiumUI.DataBold)
+                                                Text("IP: ${fc.ipAddress ?: "N/A"} • ${fc.convertedAt}", style = PremiumUI.SecondaryText)
                                             }
-                                            HorizontalDivider(color = Color(0xFFFECACA))
+                                            if (index < extra.fraudConvs.lastIndex) HorizontalDivider(color = Color(0xFFFECACA))
                                         }
                                     }
                                 }
                             }
-                            Spacer(modifier = Modifier.height(4.dp))
+                            Spacer(modifier = Modifier.height(6.dp))
                         }
 
                         // Recent Conversions
                         if (extra.recentConvs.isNotEmpty()) {
-                            Text("Recent Conversions", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-                            Spacer(modifier = Modifier.height(4.dp))
+                            Text("Recent Conversions", style = PremiumUI.TitleMedium)
+                            Spacer(modifier = Modifier.height(2.dp))
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(12.dp),
+                                shape = RoundedCornerShape(10.dp),
                                 colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-                                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                             ) {
                                 Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                                    Column(modifier = Modifier.padding(4.dp)) {
-                                        extra.recentConvs.forEach { rc ->
-                                            Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                                    val statusColor = when (rc.status.lowercase()) {
-                                                        "approved" -> Color(0xFF10B981)
-                                                        "rejected", "chargebacked" -> Color(0xFFEF4444)
-                                                        else -> Color(0xFFF59E0B)
-                                                    }
-                                                    Text(rc.status.uppercase(), fontWeight = FontWeight.Bold, color = statusColor, fontSize = 12.sp)
+                                    Column(modifier = Modifier.padding(8.dp)) {
+                                        extra.recentConvs.forEachIndexed { index, rc ->
+                                            Column(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
+                                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                                                    net.affscash.android.ui.dashboard.StatusBadge(status = rc.status)
                                                     Text("$${(( rc.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontWeight = FontWeight.Bold, color = Color(0xFF15803D))
                                                 }
-                                                Text(rc.offerName ?: "Offer #${rc.id}", fontWeight = FontWeight.Medium)
-                                                Text(rc.affName ?: "Unknown Affiliate", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                                                Text(rc.convertedAt, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                                                Spacer(modifier = Modifier.height(4.dp))
+                                                Text(rc.offerName ?: "Offer #${rc.id}", style = PremiumUI.DataBold)
+                                                Text("${rc.affName ?: "Unknown"} • ${rc.convertedAt}", style = PremiumUI.SecondaryText)
                                             }
-                                            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.5f))
+                                            if (index < extra.recentConvs.lastIndex) HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.5f))
                                         }
                                     }
                                 }
                             }
-                            Spacer(modifier = Modifier.height(4.dp))
+                            Spacer(modifier = Modifier.height(6.dp))
                         }
                     }
                 }
@@ -486,7 +483,7 @@ fun ManagerDashboardScreen(
 @Composable
 fun BarChartCard(labels: List<String>, data: List<Float>) {
     if (labels.isEmpty() || data.isEmpty()) {
-        Card(modifier = Modifier.fillMaxWidth().height(200.dp)) {
+        Card(modifier = Modifier.fillMaxWidth().height(130.dp)) {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                 Text("No data available", color = Color.Gray)
             }
@@ -500,10 +497,10 @@ fun BarChartCard(labels: List<String>, data: List<Float>) {
     val model = entryModelOf(entries)
 
     Card(
-        modifier = Modifier.fillMaxWidth().height(160.dp),
-        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier.fillMaxWidth().height(130.dp),
+        shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
             Chart(
@@ -525,10 +522,10 @@ fun BarChartCard(labels: List<String>, data: List<Float>) {
 @Composable
 fun PieChartCard(labels: List<String>, data: List<Int>, customColors: List<Color>? = null) {
     Card(
-        modifier = Modifier.fillMaxWidth().height(200.dp),
-        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier.fillMaxWidth().height(140.dp),
+        shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
             if (labels.isEmpty() || data.isEmpty() || data.sum() == 0) {
@@ -612,8 +609,8 @@ modifier = Modifier.height(28.dp),
 
 @Composable
 fun KpiGrid(stats: net.affscash.android.data.model.ManagerDashboardData) {
-    Column {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             KpiCard(
                 title = "MANAGED AFFILIATES",
                 value = stats.totalAffiliates.toString(),
@@ -632,8 +629,7 @@ fun KpiGrid(stats: net.affscash.android.data.model.ManagerDashboardData) {
                 color = Color(0xFF3B82F6)
             )
         }
-        Spacer(modifier = Modifier.height(4.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             KpiCard(
                 title = "CONVERSIONS",
                 value = stats.conv.toString(),
@@ -652,12 +648,11 @@ fun KpiGrid(stats: net.affscash.android.data.model.ManagerDashboardData) {
                 color = Color(0xFF10B981)
             )
         }
-        Spacer(modifier = Modifier.height(4.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             KpiCard(
                 title = "FRAUD CONVERSION %",
                 value = "${stats.fraudConvPct}%",
-                subTitle = "${stats.fraudConv} Fraud Conversions",
+                subTitle = "${stats.fraudConv} Fraud",
                 trend = stats.trend?.fraudConvPct,
                 icon = Icons.Outlined.Security,
                 modifier = Modifier.weight(1f),
@@ -670,8 +665,8 @@ fun KpiGrid(stats: net.affscash.android.data.model.ManagerDashboardData) {
             }
             KpiCard(
                 title = "IPQS FRAUD SCORE",
-                value = "${stats.fraudScoreAverage} /100",
-                subTitle = "Real-time average",
+                value = "${stats.fraudScoreAverage}/100",
+                subTitle = "Real-time avg",
                 icon = Icons.Outlined.Security,
                 modifier = Modifier.weight(1f),
                 color = scoreColor
@@ -692,53 +687,53 @@ fun KpiCard(
 ) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-            Column(modifier = Modifier.padding(12.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Surface(
-                    shape = RoundedCornerShape(8.dp),
-                    color = color.copy(alpha = 0.15f),
-                    modifier = Modifier.size(28.dp)
-                ) {
-                    Icon(
-                        icon,
-                        contentDescription = null,
-                        tint = color,
-                        modifier = Modifier.padding(6.dp)
-                    )
+            Column(modifier = Modifier.padding(10.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = color.copy(alpha = 0.15f),
+                        modifier = Modifier.size(24.dp)
+                    ) {
+                        Icon(
+                            icon,
+                            contentDescription = null,
+                            tint = color,
+                            modifier = Modifier.padding(4.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(title, fontSize = 10.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(title, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(value, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(subTitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            
-            trend?.let {
                 Spacer(modifier = Modifier.height(4.dp))
-                val trendColor = if (it > 0) Color(0xFF059669) else if (it < 0) Color(0xFFDC2626) else Color.Gray
-                val trendBg = if (it > 0) Color(0xFFD1FAE5) else if (it < 0) Color(0xFFFEE2E2) else Color(0xFFF3F4F6)
-                val trendText = if (it > 0) "▲ ${abs(it)}% vs prev" else if (it < 0) "▼ ${abs(it)}% vs prev" else "—"
+                Text(value, style = PremiumUI.DataBold, color = MaterialTheme.colorScheme.onSurface)
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(subTitle, style = PremiumUI.SecondaryText)
                 
-                Surface(
-                    color = trendBg,
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(
-                        trendText,
-                        color = trendColor,
-                        style = MaterialTheme.typography.labelSmall,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                    )
+                trend?.let {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    val trendColor = if (it > 0) Color(0xFF059669) else if (it < 0) Color(0xFFDC2626) else Color.Gray
+                    val trendBg = if (it > 0) Color(0xFFD1FAE5) else if (it < 0) Color(0xFFFEE2E2) else Color(0xFFF3F4F6)
+                    val trendText = if (it > 0) "▲ ${abs(it)}%" else if (it < 0) "▼ ${abs(it)}%" else "—"
+                    
+                    Surface(
+                        color = trendBg,
+                        shape = RoundedCornerShape(4.dp)
+                    ) {
+                        Text(
+                            trendText,
+                            color = trendColor,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                        )
+                    }
                 }
             }
         }
     }
-}
 }
