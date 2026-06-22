@@ -150,6 +150,7 @@ data class ManagerOfferFilters(
 @Serializable
 data class ManagedAffiliate(
     val id: Int,
-    @SerialName("affiliate_code") val affiliateCode: String,
-    val name: String
+    @SerialName("affiliate_code") val affiliateCode: String? = null,
+    val name: String? = null
 )
+

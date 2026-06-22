@@ -56,7 +56,7 @@ data class ManagerSmartlink(
     val id: Int,
     val name: String,
     val description: String? = null,
-    val status: String,
+    val status: String? = null,
     @SerialName("my_approved") val myApproved: Int = 0,
     @SerialName("my_pending") val myPending: Int = 0,
     @SerialName("total_approved") val totalApproved: Int = 0,
@@ -80,16 +80,16 @@ data class ManagerSmartlinkRequest(
     val id: Int,
     @SerialName("smartlink_id") val smartlinkId: Int,
     @SerialName("affiliate_id") val affiliateId: Int,
-    val status: String, // pending, approved, rejected
+    val status: String? = null, // pending, approved, rejected
     @SerialName("promotion_description") val promotionDescription: String? = null,
     @SerialName("admin_note") val adminNote: String? = null,
     @SerialName("created_at") val createdAt: String,
     
     // Joined fields
-    @SerialName("smartlink_name") val smartlinkName: String,
-    @SerialName("aff_name") val affName: String,
-    @SerialName("affiliate_code") val affiliateCode: String,
-    @SerialName("aff_email") val affEmail: String
+    @SerialName("smartlink_name") val smartlinkName: String? = null,
+    @SerialName("aff_name") val affName: String? = null,
+    @SerialName("affiliate_code") val affiliateCode: String? = null,
+    @SerialName("aff_email") val affEmail: String? = null
 )
 
 @Serializable

@@ -348,7 +348,7 @@ fun ManagerOfferCard(
                                 ) {
                                     managedAffiliates.forEach { affiliate ->
                                         DropdownMenuItem(
-                                            text = { Text("${affiliate.name} (${affiliate.affiliateCode})", fontSize = 13.sp) },
+                                            text = { Text("${affiliate.name ?: "Unknown"} (${affiliate.affiliateCode ?: ""})", fontSize = 13.sp) },
                                             onClick = {
                                                 selectedAffiliate = affiliate
                                                 expanded = false
@@ -358,7 +358,7 @@ fun ManagerOfferCard(
                                 }
                             }
 
-                            val generatedUrl = if (selectedAffiliate != null) {
+                            val generatedUrl = if (selectedAffiliate != null && !selectedAffiliate?.affiliateCode.isNullOrEmpty()) {
                                 "$trackingUrlBase${offer.id}?aff=${selectedAffiliate!!.affiliateCode}&sub1="
                             } else {
                                 ""

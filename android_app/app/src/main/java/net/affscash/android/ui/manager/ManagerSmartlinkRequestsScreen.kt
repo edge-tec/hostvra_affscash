@@ -154,7 +154,8 @@ fun ManagerSmartlinkRequestCard(
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                 )
-                val (bgColor, textColor) = when (request.status.lowercase()) {
+                val statusLower = (request.status ?: "pending").lowercase()
+                val (bgColor, textColor) = when (statusLower) {
                     "pending" -> Color(0xFFFEF3C7) to Color(0xFFF59E0B)
                     "approved" -> Color(0xFFD1FAE5) to Color(0xFF059669)
                     "rejected" -> Color(0xFFFEE2E2) to Color(0xFFEF4444)
@@ -165,7 +166,7 @@ fun ManagerSmartlinkRequestCard(
                     shape = PremiumUI.CardShape
                 ) {
                     Text(
-                        text = request.status.uppercase(),
+                        text = (request.status ?: "pending").uppercase(),
                         style = MaterialTheme.typography.labelSmall,
                         color = textColor,
                         fontWeight = FontWeight.Bold,
@@ -177,7 +178,7 @@ fun ManagerSmartlinkRequestCard(
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = request.smartlinkName,
+                text = request.smartlinkName ?: "Unknown Smartlink",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold
             )
@@ -196,7 +197,7 @@ fun ManagerSmartlinkRequestCard(
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
-                    text = "${request.affName} (${request.affiliateCode})",
+                    text = "${request.affName ?: "Unknown"} (${request.affiliateCode ?: ""})",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -210,7 +211,7 @@ fun ManagerSmartlinkRequestCard(
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
-                    text = request.affEmail,
+                    text = request.affEmail ?: "",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -254,7 +255,7 @@ fun ManagerSmartlinkRequestCard(
                 }
             }
 
-            if (request.status.lowercase() == "pending") {
+            if ((request.status ?: "pending").lowercase() == "pending") {
                 Spacer(modifier = Modifier.height(4.dp))
                 Button(
                     onClick = { showReviewDialog = true },
@@ -275,7 +276,7 @@ fun ManagerSmartlinkRequestCard(
             title = { Text("Review Request") },
             text = {
                 Column {
-                    Text("You are reviewing the request for ${request.smartlinkName} by ${request.affName}.")
+                    Text("You are reviewing the request for ${request.smartlinkName ?: "Unknown"} by ${request.affName ?: "Unknown"}.")
                     Spacer(modifier = Modifier.height(4.dp))
                     OutlinedTextField(
                         value = note,

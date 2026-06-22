@@ -231,7 +231,7 @@ fun ManagerSmartlinkCard(
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold
                 )
-                if (smartlink.status.lowercase() == "active") {
+                if ((smartlink.status ?: "active").lowercase() == "active") {
                     Surface(
                         shape = PremiumUI.CardShape,
                         color = Color(0xFF10B981).copy(alpha = 0.15f)
@@ -416,7 +416,7 @@ fun ManagerSmartlinkCard(
                             ) {
                                 managedAffiliates.forEach { affiliate ->
                                     DropdownMenuItem(
-                                        text = { Text("${affiliate.name} (${affiliate.affiliateCode})") },
+                                        text = { Text("${affiliate.name ?: "Unknown"} (${affiliate.affiliateCode ?: ""})") },
                                         onClick = {
                                             selectedAffiliate = affiliate
                                             expanded = false
@@ -426,7 +426,7 @@ fun ManagerSmartlinkCard(
                             }
                         }
 
-                        val generatedUrl = if (selectedAffiliate != null) {
+                        val generatedUrl = if (selectedAffiliate != null && !selectedAffiliate?.affiliateCode.isNullOrEmpty()) {
                             "$trackingUrlBase${smartlink.id}?aff=${selectedAffiliate!!.affiliateCode}&sub1="
                         } else {
                             ""

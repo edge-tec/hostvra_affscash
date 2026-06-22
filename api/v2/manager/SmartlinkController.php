@@ -18,7 +18,7 @@ try {
         $slAffParams = !empty($affIds) ? $affIds : [];
 
         $smartlinks = Database::fetchAll(
-            "SELECT sl.*,
+            "SELECT sl.*, COALESCE(sl.status, 'active') as status,
                     COUNT(DISTINCT CASE WHEN sr.status='approved' AND sr.affiliate_id IN ($affInSql) THEN sr.affiliate_id END) as my_approved,
                     COUNT(DISTINCT CASE WHEN sr.status='pending'  AND sr.affiliate_id IN ($affInSql) THEN sr.affiliate_id END) as my_pending,
                     COUNT(DISTINCT CASE WHEN sr.status='approved' THEN sr.affiliate_id END) as total_approved
@@ -44,7 +44,7 @@ try {
         if (!empty($affIds)) {
             $inSql = implode(',', array_fill(0, count($affIds), '?'));
             $managedAffiliates = Database::fetchAll(
-                "SELECT af.id, af.affiliate_code, CONCAT(u.first_name,' ',u.last_name) as name
+                "SELECT af.id, af.affiliate_code, COALESCE(NULLIF(TRIM(CONCAT(COALESCE(u.first_name,''),' ',COALESCE(u.last_name,''))), ''), u.email, '') as name
                  FROM affiliates af JOIN users u ON u.id=af.user_id
                  WHERE af.id IN ($inSql) AND u.status='active'
                  ORDER BY name",
