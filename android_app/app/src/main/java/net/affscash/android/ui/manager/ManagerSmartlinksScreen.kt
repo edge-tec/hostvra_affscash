@@ -91,7 +91,7 @@ fun ManagerSmartlinksScreen(
                             }
                             if (uiState.pendingRequestsCount > 0) {
                                 Badge(
-                                    modifier = Modifier.align(Alignment.TopEnd).padding(end = -4.dp, top = -4.dp),
+                                    modifier = Modifier.align(Alignment.TopEnd).offset(x = 4.dp, y = (-4).dp),
                                     containerColor = MaterialTheme.colorScheme.error
                                 ) {
                                     Text(uiState.pendingRequestsCount.toString())
