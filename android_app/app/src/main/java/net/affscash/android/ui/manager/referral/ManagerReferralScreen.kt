@@ -47,8 +47,8 @@ fun ManagerReferralScreen(
         topBar = {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+                color = MaterialTheme.colorScheme.background,
+                shadowElevation = 2.dp
             ) {
                 Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
                     Row(
@@ -62,8 +62,7 @@ fun ManagerReferralScreen(
                     }
                     Text(
                         text = "Referrals",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
+                        style = PremiumUI.HeaderStyle,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
@@ -91,16 +90,16 @@ fun ManagerReferralScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp),
-                        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+                        shape = PremiumUI.CardShape,
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f)),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                     ) {
                         Column(modifier = Modifier.padding(20.dp)) {
-                            Text("Your Manager Referral Link", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                            Text("Your Manager Referral Link", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                             Text(
                                 "When a new affiliate registers using your link, they are automatically assigned to your team — no manual assignment needed.",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
                                 modifier = Modifier.padding(top = 8.dp, bottom = 16.dp)
                             )
                             OutlinedTextField(
@@ -114,7 +113,7 @@ fun ManagerReferralScreen(
                                     focusedBorderColor = MaterialTheme.colorScheme.primary,
                                     unfocusedBorderColor = MaterialTheme.colorScheme.outline
                                 ),
-                                shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                                shape = PremiumUI.CardShape,
                                 trailingIcon = {
                                     IconButton(onClick = {
                                         val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -129,7 +128,7 @@ fun ManagerReferralScreen(
                             Spacer(modifier = Modifier.height(4.dp))
                             Surface(
                                 color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                                shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                                shape = PremiumUI.CardShape
                             ) {
                                 Text(
                                     "Code: ${data.referralCode}", 
@@ -151,9 +150,9 @@ fun ManagerReferralScreen(
                     ) {
                         Card(
                             modifier = Modifier.weight(1f),
-                            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                            shape = PremiumUI.CardShape,
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                         ) {
                             Column(modifier = Modifier.padding(8.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                                 Icon(Icons.Outlined.Group, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(24.dp))
@@ -164,9 +163,9 @@ fun ManagerReferralScreen(
                         }
                         Card(
                             modifier = Modifier.weight(1f),
-                            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                            shape = PremiumUI.CardShape,
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                         ) {
                             Column(modifier = Modifier.padding(8.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                                 Icon(Icons.Outlined.CheckCircle, contentDescription = null, tint = Color(0xFF10B981), modifier = Modifier.size(24.dp))
@@ -177,9 +176,9 @@ fun ManagerReferralScreen(
                         }
                         Card(
                             modifier = Modifier.weight(1f),
-                            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                            shape = PremiumUI.CardShape,
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                         ) {
                             Column(modifier = Modifier.padding(8.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                                 Icon(Icons.Outlined.MonetizationOn, contentDescription = null, tint = Color(0xFF8B5CF6), modifier = Modifier.size(24.dp))

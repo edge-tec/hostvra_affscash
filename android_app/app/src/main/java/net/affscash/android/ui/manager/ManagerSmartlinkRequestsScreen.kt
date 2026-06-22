@@ -48,8 +48,8 @@ fun ManagerSmartlinkRequestsScreen(
         topBar = {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+                color = MaterialTheme.colorScheme.background,
+                shadowElevation = 2.dp
             ) {
                 Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
                     Row(
@@ -63,8 +63,7 @@ fun ManagerSmartlinkRequestsScreen(
                     }
                     Text(
                         text = "Smartlink Requests",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
+                        style = PremiumUI.HeaderStyle,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
@@ -139,7 +138,7 @@ fun ManagerSmartlinkRequestCard(
 
     Card(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
-        shape = RoundedCornerShape(16.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -163,7 +162,7 @@ fun ManagerSmartlinkRequestCard(
                 }
                 Surface(
                     color = bgColor,
-                    shape = RoundedCornerShape(8.dp)
+                    shape = PremiumUI.CardShape
                 ) {
                     Text(
                         text = request.status.uppercase(),
@@ -221,7 +220,7 @@ fun ManagerSmartlinkRequestCard(
                 Spacer(modifier = Modifier.height(4.dp))
                 Surface(
                     color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-                    shape = RoundedCornerShape(8.dp),
+                    shape = PremiumUI.CardShape,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(modifier = Modifier.padding(8.dp)) {
@@ -239,7 +238,7 @@ fun ManagerSmartlinkRequestCard(
                 Spacer(modifier = Modifier.height(4.dp))
                 Surface(
                     color = Color(0xFFFEF2F2),
-                    shape = RoundedCornerShape(8.dp),
+                    shape = PremiumUI.CardShape,
                     border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFFECACA)),
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -260,7 +259,7 @@ fun ManagerSmartlinkRequestCard(
                 Button(
                     onClick = { showReviewDialog = true },
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp)
+                    shape = PremiumUI.CardShape
                 ) {
                     Text("Review Request")
                 }

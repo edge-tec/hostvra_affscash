@@ -186,8 +186,8 @@ fun InvoiceSummaryCard(title: String, value: String, valueColor: Color) {
     Card(
         modifier = Modifier.width(120.dp).height(80.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        shape = PremiumUI.CardShape,
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier.padding(8.dp).fillMaxSize(),
@@ -207,9 +207,9 @@ fun ManagerInvoiceDetailedItem(invoice: Invoice) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp),
-        shape = RoundedCornerShape(12.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
             // Header: Invoice Number & Status
@@ -231,7 +231,7 @@ fun ManagerInvoiceDetailedItem(invoice: Invoice) {
                 
                 Surface(
                     color = statusBg,
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                    shape = PremiumUI.CardShape
                 ) {
                     Text(
                         invoice.status.uppercase(), 

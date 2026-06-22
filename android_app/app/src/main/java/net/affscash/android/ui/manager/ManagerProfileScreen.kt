@@ -106,7 +106,7 @@ fun ManagerProfileScreen(
                     }
                     
                     Surface(
-                        shape = RoundedCornerShape(8.dp),
+                        shape = PremiumUI.CardShape,
                         color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
                         modifier = Modifier.clickable { viewModel.setTab(index) }
                     ) {
@@ -242,7 +242,7 @@ fun ProfileTabContent(
                         Spacer(modifier = Modifier.width(16.dp))
                         OutlinedButton(
                             onClick = { launcher.launch("image/*") },
-                            shape = RoundedCornerShape(8.dp),
+                            shape = PremiumUI.CardShape,
                             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                         ) {
                             Icon(Icons.Default.Upload, contentDescription = null, modifier = Modifier.size(16.dp))
@@ -335,7 +335,7 @@ fun ProfileTabContent(
                             viewModel.updateProfile(context, firstName, lastName, email, company, phone, skype, telegram, discord, selectedImageUri)
                         },
                         modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                        shape = RoundedCornerShape(8.dp),
+                        shape = PremiumUI.CardShape,
                         enabled = !isSubmitting
                     ) {
                         Text("Save Profile", fontWeight = FontWeight.Bold)
@@ -349,7 +349,7 @@ fun ProfileTabContent(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(10.dp),
             colors = CardDefaults.cardColors(containerColor = Color(0xFFFEF2F2)),
-            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
             border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFFECACA))
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
@@ -357,7 +357,7 @@ fun ProfileTabContent(
                     onClick = onLogout,
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDC2626)),
-                    shape = RoundedCornerShape(8.dp)
+                    shape = PremiumUI.CardShape
                 ) {
                     Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Logout")
                     Spacer(modifier = Modifier.width(8.dp))
@@ -429,7 +429,7 @@ fun SecurityTabContent(
                     Button(
                         onClick = { viewModel.updateSecurity(currentPass, newPass, confirmPass) },
                         modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                        shape = RoundedCornerShape(8.dp),
+                        shape = PremiumUI.CardShape,
                         enabled = !isSubmitting && currentPass.isNotEmpty() && newPass.isNotEmpty()
                     ) {
                         Text("Update Password", fontWeight = FontWeight.Bold)
@@ -674,7 +674,7 @@ fun PaymentTabContent(
                         viewModel.updatePayment(selectedMethod, updatedDetails)
                     },
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                    shape = RoundedCornerShape(8.dp),
+                    shape = PremiumUI.CardShape,
                     enabled = !isSubmitting
                 ) {
                     Text("Save Payment Details", fontWeight = FontWeight.Bold)
@@ -715,7 +715,7 @@ fun GoogleAuthenticatorTabContent(
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
 
                     if (data.twoFactorEnabled) {
-                        Surface(color = Color(0xFFD1FAE5), shape = RoundedCornerShape(8.dp), modifier = Modifier.fillMaxWidth()) {
+                        Surface(color = Color(0xFFD1FAE5), shape = PremiumUI.CardShape, modifier = Modifier.fillMaxWidth()) {
                             Text("Two-Factor Authentication is currently ENABLED.", color = Color(0xFF065F46), fontWeight = FontWeight.Bold, modifier = Modifier.padding(12.dp), fontSize = 13.sp)
                         }
                         Spacer(modifier = Modifier.height(4.dp))
@@ -741,20 +741,20 @@ fun GoogleAuthenticatorTabContent(
                             onClick = { viewModel.disable2fa(password, code) },
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
                             modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                            shape = RoundedCornerShape(8.dp),
+                            shape = PremiumUI.CardShape,
                             enabled = !isSubmitting
                         ) {
                             Text("Disable 2FA", fontWeight = FontWeight.Bold)
                         }
                     } else {
                         if (qrUrl == null) {
-                            Surface(color = Color(0xFFFEF2F2), shape = RoundedCornerShape(8.dp), modifier = Modifier.fillMaxWidth()) {
+                            Surface(color = Color(0xFFFEF2F2), shape = PremiumUI.CardShape, modifier = Modifier.fillMaxWidth()) {
                                 Text("Two-Factor Authentication is currently DISABLED.", color = Color(0xFF991B1B), fontWeight = FontWeight.Bold, modifier = Modifier.padding(12.dp), fontSize = 13.sp)
                             }
                             Button(
                                 onClick = { viewModel.start2fa() },
                                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                                shape = RoundedCornerShape(8.dp),
+                                shape = PremiumUI.CardShape,
                                 enabled = !isSubmitting
                             ) {
                                 Text("Enable 2FA", fontWeight = FontWeight.Bold)
@@ -762,9 +762,9 @@ fun GoogleAuthenticatorTabContent(
                         } else {
                             Text("1. Scan this QR Code with Google Authenticator app:", style = PremiumUI.SecondaryText)
                             Card(
-                                shape = RoundedCornerShape(12.dp),
+                                shape = PremiumUI.CardShape,
                                 colors = CardDefaults.cardColors(containerColor = Color.White),
-                                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                                 modifier = Modifier.align(Alignment.CenterHorizontally).padding(8.dp)
                             ) {
                                 QrCodeImage(
@@ -788,7 +788,7 @@ fun GoogleAuthenticatorTabContent(
                                 onClick = { viewModel.verify2fa(code) },
                                 enabled = !isSubmitting && code.length >= 6,
                                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                                shape = RoundedCornerShape(8.dp)
+                                shape = PremiumUI.CardShape
                             ) {
                                 Text("Verify & Enable", fontWeight = FontWeight.Bold)
                             }

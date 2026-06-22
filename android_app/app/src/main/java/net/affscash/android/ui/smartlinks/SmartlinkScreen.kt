@@ -54,8 +54,8 @@ fun SmartlinkScreen(
         topBar = {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-                shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+                color = MaterialTheme.colorScheme.background,
+                shadowElevation = 2.dp
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -66,8 +66,7 @@ fun SmartlinkScreen(
                 ) {
                     Text(
                         text = "Smartlinks",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
+                        style = PremiumUI.HeaderStyle,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
@@ -181,7 +180,7 @@ fun SmartlinkCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -205,7 +204,7 @@ fun SmartlinkCard(
                 }
                 
                 Badge(containerColor = MaterialTheme.colorScheme.primaryContainer) {
-                    Text(smartlink.distributionType.uppercase(), color = MaterialTheme.colorScheme.onPrimaryContainer, fontSize = 10.sp, modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp))
+                    Text(smartlink.distributionType.uppercase(), color = MaterialTheme.colorScheme.onSurface, fontSize = 10.sp, modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp))
                 }
             }
             

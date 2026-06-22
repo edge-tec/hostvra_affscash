@@ -61,7 +61,7 @@ fun ManagerOfferApprovalsScreen(
                 modifier = Modifier.padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text("Filters", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                Text("Filters", style = PremiumUI.HeaderStyle, fontWeight = FontWeight.Bold)
                 
                 OutlinedTextField(
                     value = uiState.searchQuery,
@@ -152,8 +152,8 @@ fun ManagerOfferApprovalsScreen(
         topBar = {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+                color = MaterialTheme.colorScheme.background,
+                shadowElevation = 2.dp
             ) {
                 Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
                     Row(
@@ -165,8 +165,7 @@ fun ManagerOfferApprovalsScreen(
                     ) {
                         Text(
                             text = "Offer Approvals",
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
+                            style = PremiumUI.HeaderStyle,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         IconButton(onClick = { showFilters = true }) {
@@ -250,7 +249,7 @@ fun ApprovalRequestCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -312,7 +311,7 @@ fun ApprovalRequestCard(
                 Spacer(modifier = Modifier.height(4.dp))
                 Surface(
                     color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
+                    shape = PremiumUI.CardShape,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(modifier = Modifier.padding(8.dp)) {
@@ -361,7 +360,7 @@ fun ApprovalStatusBadge(status: String) {
     
     Surface(
         color = statusBg,
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+        shape = PremiumUI.CardShape
     ) {
         Text(
             text = statusLabel,

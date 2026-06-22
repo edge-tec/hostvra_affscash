@@ -281,7 +281,7 @@ fun MainScreen(
                             containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.1f),
                             contentColor = MaterialTheme.colorScheme.error
                         ),
-                        shape = RoundedCornerShape(16.dp),
+                        shape = PremiumUI.CardShape,
                         elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp, pressedElevation = 0.dp)
                     ) {
                         Row(

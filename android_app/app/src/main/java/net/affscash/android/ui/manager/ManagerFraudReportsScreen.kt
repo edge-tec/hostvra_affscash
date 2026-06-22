@@ -61,8 +61,8 @@ fun ManagerFraudReportsScreen(
         topBar = {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+                color = MaterialTheme.colorScheme.background,
+                shadowElevation = 2.dp
             ) {
                 Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
                     Row(
@@ -78,8 +78,7 @@ fun ManagerFraudReportsScreen(
                         }
                         Text(
                             text = "Fraud Reports",
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
+                            style = PremiumUI.HeaderStyle,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                     }
@@ -189,8 +188,8 @@ fun SummaryCard(title: String, value: String, valueColor: Color, containerColor:
     Card(
         modifier = Modifier.width(110.dp).height(70.dp),
         colors = CardDefaults.cardColors(containerColor = containerColor),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        shape = PremiumUI.CardShape,
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier.padding(8.dp).fillMaxSize(),
@@ -212,9 +211,9 @@ fun ManagerFraudConversionItem(cv: ManagerFraudConversion) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
             // Header
@@ -398,7 +397,7 @@ modifier = Modifier.height(32.dp),
                         onUpdateFilters(from, to, uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy)
                     },
                     label = { Text(range, fontSize = 12.sp) },
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                    shape = PremiumUI.CardShape
                 )
             }
             

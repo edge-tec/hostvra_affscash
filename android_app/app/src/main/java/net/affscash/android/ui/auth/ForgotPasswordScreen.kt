@@ -114,7 +114,7 @@ fun ForgotPasswordScreen(
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                                     modifier = Modifier.fillMaxWidth(),
                                     singleLine = true,
-                                    shape = RoundedCornerShape(12.dp),
+                                    shape = PremiumUI.CardShape,
                                     colors = OutlinedTextFieldDefaults.colors(
                                         unfocusedBorderColor = Color.Transparent,
                                         focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -126,7 +126,7 @@ fun ForgotPasswordScreen(
                                     onClick = { viewModel.requestOtp(email) },
                                     modifier = Modifier.fillMaxWidth().height(56.dp),
                                     enabled = !isLoading && email.isNotBlank(),
-                                    shape = RoundedCornerShape(12.dp)
+                                    shape = PremiumUI.CardShape
                                 ) {
                                     if (isLoading) {
                                         CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary, strokeWidth = 3.dp)
@@ -148,7 +148,7 @@ fun ForgotPasswordScreen(
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                     modifier = Modifier.fillMaxWidth(),
                                     singleLine = true,
-                                    shape = RoundedCornerShape(12.dp),
+                                    shape = PremiumUI.CardShape,
                                     colors = OutlinedTextFieldDefaults.colors(
                                         unfocusedBorderColor = Color.Transparent,
                                         focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -160,7 +160,7 @@ fun ForgotPasswordScreen(
                                     onClick = { viewModel.verifyOtp(otp) },
                                     modifier = Modifier.fillMaxWidth().height(56.dp),
                                     enabled = !isLoading && otp.length == 6,
-                                    shape = RoundedCornerShape(12.dp)
+                                    shape = PremiumUI.CardShape
                                 ) {
                                     if (isLoading) {
                                         CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary, strokeWidth = 3.dp)
@@ -182,7 +182,7 @@ fun ForgotPasswordScreen(
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                                     modifier = Modifier.fillMaxWidth(),
                                     singleLine = true,
-                                    shape = RoundedCornerShape(12.dp),
+                                    shape = PremiumUI.CardShape,
                                     colors = OutlinedTextFieldDefaults.colors(
                                         unfocusedBorderColor = Color.Transparent,
                                         focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -202,7 +202,7 @@ fun ForgotPasswordScreen(
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                                     modifier = Modifier.fillMaxWidth(),
                                     singleLine = true,
-                                    shape = RoundedCornerShape(12.dp),
+                                    shape = PremiumUI.CardShape,
                                     colors = OutlinedTextFieldDefaults.colors(
                                         unfocusedBorderColor = Color.Transparent,
                                         focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -214,7 +214,7 @@ fun ForgotPasswordScreen(
                                     onClick = { viewModel.resetPassword(password, confirmPassword) },
                                     modifier = Modifier.fillMaxWidth().height(56.dp),
                                     enabled = !isLoading && password.isNotBlank() && confirmPassword.isNotBlank(),
-                                    shape = RoundedCornerShape(12.dp)
+                                    shape = PremiumUI.CardShape
                                 ) {
                                     if (isLoading) {
                                         CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary, strokeWidth = 3.dp)
@@ -237,7 +237,7 @@ fun ForgotPasswordScreen(
                                     Button(
                                         onClick = onNavigateBack,
                                         modifier = Modifier.fillMaxWidth().height(56.dp),
-                                        shape = RoundedCornerShape(12.dp)
+                                        shape = PremiumUI.CardShape
                                     ) {
                                         Text("Back to Login", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                                     }

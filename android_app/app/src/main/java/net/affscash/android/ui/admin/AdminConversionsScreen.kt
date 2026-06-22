@@ -69,7 +69,7 @@ fun AdminConversionsScreen(
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Surface(
-                                        shape = RoundedCornerShape(12.dp),
+                                        shape = PremiumUI.CardShape,
                                         color = MaterialTheme.colorScheme.primary,
                                         modifier = Modifier.size(48.dp)
                                     ) {
@@ -129,7 +129,7 @@ fun AdminConversionItem(conversion: Conversion) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
-        shape = RoundedCornerShape(16.dp),
+        shape = PremiumUI.CardShape,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
@@ -166,7 +166,7 @@ fun AdminConversionItem(conversion: Conversion) {
                 val statusBg = statusColor.copy(alpha = 0.15f)
                 
                 Surface(
-                    shape = RoundedCornerShape(8.dp),
+                    shape = PremiumUI.CardShape,
                     color = statusBg
                 ) {
                     Text(
@@ -184,7 +184,7 @@ fun AdminConversionItem(conversion: Conversion) {
             // Affiliate Info
             Surface(
                 color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
-                shape = RoundedCornerShape(8.dp),
+                shape = PremiumUI.CardShape,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row(

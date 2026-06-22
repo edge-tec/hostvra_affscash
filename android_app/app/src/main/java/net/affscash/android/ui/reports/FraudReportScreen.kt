@@ -84,7 +84,7 @@ fun FraudReportContent(count30Days: Int, conversions: List<FraudConversion>) {
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = Color(0xFFFFEBEE)),
-            shape = RoundedCornerShape(8.dp)
+            shape = PremiumUI.CardShape
         ) {
             Row(
                 modifier = Modifier.padding(8.dp),

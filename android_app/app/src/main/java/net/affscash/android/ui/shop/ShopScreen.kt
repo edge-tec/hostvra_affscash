@@ -83,7 +83,7 @@ fun ShopScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
-                    shape = RoundedCornerShape(12.dp)
+                    shape = PremiumUI.CardShape
                 ) {
                     Box(
                         modifier = Modifier
@@ -208,7 +208,7 @@ fun ProductCard(
 
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        shape = RoundedCornerShape(12.dp)
+        shape = PremiumUI.CardShape
     ) {
         Column(
             modifier = Modifier.fillMaxWidth().padding(8.dp)
@@ -325,7 +325,7 @@ fun ProductCard(
             } else if (neededPoints > 0) {
                 Surface(
                     color = Color(0xFFF3F4F6),
-                    shape = RoundedCornerShape(8.dp),
+                    shape = PremiumUI.CardShape,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
@@ -380,7 +380,7 @@ fun OrderCard(order: ShopOrder) {
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
             Row(
@@ -394,7 +394,7 @@ fun OrderCard(order: ShopOrder) {
                 )
                 Surface(
                     color = statusColor.copy(alpha = 0.1f),
-                    shape = RoundedCornerShape(16.dp)
+                    shape = PremiumUI.CardShape
                 ) {
                     Text(
                         text = order.status.uppercase(),

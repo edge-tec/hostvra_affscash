@@ -98,7 +98,7 @@ fun DashboardScreen(
                     // Balance Pill
                     Surface(
                         color = Color(0x59FFFFFF),
-                        shape = RoundedCornerShape(16.dp),
+                        shape = PremiumUI.CardShape,
                         border = BorderStroke(1.dp, Color(0x4DFFFFFF)),
                         modifier = Modifier.padding(end = 4.dp),
                         onClick = onNavigateToInvoices

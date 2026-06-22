@@ -208,9 +208,9 @@ fun ProfileTab(profile: ProfileInfo?, viewModel: SettingsViewModel) {
 
     Card(
         modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
-        shape = RoundedCornerShape(12.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
             Text("Profile Information", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, fontSize = 15.sp)
@@ -294,9 +294,9 @@ fun SecurityTab(viewModel: SettingsViewModel) {
 
     Card(
         modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
-        shape = RoundedCornerShape(12.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
             Text("Change Password", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, fontSize = 15.sp)
@@ -402,9 +402,9 @@ fun PaymentTab(payment: PaymentInfo?, methods: List<String>, viewModel: Settings
 
     Card(
         modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
-        shape = RoundedCornerShape(12.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
             Text("Payment Settings", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, fontSize = 15.sp)
@@ -583,9 +583,9 @@ fun GlobalPostbackTab(postback: GlobalPostbackInfo?, viewModel: SettingsViewMode
 
     Card(
         modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
-        shape = RoundedCornerShape(12.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
             Text("Global Postback Settings", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
@@ -696,7 +696,7 @@ fun ManagerTab(manager: ManagerInfo?) {
             // Header Banner
             Card(
                 modifier = Modifier.fillMaxWidth().height(200.dp),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+                shape = PremiumUI.CardShape,
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF1E213A))
             ) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -771,7 +771,7 @@ fun ManagerTab(manager: ManagerInfo?) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFEEF2FF)),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                shape = PremiumUI.CardShape
             ) {
                 Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.Top) {
                     Icon(
@@ -799,7 +799,7 @@ fun ContactCard(modifier: Modifier = Modifier, icon: androidx.compose.ui.graphic
         modifier = modifier,
         colors = CardDefaults.cardColors(containerColor = Color.White),
         border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE5E7EB)),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+        shape = PremiumUI.CardShape
     ) {
         Row(
             modifier = Modifier.padding(8.dp),
@@ -808,7 +808,7 @@ fun ContactCard(modifier: Modifier = Modifier, icon: androidx.compose.ui.graphic
             Box(
                 modifier = Modifier
                     .size(36.dp)
-                    .background(Color(0xFFE0E7FF), shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)),
+                    .background(Color(0xFFE0E7FF), shape = PremiumUI.CardShape),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(icon, contentDescription = title, tint = Color(0xFF4F46E5), modifier = Modifier.size(20.dp))

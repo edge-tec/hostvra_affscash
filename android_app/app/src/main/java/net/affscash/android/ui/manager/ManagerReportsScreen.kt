@@ -71,8 +71,8 @@ fun ManagerReportsScreen(
         topBar = {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+                color = MaterialTheme.colorScheme.background,
+                shadowElevation = 2.dp
             ) {
                 Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
                     Row(
@@ -86,8 +86,7 @@ fun ManagerReportsScreen(
                     }
                     Text(
                         text = "Reports",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
+                        style = PremiumUI.HeaderStyle,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
@@ -365,7 +364,7 @@ fun ManagerReportsScreen(
 fun SummaryCard(title: String, value: String, subtitle: String, valueColor: Color = Color.Black) {
     Card(
         modifier = Modifier.width(120.dp).height(80.dp),
-        shape = RoundedCornerShape(12.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
         elevation = CardDefaults.cardElevation(0.dp)
     ) {
@@ -394,9 +393,9 @@ fun SummaryCard(title: String, value: String, subtitle: String, valueColor: Colo
 fun PerformanceRowItem(row: ReportRow) {
     Card(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
-        shape = RoundedCornerShape(12.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
             Text(row.label, fontSize = 13.sp, fontWeight = FontWeight.Bold)
@@ -419,7 +418,7 @@ fun PerformanceRowItem(row: ReportRow) {
 fun ClickRowItem(click: ClickRow) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -435,7 +434,7 @@ fun ClickRowItem(click: ClickRow) {
                 Column(horizontalAlignment = Alignment.End) {
                     Surface(
                         color = if (click.convStatus == "approved") Color(0xFFD1FAE5) else Color(0xFFF3F4F6),
-                        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                        shape = PremiumUI.CardShape
                     ) {
                         Text(
                             click.convStatus?.uppercase() ?: "NO CONVERSION", 
@@ -459,7 +458,7 @@ fun ClickRowItem(click: ClickRow) {
 fun ConversionRowItem(conversion: ConversionRow) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -478,7 +477,7 @@ fun ConversionRowItem(conversion: ConversionRow) {
                     val statusBg = if (conversion.status == "approved") Color(0xFFD1FAE5) else Color(0xFFFEE2E2)
                     Surface(
                         color = statusBg,
-                        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                        shape = PremiumUI.CardShape
                     ) {
                         Text(
                             conversion.status.uppercase(), 
@@ -500,7 +499,7 @@ fun ConversionRowItem(conversion: ConversionRow) {
 fun SmartlinkRowItem(click: SmartlinkClickRow) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -517,7 +516,7 @@ fun SmartlinkRowItem(click: SmartlinkClickRow) {
                 Column(horizontalAlignment = Alignment.End) {
                     Surface(
                         color = if (click.convStatus == "approved") Color(0xFFD1FAE5) else Color(0xFFF3F4F6),
-                        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                        shape = PremiumUI.CardShape
                     ) {
                         Text(
                             click.convStatus?.uppercase() ?: "NO CONVERSION", 

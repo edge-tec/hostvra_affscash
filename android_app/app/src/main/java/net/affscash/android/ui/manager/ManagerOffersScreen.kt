@@ -90,7 +90,7 @@ fun ManagerOffersScreen(
                             val isSelected = uiState.tab == key
                             val icon = if (key == "regular") Icons.Outlined.LocalOffer else Icons.Outlined.Home
                             Surface(
-                                shape = RoundedCornerShape(8.dp),
+                                shape = PremiumUI.CardShape,
                                 color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
                                 modifier = Modifier.clickable { viewModel.setTab(key) }
                             ) {
@@ -333,7 +333,7 @@ fun ManagerOfferCard(
                                 OutlinedButton(
                                     onClick = { expanded = true },
                                     modifier = Modifier.fillMaxWidth(),
-                                    shape = RoundedCornerShape(8.dp),
+                                    shape = PremiumUI.CardShape,
                                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
                                 ) {
                                     Text(
@@ -374,7 +374,7 @@ fun ManagerOfferCard(
                                     textStyle = LocalTextStyle.current.copy(fontSize = 11.sp),
                                     modifier = Modifier.weight(1f),
                                     singleLine = true,
-                                    shape = RoundedCornerShape(8.dp)
+                                    shape = PremiumUI.CardShape
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
                                 Button(
@@ -387,7 +387,7 @@ fun ManagerOfferCard(
                                         }
                                     },
                                     enabled = generatedUrl.isNotEmpty(),
-                                    shape = RoundedCornerShape(8.dp),
+                                    shape = PremiumUI.CardShape,
                                     contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp)
                                 ) {
                                     Text("Copy", fontSize = 12.sp, fontWeight = FontWeight.Bold)
@@ -613,7 +613,7 @@ fun ManagerOfferFilterContent(
                     onDismiss()
                 },
                 modifier = Modifier.weight(1f).height(56.dp),
-                shape = RoundedCornerShape(12.dp)
+                shape = PremiumUI.CardShape
             ) {
                 Text("Reset", fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }
@@ -630,7 +630,7 @@ fun ManagerOfferFilterContent(
                     onDismiss()
                 },
                 modifier = Modifier.weight(1f).height(56.dp),
-                shape = RoundedCornerShape(12.dp)
+                shape = PremiumUI.CardShape
             ) {
                 Text("Apply Filters", fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }

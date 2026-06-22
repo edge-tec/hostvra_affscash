@@ -107,7 +107,7 @@ fun OfferScreen(
                         unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                         focusedContainerColor = MaterialTheme.colorScheme.surface
                     ),
-                    shape = RoundedCornerShape(12.dp)
+                    shape = PremiumUI.CardShape
                 )
                 
                 androidx.compose.animation.AnimatedVisibility(visible = showFilters) {

@@ -212,7 +212,7 @@ fun NewsScreen(
 fun NewsCard(newsItem: NewsItem, onClick: () -> Unit) {
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        shape = RoundedCornerShape(12.dp),
+        shape = PremiumUI.CardShape,
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
@@ -260,7 +260,7 @@ fun NewsCard(newsItem: NewsItem, onClick: () -> Unit) {
                 if (newsItem.isHot) {
                     Surface(
                         color = Color(0xFFEF4444),
-                        shape = RoundedCornerShape(16.dp),
+                        shape = PremiumUI.CardShape,
                         modifier = Modifier
                             .align(Alignment.TopStart)
                             .padding(8.dp)
@@ -278,7 +278,7 @@ fun NewsCard(newsItem: NewsItem, onClick: () -> Unit) {
                 newsItem.publishedAt?.let { dateString ->
                     Surface(
                         color = Color.Black.copy(alpha = 0.6f),
-                        shape = RoundedCornerShape(16.dp),
+                        shape = PremiumUI.CardShape,
                         modifier = Modifier
                             .align(Alignment.TopEnd)
                             .padding(8.dp)

@@ -160,7 +160,7 @@ fun RewardsContent(data: RewardsResponse) {
 fun NextMilestoneCard(rule: RewardRule, earned: Double) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(modifier = Modifier.padding(8.dp)) {

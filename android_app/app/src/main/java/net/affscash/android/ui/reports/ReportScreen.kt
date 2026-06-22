@@ -64,8 +64,8 @@ fun ReportScreen(
         topBar = {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-                shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+                color = MaterialTheme.colorScheme.background,
+                shadowElevation = 2.dp
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -77,8 +77,7 @@ fun ReportScreen(
                 ) {
                     Text(
                         text = "Reports",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
+                        style = PremiumUI.HeaderStyle,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     IconButton(onClick = onNavigateToFraudReport) {
@@ -359,7 +358,7 @@ fun ReportScreen(
 fun SummaryCard(title: String, value: String, subtitle: String, valueColor: Color = Color.Black) {
     Card(
         modifier = Modifier.width(120.dp).height(80.dp),
-        shape = RoundedCornerShape(12.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
         elevation = CardDefaults.cardElevation(0.dp)
     ) {
@@ -388,9 +387,9 @@ fun SummaryCard(title: String, value: String, subtitle: String, valueColor: Colo
 fun PerformanceRowItem(row: ReportRow) {
     Card(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
-        shape = RoundedCornerShape(12.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
             Text(row.label, fontSize = 13.sp, fontWeight = FontWeight.Bold)
@@ -413,7 +412,7 @@ fun PerformanceRowItem(row: ReportRow) {
 fun ClickRowItem(click: ClickRow) {
     Card(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
-        shape = RoundedCornerShape(16.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -436,7 +435,7 @@ fun ClickRowItem(click: ClickRow) {
                     val statusBg = statusColor.copy(alpha = 0.15f)
                     Surface(
                         color = statusBg,
-                        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
+                        shape = PremiumUI.CardShape,
                         modifier = Modifier.padding(bottom = 4.dp)
                     ) {
                         Text(
@@ -461,7 +460,7 @@ fun ConversionRowItem(conv: ConversionRow) {
     var expandIds by remember { mutableStateOf(false) }
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -519,7 +518,7 @@ fun ConversionRowItem(conv: ConversionRow) {
                     
                     Surface(
                         color = statusBg,
-                        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
+                        shape = PremiumUI.CardShape,
                         modifier = Modifier.padding(bottom = 4.dp)
                     ) {
                         Text(
@@ -541,7 +540,7 @@ fun ConversionRowItem(conv: ConversionRow) {
 fun SmartlinkRowItem(sl: SmartlinkClickRow) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -564,7 +563,7 @@ fun SmartlinkRowItem(sl: SmartlinkClickRow) {
                     val statusBg = statusColor.copy(alpha = 0.15f)
                     Surface(
                         color = statusBg,
-                        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
+                        shape = PremiumUI.CardShape,
                         modifier = Modifier.padding(bottom = 4.dp)
                     ) {
                         Text(

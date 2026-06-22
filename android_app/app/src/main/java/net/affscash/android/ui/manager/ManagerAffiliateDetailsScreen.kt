@@ -34,8 +34,8 @@ fun ManagerAffiliateDetailsScreen(
         topBar = {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+                color = MaterialTheme.colorScheme.background,
+                shadowElevation = 2.dp
             ) {
                 Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
                     Row(
@@ -49,8 +49,7 @@ fun ManagerAffiliateDetailsScreen(
                     }
                     Text(
                         text = "Affiliate Details",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
+                        style = PremiumUI.HeaderStyle,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
@@ -73,7 +72,7 @@ fun ManagerAffiliateDetailsScreen(
             ) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+                    shape = PremiumUI.CardShape,
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                     elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                 ) {
@@ -118,7 +117,7 @@ fun ManagerAffiliateDetailsScreen(
                                 else -> MaterialTheme.colorScheme.surfaceVariant
                             }
                             
-                            Surface(color = statusBg, shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)) {
+                            Surface(color = statusBg, shape = PremiumUI.CardShape) {
                                 Text(
                                     details.affiliate.status.uppercase(),
                                     style = MaterialTheme.typography.labelSmall,
@@ -139,7 +138,7 @@ fun ManagerAffiliateDetailsScreen(
                 if (details.stats != null) {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+                        shape = PremiumUI.CardShape,
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                     ) {

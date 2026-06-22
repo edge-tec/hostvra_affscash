@@ -217,7 +217,7 @@ fun NotificationCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(12.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(
             containerColor = if (isUnread)
                 MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)

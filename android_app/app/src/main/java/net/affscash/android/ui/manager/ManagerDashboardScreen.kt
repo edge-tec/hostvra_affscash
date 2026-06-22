@@ -103,7 +103,7 @@ fun ManagerDashboardScreen(
                             // Balance Pill
                             Surface(
                                 color = Color(0x59FFFFFF),
-                                shape = RoundedCornerShape(16.dp),
+                                shape = PremiumUI.CardShape,
                                 border = BorderStroke(1.dp, Color(0x4DFFFFFF)),
                                 modifier = Modifier.padding(end = 8.dp),
                                 onClick = onNavigateToInvoices
@@ -695,7 +695,7 @@ fun KpiCard(
             Column(modifier = Modifier.padding(10.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Surface(
-                        shape = RoundedCornerShape(8.dp),
+                        shape = PremiumUI.CardShape,
                         color = color.copy(alpha = 0.15f),
                         modifier = Modifier.size(24.dp)
                     ) {

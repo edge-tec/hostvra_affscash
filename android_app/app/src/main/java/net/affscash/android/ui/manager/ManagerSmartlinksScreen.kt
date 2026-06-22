@@ -42,8 +42,8 @@ fun ManagerSmartlinksScreen(
         topBar = {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-                shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+                color = MaterialTheme.colorScheme.background,
+                shadowElevation = 2.dp
             ) {
                 Column(
                     modifier = Modifier
@@ -57,14 +57,14 @@ fun ManagerSmartlinksScreen(
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Surface(
-                                shape = RoundedCornerShape(12.dp),
-                                color = MaterialTheme.colorScheme.primary,
+                                shape = PremiumUI.CardShape,
+                                color = MaterialTheme.colorScheme.surfaceVariant,
                                 modifier = Modifier.size(48.dp)
                             ) {
                                 Icon(
                                     Icons.Default.Link,
                                     contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    tint = MaterialTheme.colorScheme.primary,
                                     modifier = Modifier.padding(8.dp)
                                 )
                             }
@@ -72,14 +72,13 @@ fun ManagerSmartlinksScreen(
                             Column {
                                 Text(
                                     text = "Smart Links",
-                                    style = MaterialTheme.typography.headlineSmall,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                    style = PremiumUI.HeaderStyle,
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                                 Text(
                                     text = "Manage smartlinks & requests",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
                                 )
                             }
                         }
@@ -215,7 +214,7 @@ fun ManagerSmartlinkCard(
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -234,14 +233,14 @@ fun ManagerSmartlinkCard(
                 )
                 if (smartlink.status.lowercase() == "active") {
                     Surface(
-                        shape = RoundedCornerShape(8.dp),
+                        shape = PremiumUI.CardShape,
                         color = Color(0xFF10B981).copy(alpha = 0.15f)
                     ) {
                         Text("ACTIVE", color = Color(0xFF10B981), fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp))
                     }
                 } else {
                     Surface(
-                        shape = RoundedCornerShape(8.dp),
+                        shape = PremiumUI.CardShape,
                         color = Color(0xFF9E9E9E).copy(alpha = 0.15f)
                     ) {
                         Text("PAUSED", color = Color(0xFF757575), fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp))
@@ -404,7 +403,7 @@ fun ManagerSmartlinkCard(
                             OutlinedButton(
                                 onClick = { expanded = true },
                                 modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(8.dp)
+                                shape = PremiumUI.CardShape
                             ) {
                                 Text(
                                     text = selectedAffiliate?.name ?: "— Select affiliate —",
@@ -455,7 +454,7 @@ fun ManagerSmartlinkCard(
                                     }
                                 },
                                 enabled = generatedUrl.isNotEmpty(),
-                                shape = RoundedCornerShape(8.dp)
+                                shape = PremiumUI.CardShape
                             ) {
                                 Text("Copy")
                             }

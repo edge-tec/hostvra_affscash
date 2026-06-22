@@ -62,8 +62,8 @@ fun ManagerAffiliatesScreen(
         topBar = {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-                shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+                color = MaterialTheme.colorScheme.background,
+                shadowElevation = 2.dp
             ) {
                 Box(
                     modifier = Modifier
@@ -82,14 +82,14 @@ fun ManagerAffiliatesScreen(
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Surface(
-                                    shape = RoundedCornerShape(12.dp),
-                                    color = MaterialTheme.colorScheme.primary,
+                                    shape = PremiumUI.CardShape,
+                                    color = MaterialTheme.colorScheme.surfaceVariant,
                                     modifier = Modifier.size(48.dp)
                                 ) {
                                     Icon(
                                         Icons.Outlined.People,
                                         contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onPrimary,
+                                        tint = MaterialTheme.colorScheme.primary,
                                         modifier = Modifier.padding(8.dp)
                                     )
                                 }
@@ -97,14 +97,13 @@ fun ManagerAffiliatesScreen(
                                 Column {
                                     Text(
                                         text = "My Affiliates",
-                                        style = MaterialTheme.typography.headlineSmall,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                                        style = PremiumUI.HeaderStyle,
+                                        color = MaterialTheme.colorScheme.onSurface
                                     )
                                     Text(
                                         text = "Manage your affiliate network",
                                         style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(
+                                        color = MaterialTheme.colorScheme.onSurface.copy(
                                             alpha = 0.8f
                                         )
                                     )
@@ -143,7 +142,7 @@ fun ManagerAffiliatesScreen(
             ) {
                 OutlinedButton(
                     onClick = { Toast.makeText(context, "Export CSV not supported on mobile", Toast.LENGTH_SHORT).show() },
-                    shape = RoundedCornerShape(8.dp),
+                    shape = PremiumUI.CardShape,
                     modifier = Modifier.weight(1f)
                 ) {
                     Icon(Icons.Default.Download, contentDescription = null, modifier = Modifier.size(16.dp))
@@ -152,7 +151,7 @@ fun ManagerAffiliatesScreen(
                 }
                 Button(
                     onClick = { Toast.makeText(context, "Navigate to Payouts", Toast.LENGTH_SHORT).show() },
-                    shape = RoundedCornerShape(8.dp),
+                    shape = PremiumUI.CardShape,
                     modifier = Modifier.weight(1.2f)
                 ) {
                     Icon(Icons.Default.Payment, contentDescription = null, modifier = Modifier.size(16.dp))
@@ -303,7 +302,7 @@ fun ManagerAffiliateCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -319,7 +318,8 @@ fun ManagerAffiliateCard(
                 ) {
                     Surface(
                         shape = RoundedCornerShape(10.dp),
-                        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
+                        color = MaterialTheme.colorScheme.background,
+                shadowElevation = 2.dp,
                         modifier = Modifier.size(40.dp)
                     ) {
                         Icon(
@@ -387,7 +387,7 @@ fun ManagerAffiliateCard(
             // Stats Grid
             Surface(
                 color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
-                shape = RoundedCornerShape(12.dp)
+                shape = PremiumUI.CardShape
             ) {
                 Row(
                     modifier = Modifier
@@ -459,14 +459,14 @@ fun ManagerAffiliateCard(
                     OutlinedButton(
                         onClick = onView,
                         contentPadding = PaddingValues(horizontal = 12.dp),
-                        shape = RoundedCornerShape(8.dp)
+                        shape = PremiumUI.CardShape
                     ) {
                         Text("View")
                     }
                     OutlinedButton(
                         onClick = onEdit,
                         contentPadding = PaddingValues(horizontal = 12.dp),
-                        shape = RoundedCornerShape(8.dp)
+                        shape = PremiumUI.CardShape
                     ) {
                         Text("Edit")
                     }
@@ -476,7 +476,7 @@ fun ManagerAffiliateCard(
                     Button(
                         onClick = onImpersonate,
                         contentPadding = PaddingValues(horizontal = 12.dp),
-                        shape = RoundedCornerShape(8.dp)
+                        shape = PremiumUI.CardShape
                     ) {
                         Icon(
                             Icons.Default.VpnKey,
@@ -494,7 +494,7 @@ fun ManagerAffiliateCard(
                                     onClick = { onUpdateStatus("active") },
                                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF10B981)),
                                     contentPadding = PaddingValues(horizontal = 12.dp),
-                                    shape = RoundedCornerShape(8.dp)
+                                    shape = PremiumUI.CardShape
                                 ) {
                                     Text("Approve")
                                 }
@@ -505,7 +505,7 @@ fun ManagerAffiliateCard(
                                     onClick = { onUpdateStatus("suspended") },
                                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
                                     contentPadding = PaddingValues(horizontal = 12.dp),
-                                    shape = RoundedCornerShape(8.dp)
+                                    shape = PremiumUI.CardShape
                                 ) {
                                     Text("Suspend")
                                 }
@@ -516,7 +516,7 @@ fun ManagerAffiliateCard(
                                     onClick = { onUpdateStatus("active") },
                                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF10B981)),
                                     contentPadding = PaddingValues(horizontal = 12.dp),
-                                    shape = RoundedCornerShape(8.dp)
+                                    shape = PremiumUI.CardShape
                                 ) {
                                     Text("Activate")
                                 }

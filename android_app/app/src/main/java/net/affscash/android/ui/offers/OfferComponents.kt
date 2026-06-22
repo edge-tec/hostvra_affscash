@@ -234,7 +234,7 @@ fun OfferListItem(offer: Offer, isLoadingLink: Boolean, onClick: () -> Unit, onA
                                 enabled = !isLoadingLink,
                                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                                 contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp),
-                                shape = RoundedCornerShape(8.dp)
+                                shape = PremiumUI.CardShape
                             ) {
                                 if (isLoadingLink) {
                                     CircularProgressIndicator(modifier = Modifier.size(14.dp), color = MaterialTheme.colorScheme.onPrimary, strokeWidth = 2.dp)
@@ -246,7 +246,7 @@ fun OfferListItem(offer: Offer, isLoadingLink: Boolean, onClick: () -> Unit, onA
                             OutlinedButton(
                                 onClick = onApplyClick,
                                 contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp),
-                                shape = RoundedCornerShape(8.dp)
+                                shape = PremiumUI.CardShape
                             ) {
                                 Text("Request Access", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                             }

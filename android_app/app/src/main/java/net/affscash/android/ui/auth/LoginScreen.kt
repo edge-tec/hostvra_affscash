@@ -82,7 +82,7 @@ fun LoginScreen(
                 leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email", tint = MaterialTheme.colorScheme.primary) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                shape = RoundedCornerShape(12.dp),
+                shape = PremiumUI.CardShape,
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -107,7 +107,7 @@ fun LoginScreen(
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                shape = RoundedCornerShape(12.dp),
+                shape = PremiumUI.CardShape,
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -136,7 +136,7 @@ fun LoginScreen(
                             Text("OK")
                         }
                     },
-                    shape = RoundedCornerShape(16.dp),
+                    shape = PremiumUI.CardShape,
                     containerColor = MaterialTheme.colorScheme.surface,
                     titleContentColor = MaterialTheme.colorScheme.onSurface,
                     textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
@@ -148,7 +148,7 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                shape = RoundedCornerShape(12.dp),
+                shape = PremiumUI.CardShape,
                 enabled = authState !is AuthState.Loading
             ) {
                 if (authState is AuthState.Loading) {

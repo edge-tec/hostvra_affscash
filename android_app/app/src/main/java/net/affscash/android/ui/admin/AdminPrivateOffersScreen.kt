@@ -70,7 +70,7 @@ fun AdminPrivateOffersScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Surface(
-                            shape = RoundedCornerShape(12.dp),
+                            shape = PremiumUI.CardShape,
                             color = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(48.dp)
                         ) {
@@ -107,7 +107,7 @@ fun AdminPrivateOffersScreen(
                     item {
                         Card(
                             modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(16.dp),
+                            shape = PremiumUI.CardShape,
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                         ) {
@@ -136,7 +136,7 @@ fun AdminPrivateOffersScreen(
                                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                                             leadingIcon = { Icon(Icons.Default.LocalOffer, contentDescription = null, tint = MaterialTheme.colorScheme.outline) },
                                             modifier = Modifier.menuAnchor().fillMaxWidth(),
-                                            shape = RoundedCornerShape(12.dp),
+                                            shape = PremiumUI.CardShape,
                                             colors = OutlinedTextFieldDefaults.colors(
                                                 unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
                                             )
@@ -164,7 +164,7 @@ fun AdminPrivateOffersScreen(
                                         },
                                         enabled = selectedOfferId != null,
                                         modifier = Modifier.fillMaxWidth().height(50.dp),
-                                        shape = RoundedCornerShape(12.dp)
+                                        shape = PremiumUI.CardShape
                                     ) {
                                         Icon(Icons.Default.Lock, contentDescription = null, modifier = Modifier.size(18.dp))
                                         Spacer(modifier = Modifier.width(4.dp))
@@ -190,7 +190,7 @@ fun AdminPrivateOffersScreen(
                     item {
                         Card(
                             modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(16.dp),
+                            shape = PremiumUI.CardShape,
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                         ) {
@@ -206,7 +206,7 @@ fun AdminPrivateOffersScreen(
                                         Text("Active Private Offers", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
                                     }
                                     Surface(
-                                        shape = RoundedCornerShape(16.dp),
+                                        shape = PremiumUI.CardShape,
                                         color = MaterialTheme.colorScheme.primaryContainer
                                     ) {
                                         Text(
@@ -298,7 +298,7 @@ fun AdminPrivateOffersScreen(
                     item {
                         Card(
                             modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
-                            shape = RoundedCornerShape(16.dp),
+                            shape = PremiumUI.CardShape,
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                         ) {
@@ -328,7 +328,7 @@ fun AdminPrivateOffersScreen(
                                             val icon = if (isNegative) Icons.Default.Block else Icons.Default.CheckCircle
                                             
                                             Surface(
-                                                shape = RoundedCornerShape(8.dp),
+                                                shape = PremiumUI.CardShape,
                                                 color = iconBg,
                                                 modifier = Modifier.size(40.dp)
                                             ) {

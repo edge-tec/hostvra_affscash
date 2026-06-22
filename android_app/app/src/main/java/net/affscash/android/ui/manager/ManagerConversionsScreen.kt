@@ -49,8 +49,8 @@ fun ManagerConversionsScreen(
         topBar = {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-                shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+                color = MaterialTheme.colorScheme.background,
+                shadowElevation = 2.dp
             ) {
                 Column(
                     modifier = Modifier
@@ -64,14 +64,14 @@ fun ManagerConversionsScreen(
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Surface(
-                                shape = RoundedCornerShape(12.dp),
-                                color = MaterialTheme.colorScheme.primary,
+                                shape = PremiumUI.CardShape,
+                                color = MaterialTheme.colorScheme.surfaceVariant,
                                 modifier = Modifier.size(48.dp)
                             ) {
                                 Icon(
                                     Icons.Outlined.Assessment,
                                     contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    tint = MaterialTheme.colorScheme.primary,
                                     modifier = Modifier.padding(8.dp)
                                 )
                             }
@@ -79,14 +79,13 @@ fun ManagerConversionsScreen(
                             Column {
                                 Text(
                                     text = "Conversions",
-                                    style = MaterialTheme.typography.headlineSmall,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                    style = PremiumUI.HeaderStyle,
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                                 Text(
                                     text = "All team conversions",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
                                 )
                             }
                         }
@@ -235,7 +234,7 @@ fun ManagerConversionItem(conversion: Conversion) {
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -272,7 +271,7 @@ fun ManagerConversionItem(conversion: Conversion) {
                 
                 Surface(
                     color = containerColor,
-                    shape = RoundedCornerShape(8.dp)
+                    shape = PremiumUI.CardShape
                 ) {
                     Text(
                         text = conversion.status.uppercase(),
@@ -289,7 +288,7 @@ fun ManagerConversionItem(conversion: Conversion) {
             // Info Box
             Surface(
                 color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-                shape = RoundedCornerShape(12.dp),
+                shape = PremiumUI.CardShape,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(modifier = Modifier.padding(8.dp)) {

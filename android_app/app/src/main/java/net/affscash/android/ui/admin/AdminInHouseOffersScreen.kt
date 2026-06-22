@@ -66,7 +66,7 @@ fun AdminInHouseOffersScreen(
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Surface(
-                            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                            shape = PremiumUI.CardShape,
                             color = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(48.dp)
                         ) {

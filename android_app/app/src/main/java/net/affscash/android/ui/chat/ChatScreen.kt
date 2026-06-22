@@ -163,7 +163,7 @@ fun ChatScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 4.dp),
                     color = MaterialTheme.colorScheme.surfaceVariant,
-                    shape = RoundedCornerShape(8.dp)
+                    shape = PremiumUI.CardShape
                 ) {
                     Row(
                         modifier = Modifier.padding(8.dp),

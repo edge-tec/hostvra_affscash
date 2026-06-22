@@ -190,9 +190,9 @@ modifier = Modifier.height(28.dp),
                                 val model = entryModelOf(entries)
                                 Card(
                                     modifier = Modifier.fillMaxWidth().height(140.dp),
-                                    shape = RoundedCornerShape(12.dp),
+                                    shape = PremiumUI.CardShape,
                                     colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-                                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                                 ) {
                                     Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
                                         Chart(
@@ -222,9 +222,9 @@ modifier = Modifier.height(28.dp),
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Card(
                                     modifier = Modifier.fillMaxWidth(),
-                                    shape = RoundedCornerShape(12.dp),
+                                    shape = PremiumUI.CardShape,
                                     colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-                                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                                 ) {
                                     Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
                                         Column(modifier = Modifier.padding(4.dp)) {
@@ -252,9 +252,9 @@ modifier = Modifier.height(28.dp),
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Card(
                                     modifier = Modifier.fillMaxWidth(),
-                                    shape = RoundedCornerShape(12.dp),
+                                    shape = PremiumUI.CardShape,
                                     colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-                                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                                 ) {
                                     Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
                                         Column(modifier = Modifier.padding(4.dp)) {
@@ -282,9 +282,9 @@ modifier = Modifier.height(28.dp),
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Card(
                                     modifier = Modifier.fillMaxWidth(),
-                                    shape = RoundedCornerShape(12.dp),
+                                    shape = PremiumUI.CardShape,
                                     colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-                                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                                 ) {
                                     Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
                                         Column(modifier = Modifier.padding(4.dp)) {
@@ -388,9 +388,9 @@ fun AdminKpiCard(
 ) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(12.dp),
+        shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
             Column(modifier = Modifier.padding(4.dp)) {
