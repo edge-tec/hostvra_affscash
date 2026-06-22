@@ -19,12 +19,13 @@ import javax.inject.Singleton
 import dagger.hilt.android.qualifiers.ApplicationContext
 import android.content.Context
 import net.affscash.android.data.local.UserManager
+import net.affscash.android.Config
 
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "https://affscash.net/"
+    private const val BASE_URL = Config.BASE_URL
 
     @Provides
     @Singleton

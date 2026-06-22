@@ -34,6 +34,7 @@ import net.affscash.android.ui.dashboard.PremiumUI
 import net.affscash.android.data.model.RewardsResponse
 import net.affscash.android.theme.Purple40
 import net.affscash.android.utils.CoilImageGetter
+import net.affscash.android.Config
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -203,13 +204,13 @@ fun AvailableRewardItem(rule: RewardRule) {
         ) {
             if (rule.imagePath != null) {
                 val cleanPath = rule.imagePath.trim().removePrefix("/")
-                val fullImageUrl = (if (cleanPath.startsWith("http")) cleanPath else "https://affscash.net/" + cleanPath).replace(" ", "%20")
+                val fullImageUrl = (if (cleanPath.startsWith("http")) cleanPath else Config.BASE_URL + cleanPath).replace(" ", "%20")
                 SubcomposeAsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(fullImageUrl)
                         .addHeader("User-Agent", "Mozilla/5.0 (Linux; Android 13; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36")
                         .addHeader("Accept", "image/webp,image/apng,image/*,*/*;q=0.8")
-                        .addHeader("Referer", "https://affscash.net/")
+                        .addHeader("Referer", Config.BASE_URL)
                         .crossfade(true)
                         .build(),
                     contentDescription = rule.title,

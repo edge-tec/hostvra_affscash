@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import net.affscash.android.data.model.AdminSupportMessage
 import net.affscash.android.ui.dashboard.PremiumUI
+import net.affscash.android.Config
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
@@ -350,7 +351,7 @@ fun MessageBubble(message: AdminSupportMessage, onDelete: () -> Unit = {}, onEdi
                     Column(modifier = Modifier.padding(8.dp)) {
                         if (message.attachmentPath != null) {
                             val isImage = message.attachmentType?.startsWith("image/") == true
-                            val attachmentUrl = "https://affscash.net/api/v2/admin/chat?action=download&id=${message.id}"
+                            val attachmentUrl = "${Config.BASE_URL}api/v2/admin/chat?action=download&id=${message.id}"
                             
                             if (isImage) {
                                 AsyncImage(

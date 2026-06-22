@@ -38,6 +38,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import net.affscash.android.data.model.ChatMessage
 import net.affscash.android.ui.dashboard.PremiumUI
+import net.affscash.android.Config
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -380,9 +381,9 @@ fun ChatMessageBubble(
                         if (message.attachmentPath != null) {
                             val isImage = message.attachmentType?.startsWith("image/") == true
                             val attachmentUrl = when (role) {
-                                "admin" -> "https://affscash.net/api/v2/admin/chat?action=download&id=${message.id}"
-                                "manager" -> "https://affscash.net/api/v2/manager/chat?action=download&id=${message.id}"
-                                else -> "https://affscash.net/api/v2/chat?action=download&id=${message.id}"
+                                "admin" -> "${Config.BASE_URL}api/v2/admin/chat?action=download&id=${message.id}"
+                                "manager" -> "${Config.BASE_URL}api/v2/manager/chat?action=download&id=${message.id}"
+                                else -> "${Config.BASE_URL}api/v2/chat?action=download&id=${message.id}"
                             }
 
                             if (isImage) {

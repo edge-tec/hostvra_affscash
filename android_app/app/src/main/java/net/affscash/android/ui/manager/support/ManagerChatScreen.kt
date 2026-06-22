@@ -3,6 +3,7 @@ package net.affscash.android.ui.manager.support
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import net.affscash.android.Config
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -267,7 +268,7 @@ fun MessageBubble(message: ManagerMessage, affiliateId: Int, onDelete: () -> Uni
             }
             if (message.attachmentPath != null) {
                 val isImage = message.attachmentType?.startsWith("image/") == true
-                val attachmentUrl = "https://affscash.net/api/v2/manager/chat?action=download&id=${message.id}&affiliate_id=$affiliateId"
+                val attachmentUrl = "${Config.BASE_URL}api/v2/manager/chat?action=download&id=${message.id}&affiliate_id=$affiliateId"
                 
                 if (isImage) {
                     AsyncImage(

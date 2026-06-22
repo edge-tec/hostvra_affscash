@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import net.affscash.android.Config
 
 class CoilImageGetter(
     private val textView: TextView,
@@ -26,7 +27,7 @@ class CoilImageGetter(
         // Handle relative URLs returned by HTML content
         val finalUrl = if (!source.startsWith("http")) {
             val cleanPath = source.removePrefix("/")
-            "https://affscash.net/" + cleanPath.replace(" ", "%20")
+            Config.BASE_URL + cleanPath.replace(" ", "%20")
         } else {
             source.replace(" ", "%20")
         }

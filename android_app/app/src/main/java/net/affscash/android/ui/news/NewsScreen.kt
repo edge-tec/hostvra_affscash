@@ -2,6 +2,7 @@ package net.affscash.android.ui.news
 
 import android.content.Intent
 import android.net.Uri
+import net.affscash.android.Config
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -140,7 +141,7 @@ fun NewsScreen(
                     if (rawPath.isNotEmpty()) {
                         val imageUrl = if (!rawPath.startsWith("http")) {
                             val cleanPath = rawPath.removePrefix("/")
-                            "https://affscash.net/" + Uri.encode(cleanPath, "/")
+                            Config.BASE_URL + Uri.encode(cleanPath, "/")
                         } else {
                             rawPath
                         }
@@ -229,7 +230,7 @@ fun NewsCard(newsItem: NewsItem, onClick: () -> Unit) {
                     "" // Error state
                 } else if (!rawPath.startsWith("http")) {
                     val cleanPath = rawPath.removePrefix("/")
-                    "https://affscash.net/" + Uri.encode(cleanPath, "/")
+                    Config.BASE_URL + Uri.encode(cleanPath, "/")
                 } else {
                     rawPath
                 }

@@ -2,6 +2,7 @@ package net.affscash.android.data.network
 
 import android.content.Context
 import android.content.SharedPreferences
+import net.affscash.android.Config
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
@@ -14,7 +15,7 @@ class SessionCookieJar(context: Context) : CookieJar {
     init {
         // Load cookies from SharedPreferences
         val savedCookies = prefs.getStringSet("cookies", emptySet()) ?: emptySet()
-        val defaultHost = "affscash.net"
+        val defaultHost = Config.COOKIE_HOST
         val cookies = mutableListOf<Cookie>()
         for (cookieString in savedCookies) {
             Cookie.parse(HttpUrl.Builder().scheme("https").host(defaultHost).build(), cookieString)?.let {

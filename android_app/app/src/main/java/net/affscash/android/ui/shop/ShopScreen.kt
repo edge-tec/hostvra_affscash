@@ -37,6 +37,7 @@ import net.affscash.android.data.model.ShopOrder
 import net.affscash.android.ui.dashboard.PremiumUI
 import net.affscash.android.data.model.ShopProduct
 import net.affscash.android.utils.CoilImageGetter
+import net.affscash.android.Config
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -218,7 +219,7 @@ fun ProductCard(
                 "" // Trigger error fallback
             } else if (!rawPath.startsWith("http")) {
                 val cleanPath = rawPath.removePrefix("/")
-                "https://affscash.net/" + cleanPath
+                Config.BASE_URL + cleanPath
             } else {
                 rawPath
             }).replace(" ", "%20")
@@ -228,7 +229,7 @@ fun ProductCard(
                     .data(imageUrl)
                     .addHeader("User-Agent", "Mozilla/5.0 (Linux; Android 13; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36")
                     .addHeader("Accept", "image/webp,image/apng,image/*,*/*;q=0.8")
-                    .addHeader("Referer", "https://affscash.net/")
+                    .addHeader("Referer", Config.BASE_URL)
                     .crossfade(true)
                     .build(),
                 contentDescription = product.name,

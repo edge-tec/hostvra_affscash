@@ -15,6 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import net.affscash.android.data.model.AdminShopProduct
 import net.affscash.android.data.model.AdminShopOrder
+import net.affscash.android.Config
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -163,7 +164,7 @@ fun AdminShopProductCard(
             Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
                 product.imagePath?.trim()?.takeIf { it.isNotEmpty() }?.let { rawPath ->
                     val imageUrl = (if (!rawPath.startsWith("http")) {
-                        "https://affscash.net/" + rawPath.removePrefix("/")
+                        Config.BASE_URL + rawPath.removePrefix("/")
                     } else {
                         rawPath
                     }).replace(" ", "%20")
@@ -172,7 +173,7 @@ fun AdminShopProductCard(
                             .data(imageUrl)
                             .addHeader("User-Agent", "Mozilla/5.0 (Linux; Android 13; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36")
                             .addHeader("Accept", "image/webp,image/apng,image/*,*/*;q=0.8")
-                            .addHeader("Referer", "https://affscash.net/")
+                            .addHeader("Referer", Config.BASE_URL)
                             .crossfade(true)
                             .build(),
                         contentDescription = "Product Image",

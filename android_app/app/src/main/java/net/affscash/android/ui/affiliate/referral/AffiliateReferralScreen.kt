@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import net.affscash.android.ui.dashboard.PremiumUI
 import net.affscash.android.data.model.ReferredAffiliate
 import net.affscash.android.data.model.ReferralCommission
 

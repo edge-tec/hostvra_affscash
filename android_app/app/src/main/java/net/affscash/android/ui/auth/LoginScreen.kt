@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.R
+import net.affscash.android.ui.dashboard.PremiumUI
+import net.affscash.android.Config
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -176,11 +178,11 @@ fun LoginScreen(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                TextButton(onClick = { uriHandler.openUri("https://affscash.net/privacy-policy") }) {
+                TextButton(onClick = { uriHandler.openUri(Config.BASE_URL + "privacy-policy") }) {
                     Text("Privacy Policy", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary)
                 }
                 Text("•", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary)
-                TextButton(onClick = { uriHandler.openUri("https://affscash.net/terms-of-service") }) {
+                TextButton(onClick = { uriHandler.openUri(Config.BASE_URL + "terms-of-service") }) {
                     Text("Terms & Conditions", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary)
                 }
             }

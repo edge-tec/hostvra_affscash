@@ -1,6 +1,7 @@
 package net.affscash.android.ui.admin.shop
 
 import android.net.Uri
+import net.affscash.android.Config
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
@@ -161,7 +162,7 @@ fun AdminShopProductFormScreen(
                             Text("Image selected", color = MaterialTheme.colorScheme.primary)
                         } else if (formData.existingImagePath != null) {
                             AsyncImage(
-                                model = "https://affscash.net${formData.existingImagePath}",
+                                model = (Config.BASE_URL.removeSuffix("/") + "/" + (formData.existingImagePath ?: "").removePrefix("/")),
                                 contentDescription = "Current Image",
                                 modifier = Modifier.size(60.dp)
                             )
