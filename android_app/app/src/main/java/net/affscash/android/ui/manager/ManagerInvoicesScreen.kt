@@ -27,6 +27,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.border
+import androidx.compose.foundation.BorderStroke
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.data.model.Invoice
 import net.affscash.android.ui.dashboard.PremiumUI
@@ -183,11 +185,19 @@ fun ManagerInvoicesScreen(
 
 @Composable
 fun InvoiceSummaryCard(title: String, value: String, valueColor: Color) {
-    Card(
-        modifier = Modifier.width(120.dp).height(80.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
-        shape = PremiumUI.CardShape,
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    Box(
+        modifier = Modifier
+            .width(120.dp)
+            .height(80.dp)
+            .background(
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+                shape = PremiumUI.CardShape
+            )
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
+                shape = PremiumUI.CardShape
+            )
     ) {
         Column(
             modifier = Modifier.padding(8.dp).fillMaxSize(),
@@ -209,7 +219,11 @@ fun ManagerInvoiceDetailedItem(invoice: Invoice) {
             .padding(horizontal = 16.dp, vertical = 6.dp),
         shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        border = BorderStroke(
+            width = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
+        )
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
             // Header: Invoice Number & Status

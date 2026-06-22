@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
@@ -143,11 +144,18 @@ modifier = Modifier.height(32.dp),
                         // Totals section
                         if (uiState.response != null) {
                             Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                                Card(
-                                    modifier = Modifier.weight(1f),
-                                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)),
-                                    shape = PremiumUI.CardShape,
-                                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .background(
+                                            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+                                            shape = PremiumUI.CardShape
+                                        )
+                                        .border(
+                                            width = 1.dp,
+                                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
+                                            shape = PremiumUI.CardShape
+                                        )
                                 ) {
                                     Row(
                                         modifier = Modifier.padding(8.dp),
@@ -164,11 +172,18 @@ modifier = Modifier.height(32.dp),
                                     }
                                 }
 
-                                Card(
-                                    modifier = Modifier.weight(1f),
-                                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)),
-                                    shape = PremiumUI.CardShape,
-                                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .background(
+                                            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+                                            shape = PremiumUI.CardShape
+                                        )
+                                        .border(
+                                            width = 1.dp,
+                                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
+                                            shape = PremiumUI.CardShape
+                                        )
                                 ) {
                                     Row(
                                         modifier = Modifier.padding(8.dp),

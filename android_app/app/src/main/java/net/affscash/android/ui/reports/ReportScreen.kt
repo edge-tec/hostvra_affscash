@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
@@ -357,11 +358,19 @@ fun ReportScreen(
 
 @Composable
 fun SummaryCard(title: String, value: String, subtitle: String, valueColor: Color = Color.Black) {
-    Card(
-        modifier = Modifier.width(120.dp).heightIn(min = 84.dp),
-        shape = PremiumUI.CardShape,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
-        elevation = CardDefaults.cardElevation(0.dp)
+    Box(
+        modifier = Modifier
+            .width(120.dp)
+            .heightIn(min = 84.dp)
+            .background(
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+                shape = PremiumUI.CardShape
+            )
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
+                shape = PremiumUI.CardShape
+            )
     ) {
         Column(
             modifier = Modifier.padding(8.dp).fillMaxWidth().wrapContentHeight(),
