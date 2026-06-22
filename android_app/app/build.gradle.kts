@@ -43,7 +43,7 @@ android {
 
         create("release") {
             if (keystoreFile.exists()) {
-                storeFile = file(properties.getProperty("storeFile") ?: "")
+                storeFile = rootProject.file(properties.getProperty("storeFile") ?: "")
                 storePassword = properties.getProperty("storePassword")
                 keyAlias = properties.getProperty("keyAlias")
                 keyPassword = properties.getProperty("keyPassword")
