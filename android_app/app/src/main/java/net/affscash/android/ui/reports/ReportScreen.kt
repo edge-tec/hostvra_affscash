@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.data.model.*
+import net.affscash.android.ui.dashboard.PremiumUI
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -87,7 +88,7 @@ fun ReportScreen(
             }
         }
     ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
+        Column(modifier = Modifier.padding(paddingValues).fillMaxSize().background(PremiumUI.PageBackground)) {
             var filtersExpanded by remember { mutableStateOf(false) }
             Card(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),

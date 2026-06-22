@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.data.model.ManagerAffiliateDetailsData
+import net.affscash.android.ui.dashboard.PremiumUI
 import net.affscash.android.ui.affiliates.AdminAffiliatesViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

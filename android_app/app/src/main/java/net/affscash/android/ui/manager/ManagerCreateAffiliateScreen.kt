@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import net.affscash.android.data.model.CreateAffiliateRequest
+import net.affscash.android.ui.dashboard.PremiumUI
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

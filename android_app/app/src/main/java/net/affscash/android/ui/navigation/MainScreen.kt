@@ -27,6 +27,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import net.affscash.android.ui.dashboard.DashboardScreen
+import net.affscash.android.ui.dashboard.PremiumUI
 import net.affscash.android.ui.offers.OfferScreen
 import net.affscash.android.ui.reports.ReportScreen
 import net.affscash.android.ui.admin.AdminAdvertisersScreen

@@ -37,6 +37,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import net.affscash.android.data.model.ChatMessage
+import net.affscash.android.ui.dashboard.PremiumUI
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

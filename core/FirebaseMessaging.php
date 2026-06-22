@@ -90,8 +90,9 @@ class FirebaseMessaging {
                 'data' => (object)$stringData,
                 // Android-specific configuration
                 'android' => [
-                    'priority' => 'high',          // Bypass Doze mode
+                    'priority' => 'HIGH',          // Bypass Doze mode (must be HIGH not high)
                     'ttl'      => '86400s',        // 24h TTL
+                    'direct_boot_ok' => true       // Deliver even if device is locked
                 ],
             ]
         ];

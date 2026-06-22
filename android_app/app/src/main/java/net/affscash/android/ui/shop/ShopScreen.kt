@@ -34,6 +34,7 @@ import androidx.core.text.HtmlCompat
 import android.widget.TextView
 import androidx.compose.ui.viewinterop.AndroidView
 import net.affscash.android.data.model.ShopOrder
+import net.affscash.android.ui.dashboard.PremiumUI
 import net.affscash.android.data.model.ShopProduct
 import net.affscash.android.utils.CoilImageGetter
 

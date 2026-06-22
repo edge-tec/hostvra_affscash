@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.data.model.ManagerFraudConversion
+import net.affscash.android.ui.dashboard.PremiumUI
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -90,7 +91,7 @@ fun ManagerFraudReportsScreen(
 }
         }
     ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
+        Column(modifier = Modifier.padding(paddingValues).fillMaxSize().background(PremiumUI.PageBackground)) {
             // Search and Filter Bar removed to use BottomSheet
             // Loading / Error / Data
             Box(modifier = Modifier.fillMaxSize().weight(1f)) {

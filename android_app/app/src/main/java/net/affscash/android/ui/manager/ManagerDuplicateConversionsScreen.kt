@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.data.model.DuplicateConversionGroup
+import net.affscash.android.ui.dashboard.PremiumUI
 import net.affscash.android.data.model.DuplicateConversionRow
 import java.text.SimpleDateFormat
 import java.util.*
@@ -73,7 +74,7 @@ fun ManagerDuplicateConversionsScreen(
         }
     }
 ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
+        Column(modifier = Modifier.padding(paddingValues).fillMaxSize().background(PremiumUI.PageBackground)) {
             
             // Date Range Picker Strip
             Row(

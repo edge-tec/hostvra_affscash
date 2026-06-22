@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.foundation.shape.RoundedCornerShape
 import net.affscash.android.ui.components.QrCodeImage
+import net.affscash.android.ui.dashboard.PremiumUI
 import net.affscash.android.data.model.*
 
 @OptIn(ExperimentalMaterial3Api::class)

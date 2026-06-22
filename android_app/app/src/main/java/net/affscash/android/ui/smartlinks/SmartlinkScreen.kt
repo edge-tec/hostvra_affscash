@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.data.model.Smartlink
+import net.affscash.android.ui.dashboard.PremiumUI
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,7 +74,7 @@ fun SmartlinkScreen(
             }
         }
     ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
+        Column(modifier = Modifier.padding(paddingValues).fillMaxSize().background(PremiumUI.PageBackground)) {
             Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
                 when (uiState) {
                     is SmartlinkState.Loading -> {

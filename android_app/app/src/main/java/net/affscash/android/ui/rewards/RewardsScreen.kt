@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import android.net.Uri
 import androidx.compose.material.icons.filled.Image
 import net.affscash.android.data.model.RewardRule
+import net.affscash.android.ui.dashboard.PremiumUI
 import net.affscash.android.data.model.RewardsResponse
 import net.affscash.android.theme.Purple40
 import net.affscash.android.utils.CoilImageGetter

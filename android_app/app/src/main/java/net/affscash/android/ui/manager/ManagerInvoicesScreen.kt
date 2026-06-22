@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.data.model.Invoice
+import net.affscash.android.ui.dashboard.PremiumUI
 import net.affscash.android.data.model.ManagerInvoiceTabTotals
 import net.affscash.android.ui.invoices.ManagerInvoicesUiState
 import net.affscash.android.ui.invoices.ManagerInvoicesViewModel
@@ -46,28 +47,27 @@ fun ManagerInvoicesScreen(
         topBar = {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+                color = MaterialTheme.colorScheme.background,
+                shadowElevation = 2.dp
             ) {
                 Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
                     Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
-                ) {
-                    Text(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 12.dp)
+                    ) {
+                        Text(
                         text = "Invoices & Earnings",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
+                        style = PremiumUI.HeaderStyle,
                         color = MaterialTheme.colorScheme.onSurface
                     )
+                    }
                 }
-                            }
-}
+            }
         }
     ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
+        Column(modifier = Modifier.padding(paddingValues).fillMaxSize().background(PremiumUI.PageBackground)) {
             
             when (val state = uiState) {
                 is ManagerInvoicesUiState.Loading -> {

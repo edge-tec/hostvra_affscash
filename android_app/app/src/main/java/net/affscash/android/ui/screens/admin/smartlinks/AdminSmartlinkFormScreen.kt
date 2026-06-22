@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import net.affscash.android.data.model.AdminAvailableOffer
+import net.affscash.android.ui.dashboard.PremiumUI
 import net.affscash.android.data.model.AdminSmartlinkOffer
 
 @OptIn(ExperimentalMaterial3Api::class)

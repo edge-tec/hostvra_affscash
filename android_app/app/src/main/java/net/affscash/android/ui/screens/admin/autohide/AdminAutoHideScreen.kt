@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.affscash.android.data.model.AdminAutoHideCreateRequest
+import net.affscash.android.ui.dashboard.PremiumUI
 import net.affscash.android.ui.components.CustomDropdownMenu
 
 @OptIn(ExperimentalMaterial3Api::class)

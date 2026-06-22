@@ -683,6 +683,7 @@ fun PaymentTabContent(
         }
     }
 }
+}
 
 @Composable
 fun GoogleAuthenticatorTabContent(
@@ -740,7 +741,8 @@ fun GoogleAuthenticatorTabContent(
                             onClick = { viewModel.disable2fa(password, code) },
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
                             modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                            shape = RoundedCornerShape(8.dp)
+                            shape = RoundedCornerShape(8.dp),
+                            enabled = !isSubmitting
                         ) {
                             Text("Disable 2FA", fontWeight = FontWeight.Bold)
                         }
@@ -752,7 +754,8 @@ fun GoogleAuthenticatorTabContent(
                             Button(
                                 onClick = { viewModel.start2fa() },
                                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                                shape = RoundedCornerShape(8.dp)
+                                shape = RoundedCornerShape(8.dp),
+                                enabled = !isSubmitting
                             ) {
                                 Text("Enable 2FA", fontWeight = FontWeight.Bold)
                             }
@@ -783,7 +786,7 @@ fun GoogleAuthenticatorTabContent(
                             )
                             Button(
                                 onClick = { viewModel.verify2fa(code) },
-                                enabled = code.length >= 6,
+                                enabled = !isSubmitting && code.length >= 6,
                                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                                 shape = RoundedCornerShape(8.dp)
                             ) {

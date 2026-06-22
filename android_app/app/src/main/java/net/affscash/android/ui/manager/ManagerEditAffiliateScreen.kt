@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import net.affscash.android.data.model.EditAffiliateRequest
+import net.affscash.android.ui.dashboard.PremiumUI
 import net.affscash.android.data.model.ManagerAffiliateListModel
 
 @OptIn(ExperimentalMaterial3Api::class)

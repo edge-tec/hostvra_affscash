@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.foundation.clickable
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.data.model.Conversion
+import net.affscash.android.ui.dashboard.PremiumUI
 import net.affscash.android.ui.conversions.ManagerConversionsUiState
 import net.affscash.android.ui.conversions.ManagerConversionsViewModel
 

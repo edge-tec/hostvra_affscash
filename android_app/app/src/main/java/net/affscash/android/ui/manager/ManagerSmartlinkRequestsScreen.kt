@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.data.model.ManagerSmartlinkRequest
+import net.affscash.android.ui.dashboard.PremiumUI
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

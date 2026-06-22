@@ -36,6 +36,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import net.affscash.android.data.model.NewsItem
+import net.affscash.android.ui.dashboard.PremiumUI
 import net.affscash.android.utils.CoilImageGetter
 import coil.imageLoader
 import java.text.SimpleDateFormat

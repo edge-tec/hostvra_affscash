@@ -19,6 +19,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import net.affscash.android.data.model.AffiliatePaymentInfo
+import net.affscash.android.ui.dashboard.PremiumUI
 import net.affscash.android.data.model.ManagerPaymentInfo
 import net.affscash.android.data.model.OfferBasicItem
 import net.affscash.android.data.model.OfferCommissionInfo

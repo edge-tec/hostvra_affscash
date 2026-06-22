@@ -162,10 +162,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .setStyle(NotificationCompat.BigTextStyle().bigText(body))
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
         // Add icon color for brand consistency
         try {
