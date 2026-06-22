@@ -273,6 +273,8 @@ fun MessageBubble(message: ManagerMessage, affiliateId: Int, onDelete: () -> Uni
                         model = ImageRequest.Builder(context)
                             .data(attachmentUrl)
                             .crossfade(true)
+                            .memoryCacheKey("chat_img_${message.id}")
+                            .diskCacheKey("chat_img_${message.id}")
                             .build(),
                         contentDescription = "Attachment",
                         contentScale = ContentScale.Crop,

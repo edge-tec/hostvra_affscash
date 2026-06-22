@@ -389,6 +389,8 @@ fun ChatMessageBubble(
                                     model = ImageRequest.Builder(context)
                                         .data(attachmentUrl)
                                         .crossfade(true)
+                                        .memoryCacheKey("chat_img_${message.id}")
+                                        .diskCacheKey("chat_img_${message.id}")
                                         .build(),
                                     contentDescription = "Image attachment",
                                     contentScale = ContentScale.Crop,

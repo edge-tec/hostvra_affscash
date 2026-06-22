@@ -40,11 +40,21 @@ object NetworkModule {
         }
 
         val cleanJsonResponseInterceptor = Interceptor { chain ->
-            val response = chain.proceed(chain.request())
+            val request = chain.request()
+            val response = chain.proceed(request)
+
+            // Skip binary / download responses entirely — never touch image data
+            val url = request.url.toString()
+            if (url.contains("action=download")) {
+                return@Interceptor response
+            }
+
             val body = response.body
             if (body != null) {
                 val contentType = body.contentType()
-                if (contentType?.subtype?.contains("json") == true) {
+                // Only clean responses that are explicitly JSON
+                val subtype = contentType?.subtype ?: ""
+                if (subtype.contains("json") && !subtype.contains("octet")) {
                     val content = body.string()
                     val startIndex = content.indexOfFirst { it == '{' || it == '[' }
                     val endIndex = content.indexOfLast { it == '}' || it == ']' }

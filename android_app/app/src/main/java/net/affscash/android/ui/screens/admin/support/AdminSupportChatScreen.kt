@@ -349,11 +349,16 @@ fun MessageBubble(message: AdminSupportMessage, onDelete: () -> Unit = {}, onEdi
                     Column(modifier = Modifier.padding(8.dp)) {
                         if (message.attachmentPath != null) {
                             val isImage = message.attachmentType?.startsWith("image/") == true
-                            val attachmentUrl = "https://affscash.net/api/v2/chat?action=download&id=${message.id}"
+                            val attachmentUrl = "https://affscash.net/api/v2/admin/chat?action=download&id=${message.id}"
                             
                             if (isImage) {
                                 AsyncImage(
-                                    model = ImageRequest.Builder(context).data(attachmentUrl).crossfade(true).build(),
+                                    model = ImageRequest.Builder(context)
+                                        .data(attachmentUrl)
+                                        .crossfade(true)
+                                        .memoryCacheKey("chat_img_${message.id}")
+                                        .diskCacheKey("chat_img_${message.id}")
+                                        .build(),
                                     contentDescription = "Attachment",
                                     contentScale = ContentScale.Crop,
                                     modifier = Modifier

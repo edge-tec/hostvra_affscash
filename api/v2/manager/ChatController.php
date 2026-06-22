@@ -3,7 +3,6 @@ if (!defined('BASE_PATH')) {
     http_response_code(403);
     die(json_encode(['success' => false, 'error' => 'Direct access forbidden.']));
 }
-header('Content-Type: application/json');
 
 try {
     Auth::check('affiliate_manager');
@@ -33,8 +32,14 @@ try {
     $mgrId = $mgrRow['id'] ?? 0;
     
     if (empty($managerAffIds)) {
+        header('Content-Type: application/json');
         echo json_encode(['success' => true, 'conversations' => [], 'messages' => []]);
         exit;
+    }
+
+    // Set JSON content type for all actions except download (which sends binary data)
+    if ($action !== 'download') {
+        header('Content-Type: application/json');
     }
 
     $in = implode(',', array_fill(0, count($managerAffIds), '?'));
@@ -402,6 +407,7 @@ try {
     echo json_encode(['success' => false, 'error' => 'Unknown action']);
 
 } catch (Throwable $e) {
+    header('Content-Type: application/json');
     http_response_code(200);
     echo json_encode([
         'success' => false,
