@@ -145,42 +145,42 @@ modifier = Modifier.height(32.dp),
                             Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                                 Card(
                                     modifier = Modifier.weight(1f),
-                                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)),
+                                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)),
                                     shape = PremiumUI.CardShape,
-                                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                                 ) {
                                     Row(
                                         modifier = Modifier.padding(8.dp),
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        Surface(shape = PremiumUI.CardShape, color = MaterialTheme.colorScheme.secondaryContainer, modifier = Modifier.size(36.dp)) {
-                                            Icon(Icons.Default.Layers, contentDescription = null, tint = MaterialTheme.colorScheme.onSecondaryContainer, modifier = Modifier.padding(8.dp))
+                                        Surface(shape = PremiumUI.CardShape, color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f), modifier = Modifier.size(36.dp)) {
+                                            Icon(Icons.Default.Layers, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(8.dp))
                                         }
                                         Spacer(modifier = Modifier.width(10.dp))
                                         Column {
-                                            Text("${uiState.response!!.totalGroups}", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSecondaryContainer)
-                                            Text("Clusters", fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha=0.8f))
+                                            Text("${uiState.response!!.totalGroups}", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                                            Text("Clusters", fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                         }
                                     }
                                 }
 
                                 Card(
                                     modifier = Modifier.weight(1f),
-                                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f)),
+                                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)),
                                     shape = PremiumUI.CardShape,
-                                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                                 ) {
                                     Row(
                                         modifier = Modifier.padding(8.dp),
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        Surface(shape = PremiumUI.CardShape, color = MaterialTheme.colorScheme.errorContainer, modifier = Modifier.size(36.dp)) {
-                                            Icon(Icons.Default.Warning, contentDescription = null, tint = MaterialTheme.colorScheme.onErrorContainer, modifier = Modifier.padding(8.dp))
+                                        Surface(shape = PremiumUI.CardShape, color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f), modifier = Modifier.size(36.dp)) {
+                                            Icon(Icons.Default.Warning, contentDescription = null, tint = MaterialTheme.colorScheme.error, modifier = Modifier.padding(8.dp))
                                         }
                                         Spacer(modifier = Modifier.width(10.dp))
                                         Column {
-                                            Text("${uiState.response!!.totalRows}", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onErrorContainer)
-                                            Text("Duplicates", fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha=0.8f))
+                                            Text("${uiState.response!!.totalRows}", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                                            Text("Duplicates", fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                         }
                                     }
                                 }
@@ -192,11 +192,17 @@ modifier = Modifier.height(32.dp),
                         LazyColumn(modifier = Modifier.fillMaxSize()) {
                             if (uiState.response!!.groups.isEmpty()) {
                                 item {
-                                    Text(
-                                        "No duplicate conversions found for this date range.",
-                                        modifier = Modifier.padding(8.dp),
-                                        color = Color.Gray
-                                    )
+                                    Box(
+                                        modifier = Modifier.fillMaxWidth().padding(24.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = "No duplicate conversions found for this date range.",
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                    }
                                 }
                             } else {
                                 items(uiState.response!!.groups) { group ->

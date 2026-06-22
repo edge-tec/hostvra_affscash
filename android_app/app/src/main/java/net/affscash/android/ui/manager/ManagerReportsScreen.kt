@@ -364,13 +364,13 @@ fun ManagerReportsScreen(
 @Composable
 fun SummaryCard(title: String, value: String, subtitle: String, valueColor: Color = Color.Black) {
     Card(
-        modifier = Modifier.width(120.dp).height(80.dp),
+        modifier = Modifier.width(120.dp).heightIn(min = 84.dp),
         shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
         elevation = CardDefaults.cardElevation(0.dp)
     ) {
         Column(
-            modifier = Modifier.padding(8.dp).fillMaxSize(),
+            modifier = Modifier.padding(8.dp).fillMaxWidth().wrapContentHeight(),
             verticalArrangement = Arrangement.Center
         ) {
             Text(title, fontSize = 9.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
