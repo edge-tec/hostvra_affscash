@@ -139,7 +139,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token')) && Helpers
     ];
     $_cfgOk = Config::write('fraud', $fraudCfg);
     Config::clearCache();
-    Helpers::flash($_cfgOk ? 'success' : 'error', $_cfgOk ? 'IPQualityScore settings saved.' : 'Save failed — check config directory write permissions.');
+    Helpers::flash($_cfgOk ? 'success' : 'error', $_cfgOk ? 'IPQualityScore settings saved.' : 'Save failed: ' . Config::$lastError);
     Helpers::redirect('/admin/fraud');
 }
 
@@ -152,7 +152,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token')) && Helpers
     $fraudCfg['ipquery_flag_threshold']  = min(100, max(1, (int)($_POST['ipquery_flag_threshold']  ?? 50)));
     $_cfgOk = Config::write('fraud', $fraudCfg);
     Config::clearCache();
-    Helpers::flash($_cfgOk ? 'success' : 'error', $_cfgOk ? 'IPQuery.io settings saved.' : 'Save failed — check config directory write permissions.');
+    Helpers::flash($_cfgOk ? 'success' : 'error', $_cfgOk ? 'IPQuery.io settings saved.' : 'Save failed: ' . Config::$lastError);
     Helpers::redirect('/admin/fraud');
 }
 
@@ -170,7 +170,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token')) && Helpers
     $fraudCfg['proxycheck_flag_threshold']  = min(100, max(1, (int)($_POST['proxycheck_flag_threshold']  ?? 30)));
     $_cfgOk = Config::write('fraud', $fraudCfg);
     Config::clearCache();
-    Helpers::flash($_cfgOk ? 'success' : 'error', $_cfgOk ? 'ProxyCheck.io settings saved.' : 'Save failed — check config directory write permissions.');
+    Helpers::flash($_cfgOk ? 'success' : 'error', $_cfgOk ? 'ProxyCheck.io settings saved.' : 'Save failed: ' . Config::$lastError);
     Helpers::redirect('/admin/fraud');
 }
 
@@ -186,7 +186,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token')) && Helpers
                                         ? Helpers::postRaw('botscout_mode') : 'score_only';
     $_cfgOk = Config::write('fraud', $fraudCfg);
     Config::clearCache();
-    Helpers::flash($_cfgOk ? 'success' : 'error', $_cfgOk ? 'BotScout settings saved.' : 'Save failed — check config directory write permissions.');
+    Helpers::flash($_cfgOk ? 'success' : 'error', $_cfgOk ? 'BotScout settings saved.' : 'Save failed: ' . Config::$lastError);
     Helpers::redirect('/admin/fraud');
 }
 
@@ -204,7 +204,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token')) && Helpers
     $fraudCfg['frauddefense_flag_threshold']  = min(100, max(1, (int)($_POST['frauddefense_flag_threshold']  ?? 30)));
     $_cfgOk = Config::write('fraud', $fraudCfg);
     Config::clearCache();
-    Helpers::flash($_cfgOk ? 'success' : 'error', $_cfgOk ? 'FraudDefense.io settings saved.' : 'Save failed — check config directory write permissions.');
+    Helpers::flash($_cfgOk ? 'success' : 'error', $_cfgOk ? 'FraudDefense.io settings saved.' : 'Save failed: ' . Config::$lastError);
     Helpers::redirect('/admin/fraud');
 }
 
@@ -222,7 +222,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token')) && Helpers
     $fraudCfg['fraudlabspro_flag_threshold']  = min(100, max(1, (int)($_POST['fraudlabspro_flag_threshold']  ?? 40)));
     $_cfgOk = Config::write('fraud', $fraudCfg);
     Config::clearCache();
-    Helpers::flash($_cfgOk ? 'success' : 'error', $_cfgOk ? 'FraudLabs Pro settings saved.' : 'Save failed — check config directory write permissions.');
+    Helpers::flash($_cfgOk ? 'success' : 'error', $_cfgOk ? 'FraudLabs Pro settings saved.' : 'Save failed: ' . Config::$lastError);
     Helpers::redirect('/admin/fraud');
 }
 
@@ -242,7 +242,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token')) && Helpers
     $fraudCfg['scamalytics_flag_threshold']  = min(100, max(1, (int)($_POST['scamalytics_flag_threshold']  ?? 50)));
     $_cfgOk = Config::write('fraud', $fraudCfg);
     Config::clearCache();
-    Helpers::flash($_cfgOk ? 'success' : 'error', $_cfgOk ? 'Scamalytics settings saved.' : 'Save failed — check config directory write permissions.');
+    Helpers::flash($_cfgOk ? 'success' : 'error', $_cfgOk ? 'Scamalytics settings saved.' : 'Save failed: ' . Config::$lastError);
     Helpers::redirect('/admin/fraud');
 }
 

@@ -51,12 +51,18 @@ class Config {
             @mkdir($dir, 0755, true);
         }
         self::$cache[$file] = $data;
-        $result = file_put_contents($path, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), LOCK_EX);
+        $result = @file_put_contents($path, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), LOCK_EX);
         if ($result === false) {
-            error_log('[Config] Failed to write config file: ' . $path . ' — check directory permissions.');
+            $err = error_get_last();
+            $errMsg = $err ? $err['message'] : 'Unknown error';
+            error_log('[Config] Failed to write config file: ' . $path . ' — ' . $errMsg);
+            // Also store it in a static variable so controllers can access the real error
+            self::$lastError = $errMsg;
         }
         return $result !== false;
     }
+    
+    public static $lastError = '';
 
     public static function clearCache(): void {
         self::$cache = [];
