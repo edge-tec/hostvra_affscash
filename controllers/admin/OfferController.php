@@ -14,6 +14,7 @@ try { Database::query("ALTER TABLE offers ADD COLUMN require_approval TINYINT(1)
 // Per-landing-page friendly names — JSON array aligned by index with `landing_pages`.
 // Backwards compatible: when this column is empty/null, existing readers fall back to the URL.
 try { Database::query("ALTER TABLE offers ADD COLUMN landing_page_names TEXT DEFAULT NULL"); } catch (Exception $e) {}
+try { Database::query("ALTER TABLE offers MODIFY COLUMN status ENUM('active','paused','expired','pending','deleted') DEFAULT 'pending'"); } catch (Exception $e) {}
 
 // offer_links table
 try { Database::query("CREATE TABLE IF NOT EXISTS `offer_links` (

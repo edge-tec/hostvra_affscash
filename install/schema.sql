@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS `offers` (
     `monthly_cap`       INT UNSIGNED DEFAULT 0,
     `total_cap`         INT UNSIGNED DEFAULT 0,
     `daily_click_cap`   INT UNSIGNED DEFAULT 0,
-    `status`            ENUM('active','paused','expired','pending') DEFAULT 'pending',
+    `status`            ENUM('active','paused','expired','pending','deleted') DEFAULT 'pending',
     `visibility`        ENUM('public','private','require_approval') DEFAULT 'public',
     `tracking_domain`   VARCHAR(255) DEFAULT '',
     `expiry_date`       DATE NULL,
