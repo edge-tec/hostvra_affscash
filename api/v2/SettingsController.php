@@ -8,7 +8,29 @@ $userId = Auth::id();
 $action = $_GET['action'] ?? 'load';
 
 if ($action === 'load') {
-    $aff = Database::fetchOne("SELECT af.*, u.first_name, u.last_name, u.email, u.company, u.phone, u.country, u.profile_pic, u.google2fa_enabled FROM affiliates af JOIN users u ON u.id=af.user_id WHERE af.id=?", [$affId]);
+    $aff = Database::fetchOne(
+        "SELECT af.*, u.first_name, u.last_name, u.email, u.company, u.phone, u.country, u.profile_pic, u.google2fa_enabled 
+         FROM users u 
+         LEFT JOIN affiliates af ON u.id=af.user_id 
+         WHERE u.id=?", 
+        [$userId]
+    );
+
+    if (empty($aff['id'])) {
+        $code = strtoupper(substr(md5(uniqid('',true)), 0, 8));
+        $affId = Database::insert('affiliates', [
+            'user_id' => $userId,
+            'affiliate_code' => $code
+        ]);
+        $_SESSION['affiliate_id'] = $affId;
+        $aff = Database::fetchOne(
+            "SELECT af.*, u.first_name, u.last_name, u.email, u.company, u.phone, u.country, u.profile_pic, u.google2fa_enabled 
+             FROM users u 
+             LEFT JOIN affiliates af ON u.id=af.user_id 
+             WHERE u.id=?", 
+            [$userId]
+        );
+    }
     
     if (!$aff) {
         $u = Database::fetchOne("SELECT first_name, last_name, email, company, phone, google2fa_enabled FROM users WHERE id=?", [$userId]);

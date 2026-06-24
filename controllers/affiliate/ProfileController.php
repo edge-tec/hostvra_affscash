@@ -10,7 +10,30 @@ try { Database::query("ALTER TABLE affiliates ADD COLUMN IF NOT EXISTS payment_d
 try { Database::query("ALTER TABLE affiliates ADD COLUMN IF NOT EXISTS payment_terms VARCHAR(20) NOT NULL DEFAULT 'monthly'"); } catch(\Throwable $e) {}
 try { Database::query("ALTER TABLE affiliates ADD COLUMN IF NOT EXISTS allow_email_change TINYINT(1) NOT NULL DEFAULT 0"); } catch(\Throwable $e) {}
 
-$aff     = Database::fetchOne("SELECT af.*, u.first_name, u.last_name, u.email, u.company, u.phone, u.country, u.profile_pic FROM affiliates af JOIN users u ON u.id=af.user_id WHERE af.id=?", [$affId]);
+$aff = Database::fetchOne(
+    "SELECT af.*, u.first_name, u.last_name, u.email, u.company, u.phone, u.country, u.profile_pic 
+     FROM users u 
+     LEFT JOIN affiliates af ON u.id=af.user_id 
+     WHERE u.id=?", 
+    [$userId]
+);
+
+if (empty($aff['id'])) {
+    $code = strtoupper(substr(md5(uniqid('',true)), 0, 8));
+    $affId = Database::insert('affiliates', [
+        'user_id' => $userId,
+        'affiliate_code' => $code
+    ]);
+    $_SESSION['affiliate_id'] = $affId;
+    $aff = Database::fetchOne(
+        "SELECT af.*, u.first_name, u.last_name, u.email, u.company, u.phone, u.country, u.profile_pic 
+         FROM users u 
+         LEFT JOIN affiliates af ON u.id=af.user_id 
+         WHERE u.id=?", 
+        [$userId]
+    );
+}
+
 $activeTab = Helpers::get('tab') ?: 'profile';
 
 // Fetch available payment methods (include method_type for structured-field rendering)
