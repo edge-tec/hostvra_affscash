@@ -45,12 +45,12 @@ class NotificationRepository @Inject constructor(
             val body = response.body() ?: throw Exception("Empty response body")
             
             // Sync to local DB
-            val localNotifs = body.data.map {
+            val localNotifs = body.notifications.map {
                 LocalNotification(
                     id = it.id,
                     title = it.title,
                     message = it.message,
-                    type = it.type,
+                    type = it.type ?: "info",
                     link = it.link,
                     notificationType = it.notificationType,
                     deepLinkRoute = it.deepLinkRoute,

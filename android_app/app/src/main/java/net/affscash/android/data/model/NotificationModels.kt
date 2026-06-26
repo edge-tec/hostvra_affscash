@@ -28,7 +28,7 @@ data class NotificationsResponse(
 )
 
 @Serializable
-data class MarkNotificationRequest(
+data class MarkNotificationReadRequest(
     val id: Int? = null
 )
 

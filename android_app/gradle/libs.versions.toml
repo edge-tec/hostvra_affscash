@@ -21,7 +21,7 @@ coil = "2.6.0"
 gson = "2.14.0"
 kotlinxSerializationJson = "1.6.3"
 googleServices = "4.4.0"
-firebaseBom = "32.7.0"
+firebaseBom = "33.5.1"
 workManager = "2.9.1"
 
 [libraries]
@@ -74,6 +74,7 @@ gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 # Firebase
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 
 # WorkManager
 work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workManager" }

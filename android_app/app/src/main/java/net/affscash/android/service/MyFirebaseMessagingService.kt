@@ -51,9 +51,19 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        Log.d(TAG, "From: ${remoteMessage.from}")
+        Log.d(TAG, "FCM Message Received from: ${remoteMessage.from}")
+        Log.d(TAG, "Message ID: ${remoteMessage.messageId}")
 
         val data = remoteMessage.data
+        if (data.isNotEmpty()) {
+            Log.d(TAG, "Message data payload: $data")
+        }
+
+        remoteMessage.notification?.let {
+            Log.d(TAG, "Message Notification Title: ${it.title}")
+            Log.d(TAG, "Message Notification Body: ${it.body}")
+            Log.d(TAG, "Message Notification Channel: ${it.channelId}")
+        }
 
         // Extract exact counts from payload (if provided)
         val notifs = data["unread_notifs"]?.toIntOrNull()
@@ -63,9 +73,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         // Update exact badge counts immediately
         if (notifs != null || chats != null || alerts != null || approvals != null) {
+            Log.d(TAG, "Updating badge counts from payload: notifs=$notifs, chats=$chats")
             badgeManager.updateCounts(notifs, chats, alerts, approvals)
         } else {
             // Fallback for legacy generic payloads
+            Log.d(TAG, "Incrementing unread count (legacy/unspecified payload)")
             badgeManager.updateCounts(
                 notifs = (badgeManager.unreadNotifs.value + 1),
                 chats = null, alerts = null, approvals = null
@@ -75,14 +87,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // Silent sync push: only meant to update badges, no system notification shown
         val type = data["type"] ?: ""
         if (type == "silent_sync") {
-            Log.d(TAG, "Received silent sync push. Badges updated.")
+            Log.d(TAG, "Received silent sync push. Badges updated. Stopping.")
             return
         }
 
         // Data-only payload (backend sends these for reliable delivery when killed)
         if (data.isNotEmpty()) {
-            Log.d(TAG, "Message data payload: $data")
-
             val title = data["title"] ?: remoteMessage.notification?.title ?: "AffsCash"
             val body = data["body"] ?: remoteMessage.notification?.body ?: ""
             val notificationType = data["notification_type"] ?: type
@@ -91,10 +101,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
             // Skip empty title/body (shouldn't happen except for silent_sync already handled above)
             if (title.isBlank() && body.isBlank()) {
-                Log.d(TAG, "Skipping notification with empty title and body")
+                Log.d(TAG, "Skipping notification: title and body are both empty")
                 return
             }
 
+            Log.d(TAG, "Manually building notification: $title")
             // Save notification locally
             saveNotificationLocally(notificationId, title, body, type, notificationType, deepLinkRoute)
 
@@ -103,9 +114,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             return
         }
 
-        // Notification payload (foreground only — shown by system when in background)
+        // Notification payload (system handles this in background, we handle it in foreground)
         remoteMessage.notification?.let {
-            Log.d(TAG, "Message Notification Body: ${it.body}")
+            Log.d(TAG, "Handling system notification payload in foreground")
             showNotification(
                 it.title ?: "AffsCash",
                 it.body ?: "",
@@ -158,6 +169,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         deepLinkRoute: String,
         notificationId: String
     ) {
+        Log.d(TAG, "Preparing to show notification: title=$title, type=$notificationType, id=$notificationId")
+
         // Build intent with deep link extras
         val intent = Intent(this, MainActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -197,12 +210,24 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             notificationBuilder.setColor(getColor(R.color.primary))
         } catch (_: Exception) {}
 
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+                val notificationManager = androidx.core.app.NotificationManagerCompat.from(this)
 
         // Ensure channels exist (safe redundant call — channels are created at app startup)
         NotificationChannelManager.createAllChannels(this)
 
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            if (androidx.core.app.ActivityCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.POST_NOTIFICATIONS
+                ) != android.content.pm.PackageManager.PERMISSION_GRANTED
+            ) {
+                Log.e(TAG, "Missing POST_NOTIFICATIONS permission. Cannot show notification.")
+                return
+            }
+        }
+
         notificationManager.notify(requestCode, notificationBuilder.build())
+        Log.d(TAG, "Notification delivered to system manager. requestCode=$requestCode")
 
         // Show summary notification for grouping
         showGroupSummary(notificationManager)
@@ -212,7 +237,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
      * Creates a summary notification for grouped notifications.
      * Only shows when there are 2+ notifications in the group.
      */
-    private fun showGroupSummary(notificationManager: NotificationManager) {
+        private fun showGroupSummary(notificationManager: androidx.core.app.NotificationManagerCompat) {
         val summaryNotification = NotificationCompat.Builder(this, NotificationChannelManager.CHANNEL_DEFAULT)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle("AffsCash")
@@ -223,6 +248,15 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()
 
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            if (androidx.core.app.ActivityCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.POST_NOTIFICATIONS
+                ) != android.content.pm.PackageManager.PERMISSION_GRANTED
+            ) {
+                return
+            }
+        }
         notificationManager.notify(SUMMARY_NOTIFICATION_ID, summaryNotification)
     }
 

@@ -13,7 +13,7 @@ import java.io.FileInputStream
 
 android {
     namespace = "net.affscash.android"
-    compileSdk = 36
+    compileSdk = 35
     defaultConfig {
         applicationId = "net.affscash.android"
         minSdk = 23
@@ -177,6 +177,7 @@ dependencies {
   // Firebase
   implementation(platform(libs.firebase.bom))
   implementation(libs.firebase.messaging)
+  implementation(libs.firebase.analytics)
   implementation(libs.kotlinx.coroutines.play.services)
 
   // WorkManager (reliable FCM token registration)

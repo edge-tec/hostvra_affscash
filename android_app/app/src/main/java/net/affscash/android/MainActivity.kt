@@ -21,12 +21,16 @@ import dagger.hilt.android.AndroidEntryPoint
 
 import javax.inject.Inject
 import net.affscash.android.data.local.UserManager
+import net.affscash.android.service.FcmTokenManager
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var userManager: UserManager
+
+    @Inject
+    lateinit var fcmTokenManager: FcmTokenManager
 
     // Deep link route from notification tap
     private val pendingDeepLink = mutableStateOf<String?>(null)
@@ -52,6 +56,11 @@ class MainActivity : ComponentActivity() {
 
         // Handle notification deep link from cold start
         handleNotificationIntent(intent)
+
+        // Ensure token is registered on every startup if logged in
+        if (userManager.getRole() != null) {
+            fcmTokenManager.ensureTokenRegistered()
+        }
 
         enableEdgeToEdge()
         setContent {
