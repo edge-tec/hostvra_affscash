@@ -87,6 +87,12 @@ class FirebaseMessaging {
         $message = [
             'message' => [
                 'token' => $deviceToken,
+                // Notification payload ensures delivery to the system tray by Google Play Services
+                // even if the app is force-killed or restricted by OEM battery optimizers.
+                'notification' => [
+                    'title' => (string)$title,
+                    'body'  => (string)$body,
+                ],
                 // Data payload — always delivered to the app natively
                 'data' => (object)$stringData,
                 // Android-specific configuration
@@ -94,14 +100,13 @@ class FirebaseMessaging {
                     'priority' => 'HIGH',          // Bypass Doze mode (HIGH in v1 API)
                     'ttl'      => '86400s',        // 24h TTL
                     'direct_boot_ok' => true,      // Deliver even if device is locked
+                    'notification' => [
+                        'channel_id' => $channelId, // Explicitly route to correct channel
+                        'click_action' => 'android.intent.action.MAIN' // Open app on click
+                    ]
                 ],
             ]
         ];
-
-        // No 'notification' payload is sent.
-        // By sending a pure data-only payload, the Android system guarantees that
-        // MyFirebaseMessagingService.onMessageReceived() is executed even when the app is in background/killed.
-        // The app will manually construct the system notification and save it to the local SQLite DB.
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
