@@ -178,34 +178,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
 
         val requestCode = (System.currentTimeMillis() % Integer.MAX_VALUE).toInt()
-        val pendingIntent = PendingIntent.getActivity(
-            this, requestCode, intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
-
-        // Force default channel to guarantee it exists
-        val channelId = NotificationChannelManager.CHANNEL_DEFAULT
-        NotificationChannelManager.createAllChannels(this)
-
-        val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(title)
-            .setContentText(body)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(body))
-            .setAutoCancel(true)
-            .setContentIntent(pendingIntent)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-
-        val notificationManager = androidx.core.app.NotificationManagerCompat.from(this)
-
-        try {
-            notificationManager.notify(requestCode, notificationBuilder.build())
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-                val requestCode = (System.currentTimeMillis() % Integer.MAX_VALUE).toInt()
         val notificationIdInt = requestCode
         val pendingIntent = PendingIntent.getActivity(
             this, requestCode, intent,
@@ -214,6 +186,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         // Use centralized channel manager for consistent channel mapping
         val channelId = NotificationChannelManager.getChannelForType(notificationType)
+
+        // Ensure channels exist
+        NotificationChannelManager.createAllChannels(this)
 
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
@@ -234,10 +209,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             notificationBuilder.setColor(getColor(R.color.primary))
         } catch (_: Exception) {}
 
-                val notificationManager = androidx.core.app.NotificationManagerCompat.from(this)
-
-        // Ensure channels exist (safe redundant call — channels are created at app startup)
-        NotificationChannelManager.createAllChannels(this)
+        val notificationManager = androidx.core.app.NotificationManagerCompat.from(this)
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             if (androidx.core.content.ContextCompat.checkSelfPermission(
@@ -250,7 +222,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             }
         }
 
-                try {
+        try {
             notificationManager.notify(notificationIdInt, notificationBuilder.build())
             Log.d(TAG, "Notification delivered to system manager. id=$notificationIdInt")
         } catch (e: Exception) {

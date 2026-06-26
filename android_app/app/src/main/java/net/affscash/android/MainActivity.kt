@@ -104,9 +104,15 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handleNotificationIntent(intent: Intent?) {
-        if (intent?.getBooleanExtra("from_notification", false) == true) {
-            val deepLinkRoute = intent.getStringExtra("deep_link_route")
-            val notificationType = intent.getStringExtra("notification_type")
+        val fromNotificationStr = intent?.getStringExtra("from_notification")
+        val notificationTypeStr = intent?.getStringExtra("notification_type")
+        val fromNotification = intent?.getBooleanExtra("from_notification", false) == true || 
+                               fromNotificationStr == "true" ||
+                               !notificationTypeStr.isNullOrEmpty()
+
+        if (fromNotification) {
+            val deepLinkRoute = intent?.getStringExtra("deep_link_route")
+            val notificationType = intent?.getStringExtra("notification_type")
             Log.d("MainActivity", "Notification deep link: route=$deepLinkRoute type=$notificationType")
 
             if (!deepLinkRoute.isNullOrEmpty()) {
