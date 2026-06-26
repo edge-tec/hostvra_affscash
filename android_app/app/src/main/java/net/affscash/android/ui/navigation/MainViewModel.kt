@@ -8,21 +8,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
+import net.affscash.android.service.FcmTokenManager
 import javax.inject.Inject
-import com.google.firebase.messaging.FirebaseMessaging
-import net.affscash.android.data.network.ApiService
-
-import android.content.Context
-import android.provider.Settings
-import dagger.hilt.android.qualifiers.ApplicationContext
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val userManager: UserManager,
     private val affiliateRepository: AffiliateRepository,
-    private val apiService: ApiService
+    private val fcmTokenManager: FcmTokenManager
 ) : ViewModel() {
 
     private val _isImpersonating = MutableStateFlow(userManager.isImpersonating())
@@ -30,20 +23,8 @@ class MainViewModel @Inject constructor(
 
     init {
         if (userManager.getRole() != null) {
-            registerFcmToken()
-        }
-    }
-
-    private fun registerFcmToken() {
-        viewModelScope.launch {
-            try {
-                val token = FirebaseMessaging.getInstance().token.await()
-                val androidId = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID) ?: "unknown"
-                val request = mapOf("token" to token, "platform" to "android", "device_id" to androidId)
-                apiService.registerFcmToken(request)
-            } catch (e: Exception) {
-                // Ignore failures to register token
-            }
+            // Ensure token is registered when app starts
+            fcmTokenManager.ensureTokenRegistered()
         }
     }
 
@@ -59,6 +40,9 @@ class MainViewModel @Inject constructor(
                         userManager.saveUser(it, response.user?.email ?: "", response.user?.firstName + " " + response.user?.lastName)
                         userManager.saveIsImpersonating(false)
                         _isImpersonating.value = false
+                        // Re-register token with the real account
+                        fcmTokenManager.markTokenDirty()
+                        fcmTokenManager.ensureTokenRegistered()
                     }
                     onSuccess(response.role)
                 }
@@ -68,3 +52,4 @@ class MainViewModel @Inject constructor(
         }
     }
 }
+

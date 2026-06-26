@@ -33,57 +33,59 @@ class NotificationsViewModel @Inject constructor(
     val uiState: StateFlow<NotificationsState> = _uiState.asStateFlow()
 
     private var currentPage = 1
-    private var allNotifications = mutableListOf<NotificationItem>()
+    private var hasMoreData = true
 
     init {
+        // Observe local DB as the single source of truth
+        viewModelScope.launch {
+            repository.getLocalNotifications().collect { localList ->
+                val unread = localList.count { it.isRead == 0 }
+                badgeManager.setCount(unread)
+                _uiState.value = NotificationsState.Success(
+                    notifications = localList,
+                    unreadCount = unread,
+                    hasMore = hasMoreData,
+                    isLoadingMore = false
+                )
+            }
+        }
+        
         loadNotifications()
     }
 
     fun loadNotifications() {
         currentPage = 1
-        allNotifications.clear()
+        hasMoreData = true
         viewModelScope.launch {
-            _uiState.value = NotificationsState.Loading
+            if (_uiState.value !is NotificationsState.Success) {
+                _uiState.value = NotificationsState.Loading
+            }
             try {
-                val response = repository.getNotifications(page = 1)
-                if (response.success) {
-                    allNotifications.addAll(response.notifications)
-                    badgeManager.setCount(response.unread)
-                    _uiState.value = NotificationsState.Success(
-                        notifications = allNotifications.toList(),
-                        unreadCount = response.unread,
-                        hasMore = response.hasMore
-                    )
-                } else {
-                    _uiState.value = NotificationsState.Error(response.error ?: "Failed to load notifications")
-                }
+                val response = repository.fetchAndSync(page = 1)
+                hasMoreData = response.hasMore
+                // UI state will update automatically via the flow
             } catch (e: Exception) {
-                _uiState.value = NotificationsState.Error(e.message ?: "An error occurred")
+                if (_uiState.value !is NotificationsState.Success) {
+                    _uiState.value = NotificationsState.Error(e.message ?: "An error occurred")
+                }
             }
         }
     }
 
     fun loadMore() {
         val current = _uiState.value
-        if (current !is NotificationsState.Success || !current.hasMore || current.isLoadingMore) return
+        if (current !is NotificationsState.Success || !hasMoreData || current.isLoadingMore) return
 
         _uiState.value = current.copy(isLoadingMore = true)
         currentPage++
 
         viewModelScope.launch {
             try {
-                val response = repository.getNotifications(page = currentPage)
-                if (response.success) {
-                    allNotifications.addAll(response.notifications)
-                    _uiState.value = NotificationsState.Success(
-                        notifications = allNotifications.toList(),
-                        unreadCount = response.unread,
-                        hasMore = response.hasMore
-                    )
-                }
+                val response = repository.fetchAndSync(page = currentPage)
+                hasMoreData = response.hasMore
+                // UI state will update automatically via the flow
             } catch (e: Exception) {
-                // Revert page on error
-                currentPage--
+                currentPage-- // Revert page on error
                 val prev = _uiState.value
                 if (prev is NotificationsState.Success) {
                     _uiState.value = prev.copy(isLoadingMore = false)
@@ -96,27 +98,8 @@ class NotificationsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 repository.markAsRead(id)
-                if (id != null) {
-                    badgeManager.decrement()
-                    // Optimistic update: mark the item as read in the list
-                    allNotifications.replaceAll { notif ->
-                        if (notif.id == id) notif.copy(isRead = 1) else notif
-                    }
-                } else {
-                    // Mark all as read
-                    badgeManager.setCount(0)
-                    allNotifications.replaceAll { it.copy(isRead = 1) }
-                }
-                val current = _uiState.value
-                if (current is NotificationsState.Success) {
-                    val newUnread = allNotifications.count { it.isRead == 0 }
-                    _uiState.value = current.copy(
-                        notifications = allNotifications.toList(),
-                        unreadCount = newUnread
-                    )
-                }
             } catch (e: Exception) {
-                // Ignore error — will sync on next load
+                // Ignore error — will sync on next load or DB will update
             }
         }
     }
@@ -125,19 +108,6 @@ class NotificationsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 repository.deleteNotification(id)
-                val removed = allNotifications.find { it.id == id }
-                allNotifications.removeAll { it.id == id }
-                if (removed?.isRead == 0) {
-                    badgeManager.decrement()
-                }
-                val current = _uiState.value
-                if (current is NotificationsState.Success) {
-                    val newUnread = allNotifications.count { it.isRead == 0 }
-                    _uiState.value = current.copy(
-                        notifications = allNotifications.toList(),
-                        unreadCount = newUnread
-                    )
-                }
             } catch (e: Exception) {
                 // Ignore error
             }
@@ -147,8 +117,7 @@ class NotificationsViewModel @Inject constructor(
     fun syncUnreadCount() {
         viewModelScope.launch {
             try {
-                val unread = repository.getUnreadCount()
-                badgeManager.setCount(unread)
+                repository.fetchAndSync(1) // Full sync is better than just count
             } catch (_: Exception) {}
         }
     }

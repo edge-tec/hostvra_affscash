@@ -146,4 +146,16 @@ object NetworkModule {
     fun provideApiService(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun provideNotificationDatabase(@ApplicationContext context: Context): net.affscash.android.data.local.NotificationDatabase {
+        return net.affscash.android.data.local.NotificationDatabase.getInstance(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideNotificationDao(database: net.affscash.android.data.local.NotificationDatabase): net.affscash.android.data.local.NotificationDao {
+        return database.notificationDao()
+    }
 }

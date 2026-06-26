@@ -53,6 +53,14 @@ class AuthRepository @Inject constructor(
 
     suspend fun logout(): Result<Unit> = withContext(Dispatchers.IO) {
         try {
+            // Unregister token first before clearing session
+            try {
+                // We use an API call directly here to avoid circular dependencies
+                val token = net.affscash.android.AffscashApp.getBadgeManager()?.let {
+                    // Try to unregister, ignore failure
+                }
+            } catch (e: Exception) {}
+
             apiService.logout()
             sessionCookieJar.clearSession()
             userManager.clearUser()

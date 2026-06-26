@@ -1,12 +1,9 @@
 package net.affscash.android.service
 
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
-import android.media.AudioAttributes
 import android.media.RingtoneManager
-import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -14,10 +11,11 @@ import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import net.affscash.android.data.local.NotificationBadgeManager
-import net.affscash.android.data.local.UserManager
-import net.affscash.android.data.network.ApiService
+import net.affscash.android.data.local.NotificationDatabase
+import net.affscash.android.data.local.LocalNotification
 import net.affscash.android.MainActivity
 import net.affscash.android.R
 import javax.inject.Inject
@@ -28,27 +26,32 @@ import javax.inject.Inject
  * Data-only payloads are used by the backend so notifications arrive even when
  * the app is killed. This service manually constructs system notifications
  * and includes deep-link routing data in the pending intent extras.
+ *
+ * All received notifications are also persisted locally in Room database
+ * for offline viewing and reliable badge counts.
  */
 @AndroidEntryPoint
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     @Inject
-    lateinit var userManager: UserManager
-
-    @Inject
-    lateinit var apiService: ApiService
-
-    @Inject
     lateinit var badgeManager: NotificationBadgeManager
+
+    @Inject
+    lateinit var fcmTokenManager: FcmTokenManager
+
+    private val serviceScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        Log.d(TAG, "Refreshed token: $token")
-        sendRegistrationToServer(token)
+        Log.d(TAG, "Refreshed FCM token: $token")
+
+        // Save token locally and schedule reliable registration
+        fcmTokenManager.onTokenRefreshed(token)
+        fcmTokenManager.ensureTokenRegistered()
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        Log.d(TAG, "From: \${remoteMessage.from}")
+        Log.d(TAG, "From: ${remoteMessage.from}")
 
         val data = remoteMessage.data
 
@@ -78,13 +81,22 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         // Data-only payload (backend sends these for reliable delivery when killed)
         if (data.isNotEmpty()) {
-            Log.d(TAG, "Message data payload: \$data")
+            Log.d(TAG, "Message data payload: $data")
 
             val title = data["title"] ?: remoteMessage.notification?.title ?: "AffsCash"
             val body = data["body"] ?: remoteMessage.notification?.body ?: ""
             val notificationType = data["notification_type"] ?: type
             val deepLinkRoute = data["deep_link_route"] ?: ""
             val notificationId = data["notification_id"] ?: ""
+
+            // Skip empty title/body (shouldn't happen except for silent_sync already handled above)
+            if (title.isBlank() && body.isBlank()) {
+                Log.d(TAG, "Skipping notification with empty title and body")
+                return
+            }
+
+            // Save notification locally
+            saveNotificationLocally(notificationId, title, body, type, notificationType, deepLinkRoute)
 
             // Show system notification with deep link data
             showNotification(title, body, notificationType, deepLinkRoute, notificationId)
@@ -93,7 +105,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         // Notification payload (foreground only — shown by system when in background)
         remoteMessage.notification?.let {
-            Log.d(TAG, "Message Notification Body: \${it.body}")
+            Log.d(TAG, "Message Notification Body: ${it.body}")
             showNotification(
                 it.title ?: "AffsCash",
                 it.body ?: "",
@@ -102,24 +114,39 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
-    private fun sendRegistrationToServer(token: String?) {
-        token?.let {
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    val androidId = android.provider.Settings.Secure.getString(
-                        contentResolver,
-                        android.provider.Settings.Secure.ANDROID_ID
+    /**
+     * Saves a received push notification to local Room database.
+     */
+    private fun saveNotificationLocally(
+        notificationId: String,
+        title: String,
+        body: String,
+        type: String,
+        notificationType: String,
+        deepLinkRoute: String
+    ) {
+        serviceScope.launch {
+            try {
+                val id = notificationId.toIntOrNull() ?: return@launch
+                val dao = NotificationDatabase.getInstance(applicationContext).notificationDao()
+                dao.insert(
+                    LocalNotification(
+                        id = id,
+                        title = title,
+                        message = body,
+                        type = type.ifEmpty { "info" },
+                        notificationType = notificationType.ifEmpty { null },
+                        deepLinkRoute = deepLinkRoute.ifEmpty { null },
+                        isRead = 0,
+                        createdAt = java.text.SimpleDateFormat(
+                            "yyyy-MM-dd HH:mm:ss",
+                            java.util.Locale.getDefault()
+                        ).format(java.util.Date())
                     )
-                    val request = mapOf(
-                        "token" to it,
-                        "platform" to "android",
-                        "device_id" to (androidId ?: "unknown")
-                    )
-                    apiService.registerFcmToken(request)
-                    Log.d(TAG, "Token registered to server")
-                } catch (e: Exception) {
-                    Log.e(TAG, "Failed to register token: ${e.message}")
-                }
+                )
+                Log.d(TAG, "Notification saved locally: id=$id")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to save notification locally: ${e.message}")
             }
         }
     }
@@ -146,13 +173,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        // Choose channel based on notification type
-        val channelId = when {
-            notificationType.contains("conversion") -> CHANNEL_CONVERSIONS
-            notificationType.contains("withdrawal") || notificationType.contains("invoice") -> CHANNEL_WITHDRAWALS
-            notificationType.contains("news") || notificationType.contains("announcement") -> CHANNEL_NEWS
-            else -> CHANNEL_DEFAULT
-        }
+        // Use centralized channel manager for consistent channel mapping
+        val channelId = NotificationChannelManager.getChannelForType(notificationType)
 
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
@@ -167,6 +189,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            // Group notifications to avoid flooding the notification shade
+            .setGroup(GROUP_KEY)
 
         // Add icon color for brand consistency
         try {
@@ -174,62 +198,38 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         } catch (_: Exception) {}
 
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        createNotificationChannels(notificationManager)
+
+        // Ensure channels exist (safe redundant call — channels are created at app startup)
+        NotificationChannelManager.createAllChannels(this)
 
         notificationManager.notify(requestCode, notificationBuilder.build())
+
+        // Show summary notification for grouping
+        showGroupSummary(notificationManager)
     }
 
-    private fun createNotificationChannels(notificationManager: NotificationManager) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-            val audioAttributes = AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                .build()
+    /**
+     * Creates a summary notification for grouped notifications.
+     * Only shows when there are 2+ notifications in the group.
+     */
+    private fun showGroupSummary(notificationManager: NotificationManager) {
+        val summaryNotification = NotificationCompat.Builder(this, NotificationChannelManager.CHANNEL_DEFAULT)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle("AffsCash")
+            .setContentText("You have new notifications")
+            .setGroup(GROUP_KEY)
+            .setGroupSummary(true)
+            .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .build()
 
-            val channels = listOf(
-                NotificationChannel(
-                    CHANNEL_DEFAULT, "General",
-                    NotificationManager.IMPORTANCE_HIGH
-                ).apply {
-                    description = "General notifications"
-                    setSound(soundUri, audioAttributes)
-                    enableVibration(true)
-                },
-                NotificationChannel(
-                    CHANNEL_CONVERSIONS, "Conversions",
-                    NotificationManager.IMPORTANCE_HIGH
-                ).apply {
-                    description = "New conversion notifications"
-                    setSound(soundUri, audioAttributes)
-                    enableVibration(true)
-                },
-                NotificationChannel(
-                    CHANNEL_WITHDRAWALS, "Withdrawals",
-                    NotificationManager.IMPORTANCE_HIGH
-                ).apply {
-                    description = "Payment and withdrawal notifications"
-                    setSound(soundUri, audioAttributes)
-                    enableVibration(true)
-                },
-                NotificationChannel(
-                    CHANNEL_NEWS, "News & Announcements",
-                    NotificationManager.IMPORTANCE_DEFAULT
-                ).apply {
-                    description = "News and announcement notifications"
-                    setSound(soundUri, audioAttributes)
-                }
-            )
-
-            channels.forEach { notificationManager.createNotificationChannel(it) }
-        }
+        notificationManager.notify(SUMMARY_NOTIFICATION_ID, summaryNotification)
     }
 
     companion object {
         private const val TAG = "MyFirebaseMsgService"
-        private const val CHANNEL_DEFAULT = "affscash_default"
-        private const val CHANNEL_CONVERSIONS = "affscash_conversions"
-        private const val CHANNEL_WITHDRAWALS = "affscash_withdrawals"
-        private const val CHANNEL_NEWS = "affscash_news"
+        private const val GROUP_KEY = "net.affscash.android.NOTIFICATIONS"
+        private const val SUMMARY_NOTIFICATION_ID = 0
     }
 }
+

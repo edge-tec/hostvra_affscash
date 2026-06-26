@@ -1,19 +1,14 @@
 package net.affscash.android.ui.auth
 
-import android.content.Context
-import android.provider.Settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import net.affscash.android.data.model.User
-import net.affscash.android.data.network.ApiService
 import net.affscash.android.data.repository.AuthRepository
+import net.affscash.android.service.FcmTokenManager
 import javax.inject.Inject
 
 sealed class AuthState {
@@ -25,9 +20,8 @@ sealed class AuthState {
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val authRepository: AuthRepository,
-    private val apiService: ApiService
+    private val fcmTokenManager: FcmTokenManager
 ) : ViewModel() {
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
@@ -45,7 +39,9 @@ class AuthViewModel @Inject constructor(
             result.onSuccess { response ->
                 response.user?.let {
                     _authState.value = AuthState.Success(it)
-                    registerFcmToken()
+                    // Register FCM token reliably after successful login
+                    fcmTokenManager.markTokenDirty()
+                    fcmTokenManager.ensureTokenRegistered()
                 } ?: run {
                     _authState.value = AuthState.Error("Invalid response from server")
                 }
@@ -55,21 +51,12 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    private fun registerFcmToken() {
-        viewModelScope.launch {
-            try {
-                val token = FirebaseMessaging.getInstance().token.await()
-                val androidId = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID) ?: "unknown"
-                val request = mapOf("token" to token, "platform" to "android", "device_id" to androidId)
-                apiService.registerFcmToken(request)
-            } catch (e: Exception) {
-                // Ignore failures to register token
-            }
-        }
-    }
-
     fun logout() {
         viewModelScope.launch {
+            // Unregister token first before clearing session in repository
+            fcmTokenManager.unregisterToken()
+            fcmTokenManager.clearLocalData()
+            
             authRepository.logout()
             _authState.value = AuthState.Idle
         }
@@ -81,3 +68,4 @@ class AuthViewModel @Inject constructor(
         }
     }
 }
+

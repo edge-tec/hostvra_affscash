@@ -178,4 +178,9 @@ dependencies {
   implementation(platform(libs.firebase.bom))
   implementation(libs.firebase.messaging)
   implementation(libs.kotlinx.coroutines.play.services)
+
+  // WorkManager (reliable FCM token registration)
+  implementation(libs.work.runtime.ktx)
+  implementation(libs.hilt.work)
+  ksp(libs.hilt.work.compiler)
 }

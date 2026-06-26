@@ -747,17 +747,24 @@ interface ApiService {
     @GET("api/v2/notifications?action=list")
     suspend fun getNotifications(@Query("page") page: Int = 1, @Query("per_page") perPage: Int = 20): Response<NotificationsResponse>
 
+    @POST("api/v2/notifications/register_token")
+    suspend fun registerFcmToken(@Body request: Map<String, String>): Response<BasicResponse>
+
+    @POST("api/v2/notifications/unregister_token")
+    suspend fun unregisterFcmToken(@Body request: Map<String, String>): Response<BasicResponse>
+
+    @POST("api/v2/notifications/mark_read")
+    suspend fun markNotificationRead(@Body request: MarkNotificationReadRequest): Response<BasicResponse>
+
+    @POST("api/v2/notifications?action=mark_all_read")
+    suspend fun markAllNotificationsRead(): Response<BasicResponse>
+
     @GET("api/v2/notifications?action=unread_count")
     suspend fun getUnreadCount(): Response<UnreadCountResponse>
-
-    @POST("api/v2/notifications?action=mark_read")
-    suspend fun markNotificationAsRead(@Body request: MarkNotificationRequest): Response<SimpleResponse>
 
     @POST("api/v2/notifications?action=delete")
     suspend fun deleteNotification(@Body request: NotificationDeleteRequest): Response<SimpleResponse>
 
-    @POST("api/v2/notifications?action=register_token")
-    suspend fun registerFcmToken(@Body request: Map<String, String>): Response<SimpleResponse>
     
     // --- ADMIN: Fraud Score Report ---
     @GET("api/v2/admin/fraud-score-report")
