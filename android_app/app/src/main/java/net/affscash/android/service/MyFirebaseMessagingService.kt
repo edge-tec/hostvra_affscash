@@ -202,8 +202,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            // Group notifications to avoid flooding the notification shade
-            .setGroup(GROUP_KEY)
 
         // Add icon color for brand consistency
         try {
@@ -216,7 +214,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         NotificationChannelManager.createAllChannels(this)
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            if (androidx.core.app.ActivityCompat.checkSelfPermission(
+            if (androidx.core.content.ContextCompat.checkSelfPermission(
                     this,
                     android.Manifest.permission.POST_NOTIFICATIONS
                 ) != android.content.pm.PackageManager.PERMISSION_GRANTED
@@ -228,42 +226,16 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         notificationManager.notify(requestCode, notificationBuilder.build())
         Log.d(TAG, "Notification delivered to system manager. requestCode=$requestCode")
-
-        // Show summary notification for grouping
-        showGroupSummary(notificationManager)
     }
 
     /**
      * Creates a summary notification for grouped notifications.
      * Only shows when there are 2+ notifications in the group.
      */
-        private fun showGroupSummary(notificationManager: androidx.core.app.NotificationManagerCompat) {
-        val summaryNotification = NotificationCompat.Builder(this, NotificationChannelManager.CHANNEL_DEFAULT)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle("AffsCash")
-            .setContentText("You have new notifications")
-            .setGroup(GROUP_KEY)
-            .setGroupSummary(true)
-            .setAutoCancel(true)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .build()
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            if (androidx.core.app.ActivityCompat.checkSelfPermission(
-                    this,
-                    android.Manifest.permission.POST_NOTIFICATIONS
-                ) != android.content.pm.PackageManager.PERMISSION_GRANTED
-            ) {
-                return
-            }
-        }
-        notificationManager.notify(SUMMARY_NOTIFICATION_ID, summaryNotification)
-    }
 
     companion object {
         private const val TAG = "MyFirebaseMsgService"
         private const val GROUP_KEY = "net.affscash.android.NOTIFICATIONS"
-        private const val SUMMARY_NOTIFICATION_ID = 0
     }
 }
 
