@@ -169,9 +169,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         deepLinkRoute: String,
         notificationId: String
     ) {
-        Log.d(TAG, "Preparing to show notification: title=$title, type=$notificationType, id=$notificationId")
-
-        // Build intent with deep link extras
         val intent = Intent(this, MainActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
             putExtra("notification_type", notificationType)
@@ -179,6 +176,34 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             putExtra("notification_id", notificationId)
             putExtra("from_notification", true)
         }
+
+        val requestCode = (System.currentTimeMillis() % Integer.MAX_VALUE).toInt()
+        val pendingIntent = PendingIntent.getActivity(
+            this, requestCode, intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        // Force default channel to guarantee it exists
+        val channelId = NotificationChannelManager.CHANNEL_DEFAULT
+        NotificationChannelManager.createAllChannels(this)
+
+        val notificationBuilder = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle(title)
+            .setContentText(body)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(body))
+            .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+
+        val notificationManager = androidx.core.app.NotificationManagerCompat.from(this)
+
+        try {
+            notificationManager.notify(requestCode, notificationBuilder.build())
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
                 val requestCode = (System.currentTimeMillis() % Integer.MAX_VALUE).toInt()
         val notificationIdInt = requestCode
