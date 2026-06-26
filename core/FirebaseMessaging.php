@@ -98,18 +98,10 @@ class FirebaseMessaging {
             ]
         ];
 
-        // Only include the System notification payload if there is a visible title or body.
-        // If it's a silent background sync (like badge_sync), omit the notification block.
-        if (!empty($title) || !empty($body)) {
-            $message['message']['notification'] = [
-                'title' => (string)$title,
-                'body'  => (string)$body,
-            ];
-            $message['message']['android']['notification'] = [
-                'channel_id' => $channelId, // Explicitly route to correct channel
-                'click_action' => 'android.intent.action.MAIN' // Open app on click
-            ];
-        }
+        // No 'notification' payload is sent.
+        // By sending a pure data-only payload, the Android system guarantees that
+        // MyFirebaseMessagingService.onMessageReceived() is executed even when the app is in background/killed.
+        // The app will manually construct the system notification and save it to the local SQLite DB.
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
