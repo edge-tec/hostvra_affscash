@@ -152,7 +152,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                         createdAt = java.text.SimpleDateFormat(
                             "yyyy-MM-dd HH:mm:ss",
                             java.util.Locale.getDefault()
-                        ).format(java.util.Date())
+                        ).apply {
+                            timeZone = java.util.TimeZone.getTimeZone("UTC")
+                        }.format(java.util.Date())
                     )
                 )
                 Log.d(TAG, "Notification saved locally: id=$id")

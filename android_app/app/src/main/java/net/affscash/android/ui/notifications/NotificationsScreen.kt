@@ -305,6 +305,7 @@ private fun getNotificationIcon(notificationType: String?): Pair<ImageVector, Co
 fun formatRelativeTime(dateString: String): String {
     return try {
         val formatIn = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        formatIn.timeZone = java.util.TimeZone.getTimeZone("UTC")
         val date = formatIn.parse(dateString) ?: return dateString
         val now = Date()
         val diff = now.time - date.time

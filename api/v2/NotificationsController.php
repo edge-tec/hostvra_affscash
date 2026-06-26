@@ -210,7 +210,7 @@ foreach ($rows as $r) {
         'notification_type' => $r['notification_type'],
         'deep_link_route'   => $r['deep_link_route'],
         'is_read'           => $isRead ? 1 : 0,
-        'created_at'        => $r['created_at'],
+        'created_at'        => gmdate('Y-m-d H:i:s', strtotime($r['created_at'])),
     ];
 }
 
