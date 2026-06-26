@@ -180,7 +180,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             putExtra("from_notification", true)
         }
 
-        val requestCode = System.currentTimeMillis().toInt()
+                val requestCode = (System.currentTimeMillis() % Integer.MAX_VALUE).toInt()
+        val notificationIdInt = requestCode
         val pendingIntent = PendingIntent.getActivity(
             this, requestCode, intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
@@ -224,8 +225,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             }
         }
 
-        notificationManager.notify(requestCode, notificationBuilder.build())
-        Log.d(TAG, "Notification delivered to system manager. requestCode=$requestCode")
+                try {
+            notificationManager.notify(notificationIdInt, notificationBuilder.build())
+            Log.d(TAG, "Notification delivered to system manager. id=$notificationIdInt")
+        } catch (e: Exception) {
+            Log.e(TAG, "FATAL ERROR posting notification to system: ${e.message}", e)
+        }
     }
 
     /**
