@@ -457,10 +457,10 @@ try {
     .badge-new-pill{background:linear-gradient(135deg,#059669,#0ea5e9);color:#fff;font-size:8px;font-weight:800;letter-spacing:.8px;padding:3px 8px;border-radius:20px;text-transform:uppercase}
 
     /* HERO SLIDER */
-    .hero-slider-wrap{width:100%;aspect-ratio:16/9;border-radius:20px;overflow:hidden;position:relative;box-shadow:0 30px 80px rgba(124,58,237,.18),0 0 0 1px rgba(124,58,237,.12)}
-    .hero-slides{display:flex;width:100%;height:100%;transition:transform .65s cubic-bezier(.4,0,.2,1)}
-    .hero-slide{flex:0 0 100%;height:100%;position:relative}
-    .hero-slide img{width:100%;height:100%;object-fit:cover;display:block}
+    .hero-slider-wrap{width:100%;border-radius:20px;overflow:hidden;position:relative;box-shadow:0 30px 80px rgba(124,58,237,.18),0 0 0 1px rgba(124,58,237,.12)}
+    .hero-slides{display:flex;width:100%;align-items:center;transition:transform .65s cubic-bezier(.4,0,.2,1)}
+    .hero-slide{flex:0 0 100%;position:relative}
+    .hero-slide img{width:100%;height:auto;display:block}
     .hero-slide-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,5,30,.75) 0%,rgba(10,5,30,.22) 50%,transparent 100%)}
     .hero-slide-caption{position:absolute;bottom:18px;left:18px;right:60px;z-index:2}
     .hero-slide-caption h3{font-family:'Rajdhani',sans-serif;font-size:clamp(13px,2.2vw,19px);font-weight:700;color:#fff;line-height:1.15;margin-bottom:4px;text-shadow:0 2px 10px rgba(0,0,0,.5)}
@@ -472,7 +472,7 @@ try {
     .hero-slider-arrow:hover{background:rgba(255,255,255,.30);transform:translateY(-50%) scale(1.08)}
     .hero-slider-arrow.prev{left:10px}
     .hero-slider-arrow.next{right:10px}
-    .hero-slider-skeleton{width:100%;height:100%;background:linear-gradient(135deg,#f0ebff 0%,#fde8f4 50%,#e8f0ff 100%);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px}
+    .hero-slider-skeleton{width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,#f0ebff 0%,#fde8f4 50%,#e8f0ff 100%);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px}
     .hero-slider-skeleton .sk-pulse{width:32px;height:32px;border-radius:50%;border:3px solid rgba(124,58,237,.2);border-top-color:var(--violet);animation:spin .8s linear infinite}
     .hero-slider-skeleton span{font-size:12px;color:var(--muted);font-family:'DM Sans',sans-serif}
     @keyframes spin{to{transform:rotate(360deg)}}
