@@ -87,11 +87,6 @@ class FirebaseMessaging {
         $message = [
             'message' => [
                 'token' => $deviceToken,
-                // System notification payload — handles delivery when app is killed/swiped away on strict OEMs
-                'notification' => [
-                    'title' => (string)$title,
-                    'body'  => (string)$body,
-                ],
                 // Data payload — always delivered to the app natively
                 'data' => (object)$stringData,
                 // Android-specific configuration
@@ -99,13 +94,22 @@ class FirebaseMessaging {
                     'priority' => 'high',          // Bypass Doze mode (must be lowercase 'high' in v1 API)
                     'ttl'      => '86400s',        // 24h TTL
                     'direct_boot_ok' => true,      // Deliver even if device is locked
-                    'notification' => [
-                        'channel_id' => $channelId, // Explicitly route to correct channel
-                        'click_action' => 'android.intent.action.MAIN' // Open app on click
-                    ]
                 ],
             ]
         ];
+
+        // Only include the System notification payload if there is a visible title or body.
+        // If it's a silent background sync (like badge_sync), omit the notification block.
+        if (!empty($title) || !empty($body)) {
+            $message['message']['notification'] = [
+                'title' => (string)$title,
+                'body'  => (string)$body,
+            ];
+            $message['message']['android']['notification'] = [
+                'channel_id' => $channelId, // Explicitly route to correct channel
+                'click_action' => 'android.intent.action.MAIN' // Open app on click
+            ];
+        }
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
