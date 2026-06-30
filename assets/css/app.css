@@ -296,7 +296,7 @@ a:hover { text-decoration: underline; }
 }
 .stat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
 .stat-label { font-size: 12.5px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
-.stat-value { font-size: 28px; font-weight: 700; color: var(--text); line-height: 1.2; }
+.stat-value { font-size: 28px; font-weight: 700; color: var(--text); line-height: 1.2; overflow-wrap: anywhere; word-break: break-word; }
 .stat-sub { font-size: 13px; color: var(--text-light); }
 .stat-icon {
     width: 40px; height: 40px;
