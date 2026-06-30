@@ -329,12 +329,13 @@ try {
     .slider-prog{height:4px;background:rgba(124,58,237,.12);border-radius:2px;max-width:240px;margin:14px auto 0;overflow:hidden}
     .slider-prog-fill{height:100%;background:var(--grad-brand);border-radius:4px;width:0%;transition:width .1s linear}
     .count-badge{display:inline-block;background:linear-gradient(135deg,rgba(232,25,122,.12),rgba(124,58,237,.12));color:var(--pink);border:1px solid rgba(232,25,122,.25);border-radius:20px;font-size:12px;font-weight:600;padding:2px 12px;margin-left:10px;vertical-align:middle}
-    .smartlink-highlight{background:linear-gradient(135deg,rgba(5,150,105,.06) 0%,rgba(14,165,233,.06) 50%,rgba(124,58,237,.06) 100%);border:2px solid rgba(5,150,105,.18);border-radius:24px;padding:48px;text-align:center;margin:60px 0 0;position:relative;overflow:hidden}
-    .smartlink-highlight::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(5,150,105,.04),transparent,rgba(14,165,233,.04));pointer-events:none}
-    .smartlink-highlight h3{font-size:30px;margin-bottom:14px;position:relative;z-index:1}
-    .smartlink-highlight p{color:var(--muted);font-size:14px;max-width:600px;margin:0 auto 26px;position:relative;z-index:1}
-    .sl-features{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:30px;position:relative;z-index:1}
-    .sl-feat{background:rgba(5,150,105,.08);color:var(--green);border:1px solid rgba(5,150,105,.2);border-radius:30px;padding:7px 18px;font-size:12px;font-weight:600}
+    .smartlink-highlight{background:linear-gradient(135deg,rgba(5,150,105,.04) 0%,rgba(14,165,233,.04) 50%,rgba(124,58,237,.04) 100%);border:1px solid rgba(14,165,233,.2);border-radius:32px;padding:56px 40px;text-align:center;margin:70px 0 0;position:relative;overflow:hidden;box-shadow:0 24px 50px rgba(124,58,237,.08), inset 0 0 0 1px rgba(255,255,255,0.6);backdrop-filter:blur(20px)}
+    .smartlink-highlight::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at top right,rgba(14,165,233,.1),transparent 60%),radial-gradient(circle at bottom left,rgba(124,58,237,.1),transparent 60%);pointer-events:none}
+    .smartlink-highlight h3{font-size:34px;margin-bottom:16px;position:relative;z-index:1;letter-spacing:-0.5px}
+    .smartlink-highlight p{color:var(--muted);font-size:15px;max-width:650px;margin:0 auto 32px;position:relative;z-index:1;line-height:1.6}
+    .sl-features{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:36px;position:relative;z-index:1}
+    .sl-feat{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.8);color:var(--green);border:1px solid rgba(5,150,105,.2);border-radius:40px;padding:8px 20px;font-size:13px;font-weight:700;box-shadow:0 4px 14px rgba(5,150,105,.08);backdrop-filter:blur(10px);transition:transform 0.2s}
+    .sl-feat:hover{transform:translateY(-2px);border-color:rgba(5,150,105,.4)}
 
     /* ABOUT */
     .about-section{background:var(--white)}
@@ -697,10 +698,10 @@ try {
         <h3>Maximize Earnings with Our Global <em>Smartlink</em></h3>
         <p>Our advanced Smartlink technology delivers top performance across all global GEOs — ensuring you never lose valuable traffic.</p>
         <div class="sl-features">
-          <span class="sl-feat">✅ Auto GEO Optimization</span>
-          <span class="sl-feat">✅ In-House Offer Rotation</span>
-          <span class="sl-feat">✅ 100% Conversion Display</span>
-          <span class="sl-feat">✅ Zero Traffic Loss</span>
+          <span class="sl-feat"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg> Auto GEO Optimization</span>
+          <span class="sl-feat"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg> In-House Offer Rotation</span>
+          <span class="sl-feat"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg> 100% Conversion Display</span>
+          <span class="sl-feat"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg> Zero Traffic Loss</span>
         </div>
         <a href="/register/affiliate" class="btn-primary-custom" style="position:relative;z-index:2">
           <i class="fa-solid fa-bolt"></i> Join &amp; Access All Offers
