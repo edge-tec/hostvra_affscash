@@ -1094,7 +1094,7 @@ try {
   <!-- FOOTER -->
   <footer>
     <div class="container">
-      <img src="<?= $logoSrc ?>" alt="<?= $appName ?>" style="max-height:40px;width:auto;max-width:180px;object-fit:contain;margin-bottom:14px">
+      <img src="<?= $logoSrc ?>" alt="<?= $appName ?>" style="max-height:40px;width:auto;max-width:180px;object-fit:contain;margin-bottom:14px;filter:brightness(0) invert(1);">
       <div class="footer-links">
         <a href="#top">Home</a>
         <a href="#about">About</a>
