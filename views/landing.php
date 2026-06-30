@@ -359,7 +359,7 @@ try {
     /* SERVICES */
     .services-section{background:var(--grad-section-b)}
     .services-img{width:100%;border-radius:18px;overflow:hidden;border:1px solid var(--border);margin-bottom:20px;box-shadow:0 12px 40px rgba(124,58,237,.1)}
-    .services-img img{width:100%;height:400px;object-fit:cover;display:block}
+    .services-img img{width:100%;height:auto;display:block}
     .progress-item{margin-bottom:30px}
     .progress-item h4{font-size:16px;margin-bottom:6px;color:var(--text);display:flex;align-items:center;justify-content:space-between}
     .progress-item p{font-size:13px;color:var(--muted);margin-bottom:10px}
