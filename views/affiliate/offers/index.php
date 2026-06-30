@@ -329,16 +329,16 @@ foreach ($offers as $o) {
                 <button class="btn btn-secondary btn-sm" data-copy="ol-<?= $o['id'] ?>">Copy</button>
                 <button class="btn btn-sm" onclick="openGenModal(<?= $o['id'] ?>, '<?= Helpers::e($g_trackUrl) ?>', <?= (int)count($g_lpList) ?>)" style="white-space:nowrap;background:#0EA5E9;border-color:#0EA5E9;color:#fff" title="Build link with tracking parameters">&#128279; Build</button>
                 <?php if($shortenerEnabled): ?>
-                <button class="btn btn-primary btn-sm" onclick="shortenLink(<?= $o['id'] ?>, '<?= Helpers::e($g_trackUrl) ?>')" id="shorten-btn-<?= $o['id'] ?>" style="white-space:nowrap;background:#7C3AED;border-color:#7C3AED;color:#fff">&#9986; Short</button>
+                <button class="btn btn-primary btn-sm" onclick="shortenLink(<?= $o['id'] ?>, '<?= Helpers::e($g_trackUrl) ?>', 'grid')" id="shorten-btn-grid-<?= $o['id'] ?>" style="white-space:nowrap;background:#7C3AED;border-color:#7C3AED;color:#fff">&#9986; Short</button>
                 <?php endif; ?>
             </div>
             <?php if($shortenerEnabled): ?>
-            <div id="short-result-<?= $o['id'] ?>" style="display:none;margin-bottom:6px">
+            <div id="short-result-grid-<?= $o['id'] ?>" style="display:none;margin-bottom:6px">
                 <div style="display:flex;align-items:center;gap:6px">
                     <span style="font-size:11px;font-weight:600;color:#7C3AED;white-space:nowrap">&#128279; Short:</span>
-                    <input type="text" id="short-url-<?= $o['id'] ?>" class="form-control" readonly style="font-size:11px;border-color:#7C3AED;background:#F5F3FF">
-                    <button class="btn btn-sm" data-copy="short-url-<?= $o['id'] ?>" style="background:#7C3AED;color:#fff;border:none;white-space:nowrap">Copy</button>
-                    <a id="short-open-<?= $o['id'] ?>" href="#" target="_blank" style="background:#5B21B6;color:#fff;padding:4px 8px;border-radius:4px;font-size:12px;text-decoration:none">&#8599;</a>
+                    <input type="text" id="short-url-grid-<?= $o['id'] ?>" class="form-control" readonly style="font-size:11px;border-color:#7C3AED;background:#F5F3FF">
+                    <button class="btn btn-sm" data-copy="short-url-grid-<?= $o['id'] ?>" style="background:#7C3AED;color:#fff;border:none;white-space:nowrap">Copy</button>
+                    <a id="short-open-grid-<?= $o['id'] ?>" href="#" target="_blank" style="background:#5B21B6;color:#fff;padding:4px 8px;border-radius:4px;font-size:12px;text-decoration:none">&#8599;</a>
                 </div>
             </div>
             <?php endif; ?>
@@ -536,16 +536,16 @@ foreach ($offers as $o) {
                         <button class="btn btn-secondary btn-sm" data-copy="ll-<?= $o['id'] ?>">Copy</button>
                         <button class="btn btn-sm" onclick="openGenModal(<?= $o['id'] ?>, '<?= Helpers::e($l_trackUrl) ?>', <?= (int)count($l_lpList) ?>)" style="white-space:nowrap;background:#0EA5E9;border-color:#0EA5E9;color:#fff;font-size:11px">&#128279; Build</button>
                         <?php if($shortenerEnabled): ?>
-                        <button class="btn btn-sm" onclick="shortenLink(<?= $o['id'] ?>, '<?= Helpers::e($l_trackUrl) ?>')" id="shorten-btn-<?= $o['id'] ?>" style="white-space:nowrap;background:#7C3AED;border-color:#7C3AED;color:#fff;font-size:11px">&#9986; Short</button>
+                        <button class="btn btn-sm" onclick="shortenLink(<?= $o['id'] ?>, '<?= Helpers::e($l_trackUrl) ?>', 'list')" id="shorten-btn-list-<?= $o['id'] ?>" style="white-space:nowrap;background:#7C3AED;border-color:#7C3AED;color:#fff;font-size:11px">&#9986; Short</button>
                         <?php endif; ?>
                     </div>
                     <?php if($shortenerEnabled): ?>
-                    <div id="short-result-<?= $o['id'] ?>" style="display:none;margin-top:4px">
+                    <div id="short-result-list-<?= $o['id'] ?>" style="display:none;margin-top:4px">
                         <div style="display:flex;align-items:center;gap:6px">
                             <span style="font-size:11px;font-weight:600;color:#7C3AED;white-space:nowrap">&#128279; Short:</span>
-                            <input type="text" id="short-url-<?= $o['id'] ?>" class="form-control" readonly style="font-size:11px;border-color:#7C3AED;background:#F5F3FF">
-                            <button class="btn btn-sm" data-copy="short-url-<?= $o['id'] ?>" style="background:#7C3AED;color:#fff;border:none;white-space:nowrap;font-size:11px">Copy</button>
-                            <a id="short-open-<?= $o['id'] ?>" href="#" target="_blank" style="background:#5B21B6;color:#fff;padding:4px 8px;border-radius:4px;font-size:11px;text-decoration:none">&#8599;</a>
+                            <input type="text" id="short-url-list-<?= $o['id'] ?>" class="form-control" readonly style="font-size:11px;border-color:#7C3AED;background:#F5F3FF">
+                            <button class="btn btn-sm" data-copy="short-url-list-<?= $o['id'] ?>" style="background:#7C3AED;color:#fff;border:none;white-space:nowrap;font-size:11px">Copy</button>
+                            <a id="short-open-list-<?= $o['id'] ?>" href="#" target="_blank" style="background:#5B21B6;color:#fff;padding:4px 8px;border-radius:4px;font-size:11px;text-decoration:none">&#8599;</a>
                         </div>
                     </div>
                     <?php endif; ?>
@@ -657,16 +657,15 @@ function updateListTrackUrl(offerId) {
     input.value = lpVal !== '' ? base + '&lp=' + lpVal : base;
 }
 
-function shortenLink(offerId, url) {
-    var btn = document.getElementById('shorten-btn-' + offerId);
-    var resultBox = document.getElementById('short-result-' + offerId);
-    var shortInput = document.getElementById('short-url-' + offerId);
-    var shortOpen  = document.getElementById('short-open-' + offerId);
+function shortenLink(offerId, url, viewType = 'grid') {
+    var btn = document.getElementById('shorten-btn-' + viewType + '-' + offerId);
+    var resultBox = document.getElementById('short-result-' + viewType + '-' + offerId);
+    var shortInput = document.getElementById('short-url-' + viewType + '-' + offerId);
+    var shortOpen  = document.getElementById('short-open-' + viewType + '-' + offerId);
 
-    // Always use the current value of the live input field (may have been updated by Build modal)
-    var gridIn = document.getElementById('ol-' + offerId);
-    var listIn = document.getElementById('ll-' + offerId);
-    var liveUrl = (gridIn && gridIn.value) ? gridIn.value : ((listIn && listIn.value) ? listIn.value : url);
+    // Always use the current value of the live input field
+    var input = document.getElementById(viewType === 'grid' ? 'ol-' + offerId : 'll-' + offerId);
+    var liveUrl = input ? input.value : url;
 
     // If already shortened for the same URL, just toggle display
     if (shortInput.value && shortInput.dataset.srcUrl === liveUrl) {
