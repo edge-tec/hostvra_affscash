@@ -583,7 +583,12 @@ Router::any('/smartlink/{slug}', function($slug) {
 
 // Dispatch
 try {
-    Router::dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
+    $requestUri = $_SERVER['REQUEST_URI'];
+    // Alias /manager/* to /affiliate_manager/* for legacy links (e.g., existing notifications)
+    if (preg_match('#^/manager/#', $requestUri)) {
+        $requestUri = preg_replace('#^/manager/#', '/affiliate_manager/', $requestUri);
+    }
+    Router::dispatch($requestUri, $_SERVER['REQUEST_METHOD']);
 } catch (\Throwable $e) {
     file_put_contents(BASE_PATH . '/api_error.log', date('Y-m-d H:i:s') . ' ' . $_SERVER['REQUEST_URI'] . "\n" . $e->getMessage() . "\n" . $e->getTraceAsString() . "\n\n", FILE_APPEND);
     if (strpos($_SERVER['REQUEST_URI'] ?? '', '/api/') === 0) {
