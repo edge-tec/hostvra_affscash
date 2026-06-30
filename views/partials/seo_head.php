@@ -76,4 +76,8 @@ if (preg_match('/content\s*=\s*"([^"]+)"/i', $_seoVerifyMeta, $_m)) $_seoVerifyC
 <script async src="https://www.googletagmanager.com/gtag/js?id=<?= htmlspecialchars($_seoGaId, ENT_QUOTES, 'UTF-8') ?>"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','<?= htmlspecialchars($_seoGaId, ENT_QUOTES, 'UTF-8') ?>');</script>
 <?php endif; ?>
-<?php if ($fav = Config::get('config','app.favicon')): ?><link rel="icon" href="<?= Helpers::e($fav) ?>"><?php endif; ?>
+<?php 
+$fav = (class_exists('Config')) ? Config::get('config','app.favicon') : null;
+if (!$fav) { $fav = '/x-icon.png'; }
+?>
+<link rel="icon" href="<?= Helpers::e($fav) ?>" type="image/png">

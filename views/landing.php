@@ -1095,7 +1095,8 @@ try {
   <!-- FOOTER -->
   <footer>
     <div class="container">
-      <img src="<?= $logoSrc ?>" alt="<?= $appName ?>" style="max-height:40px;width:auto;max-width:180px;object-fit:contain;margin-bottom:14px;filter:brightness(0) invert(1);">
+      <?php $favIconSrc = (class_exists('Config') && Config::get('config','app.favicon')) ? Helpers::e(Config::get('config','app.favicon')) : '/x-icon.png'; ?>
+      <img src="<?= $favIconSrc ?>" alt="<?= $appName ?>" style="max-height:40px;width:auto;max-width:180px;object-fit:contain;margin-bottom:14px;">
       <div class="footer-links">
         <a href="#top">Home</a>
         <a href="#about">About</a>
