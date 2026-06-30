@@ -164,6 +164,7 @@ $(function(){
     if ($t.find('tbody tr td:first-child').length === 0) return;
     var dt = $t.DataTable({
         destroy:    true,
+        stateSave:  true,
         pageLength: 25,
         order:      [[0,'asc']],
         columnDefs: [{ targets: [6], type: 'num' }],

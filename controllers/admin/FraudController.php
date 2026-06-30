@@ -254,7 +254,9 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token')) && Helpers
         Database::update('clicks', ['status' => $newStatus, 'is_fraud' => $newStatus !== 'valid' ? 1 : 0], 'click_id=?', [$clickId]);
         Helpers::flash('success', 'Click status updated.');
     }
-    Helpers::redirect('/admin/fraud');
+    $back = Helpers::postRaw('redirect_back');
+    if (!is_string($back) || !str_starts_with($back, '/')) $back = '/admin/fraud';
+    Helpers::redirect($back);
 }
 
 // Manual approve / reject conversion from Score-Only panel
@@ -281,7 +283,9 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token')) && Helpers
             Helpers::flash('success', 'Conversion ' . $newStatus . ' successfully.');
         }
     }
-    Helpers::redirect('/admin/fraud');
+    $back = Helpers::postRaw('redirect_back');
+    if (!is_string($back) || !str_starts_with($back, '/')) $back = '/admin/fraud';
+    Helpers::redirect($back);
 }
 
 $fraudMode = $fraudCfg['mode'] ?? 'block';

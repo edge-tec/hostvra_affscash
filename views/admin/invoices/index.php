@@ -47,7 +47,7 @@
 
 <script>
 $(function() {
-    $('#tbl-invoices').DataTable({ destroy:true, pageLength:25, order:[[6,'desc']], language:{search:'Search:',lengthMenu:'Show _MENU_ entries'} });
+    $('#tbl-invoices').DataTable({ destroy:true, stateSave:true, pageLength:25, order:[[6,'desc']], language:{search:'Search:',lengthMenu:'Show _MENU_ entries'} });
 });
 </script>
 

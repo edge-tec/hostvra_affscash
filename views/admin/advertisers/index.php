@@ -259,6 +259,7 @@ $_orphanAnswers2 = array_filter(
 $(function() {
     $('#tbl-advertisers').DataTable({
         destroy: true,
+        stateSave: true,
         pageLength: 25,
         order: [],
         language: { search: 'Search:', lengthMenu: 'Show _MENU_ entries' }

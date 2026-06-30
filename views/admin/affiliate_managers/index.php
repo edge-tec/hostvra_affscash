@@ -45,7 +45,7 @@
 
 <script>
 $(function() {
-    $('#tbl-managers').DataTable({ destroy:true, pageLength:25, order:[], language:{search:'Search:',lengthMenu:'Show _MENU_ entries'} });
+    $('#tbl-managers').DataTable({ destroy:true, stateSave:true, pageLength:25, order:[], language:{search:'Search:',lengthMenu:'Show _MENU_ entries'} });
 });
 function confirmDelete(id, name) {
     if (!confirm('Delete affiliate manager "' + name + '"?\n\nThis will permanently delete the account and unassign all their affiliates. This cannot be undone.')) return;

@@ -432,12 +432,12 @@ $.fn.dataTable.ext.errMode = 'none';
 $(function() {
     $('#tbl-rules .dt-empty-row').remove();
     $('#tbl-rules').DataTable({
-        destroy:true, pageLength:25, order:[[6,'desc']], scrollX:true, autoWidth:false,
+        destroy:true, stateSave:true, pageLength:25, order:[[6,'desc']], scrollX:true, autoWidth:false,
         language:{search:'Search:',lengthMenu:'Show _MENU_ entries',emptyTable:'No rules yet.'}
     });
     $('#tbl-hidden .dt-empty-row').remove();
     $('#tbl-hidden').DataTable({
-        destroy:true, pageLength:50, order:[[6,'desc']], scrollX:true, autoWidth:false,
+        destroy:true, stateSave:true, pageLength:50, order:[[6,'desc']], scrollX:true, autoWidth:false,
         language:{search:'Search:',lengthMenu:'Show _MENU_ entries',emptyTable:'No hidden conversions in this period.'},
         columnDefs:[
             {targets:0, width:'170px'},

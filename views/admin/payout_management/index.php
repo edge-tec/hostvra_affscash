@@ -948,6 +948,7 @@ $(function() {
         if (!$t.length) return;
         $t.DataTable({
             destroy: true,
+            stateSave: true,
             pageLength: 25,
             order: [],
             language: {

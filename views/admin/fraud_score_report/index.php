@@ -326,6 +326,7 @@
                         <input type="hidden" name="action" value="update_conv_status">
                         <input type="hidden" name="conversion_id" value="<?= Helpers::e($cv['conversion_id']) ?>">
                         <input type="hidden" name="conv_status" value="approved">
+                        <input type="hidden" name="redirect_back" value="/admin/fraud-score-report?<?= Helpers::e($_SERVER['QUERY_STRING'] ?? '') ?>">
                         <button class="btn btn-success btn-sm" title="Approve">&#10003;</button>
                     </form>
                     <?php endif; ?>
@@ -583,7 +584,7 @@
 $rejectFormAction  = '/admin/fraud-score-report';
 $rejectStatusField = 'conv_status';
 $rejectStatusValue = 'rejected';
-$rejectExtraHidden = ['action' => 'update_conv_status'];
+$rejectExtraHidden = ['action' => 'update_conv_status', 'redirect_back' => '/admin/fraud-score-report?' . ($_SERVER['QUERY_STRING'] ?? '')];
 require BASE_PATH . '/views/partials/reject_reason_modal.php';
 ?>
 

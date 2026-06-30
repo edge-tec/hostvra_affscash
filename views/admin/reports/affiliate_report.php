@@ -382,6 +382,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Skip when the table only contains the "No affiliate activity" placeholder.
     if ($t.find('tbody tr td[colspan]').length) return;
     $t.DataTable({
+        stateSave:  true,
         pageLength: 25,
         lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
         order:      [[15, 'desc']], // sort by Revenue by default
@@ -406,6 +407,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!$t.length || $t.find('tbody tr').length === 0) return;
     if ($t.find('tbody tr td[colspan]').length) return;
     $t.DataTable({
+        stateSave:  true,
         pageLength: 25,
         lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
         order:      [[19, 'desc']], // sort by Clicked At

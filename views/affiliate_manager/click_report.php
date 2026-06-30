@@ -155,6 +155,7 @@ $.fn.dataTable.ext.errMode = 'none';
 $(function() {
     $('#tbl-mgr-clicks').DataTable({
         destroy: true,
+        stateSave: true,
         pageLength: 50,
         order: [[12, 'desc']],
         scrollX: true,

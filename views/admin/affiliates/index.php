@@ -122,6 +122,7 @@
 $(function() {
     $('#tbl-affiliates').DataTable({
         destroy: true,
+        stateSave: true,
         pageLength: 25,
         order: [],
         language: { search: 'Search:', lengthMenu: 'Show _MENU_ entries' }

@@ -263,6 +263,7 @@
                             <?= Helpers::csrf() ?>
                             <input type="hidden" name="conversion_id" value="<?= Helpers::e($c['conversion_id']) ?>">
                             <input type="hidden" name="status" value="approved">
+                            <input type="hidden" name="redirect_back" value="/admin/conversions?<?= Helpers::e(http_build_query(array_filter(['status'=>$status,'from'=>$from,'to'=>$to,'click_id'=>$clickId??null]))) ?>">
                             <button class="btn btn-success btn-sm" style="white-space:nowrap">✓ Approve</button>
                         </form>
                         <?php else: ?>
@@ -281,6 +282,7 @@
                             <?= Helpers::csrf() ?>
                             <input type="hidden" name="conversion_id" value="<?= Helpers::e($c['conversion_id']) ?>">
                             <input type="hidden" name="status" value="chargebacked">
+                            <input type="hidden" name="redirect_back" value="/admin/conversions?<?= Helpers::e(http_build_query(array_filter(['status'=>$status,'from'=>$from,'to'=>$to,'click_id'=>$clickId??null]))) ?>">
                             <button class="btn btn-warning btn-sm" style="white-space:nowrap">↩ CB</button>
                         </form>
                         <?php endif; ?>
@@ -297,6 +299,7 @@
 $(function() {
     $('#tbl-conversions').DataTable({
         destroy: true,
+        stateSave: true,
         pageLength: 25,
         order: [],
         language: { search: 'Search:', lengthMenu: 'Show _MENU_ entries' }
@@ -310,6 +313,7 @@ $(function() {
 $rejectFormAction  = '/admin/conversions';
 $rejectStatusField = 'status';
 $rejectStatusValue = 'rejected';
+$rejectExtraHidden = ['redirect_back' => '/admin/conversions?' . http_build_query(array_filter(['status'=>$status,'from'=>$from,'to'=>$to,'click_id'=>$clickId??null]))];
 require BASE_PATH . '/views/partials/reject_reason_modal.php';
 ?>
 

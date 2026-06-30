@@ -1313,6 +1313,7 @@ function dtInit(id, opts) {
     var $t = $('#' + id);
     if (!$t.length) return;
     if (opts.scrollX) opts.scrollX = $t.find('tbody tr').length > 0;
+    opts.stateSave = true;
     $t.DataTable(opts);
 }
 $(function() {

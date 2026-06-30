@@ -384,7 +384,9 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token')) && Helpers
             Helpers::flash('success', 'Conversion ' . $newStatus . '.');
         }
     }
-    Helpers::redirect('/admin/fraud-score-report');
+    $back = Helpers::postRaw('redirect_back');
+    if (!is_string($back) || !str_starts_with($back, '/')) $back = '/admin/fraud-score-report';
+    Helpers::redirect($back);
 }
 
 // Bulk Reject conversions
@@ -426,7 +428,9 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token')) && Helpers
     }
 
     Helpers::flash('success', "Successfully rejected $count conversion(s).");
-    Helpers::redirect('/admin/fraud-score-report');
+    $back = Helpers::postRaw('redirect_back');
+    if (!is_string($back) || !str_starts_with($back, '/')) $back = '/admin/fraud-score-report';
+    Helpers::redirect($back);
 }
 
 // Filters

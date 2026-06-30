@@ -191,6 +191,7 @@ $(function() {
     // Skip the new action column (index 10) from sort; sort by "Detected At".
     $('table').DataTable({
         destroy: true,
+        stateSave: true,
         pageLength: 25,
         order: [[9, 'desc']],
         columnDefs: [{ orderable: false, targets: 10 }],

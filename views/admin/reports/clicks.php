@@ -421,6 +421,7 @@ $(function() {
     $('#tbl-clicks .dt-empty-row').remove();
     $('#tbl-clicks').DataTable({
         destroy: true,
+        stateSave: true,
         pageLength: 50,
         order: [[25, 'desc']],
         scrollX: true,

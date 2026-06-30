@@ -85,6 +85,7 @@
 $(function() {
     var dt = $('#tbl-mgr-affiliates').DataTable({
         destroy: true,
+        stateSave: true,
         pageLength: 25,
         order: [],
         columnDefs: [{ targets: [4], type: 'num' }],

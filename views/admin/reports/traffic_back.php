@@ -137,6 +137,7 @@ $(function() {
     $('#tbl-traffic-back .dt-empty-row').remove();
     $('#tbl-traffic-back').DataTable({
         destroy: true,
+        stateSave: true,
         pageLength: 50,
         order: [[0, 'desc']],
         scrollX: true,

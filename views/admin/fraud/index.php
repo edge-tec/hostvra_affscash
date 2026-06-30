@@ -778,6 +778,7 @@
                         <input type="hidden" name="action" value="update_conv_status">
                         <input type="hidden" name="conversion_id" value="<?= Helpers::e($sc['conversion_id']) ?>">
                         <input type="hidden" name="conv_status" value="approved">
+                        <input type="hidden" name="redirect_back" value="/admin/fraud?<?= Helpers::e($_SERVER['QUERY_STRING'] ?? '') ?>">
                         <button class="btn btn-success btn-sm">&#10003; Approve</button>
                     </form>
                     <?php endif; ?>
@@ -1313,6 +1314,7 @@ function updateFdModeUI() {
 if ($('#tbl-ipquery-report').length) {
     $('#tbl-ipquery-report').DataTable({
         destroy: true,
+        stateSave: true,
         pageLength: 25,
         order: [[3, 'desc']], // sort by risk score desc
         language: { search: 'Search:', lengthMenu: 'Show _MENU_ entries' }
@@ -1323,6 +1325,7 @@ if ($('#tbl-ipquery-report').length) {
 if ($('#tbl-fd-report').length) {
     $('#tbl-fd-report').DataTable({
         destroy: true,
+        stateSave: true,
         pageLength: 25,
         order: [[1, 'desc']], // sort by risk score desc
         language: { search: 'Search:', lengthMenu: 'Show _MENU_ entries' }
@@ -1333,6 +1336,7 @@ if ($('#tbl-fd-report').length) {
 if ($('#tbl-flp-report').length) {
     $('#tbl-flp-report').DataTable({
         destroy: true,
+        stateSave: true,
         pageLength: 25,
         order: [[1, 'desc']], // sort by risk score desc
         language: { search: 'Search:', lengthMenu: 'Show _MENU_ entries' }
@@ -1446,7 +1450,7 @@ function sortConvTable(mode) {
 $rejectFormAction  = '/admin/fraud';
 $rejectStatusField = 'conv_status';
 $rejectStatusValue = 'rejected';
-$rejectExtraHidden = ['action' => 'update_conv_status'];
+$rejectExtraHidden = ['action' => 'update_conv_status', 'redirect_back' => '/admin/fraud?' . ($_SERVER['QUERY_STRING'] ?? '')];
 require BASE_PATH . '/views/partials/reject_reason_modal.php';
 ?>
 

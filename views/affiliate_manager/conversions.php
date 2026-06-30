@@ -90,6 +90,7 @@
 $(function() {
     $('#tbl-mgr-conv').DataTable({
         destroy: true,
+        stateSave: true,
         pageLength: 25,
         order: [],
         columnDefs: [{ targets: [4], type: 'num' }],
