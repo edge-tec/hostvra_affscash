@@ -13,10 +13,10 @@ $iconHtml = $favIcon ? '<img src="'.Helpers::e($favIcon).'" style="width:12px;he
 .footer-link { color:#64748B; text-decoration:none; display:inline-flex; align-items:center; }
 .footer-link:hover { color:#475569; }
 </style>
-<footer style="text-align:center;padding:20px;font-size:12px;color:#94A3B8;border-top:1px solid #E2E8F0;background:#fff">
+<footer style="text-align:center;padding:20px;font-size:12px;color:#94A3B8;border-top:1px solid #1E293B;background:#0F172A">
     <div class="mobile-footer-logo" style="margin-bottom:16px;">
         <?php if ($siteLogo): ?>
-        <img src="<?= Helpers::e($siteLogo) ?>" alt="Logo" style="max-height:36px; max-width:140px; object-fit:contain; filter:grayscale(100%); opacity:0.7;">
+        <img src="<?= Helpers::e($siteLogo) ?>" alt="Logo" style="max-height:36px; max-width:140px; object-fit:contain; filter:brightness(0) invert(1);">
         <?php else: ?>
         <span style="font-weight:bold; color:#94A3B8; font-size:16px;"><?= Helpers::e(Config::get('config','app.name') ?? 'AffTracker') ?></span>
         <?php endif; ?>

@@ -1,7 +1,7 @@
 
 <footer>
   <div class="container">
-    <img src="<?= $logoSrc ?>" alt="<?= $appName ?>" height="36" style="margin-bottom:16px;opacity:.85">
+    <img src="<?= $logoSrc ?>" alt="<?= $appName ?>" height="36" style="margin-bottom:16px;filter:brightness(0) invert(1);">
     <div class="footer-links">
       <a href="/">Home</a>
       <a href="/#offers">Offers</a>
