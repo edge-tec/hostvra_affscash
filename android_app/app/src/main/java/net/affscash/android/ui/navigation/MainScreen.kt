@@ -109,7 +109,7 @@ sealed class Screen(val route: String, val title: String, val icon: ImageVector)
         }
     }
     object AdminConversions : Screen("admin_conversions", "Conv", Icons.Filled.MonetizationOn)
-    object AdminFraudReport : Screen("admin_fraud", "Fraud", Icons.Filled.Shield)
+    object AdminFraudReport : Screen("admin_fraud", "Fraud Score Report", Icons.Filled.Shield)
     object AdminReports : Screen("admin_reports", "Reports", Icons.Filled.Assessment)
     object AdminVpnLogs : Screen("admin_vpn_logs", "VPN & Proxy Log", Icons.Filled.Security)
     object AdminAccountDeleteRequests : Screen("admin_account_delete_requests", "Delete Requests", Icons.Filled.DeleteOutline)
