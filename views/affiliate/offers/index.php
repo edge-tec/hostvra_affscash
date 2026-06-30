@@ -117,7 +117,7 @@ foreach ($offers as $o) {
         'devices'         => $rules['devices']   ?? [],
         'offerDevPayouts' => $offerDevPayouts,
         'offerCntPayouts' => $offerCntPayouts,
-        'trackUrl'    => $_trackBase.'/click/'.$o['id'].'?aff='.$aff['affiliate_code'],
+        'trackUrl'    => $_trackBase.'/click/'.$o['id'].'?aff='.($aff['affiliate_code'] ?? ''),
         'geos'        => $o['geo_targeting']    ? json_decode($o['geo_targeting'],    true) : [],
         'devTargeting'=> $o['device_targeting'] ? json_decode($o['device_targeting'], true) : [],
         'hasAccess'   => $o['access_status'] === 'approved',
