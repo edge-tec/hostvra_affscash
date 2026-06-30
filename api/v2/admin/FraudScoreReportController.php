@@ -403,7 +403,8 @@ if ($action === 'report') {
                     AVG(CASE WHEN cv.fraud_checked_at IS NOT NULL AND cv.fraud_score > 0 THEN cv.fraud_score ELSE NULL END) as avg_score,
                     MAX(CASE WHEN cv.fraud_checked_at IS NOT NULL THEN cv.fraud_score ELSE NULL END) as max_score,
                     SUM(CASE WHEN COALESCE(cv.fraud_score,0) >= 75 AND cv.fraud_checked_at IS NOT NULL THEN 1 ELSE 0 END) as high_risk
-             FROM conversions cv WHERE COALESCE(cv.is_hidden, 0) = 0"
+             FROM conversions cv WHERE $whereSQL",
+            $params
         );
         $stats = [
             'total_conversions' => (int)($statsRaw['total'] ?? 0),

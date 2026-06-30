@@ -142,16 +142,22 @@ fun AdminFraudReportScreen(
             }
 
             // List
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(8.dp)
-            ) {
-                items(uiState.conversions) { conv ->
-                    ConversionFraudCard(
-                        conversion = conv,
-                        onApprove = { viewModel.updateConversionStatus(conv.conversionId, "approved") },
-                        onReject = { reason -> viewModel.updateConversionStatus(conv.conversionId, "rejected", reason) }
-                    )
+            if (uiState.conversions.isEmpty() && !uiState.isLoading) {
+                Box(modifier = Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
+                    Text("No conversions found matching criteria.")
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                    contentPadding = PaddingValues(8.dp)
+                ) {
+                    items(uiState.conversions) { conv ->
+                        ConversionFraudCard(
+                            conversion = conv,
+                            onApprove = { viewModel.updateConversionStatus(conv.conversionId, "approved") },
+                            onReject = { reason -> viewModel.updateConversionStatus(conv.conversionId, "rejected", reason) }
+                        )
+                    }
                 }
             }
         }
@@ -205,6 +211,7 @@ fun ConversionFraudCard(
             Text("Affiliate: ${conversion.affName ?: "N/A"} (${conversion.affiliateCode ?: ""})", style = MaterialTheme.typography.bodySmall)
             Text("Offer: ${conversion.offerName ?: "Custom URL"}", style = MaterialTheme.typography.bodySmall)
             Text("IP: ${conversion.ipAddress ?: "N/A"}", style = MaterialTheme.typography.bodySmall)
+            Text("Date: ${conversion.convertedAt ?: "N/A"}", style = MaterialTheme.typography.bodySmall)
             
             Spacer(Modifier.height(8.dp))
             Row(
@@ -280,8 +287,8 @@ fun ConversionFraudCard(
 }
 
 @Composable
-fun StatusBadge(status: String) {
-    val (color, text) = when (status) {
+fun StatusBadge(status: String?) {
+    val (color, text) = when (status?.lowercase()) {
         "approved" -> Color(0xFF4CAF50) to "Approved"
         "rejected" -> Color(0xFFF44336) to "Rejected"
         else -> Color(0xFFFF9800) to "Pending"

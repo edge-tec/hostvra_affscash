@@ -27,7 +27,7 @@ data class AdminFraudReportState(
     val successMessage: String? = null,
     
     // Filters
-    val from: String = LocalDate.now().withDayOfMonth(1).format(DateTimeFormatter.ISO_LOCAL_DATE),
+    val from: String = LocalDate.now().minusDays(30).format(DateTimeFormatter.ISO_LOCAL_DATE),
     val to: String = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
     val status: String = "all",
     val affiliateId: Int? = null,
