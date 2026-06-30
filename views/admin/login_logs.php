@@ -550,9 +550,9 @@ window.loadHistory = function(page){
                     '<div style="font-size:11px;color:#9CA3AF">'+esc(r.os||'')+'</div>'+
                 '</td>'+
                 '<td style="white-space:nowrap;font-size:13px">'+esc(fmtDt(r.login_time))+'</td>'+
-                '<td style="font-size:13px">'+esc(r.duration_sec ? fmtDur(parseInt(r.duration_sec)) : (r.is_active?'Active':'—'))+'</td>'+
+                '<td style="font-size:13px">'+esc(r.duration_sec ? fmtDur(parseInt(r.duration_sec)) : (r.is_active == 1 ?'Active':'—'))+'</td>'+
                 '<td>'+
-                    (r.is_active
+                    (r.is_active == 1
                         ? '<span class="act-badge active">● Online</span>'
                         : '<span class="act-badge ended">Ended</span>')+
                 '</td>'+
