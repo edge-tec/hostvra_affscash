@@ -30,7 +30,7 @@
     width:46px; height:46px; border-radius:12px;
     display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0;
 }
-.act-sum-val { font-size:26px; font-weight:800; color:var(--text); line-height:1.1; }
+.act-sum-val { font-size:26px; font-weight:800; color:var(--text); line-height:1.1; overflow-wrap: anywhere; word-break: break-word; }
 .act-sum-label { font-size:12px; color:var(--text-muted); font-weight:500; margin-top:2px; }
 
 /* Live users grid */
@@ -550,9 +550,9 @@ window.loadHistory = function(page){
                     '<div style="font-size:11px;color:#9CA3AF">'+esc(r.os||'')+'</div>'+
                 '</td>'+
                 '<td style="white-space:nowrap;font-size:13px">'+esc(fmtDt(r.login_time))+'</td>'+
-                '<td style="font-size:13px">'+esc(r.duration_sec ? fmtDur(parseInt(r.duration_sec)) : (r.is_active == 1 ?'Active':'—'))+'</td>'+
+                '<td style="font-size:13px">'+esc(r.duration_sec ? fmtDur(parseInt(r.duration_sec)) : (r.real_is_active == 1 ?'Active':'—'))+'</td>'+
                 '<td>'+
-                    (r.is_active == 1
+                    (r.real_is_active == 1
                         ? '<span class="act-badge active">● Online</span>'
                         : '<span class="act-badge ended">Ended</span>')+
                 '</td>'+
