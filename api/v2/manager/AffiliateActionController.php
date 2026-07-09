@@ -32,7 +32,13 @@ try {
     }
 
     if ($action === 'approve') {
-        Database::query("UPDATE users SET status = 'active' WHERE id = ?", [$aff['user_id']]);
+        Database::query(
+            "UPDATE users 
+             SET status = 'active', last_login = NOW(), 
+                 inactivity_warned_at = NULL, inactivity_deactivated_at = NULL 
+             WHERE id = ?", 
+            [$aff['user_id']]
+        );
         echo json_encode(['success' => true]);
         exit;
     }

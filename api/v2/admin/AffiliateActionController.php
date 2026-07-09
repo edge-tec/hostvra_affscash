@@ -17,7 +17,13 @@ try {
     }
 
     if ($action === 'approve') {
-        Database::query("UPDATE users SET status = 'active' WHERE id = ? AND role = 'affiliate'", [$userId]);
+        Database::query(
+            "UPDATE users 
+             SET status = 'active', last_login = NOW(), 
+                 inactivity_warned_at = NULL, inactivity_deactivated_at = NULL 
+             WHERE id = ? AND role = 'affiliate'", 
+            [$userId]
+        );
         
         require_once BASE_PATH . '/core/NotificationHelper.php';
         NotificationHelper::notifyUser(

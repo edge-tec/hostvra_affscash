@@ -219,6 +219,14 @@ elseif ($action === 'edit') {
                 $userUpdate['password_hash'] = password_hash($newPass, PASSWORD_BCRYPT, ['cost' => 12]);
             }
             Database::update('users', $userUpdate, 'id=?', [$affiliate['user_id']]);
+            if ($status === 'active') {
+                Database::query(
+                    "UPDATE users 
+                     SET last_login=NOW(), inactivity_warned_at=NULL, inactivity_deactivated_at=NULL
+                     WHERE id=?",
+                    [$affiliate['user_id']]
+                );
+            }
             // Ensure columns exist before updating
             try { Database::query("ALTER TABLE affiliates ADD COLUMN IF NOT EXISTS payment_details TEXT DEFAULT NULL"); } catch(\Throwable $e) {}
             try { Database::query("ALTER TABLE affiliates ADD COLUMN IF NOT EXISTS payment_terms VARCHAR(20) NOT NULL DEFAULT 'monthly'"); } catch(\Throwable $e) {}
@@ -588,7 +596,17 @@ elseif ($action === 'view' || isset($_GET['id'])) {
         $newStatus = Helpers::post('status');
         $notes     = Helpers::post('notes');
         if (in_array($newStatus, ['active','suspended','rejected','pending'])) {
-            Database::update('users', ['status' => $newStatus], 'id=?', [$affiliate['user_id']]);
+            if ($newStatus === 'active') {
+                Database::query(
+                    "UPDATE users 
+                     SET status='active', last_login=NOW(),
+                         inactivity_warned_at=NULL, inactivity_deactivated_at=NULL
+                     WHERE id=?",
+                    [$affiliate['user_id']]
+                );
+            } else {
+                Database::update('users', ['status' => $newStatus], 'id=?', [$affiliate['user_id']]);
+            }
             $newManagerId = Helpers::postRaw('manager_id') !== '' ? ((int)Helpers::postRaw('manager_id') ?: null) : $affiliate['manager_id'];
             Database::update('affiliates', ['manager_id' => $newManagerId], 'id=?', [$id]);
             if ($notes) Database::update('affiliates', ['notes' => $notes], 'id=?', [$id]);

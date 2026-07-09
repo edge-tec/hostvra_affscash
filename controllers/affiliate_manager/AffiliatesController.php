@@ -189,7 +189,17 @@ else {
         if (in_array($targetId, $affIds) && in_array($newStatus, ['active','suspended','rejected','pending'])) {
             $aff = Database::fetchOne("SELECT user_id FROM affiliates WHERE id=?", [$targetId]);
             if ($aff) {
-                Database::update('users', ['status' => $newStatus], 'id=?', [$aff['user_id']]);
+                if ($newStatus === 'active') {
+                    Database::query(
+                        "UPDATE users 
+                         SET status='active', last_login=NOW(),
+                             inactivity_warned_at=NULL, inactivity_deactivated_at=NULL
+                         WHERE id=?",
+                        [$aff['user_id']]
+                    );
+                } else {
+                    Database::update('users', ['status' => $newStatus], 'id=?', [$aff['user_id']]);
+                }
                 Helpers::flash('success', 'Affiliate status updated.');
             }
         }

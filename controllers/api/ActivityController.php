@@ -116,7 +116,7 @@ if ($action === 'login_logs') {
     $rows = Database::fetchAll(
         "SELECT l.*, u.email, CONCAT(u.first_name,' ',u.last_name) as full_name,
                 CASE l.role WHEN 'affiliate' THEN af.affiliate_code ELSE NULL END as affiliate_code,
-                IF(s.id IS NOT NULL, 1, 0) as is_active
+                IF(s.id IS NOT NULL, 1, 0) as real_is_active
          FROM user_login_logs l
          JOIN users u ON u.id = l.user_id
          LEFT JOIN affiliates af ON af.user_id = l.user_id
