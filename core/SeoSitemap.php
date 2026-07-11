@@ -75,8 +75,13 @@ class SeoSitemap
 
         // Categories & Specific SEO Landing Pages
         $seoRoutes = [
-            '/best-cpa-offers',
-            '/high-paying-affiliate-offers',
+            '/offers/best-cpa-offers',
+            '/offers/high-paying-affiliate-offers',
+            '/offers/best-dating-cpa-offers',
+            '/offers/best-finance-cpa-offers',
+            '/offers/best-sweepstakes-offers',
+            '/offers/best-gift-card-offers',
+            '/offers/best-health-affiliate-offers',
             '/category/dating-offers',
             '/category/finance-offers',
             '/category/health-offers',

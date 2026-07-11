@@ -41,6 +41,61 @@ $seoLandingMap = [
             "Are high paying offers harder to promote?" => "Sometimes high paying offers require more targeted traffic, but the increased commission often makes up for a slightly lower conversion rate."
         ],
         'sql_modifier' => 'ORDER BY payout_amount DESC'
+    ],
+    'best-dating-cpa-offers' => [
+        'h1' => 'Best Dating CPA Offers & Affiliate Programs',
+        'title' => 'Top Dating CPA Offers | High Converting Hookup Offers',
+        'desc' => 'Promote the best dating affiliate programs and mature dating offers. Gain access to premium relationship and dating CPA offers with highest EPCs.',
+        'text' => 'The dating vertical is one of the most evergreen niches in affiliate marketing. We provide a vast selection of the best dating CPA offers, including mainstream dating app affiliate programs, hookup offers, and senior dating offers. Whether you are buying traffic or using social media, our dating offers convert.',
+        'faqs' => [
+            "What is a dating CPA offer?" => "A dating CPA offer pays you a commission when a user you refer signs up for a free dating site or purchases a premium membership.",
+            "Why are dating offers so popular?" => "Dating offers generally have a very broad appeal, meaning you can market them to a wide demographic with excellent conversion rates."
+        ],
+        'sql_modifier' => "WHERE category LIKE '%Dating%'"
+    ],
+    'best-finance-cpa-offers' => [
+        'h1' => 'Best Finance CPA Offers & Lead Generation',
+        'title' => 'Top Finance Affiliate Offers | Personal Loan & Credit Card CPA',
+        'desc' => 'Discover high-paying finance CPA offers. Promote personal loan offers, credit card leads, and investment affiliate programs for massive payouts.',
+        'text' => 'Finance is known for having some of the highest payouts in the performance marketing industry. Our network features the best finance CPA offers covering personal loan offers, credit card offers, insurance leads, and debt relief programs. Perfect for affiliates skilled in financial lead generation.',
+        'faqs' => [
+            "How do finance CPA offers work?" => "Advertisers pay top dollar for qualified financial leads. You earn a commission when a user submits their information for a loan, credit card, or insurance quote.",
+            "Are finance offers difficult to convert?" => "They require more targeted and high-quality traffic compared to sweepstakes, but the payouts are substantially higher."
+        ],
+        'sql_modifier' => "WHERE category LIKE '%Finance%'"
+    ],
+    'best-sweepstakes-offers' => [
+        'h1' => 'Best Sweepstakes Offers & CPA Giveaways',
+        'title' => 'Top Sweepstakes CPA Offers | Win Prizes & Gift Cards',
+        'desc' => 'Promote high-converting sweepstakes offers, iPhone giveaways, and cash prize CPA offers. Best for paid traffic and email marketing.',
+        'text' => 'Sweepstakes offers are perfect for affiliates looking for quick, high-volume conversions. We host the best sweepstakes CPA offers, including free giveaway offers, iPhone giveaways, and cash prize surveys. These campaigns convert easily since users just need to enter their email or zip code to participate.',
+        'faqs' => [
+            "What is a Sweepstakes CPA offer?" => "Users enter to win prizes or gift cards, and you get paid when they submit their basic information (like an email address or ZIP code).",
+            "What traffic works best for Sweepstakes?" => "Email marketing, push notifications, and pop traffic are highly effective for sweepstakes offers."
+        ],
+        'sql_modifier' => "WHERE category LIKE '%Sweepstakes%'"
+    ],
+    'best-gift-card-offers' => [
+        'h1' => 'Best Gift Card Offers & Survey CPA Programs',
+        'title' => 'Top Gift Card Offers | Amazon, Walmart & Apple Gift Cards',
+        'desc' => 'Market the best gift card offers and survey rewards. Earn CPA commissions by promoting Amazon gift card offers, Google Play, and Target giveaways.',
+        'text' => 'Everyone loves free rewards. Our network provides access to the best gift card offers, including Amazon gift card offers, Walmart, Target, Apple, and Google Play gift cards. These offers typically involve reward points or survey sweepstakes and are highly appealing to a broad audience looking to make money online.',
+        'faqs' => [
+            "Are gift card offers easy to promote?" => "Yes, because the incentive of a free gift card is very strong. They typically require a simple email submit to convert.",
+            "Which gift card brands perform best?" => "Amazon, Walmart, and Apple gift card offers consistently show the highest conversion rates."
+        ],
+        'sql_modifier' => "WHERE category LIKE '%Gift%Card%' OR name LIKE '%Gift%Card%'"
+    ],
+    'best-health-affiliate-offers' => [
+        'h1' => 'Best Health Affiliate Offers & Nutra CPA',
+        'title' => 'Top Health CPA Offers | Weight Loss & Supplement Affiliates',
+        'desc' => 'Join the best health affiliate programs. Promote weight loss offers, skincare, vitamins, and wellness CPA offers with high conversion rates.',
+        'text' => 'The Health and Wellness (Nutra) vertical is highly lucrative. Promote the best health CPA offers ranging from weight loss supplements and skincare offers to vitamins and general wellness products. These health lead generation campaigns are optimized for high EPCs and long-term profitability.',
+        'faqs' => [
+            "What does Nutra mean in CPA marketing?" => "Nutra is short for nutraceuticals, which refers to health and wellness products like dietary supplements, weight loss pills, and skincare creams.",
+            "Why promote health offers?" => "Health offers solve a pressing consumer need, leading to strong emotional buying decisions and high commission payouts."
+        ],
+        'sql_modifier' => "WHERE category LIKE '%Health%' OR category LIKE '%Nutra%'"
     ]
 ];
 
