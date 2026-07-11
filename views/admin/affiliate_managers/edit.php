@@ -65,6 +65,7 @@ require BASE_PATH . '/views/layouts/admin.php';
                 $permLabels = [
                     'view_affiliates'     => ['View Affiliates','See the list of their assigned affiliates'],
                     'approve_affiliates'  => ['Approve Affiliates','Approve or reject affiliate applications'],
+                    'edit_affiliate_payouts' => ['Edit Affiliate Payouts','Allow editing custom payouts for their affiliates'],
                     'view_conversions'    => ['View Conversions','Access conversion records'],
                     'view_reports'        => ['View Reports','Access performance reports'],
                     'manage_offers'       => ['Manage Offers','Create and edit offers'],

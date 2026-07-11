@@ -5,6 +5,7 @@ $managerPerms = json_decode($manager['permissions'] ?? '[]', true) ?: [];
 $permLabels   = [
     'view_affiliates'    => 'View Affiliates',
     'approve_affiliates' => 'Approve Affiliates',
+    'edit_affiliate_payouts' => 'Edit Affiliate Payouts',
     'view_conversions'   => 'View Conversions',
     'view_reports'       => 'View Reports',
     'manage_offers'      => 'Manage Offers',
