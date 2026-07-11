@@ -51,7 +51,7 @@ $seoLandingMap = [
             "What is a dating CPA offer?" => "A dating CPA offer pays you a commission when a user you refer signs up for a free dating site or purchases a premium membership.",
             "Why are dating offers so popular?" => "Dating offers generally have a very broad appeal, meaning you can market them to a wide demographic with excellent conversion rates."
         ],
-        'sql_modifier' => "WHERE category LIKE '%Dating%'"
+        'sql_modifier' => "AND category LIKE '%Dating%'"
     ],
     'best-finance-cpa-offers' => [
         'h1' => 'Best Finance CPA Offers & Lead Generation',
@@ -62,7 +62,7 @@ $seoLandingMap = [
             "How do finance CPA offers work?" => "Advertisers pay top dollar for qualified financial leads. You earn a commission when a user submits their information for a loan, credit card, or insurance quote.",
             "Are finance offers difficult to convert?" => "They require more targeted and high-quality traffic compared to sweepstakes, but the payouts are substantially higher."
         ],
-        'sql_modifier' => "WHERE category LIKE '%Finance%'"
+        'sql_modifier' => "AND category LIKE '%Finance%'"
     ],
     'best-sweepstakes-offers' => [
         'h1' => 'Best Sweepstakes Offers & CPA Giveaways',
@@ -73,7 +73,7 @@ $seoLandingMap = [
             "What is a Sweepstakes CPA offer?" => "Users enter to win prizes or gift cards, and you get paid when they submit their basic information (like an email address or ZIP code).",
             "What traffic works best for Sweepstakes?" => "Email marketing, push notifications, and pop traffic are highly effective for sweepstakes offers."
         ],
-        'sql_modifier' => "WHERE category LIKE '%Sweepstakes%'"
+        'sql_modifier' => "AND category LIKE '%Sweepstakes%'"
     ],
     'best-gift-card-offers' => [
         'h1' => 'Best Gift Card Offers & Survey CPA Programs',
@@ -84,7 +84,7 @@ $seoLandingMap = [
             "Are gift card offers easy to promote?" => "Yes, because the incentive of a free gift card is very strong. They typically require a simple email submit to convert.",
             "Which gift card brands perform best?" => "Amazon, Walmart, and Apple gift card offers consistently show the highest conversion rates."
         ],
-        'sql_modifier' => "WHERE category LIKE '%Gift%Card%' OR name LIKE '%Gift%Card%'"
+        'sql_modifier' => "AND (category LIKE '%Gift%Card%' OR name LIKE '%Gift%Card%')"
     ],
     'best-health-affiliate-offers' => [
         'h1' => 'Best Health Affiliate Offers & Nutra CPA',
@@ -95,7 +95,7 @@ $seoLandingMap = [
             "What does Nutra mean in CPA marketing?" => "Nutra is short for nutraceuticals, which refers to health and wellness products like dietary supplements, weight loss pills, and skincare creams.",
             "Why promote health offers?" => "Health offers solve a pressing consumer need, leading to strong emotional buying decisions and high commission payouts."
         ],
-        'sql_modifier' => "WHERE category LIKE '%Health%' OR category LIKE '%Nutra%'"
+        'sql_modifier' => "AND (category LIKE '%Health%' OR category LIKE '%Nutra%')"
     ]
 ];
 
@@ -210,4 +210,7 @@ ob_start();
 $seoCustomHead = ob_get_clean();
 
 // We can reuse the category view since the layout is identical
+$dbCategory = ucwords(str_replace(['best-', '-cpa', '-affiliate', '-offers', '-'], ['', '', '', '', ' '], $route));
+if (empty(trim($dbCategory))) $dbCategory = 'Top';
+
 require BASE_PATH . '/views/public/category.php';
