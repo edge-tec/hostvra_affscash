@@ -3,6 +3,18 @@ DirectoryIndex index.php index.html
 RewriteEngine On
 RewriteBase /
 
+# ── Redirect Legacy URLs (SEO Fixes) ─────────────────────────────────────────
+RewriteCond %{HTTP_HOST} ^app\.affscash\.net$ [NC]
+RewriteRule ^register$ https://affscash.net/register/affiliate [R=301,L]
+
+RewriteCond %{HTTP_HOST} ^app\.affscash\.net$ [NC]
+RewriteRule ^password/reset$ https://affscash.net/forgot-password [R=301,L]
+
+RewriteCond %{HTTP_HOST} ^app\.affscash\.net$ [NC]
+RewriteRule ^(.*)$ https://affscash.net/$1 [R=301,L]
+
+RewriteRule ^index\.html$ https://affscash.net/ [R=301,L]
+
 # ── Block sensitive directories ───────────────────────────────────────────────
 RewriteRule ^config/ - [F,L]
 RewriteRule ^core/ - [F,L]

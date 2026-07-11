@@ -105,4 +105,53 @@
     </div>
 </div>
 
+<?php if (Auth::hasPermission('edit_affiliate_payouts')): ?>
+<div class="card" style="margin-top:20px">
+    <div class="card-header"><span class="card-title">Custom Payouts</span></div>
+    <div class="card-body" style="padding:0;overflow-x:auto">
+        <?php if (empty($approvedOffers)): ?>
+            <div style="padding:20px;text-align:center;color:var(--text-muted);font-size:13px">No approved offers found for this affiliate.</div>
+        <?php else: ?>
+            <table style="width:100%;font-size:13px;border-collapse:collapse">
+                <thead>
+                    <tr style="background:#F8FAFC;border-bottom:1px solid #E2E8F0">
+                        <th style="text-align:left;color:var(--text-muted);padding:10px 16px;font-weight:600">Offer Name</th>
+                        <th style="text-align:right;color:var(--text-muted);padding:10px 16px;font-weight:600">Default Payout</th>
+                        <th style="text-align:right;color:var(--text-muted);padding:10px 16px;font-weight:600">Custom Payout</th>
+                        <th style="text-align:center;color:var(--text-muted);padding:10px 16px;font-weight:600">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($approvedOffers as $offer): ?>
+                    <tr style="border-bottom:1px solid #E2E8F0">
+                        <td style="padding:10px 16px;font-weight:500"><?= Helpers::e($offer['name']) ?></td>
+                        <td style="padding:10px 16px;text-align:right;color:var(--text-muted)">
+                            <?= $offer['payout_type'] === 'revenue_share' ? (float)$offer['default_payout'].'%' : '$'.number_format((float)$offer['default_payout'], 2) ?>
+                        </td>
+                        <td style="padding:10px 16px;text-align:right">
+                            <?php if ($offer['custom_payout'] !== null): ?>
+                                <strong style="color:var(--primary)">$<?= number_format((float)$offer['custom_payout'], 2) ?></strong>
+                            <?php else: ?>
+                                <span style="color:var(--text-muted)">—</span>
+                            <?php endif; ?>
+                        </td>
+                        <td style="padding:10px 16px;text-align:center">
+                            <form method="POST" style="display:flex;gap:5px;justify-content:center;align-items:center;margin:0">
+                                <?= Helpers::csrf() ?>
+                                <input type="hidden" name="action" value="update_payout">
+                                <input type="hidden" name="offer_id" value="<?= $offer['id'] ?>">
+                                <input type="number" step="0.0001" name="payout" class="form-control" style="width:90px;height:26px;padding:2px 6px;font-size:12px" 
+                                       value="<?= $offer['custom_payout'] ?? $offer['default_payout'] ?>" required>
+                                <button type="submit" class="btn btn-primary btn-sm" style="height:26px;padding:0 10px;font-size:11px">Save</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+    </div>
+</div>
+<?php endif; ?>
+
 <?php require BASE_PATH . '/views/layouts/affiliate_manager_footer.php'; ?>

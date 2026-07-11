@@ -100,6 +100,47 @@ elseif ($action === 'view') {
          FROM stats_daily WHERE affiliate_id=?",
         [$affId]
     );
+
+    if (Helpers::isPost() && Helpers::post('action') === 'update_payout') {
+        ManagerPermissions::requirePermission('edit_affiliate_payouts');
+        if (!Auth::verifyCsrf(Helpers::postRaw('_token'))) {
+            Helpers::flash('error', 'Invalid token.');
+        } else {
+            $offerId = (int)Helpers::post('offer_id');
+            $payout  = (float)Helpers::post('payout');
+            
+            $ao = Database::fetchOne("SELECT id FROM affiliate_offers WHERE affiliate_id=? AND offer_id=? AND status='approved'", [$affId, $offerId]);
+            if ($ao) {
+                Database::query("UPDATE affiliate_offers SET custom_payout=? WHERE id=?", [$payout, $ao['id']]);
+                $exists = Database::fetchOne("SELECT id FROM aff_custom_payouts WHERE affiliate_id=? AND offer_id=?", [$affId, $offerId]);
+                if ($exists) {
+                    Database::query("UPDATE aff_custom_payouts SET payout=? WHERE id=?", [$payout, $exists['id']]);
+                } else {
+                    $offerData = Database::fetchOne("SELECT revenue_amount FROM offers WHERE id=?", [$offerId]);
+                    $revenue = (float)($offerData['revenue_amount'] ?? 0);
+                    Database::insert('aff_custom_payouts', [
+                        'affiliate_id' => $affId,
+                        'offer_id'     => $offerId,
+                        'revenue'      => $revenue,
+                        'payout'       => $payout
+                    ]);
+                }
+                Helpers::flash('success', 'Custom payout updated successfully.');
+            } else {
+                Helpers::flash('error', 'Offer not approved or invalid.');
+            }
+        }
+        Helpers::redirect("/affiliate_manager/affiliates?action=view&id={$affId}");
+    }
+
+    $approvedOffers = Database::fetchAll(
+        "SELECT o.id, o.name, o.payout_amount as default_payout, o.payout_type, ao.custom_payout
+         FROM affiliate_offers ao
+         JOIN offers o ON ao.offer_id = o.id
+         WHERE ao.affiliate_id=? AND ao.status='approved'
+         ORDER BY o.name ASC",
+        [$affId]
+    );
     require BASE_PATH . '/views/affiliate_manager/affiliate_view.php';
 }
 
