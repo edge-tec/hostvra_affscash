@@ -175,6 +175,14 @@ Router::get('/', function() {
 Router::get('/offers', function() {
     require BASE_PATH . '/controllers/public/OffersController.php';
 });
+Router::get('/offers/best-cpa-offers', function() {
+    $_GET['route'] = 'best-cpa-offers';
+    require BASE_PATH . '/controllers/public/SeoLandingController.php';
+});
+Router::get('/offers/high-paying-affiliate-offers', function() {
+    $_GET['route'] = 'high-paying-affiliate-offers';
+    require BASE_PATH . '/controllers/public/SeoLandingController.php';
+});
 Router::get('/offers/{slug}', function($slug) {
     $_GET['slug'] = $slug;
     require BASE_PATH . '/controllers/public/OfferDetailController.php';
@@ -196,6 +204,10 @@ Router::get('/category/{slug}', function($slug) {
     require BASE_PATH . '/controllers/public/CategoryController.php';
 });
 Router::get('/best-cpa-offers', function() {
+    $_GET['route'] = 'best-cpa-offers';
+    require BASE_PATH . '/controllers/public/SeoLandingController.php';
+});
+Router::get('/offers/best-cpa-offers', function() {
     $_GET['route'] = 'best-cpa-offers';
     require BASE_PATH . '/controllers/public/SeoLandingController.php';
 });
