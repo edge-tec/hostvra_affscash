@@ -4,7 +4,7 @@
     <img src="<?= $logoSrc ?>" alt="<?= $appName ?>" height="36" style="margin-bottom:16px;filter:brightness(0) invert(1);">
     <div class="footer-links">
       <a href="/">Home</a>
-      <a href="/#offers">Offers</a>
+      <a href="/offers">Offers</a>
       <a href="/#about">About</a>
       <a href="/blog">Blog</a>
       <a href="/reviews">Reviews</a>
