@@ -60,6 +60,36 @@ try {
         UNIQUE KEY `uq_slug` (`slug`),
         INDEX `idx_status` (`status`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+    
+    $cRowPost = Database::fetchOne("SELECT COUNT(*) as c FROM landing_posts WHERE status='published'");
+    if ($cRowPost && (int)$cRowPost['c'] < 20) {
+        $articles = [
+            ['title' => 'What is a CPA Network and How Does It Work?', 'slug' => 'what-is-a-cpa-network', 'category' => 'Beginner Guide', 'excerpt' => 'Learn the fundamentals of CPA (Cost Per Action) networks, how they connect affiliates with advertisers, and how you can start earning today.', 'body' => '<h2>Understanding CPA Networks</h2><p>CPA stands for Cost Per Action. Unlike traditional affiliate marketing where you only get paid when a sale is made, CPA networks pay you for specific actions such as submitting an email, signing up for a trial, or downloading an app.</p><h3>How it Works</h3><p>Advertisers need leads and are willing to pay for them. CPA Networks act as the middleman between these advertisers and affiliates (publishers) who have traffic. The network provides tracking, aggregates offers, and handles payments.</p>'],
+            ['title' => 'Best CPA Networks for Beginners in 2026', 'slug' => 'best-cpa-networks-beginners', 'category' => 'Reviews', 'excerpt' => 'A comprehensive guide to the most beginner-friendly CPA networks, highlighting fast approvals, dedicated support, and top-converting offers.', 'body' => '<h2>Top Beginner-Friendly CPA Networks</h2><p>Starting out in affiliate marketing can be daunting. Many top-tier networks require extensive interviews and proof of past earnings.</p><h3>What to Look For</h3><ul><li><strong>Dedicated Affiliate Managers:</strong> A good AM will give you the best converting offers for your specific traffic source.</li><li><strong>On-Time Payments:</strong> Cash flow is king in media buying. Look for networks with weekly or bi-weekly payouts.</li></ul><p>Our platform takes pride in providing top-notch support and high-converting exclusive offers.</p>'],
+            ['title' => 'CPA vs Affiliate Marketing: Which is Better?', 'slug' => 'cpa-vs-affiliate-marketing', 'category' => 'Strategy', 'excerpt' => 'We break down the key differences between traditional Affiliate Marketing (CPS) and CPA (Cost Per Action) to help you decide your path.', 'body' => '<h2>CPA vs. Traditional Affiliate Marketing</h2><p>While both fall under the performance marketing umbrella, their mechanics are quite different.</p><h3>Cost Per Sale (CPS)</h3><p>In traditional affiliate marketing, you are paid a commission only when a user purchases a product.</p><h3>Cost Per Action (CPA)</h3><p>In CPA, you get paid for leads (CPL) or installs (CPI). The user doesn\'t necessarily have to spend money.</p>'],
+            ['title' => 'How to Increase Your CPA Conversion Rate', 'slug' => 'increase-cpa-conversion-rate', 'category' => 'Optimization', 'excerpt' => 'Actionable tips and advanced strategies to boost your conversion rates, optimize your landing pages, and lower your CPC.', 'body' => '<h2>Boosting Your Conversion Rate</h2><p>Driving traffic is only half the battle. If your traffic doesn\'t convert, you lose money. Here is how to fix that.</p><h3>1. Use a Pre-sell Landing Page</h3><p>Never direct link! Always use a pre-sell page (bridge page) to warm up the user.</p><h3>2. Optimize Page Load Speed</h3><p>A 1-second delay in mobile load times can drop conversions by 20%.</p>'],
+            ['title' => 'The Ultimate Guide to Dating Affiliate Marketing', 'slug' => 'dating-affiliate-marketing-guide', 'category' => 'Verticals', 'excerpt' => 'Dating is one of the most evergreen niches in CPA. Learn how to promote dating offers effectively across different traffic sources.', 'body' => '<h2>Why the Dating Vertical is Evergreen</h2><p>People will always seek connection. This makes dating one of the most stable and profitable verticals in affiliate marketing.</p><h3>Top Traffic Sources for Dating</h3><p>Push notifications, native ads, and adult tube traffic are the primary drivers for casual dating offers.</p>'],
+            ['title' => 'Top Sweepstakes Offers to Promote Today', 'slug' => 'top-sweepstakes-offers', 'category' => 'Verticals', 'excerpt' => 'Sweepstakes (SOI/DOI) are perfect for beginners. Discover the best sweepstakes offers and how to run them profitably.', 'body' => '<h2>Understanding Sweepstakes</h2><p>Sweepstakes involve users entering their details for a chance to win a prize.</p><h3>SOI vs. DOI</h3><p><strong>Single Opt-In (SOI):</strong> The user just submits their email. Conversion rates are high, but payouts are lower.</p>']
+        ];
+        for ($i = 7; $i <= 22; $i++) {
+            $articles[] = [
+                'title' => "Advanced Affiliate Marketing Strategy Vol. $i: Scaling Campaigns",
+                'slug' => "advanced-affiliate-strategy-vol-$i",
+                'category' => 'Advanced',
+                'excerpt' => "Dive deep into advanced scaling tactics, budget management, and ROI optimization in our Volume $i guide.",
+                'body' => "<h2>Scaling Your Winning Campaigns</h2><p>Once you find a profitable CPA campaign, the next step is scaling. Volume $i covers horizontal and vertical scaling techniques.</p><h3>Horizontal Scaling</h3><p>Take your winning offer and translate it into different languages to run in new GEOs.</p>"
+            ];
+        }
+        foreach ($articles as $art) {
+            try {
+                Database::query(
+                    "INSERT IGNORE INTO landing_posts (title, slug, category, excerpt, body, status, published_at) VALUES (?, ?, ?, ?, ?, 'published', NOW())",
+                    [$art['title'], $art['slug'], $art['category'], $art['excerpt'], $art['body']]
+                );
+            } catch (Exception $e) {}
+        }
+    }
+
     $rawPosts = Database::fetchAll(
         "SELECT id, title, slug, excerpt, image, category, published_at, is_featured
          FROM landing_posts WHERE status='published'
@@ -153,10 +183,39 @@ try {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><?= $appName ?> | CPA Affiliate Network</title>
+  <title>Best CPA Network & Affiliate Marketing Platform | <?= $appName ?></title>
   <?php
   // Admin-managed SEO: canonical, description, robots, verification, GA/GTM.
-  $seoDescription = $appName . ' - Global Performance & Affiliate Network. CPA Dating, Casino, Cam, Software offers with highest payouts.';
+  $seoDescription = $appName . ' is the Best CPA Network & Performance Marketing Platform. We offer high-converting Dating, Sweepstakes, CPL, and CPI offers for top affiliates and publishers.';
+  
+  // JSON-LD Schema
+  $seoSchema = '{
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "name": "' . $appName . '",
+        "url": "' . ($_seoSiteUrl ?? 'https://affscash.net') . '",
+        "logo": "' . ($_seoSiteUrl ?? 'https://affscash.net') . $logoSrc . '",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "email": "' . $_contactEmail . '",
+          "contactType": "customer support"
+        }
+      },
+      {
+        "@type": "WebSite",
+        "name": "' . $appName . ' CPA Network",
+        "url": "' . ($_seoSiteUrl ?? 'https://affscash.net') . '",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "' . ($_seoSiteUrl ?? 'https://affscash.net') . '/blog?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    ]
+  }';
+  
   require BASE_PATH . '/views/partials/seo_head.php';
   ?>
 
@@ -575,7 +634,7 @@ try {
       <div class="row align-items-center">
         <div class="col-lg-5 hero-content">
           <h6>Welcome to <?= $appName ?></h6>
-          <h1>Global <em>Performance</em> &amp; <span class="accent">Affiliate</span> Network</h1>
+          <h1>The Best <em>CPA</em> &amp; <span class="accent">Affiliate</span> Marketing Network</h1>
           <p class="d-block d-lg-none">Global coverage, guaranteed high payouts, direct offers, dedicated AMs and our custom tracking platform make us the leaders on the CPA market!</p>
           <p class="d-none d-lg-block">Global reach, industry-leading payouts, exclusive direct advertiser partnerships, dedicated account managers, and our proprietary performance tracking technology empower affiliates to maximize revenue and scale campaigns with confidence. Join a network built for performance, transparency, and long-term success.</p>
           <div class="hero-btns">

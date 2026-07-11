@@ -81,3 +81,9 @@ $fav = (class_exists('Config')) ? Config::get('config','app.favicon') : null;
 if (!$fav) { $fav = '/x-icon.png'; }
 ?>
 <link rel="icon" href="<?= Helpers::e($fav) ?>" type="image/png">
+
+<?php if (!empty($seoSchema)): ?>
+<script type="application/ld+json">
+<?= $seoSchema ?>
+</script>
+<?php endif; ?>
