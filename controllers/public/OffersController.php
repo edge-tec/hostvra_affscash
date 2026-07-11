@@ -6,6 +6,14 @@
 
 if (!defined('BASE_PATH')) exit;
 
+$appName  = Helpers::e(Config::get('config','app.name') ?? 'Affscash');
+$appLogo  = Config::get('config','app.logo');
+$logoSrc  = $appLogo ? Helpers::e($appLogo) : '/logoo.png';
+$_isAdmin = Auth::id() && Auth::role() === 'admin';
+$_isLogged= (bool)Auth::id();
+$_role    = Auth::role();
+$_currentPage = 'offers';
+
 $seoTitle = Config::get('config', 'app.name') . ' - Explore Top CPA Offers';
 $seoDescription = 'Discover high-converting CPA, CPL, and CPI offers across all verticals. Start earning today with our top exclusive deals and fast payouts.';
 
@@ -74,10 +82,11 @@ foreach ($geoResult as $r) {
 $availableGeos = array_keys($allGeos);
 sort($availableGeos);
 
-// Generate Schema Markup (ItemList)
+// Generate Schema Markup (ItemList & Breadcrumb)
 $schemaItems = [];
 $position = 1;
-$siteUrl = rtrim(Config::get('config', 'app.url') ?? '', '/');
+$siteUrl = rtrim(Config::get('config', 'app.url') ?? 'https://' . ($_SERVER['HTTP_HOST'] ?? 'localhost'), '/');
+$currentUrl = $siteUrl . '/offers';
 
 foreach ($offers as $o) {
     $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $o['name'])));
@@ -97,13 +106,50 @@ foreach ($offers as $o) {
     ];
 }
 
+$seoSchemaArray = [
+    "@context" => "https://schema.org",
+    "@graph" => [
+        [
+            "@type" => "BreadcrumbList",
+            "itemListElement" => [
+                [
+                    "@type" => "ListItem",
+                    "position" => 1,
+                    "name" => "Home",
+                    "item" => $siteUrl
+                ],
+                [
+                    "@type" => "ListItem",
+                    "position" => 2,
+                    "name" => "Offers Marketplace",
+                    "item" => $currentUrl
+                ]
+            ]
+        ]
+    ]
+];
+
 if (!empty($schemaItems)) {
-    $seoSchemaArray = [
-        "@context" => "https://schema.org",
+    $seoSchemaArray['@graph'][] = [
         "@type" => "ItemList",
         "itemListElement" => $schemaItems
     ];
-    $seoSchema = json_encode($seoSchemaArray, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 }
+
+$seoSchema = json_encode($seoSchemaArray, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+// Custom meta tags for Open Graph and Twitter
+ob_start();
+?>
+<meta property="og:title" content="<?= htmlspecialchars($seoTitle, ENT_QUOTES) ?>">
+<meta property="og:description" content="<?= htmlspecialchars($seoDescription, ENT_QUOTES) ?>">
+<meta property="og:url" content="<?= htmlspecialchars($currentUrl, ENT_QUOTES) ?>">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="<?= htmlspecialchars($seoTitle, ENT_QUOTES) ?>">
+<meta name="twitter:description" content="<?= htmlspecialchars($seoDescription, ENT_QUOTES) ?>">
+<link rel="canonical" href="<?= htmlspecialchars($currentUrl, ENT_QUOTES) ?>" />
+<?php
+$seoCustomHead = ob_get_clean();
 
 require BASE_PATH . '/views/public/offers.php';

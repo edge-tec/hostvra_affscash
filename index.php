@@ -190,6 +190,20 @@ Router::get('/blog/{slug}', function($slug) {
     require BASE_PATH . '/views/public/blog_post.php';
 });
 
+// Category and specific SEO landing pages
+Router::get('/category/{slug}', function($slug) {
+    $_GET['slug'] = $slug;
+    require BASE_PATH . '/controllers/public/CategoryController.php';
+});
+Router::get('/best-cpa-offers', function() {
+    $_GET['route'] = 'best-cpa-offers';
+    require BASE_PATH . '/controllers/public/SeoLandingController.php';
+});
+Router::get('/high-paying-affiliate-offers', function() {
+    $_GET['route'] = 'high-paying-affiliate-offers';
+    require BASE_PATH . '/controllers/public/SeoLandingController.php';
+});
+
 // Privacy Policy — public, no auth required.
 Router::get('/privacy-policy', function() {
     require BASE_PATH . '/views/public/privacy_policy.php';

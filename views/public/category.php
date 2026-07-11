@@ -20,53 +20,8 @@ require BASE_PATH . '/views/layouts/public_top.php';
 .offers-banner p {
     font-size: 18px;
     color: var(--text-light);
-    max-width: 600px;
+    max-width: 800px;
     margin: 0 auto;
-}
-.filter-bar {
-    background: #fff;
-    padding: 24px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-    margin: -32px auto 48px;
-    max-width: 1000px;
-    position: relative;
-    z-index: 10;
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    align-items: center;
-}
-.filter-bar input, .filter-bar select {
-    flex: 1;
-    min-width: 200px;
-    padding: 12px 16px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 15px;
-    color: var(--text);
-    background: var(--bg-body);
-    transition: all 0.2s;
-}
-.filter-bar input:focus, .filter-bar select:focus {
-    border-color: var(--violet);
-    outline: none;
-    background: #fff;
-    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
-}
-.filter-bar button {
-    background: var(--violet);
-    color: #fff;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-.filter-bar button:hover {
-    background: var(--violet-dark, #6d28d9);
 }
 .offers-grid {
     display: grid;
@@ -199,55 +154,71 @@ require BASE_PATH . '/views/layouts/public_top.php';
     color: #fff;
     border: 1px solid var(--violet);
 }
+.seo-text-block {
+    background: #fff;
+    border-radius: 16px;
+    padding: 40px;
+    margin: 64px auto;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    border: 1px solid var(--border);
+}
+.seo-text-block h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: var(--text);
+}
+.seo-text-block p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--text-light);
+    margin-bottom: 24px;
+}
+.faq-block {
+    margin-top: 48px;
+}
+.faq-item {
+    margin-bottom: 24px;
+}
+.faq-item h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 12px;
+}
+.faq-item p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-light);
+    margin: 0;
+}
 </style>
 
 <div class="offers-banner">
     <div class="container">
-        <h1>Explore Our Latest CPA Offers</h1>
-        <p>Discover high-converting offers across top verticals. Join our network today to access exclusive payouts and dedicated support.</p>
+        <h1><?= Helpers::e($meta['h1']) ?></h1>
+        <p><?= Helpers::e($meta['desc']) ?></p>
     </div>
 </div>
 
-<section style="background: #fafafa; min-height: 500px; padding-bottom: 64px;">
+<section style="background: #fafafa; min-height: 500px; padding: 64px 0;">
     <div class="container">
-        <form method="GET" action="/offers" class="filter-bar">
-            <input type="text" name="q" placeholder="Search offers..." value="<?= Helpers::e($search) ?>">
-            
-            <select name="category">
-                <option value="">All Categories</option>
-                <?php foreach ($categories as $cat): ?>
-                <option value="<?= Helpers::e($cat) ?>" <?= $category === $cat ? 'selected' : '' ?>><?= Helpers::e($cat) ?></option>
-                <?php endforeach; ?>
-            </select>
-            
-            <select name="geo">
-                <option value="">All Countries</option>
-                <option value="Global" <?= $geo === 'Global' ? 'selected' : '' ?>>Global</option>
-                <?php foreach ($availableGeos as $g): ?>
-                <option value="<?= Helpers::e($g) ?>" <?= $geo === $g ? 'selected' : '' ?>><?= Helpers::e($g) ?></option>
-                <?php endforeach; ?>
-            </select>
-            
-            <button type="submit">Filter Offers</button>
-        </form>
 
         <?php if (empty($offers)): ?>
         <div style="text-align:center; padding: 64px 0;">
             <svg style="width:64px;height:64px;color:#d1d5db;margin:0 auto 16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
             <h3 style="font-size:20px;color:var(--text);margin-bottom:8px">No offers found</h3>
-            <p style="color:var(--text-light)">Try adjusting your search or filters to find what you're looking for.</p>
-            <a href="/offers" style="display:inline-block;margin-top:16px;color:var(--violet);font-weight:600;text-decoration:none">Clear all filters</a>
+            <p style="color:var(--text-light)">We currently do not have any active public offers in this category.</p>
         </div>
         <?php else: ?>
         <div class="offers-grid">
             <?php foreach ($offers as $o): 
-                $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $o['name'])));
-                $slug = rtrim($slug, '-');
-                $url = '/offers/' . $o['id'] . '-' . $slug;
+                $oslug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $o['name'])));
+                $oslug = rtrim($oslug, '-');
+                $url = '/offers/' . $o['id'] . '-' . $oslug;
                 
                 $img = $o['thumbnail'] ? $o['thumbnail'] : '/logoo.png';
                 
-                // Format payout
                 $sym = ($o['currency'] === 'EUR') ? '€' : (($o['currency'] === 'GBP') ? '£' : '$');
                 if ($o['payout_type'] === 'RevShare') {
                     $payoutStr = number_format($o['payout_amount'], 2) . '% RevShare';
@@ -255,7 +226,6 @@ require BASE_PATH . '/views/layouts/public_top.php';
                     $payoutStr = $sym . number_format($o['payout_amount'], 2) . ' ' . $o['payout_type'];
                 }
 
-                // Format GEO
                 $geoStr = $o['geo_targeting'] ?? '';
                 if ($geoStr === '' || $geoStr === 'Global') {
                     $geoDisplay = 'Global';
@@ -269,13 +239,10 @@ require BASE_PATH . '/views/layouts/public_top.php';
             ?>
             <div class="offer-card">
                 <div class="offer-card-img">
-                    <img src="<?= Helpers::e($img) ?>" alt="<?= Helpers::e($o['name']) ?>" loading="lazy">
+                    <img src="<?= Helpers::e($img) ?>" alt="<?= Helpers::e($o['name']) ?> - Affiliate Offer" loading="lazy">
                 </div>
                 <div class="offer-card-body">
-                    <?php if ($o['category']): ?>
                     <div class="offer-cat"><?= Helpers::e($o['category']) ?></div>
-                    <?php endif; ?>
-                    
                     <h3 class="offer-title"><?= Helpers::e($o['name']) ?></h3>
                     
                     <div class="offer-meta">
@@ -297,7 +264,7 @@ require BASE_PATH . '/views/layouts/public_top.php';
         <?php if ($totalPages > 1): ?>
         <div class="pagination">
             <?php if ($page > 1): ?>
-            <a href="?page=<?= $page - 1 ?>&q=<?= urlencode($search) ?>&category=<?= urlencode($category) ?>&geo=<?= urlencode($geo) ?>">&laquo;</a>
+            <a href="?page=<?= $page - 1 ?>">&laquo;</a>
             <?php endif; ?>
             
             <?php 
@@ -308,17 +275,32 @@ require BASE_PATH . '/views/layouts/public_top.php';
                 <?php if ($i === $page): ?>
                 <span class="active"><?= $i ?></span>
                 <?php else: ?>
-                <a href="?page=<?= $i ?>&q=<?= urlencode($search) ?>&category=<?= urlencode($category) ?>&geo=<?= urlencode($geo) ?>"><?= $i ?></a>
+                <a href="?page=<?= $i ?>"><?= $i ?></a>
                 <?php endif; ?>
             <?php endfor; ?>
             
             <?php if ($page < $totalPages): ?>
-            <a href="?page=<?= $page + 1 ?>&q=<?= urlencode($search) ?>&category=<?= urlencode($category) ?>&geo=<?= urlencode($geo) ?>">&raquo;</a>
+            <a href="?page=<?= $page + 1 ?>">&raquo;</a>
             <?php endif; ?>
         </div>
         <?php endif; ?>
-        
         <?php endif; ?>
+
+        <div class="seo-text-block">
+            <h2>About <?= Helpers::e($dbCategory) ?> Affiliate Marketing</h2>
+            <p><?= Helpers::e($meta['text']) ?></p>
+            
+            <div class="faq-block">
+                <h2>Frequently Asked Questions</h2>
+                <?php foreach ($meta['faqs'] as $q => $a): ?>
+                <div class="faq-item">
+                    <h3><?= Helpers::e($q) ?></h3>
+                    <p><?= Helpers::e($a) ?></p>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        
     </div>
 </section>
 

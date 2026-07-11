@@ -9,6 +9,10 @@
   // Falls back gracefully if seo_settings table or rows are empty.
   $seoDescription = $appName . ' - Global Performance & Affiliate Network.';
   require BASE_PATH . '/views/partials/seo_head.php';
+  
+  if (isset($seoCustomHead)) {
+      echo $seoCustomHead;
+  }
   ?>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">

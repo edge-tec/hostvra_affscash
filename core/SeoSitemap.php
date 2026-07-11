@@ -73,6 +73,27 @@ class SeoSitemap
             }
         } catch (\Throwable $_e) {}
 
+        // Categories & Specific SEO Landing Pages
+        $seoRoutes = [
+            '/best-cpa-offers',
+            '/high-paying-affiliate-offers',
+            '/category/dating-offers',
+            '/category/finance-offers',
+            '/category/health-offers',
+            '/category/sweepstakes-offers',
+            '/category/gift-card-offers',
+            '/category/digital-marketing'
+        ];
+        
+        foreach ($seoRoutes as $sr) {
+            $urls[] = [
+                'loc'        => $base . $sr,
+                'changefreq' => 'weekly',
+                'priority'   => '0.9',
+                'lastmod'    => $today
+            ];
+        }
+
         // Admin-supplied custom URLs (one per line in seo_settings.sitemap_custom_urls).
         try {
             $row = Database::fetchOne(

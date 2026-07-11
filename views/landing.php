@@ -634,9 +634,9 @@ try {
       <div class="row align-items-center">
         <div class="col-lg-5 hero-content">
           <h6>Welcome to <?= $appName ?></h6>
-          <h1>The Best <em>CPA</em> &amp; <span class="accent">Affiliate</span> Marketing Network</h1>
-          <p class="d-block d-lg-none">Global coverage, guaranteed high payouts, direct offers, dedicated AMs and our custom tracking platform make us the leaders on the CPA market!</p>
-          <p class="d-none d-lg-block">Global reach, industry-leading payouts, exclusive direct advertiser partnerships, dedicated account managers, and our proprietary performance tracking technology empower affiliates to maximize revenue and scale campaigns with confidence. Join a network built for performance, transparency, and long-term success.</p>
+          <h1>The Best <em>CPA Network</em> &amp; <span class="accent">Affiliate Marketing</span> Platform</h1>
+          <p class="d-block d-lg-none">Global coverage, guaranteed high payouts, direct offers, dedicated AMs and our custom affiliate tracking software make us the leaders on the CPA network market! Make money online with our top performance marketing tools.</p>
+          <p class="d-none d-lg-block">Global reach, industry-leading payouts, and exclusive direct advertiser partnerships in lead generation. Our dedicated account managers and proprietary affiliate tracking software empower affiliates to maximize revenue, generate passive income, and scale campaigns with confidence. Join the best CPA network built for performance marketing, transparency, and long-term success.</p>
           <div class="hero-btns">
             <a href="/register/affiliate" class="btn-primary-custom"><i class="fa-solid fa-rocket"></i> Join <?= $appName ?></a>
             <a href="/login" class="btn-outline-custom"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
@@ -674,20 +674,20 @@ try {
   <!-- IMAGE BANNER MARQUEE -->
   <div class="img-banner">
     <div class="img-banner-track" id="bannerTrack">
-      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=75" alt="Affiliate Marketing" loading="lazy"><span class="banner-label">💰 Dating CPA</span></div>
-      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&q=75" alt="Online Dating" loading="lazy"><span class="banner-label">❤️ SOI Offers</span></div>
-      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=400&q=75" alt="Analytics" loading="lazy"><span class="banner-label">📊 Real-time Stats</span></div>
-      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=400&q=75" alt="Casino" loading="lazy"><span class="banner-label">🎰 Casino Offers</span></div>
-      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=400&q=75" alt="Payments" loading="lazy"><span class="banner-label">💳 Fast Payouts</span></div>
-      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&q=75" alt="Team" loading="lazy"><span class="banner-label">🌍 Global Reach</span></div>
-      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&q=75" alt="Support" loading="lazy"><span class="banner-label">🎧 24/7 Support</span></div>
-      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=75" alt="Affiliate Marketing" loading="lazy"><span class="banner-label">💰 Dating CPA</span></div>
-      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&q=75" alt="Online Dating" loading="lazy"><span class="banner-label">❤️ SOI Offers</span></div>
-      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=400&q=75" alt="Analytics" loading="lazy"><span class="banner-label">📊 Real-time Stats</span></div>
-      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=400&q=75" alt="Casino" loading="lazy"><span class="banner-label">🎰 Casino Offers</span></div>
-      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=400&q=75" alt="Payments" loading="lazy"><span class="banner-label">💳 Fast Payouts</span></div>
-      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&q=75" alt="Team" loading="lazy"><span class="banner-label">🌍 Global Reach</span></div>
-      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&q=75" alt="Support" loading="lazy"><span class="banner-label">🎧 24/7 Support</span></div>
+      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=75" alt="Dating Affiliate Program & CPA Offers" loading="lazy"><span class="banner-label">💰 Dating CPA</span></div>
+      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&q=75" alt="Online Dating Offers and Hookup Offers" loading="lazy"><span class="banner-label">❤️ SOI Offers</span></div>
+      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=400&q=75" alt="Performance Marketing and Affiliate Dashboard" loading="lazy"><span class="banner-label">📊 Real-time Stats</span></div>
+      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=400&q=75" alt="High Paying Affiliate Programs Casino" loading="lazy"><span class="banner-label">🎰 Casino Offers</span></div>
+      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=400&q=75" alt="Make Money Online with Fast Payouts" loading="lazy"><span class="banner-label">💳 Fast Payouts</span></div>
+      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&q=75" alt="Global Affiliate Network Team" loading="lazy"><span class="banner-label">🌍 Global Reach</span></div>
+      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&q=75" alt="CPA Network 24/7 Support" loading="lazy"><span class="banner-label">🎧 24/7 Support</span></div>
+      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=75" alt="CPA Sweepstakes and Free Gift Cards" loading="lazy"><span class="banner-label">💰 Sweepstakes</span></div>
+      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&q=75" alt="Finance CPA Offers and Personal Loans" loading="lazy"><span class="banner-label">🏦 Finance Offers</span></div>
+      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=400&q=75" alt="Health Affiliate Offers and Weight Loss" loading="lazy"><span class="banner-label">🍎 Health CPA</span></div>
+      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=400&q=75" alt="Amazon Gift Card Offers and Rewards" loading="lazy"><span class="banner-label">🎁 Gift Cards</span></div>
+      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=400&q=75" alt="Digital Marketing and SEO Services" loading="lazy"><span class="banner-label">📈 Digital Marketing</span></div>
+      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&q=75" alt="Media Buying and Paid Traffic" loading="lazy"><span class="banner-label">🌍 Media Buying</span></div>
+      <div class="banner-img-item"><img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&q=75" alt="Lead Generation Network" loading="lazy"><span class="banner-label">🎧 Lead Gen</span></div>
     </div>
   </div>
 
@@ -707,9 +707,9 @@ try {
   <section class="offers-section" id="offers">
     <div class="container-fluid px-3 px-md-4">
       <div class="section-heading">
-        <div class="eyebrow"><span class="pulse"></span> Live Offers &nbsp;·&nbsp; All Verticals</div>
-        <h2>Top <em>Affiliate</em> Offers <span class="count-badge" id="offerCount">Loading...</span></h2>
-        <p style="color:var(--muted);font-size:13px;margin-top:8px">Dating SOI/DOI · Casino · Cam · Financial · Smartlink · Updated Daily</p>
+        <div class="eyebrow"><span class="pulse"></span> High Paying Affiliate Programs &nbsp;·&nbsp; All Verticals</div>
+        <h2>Top <em>CPA Offers</em> <span class="count-badge" id="offerCount">Loading...</span></h2>
+        <p style="color:var(--muted);font-size:13px;margin-top:8px">Dating CPA Offers · Finance · Health · Sweepstakes · Gift Cards · Digital Marketing</p>
       </div>
       <div class="row g-3 mb-5">
         <div class="col-md-4">
