@@ -4,7 +4,7 @@
 <?php $copyright = Config::get('config','app.footer_copyright'); if ($copyright): ?>
 <footer style="text-align:center;padding:12px 20px;font-size:12px;color:#94A3B8;border-top:1px solid #E2E8F0;background:#fff"><?= Helpers::e($copyright) ?></footer>
 <?php endif; ?>
-<script src="/assets/js/app.js"></script>
+<script src="/assets/js/app.min.js"></script>
 <script>
 // ── Automatic conversion postback re-fire ────────────────────────────────
 // Silently fires any orphaned conversions (postback_sent=0, no log entries)

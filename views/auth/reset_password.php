@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Reset Password — <?= Helpers::e(Config::get('config','app.name') ?? 'AffiliateTracker') ?></title>
-<link rel="stylesheet" href="/assets/css/app.css">
+<link rel="stylesheet" href="/assets/css/app.min.css">
 <?php require BASE_PATH . '/views/partials/theme_head.php'; ?>
 <?php require BASE_PATH . '/views/partials/auth_theme.php'; ?>
 <style>
@@ -81,7 +81,7 @@ body { display:flex; align-items:center; justify-content:center; min-height:100v
         <a href="/login">&#8592; Back to Sign In</a>
     </div>
 </div>
-<script src="/assets/js/app.js"></script>
+<script src="/assets/js/app.min.js"></script>
 <?php if ($tokenValid): ?>
 <script>
 (function(){

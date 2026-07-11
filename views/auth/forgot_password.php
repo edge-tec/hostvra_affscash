@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Forgot Password — <?= Helpers::e(Config::get('config','app.name') ?? 'AffiliateTracker') ?></title>
 <link rel="canonical" href="<?= htmlspecialchars(rtrim((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']==='on'?'https':'http').'://'.$_SERVER['HTTP_HOST'].strtok($_SERVER['REQUEST_URI'], '?'), '/'), ENT_QUOTES, 'UTF-8') ?>">
-<link rel="stylesheet" href="/assets/css/app.css">
+<link rel="stylesheet" href="/assets/css/app.min.css">
 <?php require BASE_PATH . '/views/partials/theme_head.php'; ?>
 <?php require BASE_PATH . '/views/partials/auth_theme.php'; ?>
 <style>
@@ -71,6 +71,6 @@ body { display:flex; align-items:center; justify-content:center; min-height:100v
         </div>
     </div>
 </div>
-<script src="/assets/js/app.js"></script>
+<script src="/assets/js/app.min.js"></script>
 </body>
 </html>

@@ -4,7 +4,7 @@ $isPrint = !empty($_GET['print']);
 if ($isPrint) {
     // Print mode — clean layout, no admin shell
     echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Invoice '.$invoice['invoice_number'].'</title>';
-    echo '<link rel="stylesheet" href="/assets/css/app.css">';
+    echo '<link rel="stylesheet" href="/assets/css/app.min.css">';
     echo '<style>@media print{.no-print{display:none!important}}body{background:#fff}@page{margin:20mm}</style>';
     echo '</head><body style="padding:32px;max-width:800px;margin:0 auto">';
 } else {

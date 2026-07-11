@@ -6,7 +6,7 @@
 <meta name="csrf-token" content="<?= Auth::generateCsrf() ?>">
 <title><?= Helpers::e($pageTitle ?? 'Dashboard') ?> — <?= Helpers::e(Config::get('config','app.name') ?? 'AffiliateTracker') ?></title>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="/assets/css/app.css?v=<?= filemtime(BASE_PATH . '/assets/css/app.css') ?>">
+<link rel="stylesheet" href="/assets/css/app.min.css?v=<?= filemtime(BASE_PATH . '/assets/css/app.min.css') ?>">
 <?php require BASE_PATH . '/views/partials/theme_head.php'; ?>
 <style>
 /* ── In-House Fraud Detection Sidebar Module ───────────────────────── */

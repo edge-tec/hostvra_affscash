@@ -39,7 +39,7 @@ try {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?= Helpers::e($pageTitle ?? 'Dashboard') ?> — <?= Helpers::e(Config::get('config','app.name') ?? 'AffiliateTracker') ?></title>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="/assets/css/app.css?v=<?= filemtime(BASE_PATH . '/assets/css/app.css') ?>">
+<link rel="stylesheet" href="/assets/css/app.min.css?v=<?= filemtime(BASE_PATH . '/assets/css/app.min.css') ?>">
 <?php require BASE_PATH . '/views/partials/theme_head.php'; ?>
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>

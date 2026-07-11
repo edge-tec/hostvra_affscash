@@ -508,7 +508,7 @@ if (!$_isOnSupportPage):
 </script>
 <?php endif; ?>
 
-<script src="/assets/js/app.js"></script>
+<script src="/assets/js/app.min.js"></script>
 <?php $egt = Config::get('config', 'app.enable_gtranslate'); if ($egt === null || $egt == 1): ?>
 <!-- GTranslate: https://gtranslate.io/ -->
 <style>.gtranslate_wrapper { zoom: 0.75; }</style>

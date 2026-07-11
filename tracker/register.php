@@ -231,7 +231,7 @@ $appLogo = Config::get('config', 'app.logo');
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Join <?= htmlspecialchars($appName, ENT_QUOTES, 'UTF-8') ?> — Affiliate Registration</title>
-<link rel="stylesheet" href="/assets/css/app.css">
+<link rel="stylesheet" href="/assets/css/app.min.css">
 <?php if (Turnstile::isEnabled()): ?>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <?php endif; ?>
@@ -442,7 +442,7 @@ $appLogo = Config::get('config', 'app.logo');
 
 </div>
 
-<script src="/assets/js/app.js"></script>
+<script src="/assets/js/app.min.js"></script>
 <?php if (Turnstile::isEnabled()): ?>
 <script>
 function onTurnstileSuccess(token) {

@@ -6,9 +6,9 @@
  *  - <link> to dark-theme.css (rules only apply when html[data-theme="dark"])
  *  - <meta name="theme-prefs"> with the user preference, admin default, and CSRF
  *  - inline JS that sets html[data-theme] before paint so there is no flash
- *  - <script src="/assets/js/theme.js"> for toggling + persistence
+ *  - <script src="/assets/js/theme.min.js"> for toggling + persistence
  *
- * Must be included inside <head>, AFTER /assets/css/app.css. Safe to require
+ * Must be included inside <head>, AFTER /assets/css/app.min.css. Safe to require
  * multiple times — uses a static guard to avoid duplicate output.
  */
 static $_themeHeadDone = false;
@@ -30,7 +30,7 @@ $_darkLogoWhite = ($_darkLogoCfg === null || $_darkLogoCfg === '') ? '1' : ($_da
 // browser-cache headers by default, so without ?v=<mtime> visitors keep
 // being served the previous CSS and the white-logo filter never shows up
 // after we update the file.
-$_darkCssPath = __DIR__ . '/../../assets/css/dark-theme.css';
+$_darkCssPath = __DIR__ . '/../../assets/css/dark-theme.min.css';
 $_darkCssVer  = @filemtime($_darkCssPath) ?: '1';
 
 // One-shot "force" value set by admin Settings when the default theme was
@@ -40,7 +40,7 @@ $_darkCssVer  = @filemtime($_darkCssPath) ?: '1';
 $_themeForce       = $_SESSION['_theme_force'] ?? '';
 if ($_themeForce !== '') { unset($_SESSION['_theme_force']); }
 ?>
-<link rel="stylesheet" href="/assets/css/dark-theme.css?v=<?= $_darkCssVer ?>">
+<link rel="stylesheet" href="/assets/css/dark-theme.min.css?v=<?= $_darkCssVer ?>">
 <meta name="theme-prefs"
       data-user="<?= htmlspecialchars((string)$_themeUserPref, ENT_QUOTES) ?>"
       data-default="<?= htmlspecialchars($_themeDefault, ENT_QUOTES) ?>"
@@ -106,5 +106,5 @@ if ($_themeForce !== '') { unset($_SESSION['_theme_force']); }
     } catch (e) {}
 })();
 </script>
-<script src="/assets/js/theme.js" defer></script>
+<script src="/assets/js/theme.min.js" defer></script>
 <?php if ($fav = Config::get('config','app.favicon')): ?><link rel="icon" href="<?= Helpers::e($fav) ?>"><?php endif; ?>

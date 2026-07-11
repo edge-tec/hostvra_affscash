@@ -35,7 +35,7 @@ $iconHtml = $favIcon ? '<img src="'.Helpers::e($favIcon).'" style="width:12px;he
     <div><?= Helpers::e($copyright) ?></div>
     <?php endif; ?>
 </footer>
-<script src="/assets/js/app.js"></script>
+<script src="/assets/js/app.min.js"></script>
 <?php $egt = Config::get('config', 'app.enable_gtranslate'); if ($egt === null || $egt == 1): ?>
 <!-- GTranslate: https://gtranslate.io/ -->
 <style>.gtranslate_wrapper { zoom: 0.75; }</style>

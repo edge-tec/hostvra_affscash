@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Affiliate Registration — <?= Helpers::e(Config::get('config','app.name') ?? 'AffiliateTracker') ?></title>
 <link rel="canonical" href="<?= htmlspecialchars(rtrim((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']==='on'?'https':'http').'://'.$_SERVER['HTTP_HOST'].strtok($_SERVER['REQUEST_URI'], '?'), '/'), ENT_QUOTES, 'UTF-8') ?>">
-<link rel="stylesheet" href="/assets/css/app.css">
+<link rel="stylesheet" href="/assets/css/app.min.css">
 <?php require BASE_PATH . '/views/partials/theme_head.php'; ?>
 <?php require BASE_PATH . '/views/partials/auth_theme.php'; ?>
 <?php $_authBgKey = 'auth_bg_affreg'; require BASE_PATH . '/views/partials/auth_bg.php'; ?>
@@ -429,7 +429,7 @@ body { background:linear-gradient(135deg,#F8FAFC 0%,#E2E8F0 100%); padding:40px 
         <div style="margin-top:10px"><a href="/" style="color:var(--text-muted);font-size:12px">&#8592; Back to Home</a></div>
     </div>
 </div>
-<script src="/assets/js/app.js"></script>
+<script src="/assets/js/app.min.js"></script>
 <script>
 function togglePasswordVisibility(inputId, btn) {
     var input = document.getElementById(inputId);

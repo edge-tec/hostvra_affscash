@@ -260,7 +260,7 @@ class ManagerPermissions
             return;
         }
         echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Access Denied</title>'
-           . '<link rel="stylesheet" href="/assets/css/app.css"></head><body style="background:#F8FAFC;font-family:-apple-system,Segoe UI,Roboto,sans-serif">'
+           . '<link rel="stylesheet" href="/assets/css/app.min.css"></head><body style="background:#F8FAFC;font-family:-apple-system,Segoe UI,Roboto,sans-serif">'
            . '<div style="max-width:520px;margin:80px auto;background:#fff;border:1px solid #E2E8F0;border-radius:14px;padding:36px 32px;text-align:center;box-shadow:0 10px 32px -16px rgba(15,23,42,.2)">'
            . '<div style="width:64px;height:64px;border-radius:50%;background:#FEE2E2;color:#DC2626;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:30px">⊘</div>'
            . '<h1 style="margin:0 0 6px;font-size:22px;color:#0F172A">Access Denied</h1>'

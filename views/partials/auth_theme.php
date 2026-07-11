@@ -2,7 +2,7 @@
 /**
  * Theme-aware backdrop + shell styles for /views/auth/* screens.
  *
- * Include this partial AFTER /assets/css/app.css and the theme_head
+ * Include this partial AFTER /assets/css/app.min.css and the theme_head
  * partial. It assumes the page renders an <html data-theme="…"> root
  * and a `.auth-box` shell. Each theme paints body + shell with the
  * appropriate surface treatment without altering the page's brand

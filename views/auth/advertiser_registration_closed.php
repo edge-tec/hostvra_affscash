@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
 <title>Registration Closed — <?= Helpers::e(Config::get('config','app.name') ?? 'AffiliateTracker') ?></title>
-<link rel="stylesheet" href="/assets/css/app.css">
+<link rel="stylesheet" href="/assets/css/app.min.css">
 <?php require BASE_PATH . '/views/partials/theme_head.php'; ?>
 <?php require BASE_PATH . '/views/partials/auth_theme.php'; ?>
 <?php $_authBgKey = 'auth_bg_advreg'; require BASE_PATH . '/views/partials/auth_bg.php'; ?>
