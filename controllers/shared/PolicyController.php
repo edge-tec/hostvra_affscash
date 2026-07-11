@@ -50,6 +50,7 @@ $appName = Config::get('config', 'app.name') ?? 'AffTracker';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= Helpers::e($policy['title']) ?> — <?= Helpers::e($appName) ?></title>
+    <link rel="canonical" href="<?= htmlspecialchars(rtrim((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']==='on'?'https':'http').'://'.$_SERVER['HTTP_HOST'].strtok($_SERVER['REQUEST_URI'], '?'), '/'), ENT_QUOTES, 'UTF-8') ?>">
     <style>
         :root {
             --bg-body: #F8FAFC;

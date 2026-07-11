@@ -10,12 +10,14 @@ try { Database::query("ALTER TABLE users ADD COLUMN address VARCHAR(500) DEFAULT
 try { Database::query("ALTER TABLE affiliates ADD COLUMN registration_ip VARCHAR(45) DEFAULT NULL"); } catch(\Throwable $_e) {}
 
 // ── VPN/Proxy/TOR registration guard ─────────────────────────────────────
-$_vpnCheck = RegistrationVpnGuard::checkIp(Helpers::getIp());
-if ($_vpnCheck['blocked']) {
-    http_response_code(403);
-    $_vpnBlockReason = $_vpnCheck['reason'];
-    require BASE_PATH . '/views/auth/registration_vpn_blocked.php';
-    return;
+if (Helpers::isPost()) {
+    $_vpnCheck = RegistrationVpnGuard::checkIp(Helpers::getIp());
+    if ($_vpnCheck['blocked']) {
+        http_response_code(403);
+        $_vpnBlockReason = $_vpnCheck['reason'];
+        require BASE_PATH . '/views/auth/registration_vpn_blocked.php';
+        return;
+    }
 }
 
 // ── Referral code handling ─────────────────────────────────────────────────

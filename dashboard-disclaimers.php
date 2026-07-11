@@ -30,6 +30,7 @@ if (!$navLogo) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard Disclaimers — Affscash</title>
+<link rel="canonical" href="<?= htmlspecialchars(rtrim((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']==='on'?'https':'http').'://'.$_SERVER['HTTP_HOST'].strtok($_SERVER['REQUEST_URI'], '?'), '/'), ENT_QUOTES, 'UTF-8') ?>">
 <?php if (class_exists('Config') && $fav = Config::get('config','app.favicon')): ?>
 <link rel="icon" href="<?= Helpers::e($fav) ?>">
 <?php elseif ($faviconPath): ?>

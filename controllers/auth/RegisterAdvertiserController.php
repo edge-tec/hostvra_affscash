@@ -18,12 +18,14 @@ if (!$_advRegEnabled) {
 }
 
 // ── VPN/Proxy/TOR registration guard ─────────────────────────────────────
-$_vpnCheck = RegistrationVpnGuard::checkIp(Helpers::getIp());
-if ($_vpnCheck['blocked']) {
-    http_response_code(403);
-    $_vpnBlockReason = $_vpnCheck['reason'];
-    require BASE_PATH . '/views/auth/registration_vpn_blocked.php';
-    return;
+if (Helpers::isPost()) {
+    $_vpnCheck = RegistrationVpnGuard::checkIp(Helpers::getIp());
+    if ($_vpnCheck['blocked']) {
+        http_response_code(403);
+        $_vpnBlockReason = $_vpnCheck['reason'];
+        require BASE_PATH . '/views/auth/registration_vpn_blocked.php';
+        return;
+    }
 }
 
 try { Database::query("ALTER TABLE users ADD COLUMN skype VARCHAR(200) DEFAULT NULL"); } catch(Exception $e) {}
