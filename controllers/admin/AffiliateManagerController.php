@@ -34,7 +34,7 @@ try { Database::query("ALTER TABLE invoices ADD COLUMN IF NOT EXISTS balance_aft
 require_once BASE_PATH . '/core/ManagerCommissionService.php';
 ManagerPermissions::ensureSchema();   // additive — creates 4 new audit tables if missing
 
-$allPerms = ['view_affiliates','approve_affiliates','view_conversions','view_reports','manage_offers','manage_payments','create_invoices'];
+$allPerms = ['view_affiliates','approve_affiliates','edit_affiliate_payouts','view_conversions','view_reports','manage_offers','manage_payments','create_invoices'];
 $action   = Helpers::get('action') ?: (isset($_GET['id']) ? 'view' : 'index');
 
 // ── PERMISSIONS (advanced — admin-controlled per-manager matrix) ─────────────
