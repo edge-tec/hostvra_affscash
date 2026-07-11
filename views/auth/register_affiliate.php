@@ -380,7 +380,7 @@ body { background:linear-gradient(135deg,#F8FAFC 0%,#E2E8F0 100%); padding:40px 
                     <input type="checkbox" name="agree_terms" value="1" required
                            <?= !empty($_POST['agree_terms']) ? 'checked' : '' ?>
                            style="margin-top:3px;accent-color:#4F46E5;width:16px;height:16px;flex-shrink:0">
-                    <span>I agree to the <a href="/TRC.html" target="_blank" style="color:#4F46E5;font-weight:600">Terms &amp; Conditions</a>. <span style="color:#DC2626">*</span></span>
+                    <span>I agree to the <a href="/terms-of-service" target="_blank" style="color:#4F46E5;font-weight:600">Terms &amp; Conditions</a>. <span style="color:#DC2626">*</span></span>
                 </label>
                 <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:#334155;margin-top:10px">
                     <input type="checkbox" name="agree_affiliate" value="1" required
@@ -424,7 +424,7 @@ body { background:linear-gradient(135deg,#F8FAFC 0%,#E2E8F0 100%); padding:40px 
         <div style="margin-top:10px;font-size:12px">
             <a href="/privacy-policy" target="_blank" style="color:var(--text-muted)">Privacy Policy</a>
             &nbsp;&middot;&nbsp;
-            <a href="/TRC.html" target="_blank" style="color:var(--text-muted)">Terms &amp; Conditions</a>
+            <a href="/terms-of-service" target="_blank" style="color:var(--text-muted)">Terms &amp; Conditions</a>
         </div>
         <div style="margin-top:10px"><a href="/" style="color:var(--text-muted);font-size:12px">&#8592; Back to Home</a></div>
     </div>

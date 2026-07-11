@@ -26,7 +26,7 @@ class SeoSitemap
             ['loc' => $base . '/',                  'changefreq' => 'daily',   'priority' => '1.0', 'lastmod' => $today],
             ['loc' => $base . '/blog',              'changefreq' => 'daily',   'priority' => '0.8', 'lastmod' => $today],
             ['loc' => $base . '/reviews',           'changefreq' => 'weekly',  'priority' => '0.8', 'lastmod' => $today],
-            ['loc' => $base . '/TRC.html',          'changefreq' => 'yearly',  'priority' => '0.4', 'lastmod' => $today],
+            ['loc' => $base . '/terms-of-service',          'changefreq' => 'yearly',  'priority' => '0.4', 'lastmod' => $today],
             ['loc' => $base . '/login',             'changefreq' => 'monthly', 'priority' => '0.3', 'lastmod' => $today],
             ['loc' => $base . '/register/affiliate','changefreq' => 'monthly', 'priority' => '0.5', 'lastmod' => $today],
             ['loc' => $base . '/register/advertiser','changefreq'=> 'monthly', 'priority' => '0.5', 'lastmod' => $today],

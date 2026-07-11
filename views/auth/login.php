@@ -100,7 +100,7 @@ body { display:flex; align-items:center; justify-content:center; min-height:100v
             <a href="/cookie-policy" target="_blank" style="color:var(--text-muted);text-decoration:none">Cookie Policy</a>
             <a href="/dashboard-disclaimers" target="_blank" style="color:var(--text-muted);text-decoration:none">Dashboard Disclaimers</a>
             <a href="/privacy-policy" target="_blank" style="color:var(--text-muted);text-decoration:none">Privacy Policy</a>
-            <a href="/TRC.html" target="_blank" style="color:var(--text-muted);text-decoration:none">Terms &amp; Conditions</a>
+            <a href="/terms-of-service" target="_blank" style="color:var(--text-muted);text-decoration:none">Terms &amp; Conditions</a>
         </div>
         <div style="margin-top:10px"><a href="/" style="color:var(--text-muted);font-size:12px">&#8592; Back to Home</a></div>
     </div>

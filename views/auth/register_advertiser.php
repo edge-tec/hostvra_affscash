@@ -308,7 +308,7 @@ body { background:linear-gradient(135deg,#F8FAFC 0%,#E2E8F0 100%); padding:40px 
                     <input type="checkbox" name="agree_terms" value="1" required
                            <?= !empty($_POST['agree_terms']) ? 'checked' : '' ?>
                            style="margin-top:3px;accent-color:#0F766E;width:16px;height:16px;flex-shrink:0">
-                    <span>I agree to the <a href="/TRC.html" target="_blank" style="color:#0F766E;font-weight:600">Terms &amp; Conditions</a>. <span style="color:#DC2626">*</span></span>
+                    <span>I agree to the <a href="/terms-of-service" target="_blank" style="color:#0F766E;font-weight:600">Terms &amp; Conditions</a>. <span style="color:#DC2626">*</span></span>
                 </label>
             </div>
 
@@ -338,7 +338,7 @@ body { background:linear-gradient(135deg,#F8FAFC 0%,#E2E8F0 100%); padding:40px 
         <div style="margin-top:10px;font-size:12px">
             <a href="/privacy-policy" target="_blank" style="color:var(--text-muted)">Privacy Policy</a>
             &nbsp;&middot;&nbsp;
-            <a href="/TRC.html" target="_blank" style="color:var(--text-muted)">Terms &amp; Conditions</a>
+            <a href="/terms-of-service" target="_blank" style="color:var(--text-muted)">Terms &amp; Conditions</a>
         </div>
         <div style="margin-top:10px"><a href="/" style="color:var(--text-muted);font-size:12px">&#8592; Back to Home</a></div>
     </div>

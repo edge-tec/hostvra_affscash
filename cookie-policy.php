@@ -225,7 +225,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
         <a href="<?= $dashUrl ?>" class="btn btn-primary">My Dashboard</a>
     <?php else: ?>
         <a href="/login" class="btn btn-ghost">Log In</a>
-        <a href="/register" class="btn btn-primary">Get Started</a>
+        <a href="/register/affiliate" class="btn btn-primary">Get Started</a>
     <?php endif; ?>
   </div>
 </nav>
@@ -284,7 +284,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
     </nav>
     <div class="sidebar-promo">
       <p>Ready to start earning with Affscash?</p>
-      <a href="/register" class="sidebar-promo-btn">
+      <a href="/register/affiliate" class="sidebar-promo-btn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
         Join Now
       </a>

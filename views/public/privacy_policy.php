@@ -354,7 +354,7 @@ body {
     </a>
     <div class="topnav-links">
         <a href="/">Home</a>
-        <a href="/TRC.html">Terms &amp; Conditions</a>
+        <a href="/terms-of-service">Terms &amp; Conditions</a>
         <?php if (class_exists('Auth') && Auth::id()): ?>
             <?php
                 $dashUrl = '/login';
@@ -704,7 +704,7 @@ body {
     <div class="footer-links">
         <a href="/">Home</a>
         <a href="/privacy-policy">Privacy Policy</a>
-        <a href="/TRC.html">Terms &amp; Conditions</a>
+        <a href="/terms-of-service">Terms &amp; Conditions</a>
         <a href="/login">Login</a>
         <a href="/register/affiliate">Join as Affiliate</a>
         <a href="/register/advertiser">Join as Advertiser</a>

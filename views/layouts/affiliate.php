@@ -104,7 +104,7 @@ function fmtTs(ts, opts) {
     <a href="/affiliate/inhouse-offers" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/affiliate/inhouse-offers')?'active':'' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         In-House Offers</a>
-    <a href="/affiliate/smartlinks" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/affiliate/smartlinks')?'active':'' ?>">
+    <a href="/login" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/affiliate/smartlinks')?'active':'' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>Smartlinks</a>
     <a href="/affiliate/postbacks" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/affiliate/postbacks')?'active':'' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>Postbacks</a>

@@ -11,7 +11,7 @@
       <a href="/#contact">Contact</a>
       <a href="/register/affiliate">Sign Up</a>
       <a href="/login">Login</a>
-      <a href="/TRC.html" target="_blank">Terms &amp; Conditions</a>
+      <a href="/terms-of-service" target="_blank">Terms &amp; Conditions</a>
       <a href="/privacy-policy" target="_blank">Privacy Policy</a>
     </div>
     <div style="display:flex;justify-content:center;gap:18px;margin:18px 0">

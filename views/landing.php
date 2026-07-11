@@ -1164,7 +1164,7 @@ try {
         <a href="/blog">Blog</a>
         <a href="#contact">Contact</a>
         <a href="/reviews">Reviews</a>
-        <a href="/TRC.html" target="_blank">Terms &amp; Conditions</a>
+        <a href="/terms-of-service" target="_blank">Terms &amp; Conditions</a>
         <a href="/privacy-policy" target="_blank">Privacy Policy</a>
         <a href="/affiliate-agreement">Affiliate Agreement</a>
         <a href="/anti-fraud-policy">Anti-Fraud Policy</a>
@@ -1174,7 +1174,7 @@ try {
         <a href="/dashboard-disclaimers">Dashboard Disclaimers</a>
         <a href="/register/affiliate">Sign Up</a>
         <a href="/login">Login</a>
-        <a href="/affiliate/smartlinks">Short Link</a>
+        <a href="/login">Short Link</a>
       </div>
       <?php if ($_mobileAppUrl !== ''): ?>
       <div style="display:flex;justify-content:center;margin:22px 0 6px">
