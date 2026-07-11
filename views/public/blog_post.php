@@ -54,6 +54,7 @@ if (!$post) {
 }
 
 $pageTitle = Helpers::e($post['title']) . ' | ' . $appName;
+$seoDescription = htmlspecialchars(strip_tags($post['excerpt'] ?: substr($post['body'], 0, 160)), ENT_QUOTES, 'UTF-8');
 require BASE_PATH . '/views/layouts/public_top.php';
 ?>
 

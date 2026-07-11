@@ -66,7 +66,8 @@ try {
 
 $useStatic = false;
 
-$pageTitle = "Blog | $appName";
+$pageTitle = 'Blog & Updates | ' . $appName;
+$seoDescription = 'Read the latest news, updates, guides, and affiliate marketing insights on the ' . $appName . ' blog.';
 require BASE_PATH . '/views/layouts/public_top.php';
 ?>
 

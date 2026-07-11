@@ -59,7 +59,8 @@ try {
     );
 } catch (\Throwable $e) {}
 
-$pageTitle = "Reviews | $appName";
+$pageTitle = 'Reviews | ' . $appName;
+$seoDescription = 'Read reviews and testimonials from our top affiliates and see why ' . $appName . ' is the leading CPA Affiliate Network.';
 require BASE_PATH . '/views/layouts/public_top.php';
 ?>
 
