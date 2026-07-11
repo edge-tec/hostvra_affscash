@@ -51,6 +51,28 @@ class SeoSitemap
             }
         } catch (\Throwable $_e) { /* table may not exist on fresh installs */ }
 
+        // Dynamic Offers Page
+        $urls[] = ['loc' => $base . '/offers', 'changefreq' => 'daily', 'priority' => '0.9', 'lastmod' => $today];
+
+        // Public Active Offers
+        try {
+            $offers = Database::fetchAll(
+                "SELECT id, name, created_at FROM offers
+                 WHERE status='active' AND visibility='public'
+                 ORDER BY id DESC LIMIT 5000"
+            );
+            foreach ($offers as $o) {
+                $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $o['name'])));
+                $slug = rtrim($slug, '-');
+                $urls[] = [
+                    'loc'        => $base . '/offers/' . $o['id'] . '-' . $slug,
+                    'changefreq' => 'weekly',
+                    'priority'   => '0.8',
+                    'lastmod'    => $o['created_at'] ? date('Y-m-d', strtotime($o['created_at'])) : $today,
+                ];
+            }
+        } catch (\Throwable $_e) {}
+
         // Admin-supplied custom URLs (one per line in seo_settings.sitemap_custom_urls).
         try {
             $row = Database::fetchOne(

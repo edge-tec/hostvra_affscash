@@ -171,7 +171,14 @@ Router::get('/', function() {
     require BASE_PATH . '/views/landing.php';
 });
 
-// Public pages — Reviews & Blog
+// Public pages — Offers, Reviews & Blog
+Router::get('/offers', function() {
+    require BASE_PATH . '/controllers/public/OffersController.php';
+});
+Router::get('/offers/{slug}', function($slug) {
+    $_GET['slug'] = $slug;
+    require BASE_PATH . '/controllers/public/OfferDetailController.php';
+});
 Router::get('/reviews', function() {
     require BASE_PATH . '/views/public/reviews.php';
 });
