@@ -44,7 +44,7 @@
     <a href="/" class="nav-logo"><img src="<?= $logoSrc ?>" alt="<?= $appName ?>" height="40"></a>
     <ul class="nav-links">
       <li><a href="/">Home</a></li>
-      <li><a href="/#offers">Offers</a></li>
+      <li><a href="/offers" <?= (($_currentPage??'')==='offers')?'class="active"':'' ?>>Offers</a></li>
       <li><a href="/#about">About</a></li>
       <li><a href="/#services">Services</a></li>
       <li><a href="/blog" <?= (($_currentPage??'')==='blog')?'class="active"':'' ?>>Blog</a></li>
@@ -66,7 +66,7 @@
   </div>
   <div class="mobile-menu" id="mobile-menu">
     <a href="/">Home</a>
-    <a href="/#offers">Offers</a>
+    <a href="/offers" <?= (($_currentPage??'')==='offers')?'style="color:var(--pink)"':'' ?>>Offers</a>
     <a href="/#about">About</a>
     <a href="/#services">Services</a>
     <a href="/blog" <?= (($_currentPage??'')==='blog')?'style="color:var(--pink)"':'' ?>>Blog</a>
