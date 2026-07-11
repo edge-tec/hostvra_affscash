@@ -99,7 +99,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
 
     // ── Save GSC credentials + site URL ──────────────────────────────────────
     if ($sub === 'save_credentials') {
-        $siteUrl = rtrim(trim(Helpers::post('site_url')), '/');
+        $siteUrl = trim(Helpers::post('site_url'));
         seoSet('site_url', $siteUrl);
 
         // Service account JSON upload or paste
@@ -194,7 +194,8 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
     // ── Submit sitemap to Google ──────────────────────────────────────────────
     if ($sub === 'submit_sitemap') {
         $siteUrl    = seoGet('site_url', Config::get('config', 'app.url') ?? '');
-        $sitemapUrl = rtrim($siteUrl, '/') . '/sitemap.xml';
+        $appUrl     = Config::get('config', 'app.url') ?? $siteUrl;
+        $sitemapUrl = rtrim(str_starts_with($appUrl, 'http') ? $appUrl : $siteUrl, '/') . '/sitemap.xml';
         $token      = getGscToken();
         if (!$token) {
             Helpers::flash('error', 'Could not get access token — ' . (GoogleSearchConsole::lastError() ?: 'check Service Account JSON credentials.'));
