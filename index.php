@@ -232,7 +232,7 @@ Router::get('/privacy-policy', function() {
 Router::get('/privacy', function() { Helpers::redirect('/privacy-policy'); });
 
 Router::get('/terms-of-service', function() {
-    require BASE_PATH . '/terms-of-service';
+    require BASE_PATH . '/terms-of-service.php';
 });
 Router::get('/affiliate-agreement', function() {
     require BASE_PATH . '/affiliate-agreement.php';

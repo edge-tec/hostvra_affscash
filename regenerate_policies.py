@@ -50,6 +50,7 @@ def parse_existing_policy(filepath):
     return title, toc_items, notice_content, sections
 
 files_to_update = [
+    "terms-of-service.php",
     "affiliate-agreement.php",
     "anti-fraud-policy.php",
     "gdpr-compliance-policy.php",

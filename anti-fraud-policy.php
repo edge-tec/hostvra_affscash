@@ -299,6 +299,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
 
 
 
+
 <main class="tos-content">
 
 <section class="tos-section is-open" id="section-1">
@@ -567,7 +568,7 @@ Fraudulent activity includes, but is not limited to:
       <li><a href="/anti-fraud-policy" class="active-link">Anti-Fraud Policy</a></li>
       <li><a href="/gdpr-compliance-policy">GDPR Compliance</a></li>
       <li><a href="/refund-payment-policy">Refund Policy</a></li>
-      <li><a href="/cookie-policy"       >Cookie Policy</a></li>
+      <li><a href="/cookie-policy"        >Cookie Policy</a></li>
       <li><a href="/login">Login</a></li>
     </ul>
   </div>

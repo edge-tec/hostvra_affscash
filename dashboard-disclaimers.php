@@ -299,6 +299,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
 
 
 
+
 <main class="tos-content">
 
 <div class="notice-block">
@@ -307,8 +308,10 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
 
 
 
+
       <strong>Last Updated: June 1, 2026</strong><br>Applies To: All users of the AffsCash Affiliate Dashboard.
     
+
 
 
 
@@ -551,7 +554,7 @@ footer{padding:40px 6% 28px;border-top:1px solid var(--border2);background:#fff}
       <li><a href="/anti-fraud-policy">Anti-Fraud Policy</a></li>
       <li><a href="/gdpr-compliance-policy">GDPR Compliance</a></li>
       <li><a href="/refund-payment-policy">Refund Policy</a></li>
-      <li><a href="/cookie-policy"       >Cookie Policy</a></li>
+      <li><a href="/cookie-policy"        >Cookie Policy</a></li>
       <li><a href="/login">Login</a></li>
     </ul>
   </div>
