@@ -162,7 +162,68 @@ function fmtTs(ts, opts) {
 <?php require BASE_PATH . '/views/partials/affiliate_popup.php'; ?>
 
 <div class="main-content">
-<header class="topbar" style="background: linear-gradient(90deg, #a1c4fd 0%, #eac2da 100%); border-bottom: none;">
+<header class="topbar" style="background: linear-gradient(90deg, #a1c4fd 0%, #eac2da 100%); border-bottom: none; position: relative; overflow: hidden;">
+    <canvas class="topbar-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0"></canvas>
+    <script>
+    (function() {
+        var canvas = document.querySelector('.topbar-canvas');
+        if (!canvas) return;
+        var ctx = canvas.getContext('2d');
+        var w, h;
+        function resize() {
+            w = canvas.width = canvas.offsetWidth;
+            h = canvas.height = canvas.offsetHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+        var nodes = [];
+        var density = Math.min(20, Math.floor(w / 60));
+        for (var i = 0; i < density; i++) {
+            nodes.push({
+                x: Math.random() * w,
+                y: Math.random() * h,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3,
+                r: Math.random() * 2 + 1
+            });
+        }
+        function animate() {
+            if (!canvas.offsetParent) {
+                requestAnimationFrame(animate);
+                return;
+            }
+            ctx.clearRect(0, 0, w, h);
+            ctx.fillStyle = 'rgba(124, 58, 237, 0.4)';
+            nodes.forEach(function(n) {
+                n.x += n.vx;
+                n.y += n.vy;
+                if (n.x < 0 || n.x > w) n.vx *= -1;
+                if (n.y < 0 || n.y > h) n.vy *= -1;
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            ctx.lineWidth = 0.8;
+            for (var i = 0; i < nodes.length; i++) {
+                for (var j = i + 1; j < nodes.length; j++) {
+                    var dx = nodes[i].x - nodes[j].x;
+                    var dy = nodes[i].y - nodes[j].y;
+                    var dist = Math.hypot(dx, dy);
+                    if (dist < 120) {
+                        var alpha = (1 - dist / 120) * 0.15;
+                        ctx.strokeStyle = 'rgba(124, 58, 237, ' + alpha + ')';
+                        ctx.beginPath();
+                        ctx.moveTo(nodes[i].x, nodes[i].y);
+                        ctx.lineTo(nodes[j].x, nodes[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+    })();
+    </script>
     <button id="sidebarToggle" type="button" aria-label="Toggle menu" onclick="window.toggleSidebar&&window.toggleSidebar(event)" style="color:var(--text)">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" pointer-events="none"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
