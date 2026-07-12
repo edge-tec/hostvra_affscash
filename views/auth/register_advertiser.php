@@ -59,6 +59,25 @@ body {
   box-shadow: 0 4px 16px rgba(124,58,237,0.3) !important;
 }
 
+/* Responsive media query overrides for form grids */
+@media (max-width: 768px) {
+  .form-row.cols-2,
+  .form-row,
+  div[style*="grid-template-columns"],
+  #contact-fields {
+    grid-template-columns: 1fr !important;
+  }
+}
+.contact-alert {
+  background: rgba(245, 158, 11, 0.1) !important;
+  border: 1px solid rgba(245, 158, 11, 0.3) !important;
+  color: #fde047 !important;
+  border-radius: 8px !important;
+  padding: 10px 14px !important;
+  margin-bottom: 14px !important;
+  font-size: 13px !important;
+}
+
 /* Password input wrapper styling */
 .password-input-wrapper {
     position: relative;
@@ -225,7 +244,7 @@ body {
                 </div>
             </div>
             <p class="section-title">Contact Details <span style="color:#EF4444;font-size:11px;font-weight:600;text-transform:none;letter-spacing:0">(at least one required)</span></p>
-            <div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:#92400E">
+            <div class="contact-alert">
                 &#9888; Please provide at least one contact method so we can reach you.
             </div>
             <div class="form-row cols-2" style="grid-template-columns:1fr 1fr 1fr;gap:12px">
