@@ -10,8 +10,8 @@ if ($offer['payout_type'] === 'RevShare') {
     $payoutStr = $sym . number_format($offer['payout_amount'], 2) . ' ' . $offer['payout_type'];
 }
 
-$geoStr = $offer['geo_targeting'];
-if ($geoStr === 'Global') {
+$geoStr = $offer['geo_targeting'] ?? '';
+if ($geoStr === '' || $geoStr === 'Global') {
     $geoDisplay = 'Global (All Countries)';
 } elseif (strpos($geoStr, '[') === 0) {
     $arr = json_decode($geoStr, true);
