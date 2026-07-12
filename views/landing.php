@@ -867,32 +867,112 @@ try {
     @media(max-width:575px){.blog-grid{grid-template-columns:1fr}}
 
     /* TEAM */
-    .contact-team{background:var(--grad-section-a)}
-    .team-card{background:var(--white);border:1px solid var(--border);border-radius:22px;padding:34px;text-align:center;transition:all .3s;box-shadow:0 6px 24px rgba(124,58,237,.07)}
-    .team-card:hover{border-color:transparent;transform:translateY(-5px);box-shadow:0 22px 54px rgba(232,25,122,.16)}
-    .team-avatar{width:82px;height:82px;border-radius:50%;margin:0 auto 16px;background:var(--grad-brand);display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 8px 24px rgba(232,25,122,.3)}
-    .team-card h4{font-size:20px;margin-bottom:6px;color:var(--text)}
-    .team-card .team-role{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:18px}
-    .team-links{display:flex;flex-direction:column;gap:8px}
-    .team-link{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text) !important;background:#f7f5ff;border:1px solid var(--border);border-radius:10px;padding:10px 14px;transition:all .25s}
-    .team-link:hover{border-color:var(--pink);color:var(--pink) !important;background:rgba(232,25,122,.04)}
-    .team-link i{color:var(--pink);width:16px}
+    .contact-team{background:var(--grad-section-a); padding:100px 0}
+    .contact-team h2 { color: #fff }
+    .contact-team .eyebrow { -webkit-text-fill-color: rgba(255,255,255,0.7); background: none; color: rgba(255,255,255,0.7) }
+    .team-card {
+      background: rgba(15,10,36,0.6);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 34px;
+      text-align: center;
+      transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transform: perspective(1000px) rotateX(1deg);
+    }
+    .team-card:hover {
+      transform: translateY(-6px) scale(1.03) perspective(1000px) rotateX(0deg);
+      border-color: rgba(232,25,122,0.3);
+      box-shadow: 0 20px 45px rgba(232,25,122,0.25);
+    }
+    .team-avatar {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      margin: 0 auto 16px;
+      background: var(--grad-brand);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      box-shadow: 0 8px 24px rgba(232,25,122,0.3);
+    }
+    .team-card h4 { color: #fff; font-size:20px; margin-bottom:6px }
+    .team-card .team-role { color: rgba(255,255,255,0.5); font-size:12px; margin-bottom: 18px; text-transform:uppercase; letter-spacing:1px }
+    .team-links { display: flex; flex-direction: column; gap: 8px }
+    .team-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.7) !important;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      text-decoration: none;
+      transition: all 0.22s;
+    }
+    .team-link:hover {
+      background: rgba(255,255,255,0.08);
+      color: #fff !important;
+      border-color: rgba(255,255,255,0.15);
+    }
+    .team-link i { color: var(--pink) }
 
     /* CONTACT FORM */
-    .contact-form-section{background:var(--white)}
-    .address-block{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-top:24px;box-shadow:0 4px 18px rgba(124,58,237,.07)}
-    .address-block h5{font-size:14px;margin-bottom:8px;color:var(--text)}
-    .address-block p{font-size:13px;color:var(--muted);margin:0;line-height:1.85}
-    .form-card{background:var(--white);border:1px solid var(--border);border-radius:22px;padding:40px 36px;box-shadow:0 16px 50px rgba(124,58,237,.1)}
-    .form-card h3{font-size:26px;margin-bottom:26px;color:var(--text)}
-    .form-group{margin-bottom:18px}
-    .form-group label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:block}
-    .form-control-custom{width:100%;padding:12px 16px;background:#faf8ff;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;transition:all .25s;outline:none}
-    .form-control-custom:focus{border-color:var(--violet);box-shadow:0 0 0 4px rgba(124,58,237,.08);background:var(--white)}
-    .form-control-custom::placeholder{color:var(--muted)}
-    textarea.form-control-custom{resize:vertical;min-height:120px}
-    .contact-form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    @media(max-width:480px){.contact-form-row{grid-template-columns:1fr}}
+    .contact-form-section { background: var(--grad-section-b); padding:100px 0 }
+    .contact-form-section h2 { color: #fff }
+    .contact-form-section .eyebrow { -webkit-text-fill-color: rgba(255,255,255,0.7); background: none; color: rgba(255,255,255,0.7) }
+    .address-block {
+      background: rgba(15,10,36,0.6);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--r);
+      padding: 24px;
+      margin-top: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .address-block h5 { font-size: 14px; margin-bottom: 8px; color: #fff }
+    .address-block p { font-size: 13px; color: rgba(255,255,255,0.65); margin: 0; line-height: 1.85 }
+    .form-card {
+      background: rgba(15,10,36,0.6);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 40px 36px;
+      box-shadow: 0 16px 50px rgba(0,0,0,0.3);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .form-card h3 { font-size: 26px; margin-bottom: 26px; color: #fff }
+    .form-group { margin-bottom: 18px }
+    .form-group label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; display: block }
+    .form-control-custom {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1.5px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      transition: all .25s;
+      outline: none;
+    }
+    .form-control-custom:focus {
+      border-color: var(--violet);
+      box-shadow: 0 0 0 4px rgba(124,58,237,.25);
+      background: rgba(255,255,255,0.05);
+    }
+    .form-control-custom::placeholder { color: rgba(255,255,255,0.4) }
+    textarea.form-control-custom { resize: vertical; min-height: 120px }
+    .contact-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px }
+    @media(max-width: 480px) { .contact-form-row { grid-template-columns: 1fr } }
 
     /* PAYMENT CARDS */
     .payment-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
@@ -2298,27 +2378,27 @@ try {
             <div class="eyebrow"><span class="pulse"></span> Get In Touch</div>
             <h2>Feel Free To <em>Send Us</em> a Message</h2>
           </div>
-          <p style="color:var(--muted);font-size:14px;margin-bottom:24px">For any enquiry contact us via Skype, Telegram, or fill in the form and our team will respond promptly.</p>
+          <p style="color:rgba(255,255,255,0.6);font-size:14px;margin-bottom:24px">For any enquiry contact us via Skype, Telegram, or fill in the form and our team will respond promptly.</p>
           <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px">
             <?php if ($_teamsUrl): ?>
-            <a href="<?= $_teamsUrl ?>" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;background:#f7f5ff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;color:var(--text);text-decoration:none;transition:all .25s;font-weight:500">
+            <a href="<?= $_teamsUrl ?>" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px 16px;color:#fff;text-decoration:none;transition:all .25s;font-weight:500" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.borderColor='rgba(0,175,240,0.4)'" onmouseout="this.style.background='rgba(255,255,255,0.03)';this.style.borderColor='rgba(255,255,255,0.08)'">
               <i class="fa-brands fa-skype" style="color:#00aff0;font-size:18px"></i> Skype / Teams Support
             </a>
             <?php endif; ?>
-            <a href="<?= $_tgUrl ?>" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;background:#f7f5ff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;color:var(--text);text-decoration:none;transition:all .25s;font-weight:500">
+            <a href="<?= $_tgUrl ?>" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px 16px;color:#fff;text-decoration:none;transition:all .25s;font-weight:500" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.borderColor='rgba(42,171,238,0.4)'" onmouseout="this.style.background='rgba(255,255,255,0.03)';this.style.borderColor='rgba(255,255,255,0.08)'">
               <i class="fa-brands fa-telegram" style="color:#2aabee;font-size:18px"></i> Telegram @<?= $_tgHandle ?>
             </a>
           </div>
-          <div style="border-radius:18px;overflow:hidden;border:1px solid var(--border);margin-bottom:20px;box-shadow:0 8px 28px rgba(124,58,237,.1)">
+          <div style="border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);margin-bottom:20px;box-shadow:0 10px 30px rgba(0,0,0,0.25)">
             <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80" alt="Office" style="width:100%;height:160px;object-fit:cover;display:block" loading="lazy">
           </div>
           <?php if ($_companyAddr || $_companyPhone): ?>
           <div class="address-block">
             <h5><i class="fa-solid fa-location-pin" style="color:var(--pink);margin-right:6px"></i> Company Address</h5>
-            <hr style="border-color:var(--border);margin:12px 0">
+            <hr style="border-color:rgba(255,255,255,0.08);margin:12px 0">
             <?php if ($_companyAddr): ?>
             <p><?= nl2br($_companyAddr) ?></p>
-            <hr style="border-color:var(--border);margin:12px 0">
+            <hr style="border-color:rgba(255,255,255,0.08);margin:12px 0">
             <?php endif; ?>
             <?php if ($_companyPhone): ?>
             <p><i class="fa-solid fa-phone" style="color:var(--green);margin-right:6px"></i> <?= $_companyPhone ?></p>
