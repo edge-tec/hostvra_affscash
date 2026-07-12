@@ -396,19 +396,70 @@ try {
     @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
     /* STATS */
-    .stats-section{background:var(--grad-brand);padding:64px 0;position:relative;overflow:hidden}
-    .stats-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 80% at 20% 50%,rgba(255,255,255,.08),transparent),radial-gradient(ellipse 40% 60% at 80% 50%,rgba(255,255,255,.05),transparent)}
-    .stat-counter{text-align:center;padding:20px;position:relative;z-index:1}
+    .stats-section{background:var(--grad-section-b);padding:80px 0;position:relative;overflow:hidden;border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06)}
+    .stats-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 80% at 20% 50%,rgba(255,255,255,.02),transparent),radial-gradient(ellipse 40% 60% at 80% 50%,rgba(255,255,255,.01),transparent)}
+    .stat-counter {
+      text-align: center;
+      padding: 30px 20px;
+      position: relative;
+      z-index: 1;
+      background: rgba(15,10,36,0.6);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transform: perspective(1000px) rotateX(1deg);
+    }
+    .stat-counter:hover {
+      transform: translateY(-6px) scale(1.02) perspective(1000px) rotateX(0deg);
+      border-color: rgba(232,25,122,0.3);
+      box-shadow: 0 20px 45px rgba(232,25,122,0.2), inset 0 1px 1px rgba(255,255,255,0.2);
+    }
     .stat-counter .big-num{font-family:'Rajdhani',sans-serif;font-size:56px;font-weight:700;line-height:1;color:#fff;text-shadow:0 4px 20px rgba(0,0,0,.2)}
-    .stat-counter .big-label{font-size:12px;color:rgba(255,255,255,.72);margin-top:8px;text-transform:uppercase;letter-spacing:2px}
-    .stat-counter+.stat-counter::before{content:'';position:absolute;left:0;top:25%;height:50%;width:1px;background:rgba(255,255,255,.2)}
+    .stat-counter .big-label{font-size:12px;color:rgba(255,255,255,.5);margin-top:8px;text-transform:uppercase;letter-spacing:2px}
 
     /* OFFERS */
-    .offers-section{background:linear-gradient(160deg,#f0ebff 0%,#fde8f4 35%,#e8f0ff 70%,#edfbf5 100%);position:relative;overflow:hidden}
+    .offers-section{background:var(--grad-section-a);position:relative;overflow:hidden;padding:100px 0}
     .offers-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 40% at 15% 20%,rgba(124,58,237,.07),transparent),radial-gradient(ellipse 40% 35% at 85% 75%,rgba(232,25,122,.06),transparent),linear-gradient(rgba(124,58,237,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.018) 1px,transparent 1px);background-size:100% 100%,100% 100%,44px 44px,44px 44px;pointer-events:none}
+    .chart-card-3d {
+      background: rgba(15, 10, 36, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+      height: 100%;
+      transform: perspective(1000px) rotateX(1deg);
+    }
+    .chart-card-3d:hover {
+      transform: translateY(-6px) scale(1.01) perspective(1000px) rotateX(0deg);
+      border-color: rgba(124, 58, 237, 0.3);
+      box-shadow: 0 20px 45px rgba(124, 58, 237, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    }
     .aff-tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:34px}
-    .aff-tab{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:8px 18px;border-radius:30px;border:2px solid var(--border);background:var(--white);color:var(--muted);cursor:pointer;transition:all .22s}
-    .aff-tab:hover{border-color:var(--pink);color:var(--pink)}
+    .aff-tab {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      border-radius: 30px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      transition: all .22s;
+    }
+    .aff-tab:hover {
+      border-color: rgba(255,255,255,0.2);
+      color: #fff;
+      background: rgba(255,255,255,0.08);
+    }
     .aff-tab.active{background:var(--grad-brand);border-color:transparent;color:#fff;box-shadow:0 4px 16px rgba(232,25,122,.3)}
     .aff-tab[data-cat="casino"].active{background:var(--grad-gold);box-shadow:0 4px 16px rgba(217,119,6,.3)}
     .aff-tab[data-cat="cam"].active{background:linear-gradient(135deg,#a855f7,#ec4899)}
@@ -1561,7 +1612,7 @@ try {
   <!-- STATS -->
   <div class="stats-section">
     <div class="container">
-      <div class="row">
+      <div class="row g-4">
         <div class="col-6 col-md-3"><div class="stat-counter"><div class="big-num" id="statLiveOffers"><?= $_offerCount ?>+</div><div class="big-label">Live Offers</div></div></div>
         <div class="col-6 col-md-3"><div class="stat-counter"><div class="big-num">$<?= number_format($_maxPayout, 0) ?></div><div class="big-label">Max Payout</div></div></div>
         <div class="col-6 col-md-3"><div class="stat-counter"><div class="big-num">24/7</div><div class="big-label">Support</div></div></div>
@@ -1574,26 +1625,26 @@ try {
   <section class="offers-section" id="offers">
     <div class="container-fluid px-3 px-md-4">
       <div class="section-heading">
-        <div class="eyebrow"><span class="pulse"></span> High Paying Affiliate Programs &nbsp;·&nbsp; All Verticals</div>
-        <h2>Top <em>CPA Offers</em> <span class="count-badge" id="offerCount">Loading...</span></h2>
-        <p style="color:var(--muted);font-size:13px;margin-top:8px">Dating CPA Offers · Finance · Health · Sweepstakes · Gift Cards · Digital Marketing</p>
+        <div class="eyebrow" style="color:rgba(255,255,255,0.7)"><span class="pulse"></span> High Paying Affiliate Programs &nbsp;·&nbsp; All Verticals</div>
+        <h2 style="color:#fff">Top <em>CPA Offers</em> <span class="count-badge" id="offerCount" style="background:rgba(255,255,255,0.1); color:#fff">Loading...</span></h2>
+        <p style="color:rgba(255,255,255,0.6);font-size:13px;margin-top:8px">Dating CPA Offers · Finance · Health · Sweepstakes · Gift Cards · Digital Marketing</p>
       </div>
-      <div class="row g-3 mb-5">
+      <div class="row g-4 mb-5">
         <div class="col-md-4">
-          <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:0 4px 18px rgba(124,58,237,.07)">
-            <div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;margin-bottom:14px;color:var(--text)">📊 Offers by Category</div>
+          <div class="chart-card-3d">
+            <div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;margin-bottom:14px;color:#fff">📊 Offers by Category</div>
             <canvas id="chartCat" style="max-height:200px"></canvas>
           </div>
         </div>
         <div class="col-md-4">
-          <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:0 4px 18px rgba(124,58,237,.07)">
-            <div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;margin-bottom:14px;color:var(--text)">🔥 Top Payouts</div>
+          <div class="chart-card-3d">
+            <div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;margin-bottom:14px;color:#fff">🔥 Top Payouts</div>
             <canvas id="chartPayout" style="max-height:200px"></canvas>
           </div>
         </div>
         <div class="col-md-4">
-          <div style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:0 4px 18px rgba(124,58,237,.07)">
-            <div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;margin-bottom:14px;color:var(--text)">🌍 GEO Coverage</div>
+          <div class="chart-card-3d">
+            <div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;margin-bottom:14px;color:#fff">🌍 GEO Coverage</div>
             <canvas id="chartGeo" style="max-height:200px"></canvas>
           </div>
         </div>
@@ -2396,14 +2447,14 @@ try {
     var cats={SOI:0,DOI:0,Smartlink:0,CPS:0,Casino:0,Cam:0,Software:0,Financial:0};
     OFFER_DATA.forEach(function(o){var k={soi:'SOI',doi:'DOI',smartlink:'Smartlink',cps:'CPS',casino:'Casino',cam:'Cam',software:'Software',financial:'Financial'}[o.cat];if(k)cats[k]++;});
     var c1=document.getElementById('chartCat'),c2=document.getElementById('chartPayout'),c3=document.getElementById('chartGeo');
-    if(c1)new Chart(c1,{type:'doughnut',data:{labels:Object.keys(cats),datasets:[{data:Object.values(cats),backgroundColor:['#e8197a','#f97316','#059669','#d97706','#f59e0b','#a855f7','#0ea5e9','#2563eb'],borderWidth:0,hoverOffset:6}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{size:10},padding:8,boxWidth:10}}}}});
+    if(c1)new Chart(c1,{type:'doughnut',data:{labels:Object.keys(cats),datasets:[{data:Object.values(cats),backgroundColor:['#e8197a','#f97316','#059669','#d97706','#f59e0b','#a855f7','#0ea5e9','#2563eb'],borderWidth:0,hoverOffset:6}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{color:'rgba(255,255,255,0.7)',font:{size:10},padding:8,boxWidth:10}}}}});
     var _parsePay=function(o){return parseFloat(String(o.payoutDisplay||o.payout||'').replace(/[^0-9.]/g,''))||0;};
     var tp=OFFER_DATA.map(function(o){return{name:o.name,payNum:_parsePay(o)};}).filter(function(o){return o.payNum>0;}).sort(function(a,b){return b.payNum-a.payNum;}).slice(0,7);
     if(!tp.length){tp=OFFER_DATA.slice(0,7).map(function(o){return{name:o.name,payNum:_parsePay(o)||30};});}
-    if(c2&&tp.length)new Chart(c2,{type:'bar',data:{labels:tp.map(function(o){return o.name.length>13?o.name.slice(0,13)+'…':o.name;}),datasets:[{data:tp.map(function(o){return o.payNum;}),backgroundColor:['#e8197a','#7c3aed','#d97706','#059669','#2563eb','#f97316','#0ea5e9'],borderRadius:5,borderWidth:0}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:function(v){return'$'+v;}},grid:{color:'rgba(0,0,0,.05)'}},x:{ticks:{font:{size:9}}}}}});
+    if(c2&&tp.length)new Chart(c2,{type:'bar',data:{labels:tp.map(function(o){return o.name.length>13?o.name.slice(0,13)+'…':o.name;}),datasets:[{data:tp.map(function(o){return o.payNum;}),backgroundColor:['#e8197a','#7c3aed','#d97706','#059669','#2563eb','#f97316','#0ea5e9'],borderRadius:5,borderWidth:0}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{ticks:{color:'rgba(255,255,255,0.7)',callback:function(v){return'$'+v;}},grid:{color:'rgba(255,255,255,.06)'}},x:{ticks:{color:'rgba(255,255,255,0.7)',font:{size:9}},grid:{color:'rgba(255,255,255,.03)'}}}}});
     var gc={};OFFER_DATA.forEach(function(o){var g=Array.isArray(o.geos)?o.geos:(o.geos||'').split(/\s+/).filter(Boolean);g.forEach(function(x){if(x!=='WW'&&x!=='Worldwide'){gc[x]=(gc[x]||0)+1;}});});
     var tg=Object.entries(gc).sort(function(a,b){return b[1]-a[1];}).slice(0,8);
-    if(c3)new Chart(c3,{type:'bar',data:{labels:tg.map(function(g){return g[0];}),datasets:[{data:tg.map(function(g){return g[1];}),backgroundColor:'#7c3aed',borderRadius:5,borderWidth:0}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(0,0,0,.05)'}},y:{ticks:{font:{size:10}}}}}});
+    if(c3)new Chart(c3,{type:'bar',data:{labels:tg.map(function(g){return g[0];}),datasets:[{data:tg.map(function(g){return g[1];}),backgroundColor:'#7c3aed',borderRadius:5,borderWidth:0}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'rgba(255,255,255,0.7)'}},y:{ticks:{color:'rgba(255,255,255,0.7)',font:{size:10}},grid:{color:'rgba(255,255,255,.03)'}}}}});
   }
 
   // ── 3D Interactive Hero scene JavaScript (Mouse parallax + floating dynamic indicator rotation) ──
