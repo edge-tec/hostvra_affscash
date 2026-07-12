@@ -107,4 +107,5 @@ if ($_themeForce !== '') { unset($_SESSION['_theme_force']); }
 })();
 </script>
 <script src="/assets/js/theme.min.js" defer></script>
+<script src="/assets/js/networking-3d.js" defer></script>
 <?php if ($fav = Config::get('config','app.favicon')): ?><link rel="icon" href="<?= Helpers::e($fav) ?>"><?php endif; ?>

@@ -14,23 +14,23 @@
 
 html[data-theme="dark"] {
     /* Brand accents */
-    --primary:        #818CF8;
-    --primary-dark:   #6366F1;
-    --primary-light:  rgba(129,140,248,.16);
-    --secondary:      #34D399;
-    --warning:        #FBBF24;
-    --danger:         #F87171;
-    --info:           #60A5FA;
+    --primary:        #7c3aed;
+    --primary-dark:   #6d28d9;
+    --primary-light:  rgba(124,58,237,.16);
+    --secondary:      #10b981;
+    --warning:        #f59e0b;
+    --danger:         #ef4444;
+    --info:           #0ea5e9;
 
-    /* Layered surfaces — each step is ~+6% lightness over the previous */
-    --bg:             #0A0F1F;   /* page */
-    --sidebar-bg:     #0E1526;   /* chrome */
-    --card-bg:        #131B30;   /* primary surfaces */
-    --surface-2:      #1A2440;   /* hover / active fills */
-    --surface-3:      #243056;   /* raised pills / chips */
+    /* Layered surfaces — matching the landing page */
+    --bg:             #05020c;   /* page background */
+    --sidebar-bg:     rgba(15, 10, 36, 0.75);   /* translucent dark purple */
+    --card-bg:        rgba(15, 10, 36, 0.65);   /* translucent card background */
+    --surface-2:      rgba(124, 58, 237, 0.12);   /* hover / active fills */
+    --surface-3:      rgba(124, 58, 237, 0.22);   /* raised pills / chips */
 
-    --border:         rgba(148,163,184,.10);
-    --border-strong:  rgba(148,163,184,.18);
+    --border:         rgba(255, 255, 255, 0.08);
+    --border-strong:  rgba(255, 255, 255, 0.15);
 
     --text:           #E5E7EB;
     --text-muted:     #9CA3AF;
@@ -64,8 +64,9 @@ html[data-theme="dark"] .nav-link {
 /* ── Page chrome ─────────────────────────────────────────── */
 html[data-theme="dark"] body {
     background:
-        radial-gradient(1200px 600px at 0% -10%, rgba(99,102,241,.06), transparent 60%),
-        radial-gradient(900px 500px at 100% 110%, rgba(16,185,129,.04), transparent 60%),
+        radial-gradient(circle at 80% 20%, rgba(232, 25, 122, 0.14), transparent 50%),
+        radial-gradient(circle at 20% 60%, rgba(124, 58, 237, 0.14), transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.07), transparent 50%),
         var(--bg);
     color: var(--text);
 }
@@ -73,11 +74,13 @@ html[data-theme="dark"] .sidebar {
     background: var(--sidebar-bg);
     border-right: 1px solid var(--border);
     box-shadow: 1px 0 0 rgba(255,255,255,.02) inset;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 html[data-theme="dark"] .topbar  {
-    background: rgba(14,21,38,.85);
-    backdrop-filter: blur(8px) saturate(140%);
-    -webkit-backdrop-filter: blur(8px) saturate(140%);
+    background: rgba(15, 10, 36, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
 }
 
@@ -137,6 +140,8 @@ html[data-theme="dark"] .widget {
     color: var(--text);
     box-shadow: var(--shadow);
     border-radius: 14px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 html[data-theme="dark"] .stat-card:hover {
     background: var(--surface-2) !important;
@@ -171,8 +176,8 @@ html[data-theme="dark"] table thead th {
     text-transform: uppercase;
     font-size: 11.5px;
 }
-html[data-theme="dark"] tbody tr:nth-child(odd)  td { background: var(--card-bg)  !important; }
-html[data-theme="dark"] tbody tr:nth-child(even) td { background: #101729        !important; }
+html[data-theme="dark"] tbody tr:nth-child(odd)  td { background: transparent  !important; }
+html[data-theme="dark"] tbody tr:nth-child(even) td { background: rgba(255, 255, 255, 0.015) !important; }
 html[data-theme="dark"] tbody tr:hover td           { background: rgba(99,102,241,.10) !important; }
 html[data-theme="dark"] td, html[data-theme="dark"] th { border-color: var(--border) !important; }
 html[data-theme="dark"] .tbl-secondary { color: var(--text-muted); }
