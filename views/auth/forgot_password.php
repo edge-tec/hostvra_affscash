@@ -51,6 +51,16 @@ body {
   border-color: rgba(124,58,237,0.4) !important;
   box-shadow: 0 0 12px rgba(124,58,237,0.2) !important;
 }
+/* Autofill override: prevents browser autofill from making the box background white */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: #ffffff !important;
+  -webkit-box-shadow: 0 0 0 1000px #0b071e inset !important;
+  box-shadow: 0 0 0 1000px #0b071e inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
 .btn-primary, button[type="submit"] {
   background: linear-gradient(135deg,#7c3aed 0%,#3b82f6 50%,#0ea5e9 100%) !important;
   border: none !important;
