@@ -90,6 +90,7 @@ require_once BASE_PATH . '/core/SeoSitemap.php';
 function buildSitemapUrls(): array { return SeoSitemap::buildUrls(); }
 
 $action = Helpers::get('action') ?: 'index';
+$currentTab = Helpers::get('tab') ?: 'setup';
 
 // ══════════════════════════════════════════════════════════════════════════════
 // POST handlers
@@ -122,7 +123,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         } else {
             Helpers::flash('success', 'Site URL saved.');
         }
-        Helpers::redirect('/admin/search-console');
+        Helpers::redirect('/admin/search-console?tab=' . urlencode($currentTab));
     }
 
     // ── Save verification meta tag ────────────────────────────────────────────
@@ -131,7 +132,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         seoSet('google_analytics_id',  trim(Helpers::post('google_analytics_id')));
         seoSet('google_tag_manager_id',trim(Helpers::post('google_tag_manager_id')));
         Helpers::flash('success', 'Verification & tracking settings saved. Add the meta tag to your site\'s &lt;head&gt;.');
-        Helpers::redirect('/admin/search-console');
+        Helpers::redirect('/admin/search-console?tab=' . urlencode($currentTab));
     }
 
     // ── Upload HTML verification file ─────────────────────────────────────────
@@ -152,7 +153,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         } else {
             Helpers::flash('error', 'No file selected.');
         }
-        Helpers::redirect('/admin/search-console');
+        Helpers::redirect('/admin/search-console?tab=' . urlencode($currentTab));
     }
 
     // ── Save SEO settings ─────────────────────────────────────────────────────
@@ -174,7 +175,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         @file_put_contents(BASE_PATH . '/robots.txt', $robotsTxt);
 
         Helpers::flash('success', 'SEO settings saved and robots.txt updated.');
-        Helpers::redirect('/admin/search-console');
+        Helpers::redirect('/admin/search-console?tab=' . urlencode($currentTab));
     }
 
     // ── Generate / regenerate sitemap ─────────────────────────────────────────
@@ -188,7 +189,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         } else {
             Helpers::flash('error', 'Could not write sitemap.xml — check write permissions on root directory.');
         }
-        Helpers::redirect('/admin/search-console');
+        Helpers::redirect('/admin/search-console?tab=' . urlencode($currentTab));
     }
 
     // ── Submit sitemap to Google ──────────────────────────────────────────────
@@ -209,7 +210,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
                 Helpers::flash('error', 'Sitemap submission failed (HTTP ' . $r['http'] . '): ' . ($r['error'] ?: 'unknown error'));
             }
         }
-        Helpers::redirect('/admin/search-console');
+        Helpers::redirect('/admin/search-console?tab=' . urlencode($currentTab));
     }
 
     // ── Add site to GSC ───────────────────────────────────────────────────────
@@ -226,7 +227,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
                 Helpers::flash('error', 'Could not add site (HTTP ' . $r['http'] . '): ' . ($r['error'] ?: 'unknown error') . '. Make sure the service account email is added as an Owner of the property.');
             }
         }
-        Helpers::redirect('/admin/search-console');
+        Helpers::redirect('/admin/search-console?tab=' . urlencode($currentTab));
     }
 
     // ── Request URL indexing ──────────────────────────────────────────────────
@@ -269,14 +270,14 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
             if ($lastErr) $msg .= ' Last error: ' . $lastErr;
             Helpers::flash($level, $msg);
         }
-        Helpers::redirect('/admin/search-console');
+        Helpers::redirect('/admin/search-console?tab=' . urlencode($currentTab));
     }
 
     // ── Delete service account ────────────────────────────────────────────────
     if ($sub === 'remove_credentials') {
         seoSet('service_account_json', '');
         Helpers::flash('success', 'Service account credentials removed.');
-        Helpers::redirect('/admin/search-console');
+        Helpers::redirect('/admin/search-console?tab=' . urlencode($currentTab));
     }
 }
 
