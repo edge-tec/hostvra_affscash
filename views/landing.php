@@ -1870,7 +1870,7 @@ try {
 
   <!-- HERO -->
   <section class="hero" id="top">
-    <canvas id="heroParticlesCanvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:0"></canvas>
+    <canvas id="heroParticlesCanvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:999999"></canvas>
     <div class="container" style="position:relative;z-index:2">
       <div class="row align-items-center">
         <div class="col-lg-5 hero-content">
