@@ -293,7 +293,7 @@ try {
 
   <style>
     :root {
-      --white:rgba(15,10,36,0.65); --bg:#080516; --bg2:#0f0a26; --bg3:#160f38; --card:rgba(15,10,36,0.7);
+      --white:rgba(15,10,36,0.65); --bg:#05020c; --bg2:#0f0a26; --bg3:#160f38; --card:rgba(15,10,36,0.7);
       --border:rgba(255,255,255,0.08); --text:#ffffff; --muted:#9ca3af; --r:16px;
       --pink:#e8197a; --pink-light:#ff4da6; --violet:#7c3aed; --blue:#2563eb;
       --cyan:#0ea5e9; --green:#10b981; --gold:#f59e0b;
@@ -302,10 +302,10 @@ try {
       --grad-cool:linear-gradient(135deg,#2563eb 0%,#0ea5e9 60%,#10b981 100%);
       --grad-gold:linear-gradient(135deg,#f59e0b 0%,#ef4444 100%);
       --grad-green:linear-gradient(135deg,#10b981 0%,#0ea5e9 100%);
-      --grad-hero-bg:radial-gradient(circle at 50% 30%, #150e33 0%, #080516 100%);
-      --grad-section-a:linear-gradient(160deg,#0a0518 0%,#0f0a28 100%);
-      --grad-section-b:linear-gradient(160deg,#0f0a28 0%,#0a0518 100%);
-      --grad-dark-footer:linear-gradient(135deg,#0a0518 0%,#05020c 100%);
+      --grad-hero-bg: radial-gradient(circle at 80% 20%, rgba(232, 25, 122, 0.14) 0%, transparent 50%), radial-gradient(circle at 20% 60%, rgba(124, 58, 237, 0.14) 0%, transparent 50%), linear-gradient(135deg, #0a051d 0%, #05020c 100%);
+      --grad-section-a: radial-gradient(circle at 90% 10%, rgba(124, 58, 237, 0.12) 0%, transparent 45%), radial-gradient(circle at 10% 90%, rgba(14, 165, 233, 0.12) 0%, transparent 45%), linear-gradient(160deg, #05020d 0%, #0e0825 50%, #05020d 100%);
+      --grad-section-b: radial-gradient(circle at 10% 10%, rgba(232, 25, 122, 0.1) 0%, transparent 45%), radial-gradient(circle at 90% 90%, rgba(124, 58, 237, 0.1) 0%, transparent 45%), linear-gradient(160deg, #09051b 0%, #05020c 50%, #09051b 100%);
+      --grad-dark-footer: linear-gradient(180deg, #05020c 0%, #020106 100%);
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
