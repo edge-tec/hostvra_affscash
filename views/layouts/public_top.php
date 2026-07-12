@@ -245,3 +245,4 @@
     <?php endif; ?>
   </div>
 </header>
+<canvas id="publicParticlesCanvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:0"></canvas>
