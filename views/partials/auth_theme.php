@@ -35,6 +35,39 @@ html[data-theme="dark"] .auth-footer {
 }
 html[data-theme="dark"] .section-title { color: var(--text-muted) !important; border-bottom-color: var(--border) !important; }
 
+/* ── Light Mode input text visibility override on auth screens ── */
+html[data-theme="light"] .form-control,
+html[data-theme="light"] .form-control-custom,
+html[data-theme="light"] input[type="text"],
+html[data-theme="light"] input[type="password"],
+html[data-theme="light"] input[type="email"],
+html[data-theme="light"] select,
+html[data-theme="light"] textarea {
+    background: #ffffff !important;
+    border: 1px solid #CBD5E1 !important;
+    color: #1e293b !important;
+}
+
+html[data-theme="light"] .form-control:focus,
+html[data-theme="light"] .form-control-custom:focus {
+    border-color: #6366F1 !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12) !important;
+}
+
+/* Light Mode Autofill override */
+html[data-theme="light"] input:-webkit-autofill,
+html[data-theme="light"] input:-webkit-autofill:hover, 
+html[data-theme="light"] input:-webkit-autofill:focus, 
+html[data-theme="light"] input:-webkit-autofill:active,
+html[data-theme="light"] select:-webkit-autofill,
+html[data-theme="light"] textarea:-webkit-autofill {
+    -webkit-text-fill-color: #1e293b !important;
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+    box-shadow: 0 0 0 1000px #ffffff inset !important;
+    caret-color: #1e293b;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
 /* Theme picker pinned top-right on auth screens */
 .auth-theme-picker { position: fixed; top: 18px; right: 18px; z-index: 50; }
 /* On auth screens the trigger lives at the top-right corner of the
