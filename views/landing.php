@@ -1331,12 +1331,7 @@ try {
             </div>
 
             <!-- Dashboard Carousel Navigation dots (glowing 3D indicator style) -->
-            <div class="hero-3d-dots">
-              <span class="threed-dot active"></span>
-              <span class="threed-dot"></span>
-              <span class="threed-dot"></span>
-              <span class="threed-dot"></span>
-            </div>
+            <div class="hero-3d-dots" id="heroSliderDots"></div>
           </div>
           
           <!-- Core stats list under visual layout -->
