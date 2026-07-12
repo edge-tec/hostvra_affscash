@@ -777,6 +777,19 @@ tbody tr.no-data td,
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(79,70,229,.1);
 }
+/* Autofill override for Light Mode: keeps background light/white and text dark slate */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+    -webkit-text-fill-color: #1e293b !important;
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+    box-shadow: 0 0 0 1000px #ffffff inset !important;
+    caret-color: #1e293b;
+    transition: background-color 5000s ease-in-out 0s;
+}
 .form-control::placeholder { color: var(--text-light); }
 select.form-control { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748B' fill='none' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
 textarea.form-control { min-height: 100px; resize: vertical; }
