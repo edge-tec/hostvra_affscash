@@ -167,9 +167,51 @@
       color: rgba(255,255,255,0.55) !important;
       text-decoration: none !important;
   }
-  .footer a:hover, footer a:hover {
-      color: #0ea5e9 !important;
+  /* Accordion sections glassmorphism overrides */
+  .tos-section, .section {
+      background: rgba(15,10,36,0.65) !important;
+      border: 1px solid rgba(255,255,255,0.08) !important;
+      border-radius: 18px !important;
+      backdrop-filter: blur(12px) !important;
+      -webkit-backdrop-filter: blur(12px) !important;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.1) !important;
+      color: #fff !important;
+      margin-bottom: 20px !important;
+      overflow: hidden !important;
   }
+  
+  .accordion-header {
+      background: rgba(255,255,255,0.02) !important;
+      border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+      color: #fff !important;
+  }
+  .accordion-header:hover {
+      background: rgba(124,58,237,0.08) !important;
+  }
+  
+  .accordion-content {
+      background: transparent !important;
+      color: rgba(255,255,255,0.85) !important;
+  }
+  .accordion-content p {
+      color: rgba(255,255,255,0.85) !important;
+  }
+  
+  /* Alert / warning notice and callout blocks dark theme contrast fixes */
+  .notice-box {
+      background: rgba(239, 68, 68, 0.1) !important;
+      border: 1px solid rgba(239, 68, 68, 0.3) !important;
+      border-radius: 12px !important;
+  }
+  .notice-box p {
+      color: #fca5a5 !important;
+  }
+  
+  .callout.info    { background: rgba(59, 130, 246, 0.1) !important; border: 1px solid rgba(59, 130, 246, 0.3) !important; color: #93c5fd !important; }
+  .callout.warning { background: rgba(245, 158, 11, 0.1) !important; border: 1px solid rgba(245, 158, 11, 0.3) !important; color: #fde047 !important; }
+  .callout.success { background: rgba(16, 185, 129, 0.1) !important; border: 1px solid rgba(16, 185, 129, 0.3) !important; color: #6ee7b7 !important; }
+  .callout.teal    { background: rgba(20, 184, 166, 0.1) !important; border: 1px solid rgba(20, 184, 166, 0.3) !important; color: #2dd4bf !important; }
+  .callout p, .callout { color: inherit !important; }
 </style>
 
 <!-- Canvas for full-page background network constellation animation -->
