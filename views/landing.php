@@ -124,7 +124,7 @@ try {
     $_landingRevs = Database::fetchAll(
         "SELECT name, role_title, avatar, rating, review_text, country, is_featured
          FROM landing_reviews WHERE status='active'
-         ORDER BY is_featured DESC, sort_order ASC, id DESC LIMIT 8"
+         ORDER BY is_featured DESC, sort_order ASC, id DESC LIMIT 100"
     ) ?: [];
 
     $cRow = Database::fetchOne("SELECT COUNT(*) as c FROM landing_reviews WHERE status='active'");
@@ -173,7 +173,7 @@ try {
         $_landingRevs = Database::fetchAll(
             "SELECT name, role_title, avatar, rating, review_text, country, is_featured
              FROM landing_reviews WHERE status='active'
-             ORDER BY is_featured DESC, sort_order ASC, id DESC LIMIT 8"
+             ORDER BY is_featured DESC, sort_order ASC, id DESC LIMIT 100"
         ) ?: [];
     }
 } catch (\Throwable $e) {}
@@ -987,9 +987,9 @@ try {
       </div>
 
       <!-- Reviews grid -->
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:24px;margin-bottom:48px">
-        <?php foreach (array_slice($_landingRevs, 0, 6) as $rv): ?>
-        <div style="background:#fff;border-radius:20px;padding:28px;box-shadow:0 4px 28px rgba(124,58,237,.08);border:1px solid #ede9fe;display:flex;flex-direction:column;gap:16px;transition:transform .25s,box-shadow .25s" onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 40px rgba(124,58,237,.14)'" onmouseleave="this.style.transform='';this.style.boxShadow='0 4px 28px rgba(124,58,237,.08)'">
+      <div id="reviewsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:24px;margin-bottom:32px">
+        <?php foreach (array_slice($_landingRevs, 0, 100) as $index => $rv): ?>
+        <div class="review-card" style="background:#fff;border-radius:20px;padding:28px;box-shadow:0 4px 28px rgba(124,58,237,.08);border:1px solid #ede9fe;display:<?php echo $index >= 6 ? 'none' : 'flex'; ?>;flex-direction:column;gap:16px;transition:transform .25s,box-shadow .25s" onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 40px rgba(124,58,237,.14)'" onmouseleave="this.style.transform='';this.style.boxShadow='0 4px 28px rgba(124,58,237,.08)'">
 
           <!-- Stars + featured badge -->
           <div style="display:flex;align-items:center;justify-content:space-between">
@@ -1027,6 +1027,25 @@ try {
         </div>
         <?php endforeach; ?>
       </div>
+
+      <!-- Load More Button -->
+      <?php if (count($_landingRevs) > 6): ?>
+      <div style="text-align:center;margin-bottom:48px">
+        <button id="btnLoadMoreReviews" style="background:var(--grad-brand);color:#fff;border:none;border-radius:30px;padding:12px 32px;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 4px 16px rgba(124,58,237,.25);transition:transform .2s,box-shadow .2s;outline:none" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform=''">Load More Reviews</button>
+      </div>
+      <script>
+      document.getElementById('btnLoadMoreReviews').onclick = function() {
+          var cards = document.querySelectorAll('#reviewsGrid .review-card');
+          var hiddenCards = Array.from(cards).filter(function(card) { return card.style.display === 'none'; });
+          for (var i = 0; i < Math.min(9, hiddenCards.length); i++) {
+              hiddenCards[i].style.display = 'flex';
+          }
+          if (document.querySelectorAll('#reviewsGrid .review-card[style*="display: none"]').length === 0 && document.querySelectorAll('#reviewsGrid .review-card[style*="display:none"]').length === 0) {
+              this.style.display = 'none';
+          }
+      };
+      </script>
+      <?php endif; ?>
 
       <?php else: ?>
 
