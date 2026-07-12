@@ -293,29 +293,29 @@ try {
 
   <style>
     :root {
-      --white:#ffffff; --bg:#ffffff; --bg2:#f7f5ff; --bg3:#fff0f7; --card:#ffffff;
-      --border:#ede8fc; --text:#1a1535; --muted:#7c7a9e; --r:14px;
+      --white:rgba(15,10,36,0.65); --bg:#080516; --bg2:#0f0a26; --bg3:#160f38; --card:rgba(15,10,36,0.7);
+      --border:rgba(255,255,255,0.08); --text:#ffffff; --muted:#9ca3af; --r:16px;
       --pink:#e8197a; --pink-light:#ff4da6; --violet:#7c3aed; --blue:#2563eb;
-      --cyan:#0ea5e9; --green:#059669; --gold:#d97706;
-      --grad-brand:linear-gradient(135deg,#e8197a 0%,#7c3aed 50%,#2563eb 100%);
+      --cyan:#0ea5e9; --green:#10b981; --gold:#f59e0b;
+      --grad-brand:linear-gradient(135deg,#7c3aed 0%,#3b82f6 50%,#0ea5e9 100%);
       --grad-warm:linear-gradient(135deg,#f97316 0%,#e8197a 50%,#7c3aed 100%);
-      --grad-cool:linear-gradient(135deg,#2563eb 0%,#0ea5e9 60%,#059669 100%);
+      --grad-cool:linear-gradient(135deg,#2563eb 0%,#0ea5e9 60%,#10b981 100%);
       --grad-gold:linear-gradient(135deg,#f59e0b 0%,#ef4444 100%);
-      --grad-green:linear-gradient(135deg,#059669 0%,#0ea5e9 100%);
-      --grad-hero-bg:linear-gradient(145deg,#fdf8ff 0%,#f5f0ff 30%,#fff0f9 65%,#f0f7ff 100%);
-      --grad-section-a:linear-gradient(160deg,#fdf8ff 0%,#f5f0ff 100%);
-      --grad-section-b:linear-gradient(160deg,#fff8f0 0%,#fff0f9 100%);
-      --grad-dark-footer:linear-gradient(135deg,#1a1535 0%,#2d1b69 50%,#1a0030 100%);
+      --grad-green:linear-gradient(135deg,#10b981 0%,#0ea5e9 100%);
+      --grad-hero-bg:radial-gradient(circle at 50% 30%, #150e33 0%, #080516 100%);
+      --grad-section-a:linear-gradient(160deg,#0a0518 0%,#0f0a28 100%);
+      --grad-section-b:linear-gradient(160deg,#0f0a28 0%,#0a0518 100%);
+      --grad-dark-footer:linear-gradient(135deg,#0a0518 0%,#05020c 100%);
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
-    body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.7;overflow-x:hidden}
-    a{color:var(--pink);text-decoration:none;transition:color .25s}
-    a:hover{color:var(--pink-light)}
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.7;overflow-x:hidden}
+    a{color:#7c3aed;text-decoration:none;transition:all .25s}
+    a:hover{color:#0ea5e9}
     h1,h2,h3,h4,h5,h6{font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--text);line-height:1.15}
     em{font-style:normal;background:var(--grad-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
     span.accent{background:var(--grad-cool);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    section{padding:90px 0}
+    section{padding:100px 0}
 
     /* PRELOADER */
     #preloader{position:fixed;inset:0;z-index:9999;background:var(--grad-brand);display:flex;align-items:center;justify-content:center;transition:opacity .7s,visibility .7s}
@@ -327,27 +327,27 @@ try {
     @keyframes pre-bounce{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
 
     /* HEADER */
-    .site-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,.94);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--border);padding:0 24px;box-shadow:0 2px 24px rgba(124,58,237,.08);transition:background .3s}
+    .site-header{position:fixed;top:16px;left:50%;transform:translateX(-50%);width:92%;max-width:1280px;z-index:1000;background:rgba(15,10,36,0.7);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:0 24px;box-shadow:0 12px 40px rgba(0,0,0,0.3);transition:all .3s}
     .nav-inner{display:flex;align-items:center;justify-content:space-between;max-width:1280px;margin:0 auto;height:68px}
     .nav-logo{display:flex;align-items:center;text-decoration:none}
-    .nav-logo img{height:40px;width:auto;display:block}
+    .nav-logo img{height:40px;width:auto;display:block;filter:brightness(0) invert(1)}
     .nav-links{display:flex;align-items:center;gap:4px;list-style:none}
     .nav-links a{color:var(--text);font-size:13px;font-weight:500;padding:7px 11px;border-radius:8px;transition:all .22s}
-    .nav-links a:hover{background:rgba(232,25,122,.07);color:var(--pink)}
-    .nav-links .btn-login{background:var(--grad-brand);color:#fff !important;padding:8px 20px;border-radius:8px;font-weight:600;box-shadow:0 4px 16px rgba(232,25,122,.3);-webkit-text-fill-color:#fff !important}
+    .nav-links a:hover{background:rgba(124,58,237,0.15);color:#0ea5e9}
+    .nav-links .btn-login{background:var(--grad-brand);color:#fff !important;padding:8px 20px;border-radius:8px;font-weight:600;box-shadow:0 4px 16px rgba(124,58,237,0.3);-webkit-text-fill-color:#fff !important}
     .nav-links .btn-login:hover{opacity:.88;transform:translateY(-1px)}
-    .nav-links .btn-signup{border:2px solid transparent;background:linear-gradient(white,white) padding-box,var(--grad-brand) border-box;color:var(--pink) !important;padding:7px 18px;border-radius:8px;font-weight:600}
-    .nav-links .btn-signup:hover{background:linear-gradient(#fff5fa,#fff5fa) padding-box,var(--grad-brand) border-box}
+    .nav-links .btn-signup{border:2px solid transparent;background:linear-gradient(rgba(15,10,36,0.65),rgba(15,10,36,0.65)) padding-box,var(--grad-brand) border-box;color:#fff !important;padding:7px 18px;border-radius:8px;font-weight:600}
+    .nav-links .btn-signup:hover{background:linear-gradient(rgba(124,58,237,0.1),rgba(124,58,237,0.1)) padding-box,var(--grad-brand) border-box}
     .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;background:none;border:none}
-    .hamburger span{display:block;width:24px;height:2px;background:var(--text);border-radius:2px;transition:all .3s}
+    .hamburger span{display:block;width:24px;height:2px;background:#fff;border-radius:2px;transition:all .3s}
     .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
     .hamburger.open span:nth-child(2){opacity:0}
     .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-    .mobile-menu{display:none;flex-direction:column;background:var(--white);border-top:1px solid var(--border);padding:16px 24px 20px}
+    .mobile-menu{display:none;flex-direction:column;background:rgba(15,10,36,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:16px 24px 20px;margin-top:8px}
     .mobile-menu.open{display:flex}
-    .mobile-menu a{color:var(--text);padding:12px 0;border-bottom:1px solid var(--border);font-size:14px;font-weight:500}
+    .mobile-menu a{color:var(--text);padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.08);font-size:14px;font-weight:500}
     .mobile-menu a:last-child{border-bottom:none}
-    .mobile-menu a:hover{color:var(--pink)}
+    .mobile-menu a:hover{color:#0ea5e9}
 
     /* HERO */
     .hero{min-height:100vh;display:flex;align-items:center;padding-top:88px;position:relative;overflow:hidden;background:var(--grad-hero-bg)}
@@ -360,20 +360,21 @@ try {
     .hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
     .hero-visual{display:flex;align-items:center;justify-content:center;position:relative;z-index:2}
     .hero-graphic{width:100%;position:relative;margin:0 auto}
-    .hero-card-stack{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-    .hero-stat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:16px 14px;text-align:center;transition:transform .3s,box-shadow .3s;box-shadow:0 4px 20px rgba(124,58,237,.07)}
-    .hero-stat-card:hover{transform:translateY(-4px);box-shadow:0 14px 36px rgba(124,58,237,.15)}
-    .hero-stat-card .stat-num{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;display:block;line-height:1;background:var(--grad-gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    .hero-stat-card:nth-child(2) .stat-num{background:var(--grad-green);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    .hero-stat-card:nth-child(3) .stat-num{background:var(--grad-cool);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    .hero-stat-card:nth-child(4) .stat-num{background:var(--grad-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    .hero-stat-card .stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+    .hero-card-stack{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px;width:100%;transform-style:preserve-3d}
+    .hero-stat-card{background:rgba(15,10,36,0.65);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:24px 20px;text-align:center;transition:all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);box-shadow:0 10px 30px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.1);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);position:relative;overflow:hidden;transform:translateZ(10px)}
+    .hero-stat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(124,58,237,0.1),transparent);opacity:0.6;pointer-events:none}
+    .hero-stat-card:hover{transform:translateY(-6px) translateZ(25px);box-shadow:0 20px 45px rgba(124,58,237,0.25);border-color:rgba(124,58,237,0.3)}
+    .hero-stat-card .stat-num{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;display:block;line-height:1;margin-bottom:6px;background:var(--grad-gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 2px 8px rgba(245,158,11,0.3))}
+    .hero-stat-card:nth-child(2) .stat-num{background:var(--grad-green);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 2px 8px rgba(16,185,129,0.3))}
+    .hero-stat-card:nth-child(3) .stat-num{background:var(--grad-cool);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 2px 8px rgba(14,165,233,0.3))}
+    .hero-stat-card:nth-child(4) .stat-num{background:var(--grad-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 2px 8px rgba(124,58,237,0.3))}
+    .hero-stat-card .stat-label{font-size:12px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;margin-top:6px}
 
     /* BUTTONS */
-    .btn-primary-custom{display:inline-flex;align-items:center;gap:9px;background:var(--grad-brand);color:#fff !important;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;letter-spacing:1px;text-transform:uppercase;padding:14px 32px;border-radius:10px;box-shadow:0 6px 28px rgba(232,25,122,.35);transition:all .25s;-webkit-text-fill-color:#fff !important;border:none;cursor:pointer}
-    .btn-primary-custom:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(232,25,122,.5);opacity:.95}
-    .btn-outline-custom{display:inline-flex;align-items:center;gap:9px;border:2px solid var(--border);color:var(--text) !important;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:15px;letter-spacing:1px;text-transform:uppercase;padding:12px 28px;border-radius:10px;transition:all .25s;background:var(--white)}
-    .btn-outline-custom:hover{border-color:var(--pink);color:var(--pink) !important;box-shadow:0 4px 18px rgba(232,25,122,.12)}
+    .btn-primary-custom{display:inline-flex;align-items:center;gap:9px;background:var(--grad-brand);color:#fff !important;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;letter-spacing:1.5px;text-transform:uppercase;padding:14px 32px;border-radius:12px;box-shadow:0 6px 20px rgba(124,58,237,0.3);transition:all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);-webkit-text-fill-color:#fff !important;border:1px solid rgba(255,255,255,0.15);cursor:pointer}
+    .btn-primary-custom:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 12px 35px rgba(124,58,237,0.6);border-color:rgba(255,255,255,0.35)}
+    .btn-outline-custom{display:inline-flex;align-items:center;gap:9px;border:1px solid rgba(255,255,255,0.15);color:#fff !important;-webkit-text-fill-color:#fff !important;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:15px;letter-spacing:1.5px;text-transform:uppercase;padding:13px 30px;border-radius:12px;transition:all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);background:rgba(255,255,255,0.06);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 4px 15px rgba(0,0,0,0.15)}
+    .btn-outline-custom:hover{background:rgba(255,255,255,0.15);border-color:#0ea5e9;transform:translateY(-3px) scale(1.03);box-shadow:0 8px 25px rgba(14,165,233,0.4)}
 
     /* SECTION HEADINGS */
     .section-heading{margin-bottom:52px;text-align:center}
@@ -417,14 +418,14 @@ try {
     .slider-outer{position:relative;max-width:1400px;margin:0 auto}
     .slider-wrap{overflow:hidden;padding:12px 4px 18px}
     .slider-track{display:flex;gap:16px;will-change:transform;transition:transform .52s cubic-bezier(.4,0,.2,1)}
-    .offer-card{flex:0 0 calc(25% - 12px);background:var(--white);border:1.5px solid rgba(124,58,237,.14);border-radius:16px;overflow:hidden;position:relative;cursor:pointer;transition:all .3s;box-shadow:0 4px 18px rgba(124,58,237,.08),0 1px 3px rgba(0,0,0,.04)}
-    .offer-card:hover{transform:translateY(-8px);border-color:transparent;box-shadow:0 0 0 2px rgba(232,25,122,.3),0 20px 50px rgba(124,58,237,.2),0 8px 20px rgba(232,25,122,.12)}
+    .offer-card{flex:0 0 calc(25% - 12px);background:rgba(15,10,36,0.65);border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;position:relative;cursor:pointer;transition:all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);box-shadow:0 8px 32px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transform-style:preserve-3d}
+    .offer-card:hover{transform:translateY(-8px) scale(1.02);border-color:rgba(124,58,237,0.3);box-shadow:0 20px 50px rgba(124,58,237,0.25)}
     .offer-card-img{width:100%;height:140px;object-fit:cover;display:block;transition:transform .4s}
     .offer-card:hover .offer-card-img{transform:scale(1.06)}
     .offer-card-img-wrap{overflow:hidden;position:relative}
-    .offer-card-img-wrap::after{content:'';position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(transparent,rgba(255,255,255,.55))}
-    .offer-card-body{padding:14px 16px 16px}
-    .offer-id{display:inline-block;font-size:10px;font-weight:600;color:var(--muted);background:#f3f0ff;border:1px solid var(--border);border-radius:20px;padding:2px 8px;letter-spacing:.4px;margin-bottom:8px}
+    .offer-card-img-wrap::after{content:'';position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(transparent,rgba(15,10,36,0.65))}
+    .offer-card-body{padding:14px 16px 16px;transform:translateZ(10px)}
+    .offer-id{display:inline-block;font-size:10px;font-weight:600;color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:2px 8px;letter-spacing:.4px;margin-bottom:8px}
     .offer-badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:4px;margin-bottom:8px;margin-left:6px}
     .badge-soi{background:rgba(232,25,122,.1);color:var(--pink);border:1px solid rgba(232,25,122,.22)}
     .badge-doi{background:rgba(249,115,22,.1);color:#f97316;border:1px solid rgba(249,115,22,.22)}
@@ -434,16 +435,16 @@ try {
     .badge-software{background:rgba(14,165,233,.1);color:var(--cyan);border:1px solid rgba(14,165,233,.22)}
     .badge-cps{background:rgba(217,119,6,.1);color:var(--gold);border:1px solid rgba(217,119,6,.22)}
     .badge-financial{background:rgba(37,99,235,.1);color:var(--blue);border:1px solid rgba(37,99,235,.22)}
-    .offer-name{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;color:var(--text);line-height:1.2;margin-bottom:4px}
-    .offer-type{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+    .offer-name{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:4px}
+    .offer-type{font-size:11px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
     .offer-countries{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;min-height:24px}
     .ctag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:5px;background:rgba(37,99,235,.08);color:var(--blue);border:1px solid rgba(37,99,235,.18)}
-    .ctag.ww{background:rgba(5,150,105,.08);color:var(--green);border-color:rgba(5,150,105,.2)}
-    .offer-payout-row{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border)}
-    .payout-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+    .ctag.ww{background:rgba(16,185,129,0.1);color:#10b981;border:1px solid rgba(16,185,129,0.2)}
+    .offer-payout-row{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08)}
+    .payout-label{font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
     .payout-val{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;line-height:1;background:var(--grad-gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    .btn-apply{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--pink);background:rgba(232,25,122,.07);border:1px solid rgba(232,25,122,.22);border-radius:7px;padding:6px 12px;transition:all .22s;white-space:nowrap}
-    .btn-apply:hover{background:rgba(232,25,122,.16);color:var(--pink)}
+    .btn-apply{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#fff;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:6px 12px;transition:all .22s;white-space:nowrap}
+    .btn-apply:hover{background:var(--grad-brand);border-color:transparent;color:#fff;box-shadow:0 4px 15px rgba(124,58,237,0.4)}
     .slider-controls{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:28px}
     .slider-btn{width:44px;height:44px;border-radius:50%;border:none;background:var(--grad-brand);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s;box-shadow:0 4px 16px rgba(232,25,122,.3)}
     .slider-btn:hover:not(:disabled){transform:scale(1.1);box-shadow:0 8px 24px rgba(124,58,237,.4)}
@@ -462,24 +463,58 @@ try {
     .sl-feat{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.8);color:var(--green);border:1px solid rgba(5,150,105,.2);border-radius:40px;padding:8px 20px;font-size:13px;font-weight:700;box-shadow:0 4px 14px rgba(5,150,105,.08);backdrop-filter:blur(10px);transition:transform 0.2s}
     .sl-feat:hover{transform:translateY(-2px);border-color:rgba(5,150,105,.4)}
 
-    /* ABOUT */
-    .about-section{background:var(--white)}
-    .feature-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
-    @media(max-width:576px){.feature-grid{grid-template-columns:1fr}}
-    .feature-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:24px 20px;transition:all .3s;box-shadow:0 3px 16px rgba(124,58,237,.05)}
-    .feature-card:hover{border-color:transparent;transform:translateY(-4px);box-shadow:0 16px 40px rgba(232,25,122,.14)}
-    .feature-icon{width:50px;height:50px;border-radius:14px;background:linear-gradient(135deg,rgba(232,25,122,.1),rgba(124,58,237,.1));border:1px solid rgba(232,25,122,.15);display:flex;align-items:center;justify-content:center;color:var(--brand,#7C3AED);margin-bottom:14px}
-    .feature-card h4{font-size:18px;margin-bottom:8px;color:var(--text)}
-    .feature-card p{font-size:13px;color:var(--muted);line-height:1.75}
-    .about-visual{display:flex;align-items:center;justify-content:center}
-    .about-img-card{width:min(360px,100%);border-radius:22px;overflow:hidden;box-shadow:0 30px 80px rgba(124,58,237,.15),0 0 0 1px var(--border);position:relative}
-    .about-img-card img{width:100%;height:240px;object-fit:cover;display:block}
-    .about-img-stats{background:var(--white);padding:20px}
-    .ab-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border)}
-    .ab-row:last-child{border-bottom:none}
-    .ab-icon{flex-shrink:0;color:var(--brand,#7C3AED);display:flex;align-items:center;justify-content:center}
-    .ab-text h5{font-size:14px;margin-bottom:2px;color:var(--text)}
-    .ab-text p{font-size:12px;color:var(--muted);margin:0}
+    /* ABOUT & FEATURES */
+    .about-section{background:var(--grad-section-a);position:relative;overflow:hidden}
+    .feature-card-3d {
+      background: rgba(15, 10, 36, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 24px;
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+    .feature-card-3d:hover {
+      transform: translateY(-8px) rotateX(4deg) rotateY(-4deg);
+      border-color: rgba(124, 58, 237, 0.3);
+      box-shadow: 0 20px 50px rgba(124, 58, 237, 0.2);
+    }
+    .canvas-container {
+      width: 100%;
+      height: 140px;
+      margin-bottom: 20px;
+      position: relative;
+      border-radius: 16px;
+      background: rgba(10, 5, 30, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      overflow: hidden;
+    }
+    .feature-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .feature-card-3d h4 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #fff;
+      font-family: 'Rajdhani', sans-serif;
+    }
+    .feature-card-3d p {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.6);
+      line-height: 1.6;
+      margin: 0;
+    }
 
     /* SERVICES */
     .services-section{background:var(--grad-section-b)}
@@ -492,8 +527,161 @@ try {
     .progress-bar-fill{position:absolute;left:0;top:0;height:100%;background:var(--grad-brand);border-radius:4px;width:0;transition:width 1.5s cubic-bezier(.4,0,.2,1)}
     .progress-label{font-size:11px;font-weight:700;flex-shrink:0;background:var(--grad-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 
+    /* DASHBOARD PREVIEW */
+    .dashboard-preview-section { padding: 100px 0; background: var(--grad-section-b); }
+    .dashboard-preview-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 28px;
+      padding: 10px;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.4);
+      transform-style: preserve-3d;
+      transform: perspective(1000px) rotateX(2deg);
+    }
+    .dashboard-glass-ui {
+      display: flex;
+      border-radius: 20px;
+      overflow: hidden;
+      background: rgba(15,10,36,0.6);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(255,255,255,0.08);
+      min-height: 480px;
+    }
+    .db-sidebar {
+      width: 220px;
+      background: rgba(10,5,30,0.4);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+    @media(max-width:768px){.db-sidebar{display:none}}
+    .db-logo { padding-left: 8px; }
+    .db-menu { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .db-menu li {
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.22s;
+    }
+    .db-menu li.active, .db-menu li:hover {
+      background: rgba(124,58,237,0.15);
+      color: #fff;
+    }
+    .db-content { flex: 1; padding: 24px 30px; display: flex; flex-direction: column; gap: 24px; }
+    .db-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .db-header h4 { font-size: 20px; margin: 0; color: #fff; }
+    .db-header-actions { display: flex; align-items: center; gap: 16px; }
+    .db-badge.live {
+      font-size: 10px;
+      font-weight: 700;
+      background: rgba(16,185,129,0.1);
+      color: #10b981;
+      border: 1px solid rgba(16,185,129,0.2);
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .db-badge.live .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      animation: pulse 1.5s infinite;
+    }
+    .db-user { font-size: 12px; color: rgba(255,255,255,0.6); }
+    .db-widgets { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 16px; }
+    .db-widget {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .db-widget .widget-label { font-size: 10px; text-transform: uppercase; color: rgba(255,255,255,0.5); letter-spacing: 1px; }
+    .db-widget .widget-val { font-family: 'Rajdhani', sans-serif; font-size: 24px; font-weight: 700; color: #fff; }
+    .db-widget .widget-trend { font-size: 10px; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+    .db-widget .widget-trend.up { color: #10b981; }
+    .db-widget .widget-trend.down { color: #ef4444; }
+    .db-chart-row { width: 100%; }
+    .db-chart-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 20px;
+    }
+    .db-chart-card h5 { font-size: 15px; margin-bottom: 16px; color: #fff; }
+
+    /* ADVERTISER SECTION */
+    .advertiser-section { padding: 100px 0; background: var(--grad-section-a); }
+    .adv-features { display: flex; flex-direction: column; gap: 10px; }
+    .adv-feature-item { display: flex; align-items: center; gap: 10px; font-size: 13px; color: rgba(255,255,255,0.85); }
+    .adv-ecosystem-wrap {
+      width: 100%;
+      height: 380px;
+      border-radius: 24px;
+      background: rgba(15,10,36,0.65);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+    .ecosystem-canvas { width: 100%; height: 100%; display: block; }
+
+    /* TRUST & SECURITY */
+    .trust-security-section { padding: 100px 0; background: var(--grad-section-b); position: relative; }
+    .security-card {
+      background: rgba(15, 10, 36, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 28px 24px;
+      text-align: center;
+      transition: all 0.3s ease;
+      height: 100%;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .security-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(232,25,122,0.3);
+      box-shadow: 0 15px 35px rgba(232,25,122,0.15);
+    }
+    .sec-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: rgba(232,25,122,0.1);
+      border: 1px solid rgba(232,25,122,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e8197a;
+      font-size: 20px;
+      margin: 0 auto 18px;
+    }
+    .security-card h4 { font-size: 18px; margin-bottom: 10px; color: #fff; }
+    .security-card p { font-size: 13px; color: rgba(255,255,255,0.6); margin: 0; line-height: 1.6; }
+
     /* PARTNERS */
-    .partners-section{background:linear-gradient(135deg,#1a1535 0%,#2d1b69 40%,#1a0040 100%)}
+    .partners-section{background:linear-gradient(135deg,#0a0518 0%,#05020c 100%)}
     .partners-section .section-heading h2{color:#fff}
     .partners-section .eyebrow{-webkit-text-fill-color:rgba(255,255,255,.7);background:none;color:rgba(255,255,255,.7)}
     .partner-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px}
@@ -561,13 +749,14 @@ try {
     .payment-card p{font-size:12px;color:var(--muted);margin:0}
 
     /* FOOTER */
-    footer{background:var(--grad-dark-footer);padding:50px 24px 40px;text-align:center}
-    footer .footer-logo{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;color:#fff;margin-bottom:14px}
-    footer .footer-logo span{background:var(--grad-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    footer p{font-size:13px;color:rgba(255,255,255,.45)}
+    @keyframes gradientMove {
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+    }
     .footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin:18px 0}
     .footer-links a{font-size:13px;color:rgba(255,255,255,.5);transition:color .25s}
-    .footer-links a:hover{color:#fff}
+    .footer-links a:hover{color:#0ea5e9}
 
     /* SCROLL TOP */
     .scroll-top{position:fixed;bottom:28px;right:28px;z-index:500;width:46px;height:46px;border-radius:50%;background:var(--grad-brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;border:none;cursor:pointer;box-shadow:0 6px 22px rgba(232,25,122,.45);opacity:0;transform:translateY(20px);transition:all .3s}
@@ -1198,7 +1387,8 @@ try {
 
   <!-- HERO -->
   <section class="hero" id="top">
-    <div class="container">
+    <canvas id="heroParticlesCanvas" style="position:absolute;inset:0;pointer-events:none;z-index:1"></canvas>
+    <div class="container" style="position:relative;z-index:2">
       <div class="row align-items-center">
         <div class="col-lg-5 hero-content">
           <h6>Welcome to <?= $appName ?></h6>
@@ -1446,32 +1636,54 @@ try {
     </div>
   </section>
 
-  <!-- ABOUT -->
-  <section class="about-section" id="about">
+  <!-- ABOUT / FEATURES SHOWCASE -->
+  <section class="about-section" id="about" style="background:var(--grad-section-a); position:relative; overflow:hidden">
     <div class="container">
-      <div class="row align-items-center g-5">
-        <div class="col-lg-5 fade-up about-visual">
-          <div class="about-img-card">
-            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=700&q=80" alt="Affiliate Marketing Dashboard" loading="lazy">
-            <div class="about-img-stats">
-              <div class="ab-row"><span class="ab-icon"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg></span><div class="ab-text"><h5>Rapid Onboarding</h5><p>Instant approvals & AM outreach within 6 hrs</p></div></div>
-              <div class="ab-row"><span class="ab-icon"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"/></svg></span><div class="ab-text"><h5>Premium Payouts</h5><p>Industry-leading rates up to $42/conversion</p></div></div>
-              <div class="ab-row"><span class="ab-icon"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></span><div class="ab-text"><h5>Real-Time Analytics</h5><p>Proprietary high-speed tracking dashboard</p></div></div>
-              <div class="ab-row"><span class="ab-icon"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"/></svg></span><div class="ab-text"><h5>Global Reach</h5><p>Exclusive access to 300+ top-tier GEO offers</p></div></div>
-              <div class="ab-row"><span class="ab-icon"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span><div class="ab-text"><h5>Guaranteed Payments</h5><p>Flexible Net-30, Net-15, and on-demand payouts</p></div></div>
+      <div class="section-heading">
+        <div class="eyebrow"><span class="pulse"></span> Core Technologies</div>
+        <h2>Futuristic <em>Performance Marketing</em> Platform</h2>
+        <p style="color:rgba(255,255,255,0.6);font-size:14px;max-width:600px;margin:8px auto 0">Advanced real-time optimization, network analysis, and automation layers built to scale your business.</p>
+      </div>
+      
+      <div class="row g-4">
+        <!-- Card 1: Smart Tracking -->
+        <div class="col-md-6 col-lg-3 fade-up">
+          <div class="feature-card-3d">
+            <div class="canvas-container">
+              <canvas id="canvasTracking" class="feature-canvas"></canvas>
             </div>
+            <h4>Smart Tracking Technology</h4>
+            <p>Sub-second redirection and postback delivery engines with 0% traffic drop.</p>
           </div>
         </div>
-        <div class="col-lg-7 fade-up">
-          <div class="section-heading text-start mb-4">
-            <div class="eyebrow"><span class="pulse"></span> About <?= $appName ?></div>
-            <h2>Why Choose <em><?= $appName ?></em><br>as Your Partner?</h2>
+        <!-- Card 2: Fraud Protection -->
+        <div class="col-md-6 col-lg-3 fade-up">
+          <div class="feature-card-3d">
+            <div class="canvas-container">
+              <canvas id="canvasFraud" class="feature-canvas"></canvas>
+            </div>
+            <h4>Fraud Protection System</h4>
+            <p>Real-time machine learning shields blocking bots, VPNs, and device spoofing.</p>
           </div>
-          <div class="feature-grid">
-            <div class="feature-card"><div class="feature-icon"><svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09l2.846.813-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"/></svg></div><h4>Innovation</h4><p>Proprietary tech built strictly for top-tier affiliates, continuously evolving to keep you ahead.</p></div>
-            <div class="feature-card"><div class="feature-icon"><svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z"/></svg></div><h4>Reliability</h4><p>Rock-solid infrastructure providing zero-downtime tracking, ensuring every conversion is captured.</p></div>
-            <div class="feature-card"><div class="feature-icon"><svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></div><h4>Precision Analytics</h4><p>Granular insights and sub-second reporting give you the ultimate edge to optimize campaigns.</p></div>
-            <div class="feature-card"><div class="feature-icon"><svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg></div><h4>Expert Strategy</h4><p>Dedicated affiliate managers working alongside you 24/7 to scale traffic and unlock private offers.</p></div>
+        </div>
+        <!-- Card 3: Global Affiliate Network -->
+        <div class="col-md-6 col-lg-3 fade-up">
+          <div class="feature-card-3d">
+            <div class="canvas-container">
+              <canvas id="canvasGlobe" class="feature-canvas"></canvas>
+            </div>
+            <h4>Global Affiliate Network</h4>
+            <p>Connecting elite affiliates and top direct advertisers across 190+ GEOs.</p>
+          </div>
+        </div>
+        <!-- Card 4: Fast Payments -->
+        <div class="col-md-6 col-lg-3 fade-up">
+          <div class="feature-card-3d">
+            <div class="canvas-container">
+              <canvas id="canvasPayments" class="feature-canvas"></canvas>
+            </div>
+            <h4>Fast Payments</h4>
+            <p>Weekly and on-demand withdrawals supporting WebMoney, USDT, Wires and custom terms.</p>
           </div>
         </div>
       </div>
@@ -1538,6 +1750,124 @@ try {
               <div style="font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;background:var(--grad-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">6hr</div>
               <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">AM Contact</div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AFFILIATE DASHBOARD PREVIEW -->
+  <section class="dashboard-preview-section" id="dashboard-preview" style="background:var(--grad-section-b); position:relative; overflow:hidden">
+    <div class="container">
+      <div class="section-heading">
+        <div class="eyebrow"><span class="pulse"></span> Live Platform Preview</div>
+        <h2>The Ultimate <em>Affiliate</em> &amp; <span class="accent">Advertiser</span> Portal</h2>
+        <p style="color:rgba(255,255,255,0.6);font-size:14px;max-width:600px;margin:8px auto 0">A powerful, modern control panel offering direct tracking links, campaign management, postback logs, and sub-second analytics updates.</p>
+      </div>
+      
+      <div class="dashboard-preview-wrap fade-up">
+        <!-- Glassmorphism Dashboard UI Mockup -->
+        <div class="dashboard-glass-ui">
+          <!-- Sidebar -->
+          <div class="db-sidebar">
+            <div class="db-logo"><img src="<?= $logoSrc ?>" alt="Logo" height="24" style="filter:brightness(0) invert(1)"></div>
+            <ul class="db-menu">
+              <li class="active"><i class="fa-solid fa-chart-line"></i> Analytics</li>
+              <li><i class="fa-solid fa-tags"></i> CPA Offers</li>
+              <li><i class="fa-solid fa-link"></i> Smartlinks</li>
+              <li><i class="fa-solid fa-wallet"></i> Billing</li>
+              <li><i class="fa-solid fa-shield-halved"></i> Fraud Shield</li>
+              <li><i class="fa-solid fa-gear"></i> Settings</li>
+            </ul>
+          </div>
+          <!-- Content -->
+          <div class="db-content">
+            <div class="db-header">
+              <h4>Welcome Back, Elite Publisher!</h4>
+              <div class="db-header-actions">
+                <span class="db-badge live"><span class="dot"></span> Live Data Feed</span>
+                <span class="db-user"><i class="fa-solid fa-user-tie"></i> Account Manager: <strong>Alex</strong></span>
+              </div>
+            </div>
+            <!-- Stat Widgets Row -->
+            <div class="db-widgets">
+              <div class="db-widget"><span class="widget-label">Today's Earnings</span><span class="widget-val">$1,284.50</span><span class="widget-trend up"><i class="fa-solid fa-arrow-trend-up"></i> +14.2%</span></div>
+              <div class="db-widget"><span class="widget-label">Conversions</span><span class="widget-val">342</span><span class="widget-trend up"><i class="fa-solid fa-arrow-trend-up"></i> +8.5%</span></div>
+              <div class="db-widget"><span class="widget-label">Clicks</span><span class="widget-val">4,819</span><span class="widget-trend down"><i class="fa-solid fa-arrow-trend-down"></i> -1.2%</span></div>
+              <div class="db-widget"><span class="widget-label">EPC</span><span class="widget-val">$0.26</span><span class="widget-trend up"><i class="fa-solid fa-arrow-trend-up"></i> +11.8%</span></div>
+            </div>
+            <!-- Chart Row -->
+            <div class="db-chart-row">
+              <div class="db-chart-card">
+                <h5>Traffic & Earnings Progression</h5>
+                <div style="width:100%; height:180px; position:relative">
+                  <canvas id="dbPreviewChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- B2B ADVERTISER SECTION -->
+  <section class="advertiser-section" id="advertiser" style="background:var(--grad-section-a); position:relative; overflow:hidden">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-5 fade-up">
+          <div class="section-heading text-start mb-4">
+            <div class="eyebrow"><span class="pulse"></span> Advertisers</div>
+            <h2>Scale Your <em>Performance Marketing</em><br>With Premium Traffic Partners</h2>
+          </div>
+          <p style="color:rgba(255,255,255,0.7); line-height:1.8; margin-bottom:24px">Reach target consumer demographics globally with zero fraud risk. We align advertisers with verified affiliate channels, matching high-quality media sources to optimize lead generation, sweepstakes entries, software trials, and mobile app conversion objectives.</p>
+          <div class="adv-features mb-4">
+            <div class="adv-feature-item"><i class="fa-solid fa-circle-check" style="color:var(--green)"></i> <span>Direct API Integrations & Real-Time Postbacks</span></div>
+            <div class="adv-feature-item"><i class="fa-solid fa-circle-check" style="color:var(--green)"></i> <span>Advanced Bot, VPN & Custom Anti-Fraud Screening</span></div>
+            <div class="adv-feature-item"><i class="fa-solid fa-circle-check" style="color:var(--green)"></i> <span>Premium Global Traffic Quality Across All Channels</span></div>
+          </div>
+          <a href="/register/advertiser" class="btn-primary-custom"><i class="fa-solid fa-building"></i> Join as Advertiser</a>
+        </div>
+        <div class="col-lg-7 fade-up position-relative">
+          <!-- 3D Ecosystem Visualization Canvas -->
+          <div class="adv-ecosystem-wrap">
+            <canvas id="canvasAdvertiserEcosystem" class="ecosystem-canvas"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST & SECURITY SECTION -->
+  <section class="trust-security-section" id="security" style="background:var(--grad-section-b); position:relative; overflow:hidden">
+    <canvas id="canvasSecurityBg" style="position:absolute; inset:0; pointer-events:none; z-index:1"></canvas>
+    <div class="container" style="position:relative; z-index:2">
+      <div class="section-heading">
+        <div class="eyebrow"><span class="pulse"></span> Secure Network</div>
+        <h2>Enterprise-Grade <em>Anti-Fraud</em> Infrastructure</h2>
+        <p style="color:rgba(255,255,255,0.6);font-size:14px;max-width:600px;margin:8px auto 0">We continuously screen every click, conversion, and postback event using advanced multi-layered verification layers to protect advertising budgets.</p>
+      </div>
+      
+      <div class="row g-4 justify-content-center">
+        <div class="col-md-4 col-lg-3 fade-up">
+          <div class="security-card">
+            <div class="sec-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <h4>AI Fraud Detection</h4>
+            <p>Smart classifiers analyze traffic metadata in real-time, detecting bot farms and malicious VPN ranges instantly.</p>
+          </div>
+        </div>
+        <div class="col-md-4 col-lg-3 fade-up">
+          <div class="security-card">
+            <div class="sec-icon"><i class="fa-solid fa-lock"></i></div>
+            <h4>SSL Encryption</h4>
+            <p>All data relays, API keys, postbacks, and affiliate panels are secured using advanced secure sockets layers.</p>
+          </div>
+        </div>
+        <div class="col-md-4 col-lg-3 fade-up">
+          <div class="security-card">
+            <div class="sec-icon"><i class="fa-solid fa-fingerprint"></i></div>
+            <h4>Secure Tracking</h4>
+            <p>Proprietary fingerprinting algorithms verify that landing page redirects match conversion postbacks perfectly.</p>
           </div>
         </div>
       </div>
@@ -1625,14 +1955,14 @@ try {
   <?php endif; ?>
 
   <!-- REVIEWS / TESTIMONIALS -->
-  <section id="reviews" style="padding:100px 0;background:linear-gradient(160deg,#f8f5ff 0%,#fff 50%,#f0f9ff 100%)">
+  <section id="reviews" style="padding:100px 0;background:var(--grad-section-b)">
     <div class="container">
 
       <!-- Section Header -->
       <div class="section-heading" style="margin-bottom:56px">
         <div class="eyebrow"><span class="pulse"></span> Verified Testimonials</div>
         <h2>What <em>Affiliates</em> Say About <span class="accent"><?= htmlspecialchars($appName,ENT_QUOTES,'UTF-8') ?></span></h2>
-        <p style="color:var(--muted);font-size:15px;max-width:540px;margin:12px auto 0">Every review below is real — submitted by our affiliates and approved by our team.</p>
+        <p style="color:rgba(255,255,255,0.6);font-size:15px;max-width:540px;margin:12px auto 0">Every review below is real — submitted by our affiliates and approved by our team.</p>
       </div>
 
       <?php if (!empty($_landingRevs)): ?>
@@ -1644,29 +1974,29 @@ try {
         $_rvFull   = floor($_rvAvg);
         $_rvHalf   = ($_rvAvg - $_rvFull) >= 0.5 ? 1 : 0;
       ?>
-      <div style="display:flex;align-items:center;justify-content:center;gap:40px;flex-wrap:wrap;margin-bottom:48px;padding:24px 32px;background:#fff;border-radius:20px;box-shadow:0 2px 24px rgba(124,58,237,.08);border:1px solid #ede9fe">
+      <div style="display:flex;align-items:center;justify-content:center;gap:40px;flex-wrap:wrap;margin-bottom:48px;padding:24px 32px;background:rgba(15,10,36,0.65);border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)">
         <div style="text-align:center">
           <div style="font-size:42px;font-weight:800;background:var(--grad-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1"><?= $_rvAvg ?></div>
           <div style="color:#F59E0B;font-size:20px;margin:4px 0">
             <?= str_repeat('★',$_rvFull) ?><?= $_rvHalf ? '½' : '' ?><?= str_repeat('☆', 5-$_rvFull-$_rvHalf) ?>
           </div>
-          <div style="font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px">Average Rating</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.5);font-weight:600;text-transform:uppercase;letter-spacing:.5px">Average Rating</div>
         </div>
-        <div style="width:1px;height:50px;background:var(--border);display:none" class="rv-sep"></div>
+        <div style="width:1px;height:50px;background:rgba(255,255,255,0.08);display:none" class="rv-sep"></div>
         <div style="text-align:center">
           <div style="font-size:42px;font-weight:800;background:var(--grad-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1"><?= $_rvTotal ?>+</div>
-          <div style="font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-top:28px">Approved Reviews</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.5);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-top:28px">Approved Reviews</div>
         </div>
         <div style="text-align:center">
           <div style="font-size:42px;font-weight:800;background:var(--grad-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1">100%</div>
-          <div style="font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-top:28px">Real People</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.5);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-top:28px">Real People</div>
         </div>
       </div>
 
       <!-- Reviews grid -->
       <div id="reviewsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:24px;margin-bottom:32px">
         <?php foreach (array_slice($_landingRevs, 0, 450) as $index => $rv): ?>
-        <div class="review-card" style="background:#fff;border-radius:20px;padding:28px;box-shadow:0 4px 28px rgba(124,58,237,.08);border:1px solid #ede9fe;display:<?php echo $index >= 6 ? 'none' : 'flex'; ?>;flex-direction:column;gap:16px;transition:transform .25s,box-shadow .25s" onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 40px rgba(124,58,237,.14)'" onmouseleave="this.style.transform='';this.style.boxShadow='0 4px 28px rgba(124,58,237,.08)'">
+        <div class="review-card" style="background:rgba(15,10,36,0.65);border-radius:20px;padding:28px;box-shadow:0 10px 30px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:<?php echo $index >= 6 ? 'none' : 'flex'; ?>;flex-direction:column;gap:16px;transition:all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)" onmouseenter="this.style.transform='translateY(-6px)';this.style.boxShadow='0 20px 45px rgba(124,58,237,0.25)';this.style.borderColor='rgba(124,58,237,0.3)'" onmouseleave="this.style.transform='';this.style.boxShadow='0 10px 30px rgba(0,0,0,0.25)';this.style.borderColor='rgba(255,255,255,0.08)'">
 
           <!-- Stars + featured badge -->
           <div style="display:flex;align-items:center;justify-content:space-between">
@@ -1679,21 +2009,21 @@ try {
           </div>
 
           <!-- Review text -->
-          <p style="font-size:14px;color:#374151;line-height:1.75;flex:1;margin:0">"<?= Helpers::e($rv['review_text']) ?>"</p>
+          <p style="font-size:14px;color:rgba(255,255,255,0.85);line-height:1.75;flex:1;margin:0">"<?= Helpers::e($rv['review_text']) ?>"</p>
 
           <!-- Author -->
-          <div style="display:flex;align-items:center;gap:12px;padding-top:16px;border-top:1px solid #f3f0ff">
+          <div style="display:flex;align-items:center;gap:12px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.08)">
             <?php if (!empty($rv['avatar'])): ?>
-            <img src="<?= Helpers::e($rv['avatar']) ?>" alt="" style="width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid #ede9fe;flex-shrink:0">
+            <img src="<?= Helpers::e($rv['avatar']) ?>" alt="" style="width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.12);flex-shrink:0">
             <?php else: ?>
             <div style="width:46px;height:46px;border-radius:50%;background:var(--grad-brand);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px;flex-shrink:0">
               <?= strtoupper(substr(htmlspecialchars($rv['name'],ENT_QUOTES,'UTF-8'),0,1)) ?>
             </div>
             <?php endif; ?>
             <div style="min-width:0">
-              <div style="font-weight:700;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><?= Helpers::e($rv['name']) ?></div>
+              <div style="font-weight:700;font-size:14px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><?= Helpers::e($rv['name']) ?></div>
               <?php if (!empty($rv['role_title'])): ?>
-              <div style="font-size:12px;color:var(--muted);margin-top:1px"><?= Helpers::e($rv['role_title']) ?></div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:1px"><?= Helpers::e($rv['role_title']) ?></div>
               <?php endif; ?>
               <?php if (!empty($rv['country'])): ?>
               <div style="font-size:11px;color:#9ca3af;margin-top:1px">📍 <?= Helpers::e($rv['country']) ?></div>
@@ -1848,61 +2178,84 @@ try {
   </section>
 
   <!-- FOOTER -->
-  <footer>
+  <!-- FOOTER -->
+  <footer style="background: var(--grad-dark-footer); padding: 80px 0 40px; border-top: 1px solid rgba(255,255,255,0.08); position: relative">
+    <!-- Animated Gradient dividing top line -->
+    <div style="position:absolute; top:-2px; left:0; right:0; height:3px; background:linear-gradient(90deg, #7c3aed, #e8197a, #0ea5e9); background-size:200% 200%; animation: gradientMove 6s ease infinite"></div>
+    
     <div class="container">
-      <?php $favIconSrc = (class_exists('Config') && Config::get('config','app.favicon')) ? Helpers::e(Config::get('config','app.favicon')) : '/x-icon.png'; ?>
-      <img src="<?= $favIconSrc ?>" alt="<?= $appName ?>" style="max-height:40px;width:auto;max-width:180px;object-fit:contain;margin-bottom:14px;">
-      <div class="footer-links">
-        <a href="#top">Home</a>
-        <a href="#about">About</a>
-        <a href="#services">Services</a>
-        <a href="/offers">Offers</a>
-        <a href="/blog">Blog</a>
-        <a href="#contact">Contact</a>
-        <a href="/reviews">Reviews</a>
-        <a href="/terms-of-service" target="_blank">Terms &amp; Conditions</a>
-        <a href="/privacy-policy" target="_blank">Privacy Policy</a>
-        <a href="/affiliate-agreement">Affiliate Agreement</a>
-        <a href="/anti-fraud-policy">Anti-Fraud Policy</a>
-        <a href="/gdpr-compliance-policy">GDPR Compliance</a>
-        <a href="/refund-payment-policy">Refund Policy</a>
-        <a href="/cookie-policy">Cookie Policy</a>
-        <a href="/dashboard-disclaimers">Dashboard Disclaimers</a>
-        <a href="/register/affiliate">Sign Up</a>
-        <a href="/login">Login</a>
-        <a href="https://shroo.link" target="_blank">Short Link</a>
+      <div class="row g-4 mb-5 justify-content-between">
+        <div class="col-lg-4">
+          <div style="margin-bottom: 20px">
+            <img src="<?= $logoSrc ?>" alt="<?= $appName ?>" style="max-height:48px; width:auto; filter:brightness(0) invert(1)">
+          </div>
+          <p style="color: rgba(255,255,255,0.55); font-size:13px; line-height:1.7; margin-bottom: 24px">
+            Elite CPA Affiliate Network providing high-converting direct offers, global coverage, and sub-second payment frequencies to digital marketers worldwide.
+          </p>
+          <div style="display:flex; gap:16px; align-items:center">
+            <a href="<?= $_tgUrl ?>" target="_blank" rel="noopener" style="color:rgba(255,255,255,.5); font-size:20px; transition:color .25s"><i class="fa-brands fa-telegram"></i></a>
+            <?php if ($_teamsUrl): ?>
+            <a href="<?= $_teamsUrl ?>" target="_blank" rel="noopener" style="color:rgba(255,255,255,.5); font-size:20px; transition:color .25s"><i class="fa-brands fa-skype"></i></a>
+            <?php endif; ?>
+            <a href="https://www.linkedin.com/company/89707239/" target="_blank" rel="noopener" style="color:rgba(255,255,255,.5); font-size:20px; transition:color .25s"><i class="fa-brands fa-linkedin"></i></a>
+            <a href="https://www.facebook.com/affscash/" target="_blank" rel="noopener" style="color:rgba(255,255,255,.5); font-size:20px; transition:color .25s"><i class="fa-brands fa-facebook"></i></a>
+          </div>
+        </div>
+        <div class="col-md-7 col-lg-5">
+          <h5 style="color: #fff; font-size:15px; text-transform:uppercase; letter-spacing:1px; margin-bottom:16px">Newsletter Subscription</h5>
+          <p style="color: rgba(255,255,255,0.55); font-size:12px; margin-bottom:16px">Get notified on exclusive high-payout direct campaigns and industry case studies directly in your inbox.</p>
+          <form onsubmit="event.preventDefault(); alert('Successfully subscribed!'); this.reset();" style="display:flex; gap:10px; width:100%">
+            <input type="email" placeholder="Enter your email address" required style="flex:1; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:10px 16px; color:#fff; font-size:13px; outline:none">
+            <button type="submit" class="btn-primary-custom" style="padding:10px 20px; font-size:13px; border-radius:10px">Subscribe</button>
+          </form>
+        </div>
       </div>
-      <?php if ($_mobileAppUrl !== ''): ?>
-      <div style="display:flex;justify-content:center;margin:22px 0 6px">
-        <a href="<?= Helpers::e($_mobileAppUrl) ?>" target="_blank" rel="noopener"
-           style="display:inline-flex;align-items:center;gap:10px;background:#000;color:#fff;padding:9px 18px;border-radius:8px;text-decoration:none;border:1px solid #444;transition:transform .15s,box-shadow .25s"
-           onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 20px rgba(0,0,0,.35)'"
-           onmouseout="this.style.transform='';this.style.boxShadow=''"
-           title="Install <?= $_mobileAppName ?> on Google Play">
-          <!-- Google Play glyph (inline SVG so no external asset is required). -->
-          <svg width="22" height="22" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path fill="#EA4335" d="M325.3 234.3 104.4 13.4l270.6 156.3-49.7 64.6z"/>
-            <path fill="#FBBC04" d="M104.4 13.4 325.3 234.3l-49.7 64.6L104.4 498.6V13.4z"/>
-            <path fill="#34A853" d="M375 169.7 104.4 13.4l-7.7 245.3 278.3-89z"/>
-            <path fill="#4285F4" d="M375 342.3 104.4 498.6 325.3 277.7z"/>
-          </svg>
-          <span style="text-align:left;line-height:1.15">
-            <span style="display:block;font-size:10px;color:#bbb;letter-spacing:.04em">GET IT ON</span>
-            <span style="display:block;font-size:15px;font-weight:600">Google Play</span>
-          </span>
-        </a>
-      </div>
-      <?php endif; ?>
-      <div style="display:flex;justify-content:center;gap:18px;margin:18px 0">
-        <a href="<?= $_tgUrl ?>" target="_blank" rel="noopener" style="color:rgba(255,255,255,.45);font-size:22px;transition:color .25s"><i class="fa-brands fa-telegram"></i></a>
-        <?php if ($_teamsUrl): ?>
-        <a href="<?= $_teamsUrl ?>" target="_blank" rel="noopener" style="color:rgba(255,255,255,.45);font-size:22px;transition:color .25s"><i class="fa-brands fa-skype"></i></a>
+      
+      <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:30px; display:flex; flex-direction:column; gap:20px; align-items:center; justify-content:center; text-align:center">
+        <div class="footer-links" style="display:flex; flex-wrap:wrap; gap:14px; justify-content:center; max-width:800px">
+          <a href="#top">Home</a>
+          <a href="#about">About</a>
+          <a href="#services">Services</a>
+          <a href="/offers">Offers</a>
+          <a href="/blog">Blog</a>
+          <a href="#contact">Contact</a>
+          <a href="/reviews">Reviews</a>
+          <a href="/terms-of-service" target="_blank">Terms &amp; Conditions</a>
+          <a href="/privacy-policy" target="_blank">Privacy Policy</a>
+          <a href="/affiliate-agreement">Affiliate Agreement</a>
+          <a href="/anti-fraud-policy">Anti-Fraud Policy</a>
+          <a href="/gdpr-compliance-policy">GDPR Compliance</a>
+          <a href="/refund-payment-policy">Refund Policy</a>
+          <a href="/cookie-policy">Cookie Policy</a>
+          <a href="/dashboard-disclaimers">Dashboard Disclaimers</a>
+          <a href="/register/affiliate">Sign Up</a>
+          <a href="/login">Login</a>
+          <a href="https://shroo.link" target="_blank">Short Link</a>
+        </div>
+        
+        <?php if ($_mobileAppUrl !== ''): ?>
+        <div style="display:flex;justify-content:center;margin-top:10px">
+          <a href="<?= Helpers::e($_mobileAppUrl) ?>" target="_blank" rel="noopener"
+             style="display:inline-flex;align-items:center;gap:10px;background:#000;color:#fff;padding:9px 18px;border-radius:8px;text-decoration:none;border:1px solid #444;transition:transform .15s,box-shadow .25s"
+             onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 20px rgba(0,0,0,.35)'"
+             onmouseout="this.style.transform='';this.style.boxShadow=''"
+             title="Install <?= $_mobileAppName ?> on Google Play">
+            <svg width="22" height="22" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path fill="#EA4335" d="M325.3 234.3 104.4 13.4l270.6 156.3-49.7 64.6z"/>
+              <path fill="#FBBC04" d="M104.4 13.4 325.3 234.3l-49.7 64.6L104.4 498.6V13.4z"/>
+              <path fill="#34A853" d="M375 169.7 104.4 13.4l-7.7 245.3 278.3-89z"/>
+              <path fill="#4285F4" d="M375 342.3 104.4 498.6 325.3 277.7z"/>
+            </svg>
+            <span style="text-align:left;line-height:1.15">
+              <span style="display:block;font-size:10px;color:#bbb;letter-spacing:.04em">GET IT ON</span>
+              <span style="display:block;font-size:15px;font-weight:600">Google Play</span>
+            </span>
+          </a>
+        </div>
         <?php endif; ?>
-        <a href="https://www.linkedin.com/company/89707239/" target="_blank" rel="noopener" style="color:rgba(255,255,255,.45);font-size:22px;transition:color .25s"><i class="fa-brands fa-linkedin"></i></a>
-        <a href="https://www.facebook.com/affscash/" target="_blank" rel="noopener" style="color:rgba(255,255,255,.45);font-size:22px;transition:color .25s"><i class="fa-brands fa-facebook"></i></a>
+        
+        <p style="font-size:12px; color:rgba(255,255,255,0.4)">&copy; 2019 &ndash; <?= date('Y') ?> EdgeSoft Ltd. All Rights Reserved. | <?= $appName ?> CPA Affiliate Network</p>
       </div>
-      <p style="font-size:12px">&copy; 2019 &ndash; <?= date('Y') ?> EdgeSoft Ltd. All Rights Reserved. | <?= $appName ?> CPA Affiliate Network</p>
-    </div>
   </footer>
 
   <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
@@ -2295,6 +2648,525 @@ try {
     var io=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)e.target.querySelectorAll('.progress-bar-fill').forEach(function(bar){bar.style.width=bar.getAttribute('data-width')+'%';});});},{threshold:0.3});
     io.observe(el);
   });
+
+  // ── Hero Background Particles Animation ──
+  (function() {
+    var canvas = document.getElementById('heroParticlesCanvas');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var particles = [];
+    var w, h;
+    function resize() {
+      w = canvas.width = canvas.offsetWidth;
+      h = canvas.height = canvas.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    
+    for (var i = 0; i < 45; i++) {
+      particles.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        size: Math.random() * 2 + 1,
+        color: Math.random() > 0.5 ? 'rgba(124, 58, 237, 0.25)' : 'rgba(14, 165, 233, 0.2)'
+      });
+    }
+    
+    function draw() {
+      ctx.clearRect(0, 0, w, h);
+      particles.forEach(function(p) {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > w) p.vx *= -1;
+        if (p.y < 0 || p.y > h) p.vy *= -1;
+        
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+
+  // ── Features Canvases Animators ──
+  (function() {
+    // 1. Smart Tracking Sine Graph
+    var cTrack = document.getElementById('canvasTracking');
+    if (cTrack) {
+      var ctx = cTrack.getContext('2d');
+      var w, h, step = 0;
+      function resize() {
+        w = cTrack.width = cTrack.offsetWidth * window.devicePixelRatio;
+        h = cTrack.height = cTrack.offsetHeight * window.devicePixelRatio;
+        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      }
+      resize();
+      function draw() {
+        var cw = w / window.devicePixelRatio;
+        var ch = h / window.devicePixelRatio;
+        ctx.clearRect(0,0,cw,ch);
+        
+        // Draw grid lines
+        ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+        ctx.lineWidth = 1;
+        for (var i = 0; i < cw; i += 20) {
+          ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, ch); ctx.stroke();
+        }
+        for (var j = 0; j < ch; j += 20) {
+          ctx.beginPath(); ctx.moveTo(0, j); ctx.lineTo(cw, j); ctx.stroke();
+        }
+        
+        // Sine wave
+        ctx.strokeStyle = 'rgba(124, 58, 237, 0.7)';
+        ctx.shadowColor = 'rgba(124, 58, 237, 0.4)';
+        ctx.shadowBlur = 8;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        for (var x = 0; x < cw; x++) {
+          var y = ch/2 + Math.sin(x*0.02 + step) * 25 + Math.cos(x*0.01 + step*0.5)*10;
+          if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+        
+        // Moving scanner node
+        var scanX = (step * 80) % cw;
+        var scanY = ch/2 + Math.sin(scanX*0.02 + step) * 25 + Math.cos(scanX*0.01 + step*0.5)*10;
+        ctx.fillStyle = '#0ea5e9';
+        ctx.beginPath();
+        ctx.arc(scanX, scanY, 5, 0, Math.PI*2);
+        ctx.fill();
+        
+        step += 0.035;
+        requestAnimationFrame(draw);
+      }
+      draw();
+    }
+    
+    // 2. Fraud Shield
+    var cFraud = document.getElementById('canvasFraud');
+    if (cFraud) {
+      var ctx = cFraud.getContext('2d');
+      var w, h, step = 0;
+      function resize() {
+        w = cFraud.width = cFraud.offsetWidth * window.devicePixelRatio;
+        h = cFraud.height = cFraud.offsetHeight * window.devicePixelRatio;
+        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      }
+      resize();
+      function draw() {
+        var cw = w / window.devicePixelRatio;
+        var ch = h / window.devicePixelRatio;
+        ctx.clearRect(0,0,cw,ch);
+        
+        var cx = cw / 2;
+        var cy = ch / 2;
+        var r = 32;
+        
+        // Pulsing radar rings
+        var scale = 1 + (step % 1.5) / 1.5;
+        ctx.strokeStyle = 'rgba(232, 25, 122, ' + (1 - (scale-1)) + ')';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r * scale, 0, Math.PI*2);
+        ctx.stroke();
+        
+        // Shield polygon
+        ctx.shadowColor = 'rgba(232, 25, 122, 0.5)';
+        ctx.shadowBlur = 10;
+        ctx.strokeStyle = '#e8197a';
+        ctx.lineWidth = 2.5;
+        ctx.fillStyle = 'rgba(232, 25, 122, 0.1)';
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - r);
+        ctx.lineTo(cx + r, cy - r*0.4);
+        ctx.lineTo(cx + r*0.7, cy + r*0.7);
+        ctx.lineTo(cx, cy + r);
+        ctx.lineTo(cx - r*0.7, cy + r*0.7);
+        ctx.lineTo(cx - r, cy - r*0.4);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+        
+        // Scan line overlay
+        var scanY = cy - r + ((step * 35) % (r * 2));
+        ctx.strokeStyle = 'rgba(14, 165, 233, 0.6)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(cx - r*0.8, scanY);
+        ctx.lineTo(cx + r*0.8, scanY);
+        ctx.stroke();
+        
+        step += 0.02;
+        requestAnimationFrame(draw);
+      }
+      draw();
+    }
+    
+    // 3. Spinning Particle Globe
+    var cGlobe = document.getElementById('canvasGlobe');
+    if (cGlobe) {
+      var ctx = cGlobe.getContext('2d');
+      var w, h, step = 0;
+      function resize() {
+        w = cGlobe.width = cGlobe.offsetWidth * window.devicePixelRatio;
+        h = cGlobe.height = cGlobe.offsetHeight * window.devicePixelRatio;
+        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      }
+      resize();
+      
+      var points = [];
+      for (var i=0; i<38; i++) {
+        points.push({
+          lat: Math.random() * Math.PI - Math.PI/2,
+          lon: Math.random() * Math.PI * 2,
+          r: 28 + Math.random()*2
+        });
+      }
+      
+      function draw() {
+        var cw = w / window.devicePixelRatio;
+        var ch = h / window.devicePixelRatio;
+        ctx.clearRect(0,0,cw,ch);
+        
+        var cx = cw / 2;
+        var cy = ch / 2;
+        
+        // Rotation angles
+        var rotY = step * 0.45;
+        
+        // Draw globe outline
+        ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 32, 0, Math.PI*2);
+        ctx.stroke();
+        
+        // Project and draw points
+        ctx.fillStyle = '#10b981';
+        ctx.strokeStyle = 'rgba(16, 185, 129, 0.15)';
+        ctx.lineWidth = 1;
+        var proj = [];
+        points.forEach(function(p) {
+          var y3 = p.r * Math.sin(p.lat);
+          var rad = p.r * Math.cos(p.lat);
+          var x3 = rad * Math.cos(p.lon + rotY);
+          var z3 = rad * Math.sin(p.lon + rotY);
+          
+          if (z3 > -5) { // face visible
+            var scale = (z3 + 50) / 50;
+            var px = cx + x3 * scale;
+            var py = cy + y3 * scale;
+            proj.push({x: px, y: py, sz: 2.5 * scale});
+          }
+        });
+        
+        // Connect close projected points
+        for (var a=0; a<proj.length; a++) {
+          for (var b=a+1; b<proj.length; b++) {
+            var dist = Math.hypot(proj[a].x - proj[b].x, proj[a].y - proj[b].y);
+            if (dist < 22) {
+              ctx.beginPath();
+              ctx.moveTo(proj[a].x, proj[a].y);
+              ctx.lineTo(proj[b].x, proj[b].y);
+              ctx.stroke();
+            }
+          }
+        }
+        
+        // Draw point dots
+        proj.forEach(function(pt) {
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, pt.sz, 0, Math.PI*2);
+          ctx.fill();
+        });
+        
+        step += 0.015;
+        requestAnimationFrame(draw);
+      }
+      draw();
+    }
+    
+    // 4. Crypto/USDT Blockchain Node Ledgers
+    var cPayments = document.getElementById('canvasPayments');
+    if (cPayments) {
+      var ctx = cPayments.getContext('2d');
+      var w, h, step = 0;
+      function resize() {
+        w = cPayments.width = cPayments.offsetWidth * window.devicePixelRatio;
+        h = cPayments.height = cPayments.offsetHeight * window.devicePixelRatio;
+        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      }
+      resize();
+      
+      var nodes = [
+        {x: 0.2, y: 0.5, size: 5, color: '#f59e0b', pulse: 0},
+        {x: 0.4, y: 0.3, size: 4, color: '#0ea5e9', pulse: 1},
+        {x: 0.4, y: 0.7, size: 4, color: '#0ea5e9', pulse: 2},
+        {x: 0.6, y: 0.4, size: 4, color: '#7c3aed', pulse: 3},
+        {x: 0.6, y: 0.6, size: 4, color: '#7c3aed', pulse: 4},
+        {x: 0.8, y: 0.5, size: 5, color: '#10b981', pulse: 0}
+      ];
+      
+      function draw() {
+        var cw = w / window.devicePixelRatio;
+        var ch = h / window.devicePixelRatio;
+        ctx.clearRect(0,0,cw,ch);
+        
+        // Connect nodes
+        ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+        ctx.lineWidth = 1.5;
+        
+        // Draw lines
+        ctx.beginPath();
+        ctx.moveTo(nodes[0].x * cw, nodes[0].y * ch);
+        ctx.lineTo(nodes[1].x * cw, nodes[1].y * ch);
+        ctx.lineTo(nodes[3].x * cw, nodes[3].y * ch);
+        ctx.lineTo(nodes[5].x * cw, nodes[5].y * ch);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(nodes[0].x * cw, nodes[0].y * ch);
+        ctx.lineTo(nodes[2].x * cw, nodes[2].y * ch);
+        ctx.lineTo(nodes[4].x * cw, nodes[4].y * ch);
+        ctx.lineTo(nodes[5].x * cw, nodes[5].y * ch);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(nodes[1].x * cw, nodes[1].y * ch);
+        ctx.lineTo(nodes[2].x * cw, nodes[2].y * ch);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(nodes[3].x * cw, nodes[3].y * ch);
+        ctx.lineTo(nodes[4].x * cw, nodes[4].y * ch);
+        ctx.stroke();
+        
+        // Draw transaction flow packets
+        var flowProgress = (step * 0.4) % 1.0;
+        ctx.fillStyle = '#fff';
+        
+        // Path 1
+        var p1x = nodes[0].x * cw + (nodes[1].x - nodes[0].x) * cw * flowProgress;
+        var p1y = nodes[0].y * ch + (nodes[1].y - nodes[0].y) * ch * flowProgress;
+        ctx.beginPath(); ctx.arc(p1x, p1y, 2.5, 0, Math.PI*2); ctx.fill();
+        
+        // Path 2
+        var p2x = nodes[2].x * cw + (nodes[4].x - nodes[2].x) * cw * flowProgress;
+        var p2y = nodes[2].y * ch + (nodes[4].y - nodes[2].y) * ch * flowProgress;
+        ctx.beginPath(); ctx.arc(p2x, p2y, 2.5, 0, Math.PI*2); ctx.fill();
+        
+        // Draw pulsing nodes
+        nodes.forEach(function(n) {
+          var pulseScale = 1 + Math.sin(step + n.pulse) * 0.25;
+          ctx.fillStyle = n.color;
+          ctx.shadowColor = n.color;
+          ctx.shadowBlur = 8;
+          ctx.beginPath();
+          ctx.arc(n.x * cw, n.y * ch, n.size * pulseScale, 0, Math.PI*2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        });
+        
+        step += 0.035;
+        requestAnimationFrame(draw);
+      }
+      draw();
+    }
+  })();
+
+  // ── Dashboard Preview Chart ──
+  (function() {
+    var ctx = document.getElementById('dbPreviewChart');
+    if (ctx) {
+      var gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 180);
+      gradient.addColorStop(0, 'rgba(124, 58, 237, 0.4)');
+      gradient.addColorStop(1, 'rgba(124, 58, 237, 0)');
+      
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['01 AM', '04 AM', '08 AM', '12 PM', '04 PM', '08 PM', '11 PM'],
+          datasets: [{
+            label: 'Earnings ($)',
+            data: [120, 240, 480, 890, 1020, 1200, 1284],
+            borderColor: '#7c3aed',
+            borderWidth: 3,
+            backgroundColor: gradient,
+            fill: true,
+            tension: 0.4,
+            pointRadius: 4,
+            pointBackgroundColor: '#fff',
+            pointBorderColor: '#7c3aed',
+            pointBorderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: 'rgba(255, 255, 255, 0.6)', font: { size: 10 } } },
+            y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: 'rgba(255, 255, 255, 0.6)', font: { size: 10 } } }
+          }
+        }
+      });
+    }
+  })();
+
+  // ── Advertiser Ecosystem Canvas ──
+  (function() {
+    var canvas = document.getElementById('canvasAdvertiserEcosystem');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var w, h, step = 0;
+    function resize() {
+      w = canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+      h = canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    }
+    resize();
+    
+    // Define entity points
+    var nodes = [
+      { name: 'Advertisers', x: 0.15, y: 0.5, color: '#e8197a', icon: '🏢' },
+      { name: 'AffsCash API', x: 0.5, y: 0.5, color: '#7c3aed', icon: '⚙️' },
+      { name: 'Search Traffic', x: 0.85, y: 0.25, color: '#0ea5e9', icon: '🔍' },
+      { name: 'Social Media', x: 0.85, y: 0.5, color: '#0ea5e9', icon: '💬' },
+      { name: 'Native Channels', x: 0.85, y: 0.75, color: '#0ea5e9', icon: '📰' }
+    ];
+    
+    function draw() {
+      var cw = w / window.devicePixelRatio;
+      var ch = h / window.devicePixelRatio;
+      ctx.clearRect(0,0,cw,ch);
+      
+      // Draw grid lines
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
+      ctx.lineWidth = 1;
+      for (var i = 0; i < cw; i += 30) {
+        ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, ch); ctx.stroke();
+      }
+      
+      // Draw connections
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.lineWidth = 1.5;
+      
+      // Node 0 -> Node 1
+      ctx.beginPath(); ctx.moveTo(nodes[0].x*cw, nodes[0].y*ch); ctx.lineTo(nodes[1].x*cw, nodes[1].y*ch); ctx.stroke();
+      // Node 1 -> Node 2, 3, 4
+      for (var k = 2; k <= 4; k++) {
+        ctx.beginPath(); ctx.moveTo(nodes[1].x*cw, nodes[1].y*ch); ctx.lineTo(nodes[k].x*cw, nodes[k].y*ch); ctx.stroke();
+      }
+      
+      // Flow packets
+      var progress = (step * 0.3) % 1.0;
+      ctx.fillStyle = '#fff';
+      
+      // Adv -> API
+      var ax = nodes[0].x*cw + (nodes[1].x - nodes[0].x)*cw*progress;
+      var ay = nodes[0].y*ch + (nodes[1].y - nodes[0].y)*ch*progress;
+      ctx.beginPath(); ctx.arc(ax, ay, 3, 0, Math.PI*2); ctx.fill();
+      
+      // API -> Channels
+      for (var k = 2; k <= 4; k++) {
+        var cx = nodes[1].x*cw + (nodes[k].x - nodes[1].x)*cw*progress;
+        var cy = nodes[1].y*ch + (nodes[k].y - nodes[1].y)*ch*progress;
+        ctx.beginPath(); ctx.arc(cx, cy, 3, 0, Math.PI*2); ctx.fill();
+      }
+      
+      // Draw Nodes
+      nodes.forEach(function(n) {
+        var nx = n.x * cw;
+        var ny = n.y * ch;
+        
+        ctx.shadowColor = n.color;
+        ctx.shadowBlur = 10;
+        ctx.fillStyle = 'rgba(15,10,36,0.9)';
+        ctx.strokeStyle = n.color;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(nx, ny, 24, 0, Math.PI*2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+        
+        // Draw icon text
+        ctx.font = '16px serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(n.icon, nx, ny);
+        
+        // Label
+        ctx.fillStyle = '#fff';
+        ctx.font = '700 11px Rajdhani';
+        ctx.fillText(n.name, nx, ny + 38);
+      });
+      
+      step += 0.04;
+      requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+
+  // ── Security Grid Canvas Background ──
+  (function() {
+    var canvas = document.getElementById('canvasSecurityBg');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var w, h;
+    function resize() {
+      w = canvas.width = canvas.offsetWidth;
+      h = canvas.height = canvas.offsetHeight;
+    }
+    resize();
+    
+    var nodes = [];
+    for(var i=0; i<30; i++) {
+      nodes.push({
+        x: Math.random() * 1200,
+        y: Math.random() * 500,
+        vx: (Math.random() - 0.5) * 0.2,
+        vy: (Math.random() - 0.5) * 0.2
+      });
+    }
+    
+    function draw() {
+      ctx.clearRect(0,0,w,h);
+      ctx.strokeStyle = 'rgba(232, 25, 122, 0.03)';
+      ctx.lineWidth = 1;
+      
+      // Move nodes
+      nodes.forEach(function(n) {
+        n.x += n.vx;
+        n.y += n.vy;
+        if (n.x < 0 || n.x > w) n.vx *= -1;
+        if (n.y < 0 || n.y > h) n.vy *= -1;
+      });
+      
+      // Connect nodes
+      for(var a=0; a<nodes.length; a++) {
+        for(var b=a+1; b<nodes.length; b++) {
+          var dist = Math.hypot(nodes[a].x - nodes[b].x, nodes[a].y - nodes[b].y);
+          if (dist < 150) {
+            ctx.beginPath();
+            ctx.moveTo(nodes[a].x, nodes[a].y);
+            ctx.lineTo(nodes[b].x, nodes[b].y);
+            ctx.stroke();
+          }
+        }
+      }
+      
+      requestAnimationFrame(draw);
+    }
+    draw();
+    window.addEventListener('resize', resize);
+  })();
 
   loadOffersFromAPI();
 
