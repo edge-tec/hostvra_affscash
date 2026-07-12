@@ -310,10 +310,19 @@
                 p.y += p.vy * settings.speed;
                 p.z += p.vz * settings.speed;
                 
-                // Boundary bounce checks (keeps them floating across full viewport)
-                if (Math.abs(p.x) > limitX) p.vx *= -1;
-                if (Math.abs(p.y) > limitY) p.vy *= -1;
-                if (Math.abs(p.z) > limitZ) p.vz *= -1;
+                // Boundary bounce checks with edge correction (keeps them floating inside viewport)
+                if (Math.abs(p.x) > limitX) {
+                    p.vx *= -1;
+                    p.x = Math.sign(p.x) * limitX;
+                }
+                if (Math.abs(p.y) > limitY) {
+                    p.vy *= -1;
+                    p.y = Math.sign(p.y) * limitY;
+                }
+                if (Math.abs(p.z) > limitZ) {
+                    p.vz *= -1;
+                    p.z = Math.sign(p.z) * limitZ;
+                }
 
                 // True 3D orbital rotation around center (landing page physics, speed scaled)
                 var rotY = 0.0006 * settings.speed;
@@ -333,15 +342,16 @@
                 var cy = p.y - camY - scrollYOffset;
                 var cz = p.z;
                 
-                // 3D perspective projection
-                var scale = fov / (fov + cz);
+                // 3D perspective projection with safety camera near-plane clipping
+                var safeZ = Math.max(-190, Math.min(190, cz));
+                var scale = fov / (fov + safeZ);
                 var px = (cx * scale) + (w / 2);
                 var py = (cy * scale) + (h / 2);
                 
                 projected.push({
                     x: px,
                     y: py,
-                    z: cz,
+                    z: safeZ,
                     size: p.size * scale,
                     color: colors[p.type] || colors.p1 || 'rgba(124, 58, 237, 0.4)'
                 });
