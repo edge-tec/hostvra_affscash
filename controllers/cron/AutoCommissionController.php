@@ -10,7 +10,7 @@
  * Safe to run as frequently as needed — INSERT IGNORE prevents any duplicates.
  *
  * Cron entry example (every 10 minutes):
- *   */10 * * * * php /path/to/public/index.php /cron/auto-commission >> /dev/null 2>&1
+ *   *\/10 * * * * php /path/to/public/index.php /cron/auto-commission >> /dev/null 2>&1
  *
  * Or call via HTTP with a secret token:
  *   https://yourdomain.com/cron/auto-commission?token=YOUR_CRON_SECRET
