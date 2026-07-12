@@ -133,10 +133,10 @@
         var baseCount = currentTheme === 'light' ? 120 : 115;
         var numParticles = Math.floor(baseCount * settings.density);
         
-        // Wide 3D boundaries to distribute particles over the full viewport screen width and height
-        var limitX = 1000;
-        var limitY = 700;
-        var limitZ = 500;
+        // 3D boundaries to match the landing page's elegant constellation clustering
+        var limitX = 450;
+        var limitY = 300;
+        var limitZ = 200;
 
         for (var i = 0; i < numParticles; i++) {
             var pType = 'p1';
@@ -159,9 +159,9 @@
                 x: (Math.random() - 0.5) * limitX * 2,
                 y: (Math.random() - 0.5) * limitY * 2,
                 z: (Math.random() - 0.5) * limitZ * 2,
-                vx: (Math.random() - 0.5) * 0.38,
-                vy: (Math.random() - 0.5) * 0.38,
-                vz: (Math.random() - 0.5) * 0.38,
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: (Math.random() - 0.5) * 0.4,
+                vz: (Math.random() - 0.5) * 0.4,
                 size: baseSize,
                 type: pType
             });
@@ -304,9 +304,9 @@
             }
             
             var projected = [];
-            var limitX = 1000;
-            var limitY = 700;
-            var limitZ = 500;
+            var limitX = 450;
+            var limitY = 300;
+            var limitZ = 200;
 
             particles.forEach(function(p) {
                 // Natural 3D floating movement scaled by speed setting and deltaTime
@@ -318,24 +318,24 @@
                 if (Math.abs(p.x) > limitX) p.vx *= -1;
                 if (Math.abs(p.y) > limitY) p.vy *= -1;
                 if (Math.abs(p.z) > limitZ) p.vz *= -1;
+
+                // True 3D orbital rotation around center (landing page physics, speed and delta time scaled)
+                var rotY = 0.0006 * settings.speed * deltaTime;
+                var cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+                var rx1 = p.x * cosY - p.z * sinY;
+                var rz1 = p.z * cosY + p.x * sinY;
+                p.x = rx1; p.z = rz1;
+                
+                var rotX = 0.0004 * settings.speed * deltaTime;
+                var cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+                var ry1 = p.y * cosX - p.z * sinX;
+                var rz2 = p.z * cosX + p.y * sinX;
+                p.y = ry1; p.z = rz2;
                 
                 // Camera position offsets (applying parallax pivot rotation)
                 var cx = p.x - camX;
                 var cy = p.y - camY - scrollYOffset;
                 var cz = p.z;
-                
-                // Slow orbital 3D pitch tilt (delta time scaled)
-                var rotY = 0.0006 * deltaTime;
-                var cosY = Math.cos(rotY), sinY = Math.sin(rotY);
-                var x1 = cx * cosY - cz * sinY;
-                var z1 = cz * cosY + cx * sinY;
-                cx = x1; cz = z1;
-                
-                var rotX = 0.0004 * deltaTime;
-                var cosX = Math.cos(rotX), sinX = Math.sin(rotX);
-                var y1 = cy * cosX - cz * sinX;
-                var z2 = cz * cosX + cy * sinX;
-                cy = y1; cz = z2;
                 
                 // 3D perspective projection
                 var scale = fov / (fov + cz);
