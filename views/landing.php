@@ -841,34 +841,34 @@ try {
     .blog-section .eyebrow { -webkit-text-fill-color: rgba(255,255,255,0.7); background: none; color: rgba(255,255,255,0.7) }
     .blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:48px}
     .blog-card {
-      background: rgba(15,10,36,0.6);
-      border-radius: 20px;
+      background: rgba(15,10,36,0.65);
       border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.1);
+      transition: transform 0.15s ease-out, border-color 0.3s, box-shadow 0.3s;
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.1);
       transform: perspective(1000px) rotateX(1deg);
+      transform-style: preserve-3d;
     }
     .blog-card:hover {
-      transform: translateY(-8px) scale(1.02) perspective(1000px) rotateX(0deg);
       border-color: rgba(124,58,237,0.3);
       box-shadow: 0 20px 45px rgba(124,58,237,0.25);
     }
-    .blog-card-img{position:relative;overflow:hidden;aspect-ratio:16/10}
+    .blog-card-img{position:relative;overflow:hidden;aspect-ratio:16/10;transform:translateZ(15px);transform-style:preserve-3d}
     .blog-card-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
     .blog-card:hover .blog-card-img img{transform:scale(1.06)}
-    .blog-card-cat{position:absolute;top:14px;left:14px;background:var(--grad-brand);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase}
-    .blog-card-body{padding:22px 22px 20px;flex:1;display:flex;flex-direction:column;gap:10px}
+    .blog-card-cat{position:absolute;top:14px;left:14px;background:var(--grad-brand);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase;transform:translateZ(10px)}
+    .blog-card-body{padding:22px 22px 20px;flex:1;display:flex;flex-direction:column;gap:10px;transform:translateZ(25px)}
     .blog-card-date{font-size:12px;color:rgba(255,255,255,0.45);display:flex;align-items:center;gap:5px}
     .blog-card-title{font-size:17px;font-weight:700;color:#fff;line-height:1.35;margin:0;font-family:'Rajdhani',sans-serif;flex:1}
     .blog-card-title a{color:inherit;text-decoration:none;transition:color .2s}
     .blog-card-title a:hover{color:#0ea5e9}
     .blog-card-excerpt{font-size:13px;color:rgba(255,255,255,0.65);line-height:1.65;margin:0}
-    .blog-card-footer{display:flex;align-items:center;justify-content:flex-end;padding-top:14px;border-top:1px solid rgba(255,255,255,0.08);margin-top:auto}
+    .blog-card-footer{display:flex;align-items:center;justify-content:flex-end;padding-top:14px;border-top:1px solid rgba(255,255,255,0.08);margin-top:auto;transform:translateZ(30px)}
     .blog-card-read{font-size:13px;font-weight:700;color:#7c3aed;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:gap .2s,color .2s}
     .blog-card-read:hover{color:#0ea5e9;gap:9px}
     .blog-view-all{text-align:center;margin-top:48px}
@@ -3430,6 +3430,26 @@ try {
     }
     draw();
     window.addEventListener('resize', resize);
+  })();
+
+  // 3D Mouse Tilt perspective tracking for Blog cards
+  (function() {
+    var cards = document.querySelectorAll('.blog-card');
+    cards.forEach(function(card) {
+      card.addEventListener('mousemove', function(e) {
+        var rect = card.getBoundingClientRect();
+        var x = e.clientX - rect.left;
+        var y = e.clientY - rect.top;
+        var xc = rect.width / 2;
+        var yc = rect.height / 2;
+        var angleX = (yc - y) / 12;
+        var angleY = (x - xc) / 12;
+        card.style.transform = 'perspective(1000px) rotateX(' + angleX + 'deg) rotateY(' + angleY + 'deg) scale3d(1.03, 1.03, 1.03) translateY(-6px)';
+      });
+      card.addEventListener('mouseleave', function() {
+        card.style.transform = 'perspective(1000px) rotateX(1deg) rotateY(0deg) scale3d(1, 1, 1)';
+      });
+    });
   })();
 
   loadOffersFromAPI();
