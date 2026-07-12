@@ -592,13 +592,80 @@ try {
     .slider-prog{height:4px;background:rgba(124,58,237,.12);border-radius:2px;max-width:240px;margin:14px auto 0;overflow:hidden}
     .slider-prog-fill{height:100%;background:var(--grad-brand);border-radius:4px;width:0%;transition:width .1s linear}
     .count-badge{display:inline-block;background:linear-gradient(135deg,rgba(232,25,122,.12),rgba(124,58,237,.12));color:var(--pink);border:1px solid rgba(232,25,122,.25);border-radius:20px;font-size:12px;font-weight:600;padding:2px 12px;margin-left:10px;vertical-align:middle}
-    .smartlink-highlight{background:linear-gradient(135deg,rgba(5,150,105,.04) 0%,rgba(14,165,233,.04) 50%,rgba(124,58,237,.04) 100%);border:1px solid rgba(14,165,233,.2);border-radius:32px;padding:56px 40px;text-align:center;margin:70px 0 0;position:relative;overflow:hidden;box-shadow:0 24px 50px rgba(124,58,237,.08), inset 0 0 0 1px rgba(255,255,255,0.6);backdrop-filter:blur(20px)}
-    .smartlink-highlight::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at top right,rgba(14,165,233,.1),transparent 60%),radial-gradient(circle at bottom left,rgba(124,58,237,.1),transparent 60%);pointer-events:none}
-    .smartlink-highlight h3{font-size:34px;margin-bottom:16px;position:relative;z-index:1;letter-spacing:-0.5px}
-    .smartlink-highlight p{color:var(--muted);font-size:15px;max-width:650px;margin:0 auto 32px;position:relative;z-index:1;line-height:1.6}
-    .sl-features{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:36px;position:relative;z-index:1}
-    .sl-feat{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.8);color:var(--green);border:1px solid rgba(5,150,105,.2);border-radius:40px;padding:8px 20px;font-size:13px;font-weight:700;box-shadow:0 4px 14px rgba(5,150,105,.08);backdrop-filter:blur(10px);transition:transform 0.2s}
-    .sl-feat:hover{transform:translateY(-2px);border-color:rgba(5,150,105,.4)}
+    .smartlink-highlight {
+      background: rgba(15, 10, 36, 0.65) !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      border-radius: 32px;
+      padding: 56px 40px;
+      text-align: center;
+      margin: 70px 0 0;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.15) !important;
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      perspective: 1000px;
+      transform-style: preserve-3d;
+      transition: transform 0.15s ease-out;
+    }
+    .smartlink-highlight::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right,rgba(14,165,233,.12),transparent 60%),radial-gradient(circle at bottom left,rgba(124,58,237,.12),transparent 60%);
+      pointer-events: none;
+    }
+    .smartlink-highlight h3 {
+      font-size: 34px;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+      letter-spacing: -0.5px;
+      color: #fff !important;
+      transform: translateZ(25px);
+    }
+    .smartlink-highlight p {
+      color: rgba(255,255,255,0.7) !important;
+      font-size: 15px;
+      max-width: 650px;
+      margin: 0 auto 32px;
+      position: relative;
+      z-index: 1;
+      line-height: 1.6;
+      transform: translateZ(15px);
+    }
+    .sl-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 36px;
+      position: relative;
+      z-index: 1;
+      transform-style: preserve-3d;
+    }
+    .sl-feat {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(15, 10, 36, 0.5) !important;
+      color: #6ee7b7 !important;
+      border: 1px solid rgba(16, 185, 129, 0.22) !important;
+      border-radius: 40px;
+      padding: 10px 24px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255,255,255,0.1) !important;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transform: translateZ(30px);
+    }
+    .sl-feat:hover {
+      transform: translateZ(45px) translateY(-3px) scale(1.05) !important;
+      border-color: rgba(16, 185, 129, 0.45) !important;
+      box-shadow: 0 8px 30px rgba(16, 185, 129, 0.2), inset 0 1px 1px rgba(255,255,255,0.15) !important;
+    }
 
     /* ABOUT & FEATURES */
     .about-section{background:var(--grad-section-a);position:relative;overflow:hidden}
@@ -3652,6 +3719,24 @@ window.addEventListener('scroll',function(){var b=document.getElementById('scrol
       card.addEventListener('mouseleave', function() {
         card.style.transform = 'perspective(1000px) rotateX(1deg) rotateY(0deg) scale3d(1, 1, 1)';
       });
+  })();
+
+  // 3D Mouse Tilt perspective tracking for Smartlink Highlight container
+  (function() {
+    var card = document.querySelector('.smartlink-highlight');
+    if (!card) return;
+    card.addEventListener('mousemove', function(e) {
+      var rect = card.getBoundingClientRect();
+      var x = e.clientX - rect.left;
+      var y = e.clientY - rect.top;
+      var xc = rect.width / 2;
+      var yc = rect.height / 2;
+      var angleX = (yc - y) / 22;
+      var angleY = (x - xc) / 22;
+      card.style.transform = 'perspective(1200px) rotateX(' + angleX + 'deg) rotateY(' + angleY + 'deg) translateY(-2px)';
+    });
+    card.addEventListener('mouseleave', function() {
+      card.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg)';
     });
   })();
 
