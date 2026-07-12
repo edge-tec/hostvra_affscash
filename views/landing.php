@@ -1722,7 +1722,7 @@ try {
 
   <!-- HERO -->
   <section class="hero" id="top">
-    <canvas id="heroParticlesCanvas" style="position:absolute;inset:0;pointer-events:none;z-index:1"></canvas>
+    <canvas id="heroParticlesCanvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:0"></canvas>
     <div class="container" style="position:relative;z-index:2">
       <div class="row align-items-center">
         <div class="col-lg-5 hero-content">
@@ -3018,28 +3018,24 @@ window.addEventListener('scroll',function(){var b=document.getElementById('scrol
     var mouse = { x: null, y: null, active: false };
     
     function resize() {
-      w = canvas.width = canvas.offsetWidth;
-      h = canvas.height = canvas.offsetHeight;
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
     }
     resize();
     window.addEventListener('resize', resize);
     
-    // Add mouse move listener to the hero section for connection interaction
-    var hero = document.querySelector('.hero');
-    if (hero) {
-      hero.addEventListener('mousemove', function(e) {
-        var rect = hero.getBoundingClientRect();
-        mouse.x = e.clientX - rect.left;
-        mouse.y = e.clientY - rect.top;
-        mouse.active = true;
-      });
-      hero.addEventListener('mouseleave', function() {
-        mouse.active = false;
-      });
-    }
+    // Add mouse move listener globally to the window for connection interaction
+    window.addEventListener('mousemove', function(e) {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      mouse.active = true;
+    });
+    window.addEventListener('mouseleave', function() {
+      mouse.active = false;
+    });
     
     // Create particles with x, y, z coordinates
-    var numParticles = 80;
+    var numParticles = 115;
     for (var i = 0; i < numParticles; i++) {
       particles.push({
         x: (Math.random() - 0.5) * 800, // 3D local X
