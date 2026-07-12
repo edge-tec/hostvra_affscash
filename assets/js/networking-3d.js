@@ -4,6 +4,11 @@
  * Supports dynamic speed, density, mouse parallax, scroll parallax, and market status glows.
  */
 (function() {
+    if (window.spaceEngineInstance) {
+        return;
+    }
+    window.spaceEngineInstance = true;
+
     var canvas = null;
     var ctx = null;
     var particles = [];
