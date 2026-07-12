@@ -67,11 +67,11 @@
             mouse: 'rgba(14, 165, 233, '
         },
         light: {
-            p1: 'rgba(79, 70, 229, 0.35)',   // Indigo node
-            p2: 'rgba(16, 185, 129, 0.30)',  // Emerald node
-            p3: 'rgba(232, 25, 122, 0.35)',  // Pink node
-            p4: 'rgba(245, 158, 11, 0.35)',   // Golden node
-            line: 'rgba(232, 25, 122, ',    // Pink galaxy connection lines
+            p1: 'rgba(79, 70, 229, 0.65)',   // Indigo node
+            p2: 'rgba(16, 185, 129, 0.60)',  // Emerald node
+            p3: 'rgba(232, 25, 122, 0.65)',  // Pink node
+            p4: 'rgba(245, 158, 11, 0.70)',   // Golden node
+            line: 'rgba(124, 58, 237, ',    // Violet network connection lines
             mouse: 'rgba(79, 70, 229, '
         }
     };
@@ -132,7 +132,7 @@
                     angle: angle,
                     dist: dist,
                     speed: (0.0015 + (1 - dist) * 0.0035) * settings.speed,
-                    size: Math.random() * 2 + 1.2,
+                    size: Math.random() * 2.8 + 1.8,
                     type: pType
                 });
             }
@@ -267,13 +267,14 @@
                 
                 var connectLimit = theme === 'light' ? 90 : 110;
                 if (dist < connectLimit) {
-                    var opacity = (1 - (dist / connectLimit)) * 0.14 * (1 - (pa.z + pb.z) / 400);
+                    var opacityFactor = theme === 'light' ? 0.35 : 0.14;
+                    var opacity = (1 - (dist / connectLimit)) * opacityFactor * (1 - (pa.z + pb.z) / 400);
                     if (opacity > 0) {
                         ctx.beginPath();
                         ctx.moveTo(pa.x, pa.y);
                         ctx.lineTo(pb.x, pb.y);
                         ctx.strokeStyle = colors.line + opacity + ')';
-                        ctx.lineWidth = 0.8 * (1 - (pa.z + pb.z) / 400);
+                        ctx.lineWidth = (theme === 'light' ? 1.2 : 0.8) * (1 - (pa.z + pb.z) / 400);
                         ctx.stroke();
                     }
                 }
