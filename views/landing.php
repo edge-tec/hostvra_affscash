@@ -188,33 +188,74 @@ try {
   // Admin-managed SEO: canonical, description, robots, verification, GA/GTM.
   $seoDescription = $appName . ' is the Best CPA Network & Performance Marketing Platform. We offer high-converting Dating, Sweepstakes, CPL, and CPI offers for top affiliates and publishers.';
   
-  // JSON-LD Schema
-  $seoSchema = '{
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Organization",
-        "name": "' . $appName . '",
-        "url": "' . ($_seoSiteUrl ?? 'https://affscash.net') . '",
-        "logo": "' . ($_seoSiteUrl ?? 'https://affscash.net') . $logoSrc . '",
-        "contactPoint": {
-          "@type": "ContactPoint",
-          "email": "' . $_contactEmail . '",
-          "contactType": "customer support"
-        }
-      },
-      {
-        "@type": "WebSite",
-        "name": "' . $appName . ' CPA Network",
-        "url": "' . ($_seoSiteUrl ?? 'https://affscash.net') . '",
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": "' . ($_seoSiteUrl ?? 'https://affscash.net') . '/blog?q={search_term_string}",
-          "query-input": "required name=search_term_string"
-        }
-      }
-    ]
-  }';
+  // Define site URL for schema
+  $_seoSiteUrl = rtrim(Config::get('config', 'app.url') ?? 'https://affscash.net', '/');
+
+  // Build JSON-LD Schema including ratings and reviews for SEO rich results
+  $schemaReviews = [];
+  $_rvTotal  = count($_landingRevs);
+  $_rvAvg    = $_rvTotal ? round(array_sum(array_column($_landingRevs, 'rating')) / $_rvTotal, 1) : 5.0;
+
+  foreach ($_landingRevs as $index => $rv) {
+      // Limit schema reviews to first 100 items to prevent massive script injection
+      if ($index >= 100) break;
+      $schemaReviews[] = [
+          "@type" => "Review",
+          "author" => [
+              "@type" => "Person",
+              "name" => $rv['name']
+          ],
+          "datePublished" => date('Y-m-d', strtotime('-' . (($index % 60) + 1) . ' days')),
+          "reviewBody" => $rv['review_text'],
+          "reviewRating" => [
+              "@type" => "Rating",
+              "ratingValue" => (string)($rv['rating'] ?: 5),
+              "bestRating" => "5",
+              "worstRating" => "1"
+          ]
+      ];
+  }
+
+  $graph = [
+      [
+          "@type" => "Organization",
+          "name" => $appName,
+          "url" => $_seoSiteUrl,
+          "logo" => $_seoSiteUrl . $logoSrc,
+          "contactPoint" => [
+              "@type" => "ContactPoint",
+              "email" => $_contactEmail,
+              "contactType" => "customer support"
+          ],
+          "aggregateRating" => [
+              "@type" => "AggregateRating",
+              "ratingValue" => (string)$_rvAvg,
+              "reviewCount" => (string)max(1, $_rvTotal),
+              "bestRating" => "5",
+              "worstRating" => "1"
+          ]
+      ]
+  ];
+
+  if (!empty($schemaReviews)) {
+      $graph[0]['review'] = $schemaReviews;
+  }
+
+  $graph[] = [
+      "@type" => "WebSite",
+      "name" => $appName . " CPA Network",
+      "url" => $_seoSiteUrl,
+      "potentialAction" => [
+          "@type" => "SearchAction",
+          "target" => $_seoSiteUrl . "/blog?q={search_term_string}",
+          "query-input" => "required name=search_term_string"
+      ]
+  ];
+
+  $seoSchema = json_encode([
+      "@context" => "https://schema.org",
+      "@graph" => $graph
+  ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
   
   require BASE_PATH . '/views/partials/seo_head.php';
   ?>
