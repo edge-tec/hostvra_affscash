@@ -181,8 +181,10 @@ function fmtTs(ts, opts) {
 </aside>
 
 <div class="main-content">
-<header class="topbar" style="background: linear-gradient(90deg, #a1c4fd 0%, #eac2da 100%); border-bottom: none; position: relative; overflow: hidden;">
-    <canvas class="topbar-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0"></canvas>
+<header class="topbar" style="background: linear-gradient(90deg, #a1c4fd 0%, #eac2da 100%); border-bottom: none; position: relative;">
+    <div style="position: absolute; inset: 0; border-radius: inherit; overflow: hidden; pointer-events: none; z-index: 0;">
+        <canvas class="topbar-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0"></canvas>
+    </div>
     <script>
     (function() {
         var canvas = document.querySelector('.topbar-canvas');
