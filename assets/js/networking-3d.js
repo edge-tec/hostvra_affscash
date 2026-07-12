@@ -4,7 +4,8 @@
  * Supports dynamic speed, density, mouse parallax, scroll parallax, and market status glows.
  */
 (function() {
-    if (window.spaceEngineInstance) {
+    var existingCanvas = document.getElementById('heroParticlesCanvas');
+    if (existingCanvas && window.spaceEngineInstance) {
         return;
     }
     window.spaceEngineInstance = true;
@@ -170,6 +171,13 @@
     function draw() {
         if (!isRunning || !ctx) return;
         
+        // If the canvas was detached from the DOM, stop this loop
+        if (canvas && !document.body.contains(canvas)) {
+            isRunning = false;
+            animationFrameId = null;
+            return;
+        }
+        
         try {
             frameCount++;
             if (frameCount % 300 === 0) {
@@ -185,9 +193,23 @@
             var theme = document.documentElement.getAttribute('data-theme') || 'light';
             var colors = themeColorSet[theme] || themeColorSet.light;
             
-            // Re-initialize if the theme changes on the fly
+            // Update color types in place if theme changes on the fly to avoid resets/size shifts
             if (theme !== currentTheme) {
-                initParticles();
+                if (particles.length > 0) {
+                    particles.forEach(function(p) {
+                        if (theme === 'light') {
+                            var rand = Math.random();
+                            if (rand > 0.85) p.type = 'p4';
+                            else if (rand > 0.60) p.type = 'p3';
+                            else if (rand > 0.35) p.type = 'p2';
+                            else p.type = 'p1';
+                        } else {
+                            p.type = Math.random() > 0.5 ? 'p1' : 'p2';
+                        }
+                    });
+                } else {
+                    initParticles();
+                }
                 currentTheme = theme;
             }
 
