@@ -166,15 +166,27 @@ try { Database::query("ALTER TABLE offers ADD COLUMN offer_type VARCHAR(50) NOT 
 
 try {
     // ── 1. Regular + In-House offers ────────────────────────────────────────
-    $rows = Database::fetchAll(
-        "SELECT o.id, o.name, o.description, o.thumbnail AS image_url,
-                o.payout_amount, o.payout_type, o.category,
-                o.offer_type, o.is_inhouse,
-                o.geo_targeting AS allowed_countries
-         FROM offers o
-         WHERE o.status = 'active'
-         ORDER BY o.is_inhouse DESC, o.id DESC"
-    );
+    try {
+        $rows = Database::fetchAll(
+            "SELECT o.id, o.name, o.description, o.thumbnail AS image_url,
+                    o.payout_amount, o.payout_type, o.category,
+                    o.offer_type, o.is_inhouse,
+                    o.geo_targeting AS allowed_countries
+             FROM offers o
+             WHERE o.status = 'active'
+             ORDER BY o.is_inhouse DESC, o.id DESC"
+        );
+    } catch (\Throwable $queryError) {
+        // Fallback query if is_inhouse or offer_type columns are missing in schema
+        $rows = Database::fetchAll(
+            "SELECT o.id, o.name, o.description, o.thumbnail AS image_url,
+                    o.payout_amount, o.payout_type, o.category,
+                    o.geo_targeting AS allowed_countries
+             FROM offers o
+             WHERE o.status = 'active'
+             ORDER BY o.id DESC"
+        );
+    }
 
     if ($rows) {
         $seenOfferIds = [];
@@ -184,7 +196,7 @@ try {
             $seenOfferIds[$oid] = true;
 
             $catRaw    = strtolower($r['category'] ?? '');
-            $offerType = trim($r['offer_type'] ?? '');
+            $offerType = isset($r['offer_type']) ? trim($r['offer_type']) : '';
             // Determine landing tab:
             // offer_type DOI/SOI takes strict priority so DOI offers never land in the SOI section.
             // For all other offer types fall back to category → offer_type → default.
@@ -205,7 +217,8 @@ try {
 
             // Sub-label: prefer offer_type, then category, then payout_type
             $subLabel = $offerType ?: ($catRaw ? ucfirst($catRaw) : $payType);
-            $sub      = $subLabel . ($r['is_inhouse'] ? ' · In-House' : (' · ' . $payType));
+            $isInhouse = !empty($r['is_inhouse']);
+            $sub      = $subLabel . ($isInhouse ? ' · In-House' : (' · ' . $payType));
 
             $geoRaw  = $r['allowed_countries'] ?? null;
             $geosArr = [];
@@ -228,11 +241,11 @@ try {
                 'payout'       => (string)$payout,
                 'payoutDisplay'=> $payoutDisplay,
                 'payStyle'     => $payStyle,
-                'hot'          => !empty($r['is_inhouse']),
+                'hot'          => $isInhouse,
                 'top'          => false,
                 'isNew'        => false,
                 'img'          => $r['image_url'] ?: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=70',
-                'source'       => $r['is_inhouse'] ? 'inhouse' : 'regular',
+                'source'       => $isInhouse ? 'inhouse' : 'regular',
             ];
         }
     }
