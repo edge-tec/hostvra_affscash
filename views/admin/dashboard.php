@@ -1174,12 +1174,12 @@ function renderTrendChart(){
             },
             scales:{
                 x: {
-                    grid:{display:true, color:'#F1F5F9', drawBorder:false, borderDash:[4,4]},
+                    grid:{display:false},
                     ticks:{font:{size:11, family:'"Inter", sans-serif'}, color:'#64748B'}
                 },
                 y: {
                     display:hasCount, beginAtZero:true, position:'left',
-                    grid:{color:'#F1F5F9', drawBorder:false},
+                    grid:{display:false},
                     ticks:{font:{size:11, family:'"Inter", sans-serif'}, color:'#64748B', callback:v=>fmt(v)},
                     title:{display:hasCount, text:'Count', font:{size:11, family:'"Inter", sans-serif', weight:'500'}, color:'#94A3B8'}
                 },
@@ -1208,7 +1208,7 @@ function loadHourly(){
                     datasets:[{label:'Clicks',data:d.data,backgroundColor:'rgba(79,70,229,.7)',borderColor:'#4F46E5',borderWidth:1,borderRadius:3}]
                 },
                 options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-                    scales:{y:{beginAtZero:true,grid:{color:'#F1F5F9'}},x:{grid:{display:false},ticks:{maxRotation:0,font:{size:10}}}}}
+                    scales:{y:{beginAtZero:true,grid:{display:false}},x:{grid:{display:false},ticks:{maxRotation:0,font:{size:10}}}}}
             });
         }).catch(()=>{}).finally(()=>hideLoad('hourly-loading'));
 }
@@ -1263,7 +1263,7 @@ function renderCountryChart(){
         options:{
             indexAxis:'y',responsive:true,maintainAspectRatio:false,
             plugins:{legend:{position:'top',labels:{font:{size:11}}}},
-            scales:{x:{beginAtZero:true,grid:{color:'#F1F5F9'}},y:{grid:{display:false},ticks:{font:{size:11}}}}
+            scales:{x:{beginAtZero:true,grid:{display:false}},y:{grid:{display:false},ticks:{font:{size:11}}}}
         }
     });
 }
@@ -1331,7 +1331,7 @@ function renderOffersChart(){
         },
         options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:10,font:{size:11}}}},
             scales:{
-                y: {beginAtZero:true,position:'left', grid:{color:'#F1F5F9'},ticks:{callback:v=>'$'+v}},
+                y: {beginAtZero:true,position:'left', grid:{display:false},ticks:{callback:v=>'$'+v}},
                 y1:{beginAtZero:true,position:'right',grid:{display:false},  ticks:{callback:v=>v}, title:{display:true,text:'Fraud Conv',font:{size:10},color:'#DC2626'}},
                 x: {grid:{display:false},ticks:{font:{size:11}}}
             }}
@@ -1375,7 +1375,7 @@ function renderAffsChart(){
             datasets:[{label:'Payout ($)',data:rows.map(r=>r.payout),backgroundColor:COLORS.slice(1).map(c=>c+'CC'),borderColor:COLORS.slice(1),borderWidth:1.5,borderRadius:4}]
         },
         options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-            scales:{y:{beginAtZero:true,grid:{color:'#F1F5F9'},ticks:{callback:v=>'$'+v}},x:{grid:{display:false},ticks:{font:{size:11}}}}}
+            scales:{y:{beginAtZero:true,grid:{display:false},ticks:{callback:v=>'$'+v}},x:{grid:{display:false},ticks:{font:{size:11}}}}}
     });
 }
 

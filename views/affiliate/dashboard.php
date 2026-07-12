@@ -1084,8 +1084,8 @@ function renderTrendChart(d){
                 } 
             },
             scales:{
-                x:{ grid:{display:true, color:'#F1F5F9', drawBorder:false, borderDash:[4,4]}, ticks:{font:{size:11, family:'"Inter", sans-serif'},maxRotation:0,maxTicksLimit:12, color:'#64748B'} },
-                y:{ beginAtZero:true, grid:{color:'#F1F5F9', drawBorder:false}, ticks:{font:{size:11, family:'"Inter", sans-serif'}, color:'#64748B'}, position:'left' },
+                x:{ grid:{display:false}, ticks:{font:{size:11, family:'"Inter", sans-serif'},maxRotation:0,maxTicksLimit:12, color:'#64748B'} },
+                y:{ beginAtZero:true, grid:{display:false}, ticks:{font:{size:11, family:'"Inter", sans-serif'}, color:'#64748B'}, position:'left' },
                 y2:{ beginAtZero:true, grid:{display:false}, ticks:{font:{size:11, family:'"Inter", sans-serif'}, color:'#64748B', callback:function(v){return'$'+fmt(v);}}, position:'right', display: document.getElementById('tog-rev').checked }
             }
         }
@@ -1138,7 +1138,7 @@ function loadCountries(){
                 { label:'Clicks',      data:clicks, backgroundColor:'rgba(59,130,246,.75)',  borderRadius:4 },
                 { label:'Conversions', data:conv,   backgroundColor:'rgba(139,92,246,.75)',   borderRadius:4 }
             ]},
-            options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'top',labels:{font:{size:11}}}}, scales:{ x:{beginAtZero:true,grid:{color:'#F3F4F6'},ticks:{font:{size:11}}}, y:{grid:{display:false},ticks:{font:{size:11}}} } }
+            options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'top',labels:{font:{size:11}}}}, scales:{ x:{beginAtZero:true,grid:{display:false},ticks:{font:{size:11}}}, y:{grid:{display:false},ticks:{font:{size:11}}} } }
         });
         // Country table
         var tb = document.getElementById('tbl-country-body');
@@ -1171,7 +1171,7 @@ function loadOffers(){
         charts['offers'] = new Chart(ctx, {
             type:'bar',
             data:{ labels:labels, datasets:[{ label:'Revenue ($)', data:payouts, backgroundColor:COLORS.map(function(c){return c+'BB';}), borderRadius:4 }]},
-            options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){return'$'+fmt(ctx.raw,2);}}}}, scales:{ x:{beginAtZero:true,grid:{color:'#F3F4F6'},ticks:{font:{size:11},callback:function(v){return'$'+v;}}}, y:{grid:{display:false},ticks:{font:{size:11}}} } }
+            options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){return'$'+fmt(ctx.raw,2);}}}}, scales:{ x:{beginAtZero:true,grid:{display:false},ticks:{font:{size:11},callback:function(v){return'$'+v;}}}, y:{grid:{display:false},ticks:{font:{size:11}}} } }
         });
         // Offer table
         var tb = document.getElementById('tbl-offers-body');
@@ -1206,7 +1206,7 @@ function loadHourly(){
                 backgroundColor: d.data.map(function(v){ return v===maxVal?'rgba(79,70,229,1)':'rgba(79,70,229,.45)'; }),
                 borderRadius:4, borderSkipped:false
             }]},
-            options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},tooltip:{callbacks:{title:function(items){return items[0].label;},label:function(ctx){return ctx.raw+' clicks';}}}}, scales:{ x:{grid:{display:false},ticks:{font:{size:10},maxRotation:0,callback:function(v,i){return i%2===0?d.labels[i]:'';}},}, y:{beginAtZero:true,grid:{color:'#F3F4F6'},ticks:{font:{size:11}}} } }
+            options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},tooltip:{callbacks:{title:function(items){return items[0].label;},label:function(ctx){return ctx.raw+' clicks';}}}}, scales:{ x:{grid:{display:false},ticks:{font:{size:10},maxRotation:0,callback:function(v,i){return i%2===0?d.labels[i]:'';}},}, y:{beginAtZero:true,grid:{display:false},ticks:{font:{size:11}}} } }
         });
     }).catch(function(){});
 }
@@ -1238,7 +1238,7 @@ function loadSources(){
         charts['sources'] = new Chart(ctx, {
             type:'bar',
             data:{ labels:d.labels, datasets:[{label:'Clicks',data:d.data,backgroundColor:'rgba(245,158,11,.7)',borderRadius:4}]},
-            options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ x:{beginAtZero:true,grid:{color:'#F3F4F6'},ticks:{font:{size:11}}}, y:{grid:{display:false},ticks:{font:{size:11}}} } }
+            options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ x:{beginAtZero:true,grid:{display:false},ticks:{font:{size:11}}}, y:{grid:{display:false},ticks:{font:{size:11}}} } }
         });
     }).catch(function(){});
 }

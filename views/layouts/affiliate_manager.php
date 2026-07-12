@@ -181,7 +181,7 @@ function fmtTs(ts, opts) {
 </aside>
 
 <div class="main-content">
-<header class="topbar" style="background: linear-gradient(90deg, #e9e3fa 0%, #e0e9fa 50%, #e0f2fa 100%); border-bottom: none; position: relative;">
+<header class="topbar" style="position: relative;">
     <div style="position: absolute; inset: 0; border-radius: inherit; overflow: hidden; pointer-events: none; z-index: 0;">
         <canvas class="topbar-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0"></canvas>
     </div>

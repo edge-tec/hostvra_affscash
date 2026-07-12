@@ -153,8 +153,8 @@ a:hover { text-decoration: underline; }
 /* ── Topbar ── */
 .topbar {
     height: var(--topbar-h);
-    background: #fff;
-    border-bottom: 1px solid var(--border);
+    background: linear-gradient(90deg, #e9e3fa 0%, #e0e9fa 50%, #e0f2fa 100%);
+    border-bottom: none;
     display: flex;
     align-items: center;
     padding: 0 24px;
