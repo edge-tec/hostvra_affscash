@@ -454,6 +454,7 @@ html[data-theme="dark"] .an-kpi-card { background:rgba(15,23,42,.65); border-col
 
 <!-- ══ HEADER ══════════════════════════════════════════════════════════════ -->
 <div class="an-header">
+    <canvas class="an-header-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0"></canvas>
     <div style="position:relative;z-index:1">
         <div class="an-title-label">Affiliate Network</div>
         <div class="an-title">Analytics Dashboard</div>
@@ -1423,6 +1424,74 @@ setInterval(function(){
     var s = Math.round((Date.now() - _kpiTs) / 1000);
     t.textContent = s <= 1 ? 'Live · just now' : 'Live · ' + s + 's ago';
 }, 1000);
+
+// 3D Particles Constellation Network Animation inside the Header
+(function() {
+    var canvases = document.querySelectorAll('.an-header-canvas');
+    canvases.forEach(function(canvas) {
+        var ctx = canvas.getContext('2d');
+        var w, h;
+        function resize() {
+            w = canvas.width = canvas.offsetWidth;
+            h = canvas.height = canvas.offsetHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+        
+        var nodes = [];
+        var density = Math.min(25, Math.floor(w / 40));
+        for (var i = 0; i < density; i++) {
+            nodes.push({
+                x: Math.random() * w,
+                y: Math.random() * h,
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: (Math.random() - 0.5) * 0.4,
+                r: Math.random() * 2 + 1
+            });
+        }
+        
+        function animate() {
+            if (!canvas.offsetParent) {
+                requestAnimationFrame(animate);
+                return;
+            }
+            ctx.clearRect(0, 0, w, h);
+            
+            // Draw nodes
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+            nodes.forEach(function(n) {
+                n.x += n.vx;
+                n.y += n.vy;
+                if (n.x < 0 || n.x > w) n.vx *= -1;
+                if (n.y < 0 || n.y > h) n.vy *= -1;
+                
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            
+            // Draw lines
+            ctx.lineWidth = 0.8;
+            for (var i = 0; i < nodes.length; i++) {
+                for (var j = i + 1; j < nodes.length; j++) {
+                    var dx = nodes[i].x - nodes[j].x;
+                    var dy = nodes[i].y - nodes[j].y;
+                    var dist = Math.hypot(dx, dy);
+                    if (dist < 100) {
+                        var alpha = (1 - dist / 100) * 0.15;
+                        ctx.strokeStyle = 'rgba(255, 255, 255, ' + alpha + ')';
+                        ctx.beginPath();
+                        ctx.moveTo(nodes[i].x, nodes[i].y);
+                        ctx.lineTo(nodes[j].x, nodes[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+    });
+})();
 
 })();
 </script>
