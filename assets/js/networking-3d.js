@@ -1,6 +1,7 @@
 /**
- * 3D Connected Networking Constellation Animation
+ * 3D Connected Networking & Galaxy Constellation Space Engine
  * Designed for Affscash Tracking System (Light/Dark Theme background effects)
+ * Supports dynamic speed, density, mouse parallax, scroll parallax, and market status glows.
  */
 (function() {
     var canvas = null;
@@ -8,11 +9,27 @@
     var particles = [];
     var w = window.innerWidth;
     var h = window.innerHeight;
-    var mouse = { x: null, y: null, active: false };
+    var mouse = { x: 0, y: 0, actualX: 0, actualY: 0, active: false };
+    var camX = 0, camY = 0; // Smooth camera angles
     var animationFrameId = null;
     var isRunning = false;
     var fov = 400; // Focal length for 3D projection
     var currentTheme = 'light';
+
+    // Galaxy / Constellation configuration settings (with localStorage persistence)
+    var settings = {
+        enabled: localStorage.getItem('galaxy_enabled') !== 'false',
+        speed: parseFloat(localStorage.getItem('galaxy_speed') || '1.0'),
+        density: parseFloat(localStorage.getItem('galaxy_density') || '1.0'),
+        motion: parseFloat(localStorage.getItem('galaxy_motion') || '1.0'),
+        marketStatus: localStorage.getItem('galaxy_market_status') || 'neutral'
+    };
+
+    // Check system prefers-reduced-motion
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        settings.speed = 0.1;
+        settings.motion = 0.0;
+    }
 
     var themeColorSet = {
         dark: {
@@ -23,10 +40,11 @@
             mouse: 'rgba(14, 165, 233, '
         },
         light: {
-            p1: 'rgba(79, 70, 229, 0.32)',   // Indigo node
-            p2: 'rgba(16, 185, 129, 0.28)',  // Green node
-            p3: 'rgba(232, 25, 122, 0.32)',  // Pink node
-            line: 'rgba(232, 25, 122, ',    // Pink network connection lines
+            p1: 'rgba(79, 70, 229, 0.35)',   // Indigo node
+            p2: 'rgba(16, 185, 129, 0.30)',  // Emerald node
+            p3: 'rgba(232, 25, 122, 0.35)',  // Pink node
+            p4: 'rgba(245, 158, 11, 0.35)',   // Golden node
+            line: 'rgba(232, 25, 122, ',    // Pink galaxy connection lines
             mouse: 'rgba(79, 70, 229, '
         }
     };
@@ -55,19 +73,55 @@
         particles = [];
         currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
         
-        // Linear constellation network in both themes
-        var numParticles = 115;
-        for (var i = 0; i < numParticles; i++) {
-            particles.push({
-                x: (Math.random() - 0.5) * 800,
-                y: (Math.random() - 0.5) * 500,
-                z: (Math.random() - 0.5) * 400,
-                vx: (Math.random() - 0.5) * 0.4,
-                vy: (Math.random() - 0.5) * 0.4,
-                vz: (Math.random() - 0.5) * 0.4,
-                size: Math.random() * 2 + 1.5,
-                type: Math.random() > 0.6 ? 'p1' : (Math.random() > 0.35 ? 'p3' : 'p2')
-            });
+        // Base densities
+        var baseCount = currentTheme === 'light' ? 220 : 115;
+        var numParticles = Math.floor(baseCount * settings.density);
+        
+        if (currentTheme === 'light') {
+            // Arrange particles in a gorgeous 3D logarithmic spiral galaxy structure
+            var numArms = 2;
+            for (var i = 0; i < numParticles; i++) {
+                var arm = i % numArms;
+                var dist = Math.random(); // normalized distance from center
+                var angle = (arm * Math.PI) + (dist * Math.PI * 3.2); // spiral twist factor
+                
+                // Spiral coordinate structure + noise
+                var x = Math.cos(angle) * dist * 500 + (Math.random() - 0.5) * 60;
+                var y = (Math.random() - 0.5) * 60; // thickness of galaxy disk
+                var z = Math.sin(angle) * dist * 450 + (Math.random() - 0.5) * 60;
+                
+                // Light mode type options (p1-p4)
+                var pType = 'p1';
+                var rand = Math.random();
+                if (rand > 0.75) pType = 'p4'; // Gold
+                else if (rand > 0.50) pType = 'p3'; // Pink
+                else if (rand > 0.25) pType = 'p2'; // Green
+                
+                particles.push({
+                    x: x,
+                    y: y,
+                    z: z,
+                    angle: angle,
+                    dist: dist,
+                    speed: (0.0015 + (1 - dist) * 0.0035) * settings.speed,
+                    size: Math.random() * 2 + 1.2,
+                    type: pType
+                });
+            }
+        } else {
+            // Constellation network in dark mode
+            for (var i = 0; i < numParticles; i++) {
+                particles.push({
+                    x: (Math.random() - 0.5) * 800,
+                    y: (Math.random() - 0.5) * 500,
+                    z: (Math.random() - 0.5) * 400,
+                    vx: (Math.random() - 0.5) * 0.4 * settings.speed,
+                    vy: (Math.random() - 0.5) * 0.4 * settings.speed,
+                    vz: (Math.random() - 0.5) * 0.4 * settings.speed,
+                    size: Math.random() * 2 + 1.5,
+                    type: Math.random() > 0.5 ? 'p1' : 'p2'
+                });
+            }
         }
     }
 
@@ -83,45 +137,98 @@
             initParticles();
             currentTheme = theme;
         }
+
+        // Draw ambient lighting reactive to market activity (Light theme only)
+        if (theme === 'light') {
+            var glowColor1, glowColor2;
+            if (settings.marketStatus === 'positive') {
+                glowColor1 = 'rgba(16, 185, 129, 0.09)'; // emerald green glow
+                glowColor2 = 'rgba(52, 211, 153, 0.05)';
+            } else if (settings.marketStatus === 'negative') {
+                glowColor1 = 'rgba(239, 68, 68, 0.09)';  // red glow
+                glowColor2 = 'rgba(248, 113, 113, 0.05)';
+            } else {
+                glowColor1 = 'rgba(124, 58, 237, 0.07)'; // soft violet
+                glowColor2 = 'rgba(14, 165, 233, 0.06)';  // soft blue
+            }
+
+            var g1 = ctx.createRadialGradient(w * 0.8, h * 0.2, 0, w * 0.8, h * 0.2, Math.max(w, h) * 0.6);
+            g1.addColorStop(0, glowColor1);
+            g1.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.fillStyle = g1;
+            ctx.fillRect(0, 0, w, h);
+
+            var g2 = ctx.createRadialGradient(w * 0.2, h * 0.7, 0, w * 0.2, h * 0.7, Math.max(w, h) * 0.5);
+            g2.addColorStop(0, glowColor2);
+            g2.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.fillStyle = g2;
+            ctx.fillRect(0, 0, w, h);
+        }
+        
+        // Camera parallax calculations (mouse + scroll offsets)
+        var targetCamX = mouse.active ? (mouse.actualX - w/2) * 0.08 * settings.motion : 0;
+        var targetCamY = mouse.active ? (mouse.actualY - h/2) * 0.08 * settings.motion : 0;
+        camX += (targetCamX - camX) * 0.04;
+        camY += (targetCamY - camY) * 0.04;
+
+        var scrollYOffset = window.scrollY * 0.25 * settings.motion;
         
         var projected = [];
         particles.forEach(function(p) {
-            // Linear constellation speed and bouncing for both modes
-            p.x += p.vx;
-            p.y += p.vy;
-            p.z += p.vz;
-            if (Math.abs(p.x) > 450) p.vx *= -1;
-            if (Math.abs(p.y) > 300) p.vy *= -1;
-            if (Math.abs(p.z) > 200) p.vz *= -1;
+            if (theme === 'light') {
+                // Rotate stars around central core
+                p.angle += p.speed;
+                var targetX = Math.cos(p.angle) * p.dist * 500;
+                var targetZ = Math.sin(p.angle) * p.dist * 450;
+                p.x = targetX;
+                p.z = targetZ;
+                
+                // Star wobbles/dust drift
+                p.y += (Math.random() - 0.5) * 0.15;
+                if (Math.abs(p.y) > 70) p.y *= -0.9;
+            } else {
+                // Constellation linear bounce speed updates
+                p.x += p.vx;
+                p.y += p.vy;
+                p.z += p.vz;
+                if (Math.abs(p.x) > 450) p.vx *= -1;
+                if (Math.abs(p.y) > 300) p.vy *= -1;
+                if (Math.abs(p.z) > 200) p.vz *= -1;
+            }
             
-            // Slow orbital pitch rotation in Y/X for 3D depth
+            // Camera position offsets (applying parallax pivot rotation)
+            var cx = p.x - camX;
+            var cy = p.y - camY - scrollYOffset;
+            var cz = p.z;
+            
+            // Slow orbital 3D pitch tilt
             var rotY = 0.0006;
             var cosY = Math.cos(rotY), sinY = Math.sin(rotY);
-            var x1 = p.x * cosY - p.z * sinY;
-            var z1 = p.z * cosY + p.x * sinY;
-            p.x = x1; p.z = z1;
+            var x1 = cx * cosY - cz * sinY;
+            var z1 = cz * cosY + cx * sinY;
+            cx = x1; cz = z1;
             
             var rotX = 0.0004;
             var cosX = Math.cos(rotX), sinX = Math.sin(rotX);
-            var y1 = p.y * cosX - p.z * sinX;
-            var z2 = p.z * cosX + p.y * sinX;
-            p.y = y1; p.z = z2;
+            var y1 = cy * cosX - cz * sinX;
+            var z2 = cz * cosX + cy * sinX;
+            cy = y1; cz = z2;
             
-            // Perspective projection
-            var scale = fov / (fov + p.z);
-            var px = (p.x * scale) + (w / 2);
-            var py = (p.y * scale) + (h / 2);
+            // 3D perspective projection
+            var scale = fov / (fov + cz);
+            var px = (cx * scale) + (w / 2);
+            var py = (cy * scale) + (h / 2);
             
             projected.push({
                 x: px,
                 y: py,
-                z: p.z,
+                z: cz,
                 size: p.size * scale,
                 color: colors[p.type]
             });
         });
         
-        // Draw connection lines
+        // Draw connection network lines
         for (var a = 0; a < projected.length; a++) {
             var pa = projected[a];
             for (var b = a + 1; b < projected.length; b++) {
@@ -130,9 +237,9 @@
                 var dy = pa.y - pb.y;
                 var dist = Math.hypot(dx, dy);
                 
-                var connectLimit = 110;
+                var connectLimit = theme === 'light' ? 90 : 110;
                 if (dist < connectLimit) {
-                    var opacity = (1 - (dist / connectLimit)) * 0.15 * (1 - (pa.z + pb.z) / 400);
+                    var opacity = (1 - (dist / connectLimit)) * 0.14 * (1 - (pa.z + pb.z) / 400);
                     if (opacity > 0) {
                         ctx.beginPath();
                         ctx.moveTo(pa.x, pa.y);
@@ -144,15 +251,16 @@
                 }
             }
             
-            // Draw nodes
+            // Draw nodes/stars
             if (pa.x >= 0 && pa.x <= w && pa.y >= 0 && pa.y <= h) {
                 ctx.fillStyle = pa.color;
                 ctx.beginPath();
                 ctx.arc(pa.x, pa.y, Math.max(0.5, pa.size), 0, Math.PI * 2);
                 ctx.fill();
                 
+                // Star glow reflection
                 if (pa.size > 2) {
-                    ctx.strokeStyle = pa.color.replace('0.4', '0.08').replace('0.35', '0.08').replace('0.32', '0.06').replace('0.28', '0.06');
+                    ctx.strokeStyle = pa.color.replace('0.4', '0.08').replace('0.35', '0.08').replace('0.32', '0.06').replace('0.30', '0.06');
                     ctx.lineWidth = 2;
                     ctx.beginPath();
                     ctx.arc(pa.x, pa.y, pa.size * 2, 0, Math.PI * 2);
@@ -161,12 +269,12 @@
             }
         }
         
-        // Mouse interaction connections
+        // Interactive mouse connection effect
         if (mouse.active) {
             projected.forEach(function(p) {
                 var dist = Math.hypot(mouse.x - p.x, mouse.y - p.y);
                 if (dist < 150) {
-                    var opacity = (1 - (dist / 150)) * 0.22;
+                    var opacity = (1 - (dist / 150)) * 0.20;
                     ctx.beginPath();
                     ctx.moveTo(mouse.x, mouse.y);
                     ctx.lineTo(p.x, p.y);
@@ -181,6 +289,18 @@
     }
 
     function checkTheme() {
+        if (!settings.enabled) {
+            if (canvas) canvas.style.display = 'none';
+            if (isRunning) {
+                isRunning = false;
+                if (animationFrameId) {
+                    cancelAnimationFrame(animationFrameId);
+                    animationFrameId = null;
+                }
+            }
+            return;
+        }
+
         if (ensureCanvas()) {
             canvas.style.display = 'block';
             if (!isRunning) {
@@ -195,6 +315,9 @@
     function onMouseMove(e) {
         mouse.x = e.clientX;
         mouse.y = e.clientY;
+        // Dampen camera coordinate offset to prevent sudden jumps
+        mouse.actualX += (e.clientX - mouse.actualX) * 0.1;
+        mouse.actualY += (e.clientY - mouse.actualY) * 0.1;
         mouse.active = true;
     }
 
@@ -216,6 +339,126 @@
         }
     }
 
+    // ── Inject Settings Panel Interface ──
+    function injectSettingsPanel() {
+        if (document.getElementById('galaxySettingsBtn')) return;
+        
+        // Find suitable insertion target in topbar
+        var target = document.querySelector('.topbar-actions') || 
+                     document.querySelector('.topbar > div:last-child') ||
+                     document.querySelector('.topbar');
+        
+        if (!target) return;
+
+        // 1. Create floating gear/galaxy switch button
+        var btn = document.createElement('button');
+        btn.id = 'galaxySettingsBtn';
+        btn.className = 'galaxy-settings-btn';
+        btn.type = 'button';
+        btn.title = 'Space Engine Settings';
+        btn.innerHTML = `
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M3 12a9 9 0 0 1 9-9 9 9 0 0 1 9 9 9 9 0 0 1-9 9 9 9 0 0 1-9-9Z"/>
+                <path d="M12 7.5a4.5 4.5 0 0 1 4.5 4.5"/>
+            </svg>
+        `;
+        
+        // Append button
+        target.insertBefore(btn, target.firstChild);
+
+        // 2. Create glassmorphic configuration panel
+        var panel = document.createElement('div');
+        panel.id = 'galaxySettingsPanel';
+        panel.className = 'galaxy-settings-panel';
+        panel.innerHTML = `
+            <div class="galaxy-settings-header">
+                <h3>3D Space Engine</h3>
+                <button type="button" id="galaxySettingsClose">&times;</button>
+            </div>
+            <div class="galaxy-settings-body">
+                <div class="galaxy-setting-row">
+                    <label class="galaxy-toggle-label">
+                        <input type="checkbox" id="galaxyEnabled" ${settings.enabled ? 'checked' : ''}>
+                        <span>Enable Galaxy Background</span>
+                    </label>
+                </div>
+                <div class="galaxy-setting-row">
+                    <label>Rotation Speed</label>
+                    <input type="range" id="galaxySpeed" min="0" max="2" step="0.1" value="${settings.speed}">
+                </div>
+                <div class="galaxy-setting-row">
+                    <label>Star Density</label>
+                    <input type="range" id="galaxyDensity" min="0.2" max="2" step="0.1" value="${settings.density}">
+                </div>
+                <div class="galaxy-setting-row">
+                    <label>Motion Parallax</label>
+                    <input type="range" id="galaxyMotion" min="0" max="2" step="0.1" value="${settings.motion}">
+                </div>
+                <div class="galaxy-setting-row">
+                    <label>Market Condition Glow</label>
+                    <div class="galaxy-glow-group">
+                        <button type="button" class="galaxy-glow-btn ${settings.marketStatus === 'neutral' ? 'active' : ''}" data-status="neutral">Neutral</button>
+                        <button type="button" class="galaxy-glow-btn ${settings.marketStatus === 'positive' ? 'active' : ''}" data-status="positive" style="color:#10b981;">Positive</button>
+                        <button type="button" class="galaxy-glow-btn ${settings.marketStatus === 'negative' ? 'active' : ''}" data-status="negative" style="color:#ef4444;">Negative</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(panel);
+
+        // Event listener connections
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            panel.classList.toggle('show');
+        });
+
+        document.getElementById('galaxySettingsClose').addEventListener('click', function() {
+            panel.classList.remove('show');
+        });
+
+        panel.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        document.addEventListener('click', function() {
+            panel.classList.remove('show');
+        });
+
+        // Controls interactions
+        document.getElementById('galaxyEnabled').addEventListener('change', function(e) {
+            settings.enabled = e.target.checked;
+            localStorage.setItem('galaxy_enabled', settings.enabled);
+            checkTheme();
+        });
+
+        document.getElementById('galaxySpeed').addEventListener('input', function(e) {
+            settings.speed = parseFloat(e.target.value);
+            localStorage.setItem('galaxy_speed', settings.speed);
+            initParticles(); // refresh speeds
+        });
+
+        document.getElementById('galaxyDensity').addEventListener('input', function(e) {
+            settings.density = parseFloat(e.target.value);
+            localStorage.setItem('galaxy_density', settings.density);
+            initParticles(); // rebuild stars list
+        });
+
+        document.getElementById('galaxyMotion').addEventListener('input', function(e) {
+            settings.motion = parseFloat(e.target.value);
+            localStorage.setItem('galaxy_motion', settings.motion);
+        });
+
+        panel.querySelectorAll('.galaxy-glow-btn').forEach(function(b) {
+            b.addEventListener('click', function() {
+                panel.querySelectorAll('.galaxy-glow-btn').forEach(function(el) { el.classList.remove('active'); });
+                b.classList.add('active');
+                settings.marketStatus = b.dataset.status;
+                localStorage.setItem('galaxy_market_status', settings.marketStatus);
+            });
+        });
+    }
+
     function init() {
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', function run() {
@@ -233,6 +476,11 @@
         window.addEventListener('resize', resize);
         document.addEventListener('visibilitychange', handleVisibility);
         document.addEventListener('themechange', checkTheme);
+        
+        injectSettingsPanel();
+        // Fallback injection retry for slower DOM templates
+        setTimeout(injectSettingsPanel, 1000);
+        
         checkTheme();
     }
 
