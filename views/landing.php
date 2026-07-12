@@ -546,9 +546,9 @@ try {
     .slider-outer{position:relative;max-width:1400px;margin:0 auto}
     .slider-wrap{overflow:hidden;padding:12px 4px 18px}
     .slider-track{display:flex;gap:16px;will-change:transform;transition:transform .52s cubic-bezier(.4,0,.2,1)}
-    .offer-card{flex:0 0 calc(25% - 12px);background:rgba(15,10,36,0.65);border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;position:relative;cursor:pointer;transition:all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);box-shadow:0 8px 32px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transform-style:preserve-3d}
-    .offer-card:hover{transform:translateY(-8px) scale(1.02);border-color:rgba(124,58,237,0.3);box-shadow:0 20px 50px rgba(124,58,237,0.25)}
-    .offer-card-img{width:100%;height:140px;object-fit:cover;display:block;transition:transform .4s}
+    .offer-card{flex:0 0 calc(25% - 12px);background:rgba(15,10,36,0.65);border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;position:relative;cursor:pointer;transition:transform 0.15s ease-out, border-color 0.3s, box-shadow 0.3s;box-shadow:0 8px 32px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transform-style:preserve-3d}
+    .offer-card:hover{border-color:rgba(124,58,237,0.3);box-shadow:0 20px 50px rgba(124,58,237,0.25)}
+    .offer-card-img{width:100%;height:140px;object-fit:cover;display:block;transition:transform .4s;transform:translateZ(10px)}
     .offer-card-img[src*="logoo.png"],
     .offer-card-img[src*="logo"] {
       width: 65% !important;
@@ -2715,8 +2715,27 @@ try {
     if(!track)return;
     var GAP=16,DELAY=3200,cur=0,maxIdx=0,cardW=0,autoT,progT,progVal=0,allCards=[],visCards=[];
     function getVisible(){var w=window.innerWidth;if(w>=1024)return 4;if(w>=768)return 3;if(w>=480)return 2;return 1;}
-    function buildAll(){track.innerHTML=OFFER_DATA.map(buildCard).join('');allCards=Array.from(track.querySelectorAll('.offer-card'));visCards=allCards.slice();if(countEl)countEl.textContent=allCards.length+' Offers';calc();resetAuto();if(!chartsBuilt){buildCharts();chartsBuilt=true;}}
-    function filterCat(cat){cur=0;allCards.forEach(function(c){c.style.display=(cat==='all'||c.getAttribute('data-cat')===cat)?'':'none';});visCards=allCards.filter(function(c){return c.style.display!=='none';});if(countEl)countEl.textContent=visCards.length+' Offers';track.style.transition='none';track.style.transform='translateX(0)';calc();resetAuto();}
+    function initOfferCard3DTilt() {
+      allCards.forEach(function(card) {
+        if (card.getAttribute('data-tilt-bound')) return;
+        card.setAttribute('data-tilt-bound', 'true');
+        card.addEventListener('mousemove', function(e) {
+          var rect = card.getBoundingClientRect();
+          var x = e.clientX - rect.left;
+          var y = e.clientY - rect.top;
+          var xc = rect.width / 2;
+          var yc = rect.height / 2;
+          var angleX = (yc - y) / 10;
+          var angleY = (x - xc) / 10;
+          card.style.transform = 'perspective(1000px) rotateX(' + angleX + 'deg) rotateY(' + angleY + 'deg) scale3d(1.03, 1.03, 1.03) translateY(-6px)';
+        });
+        card.addEventListener('mouseleave', function() {
+          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        });
+      });
+    }
+    function buildAll(){track.innerHTML=OFFER_DATA.map(buildCard).join('');allCards=Array.from(track.querySelectorAll('.offer-card'));visCards=allCards.slice();if(countEl)countEl.textContent=allCards.length+' Offers';calc();resetAuto();if(!chartsBuilt){buildCharts();chartsBuilt=true;}initOfferCard3DTilt();}
+    function filterCat(cat){cur=0;allCards.forEach(function(c){c.style.display=(cat==='all'||c.getAttribute('data-cat')===cat)?'':'none';});visCards=allCards.filter(function(c){return c.style.display!=='none';});if(countEl)countEl.textContent=visCards.length+' Offers';track.style.transition='none';track.style.transform='translateX(0)';calc();resetAuto();initOfferCard3DTilt();}
     document.querySelectorAll('.aff-tab').forEach(function(tab){tab.addEventListener('click',function(){document.querySelectorAll('.aff-tab').forEach(function(t){t.classList.remove('active');});tab.classList.add('active');filterCat(tab.getAttribute('data-cat'));});});
     function calc(){if(!visCards.length)return;var vis=getVisible(),cw=track.parentElement.offsetWidth,nw=Math.floor((cw-GAP*(vis-1))/vis);allCards.forEach(function(c){c.style.flex='0 0 '+nw+'px';c.style.maxWidth=nw+'px';c.style.minWidth=nw+'px';});cardW=nw+GAP;maxIdx=Math.max(0,visCards.length-vis);if(cur>maxIdx)cur=maxIdx;buildDots(vis);render(false);}
     function buildDots(vis){dotsEl.innerHTML='';var pages=Math.ceil(visCards.length/Math.max(1,vis));for(var i=0;i<pages;i++){(function(idx){var d=document.createElement('div');d.className='slider-dot'+(idx===Math.floor(cur/Math.max(1,vis))?' active':'');d.onclick=function(){goTo(idx*getVisible());};dotsEl.appendChild(d);})(i);}}
