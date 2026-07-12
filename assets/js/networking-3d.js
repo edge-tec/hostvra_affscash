@@ -15,6 +15,10 @@
     var isRunning = false;
     var fov = 400; // Focal length for 3D projection
     var currentTheme = 'light';
+    
+    function getGlowColor(colorStr, opacity) {
+        return colorStr.replace(/[\d\.]+\)$/, opacity + ')');
+    }
 
     // Safe localStorage helper functions
     function safeGet(key, def) {
@@ -330,18 +334,25 @@
             
             // Draw nodes/stars
             if (pa.x >= 0 && pa.x <= w && pa.y >= 0 && pa.y <= h) {
+                // 1. Draw outer soft shadow glow bubble
+                var glowOpacity = theme === 'dark' ? '0.12' : '0.18';
+                ctx.fillStyle = getGlowColor(pa.color, glowOpacity);
+                ctx.beginPath();
+                ctx.arc(pa.x, pa.y, pa.size * 2.8, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 2. Draw central bright core node/bubble
                 ctx.fillStyle = pa.color;
                 ctx.beginPath();
                 ctx.arc(pa.x, pa.y, Math.max(0.5, pa.size), 0, Math.PI * 2);
                 ctx.fill();
                 
-                // Star glow reflection (only for dark mode to keep light mode clean and small)
-                if (theme === 'dark' && pa.size > 2.2) {
-                    ctx.strokeStyle = pa.color.replace('0.4', '0.05').replace('0.35', '0.05');
-                    ctx.lineWidth = 1;
+                // 3. Draw a tiny white inner highlight to make it look like a glossy bubble/sphere!
+                if (pa.size > 2.0) {
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
                     ctx.beginPath();
-                    ctx.arc(pa.x, pa.y, pa.size * 1.8, 0, Math.PI * 2);
-                    ctx.stroke();
+                    ctx.arc(pa.x - pa.size * 0.22, pa.y - pa.size * 0.22, pa.size * 0.22, 0, Math.PI * 2);
+                    ctx.fill();
                 }
             }
         }
