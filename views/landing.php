@@ -3800,6 +3800,7 @@ window.addEventListener('scroll',function(){var b=document.getElementById('scrol
       card.addEventListener('mouseleave', function() {
         card.style.transform = 'perspective(1000px) rotateX(1deg) rotateY(0deg) scale3d(1, 1, 1)';
       });
+    });
   })();
 
   // 3D Mouse Tilt perspective tracking for Smartlink Highlight container
