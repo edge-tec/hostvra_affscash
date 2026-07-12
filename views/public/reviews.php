@@ -64,28 +64,49 @@ $seoDescription = 'Read reviews and testimonials from our top affiliates and see
 require BASE_PATH . '/views/layouts/public_top.php';
 ?>
 
+<style>
+  .form-control-custom {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255,255,255,0.03) !important;
+    border: 1.5px solid rgba(255,255,255,0.08) !important;
+    border-radius: 10px;
+    color: #fff !important;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    transition: all .25s;
+    outline: none;
+  }
+  .form-control-custom:focus {
+    border-color: #7c3aed !important;
+    box-shadow: 0 0 0 4px rgba(124,58,237,.25) !important;
+    background: rgba(255,255,255,0.05) !important;
+  }
+  .form-control-custom::placeholder { color: rgba(255,255,255,0.4) }
+</style>
+
 <!-- PAGE BANNER -->
-<div class="page-banner">
+<div class="page-banner" style="background: linear-gradient(135deg, #0f0826 0%, #05020c 100%); border-bottom: 1px solid rgba(255,255,255,0.08)">
   <div class="container">
     <div class="breadcrumb-bar">
-      <a href="/">Home</a> <span>/</span> <span>Reviews</span>
+      <a href="/" style="color: rgba(255,255,255,0.6); text-decoration: none">Home</a> <span style="color: rgba(255,255,255,0.3)">/</span> <span style="color: #fff">Reviews</span>
     </div>
-    <h1>⭐ Affiliate <em style="-webkit-text-fill-color:#fff;background:none;color:#fff">Reviews</em></h1>
-    <p>Real experiences from affiliates worldwide. See what publishers say about <?= $appName ?>.</p>
+    <h1 style="color: #fff">⭐ Affiliate <em style="-webkit-text-fill-color:#fff;background:none;color:#fff">Reviews</em></h1>
+    <p style="color: rgba(255,255,255,0.6)">Real experiences from affiliates worldwide. See what publishers say about <?= $appName ?>.</p>
   </div>
 </div>
 
 <!-- CONTENT -->
-<section style="padding:64px 0;background:#fff">
+<section style="padding:80px 0;background:linear-gradient(135deg, #0a0518 0%, #05020c 100%)">
   <div class="container">
 
     <!-- Rating filter -->
-    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:36px;justify-content:center">
-      <a href="/reviews" style="display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:50px;font-size:13px;font-weight:600;border:2px solid <?= $ratingFilter===0?'var(--violet)':'var(--border)' ?>;background:<?= $ratingFilter===0?'var(--violet)':'#fff' ?>;color:<?= $ratingFilter===0?'#fff':'var(--text)' ?>;text-decoration:none;transition:all .2s">
-        All Reviews <span style="background:<?= $ratingFilter===0?'rgba(255,255,255,.25)':'var(--bg2)' ?>;border-radius:10px;padding:1px 8px;font-size:11px"><?= $totalCount ?: '' ?></span>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:36px;justify-content:center">
+      <a href="/reviews" style="display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:50px;font-size:13px;font-weight:600;border:1px solid <?= $ratingFilter===0?'transparent':'rgba(255,255,255,0.08)' ?>;background:<?= $ratingFilter===0?'var(--grad-brand)':'rgba(255,255,255,0.03)' ?>;color:#fff;text-decoration:none;transition:all .2s">
+        All Reviews <span style="background:rgba(255,255,255,.2);border-radius:10px;padding:1px 8px;font-size:11px"><?= $totalCount ?: '' ?></span>
       </a>
       <?php for ($i = 5; $i >= 1; $i--): ?>
-      <a href="/reviews?rating=<?= $i ?>" style="display:inline-flex;align-items:center;gap:5px;padding:9px 18px;border-radius:50px;font-size:13px;font-weight:600;border:2px solid <?= $ratingFilter===$i?'#F59E0B':'var(--border)' ?>;background:<?= $ratingFilter===$i?'#FEF3C7':'#fff' ?>;color:<?= $ratingFilter===$i?'#92400E':'var(--text)' ?>;text-decoration:none;transition:all .2s">
+      <a href="/reviews?rating=<?= $i ?>" style="display:inline-flex;align-items:center;gap:5px;padding:9px 18px;border-radius:50px;font-size:13px;font-weight:600;border:1px solid <?= $ratingFilter===$i?'transparent':'rgba(255,255,255,0.08)' ?>;background:<?= $ratingFilter===$i?'rgba(245,158,11,0.15)':'rgba(255,255,255,0.03)' ?>;color:<?= $ratingFilter===$i?'#F59E0B':'rgba(255,255,255,0.7)' ?>;text-decoration:none;transition:all .2s">
         <?= str_repeat('★', $i) ?> <span style="font-size:12px"><?= $i ?> Star<?= $i>1?'s':'' ?></span>
       </a>
       <?php endfor; ?>
@@ -94,51 +115,51 @@ require BASE_PATH . '/views/layouts/public_top.php';
     <?php if (!empty($reviews)): ?>
 
     <!-- Stats bar -->
-    <div style="background:var(--grad-section-a);border-radius:14px;padding:18px 28px;margin-bottom:36px;display:flex;align-items:center;gap:32px;flex-wrap:wrap;justify-content:center">
+    <div style="background:rgba(15,10,36,0.65);border-radius:20px;padding:24px 32px;margin-bottom:36px;display:flex;align-items:center;gap:32px;flex-wrap:wrap;justify-content:center;box-shadow:0 10px 30px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)">
       <div style="text-align:center">
         <div style="font-size:28px;font-weight:800;font-family:'Rajdhani',sans-serif;background:var(--grad-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent"><?= $totalCount ?></div>
-        <div style="font-size:12px;color:var(--muted);font-weight:600">Total Reviews</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);font-weight:600">Total Reviews</div>
       </div>
-      <div style="width:1px;height:40px;background:var(--border)"></div>
+      <div style="width:1px;height:40px;background:rgba(255,255,255,0.08)"></div>
       <div style="text-align:center">
         <div style="font-size:28px;font-weight:800;font-family:'Rajdhani',sans-serif;color:#F59E0B">★★★★★</div>
-        <div style="font-size:12px;color:var(--muted);font-weight:600">Verified Affiliates</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);font-weight:600">Verified Affiliates</div>
       </div>
-      <div style="width:1px;height:40px;background:var(--border)"></div>
+      <div style="width:1px;height:40px;background:rgba(255,255,255,0.08)"></div>
       <div style="text-align:center">
-        <div style="font-size:28px;font-weight:800;font-family:'Rajdhani',sans-serif;color:var(--green)">100%</div>
-        <div style="font-size:12px;color:var(--muted);font-weight:600">Real Experiences</div>
+        <div style="font-size:28px;font-weight:800;font-family:'Rajdhani',sans-serif;background:var(--grad-cool);-webkit-background-clip:text;-webkit-text-fill-color:transparent">100%</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);font-weight:600">Real Experiences</div>
       </div>
     </div>
 
     <!-- Reviews grid -->
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px;margin-bottom:48px">
       <?php foreach ($reviews as $rv): ?>
-      <div style="background:#fff;border-radius:18px;padding:26px;box-shadow:0 4px 24px rgba(124,58,237,.07);border:1px solid var(--border);display:flex;flex-direction:column;gap:14px;transition:transform .2s,box-shadow .2s" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 36px rgba(124,58,237,.13)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 24px rgba(124,58,237,.07)'">
+      <div class="review-card" style="background:rgba(15,10,36,0.65);border-radius:20px;padding:28px;box-shadow:0 10px 30px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;flex-direction:column;gap:14px;transition:all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)" onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='0 20px 45px rgba(124,58,237,0.2)';this.style.borderColor='rgba(124,58,237,0.3)'" onmouseout="this.style.transform='';this.style.boxShadow='0 10px 30px rgba(0,0,0,0.25)';this.style.borderColor='rgba(255,255,255,0.08)'">
         <!-- Stars + badges -->
         <div style="display:flex;align-items:center;justify-content:space-between">
           <span style="color:#F59E0B;font-size:18px;letter-spacing:2px"><?= str_repeat('★',(int)$rv['rating']) ?><?= str_repeat('☆',5-(int)$rv['rating']) ?></span>
           <?php if ($rv['is_featured']): ?>
-          <span style="background:#FEF3C7;color:#92400E;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700">⭐ Featured</span>
+          <span style="background:linear-gradient(90deg,#7c3aed,#4f46e5);color:#fff;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700">⭐ Featured</span>
           <?php elseif (($rv['source']??'admin')==='public'): ?>
-          <span style="background:#EFF6FF;color:#2563EB;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:600">✓ Verified</span>
+          <span style="background:rgba(16,185,129,0.1);color:#10b981;border:1px solid rgba(16,185,129,0.2);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600">✓ Verified</span>
           <?php endif; ?>
         </div>
         <!-- Review text -->
-        <p style="font-size:14px;color:#374151;line-height:1.75;flex:1;font-style:italic">"<?= Helpers::e($rv['review_text']) ?>"</p>
+        <p style="font-size:14px;color:rgba(255,255,255,0.85);line-height:1.75;flex:1;font-style:italic">"<?= Helpers::e($rv['review_text']) ?>"</p>
         <!-- Author -->
-        <div style="display:flex;align-items:center;gap:12px;padding-top:14px;border-top:1px solid var(--border)">
+        <div style="display:flex;align-items:center;gap:12px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.08)">
           <?php if ($rv['avatar']): ?>
-          <img src="<?= Helpers::e($rv['avatar']) ?>" alt="" style="width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--border);flex-shrink:0">
+          <img src="<?= Helpers::e($rv['avatar']) ?>" alt="" style="width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.12);flex-shrink:0">
           <?php else: ?>
           <div style="width:46px;height:46px;border-radius:50%;background:var(--grad-brand);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px;flex-shrink:0">
             <?= strtoupper(substr(htmlspecialchars($rv['name'],ENT_QUOTES,'UTF-8'),0,1)) ?>
           </div>
           <?php endif; ?>
           <div>
-            <div style="font-weight:700;font-size:14px;color:var(--text)"><?= Helpers::e($rv['name']) ?></div>
-            <?php if ($rv['role_title']): ?><div style="font-size:12px;color:var(--muted)"><?= Helpers::e($rv['role_title']) ?></div><?php endif; ?>
-            <?php if ($rv['country']): ?><div style="font-size:11px;color:var(--muted)">📍 <?= Helpers::e($rv['country']) ?></div><?php endif; ?>
+            <div style="font-weight:700;font-size:14px;color:#fff"><?= Helpers::e($rv['name']) ?></div>
+            <?php if ($rv['role_title']): ?><div style="font-size:12px;color:rgba(255,255,255,0.5)"><?= Helpers::e($rv['role_title']) ?></div><?php endif; ?>
+            <?php if ($rv['country']): ?><div style="font-size:11px;color:rgba(255,255,255,0.4)">📍 <?= Helpers::e($rv['country']) ?></div><?php endif; ?>
           </div>
         </div>
       </div>
@@ -149,51 +170,51 @@ require BASE_PATH . '/views/layouts/public_top.php';
     <?php if ($totalPages > 1): ?>
     <div style="display:flex;justify-content:center;gap:8px;margin-bottom:48px;flex-wrap:wrap">
       <?php if ($page > 1): ?>
-      <a href="/reviews?<?= $ratingFilter?'rating='.$ratingFilter.'&':'' ?>page=<?= $page-1 ?>" style="padding:8px 16px;border-radius:8px;border:1.5px solid var(--border);color:var(--text);font-size:13px;font-weight:600;text-decoration:none;transition:all .2s" onmouseover="this.style.borderColor='var(--violet)';this.style.color='var(--violet)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">← Prev</a>
+      <a href="/reviews?<?= $ratingFilter?'rating='.$ratingFilter.'&':'' ?>page=<?= $page-1 ?>" style="padding:8px 16px;border-radius:8px;border:1.5px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);color:#fff;font-size:13px;font-weight:600;text-decoration:none;transition:all .2s" onmouseover="this.style.borderColor='#7c3aed';this.style.color='#7c3aed'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)';this.style.color='#fff'">← Prev</a>
       <?php endif; ?>
       <?php for ($i = max(1, $page-2); $i <= min($totalPages, $page+2); $i++): ?>
-      <a href="/reviews?<?= $ratingFilter?'rating='.$ratingFilter.'&':'' ?>page=<?= $i ?>" style="padding:8px 16px;border-radius:8px;border:1.5px solid <?= $i===$page?'var(--violet)':'var(--border)' ?>;background:<?= $i===$page?'var(--violet)':'#fff' ?>;color:<?= $i===$page?'#fff':'var(--text)' ?>;font-size:13px;font-weight:600;text-decoration:none"><?= $i ?></a>
+      <a href="/reviews?<?= $ratingFilter?'rating='.$ratingFilter.'&':'' ?>page=<?= $i ?>" style="padding:8px 16px;border-radius:8px;border:1.5px solid <?= $i===$page?'transparent':'rgba(255,255,255,0.08)' ?>;background:<?= $i===$page?'var(--grad-brand)':'rgba(255,255,255,0.03)' ?>;color:#fff;font-size:13px;font-weight:600;text-decoration:none"><?= $i ?></a>
       <?php endfor; ?>
       <?php if ($page < $totalPages): ?>
-      <a href="/reviews?<?= $ratingFilter?'rating='.$ratingFilter.'&':'' ?>page=<?= $page+1 ?>" style="padding:8px 16px;border-radius:8px;border:1.5px solid var(--border);color:var(--text);font-size:13px;font-weight:600;text-decoration:none;transition:all .2s" onmouseover="this.style.borderColor='var(--violet)';this.style.color='var(--violet)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">Next →</a>
+      <a href="/reviews?<?= $ratingFilter?'rating='.$ratingFilter.'&':'' ?>page=<?= $page+1 ?>" style="padding:8px 16px;border-radius:8px;border:1.5px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);color:#fff;font-size:13px;font-weight:600;text-decoration:none;transition:all .2s" onmouseover="this.style.borderColor='#7c3aed';this.style.color='#7c3aed'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)';this.style.color='#fff'">Next →</a>
       <?php endif; ?>
     </div>
     <?php endif; ?>
 
     <?php else: ?>
     <!-- Empty state -->
-    <div style="text-align:center;padding:64px 24px;color:var(--muted)">
+    <div style="text-align:center;padding:64px 24px;color:rgba(255,255,255,0.4)">
       <div style="font-size:48px;margin-bottom:16px;opacity:.4">⭐</div>
-      <h3 style="font-size:20px;color:var(--muted);margin-bottom:8px">No reviews yet</h3>
+      <h3 style="font-size:20px;color:rgba(255,255,255,0.6);margin-bottom:8px">No reviews yet</h3>
       <p style="font-size:14px">Be the first to share your experience with <?= $appName ?>!</p>
     </div>
     <?php endif; ?>
 
     <!-- Submit a review form -->
-    <div id="write-review" style="background:var(--grad-section-a);border-radius:24px;padding:48px 40px;max-width:760px;margin:0 auto;border:1px solid var(--border)">
+    <div id="write-review" style="background:rgba(15,10,36,0.6);border-radius:24px;padding:48px 40px;max-width:760px;margin:0 auto;border:1px solid rgba(255,255,255,0.08);box-shadow:0 16px 50px rgba(0,0,0,0.3);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)">
       <div style="text-align:center;margin-bottom:32px">
         <div class="eyebrow" style="justify-content:center"><span class="pulse"></span> Share Your Experience</div>
-        <h2 style="font-size:30px;margin-bottom:10px">Write a <em>Review</em></h2>
-        <p style="font-size:14px;color:var(--muted)">Your review will appear after admin approval. Thank you for your feedback!</p>
+        <h2 style="font-size:30px;margin-bottom:10px;color:#fff">Write a <em>Review</em></h2>
+        <p style="font-size:14px;color:rgba(255,255,255,0.5)">Your review will appear after admin approval. Thank you for your feedback!</p>
       </div>
       <form id="reviewForm" onsubmit="submitReview(event)" novalidate>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
           <div>
-            <label style="font-size:13px;font-weight:600;color:var(--text);display:block;margin-bottom:6px">Your Name <span style="color:var(--pink)">*</span></label>
+            <label style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);display:block;margin-bottom:6px">Your Name <span style="color:var(--pink)">*</span></label>
             <input type="text" id="rv_name" class="form-control-custom" placeholder="John Smith" required maxlength="100">
           </div>
           <div>
-            <label style="font-size:13px;font-weight:600;color:var(--text);display:block;margin-bottom:6px">Email <span style="color:var(--muted);font-weight:400">(private)</span></label>
+            <label style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);display:block;margin-bottom:6px">Email <span style="color:rgba(255,255,255,0.4);font-weight:400">(private)</span></label>
             <input type="email" id="rv_email" class="form-control-custom" placeholder="you@example.com">
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
           <div>
-            <label style="font-size:13px;font-weight:600;color:var(--text);display:block;margin-bottom:6px">Role / Title</label>
+            <label style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);display:block;margin-bottom:6px">Role / Title</label>
             <input type="text" id="rv_role" class="form-control-custom" placeholder="Affiliate Marketer">
           </div>
           <div>
-            <label style="font-size:13px;font-weight:600;color:var(--text);display:block;margin-bottom:6px">Country</label>
+            <label style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);display:block;margin-bottom:6px">Country</label>
             <input type="text" id="rv_country" class="form-control-custom" placeholder="United States">
           </div>
         </div>

@@ -25,25 +25,25 @@ if ($geoStr === 'Global') {
 <style>
 .offer-detail-banner {
     padding: 60px 0 40px;
-    background: #f8fafc;
-    border-bottom: 1px solid var(--border);
+    background: linear-gradient(135deg, #0f0826 0%, #05020c 100%);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 .breadcrumb {
     font-size: 14px;
-    color: var(--text-light);
+    color: rgba(255,255,255,0.5);
     margin-bottom: 24px;
 }
 .breadcrumb a {
-    color: var(--violet);
+    color: #7c3aed;
     text-decoration: none;
     font-weight: 500;
 }
 .breadcrumb a:hover {
-    text-decoration: underline;
+    color: #0ea5e9;
 }
 .breadcrumb span {
     margin: 0 8px;
-    color: #9ca3af;
+    color: rgba(255,255,255,0.3);
 }
 .offer-header {
     display: flex;
@@ -54,14 +54,14 @@ if ($geoStr === 'Global') {
     width: 120px;
     height: 120px;
     border-radius: 20px;
-    background: #fff;
-    border: 1px solid var(--border);
+    background: rgba(15,10,36,0.6);
+    border: 1px solid rgba(255,255,255,0.08);
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
 }
 .offer-icon img {
     max-width: 100%;
@@ -75,8 +75,8 @@ if ($geoStr === 'Global') {
     display: inline-block;
     font-size: 13px;
     font-weight: 600;
-    color: var(--violet);
-    background: rgba(124, 58, 237, 0.1);
+    color: #7c3aed;
+    background: rgba(124, 58, 237, 0.15);
     padding: 4px 12px;
     border-radius: 50px;
     text-transform: uppercase;
@@ -86,7 +86,7 @@ if ($geoStr === 'Global') {
 .offer-header-info h1 {
     font-size: 32px;
     font-weight: 800;
-    color: var(--text);
+    color: #fff;
     margin-bottom: 16px;
     line-height: 1.2;
 }
@@ -100,14 +100,14 @@ if ($geoStr === 'Global') {
     align-items: center;
     gap: 8px;
     font-size: 15px;
-    color: var(--text-light);
+    color: rgba(255,255,255,0.6);
 }
 .stat-item strong {
-    color: var(--text);
+    color: #fff;
 }
 .offer-main-content {
     padding: 64px 0;
-    background: #fff;
+    background: linear-gradient(135deg, #0a0518 0%, #05020c 100%);
 }
 .content-grid {
     display: grid;
@@ -117,28 +117,37 @@ if ($geoStr === 'Global') {
 .offer-description {
     font-size: 16px;
     line-height: 1.7;
-    color: var(--text);
+    color: rgba(255,255,255,0.8);
 }
 .offer-description h2, .offer-description h3 {
     margin: 32px 0 16px;
-    color: var(--text);
+    color: #fff;
 }
 .offer-description p {
     margin-bottom: 16px;
 }
 .sidebar-box {
-    background: #f8fafc;
-    border: 1px solid var(--border);
-    border-radius: 16px;
+    background: rgba(15, 10, 36, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
     padding: 24px;
     position: sticky;
     top: 100px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transform: perspective(1000px) rotateX(1deg);
+    transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.sidebar-box:hover {
+    transform: translateY(-5px) scale(1.02) perspective(1000px) rotateX(0deg);
+    border-color: rgba(124, 58, 237, 0.3);
 }
 .sidebar-box h3 {
     font-size: 18px;
     font-weight: 700;
     margin-bottom: 16px;
-    color: var(--text);
+    color: #fff;
 }
 .sidebar-list {
     list-style: none;
@@ -147,37 +156,39 @@ if ($geoStr === 'Global') {
 }
 .sidebar-list li {
     padding: 12px 0;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     justify-content: space-between;
     font-size: 15px;
+    color: rgba(255,255,255,0.8);
 }
 .sidebar-list li:last-child {
     border-bottom: none;
 }
 .sidebar-list li span:first-child {
-    color: var(--text-light);
+    color: rgba(255, 255, 255, 0.5);
 }
 .sidebar-list li span:last-child {
     font-weight: 600;
-    color: var(--text);
+    color: #fff;
     text-align: right;
 }
 .cta-button {
     display: block;
     width: 100%;
     text-align: center;
-    background: var(--violet);
+    background: linear-gradient(135deg, #7c3aed 0%, #e8197a 100%);
     color: #fff;
     padding: 14px 24px;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 16px;
     font-weight: 700;
     text-decoration: none;
-    transition: background 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 .cta-button:hover {
-    background: var(--violet-dark, #6d28d9);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(232, 25, 122, 0.4);
 }
 @media (max-width: 768px) {
     .offer-header {
@@ -272,7 +283,7 @@ if ($geoStr === 'Global') {
                     </ul>
                     
                     <a href="/register" class="cta-button">Sign up to promote this</a>
-                    <p style="text-align:center; font-size:13px; color:var(--text-light); margin-top:16px;">Already have an account? <a href="/login" style="color:var(--violet)">Log in</a></p>
+                    <p style="text-align:center; font-size:13px; color:rgba(255,255,255,0.5); margin-top:16px;">Already have an account? <a href="/login" style="color:#7c3aed">Log in</a></p>
                 </div>
             </div>
             

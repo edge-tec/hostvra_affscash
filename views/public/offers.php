@@ -6,28 +6,31 @@ require BASE_PATH . '/views/layouts/public_top.php';
 <style>
 .offers-banner {
     padding: 80px 0 60px;
-    background: linear-gradient(135deg, var(--bg-card) 0%, #ffffff 100%);
+    background: linear-gradient(135deg, #0f0826 0%, #05020c 100%);
     text-align: center;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 .offers-banner h1 {
     font-size: 42px;
     font-weight: 800;
-    color: var(--text);
+    color: #fff;
     margin-bottom: 16px;
     letter-spacing: -0.5px;
 }
 .offers-banner p {
     font-size: 18px;
-    color: var(--text-light);
+    color: rgba(255,255,255,0.6);
     max-width: 600px;
     margin: 0 auto;
 }
 .filter-bar {
-    background: #fff;
+    background: rgba(15, 10, 36, 0.6);
     padding: 24px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     margin: -32px auto 48px;
     max-width: 1000px;
     position: relative;
@@ -41,21 +44,21 @@ require BASE_PATH . '/views/layouts/public_top.php';
     flex: 1;
     min-width: 200px;
     padding: 12px 16px;
-    border: 1px solid var(--border);
+    border: 1px solid rgba(255,255,255,0.08);
     border-radius: 8px;
     font-size: 15px;
-    color: var(--text);
-    background: var(--bg-body);
+    color: #fff;
+    background: rgba(255,255,255,0.03);
     transition: all 0.2s;
 }
 .filter-bar input:focus, .filter-bar select:focus {
-    border-color: var(--violet);
+    border-color: #7c3aed;
     outline: none;
-    background: #fff;
-    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+    background: rgba(255,255,255,0.05);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.25);
 }
 .filter-bar button {
-    background: var(--violet);
+    background: linear-gradient(135deg, #7c3aed 0%, #e8197a 100%);
     color: #fff;
     border: none;
     padding: 12px 24px;
@@ -63,10 +66,11 @@ require BASE_PATH . '/views/layouts/public_top.php';
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 .filter-bar button:hover {
-    background: var(--violet-dark, #6d28d9);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(232, 25, 122, 0.4);
 }
 .offers-grid {
     display: grid;
@@ -75,26 +79,30 @@ require BASE_PATH . '/views/layouts/public_top.php';
     margin-bottom: 48px;
 }
 .offer-card {
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 16px;
+    background: rgba(15, 10, 36, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
     overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
     display: flex;
     flex-direction: column;
+    transform: perspective(1000px) rotateX(1deg);
 }
 .offer-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.08);
-    border-color: var(--violet);
+    transform: translateY(-8px) scale(1.02) perspective(1000px) rotateX(0deg);
+    border-color: rgba(124, 58, 237, 0.3);
+    box-shadow: 0 20px 45px rgba(124, 58, 237, 0.25);
 }
 .offer-card-img {
     height: 160px;
-    background: #f8fafc;
+    background: rgba(10, 5, 30, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 .offer-card-img img {
     max-width: 100%;
@@ -110,7 +118,7 @@ require BASE_PATH . '/views/layouts/public_top.php';
 .offer-cat {
     font-size: 12px;
     font-weight: 600;
-    color: var(--violet);
+    color: #7c3aed;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 8px;
@@ -118,7 +126,7 @@ require BASE_PATH . '/views/layouts/public_top.php';
 .offer-title {
     font-size: 18px;
     font-weight: 700;
-    color: var(--text);
+    color: #fff;
     margin-bottom: 12px;
     line-height: 1.3;
     display: -webkit-box;
@@ -136,13 +144,13 @@ require BASE_PATH . '/views/layouts/public_top.php';
     font-size: 16px;
     font-weight: 700;
     color: #10b981;
-    background: #d1fae5;
+    background: rgba(16, 185, 129, 0.15);
     padding: 4px 10px;
     border-radius: 6px;
 }
 .offer-geo {
     font-size: 13px;
-    color: var(--text-light);
+    color: rgba(255, 255, 255, 0.5);
     display: flex;
     align-items: center;
     gap: 4px;
@@ -150,13 +158,13 @@ require BASE_PATH . '/views/layouts/public_top.php';
 .offer-action {
     margin-top: auto;
     padding-top: 16px;
-    border-top: 1px dashed var(--border);
+    border-top: 1px dashed rgba(255,255,255,0.08);
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 .offer-action a {
-    color: var(--violet);
+    color: #7c3aed;
     font-weight: 600;
     font-size: 14px;
     text-decoration: none;
@@ -165,7 +173,7 @@ require BASE_PATH . '/views/layouts/public_top.php';
     gap: 4px;
 }
 .offer-action a:hover {
-    text-decoration: underline;
+    color: #0ea5e9;
 }
 .pagination {
     display: flex;
@@ -185,19 +193,19 @@ require BASE_PATH . '/views/layouts/public_top.php';
     text-decoration: none;
 }
 .pagination a {
-    background: #fff;
-    border: 1px solid var(--border);
-    color: var(--text);
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #fff;
     transition: all 0.2s;
 }
 .pagination a:hover {
-    border-color: var(--violet);
-    color: var(--violet);
+    border-color: #7c3aed;
+    color: #7c3aed;
 }
 .pagination span.active {
-    background: var(--violet);
+    background: linear-gradient(135deg, #7c3aed 0%, #e8197a 100%);
     color: #fff;
-    border: 1px solid var(--violet);
+    border: 1px solid transparent;
 }
 </style>
 
@@ -208,7 +216,7 @@ require BASE_PATH . '/views/layouts/public_top.php';
     </div>
 </div>
 
-<section style="background: #fafafa; min-height: 500px; padding-bottom: 64px;">
+<section style="background: linear-gradient(135deg, #0a0518 0%, #05020c 100%); min-height: 500px; padding-bottom: 80px; padding-top: 20px">
     <div class="container">
         <form method="GET" action="/offers" class="filter-bar">
             <input type="text" name="q" placeholder="Search offers..." value="<?= Helpers::e($search) ?>">
