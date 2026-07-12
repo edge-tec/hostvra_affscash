@@ -67,8 +67,7 @@ try {
              JOIN affiliate_offers ao ON ao.offer_id  = o.id
              LEFT JOIN private_offer_access poa ON poa.offer_id = o.id AND poa.affiliate_id = ?
              WHERE ao.affiliate_id=? AND ao.status='approved' AND o.status='active'
-               AND (COALESCE(o.visibility,'public') != 'private' OR poa.id IS NOT NULL)
-             LIMIT 10",
+               AND (COALESCE(o.visibility,'public') != 'private' OR poa.id IS NOT NULL)",
             [$affId, $affId]
         );
     } catch (PDOException $e) {
@@ -77,8 +76,7 @@ try {
             "SELECT o.id, o.name, o.description, o.payout_type, o.payout_amount as payout, o.preview_url, ao.custom_payout
              FROM offers o
              JOIN affiliate_offers ao ON ao.offer_id  = o.id
-             WHERE ao.affiliate_id=? AND ao.status='approved' AND o.status='active'
-             LIMIT 10",
+             WHERE ao.affiliate_id=? AND ao.status='approved' AND o.status='active'",
             [$affId]
         );
     }
