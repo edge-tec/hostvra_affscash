@@ -120,11 +120,11 @@
                 else if (rand > 0.60) pType = 'p3'; // Pink
                 else if (rand > 0.35) pType = 'p2'; // Green
                 
-                // Standard landing page size stars
-                baseSize = Math.random() * 2.0 + 1.5;
+                // Increased size (2 steps bigger)
+                baseSize = Math.random() * 2.5 + 2.5;
             } else {
                 pType = Math.random() > 0.5 ? 'p1' : 'p2';
-                baseSize = Math.random() * 2.0 + 1.5;
+                baseSize = Math.random() * 2.5 + 2.5;
             }
 
             particles.push({
