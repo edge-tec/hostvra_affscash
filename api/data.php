@@ -160,10 +160,6 @@ $PAY_STYLE_MAP = [
     'REVSHARE' => '--grad-green',
 ];
 
-// Ensure columns exist (schema guards — safe to run on every request)
-try { Database::query("ALTER TABLE offers ADD COLUMN is_inhouse TINYINT(1) NOT NULL DEFAULT 0"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE offers ADD COLUMN offer_type VARCHAR(50) NOT NULL DEFAULT ''"); } catch (\Throwable $_e) {}
-
 try {
     // ── 1. Regular + In-House offers ────────────────────────────────────────
     try {
@@ -289,7 +285,9 @@ try {
             ];
         }
     }
-} catch (\Throwable $e) { /* fallback below */ }
+} catch (\Throwable $e) {
+    $dbgError = $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine();
+}
 
 // Fallback: sample-offers.json
 if (empty($offers)) {
@@ -336,4 +334,8 @@ if (empty($offers)) {
     ];
 }
 
-echo json_encode(['success' => true, 'data' => $offers, 'count' => count($offers)]);
+$responsePayload = ['success' => true, 'data' => $offers, 'count' => count($offers)];
+if (isset($dbgError)) {
+    $responsePayload['debug_error'] = $dbgError;
+}
+echo json_encode($responsePayload);
