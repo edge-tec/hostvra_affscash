@@ -63,7 +63,7 @@
 <!-- Desktop: scrollable tab bar -->
 <div class="settings-tabs">
     <?php
-    $tabs = ['general'=>'General','branding'=>'Branding','security'=>'Security','inactivity'=>'Affiliate Inactivity','traffic'=>'Traffic','vpn_detection'=>'VPN & Proxy','commission'=>'Commission','conversions'=>'Conversions','budget_system'=>'Budget System','domains'=>'Tracking Domains','email'=>'Email / SMTP','shortener'=>'Link Shortener','mobile_app'=>'Mobile App','notifications'=>'Notifications','fraud_reports'=>'Fraud Reports'];
+    $tabs = ['general'=>'General','branding'=>'Branding','security'=>'Security','inactivity'=>'Affiliate Inactivity','traffic'=>'Traffic','vpn_detection'=>'VPN & Proxy','commission'=>'Commission','conversions'=>'Conversions','budget_system'=>'Budget System','domains'=>'Tracking Domains','email'=>'Email / SMTP','shortener'=>'Link Shortener','mobile_app'=>'Mobile App','notifications'=>'Notifications','fraud_reports'=>'Fraud Reports', 'space_engine'=>'3D Background'];
     foreach ($tabs as $key => $label):
     ?>
     <a href="/admin/settings?tab=<?= $key ?>"
@@ -2130,6 +2130,57 @@ function frCopyUrl() {
     });
 }
 </script>
+
+<?php elseif ($activeTab === 'space_engine'): ?>
+<div class="card" style="max-width:680px">
+    <div class="card-header"><span class="card-title">3D Background Settings</span></div>
+    <div class="card-body">
+        <form method="POST">
+            <?= Helpers::csrf() ?>
+            <input type="hidden" name="tab" value="space_engine">
+            
+            <div class="form-group">
+                <label class="form-check" style="display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;color:var(--text);margin-bottom:6px">
+                    <input type="checkbox" name="space_engine_enabled" value="1" <?= (Config::get('config', 'space_engine.enabled') !== '0') ? 'checked' : '' ?> style="width:16px;height:16px;accent-color:var(--primary);cursor:pointer">
+                    <span>Enable 3D Galaxy background effect (Light Mode)</span>
+                </label>
+                <div class="form-hint">Enables/disables the floating stars, cosmic dust, and rotating galaxy animation in Light Mode.</div>
+            </div>
+
+            <div class="form-group">
+                <label>Rotation Speed</label>
+                <input type="range" name="space_engine_speed" min="0" max="2" step="0.1" class="form-control" style="height:auto;accent-color:var(--primary);cursor:pointer" value="<?= htmlspecialchars(Config::get('config', 'space_engine.speed') ?: '1.0') ?>">
+                <div class="form-hint">Controls how fast the galaxy arms rotate. Default: 1.0</div>
+            </div>
+
+            <div class="form-group">
+                <label>Star Density</label>
+                <input type="range" name="space_engine_density" min="0.2" max="2" step="0.1" class="form-control" style="height:auto;accent-color:var(--primary);cursor:pointer" value="<?= htmlspecialchars(Config::get('config', 'space_engine.density') ?: '1.0') ?>">
+                <div class="form-hint">Controls the density/number of star particles. Default: 1.0</div>
+            </div>
+
+            <div class="form-group">
+                <label>Motion Parallax</label>
+                <input type="range" name="space_engine_motion" min="0" max="2" step="0.1" class="form-control" style="height:auto;accent-color:var(--primary);cursor:pointer" value="<?= htmlspecialchars(Config::get('config', 'space_engine.motion') ?: '1.0') ?>">
+                <div class="form-hint">Controls camera reaction to mouse movement and page scroll. Default: 1.0</div>
+            </div>
+
+            <div class="form-group">
+                <label>Global Market Status Glow</label>
+                <select name="space_engine_market_status" class="form-control">
+                    <option value="neutral" <?= Config::get('config', 'space_engine.market_status') === 'neutral' ? 'selected' : '' ?>>Neutral (Soft Blue/Purple)</option>
+                    <option value="positive" <?= Config::get('config', 'space_engine.market_status') === 'positive' ? 'selected' : '' ?>>Positive Market (Soft Emerald Green)</option>
+                    <option value="negative" <?= Config::get('config', 'space_engine.market_status') === 'negative' ? 'selected' : '' ?>>Negative Market (Soft Ruby Red)</option>
+                </select>
+                <div class="form-hint">Simulate a global market sentiment layout lighting glow color.</div>
+            </div>
+
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary">Save Settings</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <?php endif; ?>
 

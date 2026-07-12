@@ -35,13 +35,21 @@
         } catch (e) {}
     }
 
-    // Galaxy / Constellation configuration settings (with localStorage persistence)
+    // Read global configurations from meta tag (set by database configuration)
+    var meta = document.querySelector('meta[name="theme-prefs"]');
+    var globalEnabled = meta ? meta.getAttribute('data-galaxy-enabled') !== '0' : true;
+    var globalSpeed = parseFloat(meta ? meta.getAttribute('data-galaxy-speed') || '1.0' : '1.0');
+    var globalDensity = parseFloat(meta ? meta.getAttribute('data-galaxy-density') || '1.0' : '1.0');
+    var globalMotion = parseFloat(meta ? meta.getAttribute('data-galaxy-motion') || '1.0' : '1.0');
+    var globalStatus = meta ? meta.getAttribute('data-galaxy-status') || 'neutral' : 'neutral';
+
+    // Galaxy / Constellation configuration settings (with localStorage persistence fallback to global defaults)
     var settings = {
-        enabled: safeGet('galaxy_enabled', 'true') !== 'false',
-        speed: parseFloat(safeGet('galaxy_speed', '1.0')),
-        density: parseFloat(safeGet('galaxy_density', '1.0')),
-        motion: parseFloat(safeGet('galaxy_motion', '1.0')),
-        marketStatus: safeGet('galaxy_market_status', 'neutral')
+        enabled: safeGet('galaxy_enabled', globalEnabled ? 'true' : 'false') !== 'false',
+        speed: parseFloat(safeGet('galaxy_speed', String(globalSpeed))),
+        density: parseFloat(safeGet('galaxy_density', String(globalDensity))),
+        motion: parseFloat(safeGet('galaxy_motion', String(globalMotion))),
+        marketStatus: safeGet('galaxy_market_status', globalStatus)
     };
 
     // Check system prefers-reduced-motion

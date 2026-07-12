@@ -566,6 +566,15 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         $success = true;
     }
 
+    elseif ($tab === 'space_engine') {
+        Config::set('config', 'space_engine.enabled', isset($_POST['space_engine_enabled']) ? '1' : '0');
+        Config::set('config', 'space_engine.speed', (string)floatval(Helpers::postRaw('space_engine_speed')));
+        Config::set('config', 'space_engine.density', (string)floatval(Helpers::postRaw('space_engine_density')));
+        Config::set('config', 'space_engine.motion', (string)floatval(Helpers::postRaw('space_engine_motion')));
+        Config::set('config', 'space_engine.market_status', trim(Helpers::post('space_engine_market_status') ?: 'neutral'));
+        $success = true;
+    }
+
     elseif ($tab === 'email') {
         Config::set('config', 'smtp.host',       trim(Helpers::post('smtp_host')));
         Config::set('config', 'smtp.port',       (int)(Helpers::post('smtp_port') ?: 587));
