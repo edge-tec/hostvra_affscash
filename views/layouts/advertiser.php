@@ -68,7 +68,7 @@ $_advRow = Database::fetchOne("SELECT balance FROM advertisers WHERE user_id=?",
 $_advBal = (float)($_advRow['balance'] ?? 0);
 try { $_advUnread = (int)(Database::fetchOne("SELECT COUNT(*) AS c FROM notifications WHERE user_id=? AND is_read=0", [Auth::id()])['c'] ?? 0); } catch(\Throwable $_e) { $_advUnread = 0; }
 ?>
-<header class="topbar" style="background: linear-gradient(90deg, #a1c4fd 0%, #eac2da 100%); border-bottom: none; position: relative;">
+<header class="topbar" style="background: linear-gradient(90deg, #e9e3fa 0%, #e0e9fa 50%, #e0f2fa 100%); border-bottom: none; position: relative;">
     <div style="position: absolute; inset: 0; border-radius: inherit; overflow: hidden; pointer-events: none; z-index: 0;">
         <canvas class="topbar-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0"></canvas>
     </div>

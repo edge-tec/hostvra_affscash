@@ -3,13 +3,13 @@
    ============================================ */
 
 :root {
-    --primary:      #4F46E5;
-    --primary-dark: #4338CA;
-    --primary-light:#EEF2FF;
+    --primary:      #7c3aed;
+    --primary-dark: #6d28d9;
+    --primary-light:#f3e8ff;
     --secondary:    #10B981;
     --warning:      #F59E0B;
     --danger:       #EF4444;
-    --info:         #3B82F6;
+    --info:         #0ea5e9;
     --bg:           #F5F7FA;
     --sidebar-bg:   rgba(255, 255, 255, 0.82);
     --card-bg:      rgba(255, 255, 255, 0.68);
@@ -30,10 +30,9 @@
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
     background:
-        radial-gradient(circle at 80% 20%, rgba(161, 196, 253, 0.18), transparent 50%),
-        radial-gradient(circle at 20% 60%, rgba(234, 194, 218, 0.18), transparent 50%),
-        radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.05), transparent 50%),
-        var(--bg);
+        radial-gradient(circle at 10% 10%, rgba(124, 58, 237, 0.06), transparent 45%),
+        radial-gradient(circle at 90% 90%, rgba(14, 165, 233, 0.06), transparent 45%),
+        linear-gradient(135deg, #f7f5fc 0%, #f3f6fc 50%, #f3fafc 100%);
     color: var(--text);
     font-size: 15px;
     line-height: 1.65;
