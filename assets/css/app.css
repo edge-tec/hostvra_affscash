@@ -10,10 +10,10 @@
     --warning:      #F59E0B;
     --danger:       #EF4444;
     --info:         #3B82F6;
-    --bg:           #F8FAFC;
-    --sidebar-bg:   #FFFFFF;
-    --card-bg:      #FFFFFF;
-    --border:       #E2E8F0;
+    --bg:           #F5F7FA;
+    --sidebar-bg:   rgba(255, 255, 255, 0.82);
+    --card-bg:      rgba(255, 255, 255, 0.68);
+    --border:       rgba(226, 232, 240, 0.65);
     --text:         #1E293B;
     --text-muted:   #64748B;
     --text-light:   #94A3B8;
@@ -29,10 +29,15 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
-    background: var(--bg);
+    background:
+        radial-gradient(circle at 80% 20%, rgba(161, 196, 253, 0.18), transparent 50%),
+        radial-gradient(circle at 20% 60%, rgba(234, 194, 218, 0.18), transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.05), transparent 50%),
+        var(--bg);
     color: var(--text);
     font-size: 15px;
     line-height: 1.65;
+    background-attachment: fixed;
 }
 
 a { color: var(--primary); text-decoration: none; }
@@ -60,6 +65,8 @@ a:hover { text-decoration: underline; }
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     padding-bottom: 24px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 .sidebar-top {
     display: flex;
@@ -320,6 +327,8 @@ a:hover { text-decoration: underline; }
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     overflow: hidden;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 .card-header {
     display: flex;
@@ -436,8 +445,8 @@ tbody td:first-child { padding-left: 22px; }
 tbody td:last-child  { padding-right: 22px; }
 
 /* Zebra rows */
-tbody tr:nth-child(even) td { background: #F8FAFF; }
-tbody tr:nth-child(odd)  td { background: #FFFFFF; }
+tbody tr:nth-child(even) td { background: rgba(79, 70, 229, 0.015); }
+tbody tr:nth-child(odd)  td { background: transparent; }
 
 /* Hover */
 tbody tr { position: relative; }

@@ -1,6 +1,6 @@
 /**
  * 3D Connected Networking Constellation Animation
- * Designed for Affscash Tracking System (Dark Theme background effect)
+ * Designed for Affscash Tracking System (Light/Dark Theme background effect)
  */
 (function() {
     var canvas = null;
@@ -12,6 +12,21 @@
     var animationFrameId = null;
     var isRunning = false;
     var fov = 400; // Focal length for 3D projection
+
+    var themeColorSet = {
+        dark: {
+            p1: 'rgba(124, 58, 237, 0.4)',  // Violet/purple node
+            p2: 'rgba(14, 165, 233, 0.35)', // Cyan/blue node
+            line: 'rgba(124, 58, 237, ',
+            mouse: 'rgba(14, 165, 233, '
+        },
+        light: {
+            p1: 'rgba(79, 70, 229, 0.28)',   // Indigo node (more visible on light bg)
+            p2: 'rgba(16, 185, 129, 0.25)',  // Green node
+            line: 'rgba(79, 70, 229, ',
+            mouse: 'rgba(16, 185, 129, '
+        }
+    };
 
     function ensureCanvas() {
         if (canvas) return true;
@@ -45,7 +60,7 @@
                 vy: (Math.random() - 0.5) * 0.4,
                 vz: (Math.random() - 0.5) * 0.4,
                 size: Math.random() * 2 + 1.5,
-                color: Math.random() > 0.5 ? 'rgba(124, 58, 237, 0.4)' : 'rgba(14, 165, 233, 0.35)'
+                type: Math.random() > 0.5 ? 'p1' : 'p2'
             });
         }
     }
@@ -53,6 +68,9 @@
     function draw() {
         if (!isRunning || !ctx) return;
         ctx.clearRect(0, 0, w, h);
+        
+        var theme = document.documentElement.getAttribute('data-theme') || 'light';
+        var colors = themeColorSet[theme] || themeColorSet.light;
         
         var projected = [];
         particles.forEach(function(p) {
@@ -90,7 +108,7 @@
                 y: py,
                 z: p.z,
                 size: p.size * scale,
-                color: p.color
+                color: colors[p.type]
             });
         });
         
@@ -109,7 +127,7 @@
                         ctx.beginPath();
                         ctx.moveTo(pa.x, pa.y);
                         ctx.lineTo(pb.x, pb.y);
-                        ctx.strokeStyle = 'rgba(124, 58, 237, ' + opacity + ')';
+                        ctx.strokeStyle = colors.line + opacity + ')';
                         ctx.lineWidth = 0.8 * (1 - (pa.z + pb.z) / 400);
                         ctx.stroke();
                     }
@@ -124,7 +142,7 @@
                 ctx.fill();
                 
                 if (pa.size > 2) {
-                    ctx.strokeStyle = pa.color.replace('0.4', '0.08').replace('0.35', '0.08');
+                    ctx.strokeStyle = pa.color.replace('0.4', '0.08').replace('0.35', '0.08').replace('0.28', '0.06').replace('0.25', '0.06');
                     ctx.lineWidth = 2;
                     ctx.beginPath();
                     ctx.arc(pa.x, pa.y, pa.size * 2, 0, Math.PI * 2);
@@ -142,7 +160,7 @@
                     ctx.beginPath();
                     ctx.moveTo(mouse.x, mouse.y);
                     ctx.lineTo(p.x, p.y);
-                    ctx.strokeStyle = 'rgba(14, 165, 233, ' + opacity + ')';
+                    ctx.strokeStyle = colors.mouse + opacity + ')';
                     ctx.lineWidth = 1;
                     ctx.stroke();
                 }
@@ -153,27 +171,13 @@
     }
 
     function checkTheme() {
-        var theme = document.documentElement.getAttribute('data-theme');
-        if (theme === 'dark') {
-            if (ensureCanvas()) {
-                canvas.style.display = 'block';
-                if (!isRunning) {
-                    isRunning = true;
-                    resize();
-                    if (particles.length === 0) initParticles();
-                    draw();
-                }
-            }
-        } else {
-            if (canvas) {
-                canvas.style.display = 'none';
-            }
-            if (isRunning) {
-                isRunning = false;
-                if (animationFrameId) {
-                    cancelAnimationFrame(animationFrameId);
-                    animationFrameId = null;
-                }
+        if (ensureCanvas()) {
+            canvas.style.display = 'block';
+            if (!isRunning) {
+                isRunning = true;
+                resize();
+                if (particles.length === 0) initParticles();
+                draw();
             }
         }
     }
