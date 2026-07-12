@@ -634,13 +634,21 @@ try {
       overflow: hidden;
     }
 
-    .main-3d-display {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 20px;
-      display: block;
-    }
+    /* HERO SLIDER (INTEGRATED INTO 3D DASHBOARD) */
+    .hero-slides{display:flex;width:100%;height:100%;align-items:center;transition:transform .65s cubic-bezier(.4,0,.2,1)}
+    .hero-slide{flex:0 0 100%;position:relative;height:100%;overflow:hidden}
+    .hero-slide img{width:100%;height:100%;object-fit:cover;display:block}
+    .hero-slide-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,5,30,0.85) 0%,rgba(10,5,30,0.2) 60%,transparent 100%);z-index:1}
+    .hero-slide-caption{position:absolute;bottom:24px;left:24px;right:60px;z-index:2}
+    .hero-slide-caption h3{font-family:'Rajdhani',sans-serif;font-size:clamp(14px,2.2vw,24px);font-weight:700;color:#fff;line-height:1.15;margin-bottom:6px;text-shadow:0 2px 10px rgba(0,0,0,.5)}
+    .hero-slide-caption p{font-size:clamp(11px,1.3vw,14px);color:rgba(255,255,255,.8);margin:0;line-height:1.4;text-shadow:0 1px 6px rgba(0,0,0,.6)}
+    .hero-slider-arrow{position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.16);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.28);color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;transition:background .22s,transform .22s;line-height:1}
+    .hero-slider-arrow:hover{background:rgba(255,255,255,.30);transform:translateY(-50%) scale(1.08)}
+    .hero-slider-arrow.prev{left:12px}
+    .hero-slider-arrow.next{right:12px}
+    .hero-slider-skeleton{width:100%;height:100%;background:linear-gradient(135deg,#1a1535 0%,#2d1b69 100%);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px}
+    .hero-slider-skeleton .sk-pulse{width:32px;height:32px;border-radius:50%;border:3px solid rgba(124,58,237,.2);border-top-color:var(--violet);animation:spin .8s linear infinite}
+    .hero-slider-skeleton span{font-size:12px;color:rgba(255,255,255,.6);font-family:'DM Sans',sans-serif}
 
     .glass-reflection-glare {
       position: absolute;
@@ -1213,9 +1221,15 @@ try {
             <!-- Float Grid Container -->
             <div class="threed-scene-wrap">
               
-              <!-- Core Floating Laptop / Monitor Dashboard -->
-              <div class="floating-dashboard-wrap">
-                <img src="/assets/images/hero_3d_dashboard.png" alt="AffsCash Futuristic 3D AI Dashboard" class="main-3d-display" loading="eager">
+              <!-- Core Floating Laptop / Monitor Dashboard Slider -->
+              <div class="floating-dashboard-wrap" id="heroSliderWrap">
+                <div class="hero-slider-skeleton" id="heroSliderSkeleton">
+                  <div class="sk-pulse"></div>
+                  <span>Loading slides…</span>
+                </div>
+                <div class="hero-slides" id="heroSlides" style="display:none"></div>
+                <button class="hero-slider-arrow prev" id="heroSliderPrev" aria-label="Previous slide" style="display:none">&#8592;</button>
+                <button class="hero-slider-arrow next" id="heroSliderNext" aria-label="Next slide" style="display:none">&#8594;</button>
                 
                 <!-- Neon overlay reflection pulse -->
                 <div class="glass-reflection-glare"></div>
@@ -2104,23 +2118,138 @@ try {
       });
     });
     
-    // Dynamic Carousel indicator interval simulator
-    var dots = scene.querySelectorAll('.threed-dot');
-    var activeIdx = 0;
-    setInterval(function() {
-      dots.forEach(function(d) { d.classList.remove('active'); });
-      activeIdx = (activeIdx + 1) % dots.length;
-      dots[activeIdx].classList.add('active');
-    }, 4200);
+    // Restored Dynamic Multi-Slide Carousel functionality (cycling live images inside 3D screen wrapper)
+    window._heroSlides = [];
+    window._heroSlideHash = '';
+    window._heroCur = 0;
+    window._heroAutoT = null;
+    window._heroEventsSet = false;
+    window._heroInitDone = false;
+    window._HERO_POLL_MS = 30000;
 
-    // Click handler for 3D indicators
-    dots.forEach(function(dot, idx) {
-      dot.onclick = function() {
-        dots.forEach(function(d) { d.classList.remove('active'); });
-        activeIdx = idx;
-        dot.classList.add('active');
-      };
-    });
+    window._heroHash = function(s) {
+      return s.map(function(x) { return (x._id || x.id || '') + '|' + (x.name || '') + '|' + (x.image || ''); }).join(';;');
+    };
+
+    window._badgePills = function(b) {
+      if (!b || !b.length) return '';
+      return b.map(function(x) {
+        if (x === 'hot') return '<span style="background:linear-gradient(135deg,#ff4500,#e8197a);color:#fff;font-size:8px;font-weight:800;padding:3px 8px;border-radius:20px;text-transform:uppercase;margin-right:4px">🔥 Hot</span>';
+        if (x === 'top') return '<span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:8px;font-weight:800;padding:3px 8px;border-radius:20px;text-transform:uppercase;margin-right:4px">⭐ Top</span>';
+        if (x === 'new') return '<span style="background:linear-gradient(135deg,#059669,#0ea5e9);color:#fff;font-size:8px;font-weight:800;padding:3px 8px;border-radius:20px;text-transform:uppercase;margin-right:4px">✨ New</span>';
+        return '';
+      }).join('');
+    };
+
+    window._heroRender = function(slides, forceReset) {
+      var se = document.getElementById('heroSlides'),
+          de = document.getElementById('heroSliderDots'),
+          sk = document.getElementById('heroSliderSkeleton'),
+          pb = document.getElementById('heroSliderPrev'),
+          nb = document.getElementById('heroSliderNext');
+      if (!se || !slides.length) return;
+      var nh = window._heroHash(slides);
+      if (!forceReset && nh === window._heroSlideHash && window._heroInitDone) return;
+      window._heroSlideHash = nh;
+      window._heroSlides = slides;
+      if (window._heroCur >= slides.length) window._heroCur = 0;
+
+      se.innerHTML = slides.map(function(s) {
+        var bp = window._badgePills(s.badges || []);
+        var sl = (s.link || '/register/affiliate').replace(/"/g, '');
+        return '<div class="hero-slide">' + (s.image ? '<img src="' + s.image + '" alt="' + ((s.name || '').replace(/"/g, '&quot;')) + '" loading="lazy">' : '<div style="width:100%;height:100%;background:linear-gradient(135deg,#1a1535,#2d1b69)"></div>') +
+          '<div class="hero-slide-overlay"></div><div class="hero-slide-caption">' + (bp ? '<div style="margin-bottom:5px">' + bp + '</div>' : '') +
+          '<h3>' + ((s.name || '').replace(/</g, '&lt;')) + '</h3>' + (s.desc ? '<p>' + ((s.desc || '').replace(/</g, '&lt;')) + '</p>' : '') +
+          '</div><a href="' + sl + '" style="position:absolute;inset:0;z-index:3;opacity:0" aria-label="' + ((s.name || '').replace(/"/g, '&quot;')) + '"></a></div>';
+      }).join('');
+
+      de.innerHTML = '';
+      for (var i = 0; i < slides.length; i++) {
+        (function(idx) {
+          var d = document.createElement('span');
+          d.className = 'threed-dot' + (idx === window._heroCur ? ' active' : '');
+          d.setAttribute('aria-label', 'Slide ' + (idx + 1));
+          d.onclick = function() { window._heroGoTo(idx); };
+          de.appendChild(d);
+        })(i);
+      }
+
+      if (sk) sk.style.display = 'none';
+      se.style.display = 'flex';
+      if (pb) pb.style.display = '';
+      if (nb) nb.style.display = '';
+
+      if (!window._heroEventsSet) {
+        window._heroEventsSet = true;
+        if (pb) pb.onclick = function() { window._heroGoTo(window._heroCur - 1); };
+        if (nb) nb.onclick = function() { window._heroGoTo(window._heroCur + 1); };
+        var tx = 0;
+        se.addEventListener('touchstart', function(e) { tx = e.touches[0].clientX; }, { passive: true });
+        se.addEventListener('touchend', function(e) {
+          var d = tx - e.changedTouches[0].clientX;
+          if (Math.abs(d) > 40) window._heroGoTo(window._heroCur + (d > 0 ? 1 : -1));
+        });
+        var wr = document.getElementById('heroSliderWrap');
+        if (wr) {
+          wr.addEventListener('mouseenter', function() { clearInterval(window._heroAutoT); });
+          wr.addEventListener('mouseleave', function() { window._heroStartAuto(); });
+        }
+      }
+
+      se.style.transition = window._heroInitDone ? 'transform .6s cubic-bezier(.4,0,.2,1)' : 'none';
+      se.style.transform = 'translateX(-' + (window._heroCur * 100) + '%)';
+      de.querySelectorAll('.threed-dot').forEach(function(d, idx) {
+        d.classList.toggle('active', idx === window._heroCur);
+      });
+
+      if (!window._heroInitDone) {
+        window._heroInitDone = true;
+        window._heroStartAuto();
+      }
+    };
+
+    window._heroGoTo = function(idx) {
+      var t = window._heroSlides.length;
+      if (!t) return;
+      window._heroCur = ((idx % t) + t) % t;
+      var se = document.getElementById('heroSlides'),
+          de = document.getElementById('heroSliderDots');
+      if (se) {
+        se.style.transition = 'transform .55s cubic-bezier(.4,0,.2,1)';
+        se.style.transform = 'translateX(-' + (window._heroCur * 100) + '%)';
+      }
+      if (de) {
+        de.querySelectorAll('.threed-dot').forEach(function(d, idx) {
+          d.classList.toggle('active', idx === window._heroCur);
+        });
+      }
+      clearInterval(window._heroAutoT);
+      window._heroStartAuto();
+    };
+
+    window._heroStartAuto = function() {
+      clearInterval(window._heroAutoT);
+      window._heroAutoT = setInterval(function() { window._heroGoTo(window._heroCur + 1); }, 4200);
+    };
+
+    window.loadSlidesFromAPI = function() {
+      fetch(AFF_API + '?resource=slider&action=list&_t=' + Date.now())
+        .then(function(r) { return r.json(); })
+        .then(function(j) {
+          window._heroRender((j.success && j.data && j.data.length) ? j.data : FALLBACK_SLIDES, false);
+        })
+        .catch(function() {
+          if (!window._heroInitDone) window._heroRender(FALLBACK_SLIDES, true);
+        });
+    };
+
+    window.initLiveHeroSlider = function() {
+      window.loadSlidesFromAPI();
+      setInterval(window.loadSlidesFromAPI, window._HERO_POLL_MS);
+    };
+
+    // Initialize the slider on runtime
+    window.initLiveHeroSlider();
     
     // Live clicks and conversions live ticker simulator
     var clicksEl = document.getElementById('liveClicksVal');
