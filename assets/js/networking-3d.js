@@ -112,7 +112,7 @@
         if (!canvas) {
             canvas = document.createElement('canvas');
             canvas.id = 'heroParticlesCanvas';
-            canvas.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:999999;display:none;';
+            canvas.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:-1;display:none;';
             document.body.insertBefore(canvas, document.body.firstChild);
         }
         ctx = canvas.getContext('2d');
