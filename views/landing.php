@@ -568,15 +568,100 @@ try {
     }
 
     /* SERVICES */
-    .services-section{background:var(--grad-section-b)}
-    .services-img{width:100%;border-radius:18px;overflow:hidden;border:1px solid var(--border);margin-bottom:20px;box-shadow:0 12px 40px rgba(124,58,237,.1)}
-    .services-img img{width:100%;height:auto;display:block}
+    .services-section{background:var(--grad-section-b); padding:100px 0}
+    .services-section h2 { color: #fff }
+    .services-section .eyebrow { -webkit-text-fill-color: rgba(255,255,255,0.7); background: none; color: rgba(255,255,255,0.7) }
+    
+    .laptop-3d-wrap {
+      perspective: 1500px;
+      position: relative;
+      margin-bottom: 30px;
+      transform-style: preserve-3d;
+      width: 100%;
+    }
+    .laptop-3d-screen {
+      transform: rotateY(-14deg) rotateX(6deg) rotateZ(1deg);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 4px solid #1e1b29;
+      box-shadow: -20px 20px 50px rgba(0,0,0,0.6), 0 0 40px rgba(124,58,237,0.15);
+      position: relative;
+      background: #000;
+      aspect-ratio: 16/10;
+      transform-style: preserve-3d;
+      transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    .laptop-3d-screen img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+    .glass-reflection {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 50%);
+      pointer-events: none;
+      z-index: 2;
+    }
+    .laptop-3d-base {
+      width: 95%;
+      height: 12px;
+      background: linear-gradient(to bottom, #2d283e, #0f0b1a);
+      border-radius: 0 0 12px 12px;
+      margin: -6px auto 0;
+      transform: rotateY(-14deg) rotateX(6deg) rotateZ(1deg) translateZ(-5px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.7);
+      border-bottom: 2px solid #4d446f;
+      transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    .laptop-3d-wrap:hover .laptop-3d-screen {
+      transform: rotateY(-6deg) rotateX(3deg) rotateZ(0deg);
+    }
+    .laptop-3d-wrap:hover .laptop-3d-screen img {
+      transform: scale(1.02);
+    }
+    .laptop-3d-wrap:hover .laptop-3d-base {
+      transform: rotateY(-6deg) rotateX(3deg) rotateZ(0deg) translateZ(-5px);
+    }
+    
     .progress-item{margin-bottom:30px}
-    .progress-item h4{font-size:16px;margin-bottom:6px;color:var(--text);display:flex;align-items:center;justify-content:space-between}
-    .progress-item p{font-size:13px;color:var(--muted);margin-bottom:10px}
-    .progress-bar-wrap{position:relative;height:8px;background:#f0ecff;border-radius:4px;overflow:hidden}
-    .progress-bar-fill{position:absolute;left:0;top:0;height:100%;background:var(--grad-brand);border-radius:4px;width:0;transition:width 1.5s cubic-bezier(.4,0,.2,1)}
-    .progress-label{font-size:11px;font-weight:700;flex-shrink:0;background:var(--grad-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .progress-item h4{font-size:16px;margin-bottom:6px;color:#fff;display:flex;align-items:center;justify-content:space-between}
+    .progress-item p{font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:10px}
+    
+    .progress-bar-wrap {
+      position: relative;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      overflow: visible;
+    }
+    .progress-bar-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      background: linear-gradient(90deg, #7c3aed, #0ea5e9);
+      border-radius: 20px;
+      width: 0;
+      transition: width 1.5s cubic-bezier(.4,0,.2,1);
+      box-shadow: 0 0 14px rgba(14, 165, 233, 0.6);
+    }
+    .progress-bar-fill::after {
+      content: '';
+      position: absolute;
+      right: -5px;
+      top: -4px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 0 12px #0ea5e9, 0 0 20px #7c3aed;
+      animation: pulse 1.5s infinite;
+    }
+    .progress-label{font-size:11px;font-weight:700;flex-shrink:0;background:var(--grad-cool);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 
     /* DASHBOARD PREVIEW */
     .dashboard-preview-section { padding: 100px 0; background: var(--grad-section-b); }
@@ -793,11 +878,26 @@ try {
 
     /* PAYMENT CARDS */
     .payment-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
-    .payment-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:22px 18px;text-align:center;transition:all .3s;box-shadow:0 3px 14px rgba(124,58,237,.05)}
-    .payment-card:hover{border-color:transparent;box-shadow:0 12px 32px rgba(5,150,105,.2);transform:translateY(-3px)}
+    .payment-card {
+      background: rgba(15,10,36,0.6);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--r);
+      padding: 22px 18px;
+      text-align: center;
+      transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transform: perspective(1000px) rotateX(1deg);
+    }
+    .payment-card:hover {
+      transform: translateY(-5px) scale(1.03) perspective(1000px) rotateX(0deg);
+      border-color: rgba(14,165,233,0.3);
+      box-shadow: 0 20px 45px rgba(14,165,233,0.2), inset 0 1px 1px rgba(255,255,255,0.2);
+    }
     .payment-card .p-icon{font-size:28px;margin-bottom:10px;display:block}
-    .payment-card h5{font-size:14px;margin-bottom:4px;color:var(--text)}
-    .payment-card p{font-size:12px;color:var(--muted);margin:0}
+    .payment-card h5{font-size:14px;margin-bottom:4px;color:#fff}
+    .payment-card p{font-size:12px;color:rgba(255,255,255,0.55);margin:0}
 
     /* FOOTER */
     @keyframes gradientMove {
@@ -1777,8 +1877,13 @@ try {
           </div>
         </div>
         <div class="col-lg-7 fade-up order-lg-1">
-          <div class="services-img">
-            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80" alt="Traffic & Monetization Analytics" loading="lazy">
+          <!-- 3D Laptop Screen Showcase Mockup -->
+          <div class="laptop-3d-wrap">
+            <div class="laptop-3d-screen">
+              <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80" alt="Traffic & Monetization Analytics" loading="lazy">
+              <div class="glass-reflection"></div>
+            </div>
+            <div class="laptop-3d-base"></div>
           </div>
           <div class="payment-cards">
             <div class="payment-card"><img src="https://www.google.com/s2/favicons?domain=swift.com&sz=128" alt="Wire Transfer" style="width:36px; height:36px; margin-bottom:10px; border-radius:4px; display:inline-block;"><h5>Wire Transfer</h5><p>International bank wire</p></div>
@@ -1788,18 +1893,19 @@ try {
             <div class="payment-card"><img src="https://www.google.com/s2/favicons?domain=plaid.com&sz=128" alt="ACH" style="width:36px; height:36px; margin-bottom:10px; border-radius:4px; display:inline-block;"><h5>ACH</h5><p>US bank transfers</p></div>
             <div class="payment-card"><img src="https://www.google.com/s2/favicons?domain=stripe.com&sz=128" alt="Upon Request" style="width:36px; height:36px; margin-bottom:10px; border-radius:4px; display:inline-block;"><h5>Upon Request</h5><p>Custom methods</p></div>
           </div>
-          <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:22px;margin-top:16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;text-align:center;box-shadow:0 4px 18px rgba(124,58,237,.07)">
+          <!-- Dark Glass Summary Grid -->
+          <div style="background:rgba(15,10,36,0.6);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r);padding:22px;margin-top:16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.25);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)">
             <div>
               <div style="font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;background:var(--grad-green);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">$50</div>
-              <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Min Payment</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.5px">Min Payment</div>
             </div>
-            <div style="border-left:1px solid var(--border);border-right:1px solid var(--border)">
+            <div style="border-left:1px solid rgba(255,255,255,0.08);border-right:1px solid rgba(255,255,255,0.08)">
               <div style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;background:var(--grad-cool);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Twice/Mo</div>
-              <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Pay Freq.</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.5px">Pay Freq.</div>
             </div>
             <div>
               <div style="font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;background:var(--grad-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">6hr</div>
-              <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">AM Contact</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.5px">AM Contact</div>
             </div>
           </div>
         </div>
