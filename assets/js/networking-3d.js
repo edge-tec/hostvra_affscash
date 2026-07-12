@@ -102,54 +102,41 @@
         currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
         
         // Base densities
-        var baseCount = currentTheme === 'light' ? 220 : 115;
+        var baseCount = currentTheme === 'light' ? 120 : 115;
         var numParticles = Math.floor(baseCount * settings.density);
         
-        if (currentTheme === 'light') {
-            // Arrange particles in a gorgeous 3D logarithmic spiral galaxy structure
-            var numArms = 2;
-            for (var i = 0; i < numParticles; i++) {
-                var arm = i % numArms;
-                var dist = Math.random(); // normalized distance from center
-                var angle = (arm * Math.PI) + (dist * Math.PI * 3.2); // spiral twist factor
-                
-                // Spiral coordinate structure + noise
-                var x = Math.cos(angle) * dist * 500 + (Math.random() - 0.5) * 60;
-                var y = (Math.random() - 0.5) * 60; // thickness of galaxy disk
-                var z = Math.sin(angle) * dist * 450 + (Math.random() - 0.5) * 60;
-                
-                // Light mode type options (p1-p4)
-                var pType = 'p1';
+        // Wide 3D boundaries to distribute particles over the full viewport screen width and height
+        var limitX = 1000;
+        var limitY = 700;
+        var limitZ = 500;
+
+        for (var i = 0; i < numParticles; i++) {
+            var pType = 'p1';
+            var baseSize = 1.2;
+            
+            if (currentTheme === 'light') {
                 var rand = Math.random();
-                if (rand > 0.75) pType = 'p4'; // Gold
-                else if (rand > 0.50) pType = 'p3'; // Pink
-                else if (rand > 0.25) pType = 'p2'; // Green
+                if (rand > 0.85) pType = 'p4'; // Gold
+                else if (rand > 0.60) pType = 'p3'; // Pink
+                else if (rand > 0.35) pType = 'p2'; // Green
                 
-                particles.push({
-                    x: x,
-                    y: y,
-                    z: z,
-                    angle: angle,
-                    dist: dist,
-                    speed: (0.0015 + (1 - dist) * 0.0035) * settings.speed,
-                    size: Math.random() * 2.8 + 1.8,
-                    type: pType
-                });
+                // Smaller, clean stars for high-end feel
+                baseSize = Math.random() * 1.2 + 0.6;
+            } else {
+                pType = Math.random() > 0.5 ? 'p1' : 'p2';
+                baseSize = Math.random() * 1.5 + 0.8;
             }
-        } else {
-            // Constellation network in dark mode
-            for (var i = 0; i < numParticles; i++) {
-                particles.push({
-                    x: (Math.random() - 0.5) * 800,
-                    y: (Math.random() - 0.5) * 500,
-                    z: (Math.random() - 0.5) * 400,
-                    vx: (Math.random() - 0.5) * 0.4 * settings.speed,
-                    vy: (Math.random() - 0.5) * 0.4 * settings.speed,
-                    vz: (Math.random() - 0.5) * 0.4 * settings.speed,
-                    size: Math.random() * 2 + 1.5,
-                    type: Math.random() > 0.5 ? 'p1' : 'p2'
-                });
-            }
+
+            particles.push({
+                x: (Math.random() - 0.5) * limitX * 2,
+                y: (Math.random() - 0.5) * limitY * 2,
+                z: (Math.random() - 0.5) * limitZ * 2,
+                vx: (Math.random() - 0.5) * 0.38 * settings.speed,
+                vy: (Math.random() - 0.5) * 0.38 * settings.speed,
+                vz: (Math.random() - 0.5) * 0.38 * settings.speed,
+                size: baseSize,
+                type: pType
+            });
         }
     }
 
@@ -202,27 +189,20 @@
         var scrollYOffset = window.scrollY * 0.25 * settings.motion;
         
         var projected = [];
+        var limitX = 1000;
+        var limitY = 700;
+        var limitZ = 500;
+
         particles.forEach(function(p) {
-            if (theme === 'light') {
-                // Rotate stars around central core
-                p.angle += p.speed;
-                var targetX = Math.cos(p.angle) * p.dist * 500;
-                var targetZ = Math.sin(p.angle) * p.dist * 450;
-                p.x = targetX;
-                p.z = targetZ;
-                
-                // Star wobbles/dust drift
-                p.y += (Math.random() - 0.5) * 0.15;
-                if (Math.abs(p.y) > 70) p.y *= -0.9;
-            } else {
-                // Constellation linear bounce speed updates
-                p.x += p.vx;
-                p.y += p.vy;
-                p.z += p.vz;
-                if (Math.abs(p.x) > 450) p.vx *= -1;
-                if (Math.abs(p.y) > 300) p.vy *= -1;
-                if (Math.abs(p.z) > 200) p.vz *= -1;
-            }
+            // Natural 3D floating movement
+            p.x += p.vx;
+            p.y += p.vy;
+            p.z += p.vz;
+            
+            // Boundary bounce checks (keeps them floating across full viewport)
+            if (Math.abs(p.x) > limitX) p.vx *= -1;
+            if (Math.abs(p.y) > limitY) p.vy *= -1;
+            if (Math.abs(p.z) > limitZ) p.vz *= -1;
             
             // Camera position offsets (applying parallax pivot rotation)
             var cx = p.x - camX;
@@ -287,12 +267,12 @@
                 ctx.arc(pa.x, pa.y, Math.max(0.5, pa.size), 0, Math.PI * 2);
                 ctx.fill();
                 
-                // Star glow reflection
-                if (pa.size > 2) {
-                    ctx.strokeStyle = pa.color.replace('0.4', '0.08').replace('0.35', '0.08').replace('0.32', '0.06').replace('0.30', '0.06');
-                    ctx.lineWidth = 2;
+                // Star glow reflection (only for dark mode to keep light mode clean and small)
+                if (theme === 'dark' && pa.size > 2.2) {
+                    ctx.strokeStyle = pa.color.replace('0.4', '0.05').replace('0.35', '0.05');
+                    ctx.lineWidth = 1;
                     ctx.beginPath();
-                    ctx.arc(pa.x, pa.y, pa.size * 2, 0, Math.PI * 2);
+                    ctx.arc(pa.x, pa.y, pa.size * 1.8, 0, Math.PI * 2);
                     ctx.stroke();
                 }
             }
