@@ -15,8 +15,13 @@
     var isRunning = false;
     var fov = 400; // Focal length for 3D projection
     var currentTheme = 'light';
+    var lastTime = performance.now();
+    var frameCount = 0;
     
     function getGlowColor(colorStr, opacity) {
+        if (typeof colorStr !== 'string') {
+            return 'rgba(124, 58, 237, ' + opacity + ')';
+        }
         return colorStr.replace(/[\d\.]+\)$/, opacity + ')');
     }
 
@@ -159,221 +164,237 @@
 
     function draw() {
         if (!isRunning || !ctx) return;
-        ctx.clearRect(0, 0, w, h);
         
-        var theme = document.documentElement.getAttribute('data-theme') || 'light';
-        var colors = themeColorSet[theme] || themeColorSet.light;
-        
-        // Re-initialize if the theme changes on the fly
-        if (theme !== currentTheme) {
-            initParticles();
-            currentTheme = theme;
-        }
-
-        // Draw ambient lighting reactive to market activity (Light theme only)
-        if (theme === 'light') {
-            var glowColor1, glowColor2;
-            if (settings.marketStatus === 'positive') {
-                glowColor1 = 'rgba(16, 185, 129, 0.09)'; // emerald green glow
-                glowColor2 = 'rgba(52, 211, 153, 0.05)';
-            } else if (settings.marketStatus === 'negative') {
-                glowColor1 = 'rgba(239, 68, 68, 0.09)';  // red glow
-                glowColor2 = 'rgba(248, 113, 113, 0.05)';
-            } else {
-                glowColor1 = 'rgba(124, 58, 237, 0.07)'; // soft violet
-                glowColor2 = 'rgba(14, 165, 233, 0.06)';  // soft blue
+        try {
+            frameCount++;
+            if (frameCount % 300 === 0) {
+                console.log("3D Space Engine Status: running, frames=" + frameCount + ", particles=" + particles.length + ", size=" + w + "x" + h);
             }
 
-            var g1 = ctx.createRadialGradient(w * 0.8, h * 0.2, 0, w * 0.8, h * 0.2, Math.max(w, h) * 0.6);
-            g1.addColorStop(0, glowColor1);
-            g1.addColorStop(1, 'rgba(255,255,255,0)');
-            ctx.fillStyle = g1;
-            ctx.fillRect(0, 0, w, h);
+            var now = performance.now();
+            var deltaTime = Math.min(2.0, (now - lastTime) / 16.666);
+            lastTime = now;
 
-            var g2 = ctx.createRadialGradient(w * 0.2, h * 0.7, 0, w * 0.2, h * 0.7, Math.max(w, h) * 0.5);
-            g2.addColorStop(0, glowColor2);
-            g2.addColorStop(1, 'rgba(255,255,255,0)');
-            ctx.fillStyle = g2;
-            ctx.fillRect(0, 0, w, h);
-        }
-        
-        // Camera parallax calculations (mouse + scroll offsets)
-        var targetCamX = mouse.active ? (mouse.actualX - w/2) * 0.08 * settings.motion : 0;
-        var targetCamY = mouse.active ? (mouse.actualY - h/2) * 0.08 * settings.motion : 0;
-        camX += (targetCamX - camX) * 0.04;
-        camY += (targetCamY - camY) * 0.04;
-
-        var scrollYOffset = window.scrollY * 0.25 * settings.motion;
-        
-        // Draw the Galaxy Shadow (Center 3D Depth Nebula Glow/Shadow)
-        var centerX = w / 2 - camX * 0.4;
-        var centerY = h / 2 - camY * 0.4 - scrollYOffset * 0.4;
-        var maxRadius = Math.max(w, h) * 0.5;
-        
-        if (theme === 'dark') {
-            // Dark Mode: Deep cosmic dust lane shadow & colored core glow
-            var centerGlow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, maxRadius);
+            ctx.clearRect(0, 0, w, h);
             
-            var coreGlowColor = 'rgba(124, 58, 237, 0.12)'; // default purple/violet
-            if (settings.marketStatus === 'positive') {
-                coreGlowColor = 'rgba(16, 185, 129, 0.10)'; // green
-            } else if (settings.marketStatus === 'negative') {
-                coreGlowColor = 'rgba(239, 68, 68, 0.10)'; // red
+            var theme = document.documentElement.getAttribute('data-theme') || 'light';
+            var colors = themeColorSet[theme] || themeColorSet.light;
+            
+            // Re-initialize if the theme changes on the fly
+            if (theme !== currentTheme) {
+                initParticles();
+                currentTheme = theme;
+            }
+
+            // Draw ambient lighting reactive to market activity (Light theme only)
+            if (theme === 'light') {
+                var glowColor1, glowColor2;
+                if (settings.marketStatus === 'positive') {
+                    glowColor1 = 'rgba(16, 185, 129, 0.09)'; // emerald green glow
+                    glowColor2 = 'rgba(52, 211, 153, 0.05)';
+                } else if (settings.marketStatus === 'negative') {
+                    glowColor1 = 'rgba(239, 68, 68, 0.09)';  // red glow
+                    glowColor2 = 'rgba(248, 113, 113, 0.05)';
+                } else {
+                    glowColor1 = 'rgba(124, 58, 237, 0.07)'; // soft violet
+                    glowColor2 = 'rgba(14, 165, 233, 0.06)';  // soft blue
+                }
+
+                var g1 = ctx.createRadialGradient(w * 0.8, h * 0.2, 0, w * 0.8, h * 0.2, Math.max(w, h) * 0.6);
+                g1.addColorStop(0, glowColor1);
+                g1.addColorStop(1, 'rgba(255,255,255,0)');
+                ctx.fillStyle = g1;
+                ctx.fillRect(0, 0, w, h);
+
+                var g2 = ctx.createRadialGradient(w * 0.2, h * 0.7, 0, w * 0.2, h * 0.7, Math.max(w, h) * 0.5);
+                g2.addColorStop(0, glowColor2);
+                g2.addColorStop(1, 'rgba(255,255,255,0)');
+                ctx.fillStyle = g2;
+                ctx.fillRect(0, 0, w, h);
             }
             
-            // Outer shadow ring
-            centerGlow.addColorStop(0, 'rgba(6, 4, 16, 0.45)'); // Deep central black hole core
-            centerGlow.addColorStop(0.18, 'rgba(6, 4, 16, 0.35)'); // central shadow
-            centerGlow.addColorStop(0.45, coreGlowColor); // Nebula glowing gas
-            centerGlow.addColorStop(0.75, 'rgba(14, 165, 233, 0.02)'); // outer faint cyan glow
-            centerGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
-            
-            ctx.fillStyle = centerGlow;
-            ctx.fillRect(0, 0, w, h);
-            
-            // Also draw a subtle inner core shadow to simulate a black hole gravitational shadow
-            var coreShadow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 140);
-            coreShadow.addColorStop(0, 'rgba(0, 0, 0, 0.50)');
-            coreShadow.addColorStop(0.6, 'rgba(6, 4, 16, 0.25)');
-            coreShadow.addColorStop(1, 'rgba(0, 0, 0, 0)');
-            ctx.fillStyle = coreShadow;
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, 140, 0, Math.PI * 2);
-            ctx.fill();
-        } else {
-            // Light Mode: Soft glowing shadow behind the center of the galaxy to give 3D contrast
-            var centerGlow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, maxRadius);
-            
-            var coreGlowColor = 'rgba(79, 70, 229, 0.06)'; // indigo
-            if (settings.marketStatus === 'positive') {
-                coreGlowColor = 'rgba(16, 185, 129, 0.06)';
-            } else if (settings.marketStatus === 'negative') {
-                coreGlowColor = 'rgba(239, 68, 68, 0.06)';
-            }
-            
-            centerGlow.addColorStop(0, 'rgba(235, 240, 255, 0.45)'); // Soft light core shadow
-            centerGlow.addColorStop(0.35, coreGlowColor);
-            centerGlow.addColorStop(0.75, 'rgba(124, 58, 237, 0.02)');
-            centerGlow.addColorStop(1, 'rgba(255, 255, 255, 0)');
-            
-            ctx.fillStyle = centerGlow;
-            ctx.fillRect(0, 0, w, h);
-        }
-        
-        var projected = [];
-        var limitX = 1000;
-        var limitY = 700;
-        var limitZ = 500;
+            // Camera parallax calculations (mouse + scroll offsets)
+            var targetCamX = mouse.active ? (mouse.actualX - w/2) * 0.08 * settings.motion : 0;
+            var targetCamY = mouse.active ? (mouse.actualY - h/2) * 0.08 * settings.motion : 0;
+            camX += (targetCamX - camX) * 0.04;
+            camY += (targetCamY - camY) * 0.04;
 
-        particles.forEach(function(p) {
-            // Natural 3D floating movement scaled by speed setting
-            p.x += p.vx * settings.speed;
-            p.y += p.vy * settings.speed;
-            p.z += p.vz * settings.speed;
+            var scrollYOffset = Math.min(40, window.scrollY * 0.08) * settings.motion;
             
-            // Boundary bounce checks (keeps them floating across full viewport)
-            if (Math.abs(p.x) > limitX) p.vx *= -1;
-            if (Math.abs(p.y) > limitY) p.vy *= -1;
-            if (Math.abs(p.z) > limitZ) p.vz *= -1;
+            // Draw the Galaxy Shadow (Center 3D Depth Nebula Glow/Shadow)
+            var centerX = w / 2 - camX * 0.4;
+            var centerY = h / 2 - camY * 0.4 - scrollYOffset * 0.4;
+            var maxRadius = Math.max(w, h) * 0.5;
             
-            // Camera position offsets (applying parallax pivot rotation)
-            var cx = p.x - camX;
-            var cy = p.y - camY - scrollYOffset;
-            var cz = p.z;
-            
-            // Slow orbital 3D pitch tilt
-            var rotY = 0.0006;
-            var cosY = Math.cos(rotY), sinY = Math.sin(rotY);
-            var x1 = cx * cosY - cz * sinY;
-            var z1 = cz * cosY + cx * sinY;
-            cx = x1; cz = z1;
-            
-            var rotX = 0.0004;
-            var cosX = Math.cos(rotX), sinX = Math.sin(rotX);
-            var y1 = cy * cosX - cz * sinX;
-            var z2 = cz * cosX + cy * sinX;
-            cy = y1; cz = z2;
-            
-            // 3D perspective projection
-            var scale = fov / (fov + cz);
-            var px = (cx * scale) + (w / 2);
-            var py = (cy * scale) + (h / 2);
-            
-            projected.push({
-                x: px,
-                y: py,
-                z: cz,
-                size: p.size * scale,
-                color: colors[p.type]
-            });
-        });
-        
-        // Draw connection network lines
-        for (var a = 0; a < projected.length; a++) {
-            var pa = projected[a];
-            for (var b = a + 1; b < projected.length; b++) {
-                var pb = projected[b];
-                var dx = pa.x - pb.x;
-                var dy = pa.y - pb.y;
-                var dist = Math.hypot(dx, dy);
+            if (theme === 'dark') {
+                // Dark Mode: Deep cosmic dust lane shadow & colored core glow
+                var centerGlow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, maxRadius);
                 
-                var connectLimit = theme === 'light' ? 90 : 110;
-                if (dist < connectLimit) {
-                    var opacityFactor = theme === 'light' ? 0.35 : 0.14;
-                    var opacity = (1 - (dist / connectLimit)) * opacityFactor * (1 - (pa.z + pb.z) / 400);
-                    if (opacity > 0) {
+                var coreGlowColor = 'rgba(124, 58, 237, 0.12)'; // default purple/violet
+                if (settings.marketStatus === 'positive') {
+                    coreGlowColor = 'rgba(16, 185, 129, 0.10)'; // green
+                } else if (settings.marketStatus === 'negative') {
+                    coreGlowColor = 'rgba(239, 68, 68, 0.10)'; // red
+                }
+                
+                // Outer shadow ring
+                centerGlow.addColorStop(0, 'rgba(6, 4, 16, 0.45)'); // Deep central black hole core
+                centerGlow.addColorStop(0.18, 'rgba(6, 4, 16, 0.35)'); // central shadow
+                centerGlow.addColorStop(0.45, coreGlowColor); // Nebula glowing gas
+                centerGlow.addColorStop(0.75, 'rgba(14, 165, 233, 0.02)'); // outer faint cyan glow
+                centerGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                
+                ctx.fillStyle = centerGlow;
+                ctx.fillRect(0, 0, w, h);
+                
+                // Also draw a subtle inner core shadow to simulate a black hole gravitational shadow
+                var coreShadow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 140);
+                coreShadow.addColorStop(0, 'rgba(0, 0, 0, 0.50)');
+                coreShadow.addColorStop(0.6, 'rgba(6, 4, 16, 0.25)');
+                coreShadow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                ctx.fillStyle = coreShadow;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, 140, 0, Math.PI * 2);
+                ctx.fill();
+            } else {
+                // Light Mode: Soft glowing shadow behind the center of the galaxy to give 3D contrast
+                var centerGlow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, maxRadius);
+                
+                var coreGlowColor = 'rgba(79, 70, 229, 0.06)'; // indigo
+                if (settings.marketStatus === 'positive') {
+                    coreGlowColor = 'rgba(16, 185, 129, 0.06)';
+                } else if (settings.marketStatus === 'negative') {
+                    coreGlowColor = 'rgba(239, 68, 68, 0.06)';
+                }
+                
+                centerGlow.addColorStop(0, 'rgba(235, 240, 255, 0.45)'); // Soft light core shadow
+                centerGlow.addColorStop(0.35, coreGlowColor);
+                centerGlow.addColorStop(0.75, 'rgba(124, 58, 237, 0.02)');
+                centerGlow.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                
+                ctx.fillStyle = centerGlow;
+                ctx.fillRect(0, 0, w, h);
+            }
+            
+            var projected = [];
+            var limitX = 1000;
+            var limitY = 700;
+            var limitZ = 500;
+
+            particles.forEach(function(p) {
+                // Natural 3D floating movement scaled by speed setting and deltaTime
+                p.x += p.vx * settings.speed * deltaTime;
+                p.y += p.vy * settings.speed * deltaTime;
+                p.z += p.vz * settings.speed * deltaTime;
+                
+                // Boundary bounce checks (keeps them floating across full viewport)
+                if (Math.abs(p.x) > limitX) p.vx *= -1;
+                if (Math.abs(p.y) > limitY) p.vy *= -1;
+                if (Math.abs(p.z) > limitZ) p.vz *= -1;
+                
+                // Camera position offsets (applying parallax pivot rotation)
+                var cx = p.x - camX;
+                var cy = p.y - camY - scrollYOffset;
+                var cz = p.z;
+                
+                // Slow orbital 3D pitch tilt (delta time scaled)
+                var rotY = 0.0006 * deltaTime;
+                var cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+                var x1 = cx * cosY - cz * sinY;
+                var z1 = cz * cosY + cx * sinY;
+                cx = x1; cz = z1;
+                
+                var rotX = 0.0004 * deltaTime;
+                var cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+                var y1 = cy * cosX - cz * sinX;
+                var z2 = cz * cosX + cy * sinX;
+                cy = y1; cz = z2;
+                
+                // 3D perspective projection
+                var scale = fov / (fov + cz);
+                var px = (cx * scale) + (w / 2);
+                var py = (cy * scale) + (h / 2);
+                
+                projected.push({
+                    x: px,
+                    y: py,
+                    z: cz,
+                    size: p.size * scale,
+                    color: colors[p.type] || colors.p1 || 'rgba(124, 58, 237, 0.4)'
+                });
+            });
+            
+            // Draw connection network lines
+            for (var a = 0; a < projected.length; a++) {
+                var pa = projected[a];
+                for (var b = a + 1; b < projected.length; b++) {
+                    var pb = projected[b];
+                    var dx = pa.x - pb.x;
+                    var dy = pa.y - pb.y;
+                    var dist = Math.hypot(dx, dy);
+                    
+                    var connectLimit = theme === 'light' ? 90 : 110;
+                    if (dist < connectLimit) {
+                        var opacityFactor = theme === 'light' ? 0.35 : 0.14;
+                        var opacity = (1 - (dist / connectLimit)) * opacityFactor * (1 - (pa.z + pb.z) / 400);
+                        if (opacity > 0) {
+                            ctx.beginPath();
+                            ctx.moveTo(pa.x, pa.y);
+                            ctx.lineTo(pb.x, pb.y);
+                            ctx.strokeStyle = colors.line + opacity + ')';
+                            ctx.lineWidth = (theme === 'light' ? 1.2 : 0.8) * (1 - (pa.z + pb.z) / 400);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                
+                // Draw nodes/stars
+                if (pa.x >= 0 && pa.x <= w && pa.y >= 0 && pa.y <= h) {
+                    // 1. Draw outer soft shadow glow bubble
+                    var glowOpacity = theme === 'dark' ? '0.12' : '0.18';
+                    ctx.fillStyle = getGlowColor(pa.color, glowOpacity);
+                    ctx.beginPath();
+                    ctx.arc(pa.x, pa.y, pa.size * 2.8, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // 2. Draw central bright core node/bubble
+                    ctx.fillStyle = pa.color;
+                    ctx.beginPath();
+                    ctx.arc(pa.x, pa.y, Math.max(0.5, pa.size), 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // 3. Draw a tiny white inner highlight to make it look like a glossy bubble/sphere!
+                    if (pa.size > 2.0) {
+                        ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
                         ctx.beginPath();
-                        ctx.moveTo(pa.x, pa.y);
-                        ctx.lineTo(pb.x, pb.y);
-                        ctx.strokeStyle = colors.line + opacity + ')';
-                        ctx.lineWidth = (theme === 'light' ? 1.2 : 0.8) * (1 - (pa.z + pb.z) / 400);
-                        ctx.stroke();
+                        ctx.arc(pa.x - pa.size * 0.22, pa.y - pa.size * 0.22, pa.size * 0.22, 0, Math.PI * 2);
+                        ctx.fill();
                     }
                 }
             }
             
-            // Draw nodes/stars
-            if (pa.x >= 0 && pa.x <= w && pa.y >= 0 && pa.y <= h) {
-                // 1. Draw outer soft shadow glow bubble
-                var glowOpacity = theme === 'dark' ? '0.12' : '0.18';
-                ctx.fillStyle = getGlowColor(pa.color, glowOpacity);
-                ctx.beginPath();
-                ctx.arc(pa.x, pa.y, pa.size * 2.8, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // 2. Draw central bright core node/bubble
-                ctx.fillStyle = pa.color;
-                ctx.beginPath();
-                ctx.arc(pa.x, pa.y, Math.max(0.5, pa.size), 0, Math.PI * 2);
-                ctx.fill();
-                
-                // 3. Draw a tiny white inner highlight to make it look like a glossy bubble/sphere!
-                if (pa.size > 2.0) {
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
-                    ctx.beginPath();
-                    ctx.arc(pa.x - pa.size * 0.22, pa.y - pa.size * 0.22, pa.size * 0.22, 0, Math.PI * 2);
-                    ctx.fill();
-                }
+            // Interactive mouse connection effect
+            if (mouse.active) {
+                projected.forEach(function(p) {
+                    var dist = Math.hypot(mouse.x - p.x, mouse.y - p.y);
+                    if (dist < 150) {
+                        var opacity = (1 - (dist / 150)) * 0.20;
+                        ctx.beginPath();
+                        ctx.moveTo(mouse.x, mouse.y);
+                        ctx.lineTo(p.x, p.y);
+                        ctx.strokeStyle = colors.mouse + opacity + ')';
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                });
+            }
+        } catch (err) {
+            console.error("3D Space Engine draw error:", err);
+        } finally {
+            if (isRunning) {
+                animationFrameId = requestAnimationFrame(draw);
             }
         }
-        
-        // Interactive mouse connection effect
-        if (mouse.active) {
-            projected.forEach(function(p) {
-                var dist = Math.hypot(mouse.x - p.x, mouse.y - p.y);
-                if (dist < 150) {
-                    var opacity = (1 - (dist / 150)) * 0.20;
-                    ctx.beginPath();
-                    ctx.moveTo(mouse.x, mouse.y);
-                    ctx.lineTo(p.x, p.y);
-                    ctx.strokeStyle = colors.mouse + opacity + ')';
-                    ctx.lineWidth = 1;
-                    ctx.stroke();
-                }
-            });
-        }
-        
-        animationFrameId = requestAnimationFrame(draw);
     }
 
     function checkTheme() {
@@ -393,6 +414,7 @@
             canvas.style.display = 'block';
             if (!isRunning) {
                 isRunning = true;
+                lastTime = performance.now();
                 resize();
                 initParticles();
                 draw();
@@ -414,17 +436,7 @@
     }
 
     function handleVisibility() {
-        if (document.hidden) {
-            if (isRunning) {
-                isRunning = false;
-                if (animationFrameId) {
-                    cancelAnimationFrame(animationFrameId);
-                    animationFrameId = null;
-                }
-            }
-        } else {
-            checkTheme();
-        }
+        // Run constantly, no pausing on tab visibility change
     }
 
     // ── Inject Settings Panel Interface ──
@@ -562,7 +574,7 @@
         window.addEventListener('mousemove', onMouseMove);
         window.addEventListener('mouseleave', onMouseLeave);
         window.addEventListener('resize', resize);
-        document.addEventListener('visibilitychange', handleVisibility);
+        // Running constantly, no visibility event pausing needed
         document.addEventListener('themechange', checkTheme);
         
         injectSettingsPanel();
