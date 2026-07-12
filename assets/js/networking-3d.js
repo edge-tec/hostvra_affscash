@@ -1,5 +1,5 @@
 /**
- * 3D Connected Networking & Galaxy Constellation Animation
+ * 3D Connected Networking Constellation Animation
  * Designed for Affscash Tracking System (Light/Dark Theme background effects)
  */
 (function() {
@@ -26,7 +26,7 @@
             p1: 'rgba(79, 70, 229, 0.32)',   // Indigo node
             p2: 'rgba(16, 185, 129, 0.28)',  // Green node
             p3: 'rgba(232, 25, 122, 0.32)',  // Pink node
-            line: 'rgba(232, 25, 122, ',    // Pink galaxy connection lines
+            line: 'rgba(232, 25, 122, ',    // Pink network connection lines
             mouse: 'rgba(79, 70, 229, '
         }
     };
@@ -55,46 +55,19 @@
         particles = [];
         currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
         
-        if (currentTheme === 'light') {
-            // Arrange particles in a 3D spiral galaxy structure
-            var numParticles = 145;
-            var numArms = 2;
-            for (var i = 0; i < numParticles; i++) {
-                var arm = i % numArms;
-                var dist = Math.random(); // normalized distance from center
-                // logarithmic spiral layout
-                var angle = (arm * Math.PI) + (dist * Math.PI * 2.8);
-                
-                var x = Math.cos(angle) * dist * 450 + (Math.random() - 0.5) * 70;
-                var y = (Math.random() - 0.5) * 50; // thickness of galaxy disk
-                var z = Math.sin(angle) * dist * 400 + (Math.random() - 0.5) * 70;
-                
-                particles.push({
-                    x: x,
-                    y: y,
-                    z: z,
-                    angle: angle,
-                    dist: dist,
-                    speed: 0.002 + (1 - dist) * 0.004, // Keplerian-ish rotation speed
-                    size: Math.random() * 2 + 1.2,
-                    type: Math.random() > 0.6 ? 'p1' : (Math.random() > 0.35 ? 'p3' : 'p2')
-                });
-            }
-        } else {
-            // Constellation network in dark mode
-            var numParticles = 115;
-            for (var i = 0; i < numParticles; i++) {
-                particles.push({
-                    x: (Math.random() - 0.5) * 800,
-                    y: (Math.random() - 0.5) * 500,
-                    z: (Math.random() - 0.5) * 400,
-                    vx: (Math.random() - 0.5) * 0.4,
-                    vy: (Math.random() - 0.5) * 0.4,
-                    vz: (Math.random() - 0.5) * 0.4,
-                    size: Math.random() * 2 + 1.5,
-                    type: Math.random() > 0.5 ? 'p1' : 'p2'
-                });
-            }
+        // Linear constellation network in both themes
+        var numParticles = 115;
+        for (var i = 0; i < numParticles; i++) {
+            particles.push({
+                x: (Math.random() - 0.5) * 800,
+                y: (Math.random() - 0.5) * 500,
+                z: (Math.random() - 0.5) * 400,
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: (Math.random() - 0.5) * 0.4,
+                vz: (Math.random() - 0.5) * 0.4,
+                size: Math.random() * 2 + 1.5,
+                type: Math.random() > 0.6 ? 'p1' : (Math.random() > 0.35 ? 'p3' : 'p2')
+            });
         }
     }
 
@@ -113,24 +86,13 @@
         
         var projected = [];
         particles.forEach(function(p) {
-            if (theme === 'light') {
-                // Galaxy spiral rotation logic
-                p.angle += p.speed;
-                var targetX = Math.cos(p.angle) * p.dist * 450;
-                var targetZ = Math.sin(p.angle) * p.dist * 400;
-                p.x = targetX;
-                p.z = targetZ;
-                p.y += (Math.random() - 0.5) * 0.15;
-                if (Math.abs(p.y) > 70) p.y *= -0.9;
-            } else {
-                // Constellation linear bounce logic
-                p.x += p.vx;
-                p.y += p.vy;
-                p.z += p.vz;
-                if (Math.abs(p.x) > 450) p.vx *= -1;
-                if (Math.abs(p.y) > 300) p.vy *= -1;
-                if (Math.abs(p.z) > 200) p.vz *= -1;
-            }
+            // Linear constellation speed and bouncing for both modes
+            p.x += p.vx;
+            p.y += p.vy;
+            p.z += p.vz;
+            if (Math.abs(p.x) > 450) p.vx *= -1;
+            if (Math.abs(p.y) > 300) p.vy *= -1;
+            if (Math.abs(p.z) > 200) p.vz *= -1;
             
             // Slow orbital pitch rotation in Y/X for 3D depth
             var rotY = 0.0006;
@@ -168,9 +130,9 @@
                 var dy = pa.y - pb.y;
                 var dist = Math.hypot(dx, dy);
                 
-                var connectLimit = theme === 'light' ? 95 : 110; // galaxy is slightly denser
+                var connectLimit = 110;
                 if (dist < connectLimit) {
-                    var opacity = (1 - (dist / connectLimit)) * 0.16 * (1 - (pa.z + pb.z) / 400);
+                    var opacity = (1 - (dist / connectLimit)) * 0.15 * (1 - (pa.z + pb.z) / 400);
                     if (opacity > 0) {
                         ctx.beginPath();
                         ctx.moveTo(pa.x, pa.y);
