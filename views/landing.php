@@ -124,15 +124,15 @@ try {
     $_landingRevs = Database::fetchAll(
         "SELECT name, role_title, avatar, rating, review_text, country, is_featured
          FROM landing_reviews WHERE status='active'
-         ORDER BY is_featured DESC, sort_order ASC, id DESC LIMIT 100"
+         ORDER BY is_featured DESC, sort_order ASC, id DESC LIMIT 450"
     ) ?: [];
 
     $cRow = Database::fetchOne("SELECT COUNT(*) as c FROM landing_reviews WHERE status='active'");
-    if ($cRow && (int)$cRow['c'] < 200) {
-        $firsts = ['John','Sarah','Mike','Emily','David','Alex','Sophia','Daniel','James','Olivia','Lucas','Emma','Liam','Ava','Noah','Isabella','Ethan','Mia','Mason','Harper'];
-        $lasts  = ['D.','L.','T.','R.','K.','P.','M.','B.','W.','S.','C.','H.','G.','N.','F.','A.','V.','O.','E.','J.'];
-        $roles  = ['Affiliate Marketer','Media Buyer','Publisher','CPA Specialist','Content Creator','Marketing Agency Owner','Senior Media Buyer','Performance Marketer'];
-        $countries = ['United States','United Kingdom','Canada','Australia','Germany','Netherlands','France','Sweden','New Zealand','Switzerland','Spain','Italy','Brazil','Singapore','Japan'];
+    if ($cRow && (int)$cRow['c'] < 420) {
+        $firsts = ['John','Sarah','Mike','Emily','David','Alex','Sophia','Daniel','James','Olivia','Lucas','Emma','Liam','Ava','Noah','Isabella','Ethan','Mia','Mason','Harper','William','Charlotte','Benjamin','Amelia','Lucas','Evelyn','Alexander','Sophia','Michael','Elizabeth'];
+        $lasts  = ['D.','L.','T.','R.','K.','P.','M.','B.','W.','S.','C.','H.','G.','N.','F.','A.','V.','O.','E.','J.','K.','M.','P.','S.','T.'];
+        $roles  = ['Affiliate Marketer','Media Buyer','Publisher','CPA Specialist','Content Creator','Marketing Agency Owner','Senior Media Buyer','Performance Marketer','SEO Specialist','Traffic Arbitrageur','Lead Gen Consultant'];
+        $countries = ['United States','United Kingdom','Canada','Australia','Germany','Netherlands','France','Sweden','New Zealand','Switzerland','Spain','Italy','Brazil','Singapore','Japan','Norway','Denmark','Finland'];
         $templates = [
             'Affscash has transformed my affiliate journey. Their top-tier offers and incredible support make them stand out in the CPA industry.',
             'I\'ve been working with Affscash for a while now, and the payouts are always on time. Highly recommend for any serious marketer!',
@@ -153,10 +153,35 @@ try {
             'The most reliable CPA network I\'ve partnered with in the past 5 years. Highly recommended.',
             'Fast approvals, great payouts, and incredible communication. A+ affiliate network.',
             'I ran a split test on their smartlink and the results blew my mind. Excellent monetization.',
-            'I love the intuitive design of their affiliate panel and the real-time reporting is lightning fast.'
+            'I love the intuitive design of their affiliate panel and the real-time reporting is lightning fast.',
+            'The integration with their API is seamless. Their postbacks fire instantly without delay, which is critical for my media buying on volume.',
+            'Weekly payouts are a blessing. The custom landing pages they provided boosted my CR by 15% on push traffic.',
+            'Highest payouts for dating and sweepstakes verticals in the market. I compared with other top networks and Affscash wins every time.',
+            'Our agency has scaled to 5 figures monthly with Affscash. Their tracking reliability and lack of redirect lag are unmatched.',
+            'I\'ve been in affiliate marketing since 2012, and Affscash\'s account management team is the most dedicated I\'ve ever encountered.',
+            'The real-time fraud prevention check keeps our traffic clean and ensures advertisers are always happy. Highly professional network.',
+            'Payouts are always on time via USDT. Exceptional service, high EPC, and robust dashboard.',
+            'Outstanding Smartlinks! The auto-rotation script is perfectly optimized for global traffic. Zero click wastage.',
+            'Exclusive SOI Dating offers with high conversion rates. Our native ads are performing beautifully.',
+            'Highly recommend this network. Their custom payout structure for high-volume affiliates is very generous.',
+            'Their offer inventory is massive. Dating, Smartlinks, Finance, and Sweepstakes are all extremely active with stellar conversion rates.',
+            'Remarkable platform for media buyers. The smartlink redirects are lightning fast and the custom geo redirection works flawlessly.',
+            'The support team literally works 24/7. Anytime I request a payout review or a custom cap increase, it is done within minutes.',
+            'A very transparent network. You get detailed statistics on devices, referrers, and countries. Flawless tracking capability.',
+            'Their in-house tracking system is faster than Voluum or Binom. Extremely low click loss, which saves us thousands of dollars.',
+            'Affscash pays on time, every time. Weekly payments via Wire and Crypto are processed without any delay.',
+            'Excellent CR on Mobile content lock and CPA offers. Scaling my campaigns has never been easier.',
+            'Our media buying group has been running dating traffic on Affscash for two years. Consistently stable payouts and best EPC.',
+            'Hands down the best CPA network for email traffic. Clean redirects, high inbox rates, and extremely helpful support.',
+            'I appreciate the personalized payout increases. Once you show high-quality volume, they automatically bump up your payouts.',
+            'Affscash provides all the tools an affiliate needs. Fast links, custom domains, and smart postback setups that work perfectly.',
+            'Very reliable tracking API. Postbacks are firing within milliseconds, making it easy to optimize my native ad campaigns.',
+            'Amazing payout rates on Tier-1 dating offers. I highly recommend them to any affiliate developer.',
+            'The best part about Affscash is their account managers. They treat you like true business partners, sharing valuable market trends.',
+            'High-converting exclusive offers and top-tier smartlinks. This platform has completely changed how I run my arbitrage campaigns.'
         ];
         
-        $needed = 200 - (int)$cRow['c'];
+        $needed = 420 - (int)$cRow['c'];
         for ($i=0; $i<$needed; $i++) {
             $name = $firsts[array_rand($firsts)] . ' ' . $lasts[array_rand($lasts)];
             $role = $roles[array_rand($roles)];
@@ -173,7 +198,7 @@ try {
         $_landingRevs = Database::fetchAll(
             "SELECT name, role_title, avatar, rating, review_text, country, is_featured
              FROM landing_reviews WHERE status='active'
-             ORDER BY is_featured DESC, sort_order ASC, id DESC LIMIT 100"
+             ORDER BY is_featured DESC, sort_order ASC, id DESC LIMIT 450"
         ) ?: [];
     }
 } catch (\Throwable $e) {}
@@ -197,8 +222,8 @@ try {
   $_rvAvg    = $_rvTotal ? round(array_sum(array_column($_landingRevs, 'rating')) / $_rvTotal, 1) : 5.0;
 
   foreach ($_landingRevs as $index => $rv) {
-      // Limit schema reviews to first 100 items to prevent massive script injection
-      if ($index >= 100) break;
+      // Limit schema reviews to first 450 items to prevent massive script injection
+      if ($index >= 450) break;
       $schemaReviews[] = [
           "@type" => "Review",
           "author" => [
@@ -1029,7 +1054,7 @@ try {
 
       <!-- Reviews grid -->
       <div id="reviewsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:24px;margin-bottom:32px">
-        <?php foreach (array_slice($_landingRevs, 0, 100) as $index => $rv): ?>
+        <?php foreach (array_slice($_landingRevs, 0, 450) as $index => $rv): ?>
         <div class="review-card" style="background:#fff;border-radius:20px;padding:28px;box-shadow:0 4px 28px rgba(124,58,237,.08);border:1px solid #ede9fe;display:<?php echo $index >= 6 ? 'none' : 'flex'; ?>;flex-direction:column;gap:16px;transition:transform .25s,box-shadow .25s" onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 40px rgba(124,58,237,.14)'" onmouseleave="this.style.transform='';this.style.boxShadow='0 4px 28px rgba(124,58,237,.08)'">
 
           <!-- Stars + featured badge -->
