@@ -711,5 +711,6 @@ body {
     </div>
 </footer>
 
+<?php if(defined('BASE_PATH')) { require BASE_PATH . '/views/partials/policy_theme.php'; } else { require __DIR__ . '/views/partials/policy_theme.php'; } ?>
 </body>
 </html>

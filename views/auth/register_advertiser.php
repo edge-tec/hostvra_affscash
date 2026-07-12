@@ -13,14 +13,51 @@
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <?php endif; ?>
 <style>
-body { background:linear-gradient(135deg,#F8FAFC 0%,#E2E8F0 100%); padding:40px 20px; }
-.auth-box { background:var(--card-bg); border:1px solid var(--border); border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,.08); width:100%; max-width:600px; margin:0 auto; overflow:hidden; }
-.auth-header { padding:28px 32px 16px; color:var(--text); text-align:center; }
-.auth-header h1 { font-size:20px; font-weight:700; color:var(--text); }
-.auth-header p { font-size:13px; color:var(--text-muted); margin-top:4px; }
-.auth-footer { padding:16px 32px; background:var(--bg); border-top:1px solid var(--border); text-align:center; font-size:13px; color:var(--text-muted); border-radius:0 0 16px 16px; }
-.auth-footer a { color:var(--primary); font-weight:600; }
-.section-title { font-size:13px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; margin:24px 0 16px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+body {
+  background: #05020c !important;
+  background-image: 
+      radial-gradient(ellipse 50% 60% at 80% 30%,rgba(124,58,237,.08),transparent),
+      radial-gradient(ellipse 40% 45% at 10% 70%,rgba(232,25,122,.06),transparent) !important;
+  color: #fff !important;
+  padding:40px 20px;
+  overflow-x: hidden;
+}
+.auth-box {
+  background: rgba(15, 10, 36, 0.65) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.35), inset 0 1px 1px rgba(255,255,255,0.15) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+.auth-header { padding:28px 32px 16px; color:#fff; text-align:center; }
+.auth-header h1 { font-size:20px; font-weight:700; color:#fff; }
+.auth-header p { font-size:13px; color:rgba(255,255,255,0.6); margin-top:4px; }
+.auth-footer { padding:16px 32px; background:rgba(15,10,36,0.3) !important; border-top:1px solid rgba(255,255,255,0.06) !important; text-align:center; font-size:13px; color:rgba(255,255,255,0.5) !important; border-radius:0 0 16px 16px; }
+.auth-footer a { color:#a855f7; font-weight:600; text-decoration:none; }
+.section-title { font-size:13px; font-weight:700; color:#a855f7; text-transform:uppercase; letter-spacing:.06em; margin:24px 0 16px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.08); }
+.form-label, label { color: rgba(255,255,255,0.8) !important; font-size:12px !important; }
+.form-control, .form-control-custom, input[type="text"], input[type="password"], input[type="email"], select, textarea {
+  background: rgba(255,255,255,0.03) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  color: #fff !important;
+}
+.form-control:focus, .form-control-custom:focus {
+  border-color: rgba(124,58,237,0.4) !important;
+  box-shadow: 0 0 12px rgba(124,58,237,0.2) !important;
+}
+.btn-primary, button[type="submit"] {
+  background: linear-gradient(135deg,#7c3aed 0%,#3b82f6 50%,#0ea5e9 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: 0 4px 16px rgba(124,58,237,0.3) !important;
+}
 
 /* Password input wrapper styling */
 .password-input-wrapper {
@@ -485,5 +522,134 @@ function onTurnstileExpired() {
 }
 </script>
 <?php endif; ?>
+<canvas id="authParticlesCanvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:0"></canvas>
+<script>
+  (function() {
+    var canvas = document.getElementById('authParticlesCanvas');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var particles = [];
+    var w, h;
+    var mouse = { x: null, y: null, active: false };
+    
+    function resize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    
+    window.addEventListener('mousemove', function(e) {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      mouse.active = true;
+    });
+    window.addEventListener('mouseleave', function() {
+      mouse.active = false;
+    });
+    
+    var numParticles = 80;
+    for (var i = 0; i < numParticles; i++) {
+      particles.push({
+        x: (Math.random() - 0.5) * 800,
+        y: (Math.random() - 0.5) * 500,
+        z: (Math.random() - 0.5) * 400,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        vz: (Math.random() - 0.5) * 0.4,
+        size: Math.random() * 2 + 1.5,
+        color: Math.random() > 0.5 ? 'rgba(124, 58, 237, 0.35)' : 'rgba(14, 165, 233, 0.3)'
+      });
+    }
+    
+    var fov = 400;
+    
+    function draw() {
+      ctx.clearRect(0, 0, w, h);
+      
+      var projected = [];
+      particles.forEach(function(p) {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.z += p.vz;
+        
+        if (Math.abs(p.x) > 450) p.vx *= -1;
+        if (Math.abs(p.y) > 300) p.vy *= -1;
+        if (Math.abs(p.z) > 200) p.vz *= -1;
+        
+        var rotY = 0.0006;
+        var cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+        var x1 = p.x * cosY - p.z * sinY;
+        var z1 = p.z * cosY + p.x * sinY;
+        p.x = x1; p.z = z1;
+        
+        var rotX = 0.0004;
+        var cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+        var y1 = p.y * cosX - p.z * sinX;
+        var z2 = p.z * cosX + p.y * sinX;
+        p.y = y1; p.z = z2;
+        
+        var scale = fov / (fov + p.z);
+        var px = (p.x * scale) + (w / 2);
+        var py = (p.y * scale) + (h / 2);
+        
+        projected.push({
+          x: px,
+          y: py,
+          z: p.z,
+          size: p.size * scale,
+          color: p.color
+        });
+      });
+      
+      for (var a = 0; a < projected.length; a++) {
+        var pa = projected[a];
+        for (var b = a + 1; b < projected.length; b++) {
+          var pb = projected[b];
+          var dx = pa.x - pb.x;
+          var dy = pa.y - pb.y;
+          var dist = Math.hypot(dx, dy);
+          
+          if (dist < 110) {
+            var opacity = (1 - (dist / 110)) * 0.15 * (1 - (pa.z + pb.z) / 400);
+            if (opacity > 0) {
+              ctx.beginPath();
+              ctx.moveTo(pa.x, pa.y);
+              ctx.lineTo(pb.x, pb.y);
+              ctx.strokeStyle = 'rgba(124, 58, 237, ' + opacity + ')';
+              ctx.lineWidth = 0.8 * (1 - (pa.z + pb.z) / 400);
+              ctx.stroke();
+            }
+          }
+        }
+        
+        if (pa.x >= 0 && pa.x <= w && pa.y >= 0 && pa.y <= h) {
+          ctx.fillStyle = pa.color;
+          ctx.beginPath();
+          ctx.arc(pa.x, pa.y, Math.max(0.5, pa.size), 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      
+      if (mouse.active) {
+        projected.forEach(function(p) {
+          var dist = Math.hypot(mouse.x - p.x, mouse.y - p.y);
+          if (dist < 150) {
+            var opacity = (1 - (dist / 150)) * 0.22;
+            ctx.beginPath();
+            ctx.moveTo(mouse.x, mouse.y);
+            ctx.lineTo(p.x, p.y);
+            ctx.strokeStyle = 'rgba(14, 165, 233, ' + opacity + ')';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        });
+      }
+      
+      requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+</script>
 </body>
 </html>
