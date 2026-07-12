@@ -582,30 +582,524 @@ try {
     .badge-top-pill{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:8px;font-weight:800;letter-spacing:.8px;padding:3px 8px;border-radius:20px;text-transform:uppercase;box-shadow:0 3px 8px rgba(245,158,11,.45)}
     .badge-new-pill{background:linear-gradient(135deg,#059669,#0ea5e9);color:#fff;font-size:8px;font-weight:800;letter-spacing:.8px;padding:3px 8px;border-radius:20px;text-transform:uppercase}
 
-    /* HERO SLIDER */
-    .hero-slider-wrap{width:100%;border-radius:20px;overflow:hidden;position:relative;box-shadow:0 30px 80px rgba(124,58,237,.18),0 0 0 1px rgba(124,58,237,.12)}
-    .hero-slides{display:flex;width:100%;align-items:center;transition:transform .65s cubic-bezier(.4,0,.2,1)}
-    .hero-slide{flex:0 0 100%;position:relative}
-    .hero-slide img{width:100%;height:auto;display:block}
-    .hero-slide-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,5,30,.75) 0%,rgba(10,5,30,.22) 50%,transparent 100%)}
-    .hero-slide-caption{position:absolute;bottom:18px;left:18px;right:60px;z-index:2}
-    .hero-slide-caption h3{font-family:'Rajdhani',sans-serif;font-size:clamp(13px,2.2vw,19px);font-weight:700;color:#fff;line-height:1.15;margin-bottom:4px;text-shadow:0 2px 10px rgba(0,0,0,.5)}
-    .hero-slide-caption p{font-size:clamp(10px,1.3vw,12px);color:rgba(255,255,255,.8);margin:0;line-height:1.4;text-shadow:0 1px 6px rgba(0,0,0,.6)}
-    .hero-slider-dots{position:absolute;bottom:12px;right:14px;display:flex;gap:5px;z-index:5;align-items:center}
-    .hero-slider-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.38);cursor:pointer;transition:all .3s;border:none;padding:0;flex-shrink:0}
-    .hero-slider-dot.active{width:18px;border-radius:3px;background:#fff}
-    .hero-slider-arrow{position:absolute;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.16);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.28);color:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;transition:background .22s,transform .22s;line-height:1}
-    .hero-slider-arrow:hover{background:rgba(255,255,255,.30);transform:translateY(-50%) scale(1.08)}
-    .hero-slider-arrow.prev{left:10px}
-    .hero-slider-arrow.next{right:10px}
-    .hero-slider-skeleton{width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,#f0ebff 0%,#fde8f4 50%,#e8f0ff 100%);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px}
-    .hero-slider-skeleton .sk-pulse{width:32px;height:32px;border-radius:50%;border:3px solid rgba(124,58,237,.2);border-top-color:var(--violet);animation:spin .8s linear infinite}
-    .hero-slider-skeleton span{font-size:12px;color:var(--muted);font-family:'DM Sans',sans-serif}
-    @keyframes spin{to{transform:rotate(360deg)}}
+    /* HERO 3D GRAPHIC EXPERIENCES */
+    .hero-graphic-3d {
+      width: 100%;
+      height: 480px;
+      position: relative;
+      margin: 0 auto;
+      perspective: 1200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    
+    .threed-platform {
+      position: absolute;
+      width: 80%;
+      height: 30px;
+      bottom: 20px;
+      background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(124,58,237,0.35), rgba(79,70,229,0.1), transparent);
+      border-radius: 50%;
+      transform: rotateX(70deg) translateZ(-40px);
+      filter: blur(10px);
+      animation: platformPulse 6s infinite ease-in-out;
+    }
+
+    .threed-scene-wrap {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease-out;
+    }
+
+    .floating-dashboard-wrap {
+      position: absolute;
+      width: 78%;
+      aspect-ratio: 16/14;
+      left: 8%;
+      top: 5%;
+      border-radius: 24px;
+      padding: 6px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 45px 100px rgba(10,5,30,0.45), 0 0 40px rgba(124,58,237,0.15);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      transform: rotateY(-14deg) rotateX(8deg) rotateZ(1deg);
+      transform-style: preserve-3d;
+      animation: mainFloat 6s infinite ease-in-out;
+      overflow: hidden;
+    }
+
+    .main-3d-display {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 20px;
+      display: block;
+    }
+
+    .glass-reflection-glare {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 40%, rgba(124,58,237,0.03) 60%, rgba(255,255,255,0) 100%);
+      pointer-events: none;
+      z-index: 5;
+      animation: glassGlare 8s infinite linear;
+    }
+
+    /* Floating UI glassmorphism layers */
+    .floating-ui-layer {
+      position: absolute;
+      z-index: 20;
+      transform-style: preserve-3d;
+      pointer-events: auto;
+      transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    /* Clicks Layer */
+    .card-clicks {
+      width: 160px;
+      left: -5%;
+      top: 25%;
+      animation: subFloat1 5s infinite ease-in-out;
+    }
+
+    /* Conversions Layer */
+    .card-convs {
+      width: 165px;
+      right: -2%;
+      top: 15%;
+      animation: subFloat2 6.5s infinite ease-in-out;
+    }
+
+    /* Revenue/Payout Layer */
+    .card-revenue {
+      width: 160px;
+      left: 12%;
+      bottom: 12%;
+      animation: subFloat3 5.8s infinite ease-in-out;
+    }
+
+    /* EPC Layer */
+    .card-epc {
+      width: 130px;
+      right: 18%;
+      top: -4%;
+      animation: subFloat1 7.2s infinite ease-in-out;
+    }
+
+    /* Fraud Alert Layer */
+    .card-fraud {
+      width: 250px;
+      right: -10%;
+      bottom: 22%;
+      animation: subFloat4 8s infinite ease-in-out;
+    }
+
+    /* Chat Popup Layer */
+    .card-chat {
+      width: 210px;
+      left: -12%;
+      top: 60%;
+      animation: subFloat2 7.8s infinite ease-in-out;
+    }
+
+    /* Glowing Encrypted node */
+    .lock-node {
+      width: 90px;
+      right: 38%;
+      bottom: -6%;
+      animation: subFloat3 6s infinite ease-in-out;
+    }
+
+    /* Common Card Styling (Apple Vision Pro Glassmorphism) */
+    .card-inner {
+      background: rgba(15, 10, 36, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+
+    .card-inner:hover {
+      border-color: rgba(124, 58, 237, 0.4);
+      transform: translateZ(20px) scale(1.05);
+      box-shadow: 0 25px 50px rgba(124, 58, 237, 0.25);
+    }
+
+    .card-glow-border {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(124,58,237,0.2), transparent);
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .card-header-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .card-val-group {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .card-label {
+      font-size: 10px;
+      color: rgba(255,255,255,0.45);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .card-val {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.1;
+    }
+
+    .card-trend {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 12px;
+      align-self: flex-start;
+    }
+
+    .card-trend.up {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+    }
+
+    /* Live Chat Popup Styles */
+    .chat-inner {
+      background: rgba(10, 7, 28, 0.8);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 10px 12px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.35);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 11px;
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chat-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .chat-user-info {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .chat-name {
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .chat-status {
+      font-size: 8px;
+      color: #10b981;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .chat-status-dot {
+      width: 4px;
+      height: 4px;
+      background: #10b981;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .chat-bubble {
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(255,255,255,0.85);
+      padding: 8px 10px;
+      border-radius: 0 12px 12px 12px;
+      margin: 0;
+      line-height: 1.35;
+    }
+
+    /* Fraud Alert CSS */
+    .fraud-inner {
+      background: rgba(239, 68, 68, 0.07);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      border-radius: 16px;
+      padding: 12px 14px;
+      box-shadow: 0 15px 35px rgba(239, 68, 68, 0.1);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .animate-pulse-border {
+      animation: pulseBorder 2.5s infinite ease-in-out;
+    }
+
+    .fraud-glow {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 10% 10%, rgba(239,68,68,0.12), transparent);
+      pointer-events: none;
+    }
+
+    .fraud-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .fraud-indicator {
+      width: 6px;
+      height: 6px;
+      background: #ef4444;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #ef4444;
+      animation: spin 1s infinite alternate;
+    }
+
+    .fraud-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: #ef4444;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .fraud-text {
+      font-size: 11px;
+      color: rgba(255,255,255,0.8);
+      margin: 0 0 8px;
+      line-height: 1.4;
+    }
+
+    .fraud-footer {
+      display: flex;
+      align-items: center;
+    }
+
+    .shield-badge {
+      font-size: 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #ef4444;
+      background: rgba(239,68,68,0.12);
+      padding: 3px 8px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Lock Node Styling */
+    .lock-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 25px rgba(16, 185, 129, 0.15);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .lock-circle:hover {
+      background: rgba(16,185,129,0.15);
+      border-color: rgba(16,185,129,0.6);
+      transform: scale(1.1) translateZ(10px);
+    }
+
+    .lock-circle i {
+      font-size: 12px;
+      color: #10b981;
+    }
+
+    .lock-label {
+      font-size: 6px;
+      font-weight: 800;
+      color: #10b981;
+      margin-top: 2px;
+      letter-spacing: 0.3px;
+    }
+
+    .glow-text {
+      text-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
+    }
+
+    /* Digital Data Stream Particles */
+    .data-particles-wrap {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #7c3aed;
+      border-radius: 50%;
+      filter: blur(0.5px);
+      opacity: 0;
+    }
+
+    .particle.p1 { left: 20%; top: 30%; animation: particleFlow1 4.5s infinite linear; }
+    .particle.p2 { right: 15%; top: 25%; animation: particleFlow2 5.5s infinite linear; background: #0ea5e9; }
+    .particle.p3 { left: 40%; bottom: 20%; animation: particleFlow3 6s infinite linear; background: #f59e0b; }
+    .particle.p4 { right: 35%; bottom: 35%; animation: particleFlow1 5s infinite linear; background: #10b981; }
+
+    /* Carousel glowing 3D Indicators */
+    .hero-3d-dots {
+      position: absolute;
+      bottom: -15px;
+      display: flex;
+      gap: 8px;
+      z-index: 5;
+    }
+
+    .threed-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.1);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .threed-dot.active {
+      background: #7c3aed;
+      box-shadow: 0 0 10px #7c3aed, 0 0 3px #7c3aed;
+      width: 24px;
+      border-radius: 4px;
+    }
+
+    /* ANIMATIONS & KEYFRAMES */
+    @keyframes mainFloat {
+      0%, 100% { transform: rotateY(-14deg) rotateX(8deg) rotateZ(1deg) translateY(0); }
+      50% { transform: rotateY(-11deg) rotateX(10deg) rotateZ(0deg) translateY(-12px); }
+    }
+
+    @keyframes subFloat1 {
+      0%, 100% { transform: translateY(0) translateZ(10px) rotate(0deg); }
+      50% { transform: translateY(-8px) translateZ(25px) rotate(1deg); }
+    }
+
+    @keyframes subFloat2 {
+      0%, 100% { transform: translateY(0) translateZ(20px) rotate(0deg); }
+      50% { transform: translateY(10px) translateZ(5px) rotate(-1.5deg); }
+    }
+
+    @keyframes subFloat3 {
+      0%, 100% { transform: translateY(0) translateZ(15px); }
+      50% { transform: translateY(-10px) translateZ(35px); }
+    }
+
+    @keyframes subFloat4 {
+      0%, 100% { transform: translateY(0) translateZ(30px) scale(1); }
+      50% { transform: translateY(-5px) translateZ(45px) scale(1.02); }
+    }
+
+    @keyframes platformPulse {
+      0%, 100% { opacity: 0.8; transform: rotateX(70deg) translateZ(-40px) scale(1); }
+      50% { opacity: 0.95; transform: rotateX(70deg) translateZ(-40px) scale(1.08); }
+    }
+
+    @keyframes glassGlare {
+      0% { background-position: -200% -200%; }
+      100% { background-position: 200% 200%; }
+    }
+
+    @keyframes pulseBorder {
+      0%, 100% { border-color: rgba(239, 68, 68, 0.25); box-shadow: 0 15px 35px rgba(239, 68, 68, 0.1); }
+      50% { border-color: rgba(239, 68, 68, 0.6); box-shadow: 0 15px 35px rgba(239, 68, 68, 0.25), 0 0 12px rgba(239, 68, 68, 0.15); }
+    }
+
+    @keyframes particleFlow1 {
+      0% { transform: translateY(40px) scale(0.6); opacity: 0; }
+      20% { opacity: 0.6; }
+      80% { opacity: 0.6; }
+      100% { transform: translateY(-60px) scale(1); opacity: 0; }
+    }
+
+    @keyframes particleFlow2 {
+      0% { transform: translateX(-40px) translateY(20px) scale(0.5); opacity: 0; }
+      30% { opacity: 0.8; }
+      70% { opacity: 0.8; }
+      100% { transform: translateX(50px) translateY(-40px) scale(0.9); opacity: 0; }
+    }
+
+    @keyframes particleFlow3 {
+      0% { transform: translateY(60px) scale(0.8); opacity: 0; }
+      15% { opacity: 0.7; }
+      85% { opacity: 0.7; }
+      100% { transform: translateY(-30px) scale(0.5); opacity: 0; }
+    }
 
     /* RESPONSIVE */
-    @media(max-width:991px){.nav-links{display:none}.hamburger{display:flex}.hero{text-align:center}.hero-btns{justify-content:center}.hero-visual{margin-top:48px}}
-    @media(max-width:767px){section{padding:64px 0}.form-card{padding:26px 20px}.smartlink-highlight{padding:30px 20px}}
+    @media(max-width:991px){
+      .nav-links{display:none}
+      .hamburger{display:flex}
+      .hero{text-align:center}
+      .hero-btns{justify-content:center}
+      .hero-visual{margin-top:48px}
+    }
+    @media(max-width:767px){
+      section{padding:64px 0}
+      .form-card{padding:26px 20px}
+      .smartlink-highlight{padding:30px 20px}
+      .hero-graphic-3d { height: 360px; }
+      .card-fraud { display: none !important; }
+      .card-chat { display: none !important; }
+      .card-clicks { left: 0%; top: 35%; }
+      .card-convs { right: 0%; top: 25%; }
+      .card-revenue { left: 8%; bottom: 6%; }
+      .lock-node { right: 10%; bottom: 6%; }
+    }
     @media(max-width:900px){.offer-card{flex:0 0 calc(33.333% - 11px) !important}}
     @media(max-width:600px){.offer-card{flex:0 0 calc(50% - 8px) !important}}
     @media(max-width:400px){.offer-card{flex:0 0 calc(100%) !important}}
@@ -712,23 +1206,131 @@ try {
           </div>
         </div>
         <div class="col-lg-7 hero-visual fade-up">
-          <div class="hero-graphic">
-            <div class="hero-slider-wrap" id="heroSliderWrap">
-              <div class="hero-slider-skeleton" id="heroSliderSkeleton">
-                <div class="sk-pulse"></div>
-                <span>Loading slides…</span>
+          <div class="hero-graphic-3d" id="hero3DGraphic">
+            <!-- 3D Platform Base with radial glow -->
+            <div class="threed-platform"></div>
+            
+            <!-- Float Grid Container -->
+            <div class="threed-scene-wrap">
+              
+              <!-- Core Floating Laptop / Monitor Dashboard -->
+              <div class="floating-dashboard-wrap">
+                <img src="/assets/images/hero_3d_dashboard.png" alt="AffsCash Futuristic 3D AI Dashboard" class="main-3d-display" loading="eager">
+                
+                <!-- Neon overlay reflection pulse -->
+                <div class="glass-reflection-glare"></div>
               </div>
-              <div class="hero-slides" id="heroSlides" style="display:none"></div>
-              <button class="hero-slider-arrow prev" id="heroSliderPrev" aria-label="Previous slide" style="display:none">&#8592;</button>
-              <button class="hero-slider-arrow next" id="heroSliderNext" aria-label="Next slide" style="display:none">&#8594;</button>
-              <div class="hero-slider-dots" id="heroSliderDots"></div>
+
+              <!-- Interactive Floating UI Cards (Parallax offset layers) -->
+              <div class="floating-ui-layer card-clicks" data-depth="0.15">
+                <div class="card-inner">
+                  <div class="card-glow-border"></div>
+                  <div class="card-header-icon"><i class="fa-solid fa-mouse-pointer" style="color:#0ea5e9"></i></div>
+                  <div class="card-val-group">
+                    <span class="card-label">Live Clicks</span>
+                    <span class="card-val" id="liveClicksVal">128,690</span>
+                  </div>
+                  <span class="card-trend up"><i class="fa-solid fa-arrow-trend-up"></i> +12.5%</span>
+                </div>
+              </div>
+
+              <div class="floating-ui-layer card-convs" data-depth="0.25">
+                <div class="card-inner">
+                  <div class="card-glow-border"></div>
+                  <div class="card-header-icon"><i class="fa-solid fa-circle-check" style="color:#10b981"></i></div>
+                  <div class="card-val-group">
+                    <span class="card-label">Conversions</span>
+                    <span class="card-val" id="liveConvsVal">8,756</span>
+                  </div>
+                  <span class="card-trend up"><i class="fa-solid fa-arrow-trend-up"></i> +8.7%</span>
+                </div>
+              </div>
+
+              <div class="floating-ui-layer card-revenue" data-depth="0.35">
+                <div class="card-inner">
+                  <div class="card-glow-border" style="background:linear-gradient(135deg,rgba(245,158,11,0.3),transparent)"></div>
+                  <div class="card-header-icon"><i class="fa-solid fa-wallet" style="color:#f59e0b"></i></div>
+                  <div class="card-val-group">
+                    <span class="card-label">Payout</span>
+                    <span class="card-val">$48,765</span>
+                  </div>
+                  <span class="card-trend up"><i class="fa-solid fa-arrow-trend-up"></i> +11.2%</span>
+                </div>
+              </div>
+
+              <div class="floating-ui-layer card-epc" data-depth="0.20">
+                <div class="card-inner">
+                  <div class="card-glow-border"></div>
+                  <div class="card-header-icon"><i class="fa-solid fa-chart-line" style="color:#a855f7"></i></div>
+                  <div class="card-val-group">
+                    <span class="card-label">EPC</span>
+                    <span class="card-val">$3.45</span>
+                  </div>
+                  <span class="card-trend up"><i class="fa-solid fa-arrow-trend-up"></i> +7.3%</span>
+                </div>
+              </div>
+
+              <!-- Animated Fraud Detection Alert Notification Layer -->
+              <div class="floating-ui-layer card-fraud" data-depth="0.4">
+                <div class="fraud-inner animate-pulse-border">
+                  <div class="fraud-glow"></div>
+                  <div class="fraud-header">
+                    <span class="fraud-indicator"></span>
+                    <span class="fraud-title">Fraud Monitoring</span>
+                  </div>
+                  <p class="fraud-text">Fraudulent conversion blocked in real-time from IP 185.220.*.*</p>
+                  <div class="fraud-footer">
+                    <span class="shield-badge"><i class="fa-solid fa-shield-halved"></i> Active protection</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Floating Live Chat Support Popup -->
+              <div class="floating-ui-layer card-chat" data-depth="0.3">
+                <div class="chat-inner">
+                  <div class="chat-header">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&q=80" alt="Support agent Manager avatar" class="chat-avatar">
+                    <div class="chat-user-info">
+                      <span class="chat-name">Live Support</span>
+                      <span class="chat-status"><span class="chat-status-dot"></span> Online</span>
+                    </div>
+                  </div>
+                  <p class="chat-bubble">Hello! Welcome to AffsCash support. How can I help you today?</p>
+                </div>
+              </div>
+
+              <!-- Glowing Lock node for Encryption visualization -->
+              <div class="floating-ui-layer lock-node" data-depth="0.45">
+                <div class="lock-circle">
+                  <i class="fa-solid fa-lock glow-text"></i>
+                  <span class="lock-label">ENCRYPTED</span>
+                </div>
+              </div>
+
+              <!-- Digital Data stream particle layers -->
+              <div class="data-particles-wrap">
+                <span class="particle p1"></span>
+                <span class="particle p2"></span>
+                <span class="particle p3"></span>
+                <span class="particle p4"></span>
+              </div>
             </div>
-            <div class="hero-card-stack">
-              <div class="hero-stat-card"><span class="stat-num" id="heroStatOffers">300+</span><span class="stat-label">Live Offers</span></div>
-              <div class="hero-stat-card"><span class="stat-num">$9.00</span><span class="stat-label">Max SOI Payout</span></div>
-              <div class="hero-stat-card"><span class="stat-num">24/7</span><span class="stat-label">Support Team</span></div>
-              <div class="hero-stat-card"><span class="stat-num">100%</span><span class="stat-label">Conversion Track</span></div>
+
+            <!-- Dashboard Carousel Navigation dots (glowing 3D indicator style) -->
+            <div class="hero-3d-dots">
+              <span class="threed-dot active"></span>
+              <span class="threed-dot"></span>
+              <span class="threed-dot"></span>
+              <span class="threed-dot"></span>
             </div>
+          </div>
+          
+          <!-- Core stats list under visual layout -->
+          <div class="hero-card-stack">
+            <div class="hero-stat-card"><span class="stat-num" id="heroStatOffers">300+</span><span class="stat-label">Live Offers</span></div>
+            <div class="hero-stat-card"><span class="stat-num">$9.00</span><span class="stat-label">Max SOI Payout</span></div>
+            <div class="hero-stat-card"><span class="stat-num">24/7</span><span class="stat-label">Support Team</span></div>
+            <div class="hero-stat-card"><span class="stat-num">100%</span><span class="stat-label">Conversion Track</span></div>
           </div>
         </div>
       </div>
@@ -1442,8 +2044,105 @@ try {
     if(c3)new Chart(c3,{type:'bar',data:{labels:tg.map(function(g){return g[0];}),datasets:[{data:tg.map(function(g){return g[1];}),backgroundColor:'#7c3aed',borderRadius:5,borderWidth:0}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(0,0,0,.05)'}},y:{ticks:{font:{size:10}}}}}});
   }
 
+  // ── 3D Interactive Hero scene JavaScript (Mouse parallax + floating dynamic indicator rotation) ──
+  (function() {
+    var scene = document.getElementById('hero3DGraphic');
+    if (!scene) return;
+    
+    var sceneWrap = scene.querySelector('.threed-scene-wrap');
+    var layers = scene.querySelectorAll('.floating-ui-layer');
+    
+    // Mouse movement parallax effect
+    scene.addEventListener('mousemove', function(e) {
+      var rect = scene.getBoundingClientRect();
+      var x = e.clientX - rect.left - (rect.width / 2);
+      var y = e.clientY - rect.top - (rect.height / 2);
+      
+      // Calculate rotation angles for scene
+      var rotY = (x / rect.width) * 22; // max 11 deg left/right
+      var rotX = -(y / rect.height) * 22; // max 11 deg up/down
+      
+      if (sceneWrap) {
+        sceneWrap.style.transform = 'rotateY(' + rotY + 'deg) rotateX(' + rotX + 'deg)';
+      }
+      
+      // Offset each UI layer based on depth
+      layers.forEach(function(layer) {
+        var depth = parseFloat(layer.getAttribute('data-depth') || '0.2');
+        var moveX = (x * depth) * 0.65;
+        var moveY = (y * depth) * 0.65;
+        
+        // Target specific transforms per card type to preserve base styles
+        var baseTransform = '';
+        if (layer.classList.contains('lock-node')) {
+          baseTransform = 'translateZ(10px) ';
+        } else if (layer.classList.contains('card-clicks')) {
+          baseTransform = 'translateZ(15px) ';
+        } else if (layer.classList.contains('card-convs')) {
+          baseTransform = 'translateZ(25px) ';
+        } else if (layer.classList.contains('card-revenue')) {
+          baseTransform = 'translateZ(35px) ';
+        } else if (layer.classList.contains('card-fraud')) {
+          baseTransform = 'translateZ(45px) ';
+        } else if (layer.classList.contains('card-chat')) {
+          baseTransform = 'translateZ(30px) ';
+        }
+        
+        layer.style.transform = baseTransform + 'translate3d(' + moveX + 'px, ' + moveY + 'px, 0px)';
+      });
+    });
+    
+    // Reset positions when mouse leaves the scene
+    scene.addEventListener('mouseleave', function() {
+      if (sceneWrap) {
+        sceneWrap.style.transform = 'rotateY(0deg) rotateX(0deg)';
+        sceneWrap.style.transition = 'transform 0.5s ease-out';
+      }
+      layers.forEach(function(layer) {
+        layer.style.transform = '';
+        layer.style.transition = 'transform 0.5s ease-out';
+      });
+    });
+    
+    // Dynamic Carousel indicator interval simulator
+    var dots = scene.querySelectorAll('.threed-dot');
+    var activeIdx = 0;
+    setInterval(function() {
+      dots.forEach(function(d) { d.classList.remove('active'); });
+      activeIdx = (activeIdx + 1) % dots.length;
+      dots[activeIdx].classList.add('active');
+    }, 4200);
+
+    // Click handler for 3D indicators
+    dots.forEach(function(dot, idx) {
+      dot.onclick = function() {
+        dots.forEach(function(d) { d.classList.remove('active'); });
+        activeIdx = idx;
+        dot.classList.add('active');
+      };
+    });
+    
+    // Live clicks and conversions live ticker simulator
+    var clicksEl = document.getElementById('liveClicksVal');
+    var convsEl = document.getElementById('liveConvsVal');
+    var currentClicks = 128690;
+    var currentConvs = 8756;
+    
+    setInterval(function() {
+      if (Math.random() > 0.3) {
+        var clickInc = Math.floor(Math.random() * 8) + 1;
+        var convInc = Math.random() > 0.85 ? 1 : 0;
+        
+        currentClicks += clickInc;
+        currentConvs += convInc;
+        
+        if (clicksEl) clicksEl.textContent = currentClicks.toLocaleString('en-US');
+        if (convsEl) convsEl.textContent = currentConvs.toLocaleString('en-US');
+      }
+    }, 2800);
+  })();
+
   function handleSubmit(e){
-    e.preventDefault();
     var sEl=document.getElementById('formSuccess'),eEl=document.getElementById('formError'),etEl=document.getElementById('errorText'),btn=e.target.querySelector('button[type="submit"]');
     sEl.style.display='none';eEl.style.display='none';
     var fn=document.getElementById('fname').value.trim(),ln=document.getElementById('lname').value.trim(),em=document.getElementById('cemail').value.trim(),msg=document.getElementById('message').value.trim();
@@ -1474,7 +2173,6 @@ try {
   });
 
   loadOffersFromAPI();
-  initLiveHeroSlider();
 
   </script>
 </body>
