@@ -184,10 +184,6 @@
                 console.log("3D Space Engine Status: running, frames=" + frameCount + ", particles=" + particles.length + ", size=" + w + "x" + h);
             }
 
-            var now = performance.now();
-            var deltaTime = Math.min(2.0, (now - lastTime) / 16.666);
-            lastTime = now;
-
             ctx.clearRect(0, 0, w, h);
             
             var theme = document.documentElement.getAttribute('data-theme') || 'light';
@@ -309,24 +305,24 @@
             var limitZ = 200;
 
             particles.forEach(function(p) {
-                // Natural 3D floating movement scaled by speed setting and deltaTime
-                p.x += p.vx * settings.speed * deltaTime;
-                p.y += p.vy * settings.speed * deltaTime;
-                p.z += p.vz * settings.speed * deltaTime;
+                // Natural 3D floating movement scaled by speed setting
+                p.x += p.vx * settings.speed;
+                p.y += p.vy * settings.speed;
+                p.z += p.vz * settings.speed;
                 
                 // Boundary bounce checks (keeps them floating across full viewport)
                 if (Math.abs(p.x) > limitX) p.vx *= -1;
                 if (Math.abs(p.y) > limitY) p.vy *= -1;
                 if (Math.abs(p.z) > limitZ) p.vz *= -1;
 
-                // True 3D orbital rotation around center (landing page physics, speed and delta time scaled)
-                var rotY = 0.0006 * settings.speed * deltaTime;
+                // True 3D orbital rotation around center (landing page physics, speed scaled)
+                var rotY = 0.0006 * settings.speed;
                 var cosY = Math.cos(rotY), sinY = Math.sin(rotY);
                 var rx1 = p.x * cosY - p.z * sinY;
                 var rz1 = p.z * cosY + p.x * sinY;
                 p.x = rx1; p.z = rz1;
                 
-                var rotX = 0.0004 * settings.speed * deltaTime;
+                var rotX = 0.0004 * settings.speed;
                 var cosX = Math.cos(rotX), sinX = Math.sin(rotX);
                 var ry1 = p.y * cosX - p.z * sinX;
                 var rz2 = p.z * cosX + p.y * sinX;
