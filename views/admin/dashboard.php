@@ -488,7 +488,7 @@ html[data-theme="dark"] .loading-overlay{background:rgba(15,23,42,.55);}
     .charts-2,.charts-3{grid-template-columns:1fr;}
     .chart-card .card-body{padding:12px;}
     .chart-wrap{height:220px;}
-    .chart-wrap.tall{height:260px;}
+    .chart-wrap.tall{height:340px;}
 }
 
 /* 640-768px (large phone) */
@@ -517,7 +517,7 @@ html[data-theme="dark"] .loading-overlay{background:rgba(15,23,42,.55);}
     .chart-card .card-header{padding:10px 12px;}
     .chart-card .card-title{font-size:12px;}
     .chart-wrap{height:200px;}
-    .chart-wrap.tall{height:240px;}
+    .chart-wrap.tall{height:320px;}
     .dash-f-input{font-size: 11px; padding: 6px 10px;}
     .dash-btn-apply,.dash-btn-reset{font-size: 11px; padding: 6px 10px;}
 }
@@ -1157,7 +1157,7 @@ function renderTrendChart(){
             responsive:true, maintainAspectRatio:false,
             interaction:{ mode:'index', intersect:false },
             plugins:{
-                legend:{ display:true, position:'bottom', labels:{ boxWidth:12, usePointStyle:true, padding:20, font:{size:13, family:'"Inter", sans-serif', weight:'600'}, color:legendColor } },
+                legend:{ display:true, position:'bottom', labels:{ boxWidth:12, usePointStyle:true, padding:10, font:{size:13, family:'"Inter", sans-serif', weight:'600'}, color:legendColor } },
                 tooltip:{ 
                     backgroundColor: 'rgba(15, 23, 42, 0.95)',
                     borderColor: 'rgba(255,255,255,0.1)',

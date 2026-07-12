@@ -828,7 +828,7 @@ function renderTrendChart(){
             responsive:true, maintainAspectRatio:false,
             interaction:{ mode:'index', intersect:false },
             plugins:{
-                legend:{ display:true, position:'bottom', labels:{ boxWidth:12, usePointStyle:true, padding:20, font:{size:13, family:'"Inter", sans-serif', weight:'600'}, color:legendColor } },
+                legend:{ display:true, position:'bottom', labels:{ boxWidth:12, usePointStyle:true, padding:10, font:{size:13, family:'"Inter", sans-serif', weight:'600'}, color:legendColor } },
                 tooltip:{ 
                     backgroundColor: 'rgba(15, 23, 42, 0.95)',
                     borderColor: 'rgba(255,255,255,0.1)',
