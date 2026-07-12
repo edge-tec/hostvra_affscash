@@ -201,6 +201,61 @@
 
         var scrollYOffset = window.scrollY * 0.25 * settings.motion;
         
+        // Draw the Galaxy Shadow (Center 3D Depth Nebula Glow/Shadow)
+        var centerX = w / 2 - camX * 0.4;
+        var centerY = h / 2 - camY * 0.4 - scrollYOffset * 0.4;
+        var maxRadius = Math.max(w, h) * 0.5;
+        
+        if (theme === 'dark') {
+            // Dark Mode: Deep cosmic dust lane shadow & colored core glow
+            var centerGlow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, maxRadius);
+            
+            var coreGlowColor = 'rgba(124, 58, 237, 0.12)'; // default purple/violet
+            if (settings.marketStatus === 'positive') {
+                coreGlowColor = 'rgba(16, 185, 129, 0.10)'; // green
+            } else if (settings.marketStatus === 'negative') {
+                coreGlowColor = 'rgba(239, 68, 68, 0.10)'; // red
+            }
+            
+            // Outer shadow ring
+            centerGlow.addColorStop(0, 'rgba(6, 4, 16, 0.45)'); // Deep central black hole core
+            centerGlow.addColorStop(0.18, 'rgba(6, 4, 16, 0.35)'); // central shadow
+            centerGlow.addColorStop(0.45, coreGlowColor); // Nebula glowing gas
+            centerGlow.addColorStop(0.75, 'rgba(14, 165, 233, 0.02)'); // outer faint cyan glow
+            centerGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            
+            ctx.fillStyle = centerGlow;
+            ctx.fillRect(0, 0, w, h);
+            
+            // Also draw a subtle inner core shadow to simulate a black hole gravitational shadow
+            var coreShadow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 140);
+            coreShadow.addColorStop(0, 'rgba(0, 0, 0, 0.50)');
+            coreShadow.addColorStop(0.6, 'rgba(6, 4, 16, 0.25)');
+            coreShadow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = coreShadow;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 140, 0, Math.PI * 2);
+            ctx.fill();
+        } else {
+            // Light Mode: Soft glowing shadow behind the center of the galaxy to give 3D contrast
+            var centerGlow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, maxRadius);
+            
+            var coreGlowColor = 'rgba(79, 70, 229, 0.06)'; // indigo
+            if (settings.marketStatus === 'positive') {
+                coreGlowColor = 'rgba(16, 185, 129, 0.06)';
+            } else if (settings.marketStatus === 'negative') {
+                coreGlowColor = 'rgba(239, 68, 68, 0.06)';
+            }
+            
+            centerGlow.addColorStop(0, 'rgba(235, 240, 255, 0.45)'); // Soft light core shadow
+            centerGlow.addColorStop(0.35, coreGlowColor);
+            centerGlow.addColorStop(0.75, 'rgba(124, 58, 237, 0.02)');
+            centerGlow.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            
+            ctx.fillStyle = centerGlow;
+            ctx.fillRect(0, 0, w, h);
+        }
+        
         var projected = [];
         var limitX = 1000;
         var limitY = 700;
