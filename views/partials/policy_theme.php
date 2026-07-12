@@ -225,6 +225,30 @@
   .notice-block strong {
       color: #fff !important;
   }
+
+  /* Responsive styles for floating header on mobile devices */
+  @media (max-width: 576px) {
+      .topnav, nav {
+          width: 95% !important;
+          padding: 0 12px !important;
+          height: 60px !important;
+          top: 10px !important;
+      }
+      .topnav-brand img, .nav-logo img, nav .logo, nav img {
+          max-height: 28px !important;
+      }
+      .nav-actions {
+          display: flex !important;
+          gap: 6px !important;
+      }
+      .nav-actions .btn, nav .btn, .nav-actions a, nav a {
+          padding: 6px 12px !important;
+          font-size: 11px !important;
+      }
+      .nav-spacer {
+          display: none !important;
+      }
+  }
 </style>
 
 <!-- Canvas for full-page background network constellation animation -->
