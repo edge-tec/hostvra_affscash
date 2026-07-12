@@ -650,6 +650,8 @@ if (!empty($_dashAffIds)) {
 const API    = '/api/admin-analytics';
 const COLORS = ['#7C3AED','#10B981','#F59E0B','#EF4444','#3B82F6','#4F46E5','#06B6D4','#F97316','#EC4899','#14B8A6'];
 const charts = {};
+const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+const legendColor = isDark ? '#E2E8F0' : '#475569';
 let trendMetrics = new Set(['clicks','conv','fraud']);
 let trendType    = 'line';
 let trendData   = {};
@@ -826,7 +828,7 @@ function renderTrendChart(){
             responsive:true, maintainAspectRatio:false,
             interaction:{ mode:'index', intersect:false },
             plugins:{
-                legend:{ display:true, position:'bottom', labels:{ boxWidth:12, usePointStyle:true, padding:20, font:{size:13, family:'"Inter", sans-serif', weight:'600'}, color:'#475569' } },
+                legend:{ display:true, position:'bottom', labels:{ boxWidth:12, usePointStyle:true, padding:20, font:{size:13, family:'"Inter", sans-serif', weight:'600'}, color:legendColor } },
                 tooltip:{ 
                     backgroundColor: 'rgba(15, 23, 42, 0.95)',
                     borderColor: 'rgba(255,255,255,0.1)',
@@ -885,7 +887,7 @@ function loadConvPie(){
             (d.rows||[]).forEach(r=>{ counts[r.status]=(counts[r.status]||0)+1; });
             const labels=Object.keys(counts),data=labels.map(l=>counts[l]),colors=labels.map(l=>pieColors[l]||'#64748B');
             makeChart('convPieChart',{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:colors,borderColor:'#fff',borderWidth:2}]},
-                options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8}}}}});
+                options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8,color:legendColor}}}}});
         }).catch(()=>{}).finally(()=>hideLoad('pie-loading'));
 }
 
@@ -904,7 +906,7 @@ function renderCountryChart(){
     makeChart('countryChart',{type:'bar',data:{labels:rows.map(r=>r.country),datasets:[
         {label:'Clicks',data:rows.map(r=>r.clicks),backgroundColor:'rgba(124,58,237,.7)',borderColor:'#7C3AED',borderWidth:1,borderRadius:3},
         {label:'Conv',data:rows.map(r=>r.conv),backgroundColor:'rgba(16,185,129,.7)',borderColor:'#10B981',borderWidth:1,borderRadius:3}
-    ]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:11}}}},
+    ]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:11},color:legendColor}}},
         scales:{x:{beginAtZero:true,grid:{display:false}},y:{grid:{display:false},ticks:{font:{size:11}}}}}});
 }
 function renderCountryTable(){
@@ -922,7 +924,7 @@ function loadDevices(){
     fetch(API+'?action=devices&'+qs(getFilters()))
         .then(r=>r.json()).then(d=>{
             makeChart('deviceChart',{type:'doughnut',data:{labels:d.labels,datasets:[{data:d.data,backgroundColor:COLORS,borderColor:'#fff',borderWidth:2}]},
-                options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8}}}}});
+                options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8,color:legendColor}}}}});
         }).catch(()=>{}).finally(()=>hideLoad('device-loading'));
 }
 
@@ -932,7 +934,7 @@ function loadBrowsers(){
     fetch(API+'?action=browsers&'+qs(getFilters()))
         .then(r=>r.json()).then(d=>{
             makeChart('browserChart',{type:'doughnut',data:{labels:d.labels,datasets:[{data:d.data,backgroundColor:COLORS.slice(2),borderColor:'#fff',borderWidth:2}]},
-                options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8}}}}});
+                options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8,color:legendColor}}}}});
         }).catch(()=>{}).finally(()=>hideLoad('browser-loading'));
 }
 

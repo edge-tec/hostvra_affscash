@@ -868,6 +868,8 @@ var COUNTRY_NAMES = {US:'United States',GB:'United Kingdom',CA:'Canada',AU:'Aust
 
 // ── State ──────────────────────────────────────────────────────────────────
 var charts = {};
+var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+var legendColor = isDark ? '#E2E8F0' : '#475569';
 var _trendData = {};
 var _convData  = {};
 var _statsData = {};
@@ -1138,7 +1140,7 @@ function loadCountries(){
                 { label:'Clicks',      data:clicks, backgroundColor:'rgba(59,130,246,.75)',  borderRadius:4 },
                 { label:'Conversions', data:conv,   backgroundColor:'rgba(139,92,246,.75)',   borderRadius:4 }
             ]},
-            options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'top',labels:{font:{size:11}}}}, scales:{ x:{beginAtZero:true,grid:{display:false},ticks:{font:{size:11}}}, y:{grid:{display:false},ticks:{font:{size:11}}} } }
+            options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'top',labels:{font:{size:11},color:legendColor}}}, scales:{ x:{beginAtZero:true,grid:{display:false},ticks:{font:{size:11}}}, y:{grid:{display:false},ticks:{font:{size:11}}} } }
         });
         // Country table
         var tb = document.getElementById('tbl-country-body');
@@ -1222,7 +1224,7 @@ function loadBrowsers(){
         charts['browser'] = new Chart(ctx, {
             type:'doughnut',
             data:{ labels:d.labels, datasets:[{data:d.data, backgroundColor:COLORS.slice(0,d.labels.length), borderColor:'#fff', borderWidth:3}]},
-            options:{ responsive:true, maintainAspectRatio:false, cutout:'55%', plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8,boxWidth:10}}} }
+            options:{ responsive:true, maintainAspectRatio:false, cutout:'55%', plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8,boxWidth:10,color:legendColor}}} }
         });
     }).catch(function(){});
 }

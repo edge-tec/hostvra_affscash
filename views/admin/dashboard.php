@@ -908,6 +908,8 @@ html[data-theme="dark"] .loading-overlay{background:rgba(15,23,42,.55);}
 const API = '/api/admin-analytics';
 const COLORS = ['#4F46E5','#10B981','#F59E0B','#EF4444','#3B82F6','#8B5CF6','#06B6D4','#F97316','#EC4899','#14B8A6'];
 const charts = {};
+const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+const legendColor = isDark ? '#E2E8F0' : '#475569';
 let trendMetrics = new Set(['clicks','conv','revenue','payout','profit','fraud']);
 let trendType    = 'line';
 let trendData   = {};
@@ -1155,7 +1157,7 @@ function renderTrendChart(){
             responsive:true, maintainAspectRatio:false,
             interaction:{ mode:'index', intersect:false },
             plugins:{
-                legend:{ display:true, position:'bottom', labels:{ boxWidth:12, usePointStyle:true, padding:20, font:{size:13, family:'"Inter", sans-serif', weight:'600'}, color:'#475569' } },
+                legend:{ display:true, position:'bottom', labels:{ boxWidth:12, usePointStyle:true, padding:20, font:{size:13, family:'"Inter", sans-serif', weight:'600'}, color:legendColor } },
                 tooltip:{ 
                     backgroundColor: 'rgba(15, 23, 42, 0.95)',
                     borderColor: 'rgba(255,255,255,0.1)',
@@ -1231,7 +1233,7 @@ function loadConvPie(){
             makeChart('convPieChart',{
                 type:'doughnut',
                 data:{labels,datasets:[{data,backgroundColor:colors,borderColor:'#fff',borderWidth:2}]},
-                options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8}}}}
+                options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8,color:legendColor}}}}
             });
         }).catch(()=>{}).finally(()=>hideLoad('pie-loading'));
 }
@@ -1262,7 +1264,7 @@ function renderCountryChart(){
         },
         options:{
             indexAxis:'y',responsive:true,maintainAspectRatio:false,
-            plugins:{legend:{position:'top',labels:{font:{size:11}}}},
+            plugins:{legend:{position:'top',labels:{font:{size:11},color:legendColor}}},
             scales:{x:{beginAtZero:true,grid:{display:false}},y:{grid:{display:false},ticks:{font:{size:11}}}}
         }
     });
@@ -1286,7 +1288,7 @@ function loadDevices(){
             makeChart('deviceChart',{
                 type:'doughnut',
                 data:{labels:d.labels,datasets:[{data:d.data,backgroundColor:COLORS,borderColor:'#fff',borderWidth:2}]},
-                options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8}}}}
+                options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8,color:legendColor}}}}
             });
         }).catch(()=>{}).finally(()=>hideLoad('device-loading'));
 }
@@ -1300,7 +1302,7 @@ function loadBrowsers(){
             makeChart('browserChart',{
                 type:'doughnut',
                 data:{labels:d.labels,datasets:[{data:d.data,backgroundColor:COLORS.slice(2),borderColor:'#fff',borderWidth:2}]},
-                options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8}}}}
+                options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8,color:legendColor}}}}
             });
         }).catch(()=>{}).finally(()=>hideLoad('browser-loading'));
 }
@@ -1329,7 +1331,7 @@ function renderOffersChart(){
                 {label:'Fraud Conversions',    data:rows.map(r=>r.fraud_conv||0), backgroundColor:'#DC2626CC',borderColor:'#DC2626',borderWidth:1.5,borderRadius:4,yAxisID:'y1'}
             ]
         },
-        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:10,font:{size:11}}}},
+        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:10,font:{size:11},color:legendColor}}},
             scales:{
                 y: {beginAtZero:true,position:'left', grid:{display:false},ticks:{callback:v=>'$'+v}},
                 y1:{beginAtZero:true,position:'right',grid:{display:false},  ticks:{callback:v=>v}, title:{display:true,text:'Fraud Conv',font:{size:10},color:'#DC2626'}},
