@@ -212,6 +212,19 @@
   .callout.success { background: rgba(16, 185, 129, 0.1) !important; border: 1px solid rgba(16, 185, 129, 0.3) !important; color: #6ee7b7 !important; }
   .callout.teal    { background: rgba(20, 184, 166, 0.1) !important; border: 1px solid rgba(20, 184, 166, 0.3) !important; color: #2dd4bf !important; }
   .callout p, .callout { color: inherit !important; }
+
+  /* Global introductory notice block styling */
+  .notice-block {
+      background: rgba(255, 255, 255, 0.03) !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      border-radius: 12px !important;
+      color: rgba(255, 255, 255, 0.85) !important;
+      backdrop-filter: blur(8px) !important;
+      -webkit-backdrop-filter: blur(8px) !important;
+  }
+  .notice-block strong {
+      color: #fff !important;
+  }
 </style>
 
 <!-- Canvas for full-page background network constellation animation -->
