@@ -30,13 +30,16 @@
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
     background:
-        radial-gradient(circle at 10% 10%, rgba(124, 58, 237, 0.06), transparent 45%),
-        radial-gradient(circle at 90% 90%, rgba(14, 165, 233, 0.06), transparent 45%),
-        linear-gradient(135deg, #f7f5fc 0%, #f3f6fc 50%, #f3fafc 100%);
+        radial-gradient(circle at 10% 20%, rgba(124, 58, 237, 0.12), transparent 45%),
+        radial-gradient(circle at 90% 80%, rgba(14, 165, 233, 0.10), transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(232, 25, 122, 0.08), transparent 45%),
+        #F5F7FA;
+    background-size: 180% 180%;
+    animation: mesh-float 25s ease infinite;
+    background-attachment: fixed;
     color: var(--text);
     font-size: 15px;
     line-height: 1.65;
-    background-attachment: fixed;
 }
 
 a { color: var(--primary); text-decoration: none; }
@@ -2522,5 +2525,14 @@ html, body { max-width: 100vw; overflow-x: hidden; }
         margin-left: 0 !important;
         width: 100% !important;
     }
+}
+
+/* ── 3D Mesh Background Floating Animation ── */
+@keyframes mesh-float {
+    0% { background-position: 0% 0%, 100% 100%, 50% 50%; }
+    25% { background-position: 30% 80%, 70% 20%, 20% 80%; }
+    50% { background-position: 100% 100%, 0% 0%, 80% 20%; }
+    75% { background-position: 70% 20%, 30% 80%, 80% 80%; }
+    100% { background-position: 0% 0%, 100% 100%, 50% 50%; }
 }
 
