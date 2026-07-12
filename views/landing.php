@@ -318,13 +318,91 @@ try {
     section{padding:100px 0}
 
     /* PRELOADER */
-    #preloader{position:fixed;inset:0;z-index:9999;background:var(--grad-brand);display:flex;align-items:center;justify-content:center;transition:opacity .7s,visibility .7s}
-    #preloader.hidden{opacity:0;visibility:hidden;pointer-events:none}
-    .pre-inner{display:flex;gap:12px;align-items:center}
-    .pre-dot{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.95);animation:pre-bounce 1.2s infinite ease-in-out}
-    .pre-dot:nth-child(2){animation-delay:.2s;background:rgba(255,255,255,.65)}
-    .pre-dot:nth-child(3){animation-delay:.4s;background:rgba(255,255,255,.35)}
-    @keyframes pre-bounce{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+    #preloader {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: #05020c;
+        background-image: 
+            radial-gradient(circle at 30% 30%, rgba(124, 58, 237, 0.15), transparent 50%),
+            radial-gradient(circle at 70% 70%, rgba(232, 25, 122, 0.12), transparent 50%) !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        transition: opacity .7s, visibility .7s;
+    }
+    #preloader.hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+    .loader-3d-container {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        transform-style: preserve-3d;
+        perspective: 500px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+    }
+    .loader-ring {
+        position: absolute;
+        border-radius: 50%;
+        border: 3px solid transparent;
+    }
+    .loader-ring.outer {
+        width: 100px;
+        height: 100px;
+        border-top-color: #7c3aed;
+        border-bottom-color: #7c3aed;
+        animation: spin3d-outer 2s infinite linear;
+    }
+    .loader-ring.middle {
+        width: 76px;
+        height: 76px;
+        border-left-color: #0ea5e9;
+        border-right-color: #0ea5e9;
+        animation: spin3d-middle 1.5s infinite linear;
+    }
+    .loader-ring.inner {
+        width: 52px;
+        height: 52px;
+        border-top-color: #e8197a;
+        border-bottom-color: #e8197a;
+        animation: spin3d-inner 1.2s infinite linear;
+    }
+    @keyframes spin3d-outer {
+        0% { transform: rotateX(35deg) rotateY(45deg) rotateZ(0deg); }
+        100% { transform: rotateX(35deg) rotateY(45deg) rotateZ(360deg); }
+    }
+    @keyframes spin3d-middle {
+        0% { transform: rotateX(45deg) rotateY(-35deg) rotateZ(360deg); }
+        100% { transform: rotateX(45deg) rotateY(-35deg) rotateZ(0deg); }
+    }
+    @keyframes spin3d-inner {
+        0% { transform: rotateX(-35deg) rotateY(35deg) rotateZ(0deg); }
+        100% { transform: rotateX(-35deg) rotateY(35deg) rotateZ(360deg); }
+    }
+    .loader-text {
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        background: linear-gradient(90deg, #7c3aed, #0ea5e9, #e8197a);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: pulse-glow 1.5s infinite ease-in-out;
+    }
+    @keyframes pulse-glow {
+        0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 2px rgba(124,58,237,0.3)); }
+        50% { opacity: 1; filter: drop-shadow(0 0 12px rgba(124,58,237,0.8)); }
+    }
 
     /* HEADER */
     .site-header{position:fixed;top:16px;left:50%;transform:translateX(-50%);width:92%;max-width:1280px;z-index:1000;background:rgba(15,10,36,0.7);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:0 24px;box-shadow:0 12px 40px rgba(0,0,0,0.3);transition:all .3s}
@@ -1736,9 +1814,12 @@ try {
 
   <!-- PRELOADER -->
   <div id="preloader">
-    <div class="pre-inner">
-      <div class="pre-dot"></div><div class="pre-dot"></div><div class="pre-dot"></div>
+    <div class="loader-3d-container">
+      <div class="loader-ring outer"></div>
+      <div class="loader-ring middle"></div>
+      <div class="loader-ring inner"></div>
     </div>
+    <div class="loader-text">Loading AffsCash</div>
   </div>
 
   <!-- HEADER -->
