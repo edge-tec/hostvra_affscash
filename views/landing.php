@@ -827,23 +827,41 @@ try {
     .partner-card span{font-size:12px;font-weight:600;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:1px}
 
     /* BLOG CARDS */
-    .blog-section{background:linear-gradient(160deg,#fdf8ff 0%,#f5f0ff 60%,#fff 100%);padding:100px 0}
+    .blog-section{background:var(--grad-section-b);padding:100px 0}
+    .blog-section h2 { color: #fff }
+    .blog-section .eyebrow { -webkit-text-fill-color: rgba(255,255,255,0.7); background: none; color: rgba(255,255,255,0.7) }
     .blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:48px}
-    .blog-card{background:#fff;border-radius:20px;border:1px solid var(--border);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 4px 24px rgba(124,58,237,.07);transition:transform .28s,box-shadow .28s}
-    .blog-card:hover{transform:translateY(-6px);box-shadow:0 16px 48px rgba(124,58,237,.16);border-color:rgba(124,58,237,.2)}
+    .blog-card {
+      background: rgba(15,10,36,0.6);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transform: perspective(1000px) rotateX(1deg);
+    }
+    .blog-card:hover {
+      transform: translateY(-8px) scale(1.02) perspective(1000px) rotateX(0deg);
+      border-color: rgba(124,58,237,0.3);
+      box-shadow: 0 20px 45px rgba(124,58,237,0.25);
+    }
     .blog-card-img{position:relative;overflow:hidden;aspect-ratio:16/10}
     .blog-card-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
     .blog-card:hover .blog-card-img img{transform:scale(1.06)}
     .blog-card-cat{position:absolute;top:14px;left:14px;background:var(--grad-brand);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase}
     .blog-card-body{padding:22px 22px 20px;flex:1;display:flex;flex-direction:column;gap:10px}
-    .blog-card-date{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px}
-    .blog-card-title{font-size:17px;font-weight:700;color:var(--text);line-height:1.35;margin:0;font-family:'Rajdhani',sans-serif;flex:1}
+    .blog-card-date{font-size:12px;color:rgba(255,255,255,0.45);display:flex;align-items:center;gap:5px}
+    .blog-card-title{font-size:17px;font-weight:700;color:#fff;line-height:1.35;margin:0;font-family:'Rajdhani',sans-serif;flex:1}
     .blog-card-title a{color:inherit;text-decoration:none;transition:color .2s}
-    .blog-card-title a:hover{color:var(--pink)}
-    .blog-card-excerpt{font-size:13px;color:var(--muted);line-height:1.65;margin:0}
-    .blog-card-footer{display:flex;align-items:center;justify-content:flex-end;padding-top:14px;border-top:1px solid var(--border);margin-top:auto}
-    .blog-card-read{font-size:13px;font-weight:700;color:var(--violet);text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:gap .2s,color .2s}
-    .blog-card-read:hover{color:var(--pink);gap:9px}
+    .blog-card-title a:hover{color:#0ea5e9}
+    .blog-card-excerpt{font-size:13px;color:rgba(255,255,255,0.65);line-height:1.65;margin:0}
+    .blog-card-footer{display:flex;align-items:center;justify-content:flex-end;padding-top:14px;border-top:1px solid rgba(255,255,255,0.08);margin-top:auto}
+    .blog-card-read{font-size:13px;font-weight:700;color:#7c3aed;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:gap .2s,color .2s}
+    .blog-card-read:hover{color:#0ea5e9;gap:9px}
     .blog-view-all{text-align:center;margin-top:48px}
     @media(max-width:991px){.blog-grid{grid-template-columns:repeat(2,1fr)}}
     @media(max-width:575px){.blog-grid{grid-template-columns:1fr}}
@@ -2061,7 +2079,7 @@ try {
       <div class="section-heading">
         <div class="eyebrow"><span class="pulse"></span> News &amp; Updates</div>
         <h2>Latest From Our <span class="accent">Blog</span></h2>
-        <p style="color:var(--muted);font-size:15px;max-width:520px;margin:10px auto 0">
+        <p style="color:rgba(255,255,255,0.6);font-size:15px;max-width:520px;margin:10px auto 0">
           Affiliate tips, CPA strategies, and network updates — all in one place.
         </p>
       </div>
