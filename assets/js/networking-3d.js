@@ -16,13 +16,32 @@
     var fov = 400; // Focal length for 3D projection
     var currentTheme = 'light';
 
+    // Safe localStorage helper functions
+    function safeGet(key, def) {
+        try {
+            if (window.localStorage) {
+                var val = localStorage.getItem(key);
+                if (val !== null) return val;
+            }
+        } catch (e) {}
+        return def;
+    }
+
+    function safeSet(key, val) {
+        try {
+            if (window.localStorage) {
+                localStorage.setItem(key, val);
+            }
+        } catch (e) {}
+    }
+
     // Galaxy / Constellation configuration settings (with localStorage persistence)
     var settings = {
-        enabled: localStorage.getItem('galaxy_enabled') !== 'false',
-        speed: parseFloat(localStorage.getItem('galaxy_speed') || '1.0'),
-        density: parseFloat(localStorage.getItem('galaxy_density') || '1.0'),
-        motion: parseFloat(localStorage.getItem('galaxy_motion') || '1.0'),
-        marketStatus: localStorage.getItem('galaxy_market_status') || 'neutral'
+        enabled: safeGet('galaxy_enabled', 'true') !== 'false',
+        speed: parseFloat(safeGet('galaxy_speed', '1.0')),
+        density: parseFloat(safeGet('galaxy_density', '1.0')),
+        motion: parseFloat(safeGet('galaxy_motion', '1.0')),
+        marketStatus: safeGet('galaxy_market_status', 'neutral')
     };
 
     // Check system prefers-reduced-motion
@@ -51,6 +70,7 @@
 
     function ensureCanvas() {
         if (canvas) return true;
+        if (!document.body) return false;
         
         canvas = document.getElementById('heroParticlesCanvas');
         if (!canvas) {
@@ -428,25 +448,25 @@
         // Controls interactions
         document.getElementById('galaxyEnabled').addEventListener('change', function(e) {
             settings.enabled = e.target.checked;
-            localStorage.setItem('galaxy_enabled', settings.enabled);
+            safeSet('galaxy_enabled', settings.enabled);
             checkTheme();
         });
 
         document.getElementById('galaxySpeed').addEventListener('input', function(e) {
             settings.speed = parseFloat(e.target.value);
-            localStorage.setItem('galaxy_speed', settings.speed);
+            safeSet('galaxy_speed', settings.speed);
             initParticles(); // refresh speeds
         });
 
         document.getElementById('galaxyDensity').addEventListener('input', function(e) {
             settings.density = parseFloat(e.target.value);
-            localStorage.setItem('galaxy_density', settings.density);
+            safeSet('galaxy_density', settings.density);
             initParticles(); // rebuild stars list
         });
 
         document.getElementById('galaxyMotion').addEventListener('input', function(e) {
             settings.motion = parseFloat(e.target.value);
-            localStorage.setItem('galaxy_motion', settings.motion);
+            safeSet('galaxy_motion', settings.motion);
         });
 
         panel.querySelectorAll('.galaxy-glow-btn').forEach(function(b) {
@@ -454,7 +474,7 @@
                 panel.querySelectorAll('.galaxy-glow-btn').forEach(function(el) { el.classList.remove('active'); });
                 b.classList.add('active');
                 settings.marketStatus = b.dataset.status;
-                localStorage.setItem('galaxy_market_status', settings.marketStatus);
+                safeSet('galaxy_market_status', settings.marketStatus);
             });
         });
     }
