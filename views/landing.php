@@ -1109,7 +1109,7 @@ try {
     /* HERO 3D GRAPHIC EXPERIENCES */
     .hero-graphic-3d {
       width: 100%;
-      height: 480px;
+      height: 580px;
       position: relative;
       margin: 0 auto;
       perspective: 1200px;
@@ -1141,9 +1141,9 @@ try {
 
     .floating-dashboard-wrap {
       position: absolute;
-      width: 78%;
+      width: 90%;
       aspect-ratio: 16/14;
-      left: 8%;
+      left: 5%;
       top: 5%;
       border-radius: 24px;
       padding: 6px;
@@ -1624,7 +1624,7 @@ try {
       section{padding:64px 0}
       .form-card{padding:26px 20px}
       .smartlink-highlight{padding:30px 20px}
-      .hero-graphic-3d { height: 360px; }
+      .hero-graphic-3d { height: 460px; }
       .card-fraud { display: none !important; }
       .card-chat { display: none !important; }
       .card-clicks { left: 0%; top: 35%; }
