@@ -4,6 +4,9 @@
  * Serves slider and offers data for the public landing page.
  * Works standalone (bypasses index.php router since it's a real file).
  */
+define('BASE_PATH', dirname(__DIR__));
+define('CONFIG_PATH', BASE_PATH . '/config');
+
 header('Content-Type: application/json');
 // Restrict CORS to configured app domain instead of wildcard
 $_apiOrigin = '';
@@ -22,9 +25,6 @@ if ($_apiOrigin) {
     header('Access-Control-Allow-Origin: *');
 }
 header('Cache-Control: no-cache, must-revalidate');
-
-define('BASE_PATH', dirname(__DIR__));
-define('CONFIG_PATH', BASE_PATH . '/config');
 
 // Fallback if not installed
 if (!file_exists(CONFIG_PATH . '/config.json')) {
