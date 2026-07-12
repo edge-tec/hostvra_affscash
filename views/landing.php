@@ -472,6 +472,15 @@ try {
     .offer-card{flex:0 0 calc(25% - 12px);background:rgba(15,10,36,0.65);border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;position:relative;cursor:pointer;transition:all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);box-shadow:0 8px 32px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transform-style:preserve-3d}
     .offer-card:hover{transform:translateY(-8px) scale(1.02);border-color:rgba(124,58,237,0.3);box-shadow:0 20px 50px rgba(124,58,237,0.25)}
     .offer-card-img{width:100%;height:140px;object-fit:cover;display:block;transition:transform .4s}
+    .offer-card-img[src*="logoo.png"],
+    .offer-card-img[src*="logo"] {
+      width: 65% !important;
+      height: 90px !important;
+      object-fit: contain !important;
+      margin: 25px auto !important;
+      filter: brightness(0) invert(1) !important;
+      opacity: 0.9 !important;
+    }
     .offer-card:hover .offer-card-img{transform:scale(1.06)}
     .offer-card-img-wrap{overflow:hidden;position:relative}
     .offer-card-img-wrap::after{content:'';position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(transparent,rgba(15,10,36,0.65))}

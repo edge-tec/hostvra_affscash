@@ -109,6 +109,14 @@ require BASE_PATH . '/views/layouts/public_top.php';
     max-height: 100%;
     object-fit: cover;
 }
+.offer-card-img img[src*="logoo.png"],
+.offer-card-img img[src*="logo"] {
+    max-width: 70%;
+    max-height: 70%;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
+}
 .offer-card-body {
     padding: 20px;
     flex: 1;

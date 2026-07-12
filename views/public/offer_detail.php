@@ -68,6 +68,13 @@ if ($geoStr === 'Global') {
     max-height: 100%;
     object-fit: contain;
 }
+.offer-icon img[src*="logoo.png"],
+.offer-icon img[src*="logo"] {
+    max-width: 80%;
+    max-height: 80%;
+    filter: brightness(0) invert(1);
+    opacity: 0.95;
+}
 .offer-header-info {
     flex: 1;
 }
