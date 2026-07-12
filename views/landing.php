@@ -2999,8 +2999,7 @@ try {
 
   var ham=document.getElementById('hamburger'),mob=document.getElementById('mobile-menu');
   if(ham&&mob){ham.addEventListener('click',function(){ham.classList.toggle('open');mob.classList.toggle('open');});mob.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){ham.classList.remove('open');mob.classList.remove('open');});});}
-
-  window.addEventListener('scroll',function(){var b=document.getElementById('scrollTop');if(b)b.classList.toggle('visible',window.scrollY>400);});
+window.addEventListener('scroll',function(){var b=document.getElementById('scrollTop');if(b)b.classList.toggle('visible',window.scrollY>400);});
 
   var observer=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.12});
   document.querySelectorAll('.fade-up').forEach(function(el){observer.observe(el);});
@@ -3009,13 +3008,15 @@ try {
     io.observe(el);
   });
 
-  // ── Hero Background Particles Animation ──
+  // ── Hero Background Particles Animation (3D Connected Networking Constellation) ──
   (function() {
     var canvas = document.getElementById('heroParticlesCanvas');
     if (!canvas) return;
     var ctx = canvas.getContext('2d');
     var particles = [];
     var w, h;
+    var mouse = { x: null, y: null, active: false };
+    
     function resize() {
       w = canvas.width = canvas.offsetWidth;
       h = canvas.height = canvas.offsetHeight;
@@ -3023,30 +3024,140 @@ try {
     resize();
     window.addEventListener('resize', resize);
     
-    for (var i = 0; i < 45; i++) {
-      particles.push({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        vx: (Math.random() - 0.5) * 0.35,
-        vy: (Math.random() - 0.5) * 0.35,
-        size: Math.random() * 2 + 1,
-        color: Math.random() > 0.5 ? 'rgba(124, 58, 237, 0.25)' : 'rgba(14, 165, 233, 0.2)'
+    // Add mouse move listener to the hero section for connection interaction
+    var hero = document.querySelector('.hero');
+    if (hero) {
+      hero.addEventListener('mousemove', function(e) {
+        var rect = hero.getBoundingClientRect();
+        mouse.x = e.clientX - rect.left;
+        mouse.y = e.clientY - rect.top;
+        mouse.active = true;
+      });
+      hero.addEventListener('mouseleave', function() {
+        mouse.active = false;
       });
     }
     
+    // Create particles with x, y, z coordinates
+    var numParticles = 80;
+    for (var i = 0; i < numParticles; i++) {
+      particles.push({
+        x: (Math.random() - 0.5) * 800, // 3D local X
+        y: (Math.random() - 0.5) * 500, // 3D local Y
+        z: (Math.random() - 0.5) * 400, // 3D local Z
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        vz: (Math.random() - 0.5) * 0.4,
+        size: Math.random() * 2 + 1.5,
+        color: Math.random() > 0.5 ? 'rgba(124, 58, 237, 0.4)' : 'rgba(14, 165, 233, 0.35)'
+      });
+    }
+    
+    var fov = 400; // Focal length
+    
     function draw() {
       ctx.clearRect(0, 0, w, h);
+      
+      // Update & project particles
+      var projected = [];
       particles.forEach(function(p) {
+        // Move in 3D
         p.x += p.vx;
         p.y += p.vy;
-        if (p.x < 0 || p.x > w) p.vx *= -1;
-        if (p.y < 0 || p.y > h) p.vy *= -1;
+        p.z += p.vz;
         
-        ctx.fillStyle = p.color;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
+        // Bounce within virtual 3D box bounds
+        if (Math.abs(p.x) > 450) p.vx *= -1;
+        if (Math.abs(p.y) > 300) p.vy *= -1;
+        if (Math.abs(p.z) > 200) p.vz *= -1;
+        
+        // Slow rotation in 3D space
+        var rotY = 0.0006;
+        var cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+        var x1 = p.x * cosY - p.z * sinY;
+        var z1 = p.z * cosY + p.x * sinY;
+        p.x = x1; p.z = z1;
+        
+        var rotX = 0.0004;
+        var cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+        var y1 = p.y * cosX - p.z * sinX;
+        var z2 = p.z * cosX + p.y * sinX;
+        p.y = y1; p.z = z2;
+        
+        // Perspective projection
+        var scale = fov / (fov + p.z);
+        var px = (p.x * scale) + (w / 2);
+        var py = (p.y * scale) + (h / 2);
+        
+        projected.push({
+          x: px,
+          y: py,
+          z: p.z,
+          size: p.size * scale,
+          color: p.color
+        });
       });
+      
+      // Connect nodes with lines if they are close
+      for (var a = 0; a < projected.length; a++) {
+        var pa = projected[a];
+        for (var b = a + 1; b < projected.length; b++) {
+          var pb = projected[b];
+          
+          // Calculate distance in 2D space
+          var dx = pa.x - pb.x;
+          var dy = pa.y - pb.y;
+          var dist = Math.hypot(dx, dy);
+          
+          // Only connect if they are close enough
+          if (dist < 110) {
+            // Fade out based on distance and depth (farther lines are thinner/fainter)
+            var opacity = (1 - (dist / 110)) * 0.15 * (1 - (pa.z + pb.z) / 400);
+            if (opacity > 0) {
+              ctx.beginPath();
+              ctx.moveTo(pa.x, pa.y);
+              ctx.lineTo(pb.x, pb.y);
+              ctx.strokeStyle = 'rgba(124, 58, 237, ' + opacity + ')';
+              ctx.lineWidth = 0.8 * (1 - (pa.z + pb.z) / 400);
+              ctx.stroke();
+            }
+          }
+        }
+        
+        // Draw the point
+        if (pa.x >= 0 && pa.x <= w && pa.y >= 0 && pa.y <= h) {
+          ctx.fillStyle = pa.color;
+          ctx.beginPath();
+          ctx.arc(pa.x, pa.y, Math.max(0.5, pa.size), 0, Math.PI * 2);
+          ctx.fill();
+          
+          // Draw subtle outer glow ring for larger points
+          if (pa.size > 2) {
+            ctx.strokeStyle = pa.color.replace('0.4', '0.08').replace('0.35', '0.08');
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(pa.x, pa.y, pa.size * 2, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+        }
+      }
+      
+      // Draw line from mouse to nearby nodes
+      if (mouse.active) {
+        projected.forEach(function(p) {
+          var dist = Math.hypot(mouse.x - p.x, mouse.y - p.y);
+          if (dist < 150) {
+            var opacity = (1 - (dist / 150)) * 0.22;
+            ctx.beginPath();
+            ctx.moveTo(mouse.x, mouse.y);
+            ctx.lineTo(p.x, p.y);
+            ctx.strokeStyle = 'rgba(14, 165, 233, ' + opacity + ')';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        });
+      }
+      
       requestAnimationFrame(draw);
     }
     draw();
