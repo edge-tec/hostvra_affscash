@@ -58,6 +58,19 @@
         settings.motion = 0.0;
     }
 
+    // Safety fallbacks for speed/density
+    if (isNaN(settings.speed) || settings.speed <= 0.05) {
+        settings.speed = 1.0;
+    }
+    if (isNaN(settings.density) || settings.density <= 0.05) {
+        settings.density = 1.0;
+    }
+    if (isNaN(settings.motion)) {
+        settings.motion = 1.0;
+    }
+
+    console.log("3D Space Engine: Active Settings:", JSON.stringify(settings));
+
     var themeColorSet = {
         dark: {
             p1: 'rgba(124, 58, 237, 0.4)',  // Violet/purple node
@@ -131,9 +144,9 @@
                 x: (Math.random() - 0.5) * limitX * 2,
                 y: (Math.random() - 0.5) * limitY * 2,
                 z: (Math.random() - 0.5) * limitZ * 2,
-                vx: (Math.random() - 0.5) * 0.38 * settings.speed,
-                vy: (Math.random() - 0.5) * 0.38 * settings.speed,
-                vz: (Math.random() - 0.5) * 0.38 * settings.speed,
+                vx: (Math.random() - 0.5) * 0.38,
+                vy: (Math.random() - 0.5) * 0.38,
+                vz: (Math.random() - 0.5) * 0.38,
                 size: baseSize,
                 type: pType
             });
@@ -194,10 +207,10 @@
         var limitZ = 500;
 
         particles.forEach(function(p) {
-            // Natural 3D floating movement
-            p.x += p.vx;
-            p.y += p.vy;
-            p.z += p.vz;
+            // Natural 3D floating movement scaled by speed setting
+            p.x += p.vx * settings.speed;
+            p.y += p.vy * settings.speed;
+            p.z += p.vz * settings.speed;
             
             // Boundary bounce checks (keeps them floating across full viewport)
             if (Math.abs(p.x) > limitX) p.vx *= -1;
