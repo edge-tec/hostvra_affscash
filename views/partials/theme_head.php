@@ -57,10 +57,12 @@ if ($_themeForce !== '') { unset($_SESSION['_theme_force']); }
       data-galaxy-network-style="<?= htmlspecialchars((string)Config::get('config', 'space_engine.network_style'), ENT_QUOTES) ?>">
 <style>
 /* Make layout transparent when Galaxy 3D background is active */
-body.galaxy-bg-active { background-color: transparent !important; }
-body.galaxy-bg-active .app-layout,
-body.galaxy-bg-active .main-content,
-body.galaxy-bg-active .page-wrapper {
+html.galaxy-bg-active,
+html.galaxy-bg-active body,
+html.galaxy-bg-active .app-layout,
+html.galaxy-bg-active .main-content,
+html.galaxy-bg-active .page-wrapper,
+html.galaxy-bg-active .page-content {
     background-color: transparent !important;
     background: transparent !important;
 }
