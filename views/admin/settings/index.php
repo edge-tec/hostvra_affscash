@@ -2174,7 +2174,22 @@ function frCopyUrl() {
                 </select>
                 <div class="form-hint">Simulate a global market sentiment layout lighting glow color.</div>
             </div>
-
+            
+            <div class="form-row cols-2">
+                <div class="form-group mb-0">
+                    <label>Bubble Style</label>
+                    <select name="space_engine_bubble_style" class="form-control">
+                        <option value="glow" <?= Config::get('config', 'space_engine.bubble_style') === 'glow' || !Config::get('config', 'space_engine.bubble_style') ? 'selected' : '' ?>>Glow (Default)</option>
+                        <option value="solid" <?= Config::get('config', 'space_engine.bubble_style') === 'solid' ? 'selected' : '' ?>>Solid Circle</option>
+                        <option value="ring" <?= Config::get('config', 'space_engine.bubble_style') === 'ring' ? 'selected' : '' ?>>Hollow Ring</option>
+                        <option value="square" <?= Config::get('config', 'space_engine.bubble_style') === 'square' ? 'selected' : '' ?>>Square</option>
+                    </select>
+                </div>
+                <div class="form-group mb-0">
+                    <label>Bubble Size Multiplier (0.5 - 3.0)</label>
+                    <input type="number" step="0.1" min="0.5" max="3.0" name="space_engine_bubble_size" class="form-control" value="<?= Helpers::e(Config::get('config', 'space_engine.bubble_size') ?: '1.0') ?>">
+                </div>
+            </div>
             <div class="mt-3">
                 <button type="submit" class="btn btn-primary">Save Settings</button>
             </div>

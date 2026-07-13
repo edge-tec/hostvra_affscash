@@ -51,7 +51,9 @@ if ($_themeForce !== '') { unset($_SESSION['_theme_force']); }
       data-galaxy-speed="<?= htmlspecialchars((string)Config::get('config', 'space_engine.speed'), ENT_QUOTES) ?>"
       data-galaxy-density="<?= htmlspecialchars((string)Config::get('config', 'space_engine.density'), ENT_QUOTES) ?>"
       data-galaxy-motion="<?= htmlspecialchars((string)Config::get('config', 'space_engine.motion'), ENT_QUOTES) ?>"
-      data-galaxy-status="<?= htmlspecialchars((string)Config::get('config', 'space_engine.market_status'), ENT_QUOTES) ?>">
+      data-galaxy-status="<?= htmlspecialchars((string)Config::get('config', 'space_engine.market_status'), ENT_QUOTES) ?>"
+      data-galaxy-bubble-style="<?= htmlspecialchars((string)Config::get('config', 'space_engine.bubble_style'), ENT_QUOTES) ?>"
+      data-galaxy-bubble-size="<?= htmlspecialchars((string)Config::get('config', 'space_engine.bubble_size'), ENT_QUOTES) ?>">
 <script>
 // FOUC guard — apply the resolved theme attribute synchronously, before
 // any stylesheet repaints. Runs on every page load so logged-out auth

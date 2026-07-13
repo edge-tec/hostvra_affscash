@@ -57,6 +57,8 @@
     var globalDensity = parseFloat(meta ? meta.getAttribute('data-galaxy-density') || '1.0' : '1.0');
     var globalMotion = parseFloat(meta ? meta.getAttribute('data-galaxy-motion') || '1.0' : '1.0');
     var globalStatus = meta ? meta.getAttribute('data-galaxy-status') || 'neutral' : 'neutral';
+    var globalBubbleStyle = meta ? meta.getAttribute('data-galaxy-bubble-style') || 'glow' : 'glow';
+    var globalBubbleSize = parseFloat(meta ? meta.getAttribute('data-galaxy-bubble-size') || '1.0' : '1.0');
 
     // Galaxy / Constellation configuration settings (with localStorage persistence fallback to global defaults)
     var settings = {
@@ -64,7 +66,9 @@
         speed: parseFloat(safeGet('galaxy_speed', String(globalSpeed))),
         density: parseFloat(safeGet('galaxy_density', String(globalDensity))),
         motion: parseFloat(safeGet('galaxy_motion', String(globalMotion))),
-        marketStatus: safeGet('galaxy_market_status', globalStatus)
+        marketStatus: safeGet('galaxy_market_status', globalStatus),
+        bubbleStyle: safeGet('galaxy_bubble_style', globalBubbleStyle),
+        bubbleSize: parseFloat(safeGet('galaxy_bubble_size', String(globalBubbleSize)))
     };
 
     // Check system prefers-reduced-motion
@@ -383,25 +387,45 @@
                 
                 // Draw nodes/stars
                 if (pa.x >= 0 && pa.x <= w && pa.y >= 0 && pa.y <= h) {
-                    // 1. Draw outer soft shadow glow bubble
-                    var glowOpacity = theme === 'dark' ? '0.12' : '0.18';
-                    ctx.fillStyle = getGlowColor(pa.color, glowOpacity);
-                    ctx.beginPath();
-                    ctx.arc(pa.x, pa.y, pa.size * 2.8, 0, Math.PI * 2);
-                    ctx.fill();
+                    var currentSize = pa.size * (settings.bubbleSize || 1.0);
+                    var style = settings.bubbleStyle || 'glow';
                     
-                    // 2. Draw central bright core node/bubble
-                    ctx.fillStyle = pa.color;
-                    ctx.beginPath();
-                    ctx.arc(pa.x, pa.y, Math.max(0.5, pa.size), 0, Math.PI * 2);
-                    ctx.fill();
-                    
-                    // 3. Draw a tiny white inner highlight to make it look like a glossy bubble/sphere!
-                    if (pa.size > 2.0) {
-                        ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+                    if (style === 'glow') {
+                        // 1. Draw outer soft shadow glow bubble
+                        var glowOpacity = theme === 'dark' ? '0.12' : '0.18';
+                        ctx.fillStyle = getGlowColor(pa.color, glowOpacity);
                         ctx.beginPath();
-                        ctx.arc(pa.x - pa.size * 0.22, pa.y - pa.size * 0.22, pa.size * 0.22, 0, Math.PI * 2);
+                        ctx.arc(pa.x, pa.y, currentSize * 2.8, 0, Math.PI * 2);
                         ctx.fill();
+                        
+                        // 2. Draw central bright core node/bubble
+                        ctx.fillStyle = pa.color;
+                        ctx.beginPath();
+                        ctx.arc(pa.x, pa.y, Math.max(0.5, currentSize), 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // 3. Draw a tiny white inner highlight to make it look like a glossy bubble/sphere!
+                        if (currentSize > 2.0) {
+                            ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+                            ctx.beginPath();
+                            ctx.arc(pa.x - currentSize * 0.22, pa.y - currentSize * 0.22, currentSize * 0.22, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    } else if (style === 'solid') {
+                        ctx.fillStyle = pa.color;
+                        ctx.beginPath();
+                        ctx.arc(pa.x, pa.y, Math.max(0.5, currentSize), 0, Math.PI * 2);
+                        ctx.fill();
+                    } else if (style === 'ring') {
+                        ctx.strokeStyle = pa.color;
+                        ctx.lineWidth = Math.max(0.8, currentSize * 0.3);
+                        ctx.beginPath();
+                        ctx.arc(pa.x, pa.y, Math.max(1, currentSize), 0, Math.PI * 2);
+                        ctx.stroke();
+                    } else if (style === 'square') {
+                        ctx.fillStyle = pa.color;
+                        var s = Math.max(1, currentSize * 1.5);
+                        ctx.fillRect(pa.x - s/2, pa.y - s/2, s, s);
                     }
                 }
             }
@@ -529,6 +553,19 @@
                     <input type="range" id="galaxyMotion" min="0" max="2" step="0.1" value="${settings.motion}">
                 </div>
                 <div class="galaxy-setting-row">
+                    <label>Bubble Size</label>
+                    <input type="range" id="galaxyBubbleSize" min="0.5" max="3" step="0.1" value="${settings.bubbleSize}">
+                </div>
+                <div class="galaxy-setting-row" style="margin-top: 10px;">
+                    <label>Bubble Style</label>
+                    <select id="galaxyBubbleStyle" style="width:100%; padding: 4px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: inherit; border-radius: 4px; font-size: 13px;">
+                        <option value="glow" ${settings.bubbleStyle === 'glow' ? 'selected' : ''}>Glow (Default)</option>
+                        <option value="solid" ${settings.bubbleStyle === 'solid' ? 'selected' : ''}>Solid Circle</option>
+                        <option value="ring" ${settings.bubbleStyle === 'ring' ? 'selected' : ''}>Hollow Ring</option>
+                        <option value="square" ${settings.bubbleStyle === 'square' ? 'selected' : ''}>Square</option>
+                    </select>
+                </div>
+                <div class="galaxy-setting-row" style="margin-top: 12px;">
                     <label>Market Condition Glow</label>
                     <div class="galaxy-glow-group">
                         <button type="button" class="galaxy-glow-btn ${settings.marketStatus === 'neutral' ? 'active' : ''}" data-status="neutral">Neutral</button>
@@ -580,6 +617,16 @@
         document.getElementById('galaxyMotion').addEventListener('input', function(e) {
             settings.motion = parseFloat(e.target.value);
             safeSet('galaxy_motion', settings.motion);
+        });
+
+        document.getElementById('galaxyBubbleSize').addEventListener('input', function(e) {
+            settings.bubbleSize = parseFloat(e.target.value);
+            safeSet('galaxy_bubble_size', settings.bubbleSize);
+        });
+
+        document.getElementById('galaxyBubbleStyle').addEventListener('change', function(e) {
+            settings.bubbleStyle = e.target.value;
+            safeSet('galaxy_bubble_style', settings.bubbleStyle);
         });
 
         panel.querySelectorAll('.galaxy-glow-btn').forEach(function(b) {
