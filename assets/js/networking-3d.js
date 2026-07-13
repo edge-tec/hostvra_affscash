@@ -483,6 +483,7 @@
 
     function checkTheme() {
         if (!settings.enabled) {
+            document.body.classList.remove('galaxy-bg-active');
             if (canvas) canvas.style.display = 'none';
             if (isRunning) {
                 isRunning = false;
@@ -496,6 +497,7 @@
 
         if (ensureCanvas()) {
             canvas.style.display = 'block';
+            document.body.classList.add('galaxy-bg-active');
             if (!isRunning) {
                 isRunning = true;
                 lastTime = performance.now();

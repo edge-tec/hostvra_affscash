@@ -55,6 +55,16 @@ if ($_themeForce !== '') { unset($_SESSION['_theme_force']); }
       data-galaxy-bubble-style="<?= htmlspecialchars((string)Config::get('config', 'space_engine.bubble_style'), ENT_QUOTES) ?>"
       data-galaxy-bubble-size="<?= htmlspecialchars((string)Config::get('config', 'space_engine.bubble_size'), ENT_QUOTES) ?>"
       data-galaxy-network-style="<?= htmlspecialchars((string)Config::get('config', 'space_engine.network_style'), ENT_QUOTES) ?>">
+<style>
+/* Make layout transparent when Galaxy 3D background is active */
+body.galaxy-bg-active { background-color: transparent !important; }
+body.galaxy-bg-active .app-layout,
+body.galaxy-bg-active .main-content,
+body.galaxy-bg-active .page-wrapper {
+    background-color: transparent !important;
+    background: transparent !important;
+}
+</style>
 <script>
 // FOUC guard — apply the resolved theme attribute synchronously, before
 // any stylesheet repaints. Runs on every page load so logged-out auth
