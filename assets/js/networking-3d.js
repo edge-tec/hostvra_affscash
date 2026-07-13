@@ -112,7 +112,7 @@
         if (!canvas) {
             canvas = document.createElement('canvas');
             canvas.id = 'heroParticlesCanvas';
-            canvas.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:-1;display:none;';
+            canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-1;display:none;';
             document.body.insertBefore(canvas, document.body.firstChild);
         }
         ctx = canvas.getContext('2d');
@@ -134,9 +134,9 @@
         var numParticles = Math.floor(baseCount * settings.density);
         
         // 3D boundaries to match the landing page's elegant constellation clustering
-        var limitX = 450;
-        var limitY = 300;
-        var limitZ = 200;
+        var limitX = Math.max(450, w * 0.6);
+        var limitY = Math.max(400, h * 0.6);
+        var limitZ = 250;
 
         for (var i = 0; i < numParticles; i++) {
             var pType = 'p1';
@@ -300,9 +300,9 @@
             }
             
             var projected = [];
-            var limitX = 450;
-            var limitY = 300;
-            var limitZ = 200;
+            var limitX = Math.max(450, w * 0.6);
+            var limitY = Math.max(400, h * 0.6);
+            var limitZ = 250;
 
             particles.forEach(function(p) {
                 // Natural 3D floating movement scaled by speed setting
