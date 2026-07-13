@@ -353,40 +353,65 @@ function loadStats(){
 }
 
 function renderHourly(data){
-    if (charts.hourly) charts.hourly.destroy();
     var ctx = document.getElementById('chart-hourly');
     if (!ctx) return;
     var max = Math.max.apply(null,data)||1;
-    charts.hourly = new Chart(ctx,{
-        type:'bar',
-        data:{labels:data.map(function(_,i){return i%3===0?String(i).padStart(2,'0')+':00':'';}),
-              datasets:[{data:data,backgroundColor:data.map(function(v){return v===max?'rgba(79,70,229,1)':'rgba(79,70,229,.45)';}),borderRadius:3,borderSkipped:false}]},
-        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{beginAtZero:true,grid:{color:'#F3F4F6'},ticks:{font:{size:11}}}}}
-    });
+    var labels = data.map(function(_,i){return i%3===0?String(i).padStart(2,'0')+':00':'';});
+    var bgColors = data.map(function(v){return v===max?'rgba(79,70,229,1)':'rgba(79,70,229,.45)';});
+    
+    if (charts.hourly) {
+        charts.hourly.data.labels = labels;
+        charts.hourly.data.datasets[0].data = data;
+        charts.hourly.data.datasets[0].backgroundColor = bgColors;
+        charts.hourly.update('none'); // Update without animation to prevent flicker
+    } else {
+        charts.hourly = new Chart(ctx,{
+            type:'bar',
+            data:{labels:labels,
+                  datasets:[{data:data,backgroundColor:bgColors,borderRadius:3,borderSkipped:false}]},
+            options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{beginAtZero:true,grid:{color:'#F3F4F6'},ticks:{font:{size:11}}}}}
+        });
+    }
 }
 
 function renderDevices(data){
-    if (charts.devices) charts.devices.destroy();
     var ctx = document.getElementById('chart-devices');
     if (!ctx || !data.length) return;
-    charts.devices = new Chart(ctx,{
-        type:'doughnut',
-        data:{labels:data.map(function(r){return r.label;}),
-              datasets:[{data:data.map(function(r){return r.cnt;}),backgroundColor:COLORS.slice(0,data.length),borderColor:'#fff',borderWidth:3}]},
-        options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8,boxWidth:10}}}}
-    });
+    var labels = data.map(function(r){return r.label;});
+    var counts = data.map(function(r){return r.cnt;});
+    
+    if (charts.devices) {
+        charts.devices.data.labels = labels;
+        charts.devices.data.datasets[0].data = counts;
+        charts.devices.update('none');
+    } else {
+        charts.devices = new Chart(ctx,{
+            type:'doughnut',
+            data:{labels:labels,
+                  datasets:[{data:counts,backgroundColor:COLORS.slice(0,data.length),borderColor:'#fff',borderWidth:3}]},
+            options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8,boxWidth:10}}}}
+        });
+    }
 }
 
 function renderCountries(data){
-    if (charts.countries) charts.countries.destroy();
     var ctx = document.getElementById('chart-countries');
     if (!ctx || !data.length) return;
-    charts.countries = new Chart(ctx,{
-        type:'bar',
-        data:{labels:data.map(function(r){return r.country;}),
-              datasets:[{data:data.map(function(r){return r.cnt;}),backgroundColor:'rgba(16,185,129,.7)',borderRadius:4}]},
-        options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{color:'#F3F4F6'},ticks:{font:{size:11}}},y:{grid:{display:false},ticks:{font:{size:11}}}}}
-    });
+    var labels = data.map(function(r){return r.country;});
+    var counts = data.map(function(r){return r.cnt;});
+    
+    if (charts.countries) {
+        charts.countries.data.labels = labels;
+        charts.countries.data.datasets[0].data = counts;
+        charts.countries.update('none');
+    } else {
+        charts.countries = new Chart(ctx,{
+            type:'bar',
+            data:{labels:labels,
+                  datasets:[{data:counts,backgroundColor:'rgba(16,185,129,.7)',borderRadius:4}]},
+            options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,animation:{duration:0},plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{color:'#F3F4F6'},ticks:{font:{size:11}}},y:{grid:{display:false},ticks:{font:{size:11}}}}}
+        });
+    }
 }
 
 // ── Live Users ─────────────────────────────────────────────────────────────
@@ -620,7 +645,7 @@ function startLiveCountdown(){
     liveCountdown = setInterval(function(){
         loadLive();
         loadStats();
-    }, 3000);
+    }, 5000);
 }
 
 window.refreshAll = function(){
