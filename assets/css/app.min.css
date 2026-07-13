@@ -37,3 +37,17 @@
         grid-template-columns: 1fr !important;
     }
 }
+
+@media (max-width: 768px) {
+    /* Make Quill toolbar wrap on mobile so it doesn't stretch the page */
+    .ql-toolbar, #ruleDescToolbar {
+        white-space: normal !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 4px;
+    }
+    .ql-formats {
+        margin-right: 8px !important;
+        margin-bottom: 4px !important;
+    }
+}
