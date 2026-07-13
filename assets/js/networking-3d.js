@@ -370,11 +370,11 @@
                 });
             });
             
-            // Draw connection network lines
+            // Draw connection network lines and nodes
             var netStyle = settings.networkStyle || 'solid';
-            if (netStyle !== 'none') {
-                for (var a = 0; a < projected.length; a++) {
-                    var pa = projected[a];
+            for (var a = 0; a < projected.length; a++) {
+                var pa = projected[a];
+                if (netStyle !== 'none') {
                     for (var b = a + 1; b < projected.length; b++) {
                         var pb = projected[b];
                         var dx = pa.x - pb.x;
@@ -417,7 +417,6 @@
                         }
                     }
                 }
-            }
                 
                 // Draw nodes/stars
                 if (pa.x >= 0 && pa.x <= w && pa.y >= 0 && pa.y <= h) {
