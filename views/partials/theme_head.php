@@ -52,6 +52,7 @@ if ($_galaxyForce !== '') { unset($_SESSION['_galaxy_force']); }
       data-csrf="<?= htmlspecialchars($_themeCsrf, ENT_QUOTES) ?>"
       data-galaxy-force="<?= htmlspecialchars($_galaxyForce, ENT_QUOTES) ?>"
       data-galaxy-enabled="<?= htmlspecialchars((string)Config::get('config', 'space_engine.enabled'), ENT_QUOTES) ?>"
+      data-galaxy-allow-override="<?= htmlspecialchars((string)Config::get('config', 'space_engine.allow_user_override'), ENT_QUOTES) ?>"
       data-galaxy-speed="<?= htmlspecialchars((string)Config::get('config', 'space_engine.speed'), ENT_QUOTES) ?>"
       data-galaxy-density="<?= htmlspecialchars((string)Config::get('config', 'space_engine.density'), ENT_QUOTES) ?>"
       data-galaxy-motion="<?= htmlspecialchars((string)Config::get('config', 'space_engine.motion'), ENT_QUOTES) ?>"

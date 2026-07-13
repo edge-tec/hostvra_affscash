@@ -568,7 +568,9 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
 
     elseif ($tab === 'space_engine') {
         $enabled = isset($_POST['space_engine_enabled']) ? '1' : '0';
+        $allowOverride = isset($_POST['space_engine_allow_override']) ? '1' : '0';
         Config::set('config', 'space_engine.enabled', $enabled);
+        Config::set('config', 'space_engine.allow_user_override', $allowOverride);
         $_SESSION['_galaxy_force'] = $enabled === '1' ? 'true' : 'false';
         
         Config::set('config', 'space_engine.speed', (string)floatval(Helpers::postRaw('space_engine_speed')));

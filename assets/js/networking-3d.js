@@ -60,6 +60,7 @@
         globalEnabled = galaxyForce === 'true';
     }
 
+    var globalAllowOverride = meta ? meta.getAttribute('data-galaxy-allow-override') !== '0' : true;
     var globalSpeed = parseFloat(meta ? meta.getAttribute('data-galaxy-speed') || '1.0' : '1.0');
     var globalDensity = parseFloat(meta ? meta.getAttribute('data-galaxy-density') || '1.0' : '1.0');
     var globalMotion = parseFloat(meta ? meta.getAttribute('data-galaxy-motion') || '1.0' : '1.0');
@@ -533,6 +534,8 @@
 
     // ── Inject Settings Panel Interface ──
     function injectSettingsPanel() {
+        var isAdminPage = window.location.pathname.startsWith('/admin');
+        if (!globalAllowOverride && !isAdminPage) return;
         if (document.getElementById('galaxySettingsBtn')) return;
         
         // Find suitable insertion target in topbar

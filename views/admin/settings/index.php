@@ -2147,6 +2147,14 @@ function frCopyUrl() {
                 <div class="form-hint">Enables/disables the floating stars, cosmic dust, and rotating galaxy animation in Light Mode.</div>
             </div>
 
+            <div class="form-group" style="margin-top: 20px;">
+                <label class="form-check" style="display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;color:var(--text);margin-bottom:6px">
+                    <input type="checkbox" name="space_engine_allow_override" value="1" <?= (Config::get('config', 'space_engine.allow_user_override') !== '0') ? 'checked' : '' ?> style="width:16px;height:16px;accent-color:var(--primary);cursor:pointer">
+                    <span>Allow Users to Customize Settings (Frontend Widget)</span>
+                </label>
+                <div class="form-hint">If enabled, Affiliates and Managers will see a floating settings widget to customize their own background preferences. If disabled, only the Admin controls the settings.</div>
+            </div>
+
             <div class="form-group">
                 <label>Rotation Speed</label>
                 <input type="range" name="space_engine_speed" min="0" max="2" step="0.1" class="form-control" style="height:auto;accent-color:var(--primary);cursor:pointer" value="<?= htmlspecialchars(Config::get('config', 'space_engine.speed') ?: '1.0') ?>">
