@@ -440,7 +440,24 @@ window.filterLiveCards = function(search){
         var matchRole = !role || u.role === role;
         return matchSearch && matchRole;
     });
-    renderLiveGrid(filtered);
+    
+    var displayUsers = filtered.slice(0, 60);
+    renderLiveGrid(displayUsers);
+    
+    var limitWarning = document.getElementById('live-limit-warning');
+    if (!limitWarning) {
+        limitWarning = document.createElement('div');
+        limitWarning.id = 'live-limit-warning';
+        limitWarning.style = 'text-align:center; padding:15px; color:#6B7280; font-size:13px; grid-column: 1 / -1; margin-top: 15px; background: #F3F4F6; border-radius: 8px;';
+        document.getElementById('live-grid').after(limitWarning);
+    }
+    
+    if (filtered.length > 60) {
+        limitWarning.style.display = '';
+        limitWarning.innerHTML = 'Showing <strong>60</strong> of <strong>' + fmt(filtered.length) + '</strong> online users. Use the search to find specific users.';
+    } else {
+        limitWarning.style.display = 'none';
+    }
 };
 
 function renderLiveGrid(users){
