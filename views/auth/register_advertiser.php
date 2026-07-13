@@ -579,8 +579,8 @@ function onTurnstileExpired() {
     });
     
     var numParticles = 80;
-    var initLimitX = Math.max(450, w * 0.6);
-    var initLimitY = Math.max(300, h * 0.6);
+    var initLimitX = Math.max(450, w * 1.2);
+    var initLimitY = Math.max(300, h * 1.2);
     var initLimitZ = 200;
     for (var i = 0; i < numParticles; i++) {
       particles.push({
@@ -601,8 +601,8 @@ function onTurnstileExpired() {
       ctx.clearRect(0, 0, w, h);
       
       var projected = [];
-      var limitX = Math.max(450, w * 0.6);
-      var limitY = Math.max(300, h * 0.6);
+      var limitX = Math.max(450, w * 1.2);
+      var limitY = Math.max(300, h * 1.2);
       var limitZ = 200;
       particles.forEach(function(p) {
         p.x += p.vx;

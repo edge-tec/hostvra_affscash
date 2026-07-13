@@ -134,8 +134,8 @@
         var numParticles = Math.floor(baseCount * settings.density);
         
         // 3D boundaries to match the landing page's elegant constellation clustering
-        var limitX = Math.max(450, w * 0.6);
-        var limitY = Math.max(400, h * 0.6);
+        var limitX = Math.max(450, w * 1.2);
+        var limitY = Math.max(400, h * 1.2);
         var limitZ = 250;
 
         for (var i = 0; i < numParticles; i++) {
@@ -300,8 +300,8 @@
             }
             
             var projected = [];
-            var limitX = Math.max(450, w * 0.6);
-            var limitY = Math.max(400, h * 0.6);
+            var limitX = Math.max(450, w * 1.2);
+            var limitY = Math.max(400, h * 1.2);
             var limitZ = 250;
 
             particles.forEach(function(p) {
