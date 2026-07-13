@@ -59,6 +59,7 @@
     var globalStatus = meta ? meta.getAttribute('data-galaxy-status') || 'neutral' : 'neutral';
     var globalBubbleStyle = meta ? meta.getAttribute('data-galaxy-bubble-style') || 'glow' : 'glow';
     var globalBubbleSize = parseFloat(meta ? meta.getAttribute('data-galaxy-bubble-size') || '1.0' : '1.0');
+    var globalNetworkStyle = meta ? meta.getAttribute('data-galaxy-network-style') || 'solid' : 'solid';
 
     // Galaxy / Constellation configuration settings (with localStorage persistence fallback to global defaults)
     var settings = {
@@ -68,7 +69,8 @@
         motion: parseFloat(safeGet('galaxy_motion', String(globalMotion))),
         marketStatus: safeGet('galaxy_market_status', globalStatus),
         bubbleStyle: safeGet('galaxy_bubble_style', globalBubbleStyle),
-        bubbleSize: parseFloat(safeGet('galaxy_bubble_size', String(globalBubbleSize)))
+        bubbleSize: parseFloat(safeGet('galaxy_bubble_size', String(globalBubbleSize))),
+        networkStyle: safeGet('galaxy_network_style', globalNetworkStyle)
     };
 
     // Check system prefers-reduced-motion
@@ -362,28 +364,53 @@
             });
             
             // Draw connection network lines
-            for (var a = 0; a < projected.length; a++) {
-                var pa = projected[a];
-                for (var b = a + 1; b < projected.length; b++) {
-                    var pb = projected[b];
-                    var dx = pa.x - pb.x;
-                    var dy = pa.y - pb.y;
-                    var dist = Math.hypot(dx, dy);
-                    
-                    var connectLimit = theme === 'light' ? 90 : 110;
-                    if (dist < connectLimit) {
-                        var opacityFactor = theme === 'light' ? 0.35 : 0.14;
-                        var opacity = (1 - (dist / connectLimit)) * opacityFactor * (1 - (pa.z + pb.z) / 400);
-                        if (opacity > 0) {
-                            ctx.beginPath();
-                            ctx.moveTo(pa.x, pa.y);
-                            ctx.lineTo(pb.x, pb.y);
-                            ctx.strokeStyle = colors.line + opacity + ')';
-                            ctx.lineWidth = (theme === 'light' ? 1.2 : 0.8) * (1 - (pa.z + pb.z) / 400);
-                            ctx.stroke();
+            var netStyle = settings.networkStyle || 'solid';
+            if (netStyle !== 'none') {
+                for (var a = 0; a < projected.length; a++) {
+                    var pa = projected[a];
+                    for (var b = a + 1; b < projected.length; b++) {
+                        var pb = projected[b];
+                        var dx = pa.x - pb.x;
+                        var dy = pa.y - pb.y;
+                        var dist = Math.hypot(dx, dy);
+                        
+                        var connectLimit = theme === 'light' ? 90 : 110;
+                        if (dist < connectLimit) {
+                            var opacityFactor = theme === 'light' ? 0.35 : 0.14;
+                            var opacity = (1 - (dist / connectLimit)) * opacityFactor * (1 - (pa.z + pb.z) / 400);
+                            if (opacity > 0) {
+                                if (netStyle === 'triangles') {
+                                    for (var c = b + 1; c < projected.length; c++) {
+                                        var pc = projected[c];
+                                        if (Math.hypot(pb.x - pc.x, pb.y - pc.y) < connectLimit) {
+                                            ctx.beginPath();
+                                            ctx.moveTo(pa.x, pa.y);
+                                            ctx.lineTo(pb.x, pb.y);
+                                            ctx.lineTo(pc.x, pc.y);
+                                            ctx.closePath();
+                                            ctx.fillStyle = colors.line + (opacity * 0.4) + ')';
+                                            ctx.fill();
+                                            ctx.strokeStyle = colors.line + (opacity * 0.8) + ')';
+                                            ctx.lineWidth = 0.5;
+                                            ctx.stroke();
+                                            break; 
+                                        }
+                                    }
+                                } else {
+                                    ctx.beginPath();
+                                    ctx.moveTo(pa.x, pa.y);
+                                    ctx.lineTo(pb.x, pb.y);
+                                    ctx.strokeStyle = colors.line + opacity + ')';
+                                    ctx.lineWidth = (theme === 'light' ? 1.2 : 0.8) * (1 - (pa.z + pb.z) / 400);
+                                    if (netStyle === 'dashed') ctx.setLineDash([5, 8]);
+                                    ctx.stroke();
+                                    if (netStyle === 'dashed') ctx.setLineDash([]);
+                                }
+                            }
                         }
                     }
                 }
+            }
                 
                 // Draw nodes/stars
                 if (pa.x >= 0 && pa.x <= w && pa.y >= 0 && pa.y <= h) {
@@ -565,6 +592,15 @@
                         <option value="square" ${settings.bubbleStyle === 'square' ? 'selected' : ''}>Square</option>
                     </select>
                 </div>
+                <div class="galaxy-setting-row" style="margin-top: 10px;">
+                    <label>Network Line Style</label>
+                    <select id="galaxyNetworkStyle" style="width:100%; padding: 4px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: inherit; border-radius: 4px; font-size: 13px;">
+                        <option value="solid" ${settings.networkStyle === 'solid' ? 'selected' : ''}>Solid Lines (Default)</option>
+                        <option value="dashed" ${settings.networkStyle === 'dashed' ? 'selected' : ''}>Dashed Lines</option>
+                        <option value="triangles" ${settings.networkStyle === 'triangles' ? 'selected' : ''}>Triangles (Web)</option>
+                        <option value="none" ${settings.networkStyle === 'none' ? 'selected' : ''}>No Lines (Particles Only)</option>
+                    </select>
+                </div>
                 <div class="galaxy-setting-row" style="margin-top: 12px;">
                     <label>Market Condition Glow</label>
                     <div class="galaxy-glow-group">
@@ -627,6 +663,11 @@
         document.getElementById('galaxyBubbleStyle').addEventListener('change', function(e) {
             settings.bubbleStyle = e.target.value;
             safeSet('galaxy_bubble_style', settings.bubbleStyle);
+        });
+
+        document.getElementById('galaxyNetworkStyle').addEventListener('change', function(e) {
+            settings.networkStyle = e.target.value;
+            safeSet('galaxy_network_style', settings.networkStyle);
         });
 
         panel.querySelectorAll('.galaxy-glow-btn').forEach(function(b) {

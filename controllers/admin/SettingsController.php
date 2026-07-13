@@ -574,6 +574,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         Config::set('config', 'space_engine.market_status', trim(Helpers::post('space_engine_market_status') ?: 'neutral'));
         Config::set('config', 'space_engine.bubble_style', trim(Helpers::post('space_engine_bubble_style') ?: 'glow'));
         Config::set('config', 'space_engine.bubble_size', (string)floatval(Helpers::postRaw('space_engine_bubble_size') ?: '1.0'));
+        Config::set('config', 'space_engine.network_style', trim(Helpers::post('space_engine_network_style') ?: 'solid'));
         $success = true;
     }
 

@@ -2175,6 +2175,18 @@ function frCopyUrl() {
                 <div class="form-hint">Simulate a global market sentiment layout lighting glow color.</div>
             </div>
             
+            <div class="form-row cols-2 mt-2">
+                <div class="form-group mb-0">
+                    <label>Networking Line Style</label>
+                    <select name="space_engine_network_style" class="form-control">
+                        <option value="solid" <?= Config::get('config', 'space_engine.network_style') === 'solid' || !Config::get('config', 'space_engine.network_style') ? 'selected' : '' ?>>Solid Lines (Default)</option>
+                        <option value="dashed" <?= Config::get('config', 'space_engine.network_style') === 'dashed' ? 'selected' : '' ?>>Dashed Lines</option>
+                        <option value="triangles" <?= Config::get('config', 'space_engine.network_style') === 'triangles' ? 'selected' : '' ?>>Triangles (Web)</option>
+                        <option value="none" <?= Config::get('config', 'space_engine.network_style') === 'none' ? 'selected' : '' ?>>No Lines (Particles Only)</option>
+                    </select>
+                </div>
+            </div>
+            
             <div class="form-row cols-2">
                 <div class="form-group mb-0">
                     <label>Bubble Style</label>
