@@ -53,6 +53,13 @@
     // Read global configurations from meta tag (set by database configuration)
     var meta = document.querySelector('meta[name="theme-prefs"]');
     var globalEnabled = meta ? meta.getAttribute('data-galaxy-enabled') !== '0' : true;
+    var galaxyForce = meta ? meta.getAttribute('data-galaxy-force') : '';
+    
+    if (galaxyForce === 'true' || galaxyForce === 'false') {
+        safeSet('galaxy_enabled', galaxyForce);
+        globalEnabled = galaxyForce === 'true';
+    }
+
     var globalSpeed = parseFloat(meta ? meta.getAttribute('data-galaxy-speed') || '1.0' : '1.0');
     var globalDensity = parseFloat(meta ? meta.getAttribute('data-galaxy-density') || '1.0' : '1.0');
     var globalMotion = parseFloat(meta ? meta.getAttribute('data-galaxy-motion') || '1.0' : '1.0');

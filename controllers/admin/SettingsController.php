@@ -567,7 +567,10 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
     }
 
     elseif ($tab === 'space_engine') {
-        Config::set('config', 'space_engine.enabled', isset($_POST['space_engine_enabled']) ? '1' : '0');
+        $enabled = isset($_POST['space_engine_enabled']) ? '1' : '0';
+        Config::set('config', 'space_engine.enabled', $enabled);
+        $_SESSION['_galaxy_force'] = $enabled === '1' ? 'true' : 'false';
+        
         Config::set('config', 'space_engine.speed', (string)floatval(Helpers::postRaw('space_engine_speed')));
         Config::set('config', 'space_engine.density', (string)floatval(Helpers::postRaw('space_engine_density')));
         Config::set('config', 'space_engine.motion', (string)floatval(Helpers::postRaw('space_engine_motion')));

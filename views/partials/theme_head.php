@@ -39,6 +39,9 @@ $_darkCssVer  = @filemtime($_darkCssPath) ?: '1';
 // the new default on the very next paint.
 $_themeForce       = $_SESSION['_theme_force'] ?? '';
 if ($_themeForce !== '') { unset($_SESSION['_theme_force']); }
+
+$_galaxyForce      = $_SESSION['_galaxy_force'] ?? '';
+if ($_galaxyForce !== '') { unset($_SESSION['_galaxy_force']); }
 ?>
 <link rel="stylesheet" href="/assets/css/dark-theme.min.css?v=<?= $_darkCssVer ?>">
 <meta name="theme-prefs"
@@ -47,6 +50,7 @@ if ($_themeForce !== '') { unset($_SESSION['_theme_force']); }
       data-force="<?= htmlspecialchars($_themeForce, ENT_QUOTES) ?>"
       data-dark-logo="<?= htmlspecialchars($_darkLogoWhite, ENT_QUOTES) ?>"
       data-csrf="<?= htmlspecialchars($_themeCsrf, ENT_QUOTES) ?>"
+      data-galaxy-force="<?= htmlspecialchars($_galaxyForce, ENT_QUOTES) ?>"
       data-galaxy-enabled="<?= htmlspecialchars((string)Config::get('config', 'space_engine.enabled'), ENT_QUOTES) ?>"
       data-galaxy-speed="<?= htmlspecialchars((string)Config::get('config', 'space_engine.speed'), ENT_QUOTES) ?>"
       data-galaxy-density="<?= htmlspecialchars((string)Config::get('config', 'space_engine.density'), ENT_QUOTES) ?>"
