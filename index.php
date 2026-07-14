@@ -58,7 +58,7 @@ require BASE_PATH . '/core/PopupService.php';
 require BASE_PATH . '/core/RegistrationSecurity.php';
 require BASE_PATH . '/core/RegistrationVpnGuard.php';
 require BASE_PATH . '/core/RiskEngine.php';
-
+require BASE_PATH . '/core/TrafficSourceOverride.php';
 
 // Initialize config
 Config::init(CONFIG_PATH);
