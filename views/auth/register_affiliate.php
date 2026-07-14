@@ -640,6 +640,7 @@ function onTurnstileExpired() {
 }
 </script>
 <?php endif; ?>
+<?php if (empty($_authBgActive)): ?>
 <canvas id="authParticlesCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0"></canvas>
 <script>
   (function() {
@@ -775,5 +776,6 @@ function onTurnstileExpired() {
     draw();
   })();
 </script>
+<?php endif; ?>
 </body>
 </html>

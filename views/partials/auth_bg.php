@@ -159,10 +159,20 @@ html[data-theme="dark"] body::after {
 /* Static image only — with glassmorphism we no longer need the body tint */
 html body {
     background: url("<?= $imgUrl ?>") center center / cover no-repeat fixed !important;
+    background-image: url("<?= $imgUrl ?>") !important;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
     background-color:#EEF2FF;
 }
 html[data-theme="dark"] body {
     background: url("<?= $imgUrl ?>") center center / cover no-repeat fixed !important;
+    background-image: url("<?= $imgUrl ?>") !important;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
     background-color:#0A0F1F;
 }
 @media (hover: none), (pointer: coarse), (max-width: 768px){
