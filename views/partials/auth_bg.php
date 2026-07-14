@@ -137,7 +137,7 @@ html body, html[data-theme="dark"] body {
     background: transparent !important;
 }
 html body::before {
-    content:""; position:fixed; inset:0; z-index:-9;
+    content:""; position:fixed; inset:0; z-index:-10;
     background:url("<?= $imgUrl ?>") center center / cover no-repeat;
     filter: blur(<?= $bgBlur ?>px);
     transform: scale(1.06);
@@ -146,8 +146,8 @@ html body::before {
     pointer-events:none;
 }
 html body::after {
-    content:""; position:fixed; inset:0; z-index:-10; pointer-events:none;
-    background:linear-gradient(135deg, rgba(238,242,255,.72) 0%, rgba(240,253,244,.72) 100%);
+    content:""; position:fixed; inset:0; z-index:-9; pointer-events:none;
+    background:linear-gradient(135deg, rgba(238,242,255,.05) 0%, rgba(240,253,244,.05) 100%);
 }
 html[data-theme="dark"] body::after {
     background:linear-gradient(135deg, rgba(10,15,31,.78) 0%, rgba(20,28,52,.72) 100%);
