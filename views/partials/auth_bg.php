@@ -82,6 +82,8 @@ $bgBlurOn  = $bgBlur > 0;
 // If nothing at all is configured, emit nothing — existing gradient stays.
 if (!$imgOk && !$vidOk && !$animOn && !$ovOn) return;
 
+$_authBgActive = true;
+
 // Convert hex → rgba for the overlay
 $ovR = hexdec(substr($ovColor, 1, 2));
 $ovG = hexdec(substr($ovColor, 3, 2));

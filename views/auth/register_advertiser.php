@@ -14,10 +14,12 @@
 <?php endif; ?>
 <style>
 body {
+<?php if (empty($_authBgActive)): ?>
   background: #05020c !important;
   background-image: 
       radial-gradient(ellipse 50% 60% at 80% 30%,rgba(124,58,237,.08),transparent),
       radial-gradient(ellipse 40% 45% at 10% 70%,rgba(232,25,122,.06),transparent) !important;
+<?php endif; ?>
   color: #fff !important;
   padding:40px 20px;
   overflow-x: hidden;
