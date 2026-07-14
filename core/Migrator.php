@@ -293,18 +293,23 @@ class Migrator
             $pdo    = Database::getInstance();
             $tables = $pdo->query("SHOW TABLES")->fetchAll(\PDO::FETCH_COLUMN);
 
-            $sql  = "-- Pre-migration auto-backup\n";
-            $sql .= "-- Generated: " . date('Y-m-d H:i:s') . "\n";
-            $sql .= "-- Tables: " . count($tables) . "\n\n";
-            $sql .= "SET FOREIGN_KEY_CHECKS=0;\n";
-            $sql .= "SET NAMES utf8mb4;\n\n";
+            $fp = @fopen($file, 'w');
+            if (!$fp) {
+                throw new \Exception("Cannot open backup file for writing: $file");
+            }
+
+            fwrite($fp, "-- Pre-migration auto-backup\n");
+            fwrite($fp, "-- Generated: " . date('Y-m-d H:i:s') . "\n");
+            fwrite($fp, "-- Tables: " . count($tables) . "\n\n");
+            fwrite($fp, "SET FOREIGN_KEY_CHECKS=0;\n");
+            fwrite($fp, "SET NAMES utf8mb4;\n\n");
 
             foreach ($tables as $tbl) {
                 // Schema
-                $cr   = $pdo->query("SHOW CREATE TABLE `{$tbl}`")->fetch(\PDO::FETCH_ASSOC);
-                $sql .= "-- Table: {$tbl}\n";
-                $sql .= "DROP TABLE IF EXISTS `{$tbl}`;\n";
-                $sql .= ($cr['Create Table'] ?? '') . ";\n\n";
+                $cr = $pdo->query("SHOW CREATE TABLE `{$tbl}`")->fetch(\PDO::FETCH_ASSOC);
+                fwrite($fp, "-- Table: {$tbl}\n");
+                fwrite($fp, "DROP TABLE IF EXISTS `{$tbl}`;\n");
+                fwrite($fp, ($cr['Create Table'] ?? '') . ";\n\n");
 
                 // Data — chunked to limit memory pressure on large tables
                 $offset = 0;
@@ -319,15 +324,16 @@ class Migrator
                             fn($v) => $v === null ? 'NULL' : $pdo->quote((string)$v),
                             array_values($row)
                         ));
-                        $sql .= "INSERT INTO `{$tbl}` ({$cols}) VALUES ({$vals});\n";
+                        fwrite($fp, "INSERT INTO `{$tbl}` ({$cols}) VALUES ({$vals});\n");
                     }
                     $offset += $chunk;
                 } while (count($rows) === $chunk);
-                $sql .= "\n";
+                fwrite($fp, "\n");
             }
 
-            $sql .= "SET FOREIGN_KEY_CHECKS=1;\n";
-            @file_put_contents($file, $sql, LOCK_EX);
+            fwrite($fp, "SET FOREIGN_KEY_CHECKS=1;\n");
+            fclose($fp);
+
             self::pruneOldBackups($backupDir);
         } catch (\Exception $e) {
             error_log('[Migrator] Pre-migration backup failed: ' . $e->getMessage());
