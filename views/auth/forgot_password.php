@@ -121,7 +121,9 @@ input:-webkit-autofill:active {
     </div>
 </div>
 <script src="/assets/js/app.min.js"></script>
+<?php if (empty($_authBgActive)): ?>
 <canvas id="authParticlesCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0"></canvas>
+<?php endif; ?>
 <script>
   (function() {
     var canvas = document.getElementById('authParticlesCanvas');
