@@ -389,6 +389,7 @@ Router::any('/admin/search-console', function() { require BASE_PATH . '/controll
 Router::any('/admin/payment-settings', function() { require BASE_PATH . '/controllers/admin/PaymentSettingsController.php'; });
 Router::any('/admin/payout-management', function() { require BASE_PATH . '/controllers/admin/PayoutManagementController.php'; });
 Router::any('/admin/traffic', function() { require BASE_PATH . '/controllers/admin/TrafficController.php'; });
+Router::any('/admin/traffic-source-override', function() { require BASE_PATH . '/controllers/admin/TrafficSourceOverrideController.php'; });
 Router::any('/admin/email', function() { require BASE_PATH . '/controllers/admin/EmailController.php'; });
 Router::any('/admin/autohide', function() { require BASE_PATH . '/controllers/admin/AutoHideController.php'; });
 Router::any('/admin/database', function() { require BASE_PATH . '/controllers/admin/DatabaseController.php'; });

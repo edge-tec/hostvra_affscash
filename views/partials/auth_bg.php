@@ -109,7 +109,7 @@ $_animJsVer   = @filemtime($_animJsFs) ?: '1';
    only when a layered background is active, so the layers underneath
    become visible. When nothing is active we leave the existing body
    gradient alone (back-compat). */
-html body, html[data-theme="dark"] body { background:transparent !important; }
+html body, html[data-theme="dark"] body, html[data-theme="light"] body { background:transparent !important; }
 
 /* Hard guarantee: the auth shell sits ABOVE the background stack and is
    never overlapped by the video/animation. The stack uses z-index:-10
@@ -133,7 +133,7 @@ html body, html[data-theme="dark"] body { background:transparent !important; }
 /* Static image + admin-controlled blur. Painting blur on `background-image`
    is not possible directly, so we drop the image into a fixed pseudo-layer
    and blur THAT — the existing body gradient stays on top for legibility. */
-html body, html[data-theme="dark"] body {
+html body, html[data-theme="dark"] body, html[data-theme="light"] body {
     background: transparent !important;
 }
 html body::before {
@@ -157,7 +157,7 @@ html[data-theme="dark"] body::after {
 <?php else: ?>
 <style>
 /* Static image only — with glassmorphism we no longer need the body tint */
-html body {
+html body, html[data-theme="light"] body {
     background: url("<?= $imgUrl ?>") center center / cover no-repeat fixed !important;
     background-image: url("<?= $imgUrl ?>") !important;
     background-size: cover !important;

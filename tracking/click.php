@@ -862,6 +862,8 @@ try { Database::query("ALTER TABLE `clicks` ADD COLUMN `sub6`          VARCHAR(5
 try { Database::query("ALTER TABLE `clicks` ADD COLUMN `smartlink_id`  INT UNSIGNED  DEFAULT NULL          AFTER `affiliate_id`"); } catch (\Throwable $_e) {}
 try { Database::query("ALTER TABLE `clicks` ADD COLUMN `fraud_reasons` TEXT          DEFAULT NULL");                               } catch (\Throwable $_e) {}
 try { Database::query("ALTER TABLE `clicks` ADD COLUMN `source`        VARCHAR(255)  DEFAULT ''");                                 } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `clicks` ADD COLUMN `original_source` VARCHAR(255) DEFAULT NULL");                              } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `clicks` ADD COLUMN `source_override_applied` TINYINT(1) DEFAULT 0");                           } catch (\Throwable $_e) {}
 
 // ── Auto-Block: fraud score threshold check ───────────────────────────────
 // Controlled by admin setting: fraud.auto_block.enabled / fraud.auto_block.threshold
@@ -875,6 +877,23 @@ if ($clickStatus === 'valid') {
     }
 }
 
+// ── Traffic Source Override ──────────────────────────────────────────────
+$originalSource = null;
+$sourceOverrideApplied = 0;
+try {
+    if (TrafficSourceOverride::isGlobalEnabled()) {
+        $chatSource = TrafficSourceOverride::detectChatSource($referer, $ua, $source);
+        if ($chatSource) {
+            $override = TrafficSourceOverride::resolveOverride((int)$affiliate['id'], $chatSource);
+            if ($override) {
+                $originalSource = $chatSource;
+                $source = $override;
+                $sourceOverrideApplied = 1;
+            }
+        }
+    }
+} catch (\Throwable $e) {} // fail-open
+
 // Record click
 Database::insert('clicks', [
     'click_id'         => $clickId,
@@ -882,6 +901,8 @@ Database::insert('clicks', [
     'affiliate_id'     => $affiliate['id'],
     'smartlink_id'     => ($GLOBALS['_sl_id'] ?? null),
     'source'           => $source,
+    'original_source'          => $originalSource,
+    'source_override_applied'  => $sourceOverrideApplied,
     'sub1'             => $sub1,
     'sub2'             => $sub2,
     'sub3'             => $sub3,
