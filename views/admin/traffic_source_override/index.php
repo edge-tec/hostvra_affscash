@@ -47,7 +47,7 @@
 
                 <div class="form-group">
                     <label>Target Original Sources</label>
-                    <select name="target_original_sources[]" class="form-control select2-multi" multiple>
+                    <select name="target_original_sources[]" class="form-control select2-tags-multi" multiple>
                         <option value="WhatsApp">WhatsApp</option>
                         <option value="Telegram">Telegram</option>
                         <option value="Facebook Messenger">Facebook Messenger</option>
@@ -68,8 +68,21 @@
 
                 <div class="form-group">
                     <label>Override As (Destination)</label>
-                    <input type="text" name="override_source" class="form-control" placeholder="e.g. Paid Ads" required>
-                    <div class="form-hint">The new source to send to advertisers.</div>
+                    <select name="override_source" class="form-control select2-tags-single" required>
+                        <option value="">Select or type destination source...</option>
+                        <option value="Paid Ads">Paid Ads</option>
+                        <option value="SEO">SEO</option>
+                        <option value="Email">Email</option>
+                        <option value="Display">Display</option>
+                        <option value="Native">Native</option>
+                        <option value="Push">Push</option>
+                        <option value="Social">Social</option>
+                        <option value="Search">Search</option>
+                        <option value="Organic">Organic</option>
+                        <option value="Influencer">Influencer</option>
+                        <option value="Referral">Referral</option>
+                    </select>
+                    <div class="form-hint">Select a common source or type your own.</div>
                 </div>
 
                 <hr style="margin: 15px 0; border: none; border-top: 1px dashed #ccc;">
@@ -253,6 +266,16 @@
         $('.select2-multi').select2({
             width: '100%',
             placeholder: "Select options"
+        });
+        $('.select2-tags-multi').select2({
+            width: '100%',
+            placeholder: "Select options or type custom ones...",
+            tags: true
+        });
+        $('.select2-tags-single').select2({
+            width: '100%',
+            placeholder: "Select or type destination...",
+            tags: true
         });
     });
 </script>
