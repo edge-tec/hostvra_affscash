@@ -5,6 +5,14 @@ $pageTitle = 'Dashboard';
 // Schema migrations
 try { Database::query("ALTER TABLE conversions ADD COLUMN is_hidden TINYINT(1) NOT NULL DEFAULT 0"); } catch(Exception $e) {}
 try { Database::query("ALTER TABLE conversions ADD COLUMN is_test TINYINT(1) NOT NULL DEFAULT 0"); } catch(Exception $e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `traffic_source`      VARCHAR(50)   DEFAULT 'Unknown'");  } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `traffic_source_type` VARCHAR(30)   DEFAULT 'Unknown'");  } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `referrer_url`        VARCHAR(2000) DEFAULT NULL");        } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `utm_source`          VARCHAR(255)  DEFAULT NULL");        } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `utm_medium`          VARCHAR(255)  DEFAULT NULL");        } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `utm_campaign`        VARCHAR(255)  DEFAULT NULL");        } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `utm_content`         VARCHAR(255)  DEFAULT NULL");        } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `utm_term`            VARCHAR(255)  DEFAULT NULL");        } catch (\Throwable $_e) {}
 
 // Total counts (static header cards)
 $totalAffiliates   = Database::count('users', 'role=? AND status=?', ['affiliate', 'active']);
