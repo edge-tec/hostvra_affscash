@@ -46,9 +46,24 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Target Original Sources (CSV)</label>
-                    <input type="text" name="target_original_sources" class="form-control" placeholder="WhatsApp, Telegram">
-                    <div class="form-hint">Comma separated. Leave blank to apply to ALL sources.</div>
+                    <label>Target Original Sources</label>
+                    <select name="target_original_sources[]" class="form-control select2-multi" multiple>
+                        <option value="WhatsApp">WhatsApp</option>
+                        <option value="Telegram">Telegram</option>
+                        <option value="Facebook Messenger">Facebook Messenger</option>
+                        <option value="Instagram Direct">Instagram Direct</option>
+                        <option value="Threads">Threads</option>
+                        <option value="Discord">Discord</option>
+                        <option value="Skype">Skype</option>
+                        <option value="Signal">Signal</option>
+                        <option value="WeChat">WeChat</option>
+                        <option value="LINE">LINE</option>
+                        <option value="Viber">Viber</option>
+                        <option value="Reddit">Reddit</option>
+                        <option value="TikTok">TikTok</option>
+                        <option value="Direct">Direct</option>
+                    </select>
+                    <div class="form-hint">Leave blank to apply to ALL sources.</div>
                 </div>
 
                 <div class="form-group">
@@ -61,28 +76,55 @@
                 <p style="font-weight:600;font-size:12px;margin-bottom:10px;text-transform:uppercase">Optional Conditions</p>
 
                 <div class="form-group">
-                    <label>Affiliate IDs (CSV)</label>
-                    <input type="text" name="affiliate_ids" class="form-control" placeholder="e.g. 10, 25">
+                    <label>Affiliates</label>
+                    <select name="affiliate_ids[]" class="form-control select2-multi" multiple>
+                        <?php foreach ($affiliates as $aff): ?>
+                            <option value="<?= $aff['id'] ?>"><?= Helpers::e($aff['name']) ?> (ID: <?= $aff['id'] ?>)</option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
 
                 <div class="form-group">
-                    <label>Offer IDs (CSV)</label>
-                    <input type="text" name="offer_ids" class="form-control" placeholder="e.g. 100, 205">
+                    <label>Offers</label>
+                    <select name="offer_ids[]" class="form-control select2-multi" multiple>
+                        <?php foreach ($offers as $off): ?>
+                            <option value="<?= $off['id'] ?>"><?= Helpers::e($off['name']) ?> (ID: <?= $off['id'] ?>)</option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
                 
                 <div class="form-group">
-                    <label>Advertiser IDs (CSV)</label>
-                    <input type="text" name="advertiser_ids" class="form-control" placeholder="e.g. 5, 8">
+                    <label>Advertisers</label>
+                    <select name="advertiser_ids[]" class="form-control select2-multi" multiple>
+                        <?php foreach ($advertisers as $adv): ?>
+                            <option value="<?= $adv['id'] ?>"><?= Helpers::e($adv['name']) ?> (ID: <?= $adv['id'] ?>)</option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
 
                 <div class="form-group">
-                    <label>Countries (CSV)</label>
-                    <input type="text" name="countries" class="form-control" placeholder="e.g. US, GB, CA">
+                    <label>Countries</label>
+                    <select name="countries[]" class="form-control select2-multi" multiple>
+                        <option value="US">United States</option>
+                        <option value="GB">United Kingdom</option>
+                        <option value="CA">Canada</option>
+                        <option value="AU">Australia</option>
+                        <option value="DE">Germany</option>
+                        <option value="FR">France</option>
+                        <option value="IN">India</option>
+                        <option value="BD">Bangladesh</option>
+                        <!-- more countries can be typed in select2 -->
+                    </select>
                 </div>
 
                 <div class="form-group">
-                    <label>Device Types (CSV)</label>
-                    <input type="text" name="device_types" class="form-control" placeholder="e.g. Mobile, Desktop">
+                    <label>Device Types</label>
+                    <select name="device_types[]" class="form-control select2-multi" multiple>
+                        <option value="Mobile">Mobile</option>
+                        <option value="Desktop">Desktop</option>
+                        <option value="Tablet">Tablet</option>
+                        <option value="Bot">Bot</option>
+                    </select>
                 </div>
 
                 <button class="btn btn-primary" style="width:100%">Save Override Rule</button>
@@ -182,5 +224,37 @@
         </div>
     </div>
 </div>
+
+<!-- Select2 CSS and JS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<style>
+    .select2-container--default .select2-selection--multiple {
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        min-height: 38px;
+    }
+    .select2-container--default.select2-container--focus .select2-selection--multiple {
+        border-color: #80bdff;
+        outline: 0;
+    }
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        background-color: #f8f9fa;
+        border: 1px solid #dae0e5;
+        border-radius: 3px;
+        padding: 2px 6px;
+        margin-top: 5px;
+    }
+</style>
+<script>
+    // Note: ensure jQuery is loaded. If it's already in the admin layout, this will just use it.
+    // If not, we just loaded it above.
+    $(document).ready(function() {
+        $('.select2-multi').select2({
+            width: '100%',
+            placeholder: "Select options"
+        });
+    });
+</script>
 
 <?php require BASE_PATH . '/views/layouts/admin_footer.php'; ?>
