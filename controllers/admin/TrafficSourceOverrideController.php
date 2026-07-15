@@ -29,7 +29,7 @@ if (Helpers::isPost()) {
         ];
         
         // Parse target sources
-        $targetSources = Helpers::post('target_original_sources');
+        $targetSources = $_POST['target_original_sources'] ?? null;
         if (is_array($targetSources)) {
             $data['target_original_sources'] = array_values(array_filter(array_map('trim', $targetSources)));
         } else {
@@ -39,35 +39,35 @@ if (Helpers::isPost()) {
         // Parse conditions
         $conditions = [];
         
-        $affIds = Helpers::post('affiliate_ids');
+        $affIds = $_POST['affiliate_ids'] ?? null;
         if (is_array($affIds) && !empty($affIds)) {
             $conditions['affiliate_ids'] = array_values(array_filter(array_map('intval', $affIds)));
         } elseif (!empty($affIds)) {
             $conditions['affiliate_ids'] = array_map('intval', explode(',', $affIds));
         }
         
-        $offerIds = Helpers::post('offer_ids');
+        $offerIds = $_POST['offer_ids'] ?? null;
         if (is_array($offerIds) && !empty($offerIds)) {
             $conditions['offer_ids'] = array_values(array_filter(array_map('intval', $offerIds)));
         } elseif (!empty($offerIds)) {
             $conditions['offer_ids'] = array_map('intval', explode(',', $offerIds));
         }
         
-        $advIds = Helpers::post('advertiser_ids');
+        $advIds = $_POST['advertiser_ids'] ?? null;
         if (is_array($advIds) && !empty($advIds)) {
             $conditions['advertiser_ids'] = array_values(array_filter(array_map('intval', $advIds)));
         } elseif (!empty($advIds)) {
             $conditions['advertiser_ids'] = array_map('intval', explode(',', $advIds));
         }
         
-        $countries = Helpers::post('countries');
+        $countries = $_POST['countries'] ?? null;
         if (is_array($countries) && !empty($countries)) {
             $conditions['countries'] = array_values(array_filter(array_map('trim', $countries)));
         } elseif (!empty($countries)) {
             $conditions['countries'] = array_map('trim', explode(',', $countries));
         }
         
-        $deviceTypes = Helpers::post('device_types');
+        $deviceTypes = $_POST['device_types'] ?? null;
         if (is_array($deviceTypes) && !empty($deviceTypes)) {
             $conditions['device_types'] = array_values(array_filter(array_map('trim', $deviceTypes)));
         } elseif (!empty($deviceTypes)) {

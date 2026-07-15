@@ -246,7 +246,7 @@ class AdvancedTrafficSourceOverride
     public static function addRule(array $data): int
     {
         self::ensureSchema();
-        Database::insert('traffic_source_overrides', [
+        return Database::insert('traffic_source_overrides', [
             'name'                    => substr(trim($data['name'] ?? 'New Rule'), 0, 255),
             'enabled'                 => (int)($data['enabled'] ?? 1),
             'priority'                => (int)($data['priority'] ?? 0),
@@ -254,7 +254,6 @@ class AdvancedTrafficSourceOverride
             'target_original_sources' => empty($data['target_original_sources']) ? null : json_encode($data['target_original_sources']),
             'override_source'         => substr(trim($data['override_source']), 0, 255),
         ]);
-        return Database::lastInsertId();
     }
 
     public static function updateRule(int $id, array $data): bool
