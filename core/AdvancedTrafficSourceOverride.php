@@ -260,7 +260,7 @@ class AdvancedTrafficSourceOverride
     {
         self::ensureSchema();
         try {
-            Database::execute(
+            Database::query(
                 "UPDATE `traffic_source_overrides` SET 
                     `name` = ?, 
                     `enabled` = ?, 
@@ -289,7 +289,7 @@ class AdvancedTrafficSourceOverride
     {
         self::ensureSchema();
         try {
-            Database::execute("UPDATE `traffic_source_overrides` SET `enabled` = NOT `enabled` WHERE `id` = ?", [$id]);
+            Database::query("UPDATE `traffic_source_overrides` SET `enabled` = NOT `enabled` WHERE `id` = ?", [$id]);
             return true;
         } catch (\Throwable $e) {
             return false;
@@ -300,7 +300,7 @@ class AdvancedTrafficSourceOverride
     {
         self::ensureSchema();
         try {
-            Database::execute("DELETE FROM `traffic_source_overrides` WHERE `id` = ?", [$id]);
+            Database::query("DELETE FROM `traffic_source_overrides` WHERE `id` = ?", [$id]);
             return true;
         } catch (\Throwable $e) {
             return false;
