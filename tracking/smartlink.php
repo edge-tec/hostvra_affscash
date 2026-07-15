@@ -189,7 +189,7 @@ if ($isCustomEntry) {
         $source  = Helpers::get('source') ?: Helpers::get('utm_source') ?: Helpers::get('traffic_source') ?: '';
         $referer = $_SERVER['HTTP_REFERER'] ?? '';
 
-        // ── Traffic Source Override (same logic as click.php) ────────────
+        // ── Traffic Source Detection (same logic as click.php) ────────────
         $originalSource = null;
         $sourceOverrideApplied = 0;
         try {
@@ -206,6 +206,26 @@ if ($isCustomEntry) {
             }
         } catch (\Throwable $e) {} // fail-open
 
+        $extraDetParams = [
+            'utm_source'   => Helpers::get('utm_source'),
+            'utm_medium'   => Helpers::get('utm_medium'),
+            'utm_campaign' => Helpers::get('utm_campaign'),
+            'utm_content'  => Helpers::get('utm_content'),
+            'utm_term'     => Helpers::get('utm_term'),
+            'gclid'        => Helpers::get('gclid'),
+            'x_requested_with' => $_SERVER['HTTP_X_REQUESTED_WITH'] ?? null,
+        ];
+        $tsDet = TrafficSourceDetector::detect($source, $referer, $ua ?? '', $sourceOverrideApplied, $extraDetParams);
+
+        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `traffic_source`      VARCHAR(50)  DEFAULT 'Unknown'"); } catch (\Throwable $_e) {}
+        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `traffic_source_type` VARCHAR(50)  DEFAULT 'Unknown'"); } catch (\Throwable $_e) {}
+        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `detected_by`         VARCHAR(100) DEFAULT NULL"); } catch (\Throwable $_e) {}
+        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `utm_source`          VARCHAR(255) DEFAULT NULL"); } catch (\Throwable $_e) {}
+        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `utm_medium`          VARCHAR(255) DEFAULT NULL"); } catch (\Throwable $_e) {}
+        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `utm_campaign`        VARCHAR(255) DEFAULT NULL"); } catch (\Throwable $_e) {}
+        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `utm_content`         VARCHAR(255) DEFAULT NULL"); } catch (\Throwable $_e) {}
+        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `utm_term`            VARCHAR(255) DEFAULT NULL"); } catch (\Throwable $_e) {}
+
         try {
             Database::insert('clicks', [
                 'click_id'     => $clickId,
@@ -215,6 +235,14 @@ if ($isCustomEntry) {
                 'source'       => substr($source, 0, 255),
                 'original_source'         => $originalSource,
                 'source_override_applied' => $sourceOverrideApplied,
+                'traffic_source'       => $tsDet['source'],
+                'traffic_source_type'  => $tsDet['type'],
+                'detected_by'          => $tsDet['detected_by'],
+                'utm_source'           => $tsDet['utm_source'],
+                'utm_medium'           => $tsDet['utm_medium'],
+                'utm_campaign'         => $tsDet['utm_campaign'],
+                'utm_content'          => $tsDet['utm_content'],
+                'utm_term'             => $tsDet['utm_term'],
                 'sub1'         => substr($sub1, 0, 500),
                 'sub2'         => substr($sub2, 0, 500),
                 'sub3'         => substr($sub3, 0, 500),

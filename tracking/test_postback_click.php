@@ -108,6 +108,9 @@ try {
         'is_unique'    => 1,
         'is_fraud'     => 0,
         'source'       => 'postback_test',
+        'traffic_source'      => 'Unknown',
+        'traffic_source_type' => 'Unknown',
+        'detected_by'         => 'Test Postback',
     ]);
 } catch (\Throwable $e) {
     // clicks table may require offer_id NOT NULL on older installs — try with offer_id=1
@@ -128,6 +131,9 @@ try {
             'is_unique'    => 1,
             'is_fraud'     => 0,
             'source'       => 'postback_test',
+            'traffic_source'      => 'Unknown',
+            'traffic_source_type' => 'Unknown',
+            'detected_by'         => 'Test Postback',
         ]);
     } catch (\Throwable $e2) {}
 }

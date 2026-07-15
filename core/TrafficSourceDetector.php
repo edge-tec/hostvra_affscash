@@ -6,10 +6,12 @@
  *   1. Traffic Source Override (source_override_applied=1)
  *   2. Explicit source/utm_source parameter
  *   3. HTTP Referer domain matching
- *   4. User-Agent keyword matching
- *   5. Fallback: Direct (no referer) or Unknown
+ *   4. HTTP_X_REQUESTED_WITH package name matching (In-App Browsers)
+ *   5. User-Agent keyword matching (Chat Apps, etc.)
+ *   6. Medium-based mapping
+ *   7. Fallback: Direct (no referer/UA) or Unknown
  *
- * Returns an array with: source, type, color, utm_* fields.
+ * Returns an array with: source, type, color, detected_by, utm_* fields.
  */
 final class TrafficSourceDetector
 {
@@ -18,10 +20,22 @@ final class TrafficSourceDetector
         'Facebook'      => '#1877F2',
         'Facebook Ads'  => '#0D47A1',
         'Instagram'     => '#E4405F',
+        'Instagram DM'  => '#E4405F',
         'Threads'       => '#000000',
         'Messenger'     => '#00B2FF',
         'WhatsApp'      => '#25D366',
         'Telegram'      => '#26A5E4',
+        'Discord'       => '#5865F2',
+        'Skype'         => '#00AFF0',
+        'Signal'        => '#3A76F0',
+        'WeChat'        => '#07C160',
+        'LINE'          => '#00C300',
+        'Viber'         => '#7360F2',
+        'Snapchat'      => '#FFFC00',
+        'Slack'         => '#4A154B',
+        'Teams'         => '#6264A7',
+        'Gmail'         => '#EA4335',
+        'Outlook'       => '#0078D4',
         'Google Search' => '#34A853',
         'Google Ads'    => '#FBBC04',
         'YouTube'       => '#FF0000',
@@ -47,10 +61,22 @@ final class TrafficSourceDetector
         'Facebook'      => 'Social',
         'Facebook Ads'  => 'Paid',
         'Instagram'     => 'Social',
+        'Instagram DM'  => 'Chat',
         'Threads'       => 'Social',
-        'Messenger'     => 'Social',
-        'WhatsApp'      => 'Social',
-        'Telegram'      => 'Social',
+        'Messenger'     => 'Chat',
+        'WhatsApp'      => 'Chat',
+        'Telegram'      => 'Chat',
+        'Discord'       => 'Chat',
+        'Skype'         => 'Chat',
+        'Signal'        => 'Chat',
+        'WeChat'        => 'Chat',
+        'LINE'          => 'Chat',
+        'Viber'         => 'Chat',
+        'Snapchat'      => 'Chat',
+        'Slack'         => 'Chat',
+        'Teams'         => 'Chat',
+        'Gmail'         => 'Email',
+        'Outlook'       => 'Email',
         'Google Search' => 'Organic',
         'Google Ads'    => 'Paid',
         'YouTube'       => 'Social',
@@ -149,23 +175,61 @@ final class TrafficSourceDetector
         'ecosia.org'        => 'Organic',
     ];
 
+    // ── In-App Browser App Package Headers (HTTP_X_REQUESTED_WITH) ───────
+    private static array $appPackageMap = [
+        'com.whatsapp'                   => 'WhatsApp',
+        'com.whatsapp.w4b'               => 'WhatsApp',
+        'org.telegram.messenger'         => 'Telegram',
+        'org.telegram.plus'              => 'Telegram',
+        'com.facebook.orca'              => 'Messenger',
+        'com.facebook.katana'            => 'Facebook',
+        'com.instagram.android'          => 'Instagram',
+        'com.instagram.direct'           => 'Instagram DM',
+        'com.discord'                    => 'Discord',
+        'com.skype.raider'               => 'Skype',
+        'org.thoughtcrime.securesms'     => 'Signal',
+        'com.tencent.mm'                 => 'WeChat',
+        'jp.naver.line.android'          => 'LINE',
+        'com.viber.voip'                 => 'Viber',
+        'com.snapchat.android'           => 'Snapchat',
+        'com.Slack'                      => 'Slack',
+        'com.microsoft.teams'            => 'Teams',
+        'com.google.android.gm'          => 'Gmail',
+        'com.microsoft.office.outlook'   => 'Outlook',
+        'com.zhiliaoapp.musically'       => 'TikTok',
+        'com.twitter.android'            => 'X',
+        'com.reddit.frontpage'           => 'Reddit',
+        'com.linkedin.android'           => 'LinkedIn',
+    ];
+
     // ── User-Agent → source mapping ──────────────────────────────────────
     private static array $uaMap = [
-        'FBAN/Messenger'  => 'Messenger',
-        'FB_IAB/Messenger'=> 'Messenger',
-        'Messenger/'      => 'Messenger',
-        'WhatsApp'        => 'WhatsApp',
-        'TelegramBot'     => 'Telegram',
-        'Telegram'        => 'Telegram',
-        'Viber'           => 'Referral',
-        'Discord'         => 'Referral',
-        'Line/'           => 'Referral',
-        'Snapchat'        => 'Referral',
-        'FBAN/'           => 'Facebook',
-        'FB_IAB/'         => 'Facebook',
-        'Instagram'       => 'Instagram',
-        'Pinterest/'      => 'Pinterest',
-        'LinkedInApp'     => 'LinkedIn',
+        'WhatsApp'          => 'WhatsApp',
+        'TelegramBot'       => 'Telegram',
+        'Telegram'          => 'Telegram',
+        'FBAN/Messenger'    => 'Messenger',
+        'FB_IAB/Messenger'  => 'Messenger',
+        'Messenger/'        => 'Messenger',
+        'Discord'           => 'Discord',
+        'Skype'             => 'Skype',
+        'Signal'            => 'Signal',
+        'MicroMessenger'    => 'WeChat',
+        'WeChat'            => 'WeChat',
+        'Line/'             => 'LINE',
+        'Viber'             => 'Viber',
+        'Snapchat'          => 'Snapchat',
+        'Slack'             => 'Slack',
+        'Teams'             => 'Teams',
+        'Gmail'             => 'Gmail',
+        'Outlook'           => 'Outlook',
+        'Instagram'         => 'Instagram',
+        'FBAN/'             => 'Facebook',
+        'FB_IAB/'           => 'Facebook',
+        'Pinterest/'        => 'Pinterest',
+        'LinkedInApp'       => 'LinkedIn',
+        'TikTok'            => 'TikTok',
+        'Twitter'           => 'X',
+        'Reddit'            => 'Reddit',
     ];
 
     // ── Source keyword → source mapping (for ?source= / ?utm_source=) ────
@@ -179,6 +243,17 @@ final class TrafficSourceDetector
         'whatsapp'    => 'WhatsApp',
         'telegram'    => 'Telegram',
         'tg'          => 'Telegram',
+        'discord'     => 'Discord',
+        'skype'       => 'Skype',
+        'signal'      => 'Signal',
+        'wechat'      => 'WeChat',
+        'line'        => 'LINE',
+        'viber'       => 'Viber',
+        'snapchat'    => 'Snapchat',
+        'slack'       => 'Slack',
+        'teams'       => 'Teams',
+        'gmail'       => 'Gmail',
+        'outlook'     => 'Outlook',
         'google'      => 'Google Search',
         'youtube'     => 'YouTube',
         'yt'          => 'YouTube',
@@ -206,8 +281,8 @@ final class TrafficSourceDetector
      * @param string $referer         HTTP Referer from the click
      * @param string $ua              User-Agent from the click
      * @param int    $overrideApplied Whether source override was applied (1/0)
-     * @param array  $extraParams     Optional: sub params that may contain UTM data
-     * @return array{source: string, type: string, color: string, utm_source: ?string, utm_medium: ?string, utm_campaign: ?string, utm_content: ?string, utm_term: ?string}
+     * @param array  $extraParams     Optional: sub params that may contain UTM data, headers, etc.
+     * @return array{source: string, type: string, color: string, detected_by: string, utm_source: ?string, utm_medium: ?string, utm_campaign: ?string, utm_content: ?string, utm_term: ?string}
      */
     public static function detect(
         string $source,
@@ -244,47 +319,71 @@ final class TrafficSourceDetector
         if (!empty($extraParams['utm_term']))     $utmTerm     = substr($extraParams['utm_term'], 0, 255);
 
         $detected = null;
+        $detectedBy = '';
         $srcLower = strtolower(trim($source));
 
         // ── Priority 1: Traffic Source Override applied → use the overridden source key
         if ($overrideApplied && $srcLower !== '') {
             $detected = self::resolveFromOverrideKey($srcLower);
+            if ($detected) $detectedBy = 'Traffic Source Override';
         }
 
-        // ── Priority 2: Explicit source param / utm_source keyword match
+        // ── Priority 2: Explicit source param
         if (!$detected && $srcLower !== '') {
             $detected = self::resolveFromSourceKeyword($srcLower);
-        }
-        if (!$detected && $utmSource) {
-            $detected = self::resolveFromSourceKeyword(strtolower($utmSource));
+            if ($detected) $detectedBy = 'Click Parameter (source)';
         }
 
-        // ── Priority 3: Check for paid medium (upgrades source)
+        // ── Priority 3: UTM Source match
+        if (!$detected && $utmSource) {
+            $detected = self::resolveFromSourceKeyword(strtolower($utmSource));
+            if ($detected) $detectedBy = 'UTM Source Parameter';
+        }
+
+        // Check for paid medium (upgrades source)
         $isPaid = false;
         if ($utmMedium) {
             $medLower = strtolower($utmMedium);
             $isPaid = in_array($medLower, ['cpc', 'cpm', 'ppc', 'paid', 'paidsocial', 'paid_social', 'retargeting']);
         }
 
-        // Check for Google Ads via gclid in referer
-        if (!$detected && $referer !== '' && str_contains($referer, 'gclid=')) {
+        // Check for Google Ads via gclid in referer/params
+        if (!$detected && (($referer !== '' && str_contains($referer, 'gclid=')) || !empty($extraParams['gclid']))) {
             $detected = 'Google Ads';
+            $detectedBy = 'Deep Link (gclid)';
         }
 
-        // ── Priority 4: Referer domain matching
+        // ── Priority 4: HTTP_X_REQUESTED_WITH (In-App Browser Package Name)
+        if (!$detected && !empty($extraParams['x_requested_with'])) {
+            $pkg = strtolower(trim($extraParams['x_requested_with']));
+            if (isset(self::$appPackageMap[$pkg])) {
+                $detected = self::$appPackageMap[$pkg];
+                $detectedBy = 'App Package (X-Requested-With)';
+            }
+        }
+
+        // ── Priority 5: Referer domain matching
         if (!$detected && $referer !== '') {
-            $detected = self::resolveFromReferer($referer, $ua);
+            $det = self::resolveFromReferer($referer, $ua);
+            if ($det) {
+                $detected = $det;
+                $detectedBy = 'HTTP Referrer';
+            }
         }
 
-        // ── Priority 5: User-Agent matching
+        // ── Priority 6: User-Agent matching (Excellent for Chat Apps hiding referers)
         if (!$detected && $ua !== '') {
-            $detected = self::resolveFromUA($ua);
+            $det = self::resolveFromUA($ua);
+            if ($det) {
+                $detected = $det;
+                $detectedBy = 'User-Agent Header';
+            }
         }
 
-        // ── Priority 6: Medium-based detection
+        // ── Priority 7: Medium-based fallback detection
         if (!$detected && $utmMedium) {
             $medLower = strtolower($utmMedium);
-            $detected = match (true) {
+            $det = match (true) {
                 $medLower === 'email'                                     => 'Email',
                 in_array($medLower, ['display', 'banner', 'cpm'])        => 'Display',
                 $medLower === 'push'                                      => 'Push',
@@ -296,23 +395,40 @@ final class TrafficSourceDetector
                 $medLower === 'referral'                                  => 'Referral',
                 default                                                   => null,
             };
+            if ($det) {
+                $detected = $det;
+                $detectedBy = 'UTM Medium Parameter';
+            }
         }
 
-        // ── Priority 7: Fallback
+        // ── Priority 8: Final Fallback (Direct vs Unknown)
         if (!$detected) {
-            $detected = ($referer === '' || $referer === null) ? 'Direct' : 'Unknown';
+            if ($referer === '' || $referer === null) {
+                $detected = 'Direct';
+                $detectedBy = 'Empty Referrer (Fallback)';
+            } else {
+                $detected = 'Unknown';
+                $detectedBy = 'Unknown Referrer: ' . parse_url($referer, PHP_URL_HOST);
+            }
         }
 
         // Upgrade to Ads variant if paid medium detected
         if ($isPaid) {
-            if ($detected === 'Facebook')      $detected = 'Facebook Ads';
-            if ($detected === 'Google Search') $detected = 'Google Ads';
+            if ($detected === 'Facebook') {
+                $detected = 'Facebook Ads';
+                $detectedBy .= ' + Paid Medium';
+            }
+            if ($detected === 'Google Search') {
+                $detected = 'Google Ads';
+                $detectedBy .= ' + Paid Medium';
+            }
         }
 
         return [
             'source'       => $detected,
             'type'         => self::SOURCE_TYPES[$detected] ?? 'Unknown',
             'color'        => self::SOURCE_COLORS[$detected] ?? '#94A3B8',
+            'detected_by'  => $detectedBy,
             'utm_source'   => $utmSource   ? substr($utmSource, 0, 255)   : null,
             'utm_medium'   => $utmMedium   ? substr($utmMedium, 0, 255)   : null,
             'utm_campaign' => $utmCampaign ? substr($utmCampaign, 0, 255) : null,
@@ -341,7 +457,6 @@ final class TrafficSourceDetector
 
     private static function resolveFromOverrideKey(string $key): ?string
     {
-        // Override keys are like: 'display', 'paid_ads', 'email', 'social', etc.
         $map = [
             'organic'    => 'Organic',
             'paid_ads'   => 'Display',
@@ -357,11 +472,9 @@ final class TrafficSourceDetector
 
     private static function resolveFromSourceKeyword(string $keyword): ?string
     {
-        // Exact match first
         if (isset(self::$sourceKeywordMap[$keyword])) {
             return self::$sourceKeywordMap[$keyword];
         }
-        // Partial match
         foreach (self::$sourceKeywordMap as $k => $v) {
             if (str_contains($keyword, $k)) {
                 return $v;
@@ -374,24 +487,25 @@ final class TrafficSourceDetector
     {
         $host = strtolower(parse_url($referer, PHP_URL_HOST) ?? '');
         if ($host === '') return null;
-
-        // Strip www.
         $host = preg_replace('/^www\./', '', $host);
 
-        // Exact match
         if (isset(self::$refererMap[$host])) {
             $source = self::$refererMap[$host];
-            // Facebook referer + Messenger UA → Messenger
             if ($source === 'Facebook' && $ua !== '') {
                 $uaLower = strtolower($ua);
                 if (str_contains($uaLower, 'messenger') || str_contains($uaLower, 'fban/messenger')) {
                     return 'Messenger';
                 }
             }
+            if ($source === 'Instagram' && $ua !== '') {
+                $uaLower = strtolower($ua);
+                if (str_contains($uaLower, 'direct')) {
+                    return 'Instagram DM';
+                }
+            }
             return $source;
         }
 
-        // Subdomain matching (e.g., de.quora.com → quora.com)
         $parts = explode('.', $host);
         if (count($parts) > 2) {
             $baseDomain = implode('.', array_slice($parts, -2));
@@ -400,7 +514,6 @@ final class TrafficSourceDetector
             }
         }
 
-        // Google TLD matching (google.co.*, google.com.*)
         if (preg_match('/^google\./i', $host)) {
             return 'Google Search';
         }

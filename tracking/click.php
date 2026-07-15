@@ -851,10 +851,9 @@ if (!empty($GLOBALS['_sl_direct_url'])) {
     $lpIdx    = null;
 }
 
-// ── Traffic Source Override ──────────────────────────────────────────────
+// ── Traffic Source Detection ──────────────────────────────────────────────
 // MUST run BEFORE the offer URL macro replacement below so that {source}
-// in the advertiser's offer URL receives the overridden value, NOT the
-// original chat source (e.g. 'display' instead of 'telegram').
+// in the advertiser's offer URL receives the overridden/detected value.
 $originalSource = null;
 $sourceOverrideApplied = 0;
 try {
@@ -871,9 +870,23 @@ try {
     }
 } catch (\Throwable $e) {} // fail-open
 
+// Extra params for detection (extracting from GET)
+$extraDetParams = [
+    'utm_source'   => Helpers::get('utm_source'),
+    'utm_medium'   => Helpers::get('utm_medium'),
+    'utm_campaign' => Helpers::get('utm_campaign'),
+    'utm_content'  => Helpers::get('utm_content'),
+    'utm_term'     => Helpers::get('utm_term'),
+    'gclid'        => Helpers::get('gclid'),
+    'x_requested_with' => $_SERVER['HTTP_X_REQUESTED_WITH'] ?? null,
+];
+$tsDet = TrafficSourceDetector::detect($source, $referer, $ua, $sourceOverrideApplied, $extraDetParams);
+// Use the final detected source instead of the raw param for the URL replacement
+$finalSource = $tsDet['source'];
+
 $offerUrl = str_replace(
     ['{click_id}', '{aff_id}', '{aff_sub1}', '{aff_sub2}', '{aff_sub3}', '{aff_sub4}', '{sub1}', '{sub2}', '{sub3}', '{sub4}', '{sub5}', '{sub6}', '{offer_id}', '{country}', '{source}'],
-    [urlencode($clickId), urlencode($affCode), urlencode($sub3), urlencode($sub4), urlencode($sub5), urlencode($sub6), urlencode($sub1), urlencode($sub2), urlencode($sub3), urlencode($sub4), urlencode($sub5), urlencode($sub6), $offerId, urlencode($geo['country']), urlencode($source ?? '')],
+    [urlencode($clickId), urlencode($affCode), urlencode($sub3), urlencode($sub4), urlencode($sub5), urlencode($sub6), urlencode($sub1), urlencode($sub2), urlencode($sub3), urlencode($sub4), urlencode($sub5), urlencode($sub6), $offerId, urlencode($geo['country']), urlencode($finalSource ?? '')],
     $offerUrl
 );
 
@@ -884,6 +897,14 @@ try { Database::query("ALTER TABLE `clicks` ADD COLUMN `fraud_reasons` TEXT     
 try { Database::query("ALTER TABLE `clicks` ADD COLUMN `source`        VARCHAR(255)  DEFAULT ''");                                 } catch (\Throwable $_e) {}
 try { Database::query("ALTER TABLE `clicks` ADD COLUMN `original_source` VARCHAR(255) DEFAULT NULL");                              } catch (\Throwable $_e) {}
 try { Database::query("ALTER TABLE `clicks` ADD COLUMN `source_override_applied` TINYINT(1) DEFAULT 0");                           } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `clicks` ADD COLUMN `traffic_source`      VARCHAR(50)  DEFAULT 'Unknown'"); } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `clicks` ADD COLUMN `traffic_source_type` VARCHAR(50)  DEFAULT 'Unknown'"); } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `clicks` ADD COLUMN `detected_by`         VARCHAR(100) DEFAULT NULL"); } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `clicks` ADD COLUMN `utm_source`          VARCHAR(255) DEFAULT NULL"); } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `clicks` ADD COLUMN `utm_medium`          VARCHAR(255) DEFAULT NULL"); } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `clicks` ADD COLUMN `utm_campaign`        VARCHAR(255) DEFAULT NULL"); } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `clicks` ADD COLUMN `utm_content`         VARCHAR(255) DEFAULT NULL"); } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `clicks` ADD COLUMN `utm_term`            VARCHAR(255) DEFAULT NULL"); } catch (\Throwable $_e) {}
 
 // ── Auto-Block: fraud score threshold check ───────────────────────────────
 // Controlled by admin setting: fraud.auto_block.enabled / fraud.auto_block.threshold
@@ -897,9 +918,6 @@ if ($clickStatus === 'valid') {
     }
 }
 
-// (Traffic Source Override logic moved above the offer URL macro replacement
-//  so that {source} in advertiser URLs receives the overridden value.)
-
 // Record click
 Database::insert('clicks', [
     'click_id'         => $clickId,
@@ -909,6 +927,14 @@ Database::insert('clicks', [
     'source'           => $source,
     'original_source'          => $originalSource,
     'source_override_applied'  => $sourceOverrideApplied,
+    'traffic_source'       => $tsDet['source'],
+    'traffic_source_type'  => $tsDet['type'],
+    'detected_by'          => $tsDet['detected_by'],
+    'utm_source'           => $tsDet['utm_source'],
+    'utm_medium'           => $tsDet['utm_medium'],
+    'utm_campaign'         => $tsDet['utm_campaign'],
+    'utm_content'          => $tsDet['utm_content'],
+    'utm_term'             => $tsDet['utm_term'],
     'sub1'             => $sub1,
     'sub2'             => $sub2,
     'sub3'             => $sub3,
