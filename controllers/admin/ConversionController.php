@@ -41,7 +41,8 @@ if (Helpers::isPost() && Helpers::post('action') === 'auto_fire_pending') {
             "SELECT cv.conversion_id, cv.click_id, cv.offer_id, cv.affiliate_id,
                     cv.payout, cv.revenue, cv.status,
                     ck.sub1, ck.sub2, ck.sub3, ck.sub4, ck.sub5,
-                    COALESCE(ck.sub6, '') as sub6, ck.source
+                    COALESCE(ck.sub6, '') as sub6, ck.source,
+                    cv.traffic_source, cv.traffic_source_type, cv.referrer_url, cv.utm_source, cv.utm_medium, cv.utm_campaign, cv.utm_content, cv.utm_term
              FROM conversions cv
              LEFT JOIN clicks ck ON ck.click_id = cv.click_id
              WHERE cv.postback_sent = 0
@@ -107,7 +108,8 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
             "SELECT cv.conversion_id, cv.click_id, cv.offer_id, cv.affiliate_id,
                     cv.payout, cv.revenue, cv.status,
                     ck.sub1, ck.sub2, ck.sub3, ck.sub4, ck.sub5,
-                    COALESCE(ck.sub6, '') as sub6, ck.source
+                    COALESCE(ck.sub6, '') as sub6, ck.source,
+                    cv.traffic_source, cv.traffic_source_type, cv.referrer_url, cv.utm_source, cv.utm_medium, cv.utm_campaign, cv.utm_content, cv.utm_term
              FROM conversions cv
              LEFT JOIN clicks ck ON ck.click_id = cv.click_id
              WHERE cv.postback_sent = 0
@@ -136,6 +138,11 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
                 'sub4'          => $conv['sub4'] ?? '',
                 'sub5'          => $conv['sub5'] ?? '',
                 'sub6'          => $conv['sub6'] ?? '',
+                'traffic_source'=> $conv['traffic_source'] ?? 'Unknown',
+                'traffic_source_type' => $conv['traffic_source_type'] ?? 'Unknown',
+                'referrer_url'  => $conv['referrer_url'] ?? '',
+                'utm_source'    => $conv['utm_source'] ?? '',
+                'utm_medium'    => $conv['utm_medium'] ?? '',
             ];
             try {
                 PostbackFirer::fireAll($convForPostback, $conv['status'], true);
@@ -314,6 +321,11 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
                         'sub4'          => $conv['sub4'] ?? '',
                         'sub5'          => $conv['sub5'] ?? '',
                         'sub6'          => $conv['sub6'] ?? '',
+                        'traffic_source'=> $conv['traffic_source'] ?? 'Unknown',
+                        'traffic_source_type' => $conv['traffic_source_type'] ?? 'Unknown',
+                        'referrer_url'  => $conv['referrer_url'] ?? '',
+                        'utm_source'    => $conv['utm_source'] ?? '',
+                        'utm_medium'    => $conv['utm_medium'] ?? '',
                     ];
 
                     // Always mark postback_sent=1 after every admin-triggered status change.
@@ -403,6 +415,7 @@ $conversions = Database::fetchAll(
             o.landing_page_names as offer_landing_page_names,
             CONCAT(u.first_name,' ',u.last_name) as aff_name,
             af.affiliate_code,
+            c.traffic_source, c.traffic_source_type, c.referrer_url, c.utm_source, c.utm_medium, c.utm_campaign, c.utm_content, c.utm_term,
             ck.user_agent      as ck_user_agent,
             ck.device_type     as ck_device_type,
             ck.os              as ck_os,
@@ -420,9 +433,9 @@ $conversions = Database::fetchAll(
 );
 
 $_exportFmt = Helpers::get('export');
-if ($_exportFmt === 'csv' || $_exportFmt === 'xls') {
-    $headerRow = ['Conversion ID','Click ID','Offer','Affiliate','Aff Code',
-                  'Payout','Revenue','Status','Rejection Reason','Rejected At','Device Brand','Device Model','OS Version','Landing Page','Landing Page Name','Referrer','Fraud Score','Country','IP','Postback Sent','Converted At'];
+    if ($_exportFmt === 'csv' || $_exportFmt === 'xls') {
+        $headerRow = ['Conversion ID','Click ID','Offer','Affiliate','Aff Code',
+                      'Payout','Revenue','Status','Rejection Reason','Rejected At','Device Brand','Device Model','OS Version','Landing Page','Landing Page Name','Referrer','Traffic Source','UTM Source','UTM Medium','Fraud Score','Country','IP','Postback Sent','Converted At'];
     if ($_exportFmt === 'xls') {
         ExportHelper::beginXls('conversions');
         ExportHelper::xlsHeaderRow($headerRow);
@@ -476,6 +489,7 @@ if ($_exportFmt === 'csv' || $_exportFmt === 'xls') {
             $c['payout'], $c['revenue'], $c['status'],
             $c['rejection_reason'] ?? '', $c['rejected_at'] ?? '',
             $csvBrand, $csvModel, $csvOs, $csvLp, $csvLpName, $csvRef,
+            $c['traffic_source'] ?? 'Unknown', $c['utm_source'] ?? '', $c['utm_medium'] ?? '',
             !empty($c['fraud_checked_at']) ? (int)($c['fraud_score'] ?? 0) : 'pending',
             $c['country'] ?? '', $c['ip_address'],
             $c['postback_sent'] ? 'Yes' : 'No',

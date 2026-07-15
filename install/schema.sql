@@ -977,3 +977,15 @@ INSERT IGNORE INTO `schema_migrations` (migration, batch, status) VALUES
     ('0008_manager_commission_from_profit.sql',1, 'applied'),
     ('0009_manager_invoice_balance.sql',      1, 'applied'),
     ('0010_manager_commission_fix.sql',       1, 'applied');
+
+-- ── Traffic Source Tracking on conversions ────────────────────────────────
+ALTER TABLE `conversions` ADD COLUMN IF NOT EXISTS `traffic_source`      VARCHAR(50)   DEFAULT 'Unknown';
+ALTER TABLE `conversions` ADD COLUMN IF NOT EXISTS `traffic_source_type` VARCHAR(30)   DEFAULT 'Unknown';
+ALTER TABLE `conversions` ADD COLUMN IF NOT EXISTS `referrer_url`        VARCHAR(2000) DEFAULT NULL;
+ALTER TABLE `conversions` ADD COLUMN IF NOT EXISTS `utm_source`          VARCHAR(255)  DEFAULT NULL;
+ALTER TABLE `conversions` ADD COLUMN IF NOT EXISTS `utm_medium`          VARCHAR(255)  DEFAULT NULL;
+ALTER TABLE `conversions` ADD COLUMN IF NOT EXISTS `utm_campaign`        VARCHAR(255)  DEFAULT NULL;
+ALTER TABLE `conversions` ADD COLUMN IF NOT EXISTS `utm_content`         VARCHAR(255)  DEFAULT NULL;
+ALTER TABLE `conversions` ADD COLUMN IF NOT EXISTS `utm_term`            VARCHAR(255)  DEFAULT NULL;
+ALTER TABLE `conversions` ADD INDEX IF NOT EXISTS `idx_traffic_source`      (`traffic_source`);
+ALTER TABLE `conversions` ADD INDEX IF NOT EXISTS `idx_traffic_source_type` (`traffic_source_type`);

@@ -134,6 +134,18 @@ $tabIcons = [
                 <input type="text" name="sub1" class="form-control" value="<?= Helpers::e($sub1) ?>" placeholder="sub1 value" style="width:110px">
             </div>
 
+            <?php if (in_array($tab, ['conversions','rejected','pending','autohide'])): ?>
+            <div class="form-group mb-0">
+                <label>Traffic Source</label>
+                <select name="traffic_source" class="form-control">
+                    <option value="">All Sources</option>
+                    <?php foreach (TrafficSourceDetector::allSources() as $_tsSrc): ?>
+                    <option value="<?= Helpers::e($_tsSrc) ?>" <?= ($trafficSource ?? '') === $_tsSrc ? 'selected' : '' ?>><?= Helpers::e($_tsSrc) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <?php endif; ?>
+
             <?php if (in_array($tab, ['sl_clicks','sl_conversions','sl_affiliates'])): ?>
             <div class="form-group mb-0">
                 <label>SmartLink</label>
@@ -571,7 +583,7 @@ if ($notSent > 0 && in_array($tab, ['conversions','pending'])):
                     <th>OFFER</th><th>AFFILIATE</th><th>CLICK ID</th><th>CONVERSION ID</th>
                     <th>AFF CLICK ID</th><th>AFF SUB 2</th><th>STATUS</th>
                     <th>PAYOUT</th><th>REVENUE</th><th>PROFIT</th>
-                    <th>GOAL</th><th>TXN ID</th><th>COUNTRY</th><th>CITY</th><th>STATE</th><th>OS</th><th>BROWSER</th>
+                    <th>GOAL</th><th>TXN ID</th><th>COUNTRY</th><th>TRAFFIC SOURCE</th><th>CITY</th><th>STATE</th><th>OS</th><th>BROWSER</th>
                     <th>CONV IP</th><th>USER AGENT</th>
                     <th>DEVICE BRAND</th><th>DEVICE MODEL</th>
                     <th>CATEGORY</th><th>PRELAND</th><th>LP NAME</th><th>OFFER PAGE</th><th>FLOW ID</th>
@@ -634,6 +646,13 @@ if ($notSent > 0 && in_array($tab, ['conversions','pending'])):
                 <td><?= Helpers::e($r['goal_name']?:'—') ?></td>
                 <td class="text-sm text-muted"><?= Helpers::e($r['transaction_id']?:'—') ?></td>
                 <td><?php if (!empty($r['country'])): ?><img src="https://flagcdn.com/16x12/<?= strtolower($r['country']) ?>.png" onerror="this.style.display='none'" style="vertical-align:middle;margin-right:3px"><?= Helpers::e($r['country']) ?><?php else: ?>—<?php endif; ?></td>
+                <?php
+                $_tsLabel = $r['traffic_source'] ?? 'Unknown';
+                $_tsColor = TrafficSourceDetector::color($_tsLabel);
+                // Choose light text for dark backgrounds
+                $_tsDark = in_array($_tsLabel, ['Threads','TikTok','Facebook Ads','Direct','Unknown','X']);
+                ?>
+                <td><span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;background:<?= $_tsColor ?>;color:<?= $_tsDark ? '#fff' : '#fff' ?>;white-space:nowrap"><?= Helpers::e($_tsLabel) ?></span></td>
                 <td><?= Helpers::e($r['city'] ?: '—') ?></td>
                 <td><?= Helpers::e($r['region'] ?: '—') ?></td>
                 <td><?= Helpers::e($r['os']?:'—') ?></td>

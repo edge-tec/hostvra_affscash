@@ -2,6 +2,8 @@
 Auth::check('admin');
 $pageTitle = 'Reports';
 
+require_once BASE_PATH . '/core/TrafficSourceDetector.php';
+
 // Ensure required geo columns exist on conversions table
 try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_country`      VARCHAR(60)  DEFAULT NULL"); } catch (\Throwable $_e) {}
 try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_country_code` CHAR(2)      DEFAULT NULL"); } catch (\Throwable $_e) {}
@@ -10,6 +12,15 @@ try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_state`     
 try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_isp`          VARCHAR(200) DEFAULT NULL"); } catch (\Throwable $_e) {}
 try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_org`          VARCHAR(200) DEFAULT NULL"); } catch (\Throwable $_e) {}
 try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_asn`          VARCHAR(30)  DEFAULT NULL"); } catch (\Throwable $_e) {}
+// Ensure traffic-source tracking columns exist on conversions table
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `traffic_source`      VARCHAR(50)   DEFAULT 'Unknown'");  } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `traffic_source_type` VARCHAR(30)   DEFAULT 'Unknown'");  } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `referrer_url`        VARCHAR(2000) DEFAULT NULL");        } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `utm_source`          VARCHAR(255)  DEFAULT NULL");        } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `utm_medium`          VARCHAR(255)  DEFAULT NULL");        } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `utm_campaign`        VARCHAR(255)  DEFAULT NULL");        } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `utm_content`         VARCHAR(255)  DEFAULT NULL");        } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `utm_term`            VARCHAR(255)  DEFAULT NULL");        } catch (\Throwable $_e) {}
 
 /**
  * Lazy geo-backfill helper.
@@ -83,9 +94,10 @@ if ($affCode !== '' && $affId === 0) {
     $_affRow = Database::fetchOne("SELECT id FROM affiliates WHERE affiliate_code = ?", [$affCode]);
     if ($_affRow) $affId = (int)$_affRow['id'];
 }
-$country = trim(Helpers::get('country') ?: '');
-$sub1    = trim(Helpers::get('sub1') ?: '');
-$limit   = min((int)(Helpers::get('limit') ?: 1000), 10000);
+$country        = trim(Helpers::get('country') ?: '');
+$sub1           = trim(Helpers::get('sub1') ?: '');
+$trafficSource  = trim(Helpers::get('traffic_source') ?: '');
+$limit          = min((int)(Helpers::get('limit') ?: 1000), 10000);
 
 $slId    = (int)(Helpers::get('sl_id') ?: 0);
 
@@ -117,7 +129,7 @@ function buildClickWhere(int $offerId, int $affId, string $country, string $sub1
 }
 
 // Build conversion WHERE parts
-function buildConvWhere(int $offerId, int $affId, string $country, string $sub1): array {
+function buildConvWhere(int $offerId, int $affId, string $country, string $sub1, string $trafficSource = ''): array {
     $where  = ['cv.converted_at BETWEEN ? AND ?'];
     $params = [];
     if ($offerId > 0) { $where[] = 'cv.offer_id = ?';     $params[] = $offerId; }
@@ -129,6 +141,10 @@ function buildConvWhere(int $offerId, int $affId, string $country, string $sub1)
     if ($sub1 !== '') {
         $where[] = 'EXISTS(SELECT 1 FROM clicks ck WHERE ck.click_id=cv.click_id AND ck.sub1 LIKE ?)';
         $params[] = '%'.$sub1.'%';
+    }
+    if ($trafficSource !== '') {
+        $where[] = "COALESCE(cv.traffic_source, 'Unknown') = ?";
+        $params[] = $trafficSource;
     }
     return [$where, $params];
 }
@@ -491,7 +507,7 @@ $convStatusFilter = match($tab) {
 };
 
 if (in_array($tab, ['conversions','rejected','pending','autohide'])) {
-    [$cvWhere, $cvExtra] = buildConvWhere($offerId, $affId, $country, $sub1);
+    [$cvWhere, $cvExtra] = buildConvWhere($offerId, $affId, $country, $sub1, $trafficSource);
     $cvParams = array_merge([$dateFrom, $dateTo], $cvExtra);
 
     if ($tab === 'autohide') {
@@ -519,12 +535,18 @@ if (in_array($tab, ['conversions','rejected','pending','autohide'])) {
                 cv.fraud_score, cv.fraud_checked_at,
                 COALESCE(cv.rejection_reason, '') as rejection_reason,
                 cv.rejected_at,
+                COALESCE(cv.traffic_source, 'Unknown') as traffic_source,
+                COALESCE(cv.traffic_source_type, 'Unknown') as traffic_source_type,
+                cv.referrer_url, cv.utm_source, cv.utm_medium,
+                cv.utm_campaign, cv.utm_content, cv.utm_term,
                 o.name as offer_name, o.category as offer_category,
                 o.offer_url as offer_page, o.landing_pages as offer_landing_pages,
                 o.landing_page_names as offer_landing_page_names,
                 CONCAT(u.first_name,' ',u.last_name) as aff_name, af.affiliate_code,
                 ck.sub1, ck.sub2, ck.sub3, ck.os, ck.browser, ck.user_agent,
                 ck.landing_page_idx, ck.smartlink_id as flow_id,
+                ck.source as click_source, ck.referer as click_referer,
+                COALESCE(ck.source_override_applied, 0) as click_override_applied,
                 /* Country fallback chain — older rows may have no click record so
                    ck.country is NULL; fall back to the IPQuery geo code captured
                    when fraud-checking the conversion itself, then to empty. */
@@ -546,6 +568,42 @@ if (in_array($tab, ['conversions','rejected','pending','autohide'])) {
     if (!empty($convRows)) {
         _backfillMissingGeo($convRows, 25);
     }
+
+    // ── Lazy backfill traffic source for old conversions ─────────────────
+    // Old conversions have traffic_source = 'Unknown' because the column
+    // didn't exist when they were created. Detect from the linked click.
+    $_tsBfCount = 0;
+    foreach ($convRows as &$_tsr) {
+        if ($_tsBfCount >= 25) break;
+        if (($_tsr['traffic_source'] ?? '') !== 'Unknown') continue;
+        // Only backfill if we have click data to detect from
+        $clickSrc  = $_tsr['click_source']        ?? '';
+        $clickRef  = $_tsr['click_referer']        ?? '';
+        $clickUA   = $_tsr['user_agent']           ?? '';
+        $clickOvr  = (int)($_tsr['click_override_applied'] ?? 0);
+        if ($clickSrc === '' && $clickRef === '' && $clickUA === '') continue;
+        $_bfResult = TrafficSourceDetector::detect($clickSrc, $clickRef, $clickUA, $clickOvr);
+        if ($_bfResult['source'] === 'Unknown') continue;
+        try {
+            Database::query(
+                "UPDATE `conversions` SET `traffic_source` = ?, `traffic_source_type` = ?,
+                 `referrer_url` = COALESCE(`referrer_url`, ?),
+                 `utm_source` = COALESCE(`utm_source`, ?), `utm_medium` = COALESCE(`utm_medium`, ?),
+                 `utm_campaign` = COALESCE(`utm_campaign`, ?), `utm_content` = COALESCE(`utm_content`, ?),
+                 `utm_term` = COALESCE(`utm_term`, ?)
+                 WHERE `conversion_id` = ?",
+                [$_bfResult['source'], $_bfResult['type'],
+                 substr($clickRef, 0, 2000) ?: null,
+                 $_bfResult['utm_source'], $_bfResult['utm_medium'],
+                 $_bfResult['utm_campaign'], $_bfResult['utm_content'],
+                 $_bfResult['utm_term'], $_tsr['conversion_id']]
+            );
+            $_tsr['traffic_source']      = $_bfResult['source'];
+            $_tsr['traffic_source_type'] = $_bfResult['type'];
+            $_tsBfCount++;
+        } catch (\Throwable $_e) {}
+    }
+    unset($_tsr);
 
     // Pre-compute CR / CTR stats per offer for the selected date range
     $offerStatMap = [];
@@ -572,7 +630,7 @@ if (in_array($tab, ['conversions','rejected','pending','autohide'])) {
     }
 
     if ($isExport) {
-        $headerRow = ['CONVERSION ID','CLICK ID','OFFER','AFFILIATE','AFF CODE','SUB1','SUB2','STATUS','REJECTION REASON','REJECTED AT','PAYOUT','REVENUE','PROFIT','TRANSACTION ID','GOAL','COUNTRY','CITY','STATE','OS','BROWSER','CONV IP','USER AGENT','FRAUD SCORE','POSTBACK SENT','CONVERTED AT','DEVICE BRAND','DEVICE MODEL','CATEGORY','PRELAND','LANDING PAGE NAME','OFFER PAGE','FLOW ID','CR (VISIT)','CR (CLICK)','CR (UNIQUE)','CTR'];
+        $headerRow = ['CONVERSION ID','CLICK ID','OFFER','AFFILIATE','AFF CODE','SUB1','SUB2','STATUS','REJECTION REASON','REJECTED AT','PAYOUT','REVENUE','PROFIT','TRANSACTION ID','GOAL','TRAFFIC SOURCE','COUNTRY','CITY','STATE','OS','BROWSER','CONV IP','USER AGENT','FRAUD SCORE','POSTBACK SENT','CONVERTED AT','DEVICE BRAND','DEVICE MODEL','CATEGORY','PRELAND','LANDING PAGE NAME','OFFER PAGE','FLOW ID','CR (VISIT)','CR (CLICK)','CR (UNIQUE)','CTR','REFERRER URL','UTM SOURCE','UTM MEDIUM','UTM CAMPAIGN','UTM CONTENT','UTM TERM'];
         if ($_exportFormat === 'xls') {
             ExportHelper::beginXls('report-'.$tab);
             ExportHelper::xlsHeaderRow($headerRow);
@@ -606,7 +664,7 @@ if (in_array($tab, ['conversions','rejected','pending','autohide'])) {
             $crClick  = (!empty($os['total_clicks'])&& $os['total_clicks']> 0) ? round($os['total_conv']/$os['total_clicks']*100,2).'%' : '—';
             $crUnique = (!empty($os['total_unique'])&& $os['total_unique']> 0) ? round($os['total_conv']/$os['total_unique']*100,2).'%' : '—';
             $ctr      = (!empty($os['total_impr'])  && $os['total_impr']  > 0) ? round($os['total_clicks']/$os['total_impr']*100,2).'%' : '—';
-            $rowCells = [$r['conversion_id'],$r['click_id'],$r['offer_name']??'—',$r['aff_name'],$r['affiliate_code'],$r['sub1'],$r['sub2'],$r['status'],$r['rejection_reason']??'',$r['rejected_at']??'',number_format($r['payout'],4),number_format($r['revenue'],4),number_format($r['profit'],4),$r['transaction_id'],$r['goal_name'],$r['country'],$r['city'],$r['region'],$r['os'],$r['browser'],$r['conv_ip']??'',$ua,!empty($r['fraud_checked_at'])?(int)$r['fraud_score']:'pending',$r['postback_sent']?'Yes':'No',$r['converted_at'],$dBrand,$dModel,$r['offer_category']??'',$preland,$lpName,$r['offer_page']??'',$r['flow_id']??'',$crVisit,$crClick,$crUnique,$ctr];
+            $rowCells = [$r['conversion_id'],$r['click_id'],$r['offer_name']??'—',$r['aff_name'],$r['affiliate_code'],$r['sub1'],$r['sub2'],$r['status'],$r['rejection_reason']??'',$r['rejected_at']??'',number_format($r['payout'],4),number_format($r['revenue'],4),number_format($r['profit'],4),$r['transaction_id'],$r['goal_name'],$r['traffic_source']??'Unknown',$r['country'],$r['city'],$r['region'],$r['os'],$r['browser'],$r['conv_ip']??'',$ua,!empty($r['fraud_checked_at'])?(int)$r['fraud_score']:'pending',$r['postback_sent']?'Yes':'No',$r['converted_at'],$dBrand,$dModel,$r['offer_category']??'',$preland,$lpName,$r['offer_page']??'',$r['flow_id']??'',$crVisit,$crClick,$crUnique,$ctr,$r['referrer_url']??'',$r['utm_source']??'',$r['utm_medium']??'',$r['utm_campaign']??'',$r['utm_content']??'',$r['utm_term']??''];
             if ($_exportFormat === 'xls') ExportHelper::xlsRow($rowCells);
             else                          fputcsv($f, $rowCells);
         }

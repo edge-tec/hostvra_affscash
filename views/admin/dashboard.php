@@ -884,6 +884,51 @@ html[data-theme="dark"] .loading-overlay{background:rgba(15,23,42,.55);}
     </div>
 </div>
 
+<?php if (!empty($trafficSources)): ?>
+<!-- ── Traffic Sources (last 30 days) ─────────────────────────────────── -->
+<div class="chart-card mb-3">
+    <div class="card-header">
+        <span class="card-title">Conversions by Traffic Source (Last 30 Days)</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:20px">
+        <div class="table-wrap">
+            <table class="analytics-table">
+                <thead>
+                    <tr><th>Source</th><th>Conversions</th><th>Revenue</th><th>Payout</th><th>Profit</th></tr>
+                </thead>
+                <tbody>
+                <?php foreach ($trafficSources as $ts): 
+                    $tsLabel = $ts['source'] ?? 'Unknown';
+                    $tsColor = TrafficSourceDetector::color($tsLabel);
+                    $tsDark  = in_array($tsLabel, ['Threads','TikTok','Facebook Ads','Direct','Unknown','X']);
+                ?>
+                <tr>
+                    <td>
+                        <span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;background:<?= $tsColor ?>;color:#fff;white-space:nowrap">
+                            <?= Helpers::e($tsLabel) ?>
+                        </span>
+                    </td>
+                    <td><?= number_format((int)$ts['conversions']) ?></td>
+                    <td>$<?= number_format((float)$ts['revenue'], 2) ?></td>
+                    <td>$<?= number_format((float)$ts['payout'], 2) ?></td>
+                    <td style="color:<?= (float)$ts['profit'] >= 0 ? '#059669' : 'var(--danger)' ?>;font-weight:700">
+                        $<?= number_format((float)$ts['profit'], 2) ?>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <canvas id="tsPieChart" style="max-height:250px;width:100%"></canvas>
+            <div style="margin-top:20px">
+                <canvas id="tsBarChart" style="max-height:200px;width:100%"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
 <!-- ── Recent Conversions ─────────────────────────────────────────────── -->
 <div class="chart-card mb-3">
     <div class="card-header">
@@ -1671,6 +1716,84 @@ loadAll();
         }
         animate();
     });
+})();
+
+})();
+
+// ── Traffic Source Charts (Static PHP Data) ───────────────────────────
+(function() {
+    var tsData = <?= json_encode($trafficSources ?? []) ?>;
+    if (!tsData || tsData.length === 0) return;
+
+    // Load Chart.js if not already loaded by dynamic charts
+    if (typeof Chart === 'undefined') {
+        var script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+        script.onload = renderTsCharts;
+        document.head.appendChild(script);
+    } else {
+        renderTsCharts();
+    }
+
+    function renderTsCharts() {
+        var labels = tsData.map(d => d.source || 'Unknown');
+        var convs  = tsData.map(d => parseInt(d.conversions));
+        var revs   = tsData.map(d => parseFloat(d.revenue));
+        var profs  = tsData.map(d => parseFloat(d.profit));
+        
+        // Use PHP detector colors injected via JS
+        var colorMap = <?= json_encode(TrafficSourceDetector::SOURCE_COLORS) ?>;
+        var colors = labels.map(l => colorMap[l] || '#94A3B8');
+
+        // Pie Chart
+        var ctxPie = document.getElementById('tsPieChart');
+        if (ctxPie) {
+            new Chart(ctxPie, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: convs,
+                        backgroundColor: colors,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { boxWidth: 12 } },
+                        title: { display: true, text: 'Conversion Distribution' }
+                    },
+                    cutout: '65%'
+                }
+            });
+        }
+
+        // Bar Chart (Revenue vs Profit)
+        var ctxBar = document.getElementById('tsBarChart');
+        if (ctxBar) {
+            new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Revenue', data: revs, backgroundColor: '#3b82f6', borderRadius: 2 },
+                        { label: 'Profit', data: profs, backgroundColor: '#10b981', borderRadius: 2 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: true, position: 'top' } },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { beginAtZero: true, grid: { borderDash: [2,2], color: '#e2e8f0' } }
+                    }
+                }
+            });
+        }
+    }
 })();
 
 })();

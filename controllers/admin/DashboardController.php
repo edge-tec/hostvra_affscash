@@ -29,4 +29,17 @@ $topProfitOffers = Database::fetchAll(
      GROUP BY o.id ORDER BY profit DESC LIMIT 10"
 );
 
+// Conversions by Traffic Source (last 30 days)
+$trafficSources = Database::fetchAll(
+    "SELECT COALESCE(NULLIF(traffic_source,''),'Unknown') as source,
+            COUNT(*) as conversions,
+            SUM(revenue) as revenue, SUM(payout) as payout,
+            SUM(revenue-payout) as profit
+     FROM conversions
+     WHERE status='approved' AND is_hidden=0
+       AND converted_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+     GROUP BY source ORDER BY conversions DESC LIMIT 15"
+);
+require_once BASE_PATH . '/core/TrafficSourceDetector.php';
+
 require BASE_PATH . '/views/admin/dashboard.php';

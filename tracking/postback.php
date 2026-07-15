@@ -656,6 +656,25 @@ if ($_convCountry === '' || $_convCity === '') {
     } catch (\Throwable $_geoEx) {}
 }
 
+// ── Ensure traffic-source columns exist on conversions table ──────────
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `traffic_source`      VARCHAR(50)   DEFAULT 'Unknown'");  } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `traffic_source_type` VARCHAR(30)   DEFAULT 'Unknown'");  } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `referrer_url`        VARCHAR(2000) DEFAULT NULL");        } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `utm_source`          VARCHAR(255)  DEFAULT NULL");        } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `utm_medium`          VARCHAR(255)  DEFAULT NULL");        } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `utm_campaign`        VARCHAR(255)  DEFAULT NULL");        } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `utm_content`         VARCHAR(255)  DEFAULT NULL");        } catch (\Throwable $_e) {}
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `utm_term`            VARCHAR(255)  DEFAULT NULL");        } catch (\Throwable $_e) {}
+
+// ── Traffic Source Detection ──────────────────────────────────────────
+require_once BASE_PATH . '/core/TrafficSourceDetector.php';
+$_tsResult = TrafficSourceDetector::detect(
+    $click['source'] ?? '',
+    $click['referer'] ?? '',
+    $click['user_agent'] ?? '',
+    (int)($click['source_override_applied'] ?? 0)
+);
+
 Database::begin();
 try {
     $newConvDbId = Database::insert('conversions', [
@@ -687,6 +706,15 @@ try {
         'landing_page'   => $_lpUrl ?: null,
         'referrer'       => $_referrer ?: null,
         'fraud_reasons'  => !empty($riskEngineReasons) ? json_encode($riskEngineReasons) : null,
+        // ── Traffic Source Tracking ─────────────────────────────────
+        'traffic_source'      => $_tsResult['source'],
+        'traffic_source_type' => $_tsResult['type'],
+        'referrer_url'        => substr($click['referer'] ?? '', 0, 2000) ?: null,
+        'utm_source'          => $_tsResult['utm_source'],
+        'utm_medium'          => $_tsResult['utm_medium'],
+        'utm_campaign'        => $_tsResult['utm_campaign'],
+        'utm_content'         => $_tsResult['utm_content'],
+        'utm_term'            => $_tsResult['utm_term'],
     ]);
 
     // Only credit balance and stats when NOT hidden, NOT pending manual approval, and NOT rejected
