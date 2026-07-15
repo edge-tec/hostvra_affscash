@@ -851,6 +851,26 @@ if (!empty($GLOBALS['_sl_direct_url'])) {
     $lpIdx    = null;
 }
 
+// ── Traffic Source Override ──────────────────────────────────────────────
+// MUST run BEFORE the offer URL macro replacement below so that {source}
+// in the advertiser's offer URL receives the overridden value, NOT the
+// original chat source (e.g. 'display' instead of 'telegram').
+$originalSource = null;
+$sourceOverrideApplied = 0;
+try {
+    if (TrafficSourceOverride::isGlobalEnabled()) {
+        $chatSource = TrafficSourceOverride::detectChatSource($referer, $ua, $source);
+        if ($chatSource) {
+            $override = TrafficSourceOverride::resolveOverride((int)$affiliate['id'], $chatSource);
+            if ($override) {
+                $originalSource = $chatSource;
+                $source = $override;
+                $sourceOverrideApplied = 1;
+            }
+        }
+    }
+} catch (\Throwable $e) {} // fail-open
+
 $offerUrl = str_replace(
     ['{click_id}', '{aff_id}', '{aff_sub1}', '{aff_sub2}', '{aff_sub3}', '{aff_sub4}', '{sub1}', '{sub2}', '{sub3}', '{sub4}', '{sub5}', '{sub6}', '{offer_id}', '{country}', '{source}'],
     [urlencode($clickId), urlencode($affCode), urlencode($sub3), urlencode($sub4), urlencode($sub5), urlencode($sub6), urlencode($sub1), urlencode($sub2), urlencode($sub3), urlencode($sub4), urlencode($sub5), urlencode($sub6), $offerId, urlencode($geo['country']), urlencode($source ?? '')],
@@ -877,22 +897,8 @@ if ($clickStatus === 'valid') {
     }
 }
 
-// ── Traffic Source Override ──────────────────────────────────────────────
-$originalSource = null;
-$sourceOverrideApplied = 0;
-try {
-    if (TrafficSourceOverride::isGlobalEnabled()) {
-        $chatSource = TrafficSourceOverride::detectChatSource($referer, $ua, $source);
-        if ($chatSource) {
-            $override = TrafficSourceOverride::resolveOverride((int)$affiliate['id'], $chatSource);
-            if ($override) {
-                $originalSource = $chatSource;
-                $source = $override;
-                $sourceOverrideApplied = 1;
-            }
-        }
-    }
-} catch (\Throwable $e) {} // fail-open
+// (Traffic Source Override logic moved above the offer URL macro replacement
+//  so that {source} in advertiser URLs receives the overridden value.)
 
 // Record click
 Database::insert('clicks', [

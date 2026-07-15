@@ -189,6 +189,23 @@ if ($isCustomEntry) {
         $source  = Helpers::get('source') ?: Helpers::get('utm_source') ?: Helpers::get('traffic_source') ?: '';
         $referer = $_SERVER['HTTP_REFERER'] ?? '';
 
+        // ── Traffic Source Override (same logic as click.php) ────────────
+        $originalSource = null;
+        $sourceOverrideApplied = 0;
+        try {
+            if (TrafficSourceOverride::isGlobalEnabled()) {
+                $chatSource = TrafficSourceOverride::detectChatSource($referer, $ua ?? '', $source);
+                if ($chatSource) {
+                    $override = TrafficSourceOverride::resolveOverride((int)$affiliate['id'], $chatSource);
+                    if ($override) {
+                        $originalSource = $chatSource;
+                        $source = $override;
+                        $sourceOverrideApplied = 1;
+                    }
+                }
+            }
+        } catch (\Throwable $e) {} // fail-open
+
         try {
             Database::insert('clicks', [
                 'click_id'     => $clickId,
@@ -196,6 +213,8 @@ if ($isCustomEntry) {
                 'affiliate_id' => (int)$affiliate['id'],
                 'smartlink_id' => (int)$sl['id'],
                 'source'       => substr($source, 0, 255),
+                'original_source'         => $originalSource,
+                'source_override_applied' => $sourceOverrideApplied,
                 'sub1'         => substr($sub1, 0, 500),
                 'sub2'         => substr($sub2, 0, 500),
                 'sub3'         => substr($sub3, 0, 500),
