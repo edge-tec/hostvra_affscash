@@ -226,21 +226,13 @@ class AdvancedTrafficSourceOverride
     public static function getAllRules(): array
     {
         self::ensureSchema();
-        try {
-            return Database::fetchAll("SELECT * FROM `traffic_source_overrides` ORDER BY `priority` DESC, `id` DESC") ?: [];
-        } catch (\Throwable $e) {
-            return [];
-        }
+        return Database::fetchAll("SELECT * FROM `traffic_source_overrides` ORDER BY `priority` DESC, `id` DESC") ?: [];
     }
 
     public static function getRule(int $id): ?array
     {
         self::ensureSchema();
-        try {
-            return Database::fetchOne("SELECT * FROM `traffic_source_overrides` WHERE `id` = ?", [$id]) ?: null;
-        } catch (\Throwable $e) {
-            return null;
-        }
+        return Database::fetchOne("SELECT * FROM `traffic_source_overrides` WHERE `id` = ?", [$id]) ?: null;
     }
 
     public static function addRule(array $data): int
@@ -259,51 +251,39 @@ class AdvancedTrafficSourceOverride
     public static function updateRule(int $id, array $data): bool
     {
         self::ensureSchema();
-        try {
-            Database::query(
-                "UPDATE `traffic_source_overrides` SET 
-                    `name` = ?, 
-                    `enabled` = ?, 
-                    `priority` = ?, 
-                    `conditions` = ?, 
-                    `target_original_sources` = ?, 
-                    `override_source` = ? 
-                WHERE `id` = ?",
-                [
-                    substr(trim($data['name'] ?? ''), 0, 255),
-                    (int)($data['enabled'] ?? 1),
-                    (int)($data['priority'] ?? 0),
-                    empty($data['conditions']) ? null : json_encode($data['conditions']),
-                    empty($data['target_original_sources']) ? null : json_encode($data['target_original_sources']),
-                    substr(trim($data['override_source']), 0, 255),
-                    $id
-                ]
-            );
-            return true;
-        } catch (\Throwable $e) {
-            return false;
-        }
+        Database::query(
+            "UPDATE `traffic_source_overrides` SET 
+                `name` = ?, 
+                `enabled` = ?, 
+                `priority` = ?, 
+                `conditions` = ?, 
+                `target_original_sources` = ?, 
+                `override_source` = ? 
+            WHERE `id` = ?",
+            [
+                substr(trim($data['name'] ?? ''), 0, 255),
+                (int)($data['enabled'] ?? 1),
+                (int)($data['priority'] ?? 0),
+                empty($data['conditions']) ? null : json_encode($data['conditions']),
+                empty($data['target_original_sources']) ? null : json_encode($data['target_original_sources']),
+                substr(trim($data['override_source']), 0, 255),
+                $id
+            ]
+        );
+        return true;
     }
 
     public static function toggleRule(int $id): bool
     {
         self::ensureSchema();
-        try {
-            Database::query("UPDATE `traffic_source_overrides` SET `enabled` = NOT `enabled` WHERE `id` = ?", [$id]);
-            return true;
-        } catch (\Throwable $e) {
-            return false;
-        }
+        Database::query("UPDATE `traffic_source_overrides` SET `enabled` = NOT `enabled` WHERE `id` = ?", [$id]);
+        return true;
     }
 
     public static function deleteRule(int $id): bool
     {
         self::ensureSchema();
-        try {
-            Database::query("DELETE FROM `traffic_source_overrides` WHERE `id` = ?", [$id]);
-            return true;
-        } catch (\Throwable $e) {
-            return false;
-        }
+        Database::query("DELETE FROM `traffic_source_overrides` WHERE `id` = ?", [$id]);
+        return true;
     }
 }
