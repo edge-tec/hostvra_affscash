@@ -48,6 +48,8 @@
                 <div class="form-group">
                     <label>Target Original Sources</label>
                     <select name="target_original_sources[]" class="form-control select2-tags-multi" multiple>
+                        <option value="Unknown">Unknown</option>
+                        <option value="Direct">Direct</option>
                         <option value="WhatsApp">WhatsApp</option>
                         <option value="Telegram">Telegram</option>
                         <option value="Facebook Messenger">Facebook Messenger</option>
@@ -61,7 +63,6 @@
                         <option value="Viber">Viber</option>
                         <option value="Reddit">Reddit</option>
                         <option value="TikTok">TikTok</option>
-                        <option value="Direct">Direct</option>
                     </select>
                     <div class="form-hint">Leave blank to apply to ALL sources.</div>
                 </div>
@@ -70,17 +71,33 @@
                     <label>Override As (Destination)</label>
                     <select name="override_source" class="form-control select2-tags-single" required>
                         <option value="">Select or type destination source...</option>
-                        <option value="Paid Ads">Paid Ads</option>
-                        <option value="SEO">SEO</option>
+                        <option value="Gmail">Gmail</option>
                         <option value="Email">Email</option>
-                        <option value="Display">Display</option>
-                        <option value="Native">Native</option>
-                        <option value="Push">Push</option>
-                        <option value="Social">Social</option>
-                        <option value="Search">Search</option>
-                        <option value="Organic">Organic</option>
-                        <option value="Influencer">Influencer</option>
+                        <option value="Google Search">Google Search</option>
+                        <option value="Google Ads">Google Ads</option>
+                        <option value="Paid Ads">Paid Ads</option>
+                        <option value="Display Ads">Display Ads</option>
+                        <option value="Social Media Ads">Social Media Ads</option>
+                        <option value="SEO">SEO</option>
+                        <option value="Organic Search">Organic Search</option>
                         <option value="Referral">Referral</option>
+                        <option value="Native Ads">Native Ads</option>
+                        <option value="Push Ads">Push Ads</option>
+                        <option value="SMS">SMS</option>
+                        <option value="Facebook">Facebook</option>
+                        <option value="Facebook Ads">Facebook Ads</option>
+                        <option value="Instagram">Instagram</option>
+                        <option value="Instagram Ads">Instagram Ads</option>
+                        <option value="Telegram">Telegram</option>
+                        <option value="WhatsApp">WhatsApp</option>
+                        <option value="Messenger">Messenger</option>
+                        <option value="Reddit">Reddit</option>
+                        <option value="Quora">Quora</option>
+                        <option value="X (Twitter)">X (Twitter)</option>
+                        <option value="TikTok">TikTok</option>
+                        <option value="LinkedIn">LinkedIn</option>
+                        <option value="Pinterest">Pinterest</option>
+                        <option value="YouTube">YouTube</option>
                     </select>
                     <div class="form-hint">Select a common source or type your own.</div>
                 </div>
