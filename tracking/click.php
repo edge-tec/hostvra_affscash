@@ -852,24 +852,6 @@ if (!empty($GLOBALS['_sl_direct_url'])) {
 }
 
 // ── Traffic Source Detection ──────────────────────────────────────────────
-// MUST run BEFORE the offer URL macro replacement below so that {source}
-// in the advertiser's offer URL receives the overridden/detected value.
-$originalSource = null;
-$sourceOverrideApplied = 0;
-try {
-    if (TrafficSourceOverride::isGlobalEnabled()) {
-        $chatSource = TrafficSourceOverride::detectChatSource($referer, $ua, $source);
-        if ($chatSource) {
-            $override = TrafficSourceOverride::resolveOverride((int)$affiliate['id'], $chatSource);
-            if ($override) {
-                $originalSource = $chatSource;
-                $source = $override;
-                $sourceOverrideApplied = 1;
-            }
-        }
-    }
-} catch (\Throwable $e) {} // fail-open
-
 // Extra params for detection (extracting from GET)
 $extraDetParams = [
     'utm_source'   => Helpers::get('utm_source'),
@@ -880,13 +862,41 @@ $extraDetParams = [
     'gclid'        => Helpers::get('gclid'),
     'x_requested_with' => $_SERVER['HTTP_X_REQUESTED_WITH'] ?? null,
 ];
-$tsDet = TrafficSourceDetector::detect($source, $referer, $ua, $sourceOverrideApplied, $extraDetParams);
-// Use the final detected source instead of the raw param for the URL replacement
-$finalSource = $tsDet['source'];
+// Get TRUE original source
+$tsDet = TrafficSourceDetector::detect($source, $referer, $ua, false, $extraDetParams);
+$trueOriginalSource = $tsDet['source'];
+
+// ── Advanced Traffic Source Override ──────────────────────────────────────
+require_once BASE_PATH . '/core/AdvancedTrafficSourceOverride.php';
+
+$advOverrideSource = null;
+$advOverrideRuleId = null;
+
+try {
+    $overrideMatch = AdvancedTrafficSourceOverride::evaluate($trueOriginalSource, [
+        'affiliate_id'  => (int)$affiliate['id'],
+        'offer_id'      => (int)$offerId,
+        'advertiser_id' => (int)($offer['advertiser_uid'] ?? $offer['advertiser_id'] ?? 0),
+        'country'       => $geo['country'] ?? '',
+        'device_type'   => $deviceInfo['device'] ?? '',
+        'browser'       => $deviceInfo['browser'] ?? '',
+        'os'            => $deviceInfo['os'] ?? '',
+        'smartlink_id'  => $GLOBALS['_sl_id'] ?? null,
+        'landing_page_idx' => $lpIdx
+    ]);
+
+    if ($overrideMatch) {
+        $advOverrideSource = $overrideMatch['override_source'];
+        $advOverrideRuleId = $overrideMatch['rule_id'];
+    }
+} catch (\Throwable $e) {}
+
+// Use the override source for the advertiser URL, or fallback to true source
+$finalSourceForAdvertiser = $advOverrideSource ?? $trueOriginalSource;
 
 $offerUrl = str_replace(
     ['{click_id}', '{aff_id}', '{aff_sub1}', '{aff_sub2}', '{aff_sub3}', '{aff_sub4}', '{sub1}', '{sub2}', '{sub3}', '{sub4}', '{sub5}', '{sub6}', '{offer_id}', '{country}', '{source}'],
-    [urlencode($clickId), urlencode($affCode), urlencode($sub3), urlencode($sub4), urlencode($sub5), urlencode($sub6), urlencode($sub1), urlencode($sub2), urlencode($sub3), urlencode($sub4), urlencode($sub5), urlencode($sub6), $offerId, urlencode($geo['country']), urlencode($finalSource ?? '')],
+    [urlencode($clickId), urlencode($affCode), urlencode($sub3), urlencode($sub4), urlencode($sub5), urlencode($sub6), urlencode($sub1), urlencode($sub2), urlencode($sub3), urlencode($sub4), urlencode($sub5), urlencode($sub6), $offerId, urlencode($geo['country']), urlencode($finalSourceForAdvertiser ?? '')],
     $offerUrl
 );
 
@@ -924,11 +934,13 @@ Database::insert('clicks', [
     'offer_id'         => $offerId,
     'affiliate_id'     => $affiliate['id'],
     'smartlink_id'     => ($GLOBALS['_sl_id'] ?? null),
-    'source'           => $source,
-    'original_source'          => $originalSource,
-    'source_override_applied'  => $sourceOverrideApplied,
+    'source'           => substr($source, 0, 255), // original raw param
+    'original_source'          => null, // Deprecated
+    'source_override_applied'  => 0, // Deprecated
     'traffic_source'       => $tsDet['source'],
     'traffic_source_type'  => $tsDet['type'],
+    'override_source'      => $advOverrideSource,
+    'override_rule_id'     => $advOverrideRuleId,
     'detected_by'          => $tsDet['detected_by'],
     'utm_source'           => $tsDet['utm_source'],
     'utm_medium'           => $tsDet['utm_medium'],

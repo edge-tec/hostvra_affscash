@@ -189,23 +189,7 @@ if ($isCustomEntry) {
         $source  = Helpers::get('source') ?: Helpers::get('utm_source') ?: Helpers::get('traffic_source') ?: '';
         $referer = $_SERVER['HTTP_REFERER'] ?? '';
 
-        // ── Traffic Source Detection (same logic as click.php) ────────────
-        $originalSource = null;
-        $sourceOverrideApplied = 0;
-        try {
-            if (TrafficSourceOverride::isGlobalEnabled()) {
-                $chatSource = TrafficSourceOverride::detectChatSource($referer, $ua ?? '', $source);
-                if ($chatSource) {
-                    $override = TrafficSourceOverride::resolveOverride((int)$affiliate['id'], $chatSource);
-                    if ($override) {
-                        $originalSource = $chatSource;
-                        $source = $override;
-                        $sourceOverrideApplied = 1;
-                    }
-                }
-            }
-        } catch (\Throwable $e) {} // fail-open
-
+        // ── Traffic Source Detection ────────────
         $extraDetParams = [
             'utm_source'   => Helpers::get('utm_source'),
             'utm_medium'   => Helpers::get('utm_medium'),
@@ -215,7 +199,37 @@ if ($isCustomEntry) {
             'gclid'        => Helpers::get('gclid'),
             'x_requested_with' => $_SERVER['HTTP_X_REQUESTED_WITH'] ?? null,
         ];
-        $tsDet = TrafficSourceDetector::detect($source, $referer, $ua ?? '', $sourceOverrideApplied, $extraDetParams);
+        $tsDet = TrafficSourceDetector::detect($source, $referer, $ua ?? '', false, $extraDetParams);
+        $trueOriginalSource = $tsDet['source'];
+
+        // ── Advanced Traffic Source Override ──────────────────────────────────────
+        require_once BASE_PATH . '/core/AdvancedTrafficSourceOverride.php';
+
+        $advOverrideSource = null;
+        $advOverrideRuleId = null;
+        
+        try {
+            $deviceInfo = Helpers::parseDeviceDetailed($ua ?? '');
+            $ip = Helpers::getIp();
+            $geo = Helpers::getGeoInfo($ip);
+            
+            $overrideMatch = AdvancedTrafficSourceOverride::evaluate($trueOriginalSource, [
+                'affiliate_id'  => (int)$affiliate['id'],
+                'offer_id'      => null, // custom smartlink redirect doesn't have an offer_id yet
+                'advertiser_id' => null,
+                'country'       => $geo['country'] ?? '',
+                'device_type'   => $deviceInfo['device'] ?? '',
+                'browser'       => $deviceInfo['browser'] ?? '',
+                'os'            => $deviceInfo['os'] ?? '',
+                'smartlink_id'  => (int)$sl['id'],
+                'landing_page_idx' => null
+            ]);
+
+            if ($overrideMatch) {
+                $advOverrideSource = $overrideMatch['override_source'];
+                $advOverrideRuleId = $overrideMatch['rule_id'];
+            }
+        } catch (\Throwable $e) {}
 
         try { Database::query("ALTER TABLE `clicks` ADD COLUMN `traffic_source`      VARCHAR(50)  DEFAULT 'Unknown'"); } catch (\Throwable $_e) {}
         try { Database::query("ALTER TABLE `clicks` ADD COLUMN `traffic_source_type` VARCHAR(50)  DEFAULT 'Unknown'"); } catch (\Throwable $_e) {}
@@ -232,11 +246,13 @@ if ($isCustomEntry) {
                 'offer_id'     => null,
                 'affiliate_id' => (int)$affiliate['id'],
                 'smartlink_id' => (int)$sl['id'],
-                'source'       => substr($source, 0, 255),
-                'original_source'         => $originalSource,
-                'source_override_applied' => $sourceOverrideApplied,
+                'source'       => substr($source, 0, 255), // original raw param
+                'original_source'         => null,
+                'source_override_applied' => 0,
                 'traffic_source'       => $tsDet['source'],
                 'traffic_source_type'  => $tsDet['type'],
+                'override_source'      => $advOverrideSource,
+                'override_rule_id'     => $advOverrideRuleId,
                 'detected_by'          => $tsDet['detected_by'],
                 'utm_source'           => $tsDet['utm_source'],
                 'utm_medium'           => $tsDet['utm_medium'],

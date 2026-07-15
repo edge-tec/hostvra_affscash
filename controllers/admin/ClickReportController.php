@@ -209,7 +209,7 @@ if (Helpers::get('export') === 'csv') {
                 c.is_fraud, c.fraud_score, c.os, c.browser, c.user_agent,
                 c.device_type, c.ip_address, c.country, c.city, c.region,
                 c.revenue, c.payout, (c.revenue - c.payout) as profit, c.clicked_at,
-                c.landing_page_idx,
+                c.landing_page_idx, c.traffic_source, c.override_source, c.traffic_source_type,
                 o.name as offer_name, COALESCE(o.is_inhouse,0) as is_inhouse,
                 o.landing_pages as offer_landing_pages,
                 o.landing_page_names as offer_landing_page_names,
@@ -227,7 +227,7 @@ if (Helpers::get('export') === 'csv') {
     header('Content-Type: text/csv');
     header('Content-Disposition: attachment; filename="click-report-'.date('Y-m-d').'.csv"');
     $f = fopen('php://output', 'w');
-    fputcsv($f, ['OFFER','AFFILIATE','AFF CODE','CLICK ID','SUB1','SUB2','SUB3','SUB4','SUB5','SOURCE','REFERER','FRAUD',
+    fputcsv($f, ['OFFER','AFFILIATE','AFF CODE','CLICK ID','SUB1','SUB2','SUB3','SUB4','SUB5','SOURCE','ORIGINAL TRAFFIC SOURCE','OVERRIDDEN SOURCE','REFERER','FRAUD',
                  'OS','BROWSER','USER AGENT','DEVICE','IP','COUNTRY','CITY','REGION',
                  'LANDING PAGE','LANDING PAGE NAME',
                  'REVENUE','PAYOUT','PROFIT','CONV STATUS','CLICK TIME']);
@@ -243,7 +243,7 @@ if (Helpers::get('export') === 'csv') {
         }
         fputcsv($f, [
             $r['offer_name'] ?: '— Custom URL —', $r['aff_name'], $r['affiliate_code'],
-            $r['click_id'], $r['sub1'], $r['sub2'], $r['sub3'], $r['sub4'], $r['sub5'] ?? '', $r['source'] ?? '', $r['referer'],
+            $r['click_id'], $r['sub1'], $r['sub2'], $r['sub3'], $r['sub4'], $r['sub5'] ?? '', $r['source'] ?? '', $r['traffic_source'] ?? '', $r['override_source'] ?? '', $r['referer'],
             $r['is_fraud'] ? 'Yes' : 'No',
             $r['os'], $r['browser'], $r['user_agent'], $r['device_type'],
             $r['ip_address'], $r['country'], $r['city'], $r['region'],
@@ -262,7 +262,7 @@ if (Helpers::get('export') === 'csv') {
 $clicks = Database::fetchAll(
     "SELECT c.click_id, c.sub1, c.sub2, c.sub3, c.sub4, c.sub5, c.sub6, c.source, c.referer,
             c.is_fraud, c.fraud_score, c.fraud_reasons, c.os, c.browser, c.user_agent,
-            c.device_type,
+            c.device_type, c.traffic_source, c.override_source, c.traffic_source_type,
             c.ip_address, c.country, c.city, c.region,
             c.revenue, c.payout, (c.revenue - c.payout) as profit, c.clicked_at, c.status,
             c.landing_page_idx,

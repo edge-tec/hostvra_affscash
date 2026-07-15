@@ -583,7 +583,7 @@ if ($notSent > 0 && in_array($tab, ['conversions','pending'])):
                     <th>OFFER</th><th>AFFILIATE</th><th>CLICK ID</th><th>CONVERSION ID</th>
                     <th>AFF CLICK ID</th><th>AFF SUB 2</th><th>STATUS</th>
                     <th>PAYOUT</th><th>REVENUE</th><th>PROFIT</th>
-                    <th>GOAL</th><th>TXN ID</th><th>COUNTRY</th><th>TRAFFIC SOURCE</th><th>CITY</th><th>STATE</th><th>OS</th><th>BROWSER</th>
+                    <th>GOAL</th><th>TXN ID</th><th>COUNTRY</th><th>TRAFFIC SOURCE</th><th>OVERRIDDEN TO</th><th>CITY</th><th>STATE</th><th>OS</th><th>BROWSER</th>
                     <th>CONV IP</th><th>USER AGENT</th>
                     <th>DEVICE BRAND</th><th>DEVICE MODEL</th>
                     <th>CATEGORY</th><th>PRELAND</th><th>LP NAME</th><th>OFFER PAGE</th><th>FLOW ID</th>
@@ -653,6 +653,13 @@ if ($notSent > 0 && in_array($tab, ['conversions','pending'])):
                 $_tsDark = in_array($_tsLabel, ['Threads','TikTok','Facebook Ads','Direct','Unknown','X']);
                 ?>
                 <td><span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;background:<?= $_tsColor ?>;color:<?= $_tsDark ? '#fff' : '#fff' ?>;white-space:nowrap"><?= Helpers::e($_tsLabel) ?></span></td>
+                <td>
+                    <?php if (!empty($r['override_source']) && $r['override_source'] !== 'Unknown'): ?>
+                        <span class="badge badge-primary"><?= Helpers::e($r['override_source']) ?></span>
+                    <?php else: ?>
+                        —
+                    <?php endif; ?>
+                </td>
                 <td><?= Helpers::e($r['city'] ?: '—') ?></td>
                 <td><?= Helpers::e($r['region'] ?: '—') ?></td>
                 <td><?= Helpers::e($r['os']?:'—') ?></td>

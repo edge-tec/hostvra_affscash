@@ -322,13 +322,7 @@ final class TrafficSourceDetector
         $detectedBy = '';
         $srcLower = strtolower(trim($source));
 
-        // ── Priority 1: Traffic Source Override applied → use the overridden source key
-        if ($overrideApplied && $srcLower !== '') {
-            $detected = self::resolveFromOverrideKey($srcLower);
-            if ($detected) $detectedBy = 'Traffic Source Override';
-        }
-
-        // ── Priority 2: Explicit source param
+        // ── Priority 1: Explicit source param
         if (!$detected && $srcLower !== '') {
             $detected = self::resolveFromSourceKeyword($srcLower);
             if ($detected) $detectedBy = 'Click Parameter (source)';

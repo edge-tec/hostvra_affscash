@@ -194,6 +194,8 @@ CREATE TABLE IF NOT EXISTS `clicks` (
     `source_override_applied` TINYINT(1) DEFAULT 0,
     `traffic_source`      VARCHAR(50)  DEFAULT 'Unknown',
     `traffic_source_type` VARCHAR(50)  DEFAULT 'Unknown',
+    `override_source`     VARCHAR(50)  DEFAULT NULL,
+    `override_rule_id`    INT UNSIGNED DEFAULT NULL,
     `detected_by`         VARCHAR(100) DEFAULT NULL,
     `utm_source`          VARCHAR(255) DEFAULT NULL,
     `utm_medium`          VARCHAR(255) DEFAULT NULL,
@@ -1000,3 +1002,23 @@ ALTER TABLE `conversions` ADD COLUMN IF NOT EXISTS `utm_content`         VARCHAR
 ALTER TABLE `conversions` ADD COLUMN IF NOT EXISTS `utm_term`            VARCHAR(255)  DEFAULT NULL;
 ALTER TABLE `conversions` ADD INDEX IF NOT EXISTS `idx_traffic_source`      (`traffic_source`);
 ALTER TABLE `conversions` ADD INDEX IF NOT EXISTS `idx_traffic_source_type` (`traffic_source_type`);
+
+-- ── Admin Traffic Source Override System ───────────────────────────────────
+CREATE TABLE IF NOT EXISTS `traffic_source_overrides` (
+    `id`                      INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `name`                    VARCHAR(255) NOT NULL,
+    `enabled`                 TINYINT(1) NOT NULL DEFAULT 1,
+    `priority`                INT NOT NULL DEFAULT 0,
+    `conditions`              JSON NULL COMMENT 'Stores JSON arrays for Affiliates, Offers, Advertisers, etc.',
+    `target_original_sources` JSON NULL COMMENT 'Stores JSON array of original sources to override',
+    `override_source`         VARCHAR(255) NOT NULL,
+    `created_at`              DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`              DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX `idx_enabled`       (`enabled`),
+    INDEX `idx_priority`      (`priority`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE `clicks` ADD COLUMN IF NOT EXISTS `override_source` VARCHAR(50) DEFAULT NULL;
+ALTER TABLE `clicks` ADD COLUMN IF NOT EXISTS `override_rule_id` INT UNSIGNED DEFAULT NULL;
+ALTER TABLE `conversions` ADD COLUMN IF NOT EXISTS `override_source` VARCHAR(50) DEFAULT NULL;
+ALTER TABLE `conversions` ADD COLUMN IF NOT EXISTS `override_rule_id` INT UNSIGNED DEFAULT NULL;

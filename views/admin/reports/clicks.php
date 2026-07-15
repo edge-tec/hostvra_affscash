@@ -185,7 +185,10 @@
                     <th>AFF SUB 3</th>
                     <th>SUB 4</th>
                     <th>SUB 5</th>
+                    <th>SMARTLINK</th>
                     <th>SOURCE</th>
+                    <th>TRAFFIC SOURCE</th>
+                    <th>OVERRIDDEN TO</th>
                     <th>FRAUD</th>
                     <th>OS NAME</th>
                     <th>BROWSER</th>
@@ -274,7 +277,28 @@
                 <td><?= Helpers::e($c['sub4'] ?? '' ?: '—') ?></td>
                 <td><?= Helpers::e($c['sub5'] ?? '' ?: '—') ?></td>
                 <td><?= Helpers::e($c['sub6'] ?? '' ?: '—') ?></td>
+                <td>
+                    <?php if (isset($c['smartlink_id']) && $c['smartlink_id'] > 0): ?>
+                        <span class="badge badge-info" title="SmartLink #<?= (int)$c['smartlink_id'] ?>">SL #<?= (int)$c['smartlink_id'] ?></span>
+                    <?php else: ?>
+                        —
+                    <?php endif; ?>
+                </td>
                 <td><?= Helpers::e($c['source'] ?? '' ?: '—') ?></td>
+                <td>
+                    <?php if (!empty($c['traffic_source'])): ?>
+                        <span class="badge badge-secondary"><?= Helpers::e($c['traffic_source']) ?></span>
+                    <?php else: ?>
+                        —
+                    <?php endif; ?>
+                </td>
+                <td>
+                    <?php if (!empty($c['override_source'])): ?>
+                        <span class="badge badge-primary"><?= Helpers::e($c['override_source']) ?></span>
+                    <?php else: ?>
+                        —
+                    <?php endif; ?>
+                </td>
                 <td>
                     <?php if ($isFraud): ?>
                     <span class="badge badge-danger" title="Score: <?= (int)$c['fraud_score'] ?>. <?= Helpers::e($c['fraud_reasons'] ?? '') ?>">Fraud&nbsp;<?= (int)$c['fraud_score'] ?></span>

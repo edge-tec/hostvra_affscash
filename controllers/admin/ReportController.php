@@ -536,6 +536,7 @@ if (in_array($tab, ['conversions','rejected','pending','autohide'])) {
                 COALESCE(cv.rejection_reason, '') as rejection_reason,
                 cv.rejected_at,
                 COALESCE(cv.traffic_source, 'Unknown') as traffic_source,
+                COALESCE(cv.override_source, 'Unknown') as override_source,
                 COALESCE(cv.traffic_source_type, 'Unknown') as traffic_source_type,
                 cv.referrer_url, cv.utm_source, cv.utm_medium,
                 cv.utm_campaign, cv.utm_content, cv.utm_term,
