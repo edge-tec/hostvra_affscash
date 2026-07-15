@@ -59,6 +59,8 @@ require BASE_PATH . '/core/RegistrationSecurity.php';
 require BASE_PATH . '/core/RegistrationVpnGuard.php';
 require BASE_PATH . '/core/RiskEngine.php';
 require BASE_PATH . '/core/TrafficSourceOverride.php';
+require BASE_PATH . '/core/TrafficSourceDetector.php';
+require BASE_PATH . '/core/AdvancedTrafficSourceOverride.php';
 
 // Initialize config
 Config::init(CONFIG_PATH);
