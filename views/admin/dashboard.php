@@ -1718,8 +1718,6 @@ loadAll();
     });
 })();
 
-})();
-
 // ── Traffic Source Charts (Static PHP Data) ───────────────────────────
 (function() {
     var tsData = <?= json_encode($trafficSources ?? []) ?>;
