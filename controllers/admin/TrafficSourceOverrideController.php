@@ -105,6 +105,6 @@ $rules         = AdvancedTrafficSourceOverride::getAllRules();
 
 $affiliates = Database::fetchAll("SELECT af.id, CONCAT(u.first_name, ' ', u.last_name) as name FROM affiliates af JOIN users u ON u.id = af.user_id ORDER BY name") ?: [];
 $offers = Database::fetchAll("SELECT id, name FROM offers ORDER BY name") ?: [];
-$advertisers = Database::fetchAll("SELECT id, company_name as name FROM advertisers ORDER BY company_name") ?: [];
+$advertisers = Database::fetchAll("SELECT adv.id, COALESCE(NULLIF(u.company, ''), CONCAT(u.first_name, ' ', u.last_name)) as name FROM advertisers adv JOIN users u ON u.id = adv.user_id ORDER BY name") ?: [];
 
 require BASE_PATH . '/views/admin/traffic_source_override/index.php';
