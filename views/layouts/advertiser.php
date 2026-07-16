@@ -150,7 +150,7 @@ try { $_advUnread = (int)(Database::fetchOne("SELECT COUNT(*) AS c FROM notifica
            title="Notifications"
            style="position:relative;padding:6px;border-radius:12px;color:var(--text);border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.25);text-decoration:none;display:flex;align-items:center;transition:.2s" onmouseover="this.style.background='rgba(255,255,255,0.45)'" onmouseout="this.style.background='rgba(255,255,255,0.25)'">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-            <span id="adv-notif-badge" style="display:<?= $_advUnread > 0 ? 'flex' : 'none' ?>;position:absolute;top:2px;right:2px;background:#EF4444;color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:700;align-items:center;justify-content:center;line-height:1"><?= $_advUnread > 9 ? '9+' : $_advUnread ?></span>
+            <span id="adv-notif-badge" style="display:<?= $_advUnread > 0 ? 'flex' : 'none' ?>;position:absolute;top:2px;right:2px;background:#EF4444;color:#fff;min-width:16px;height:16px;border-radius:10px;padding:0 4px;box-sizing:border-box;font-size:9px;font-weight:700;align-items:center;justify-content:center;line-height:1"><?= $_advUnread > 9 ? '9+' : $_advUnread ?></span>
         </a>
         <div class="user-menu" style="position:relative; background:rgba(255,255,255,0.25); border:1px solid rgba(255,255,255,0.3); border-radius:24px; padding:4px 10px 4px 4px;">
             <div class="user-avatar" style="width:24px; height:24px; font-size:11px; background:#0F766E"><?= strtoupper(substr(Auth::currentUser()['first_name']??'A',0,1)) ?></div>

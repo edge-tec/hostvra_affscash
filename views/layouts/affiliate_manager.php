@@ -312,7 +312,7 @@ function fmtTs(ts, opts) {
                     <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
                     <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
                 </svg>
-                <span id="fa-badge" style="display:none;position:absolute;top:2px;right:2px;background:#EF4444;color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:700;align-items:center;justify-content:center;line-height:1">0</span>
+                <span id="fa-badge" style="display:none;position:absolute;top:2px;right:2px;background:#EF4444;color:#fff;min-width:16px;height:16px;border-radius:10px;padding:0 4px;box-sizing:border-box;font-size:9px;font-weight:700;align-items:center;justify-content:center;line-height:1">0</span>
             </button>
             <div id="fa-dropdown" class="fa-dropdown" style="display:none;background:#fff;box-shadow:0 12px 40px rgba(0,0,0,.22);border:1px solid #E2E8F0;z-index:9999">
                 <div style="padding:12px 16px;border-bottom:1px solid #F1F5F9;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,#FEF2F2,#FFE4E6);border-radius:10px 10px 0 0">
@@ -333,7 +333,7 @@ function fmtTs(ts, opts) {
         <div style="position:relative" id="notif-wrap">
             <button onclick="toggleNotifDropdown()" style="position:relative;display:flex;align-items:center;padding:6px;border-radius:12px;color:var(--text);border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.25);cursor:pointer;transition:.2s" title="Notifications" onmouseover="this.style.background='rgba(255,255,255,0.45)'" onmouseout="this.style.background='rgba(255,255,255,0.25)'">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                <span id="notif-badge" style="display:none;position:absolute;top:2px;right:2px;background:#EF4444;color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:700;align-items:center;justify-content:center;line-height:1">0</span>
+                <span id="notif-badge" style="display:none;position:absolute;top:2px;right:2px;background:#EF4444;color:#fff;min-width:16px;height:16px;border-radius:10px;padding:0 4px;box-sizing:border-box;font-size:9px;font-weight:700;align-items:center;justify-content:center;line-height:1">0</span>
             </button>
             <div id="notif-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 8px);width:320px;max-width:calc(100vw - 16px);background:#fff;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.15);border:1px solid #E2E8F0;z-index:9999">
                 <div style="padding:12px 16px;border-bottom:1px solid #F1F5F9;display:flex;justify-content:space-between;align-items:center">
@@ -346,7 +346,7 @@ function fmtTs(ts, opts) {
         <!-- Support Inbox -->
         <a href="/affiliate_manager/support" style="position:relative;display:flex;align-items:center;padding:6px;border-radius:12px;color:var(--text);border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.25);text-decoration:none;transition:.2s" title="Support Inbox" id="chat-bell" onmouseover="this.style.background='rgba(255,255,255,0.45)'" onmouseout="this.style.background='rgba(255,255,255,0.25)'">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            <span id="chat-badge" style="display:none;position:absolute;top:2px;right:2px;background:#EF4444;color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:700;align-items:center;justify-content:center;line-height:1">0</span>
+            <span id="chat-badge" style="display:none;position:absolute;top:2px;right:2px;background:#EF4444;color:#fff;min-width:16px;height:16px;border-radius:10px;padding:0 4px;box-sizing:border-box;font-size:9px;font-weight:700;align-items:center;justify-content:center;line-height:1">0</span>
         </a>
     </div>
     <div class="topbar-actions">
