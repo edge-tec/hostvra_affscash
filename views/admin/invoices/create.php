@@ -40,7 +40,7 @@ require BASE_PATH . '/views/layouts/admin.php';
                 <select id="affSelect" class="form-control">
                     <option value="">Select affiliate...</option>
                     <?php foreach ($affiliates as $a): ?>
-                    <option value="<?= $a['id'] ?>"><?= Helpers::e($a['label']) ?></option>
+                    <option value="<?= $a['id'] ?>" <?= (isset($_GET['affiliate_id']) && $_GET['affiliate_id'] == $a['id']) ? 'selected' : '' ?>><?= Helpers::e($a['label']) ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -932,5 +932,17 @@ function appendNote(text) {
     }
 })();
 </script>
+
+<?php if (isset($_GET['affiliate_id'])): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        if(document.getElementById('affSelect').value) {
+            loadOffers();
+        }
+    }, 100);
+});
+</script>
+<?php endif; ?>
 
 <?php require BASE_PATH . '/views/layouts/admin_footer.php'; ?>

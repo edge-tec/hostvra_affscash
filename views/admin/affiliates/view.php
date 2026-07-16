@@ -12,6 +12,7 @@ require_once BASE_PATH . '/views/admin/_payment_details_display.php';
         <a href="/admin/affiliates/<?= $affiliate['id'] ?>?action=edit" class="btn btn-primary">&#9998; Edit</a>
         <a href="/admin/affiliates?action=impersonate&user_id=<?= $affiliate['user_id'] ?>" class="btn btn-secondary" onclick="return confirm('Login as this affiliate?')">&#128064; Login As</a>
         <a href="/admin/invoices?affiliate_id=<?= $affiliate['id'] ?>" class="btn btn-secondary">&#128176; View Invoices</a>
+        <a href="/admin/invoices?action=create&affiliate_id=<?= $affiliate['id'] ?>" class="btn btn-secondary" style="background:#ECFDF5;color:#065F46;border-color:#A7F3D0">&#10133; Generate Invoice</a>
 
         <?php if (!empty($affiliate['google2fa_enabled'])): ?>
         <form method="POST" action="/admin/users/2fa-reset" style="display:inline" onsubmit="return confirm('Reset Google Authenticator 2FA for this affiliate?\nThey will need to re-enable it from their account.');">
