@@ -26,6 +26,15 @@ if ($action === 'mark_read') {
     exit;
 }
 
+if ($action === 'unread_count') {
+    $unread = Database::fetchOne(
+        "SELECT COUNT(*) as cnt FROM notifications WHERE (user_id=? OR (user_id IS NULL AND target_role=?)) AND is_read=0",
+        [$userId, $role]
+    );
+    echo json_encode(['unread' => (int)($unread['cnt'] ?? 0)]);
+    exit;
+}
+
 // default: get recent notifications
 $rows = Database::fetchAll(
     "SELECT * FROM notifications WHERE (user_id=? OR (user_id IS NULL AND target_role=?)) ORDER BY created_at DESC LIMIT 20",
