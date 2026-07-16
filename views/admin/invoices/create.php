@@ -67,11 +67,11 @@ require BASE_PATH . '/views/layouts/admin.php';
         <div class="form-row cols-3" style="margin-top:16px;align-items:flex-end">
             <div class="form-group" style="margin-bottom:0">
                 <label>Period Start <span style="color:#EF4444">*</span></label>
-                <input type="date" id="periodFrom" class="form-control" value="<?= date('Y-m-01') ?>">
+                <input type="date" id="periodFrom" class="form-control" value="<?= isset($_GET['period_start']) ? Helpers::e($_GET['period_start']) : date('Y-m-01') ?>">
             </div>
             <div class="form-group" style="margin-bottom:0">
                 <label>Period End <span style="color:#EF4444">*</span></label>
-                <input type="date" id="periodTo" class="form-control" value="<?= date('Y-m-d') ?>">
+                <input type="date" id="periodTo" class="form-control" value="<?= isset($_GET['period_end']) ? Helpers::e($_GET['period_end']) : date('Y-m-d') ?>">
             </div>
             <div style="margin-bottom:0">
                 <button type="button" class="btn btn-primary" style="width:100%;height:40px" onclick="loadOffers()">

@@ -12,7 +12,7 @@ require_once BASE_PATH . '/views/admin/_payment_details_display.php';
         <a href="/admin/affiliates/<?= $affiliate['id'] ?>?action=edit" class="btn btn-primary">&#9998; Edit</a>
         <a href="/admin/affiliates?action=impersonate&user_id=<?= $affiliate['user_id'] ?>" class="btn btn-secondary" onclick="return confirm('Login as this affiliate?')">&#128064; Login As</a>
         <a href="/admin/invoices?affiliate_id=<?= $affiliate['id'] ?>" class="btn btn-secondary">&#128176; View Invoices</a>
-        <a href="/admin/invoices?action=create&affiliate_id=<?= $affiliate['id'] ?>" class="btn btn-secondary" style="background:#ECFDF5;color:#065F46;border-color:#A7F3D0">&#10133; Generate Invoice</a>
+        <button type="button" class="btn btn-secondary" style="background:#ECFDF5;color:#065F46;border-color:#A7F3D0" onclick="document.getElementById('invoice-modal').style.display='flex'">&#10133; Generate Invoice</button>
 
         <?php if (!empty($affiliate['google2fa_enabled'])): ?>
         <form method="POST" action="/admin/users/2fa-reset" style="display:inline" onsubmit="return confirm('Reset Google Authenticator 2FA for this affiliate?\nThey will need to re-enable it from their account.');">
@@ -46,6 +46,30 @@ require_once BASE_PATH . '/views/admin/_payment_details_display.php';
             </form>
             <button type="button" class="btn btn-secondary" onclick="document.getElementById('delete-modal').style.display='none'">Cancel</button>
         </div>
+    </div>
+</div>
+
+<!-- Generate Invoice Modal -->
+<div id="invoice-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center">
+    <div style="background:#fff;border-radius:12px;padding:32px;max-width:420px;width:90%;text-align:center">
+        <h3 style="margin-bottom:8px">Generate Invoice</h3>
+        <p style="color:#64748B;margin-bottom:24px">Select the billing period for this invoice.</p>
+        <form method="GET" action="/admin/invoices">
+            <input type="hidden" name="action" value="create">
+            <input type="hidden" name="affiliate_id" value="<?= $affiliate['id'] ?>">
+            <div style="text-align:left;margin-bottom:12px">
+                <label style="display:block;margin-bottom:4px;font-size:13px;font-weight:600">Period Start <span style="color:#EF4444">*</span></label>
+                <input type="date" name="period_start" class="form-control" required value="<?= date('Y-m-01') ?>">
+            </div>
+            <div style="text-align:left;margin-bottom:24px">
+                <label style="display:block;margin-bottom:4px;font-size:13px;font-weight:600">Period End <span style="color:#EF4444">*</span></label>
+                <input type="date" name="period_end" class="form-control" required value="<?= date('Y-m-d') ?>">
+            </div>
+            <div style="display:flex;gap:12px;justify-content:center">
+                <button type="submit" class="btn btn-primary" style="background:#16A34A;border-color:#16A34A">Continue</button>
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('invoice-modal').style.display='none'">Cancel</button>
+            </div>
+        </form>
     </div>
 </div>
 
