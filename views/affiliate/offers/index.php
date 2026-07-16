@@ -441,6 +441,7 @@ foreach ($offers as $o) {
                     </div>
                     <?php endif; ?>
                     <div style="display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:3px">
+                        <button type="button" onclick="showOfferDetailsModal(<?= $o['id'] ?>)" style="display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;color:#4F46E5;background:#EEF2FF;border:1px solid #C7D2FE;border-radius:4px;padding:2px 7px;cursor:pointer">&#128196; Details</button>
                         <?php if($o['preview_url'] ?? ''): ?>
                         <a href="<?= Helpers::e($o['preview_url']) ?>" target="_blank" rel="noopener"
                            style="display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;color:#0EA5E9;text-decoration:none;background:#F0F9FF;border:1px solid #BAE6FD;border-radius:4px;padding:2px 7px">
@@ -1082,5 +1083,53 @@ document.getElementById('genLinkModal').addEventListener('click', function(e) {
     if (e.target === this) closeGenModal();
 });
 </script>
+
+<?php
+$jsOfferDetails = [];
+foreach($offers as $o) {
+    $jsOfferDetails[$o['id']] = [
+        'name' => $o['name'],
+        'desc' => $o['description'] ?? '',
+        'terms' => $o['terms'] ?? ''
+    ];
+}
+?>
+<script>
+var _offerDetails = <?= json_encode($jsOfferDetails) ?>;
+function showOfferDetailsModal(id) {
+    var data = _offerDetails[id];
+    if(!data) return;
+    document.getElementById('od-modal-title').textContent = data.name;
+    document.getElementById('od-modal-desc').innerHTML = data.desc.replace(/\n/g, '<br>');
+    var tEl = document.getElementById('od-modal-terms-wrap');
+    if(data.terms) {
+        document.getElementById('od-modal-terms').innerHTML = data.terms;
+        tEl.style.display = 'block';
+    } else {
+        tEl.style.display = 'none';
+    }
+    document.getElementById('offer-details-modal').style.display = 'flex';
+}
+</script>
+
+<!-- Offer Details Modal -->
+<div id="offer-details-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;padding:20px">
+    <div style="background:#fff;border-radius:12px;padding:24px;max-width:600px;width:100%;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 10px 25px rgba(0,0,0,.2)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+            <h3 id="od-modal-title" style="margin:0;font-size:18px;font-weight:700"></h3>
+            <button type="button" onclick="document.getElementById('offer-details-modal').style.display='none'" style="background:none;border:none;font-size:24px;line-height:1;cursor:pointer;color:#94A3B8">&times;</button>
+        </div>
+        <div style="overflow-y:auto;flex:1;padding-right:8px;font-size:13px;color:#334155;line-height:1.6">
+            <div id="od-modal-desc" style="margin-bottom:20px;white-space:pre-wrap"></div>
+            <div id="od-modal-terms-wrap" style="display:none;background:#FFFBEB;border:1px solid #FDE68A;border-radius:6px;padding:12px">
+                <div style="font-weight:700;color:#92400E;margin-bottom:8px">&#128221; Terms &amp; Conditions</div>
+                <div id="od-modal-terms" style="color:#78350F;white-space:pre-line"></div>
+            </div>
+        </div>
+        <div style="margin-top:20px;text-align:right">
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('offer-details-modal').style.display='none'">Close</button>
+        </div>
+    </div>
+</div>
 
 <?php require BASE_PATH . '/views/layouts/affiliate_footer.php'; ?>
