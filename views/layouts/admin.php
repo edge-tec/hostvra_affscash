@@ -419,7 +419,19 @@ function fmtTs(ts, opts) {
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
         VPN/Proxy Skip List
     </a>
-    <a href="/admin/fraud" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/fraud') && !str_contains($_SERVER['REQUEST_URI'],'/admin/fraud-score-report') ? 'active' : '' ?>">
+    <a href="/admin/autohide" class="nav-link <?= str_starts_with($_SERVER['REQUEST_URI'],'/admin/autohide') ? 'active' : '' ?>">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+        Auto Hide
+    </a>
+    </div>
+</div>
+<div class="sidebar-group">
+    <div class="sidebar-group-header" onclick="toggleSidebarGroup(this)">
+        <span>Fraud Detector</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
+    <div class="sidebar-group-items">
+        <a href="/admin/fraud" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/fraud') && !str_contains($_SERVER['REQUEST_URI'],'/admin/fraud-score-report') ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         Fraud Detector
     </a>
@@ -430,10 +442,6 @@ function fmtTs(ts, opts) {
     <a href="/admin/fraud-alerts" class="nav-link <?= str_starts_with($_SERVER['REQUEST_URI'],'/admin/fraud-alerts') ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         Fraud Alerts
-    </a>
-    <a href="/admin/autohide" class="nav-link <?= str_starts_with($_SERVER['REQUEST_URI'],'/admin/autohide') ? 'active' : '' ?>">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-        Auto Hide
     </a>
         </div>
 </div>
