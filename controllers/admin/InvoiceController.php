@@ -206,6 +206,14 @@ if ($action === 'download_pdf') {
 
 // ── Index ─────────────────────────────────────────────────────────────────────
 if ($action === 'index') {
+    $whereClause = '';
+    $queryParams = [];
+    $filterAffId = (int)Helpers::get('affiliate_id');
+    if ($filterAffId > 0) {
+        $whereClause = "WHERE inv.affiliate_id = ?";
+        $queryParams[] = $filterAffId;
+    }
+
     $invoices = Database::fetchAll(
         "SELECT inv.*,
                 CASE
@@ -222,7 +230,9 @@ if ($action === 'index') {
          LEFT JOIN affiliates af  ON af.id=inv.affiliate_id  LEFT JOIN users ua ON ua.id=af.user_id
          LEFT JOIN advertisers adv ON adv.id=inv.advertiser_id LEFT JOIN users ub ON ub.id=adv.user_id
          LEFT JOIN affiliate_managers mgr ON mgr.id=inv.manager_id LEFT JOIN users um ON um.id=mgr.user_id
-         ORDER BY inv.created_at DESC"
+         $whereClause
+         ORDER BY inv.created_at DESC",
+        $queryParams
     );
 
     if (Helpers::get('export') === 'csv') {
