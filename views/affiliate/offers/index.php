@@ -131,7 +131,7 @@ foreach ($offers as $o) {
 ?>
 
 <!-- ── GRID VIEW ─────────────────────────────────────────────────────────── -->
-<div id="view-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;align-items:start">
+<div id="view-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;align-items:stretch">
 <?php if(empty($offers)): ?>
 <div style="grid-column:1/-1"><div class="empty-state"><div class="icon">&#127991;</div><h3>No offers available</h3><p>Check back later for new offers.</p></div></div>
 <?php else: ?>
@@ -187,35 +187,49 @@ foreach ($offers as $o) {
         <div style="display:flex;gap:16px;margin-bottom:10px">
             <?php if(!$g_isRevShare): ?>
             <div>
-                <div class="stat-label">Payout</div>
+                <div class="stat-label">PAYOUT</div>
                 <div style="font-size:20px;font-weight:700;color:var(--secondary)">$<?= number_format($g_payout,2) ?></div>
-                <?php if($g_isCustom): ?><span style="font-size:10px;background:#D1FAE5;color:#065F46;padding:1px 6px;border-radius:8px;font-weight:700">&#10003; Custom Rate</span><?php endif; ?>
+                <?php if($g_isCustom): ?><span style="font-size:10px;background:#D1FAE5;color:#065F46;padding:1px 6px;border-radius:8px;font-weight:700">&#10003; Custom</span><?php endif; ?>
             </div>
             <?php endif; ?>
             <div style="flex:1;min-width:0">
-                <div class="stat-label">GEO</div>
-                <?php if(empty($g_geos)): ?>
-                <span style="font-size:13px;color:var(--text-muted)">Global</span>
-                <?php else: ?>
-                <div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:3px">
-                    <?php foreach($g_geos as $_gc): ?><span style="display:inline-flex;align-items:center;gap:2px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:600;white-space:nowrap"><?= Helpers::flag($_gc) ?> <?= strtoupper(htmlspecialchars($_gc,ENT_QUOTES,'UTF-8')) ?></span><?php endforeach; ?>
+                <div class="stat-label">GEO &amp; DEVICES</div>
+                <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">
+                    <?php if(empty($g_geos)): ?>
+                    <span style="display:inline-flex;align-items:center;background:#F1F5F9;border:1px solid #E2E8F0;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:600;color:var(--text-muted)">Global</span>
+                    <?php else: ?>
+                        <?php 
+                        $visibleGeos = array_slice($g_geos, 0, 5);
+                        $hiddenGeos = array_slice($g_geos, 5);
+                        foreach($visibleGeos as $_gc): 
+                        ?>
+                        <span style="display:inline-flex;align-items:center;gap:2px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:600;white-space:nowrap;color:#1E40AF"><?= Helpers::flag($_gc) ?> <?= strtoupper(htmlspecialchars($_gc,ENT_QUOTES,'UTF-8')) ?></span>
+                        <?php endforeach; ?>
+                        
+                        <?php if(count($hiddenGeos) > 0): ?>
+                        <button type="button" id="btn-more-geo-<?= $o['id'] ?>" onclick="document.getElementById('more-geos-<?= $o['id'] ?>').style.display='contents'; this.style.display='none'" style="display:inline-flex;align-items:center;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:600;cursor:pointer;color:var(--text-muted)">+<?= count($hiddenGeos) ?> more</button>
+                        <span id="more-geos-<?= $o['id'] ?>" style="display:none;">
+                            <?php foreach($hiddenGeos as $_gc): ?>
+                            <span style="display:inline-flex;align-items:center;gap:2px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:600;white-space:nowrap;color:#1E40AF"><?= Helpers::flag($_gc) ?> <?= strtoupper(htmlspecialchars($_gc,ENT_QUOTES,'UTF-8')) ?></span>
+                            <?php endforeach; ?>
+                        </span>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
+                    <?php if(!empty($g_devTargeting)): ?>
+                        <span style="color:#CBD5E1;margin:0 2px">|</span>
+                        <?php
+                        $_dtIcons=['mobile'=>'&#128241;','tablet'=>'&#128242;','desktop'=>'&#128421;'];
+                        foreach($g_devTargeting as $_dv):
+                            $_dvIcon = $_dtIcons[$_dv] ?? '&#128225;';
+                        ?>
+                        <span style="display:inline-flex;align-items:center;gap:3px;background:#F8FAFC;border:1px solid #E2E8F0;color:#475569;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:600;white-space:nowrap">
+                            <?= $_dvIcon ?> <?= ucfirst($_dv) ?>
+                        </span>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
-                <?php endif; ?>
             </div>
-            <?php if(!empty($g_devTargeting)): ?>
-            <div>
-                <div class="stat-label">Devices</div>
-                <?php
-                $_dtIcons=['mobile'=>'&#128241;','tablet'=>'&#128242;','desktop'=>'&#128421;'];
-                foreach($g_devTargeting as $_dv):
-                    $_dvIcon = $_dtIcons[$_dv] ?? '&#128225;';
-                ?>
-                <div style="display:inline-flex;align-items:center;gap:3px;background:#EFF6FF;border:1px solid #BFDBFE;color:#1E40AF;border-radius:5px;padding:2px 7px;font-size:11px;font-weight:600;margin-top:3px;white-space:nowrap">
-                    <?= $_dvIcon ?> <?= ucfirst($_dv) ?>
-                </div>
-                <?php endforeach; ?>
-            </div>
-            <?php endif; ?>
         </div>
         <?php if(!empty($g_countries)): ?>
         <div style="margin-bottom:8px">
