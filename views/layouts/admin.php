@@ -9,6 +9,30 @@
 <link rel="stylesheet" href="/assets/css/app.min.css?v=<?= filemtime(BASE_PATH . '/assets/css/app.min.css') ?>">
 <?php require BASE_PATH . '/views/partials/theme_head.php'; ?>
 <style>
+
+/* ── Sidebar Accordion ───────────────────────────────────────── */
+.sidebar-group { margin-bottom: 2px; }
+.sidebar-group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748B;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background .2s, color .2s;
+    margin: 4px 0 2px 0;
+}
+.sidebar-group-header:hover { background: #F1F5F9; color: #334155; }
+.sidebar-group-header svg { width: 14px; height: 14px; transition: transform .2s; }
+.sidebar-group.open .sidebar-group-header svg { transform: rotate(180deg); }
+.sidebar-group-items { display: none; }
+.sidebar-group.open .sidebar-group-items { display: block; }
+
 /* ── In-House Fraud Detection Sidebar Module ───────────────────────── */
 .fds-nav-section { margin: 4px 0; }
 .fds-nav-toggle {
@@ -239,8 +263,13 @@ function fmtTs(ts, opts) {
         </button>
     </div>
 
-    <p class="sidebar-section">Main</p>
-    <a href="/admin/dashboard" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/dashboard') ? 'active' : '' ?>">
+    <div class="sidebar-group">
+    <div class="sidebar-group-header" onclick="toggleSidebarGroup(this)">
+        <span>Main</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
+    <div class="sidebar-group-items">
+        <a href="/admin/dashboard" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/dashboard') ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
         Dashboard
     </a>
@@ -252,9 +281,16 @@ function fmtTs(ts, opts) {
         <span class="nav-badge" style="background:#F59E0B"><?= $draftNews ?></span>
         <?php endif; } catch(\Throwable $e) {} ?>
     </a>
+    </div>
+</div>
 
-    <p class="sidebar-section">Landing Page</p>
-    <a href="/admin/landing/sliders" class="nav-link <?= str_starts_with($_SERVER['REQUEST_URI'],'/admin/landing/sliders') ? 'active' : '' ?>">
+<div class="sidebar-group">
+    <div class="sidebar-group-header" onclick="toggleSidebarGroup(this)">
+        <span>Landing Page</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
+    <div class="sidebar-group-items">
+        <a href="/admin/landing/sliders" class="nav-link <?= str_starts_with($_SERVER['REQUEST_URI'],'/admin/landing/sliders') ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
         Sliders
     </a>
@@ -279,9 +315,16 @@ function fmtTs(ts, opts) {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/></svg>
         Referral System
     </a>
+    </div>
+</div>
 
-    <p class="sidebar-section">Users</p>
-    <a href="/admin/affiliates" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/affiliates') ? 'active' : '' ?>">
+<div class="sidebar-group">
+    <div class="sidebar-group-header" onclick="toggleSidebarGroup(this)">
+        <span>Users</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
+    <div class="sidebar-group-items">
+        <a href="/admin/affiliates" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/affiliates') ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         Affiliates
         <?php $pending = Database::count('users','role=? AND status=?',['affiliate','pending']); if($pending): ?>
@@ -292,9 +335,16 @@ function fmtTs(ts, opts) {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.07 11a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3 .18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 7.91a16 16 0 0 0 5.5 5.5l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 14h.92z"/></svg>
         Advertisers
     </a>
+    </div>
+</div>
 
-    <p class="sidebar-section">Offers & Links</p>
-    <a href="/admin/offers" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/offers') && !str_contains($_SERVER['REQUEST_URI'],'/admin/offer-approvals') && !str_contains($_SERVER['REQUEST_URI'],'/admin/inhouse-offers') ? 'active' : '' ?>">
+<div class="sidebar-group">
+    <div class="sidebar-group-header" onclick="toggleSidebarGroup(this)">
+        <span>Offers & Links</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
+    <div class="sidebar-group-items">
+        <a href="/admin/offers" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/offers') && !str_contains($_SERVER['REQUEST_URI'],'/admin/offer-approvals') && !str_contains($_SERVER['REQUEST_URI'],'/admin/inhouse-offers') ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
         Offers
     </a>
@@ -323,9 +373,16 @@ function fmtTs(ts, opts) {
             <span style="background:#EF4444;color:#fff;border-radius:10px;padding:1px 6px;font-size:10px;font-weight:700;margin-left:auto"><?= (int)$_slPending['cnt'] ?></span>
         <?php endif; } catch(\Exception $e) {} ?>
     </a>
+    </div>
+</div>
 
-    <p class="sidebar-section">Tracking</p>
-    <a href="/admin/conversions" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/conversions') ? 'active' : '' ?>">
+<div class="sidebar-group">
+    <div class="sidebar-group-header" onclick="toggleSidebarGroup(this)">
+        <span>Tracking</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
+    <div class="sidebar-group-items">
+        <a href="/admin/conversions" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/conversions') ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
         Conversions
     </a>
@@ -418,9 +475,16 @@ function fmtTs(ts, opts) {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M21 3l-7 7"/><circle cx="11" cy="11" r="8"/></svg>
         Source Override
     </a>
+    </div>
+</div>
 
-    <p class="sidebar-section">Finance</p>
-    <a href="/admin/invoices" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/invoices') ? 'active' : '' ?>">
+<div class="sidebar-group">
+    <div class="sidebar-group-header" onclick="toggleSidebarGroup(this)">
+        <span>Finance</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
+    <div class="sidebar-group-items">
+        <a href="/admin/invoices" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/invoices') ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
         Invoices
     </a>
@@ -447,9 +511,16 @@ function fmtTs(ts, opts) {
         <span style="margin-left:auto;background:#EF4444;color:#fff;border-radius:999px;font-size:10px;font-weight:700;padding:1px 7px"><?= $_delPending ?></span>
         <?php endif; } catch(\Throwable $e) {} ?>
     </a>
+    </div>
+</div>
 
-    <p class="sidebar-section">Settings</p>
-    <a href="/admin/affiliate-managers" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/affiliate-managers') && !str_contains($_SERVER['REQUEST_URI'],'/permissions') && !str_contains($_SERVER['REQUEST_URI'],'/fraud-rejections') && !str_contains($_SERVER['REQUEST_URI'],'/messages') ? 'active' : '' ?>">
+<div class="sidebar-group">
+    <div class="sidebar-group-header" onclick="toggleSidebarGroup(this)">
+        <span>Settings</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
+    <div class="sidebar-group-items">
+        <a href="/admin/affiliate-managers" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/affiliate-managers') && !str_contains($_SERVER['REQUEST_URI'],'/permissions') && !str_contains($_SERVER['REQUEST_URI'],'/fraud-rejections') && !str_contains($_SERVER['REQUEST_URI'],'/messages') ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         Aff. Managers
         <?php $pendingMgr = Database::count('users','role=? AND status=?',['affiliate_manager','pending']); if($pendingMgr): ?>
@@ -485,9 +556,16 @@ function fmtTs(ts, opts) {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         Settings
     </a>
+    </div>
+</div>
 
-    <p class="sidebar-section">Rewards &amp; Shop</p>
-    <a href="/admin/points" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/points') ? 'active' : '' ?>">
+<div class="sidebar-group">
+    <div class="sidebar-group-header" onclick="toggleSidebarGroup(this)">
+        <span>Rewards &amp; Shop</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
+    <div class="sidebar-group-items">
+        <a href="/admin/points" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/points') ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M9 9h4.5a2 2 0 1 1 0 4H9m0 0h4.5a2 2 0 1 1 0 4H9"/></svg>
         Points
     </a>
@@ -523,8 +601,10 @@ function fmtTs(ts, opts) {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
         Database Tools
     </a>
+    </div>
+</div>
 
-    <?php
+<?php
     // ── In-House Fraud Detection System ─────────────────────────────────────
     $_fraudActive  = str_starts_with($_SERVER['REQUEST_URI'], '/admin/fraud-center');
     $_fraudOpen    = $_fraudActive || !empty($_SESSION['fraud_menu_open']);
@@ -950,4 +1030,16 @@ document.addEventListener('DOMContentLoaded', function() {
     sb.addEventListener('scroll', saveScroll, {passive: true});
     window.addEventListener('beforeunload', saveScroll);
 });
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll('.sidebar-group').forEach(function(group) {
+        if (group.querySelector('.nav-link.active') || group.querySelector('.fds-link.active')) {
+            group.classList.add('open');
+        }
+    });
+});
+function toggleSidebarGroup(el) {
+    el.parentElement.classList.toggle('open');
+}
 </script>
