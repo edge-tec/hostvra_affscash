@@ -378,19 +378,11 @@ function fmtTs(ts, opts) {
 
 <div class="sidebar-group">
     <div class="sidebar-group-header" onclick="toggleSidebarGroup(this)">
-        <span>Tracking</span>
+        <span>Tracking & Postbacks</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
     </div>
     <div class="sidebar-group-items">
-        <a href="/admin/conversions" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/conversions') ? 'active' : '' ?>">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        Conversions
-    </a>
-    <a href="/admin/rejection-reasons" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/rejection-reasons') ? 'active' : '' ?>">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-        Rejection Reasons
-    </a>
-    <a href="/admin/postbacks" class="nav-link <?= str_starts_with($_SERVER['REQUEST_URI'],'/admin/postbacks') ? 'active' : '' ?>">
+        <a href="/admin/postbacks" class="nav-link <?= str_starts_with($_SERVER['REQUEST_URI'],'/admin/postbacks') ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
         Global Postbacks
     </a>
@@ -443,11 +435,35 @@ function fmtTs(ts, opts) {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
         Auto Hide
     </a>
-    <a href="/admin/reports" class="nav-link <?= str_starts_with(strtok($_SERVER['REQUEST_URI'],'?'),'/admin/reports') && !str_contains($_SERVER['REQUEST_URI'],'/admin/reports/clicks') && !str_contains($_SERVER['REQUEST_URI'],'/admin/reports/affiliates') ? 'active' : '' ?>">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-        Reports
+        </div>
+</div>
+<div class="sidebar-group">
+    <div class="sidebar-group-header" onclick="toggleSidebarGroup(this)">
+        <span>Conversions</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
+    <div class="sidebar-group-items">
+        <a href="/admin/conversions" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/conversions') ? 'active' : '' ?>">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Conversions
     </a>
-    <a href="/admin/reports/clicks" class="nav-link <?= str_starts_with($_SERVER['REQUEST_URI'],'/admin/reports/clicks') ? 'active' : '' ?>">
+    <a href="/admin/rejection-reasons" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/rejection-reasons') ? 'active' : '' ?>">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        Rejection Reasons
+    </a>
+    <a href="/admin/reports/duplicate-conversions" class="nav-link <?= str_starts_with(strtok($_SERVER['REQUEST_URI'],'?'),'/admin/reports/duplicate-conversions') ? 'active' : '' ?>">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Duplicate Conversions
+    </a>
+        </div>
+</div>
+<div class="sidebar-group">
+    <div class="sidebar-group-header" onclick="toggleSidebarGroup(this)">
+        <span>Clicks & Traffic</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
+    <div class="sidebar-group-items">
+        <a href="/admin/reports/clicks" class="nav-link <?= str_starts_with($_SERVER['REQUEST_URI'],'/admin/reports/clicks') ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V9z"/><polyline points="15 3 15 9 21 9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
         Click Report
     </a>
@@ -459,14 +475,6 @@ function fmtTs(ts, opts) {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
         Traffic Source Override Logs
     </a>
-    <a href="/admin/reports/affiliates" class="nav-link <?= str_starts_with($_SERVER['REQUEST_URI'],'/admin/reports/affiliates') ? 'active' : '' ?>">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Affiliate Report
-    </a>
-    <a href="/admin/reports/duplicate-conversions" class="nav-link <?= str_starts_with(strtok($_SERVER['REQUEST_URI'],'?'),'/admin/reports/duplicate-conversions') ? 'active' : '' ?>">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        Duplicate Conversions
-    </a>
     <a href="/admin/traffic" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/traffic') && !str_contains($_SERVER['REQUEST_URI'],'/admin/traffic-source-override') ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         Traffic Stats
@@ -477,7 +485,22 @@ function fmtTs(ts, opts) {
     </a>
     </div>
 </div>
-
+<div class="sidebar-group">
+    <div class="sidebar-group-header" onclick="toggleSidebarGroup(this)">
+        <span>Reports</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
+    <div class="sidebar-group-items">
+        <a href="/admin/reports" class="nav-link <?= str_starts_with(strtok($_SERVER['REQUEST_URI'],'?'),'/admin/reports') && !str_contains($_SERVER['REQUEST_URI'],'/admin/reports/clicks') && !str_contains($_SERVER['REQUEST_URI'],'/admin/reports/affiliates') ? 'active' : '' ?>">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Reports
+    </a>
+    <a href="/admin/reports/affiliates" class="nav-link <?= str_starts_with($_SERVER['REQUEST_URI'],'/admin/reports/affiliates') ? 'active' : '' ?>">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Affiliate Report
+    </a>
+        </div>
+</div>
 <div class="sidebar-group">
     <div class="sidebar-group-header" onclick="toggleSidebarGroup(this)">
         <span>Finance</span>
