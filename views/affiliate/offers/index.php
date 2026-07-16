@@ -160,19 +160,10 @@ foreach ($offers as $o) {
         </div>
 
         <?php if($o['description']): ?>
-        <?php $_desc = $o['description']; $_descShort = mb_strlen($_desc) > 120; ?>
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:4px" id="gdesc-short-<?= $o['id'] ?>">
-            <?= Helpers::e($descShort = mb_substr($_desc, 0, 120)) ?><?= $_descShort ? '…' : '' ?>
-            <?php if($_descShort): ?>
-            <button type="button" onclick="toggleGDesc(<?= $o['id'] ?>)" style="background:none;border:none;color:var(--primary);cursor:pointer;font-size:12px;padding:0 4px">More</button>
-            <?php endif; ?>
-        </p>
-        <?php if($_descShort): ?>
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:4px;display:none" id="gdesc-full-<?= $o['id'] ?>">
-            <?= Helpers::e($_desc) ?>
-            <button type="button" onclick="toggleGDesc(<?= $o['id'] ?>)" style="background:none;border:none;color:var(--primary);cursor:pointer;font-size:12px;padding:0 4px">Less</button>
-        </p>
-        <?php endif; ?>
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px">
+            <span><?= Helpers::e(mb_substr($o['description'], 0, 120)) ?><?= mb_strlen($o['description']) > 120 ? '…' : '' ?></span>
+            <button type="button" onclick="showOfferDetailsModal(<?= $o['id'] ?>)" style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;color:#4F46E5;background:#EEF2FF;border:1px solid #C7D2FE;cursor:pointer;margin-left:4px">&#128196; Details</button>
+        </div>
         <?php endif; ?>
 
         <?php if($o['preview_url'] ?? ''): ?>
