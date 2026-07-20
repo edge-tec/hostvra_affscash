@@ -170,9 +170,23 @@ elseif ($action === 'delete') {
         $id = (int)Helpers::postRaw('adv_id');
         $adv = Database::fetchOne("SELECT u.id as user_id FROM users u JOIN advertisers adv ON adv.user_id=u.id WHERE adv.id=?", [$id]);
         if ($adv) {
-            Database::update('users', ['status' => 'deleted'], 'id=?', [$adv['user_id']]);
+            // Hard delete: remove related records first to avoid orphaned data
             Database::query("DELETE FROM user_active_sessions WHERE user_id=?", [$adv['user_id']]);
-            Helpers::flash('success', 'Advertiser account deleted.');
+            
+            // Cleanup offers created by this advertiser
+            $offers = Database::fetchAll("SELECT id FROM offers WHERE advertiser_id=?", [$id]);
+            foreach ($offers as $o) {
+                Database::query("DELETE FROM affiliate_offers WHERE offer_id=?", [$o['id']]);
+                Database::query("DELETE FROM smartlink_offers WHERE offer_id=?", [$o['id']]);
+                Database::query("DELETE FROM offer_links WHERE offer_id=?", [$o['id']]);
+            }
+            Database::query("DELETE FROM offers WHERE advertiser_id=?", [$id]);
+            
+            // Delete the advertiser and user accounts
+            Database::query("DELETE FROM advertisers WHERE user_id=?", [$adv['user_id']]);
+            Database::query("DELETE FROM users WHERE id=?", [$adv['user_id']]);
+            
+            Helpers::flash('success', 'Advertiser account permanently deleted.');
         } else {
             Helpers::flash('error', 'Advertiser not found.');
         }
