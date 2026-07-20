@@ -92,7 +92,7 @@ else
 if ($action === 'index') {
     $advertisers = Database::fetchAll(
         "SELECT u.id,u.email,u.first_name,u.last_name,u.company,u.status,u.created_at,adv.advertiser_code,adv.balance,adv.id as adv_id,adv.budget_exempt
-         FROM users u JOIN advertisers adv ON adv.user_id=u.id WHERE u.role='advertiser' ORDER BY u.created_at DESC"
+         FROM users u JOIN advertisers adv ON adv.user_id=u.id WHERE u.role='advertiser' AND u.status != 'deleted' ORDER BY u.created_at DESC"
     );
     require BASE_PATH . '/views/admin/advertisers/index.php';
 }
@@ -102,7 +102,7 @@ elseif ($action === 'edit') {
     // Idempotent column ensure — covers admins viewing legacy advertisers
     // that registered before the answers column existed.
     try { Database::query("ALTER TABLE advertisers ADD COLUMN registration_answers TEXT NULL"); } catch(\Throwable $e) {}
-    $advertiser = Database::fetchOne("SELECT u.*,adv.* FROM users u JOIN advertisers adv ON adv.user_id=u.id WHERE adv.id=?", [$id]);
+    $advertiser = Database::fetchOne("SELECT u.*,adv.* FROM users u JOIN advertisers adv ON adv.user_id=u.id WHERE adv.id=? AND u.status != 'deleted'", [$id]);
     if (!$advertiser) Helpers::redirect('/admin/advertisers');
 
     // Registration Q&A — show ALL questions the advertiser answered (active or deactivated),
@@ -182,7 +182,7 @@ elseif ($action === 'delete') {
 
 elseif ($action === 'view') {
     $id = (int)$_GET['id'];
-    $advertiser = Database::fetchOne("SELECT u.*,adv.* FROM users u JOIN advertisers adv ON adv.user_id=u.id WHERE adv.id=?", [$id]);
+    $advertiser = Database::fetchOne("SELECT u.*,adv.* FROM users u JOIN advertisers adv ON adv.user_id=u.id WHERE adv.id=? AND u.status != 'deleted'", [$id]);
     if (!$advertiser) Helpers::redirect('/admin/advertisers');
 
     if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {

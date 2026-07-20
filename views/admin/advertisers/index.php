@@ -246,12 +246,6 @@ $_orphanAnswers2 = array_filter(
         </tbody>
     </table></div>
 </div>
-<!-- Delete confirmation form -->
-<form id="delete-adv-form" method="POST" action="/admin/advertisers?action=delete" style="display:none">
-    <?= Helpers::csrf() ?>
-    <input type="hidden" name="adv_id" id="delete-adv-id">
-</form>
-
 <!-- Hidden CSRF token for AJAX budget-exempt toggle -->
 <input type="hidden" id="csrf-token" value="<?= htmlspecialchars(Helpers::csrfToken(), ENT_QUOTES, 'UTF-8') ?>">
 
@@ -300,6 +294,12 @@ $(function() {
 });
 </script>
 <?php endif; ?>
+
+<!-- Delete confirmation form -->
+<form id="delete-adv-form" method="POST" action="/admin/advertisers?action=delete" style="display:none">
+    <?= Helpers::csrf() ?>
+    <input type="hidden" name="adv_id" id="delete-adv-id">
+</form>
 
 <script>
 function confirmDeleteAdv(id, name) {
