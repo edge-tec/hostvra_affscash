@@ -5,7 +5,7 @@ $pageTitle = 'Advertisers';
 try { Database::query("ALTER TABLE users MODIFY COLUMN status ENUM('active','pending','suspended','rejected','deleted') NOT NULL DEFAULT 'pending'"); } catch(\Throwable $_e) {}
 AdvBudget::ensureSchema();
 
-$action = Helpers::get('action') ?: (isset($_GET['id']) ? 'view' : 'index');
+$action = Helpers::get('action') ?: ($_POST['action'] ?? '') ?: (isset($_GET['id']) ? 'view' : 'index');
 
 // ── AJAX: Toggle budget exemption for an advertiser ───────────────────────
 if ($action === 'toggle_budget_exempt') {
@@ -172,25 +172,43 @@ elseif ($action === 'delete') {
         if ($adv) {
             try {
                 Database::begin();
-                // Hard delete: remove related records first to avoid orphaned data
-                Database::query("DELETE FROM user_active_sessions WHERE user_id=?", [$adv['user_id']]);
-                
-                // Cleanup offers created by this advertiser
+
+                // 1. Get all offer IDs owned by this advertiser
                 $offers = Database::fetchAll("SELECT id FROM offers WHERE advertiser_id=?", [$id]);
-                foreach ($offers as $o) {
-                    Database::query("DELETE FROM affiliate_offers WHERE offer_id=?", [$o['id']]);
-                    Database::query("DELETE FROM smartlink_offers WHERE offer_id=?", [$o['id']]);
-                    Database::query("DELETE FROM offer_links WHERE offer_id=?", [$o['id']]);
+                $offerIds = array_column($offers, 'id');
+
+                // 2. Delete offer sub-records (affiliate_offers, smartlink_offers, offer_links)
+                if ($offerIds) {
+                    $ph = implode(',', array_fill(0, count($offerIds), '?'));
+                    Database::query("DELETE FROM affiliate_offers WHERE offer_id IN ($ph)", $offerIds);
+                    try { Database::query("DELETE FROM smartlink_offers WHERE offer_id IN ($ph)", $offerIds); } catch (\Throwable $e) {}
+                    try { Database::query("DELETE FROM offer_links WHERE offer_id IN ($ph)", $offerIds); } catch (\Throwable $e) {}
                 }
+
+                // 3. Delete offers
                 Database::query("DELETE FROM offers WHERE advertiser_id=?", [$id]);
-                
-                // Delete the advertiser and user accounts
-                Database::query("DELETE FROM advertisers WHERE user_id=?", [$adv['user_id']]);
+
+                // 4. Nullify advertiser_id in invoices (preserve invoice history)
+                try { Database::query("UPDATE invoices SET advertiser_id=NULL WHERE advertiser_id=?", [$id]); } catch (\Throwable $e) {}
+
+                // 5. Delete clicks referencing this advertiser (or nullify)
+                try { Database::query("UPDATE clicks SET advertiser_id=NULL WHERE advertiser_id=?", [$id]); } catch (\Throwable $e) {}
+
+                // 6. Delete notifications for this user
+                try { Database::query("DELETE FROM notifications WHERE user_id=?", [$adv['user_id']]); } catch (\Throwable $e) {}
+
+                // 7. Delete user devices
+                try { Database::query("DELETE FROM user_devices WHERE user_id=?", [$adv['user_id']]); } catch (\Throwable $e) {}
+
+                // 8. Delete the advertiser record
+                Database::query("DELETE FROM advertisers WHERE id=?", [$id]);
+
+                // 9. Delete the user account
                 Database::query("DELETE FROM users WHERE id=?", [$adv['user_id']]);
-                
+
                 Database::commit();
                 Helpers::flash('success', 'Advertiser account permanently deleted.');
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 Database::rollback();
                 Helpers::flash('error', 'Delete failed: ' . $e->getMessage());
             }

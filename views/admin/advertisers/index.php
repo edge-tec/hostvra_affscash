@@ -7,7 +7,12 @@
     <div class="d-flex gap-2">
         <a href="/admin/advertisers?action=edit&id=<?= $advertiser['adv_id'] ?? $advertiser['id'] ?>" class="btn btn-sm" style="background:#F59E0B;color:#fff">Edit</a>
         <a href="/admin/advertisers?action=impersonate&user_id=<?= $advertiser['user_id'] ?>" class="btn btn-primary" onclick="return confirm('Login as this advertiser?')">&#128064; Login As</a>
-        <button class="btn btn-sm btn-danger" onclick="confirmDeleteAdv(<?= $advertiser['adv_id'] ?? $advertiser['id'] ?>, '<?= Helpers::e($advertiser['first_name'].' '.$advertiser['last_name']) ?>')">Delete</button>
+        <form method="POST" action="/admin/advertisers?action=delete" style="display:inline" onsubmit="return confirm('Delete advertiser <?= htmlspecialchars(Helpers::e($advertiser['first_name'].' '.$advertiser['last_name']), ENT_QUOTES, 'UTF-8') ?>?\n\nThis will permanently delete the account. This cannot be undone.')">
+            <?= Helpers::csrf() ?>
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="adv_id" value="<?= $advertiser['adv_id'] ?? $advertiser['id'] ?>">
+            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+        </form>
         <a href="/admin/advertisers" class="btn btn-secondary">← Back</a>
     </div>
 </div>
@@ -239,7 +244,12 @@ $_orphanAnswers2 = array_filter(
                     <button class="btn btn-success btn-sm">Approve</button>
                 </form>
                 <?php endif; ?>
-                <button class="btn btn-sm btn-danger" onclick="confirmDeleteAdv(<?= $adv['adv_id'] ?>, '<?= Helpers::e($adv['first_name'].' '.$adv['last_name']) ?>')">Delete</button>
+                <form method="POST" action="/admin/advertisers?action=delete" style="display:inline" onsubmit="return confirm('Delete advertiser <?= htmlspecialchars(Helpers::e($adv['first_name'].' '.$adv['last_name']), ENT_QUOTES, 'UTF-8') ?>?\n\nThis will permanently delete the account. This cannot be undone.')">
+                    <?= Helpers::csrf() ?>
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="adv_id" value="<?= $adv['adv_id'] ?>">
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
             </td>
         </tr>
         <?php endforeach; ?>
@@ -294,19 +304,5 @@ $(function() {
 });
 </script>
 <?php endif; ?>
-
-<!-- Delete confirmation form -->
-<form id="delete-adv-form" method="POST" action="/admin/advertisers?action=delete" style="display:none">
-    <?= Helpers::csrf() ?>
-    <input type="hidden" name="adv_id" id="delete-adv-id">
-</form>
-
-<script>
-function confirmDeleteAdv(id, name) {
-    if (!confirm('Delete advertiser "' + name + '"?\n\nThis will permanently delete the account. This cannot be undone.')) return;
-    document.getElementById('delete-adv-id').value = id;
-    document.getElementById('delete-adv-form').submit();
-}
-</script>
 
 <?php require BASE_PATH . '/views/layouts/admin_footer.php'; ?>
