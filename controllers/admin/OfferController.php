@@ -506,8 +506,8 @@ elseif ($action === 'delete') {
         $offerId = (int)Helpers::postRaw('offer_id');
         $offer   = Database::fetchOne("SELECT id, name FROM offers WHERE id=?", [$offerId]);
         if ($offer) {
-            // Soft delete: mark as deleted, remove affiliate access
-            Database::update('offers', ['status' => 'deleted'], 'id=?', [$offerId]);
+            // Hard delete: remove completely from the database
+            Database::query("DELETE FROM offers WHERE id=?", [$offerId]);
             Database::query("DELETE FROM affiliate_offers WHERE offer_id=?", [$offerId]);
             Database::query("DELETE FROM smartlink_offers WHERE offer_id=?", [$offerId]);
             Database::query("DELETE FROM offer_links WHERE offer_id=?", [$offerId]);
