@@ -460,6 +460,11 @@ html[data-theme="dark"] .an-kpi-card { background:rgba(15,23,42,.65); border-col
         <div class="an-title">Analytics Dashboard</div>
         <div style="font-size:12px;color:rgba(255,255,255,.5);margin-top:4px" id="an-last-updated">Loading data…</div>
     </div>
+    <button type="button" class="dash-filter-toggle-btn" onclick="document.getElementById('an-filter-bar').classList.toggle('open'); this.classList.toggle('open')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        <span>Filter Options</span>
+        <span class="dash-toggle-chevron">▼</span>
+    </button>
     <div class="an-filters" id="an-filter-bar">
         <!-- Period quick tabs -->
         <div class="an-period-tabs">

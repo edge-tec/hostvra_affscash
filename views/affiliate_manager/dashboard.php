@@ -295,6 +295,11 @@ html[data-theme="dark"] .loading-overlay{background:rgba(15,23,42,.55);}
         <div class="dash-hdr-title">Analytics Dashboard</div>
         <div class="dash-hdr-updated" id="dash-updated">Loading data…</div>
     </div>
+    <button type="button" class="dash-filter-toggle-btn" onclick="document.querySelector('.dash-filters').classList.toggle('open'); this.classList.toggle('open')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        <span>Filter Options</span>
+        <span class="dash-toggle-chevron">▼</span>
+    </button>
     <div class="dash-filters">
         <div class="dash-period-tabs">
             <button class="dash-period-tab" onclick="setPeriod(this,'today')">Today</button>
