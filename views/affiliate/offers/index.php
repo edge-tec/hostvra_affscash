@@ -24,54 +24,68 @@ var _trackDomains = <?= $_domainListJson ?>;
     </div>
 </div>
 
-<!-- Filter Bar -->
-<div class="card mb-3">
-    <div class="card-body" style="padding:12px 16px">
-        <form method="GET" action="/affiliate/offers" style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end">
-            <div><label style="font-size:11px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:3px">Search</label>
-                <input type="text" name="q" class="form-control" placeholder="Offer name..." value="<?= Helpers::e($qFilter ?? '') ?>" style="min-width:140px"></div>
-            <div><label style="font-size:11px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:3px">Category</label>
+<div class="card mb-3 filter-card filter-open" id="offers-filter-card">
+    <button type="button" class="filter-toggle-btn" onclick="this.closest('.filter-card').classList.toggle('filter-open')">
+        <span class="filter-toggle-left">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            <span>Filter Offers</span>
+        </span>
+        <span class="filter-toggle-icon">▲</span>
+    </button>
+    <div class="card-body">
+        <form method="GET" action="/affiliate/offers" id="offers-filter-form" class="d-flex gap-3 align-center" style="flex-wrap:wrap">
+            <div class="form-group mb-0">
+                <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Search</label>
+                <input type="text" name="q" class="form-control" placeholder="Offer name..." value="<?= Helpers::e($qFilter ?? '') ?>" style="min-width:140px">
+            </div>
+            <div class="form-group mb-0">
+                <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Category</label>
                 <select name="category" class="form-control">
                     <option value="">All Categories</option>
                     <?php foreach ($filterCategories as $fc): ?>
                     <option value="<?= Helpers::e($fc['category']) ?>" <?= ($catFilter ?? '') === $fc['category'] ? 'selected' : '' ?>><?= Helpers::e($fc['category']) ?></option>
                     <?php endforeach; ?>
-                </select></div>
-            <div><label style="font-size:11px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:3px">Offer Type</label>
+                </select>
+            </div>
+            <div class="form-group mb-0">
+                <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Offer Type</label>
                 <select name="offer_type" class="form-control">
                     <option value="">All Types</option>
                     <?php foreach ($filterOfferTypes as $ft): ?>
                     <option value="<?= Helpers::e($ft['offer_type']) ?>" <?= ($offerTypeFilter ?? '') === $ft['offer_type'] ? 'selected' : '' ?>><?= Helpers::e($ft['offer_type']) ?></option>
                     <?php endforeach; ?>
-                </select></div>
-            <div><label style="font-size:11px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:3px">Payout Type</label>
+                </select>
+            </div>
+            <div class="form-group mb-0">
+                <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Payout Type</label>
                 <select name="payout_type" class="form-control">
                     <option value="">All</option>
                     <?php foreach (['CPA','CPL','CPS','CPM','CPC','RevShare','Trial'] as $pt): ?>
                     <option value="<?= $pt ?>" <?= ($typeFilter ?? '') === $pt ? 'selected' : '' ?>><?= $pt ?></option>
                     <?php endforeach; ?>
-                </select></div>
-            <div><label style="font-size:11px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:3px">Country</label>
-                <input type="text" name="country" class="form-control" placeholder="US" value="<?= Helpers::e($countryFilter ?? '') ?>" maxlength="2" style="width:70px;text-transform:uppercase"></div>
-            <div><label style="font-size:11px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:3px">Device</label>
+                </select>
+            </div>
+            <div class="form-group mb-0">
+                <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Country</label>
+                <input type="text" name="country" class="form-control" placeholder="US" value="<?= Helpers::e($countryFilter ?? '') ?>" maxlength="2" style="width:70px;text-transform:uppercase">
+            </div>
+            <div class="form-group mb-0">
+                <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Device</label>
                 <select name="device" class="form-control">
                     <option value="">All</option>
                     <?php foreach (['desktop','mobile','tablet'] as $dv): ?>
                     <option value="<?= $dv ?>" <?= ($deviceFilter ?? '') === $dv ? 'selected' : '' ?>><?= ucfirst($dv) ?></option>
                     <?php endforeach; ?>
-                </select></div>
-            <div><label style="font-size:11px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:3px">Offer ID</label>
-                <input type="number" name="offer_id" class="form-control" placeholder="ID..." value="<?= ($idFilter ?? 0) > 0 ? (int)$idFilter : '' ?>" min="1" style="width:80px"></div>
-            <div><label style="font-size:11px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:3px">Access</label>
-                <select name="access_filter" class="form-control">
+                </select>
+            </div>
+            <div class="form-group mb-0">
+                <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Offer ID</label>
+                <input type="number" name="offer_id" class="form-control" placeholder="ID..." value="<?= ($idFilter ?? 0) > 0 ? (int)$idFilter : '' ?>" min="1" style="width:80px">
+            </div>
+            <div class="form-group mb-0">
+                <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Access</label>
+                <select name="access" class="form-control">
                     <option value="">All Offers</option>
-                    <option value="active" <?= ($accessFilter ?? '') === 'active' ? 'selected' : '' ?>>Active Offers</option>
-                    <option value="request" <?= ($accessFilter ?? '') === 'request' ? 'selected' : '' ?>>Request / Need Approval</option>
-                    <option value="all_access" <?= ($accessFilter ?? '') === 'all_access' ? 'selected' : '' ?>>Access for All</option>
-                </select></div>
-            <button type="submit" class="btn btn-primary btn-sm">Filter</button>
-            <?php if ($qFilter || $catFilter || $typeFilter || $offerTypeFilter || $countryFilter || $deviceFilter || ($idFilter ?? 0) > 0 || ($accessFilter ?? '')): ?>
-            <a href="/affiliate/offers" class="btn btn-secondary btn-sm">Clear</a>
             <?php endif; ?>
         </form>
     </div>
@@ -139,69 +153,83 @@ foreach ($offers as $o) {
     $d = $_offerData[$o['id']];
     extract($d, EXTR_PREFIX_ALL, 'g');
 ?>
-<div class="card" style="display:flex;flex-direction:column;min-width:0">
+<div class="card offer-3d-card" style="display:flex;flex-direction:column;min-width:0;border-radius:18px;border:1px solid rgba(226,232,240,0.85);background:linear-gradient(145deg,#ffffff 0%,#f8fafc 100%);box-shadow:0 10px 25px -5px rgba(0,0,0,0.05),0 8px 10px -6px rgba(0,0,0,0.02);transition:all 0.28s ease;overflow:hidden">
     <?php if (!empty(trim($o['offer_image'] ?? ''))): ?>
-    <div style="height:120px;background:linear-gradient(135deg,#4F46E5,#7C3AED);border-radius:8px 8px 0 0;overflow:hidden">
-        <img src="<?= Helpers::e($o['offer_image']) ?>" alt="" style="width:100%;height:100%;object-fit:cover;opacity:.9" onerror="this.parentElement.style.display='none'">
+    <div style="height:140px;background:linear-gradient(135deg,#4F46E5,#7C3AED);position:relative;overflow:hidden">
+        <img src="<?= Helpers::e($o['offer_image']) ?>" alt="" style="width:100%;height:100%;object-fit:cover;opacity:.92" onerror="this.parentElement.style.display='none'">
+        <div style="position:absolute;bottom:8px;left:8px">
+            <span style="font-size:11px;background:rgba(15,23,42,0.75);color:#fff;backdrop-filter:blur(8px);border-radius:6px;padding:2px 8px;font-weight:700;font-family:monospace">OFF-<?= str_pad((int)$o['id'], 4, '0', STR_PAD_LEFT) ?></span>
+        </div>
     </div>
     <?php endif; ?>
-    <div style="padding:20px;flex:1">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:4px;margin-bottom:8px">
-            <div style="display:flex;gap:4px;flex-wrap:wrap">
-                <?php if($o['offer_type'] ?? ''): ?><span class="badge badge-success"><?= Helpers::e($o['offer_type']) ?></span><?php endif; ?>
-                <span class="badge badge-info"><?= Helpers::e($o['payout_type']) ?></span>
-                <?php if(!empty($o['require_approval'])): ?><span class="badge badge-warning" style="font-size:10px">Approval Required</span><?php endif; ?>
+
+    <div style="padding:22px;flex:1;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px">
+            <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
+                <?php if($o['offer_type'] ?? ''): ?>
+                <span class="badge badge-success" style="border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;background:linear-gradient(135deg,#DCFCE7,#F0FDF4);color:#15803D;border:1px solid #BBF7D0"><?= Helpers::e($o['offer_type']) ?></span>
+                <?php endif; ?>
+                <span class="badge badge-info" style="border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;background:linear-gradient(135deg,#DBEAFE,#EFF6FF);color:#1D4ED8;border:1px solid #BFDBFE"><?= Helpers::e($o['payout_type']) ?></span>
+                <?php if(!empty($o['require_approval'])): ?>
+                <span class="badge badge-warning" style="border-radius:20px;padding:3px 9px;font-size:10px;font-weight:700;background:linear-gradient(135deg,#FEF9C3,#FFFBE0);color:#92400E;border:1px solid #FDE68A">Approval Required</span>
+                <?php endif; ?>
             </div>
-            <?php if($o['category']): ?><span class="badge badge-muted"><?= Helpers::e($o['category']) ?></span><?php endif; ?>
+            <?php if($o['category']): ?>
+            <span class="badge badge-muted" style="border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;background:#F1F5F9;color:#64748B;border:1px solid #E2E8F0"><?= Helpers::e($o['category']) ?></span>
+            <?php endif; ?>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-            <h3 style="font-size:16px;font-weight:700;margin:0"><?= Helpers::e($o['name']) ?></h3>
-            <span style="font-size:10px;background:#EFF6FF;color:#2563EB;border-radius:4px;padding:1px 6px;font-weight:700;font-family:monospace;white-space:nowrap;flex-shrink:0">OFF-<?= str_pad((int)$o['id'], 4, '0', STR_PAD_LEFT) ?></span>
+
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+            <h3 style="font-size:16.5px;font-weight:800;color:var(--text);margin:0;line-height:1.35"><?= Helpers::e($o['name']) ?></h3>
+            <?php if (empty(trim($o['offer_image'] ?? ''))): ?>
+            <span style="font-size:11px;background:linear-gradient(135deg,#EFF6FF,#DBEAFE);color:#1D4ED8;border:1px solid #BFDBFE;border-radius:6px;padding:2px 7px;font-weight:700;font-family:monospace;white-space:nowrap;flex-shrink:0">OFF-<?= str_pad((int)$o['id'], 4, '0', STR_PAD_LEFT) ?></span>
+            <?php endif; ?>
         </div>
 
         <?php if($o['description']): ?>
-        <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px">
+        <div style="font-size:13px;color:var(--text-muted);line-height:1.5">
             <span><?= Helpers::e(mb_substr($o['description'], 0, 120)) ?><?= mb_strlen($o['description']) > 120 ? '…' : '' ?></span>
-            <button type="button" onclick="showOfferDetailsModal(<?= $o['id'] ?>)" style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;color:#4F46E5;background:#EEF2FF;border:1px solid #C7D2FE;cursor:pointer;margin-left:4px">&#128196; Details</button>
+            <button type="button" onclick="showOfferDetailsModal(<?= $o['id'] ?>)" style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:8px;color:#4F46E5;background:#EEF2FF;border:1px solid #C7D2FE;cursor:pointer;margin-left:4px" title="View offer details">📄 Details</button>
         </div>
         <?php endif; ?>
 
         <?php if($o['preview_url'] ?? ''): ?>
-        <div style="margin-bottom:8px">
+        <div>
             <a href="<?= Helpers::e($o['preview_url']) ?>" target="_blank" rel="noopener"
-               style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:#0EA5E9;text-decoration:none;background:#F0F9FF;border:1px solid #BAE6FD;border-radius:5px;padding:4px 10px">
-                &#128065; Preview Offer
+               style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:#0EA5E9;text-decoration:none;background:#F0F9FF;border:1px solid #BAE6FD;border-radius:8px;padding:4px 10px">
+                👁 Preview Offer
             </a>
         </div>
         <?php endif; ?>
 
-        <div style="display:flex;gap:16px;margin-bottom:10px">
+        <!-- 3D Payout & Target Specs -->
+        <div style="display:flex;gap:14px;background:linear-gradient(135deg,#F0FDF4 0%,#ECFDF5 100%);border:1px solid #A7F3D0;border-radius:14px;padding:12px 16px;box-shadow:inset 0 1px 2px rgba(255,255,255,0.7);margin-top:auto">
             <?php if(!$g_isRevShare): ?>
             <div>
-                <div class="stat-label">PAYOUT</div>
-                <div style="font-size:20px;font-weight:700;color:var(--secondary)">$<?= number_format($g_payout,2) ?></div>
-                <?php if($g_isCustom): ?><span style="font-size:10px;background:#D1FAE5;color:#065F46;padding:1px 6px;border-radius:8px;font-weight:700">&#10003; Custom</span><?php endif; ?>
+                <div class="stat-label" style="font-size:10px;font-weight:800;color:#047857;letter-spacing:.05em;text-transform:uppercase">PAYOUT</div>
+                <div style="font-size:22px;font-weight:800;color:#059669">$<?= number_format($g_payout,2) ?></div>
+                <?php if($g_isCustom): ?><span style="font-size:10px;background:#D1FAE5;color:#065F46;padding:1px 6px;border-radius:8px;font-weight:700">✓ Custom</span><?php endif; ?>
             </div>
             <?php endif; ?>
             <div style="flex:1;min-width:0">
-                <div class="stat-label">GEO &amp; DEVICES</div>
+                <div class="stat-label" style="font-size:10px;font-weight:800;color:#64748B;letter-spacing:.05em;text-transform:uppercase">GEO &amp; DEVICES</div>
                 <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">
                     <?php if(empty($g_geos)): ?>
-                    <span style="display:inline-flex;align-items:center;background:#F1F5F9;border:1px solid #E2E8F0;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:600;color:var(--text-muted)">Global</span>
+                    <span style="display:inline-flex;align-items:center;background:#F1F5F9;border:1px solid #E2E8F0;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700;color:var(--text-muted)">Global</span>
                     <?php else: ?>
                         <?php 
-                        $visibleGeos = array_slice($g_geos, 0, 5);
-                        $hiddenGeos = array_slice($g_geos, 5);
+                        $visibleGeos = array_slice($g_geos, 0, 4);
+                        $hiddenGeos = array_slice($g_geos, 4);
                         foreach($visibleGeos as $_gc): 
                         ?>
-                        <span style="display:inline-flex;align-items:center;gap:2px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:600;white-space:nowrap;color:#1E40AF"><?= Helpers::flag($_gc) ?> <?= strtoupper(htmlspecialchars($_gc,ENT_QUOTES,'UTF-8')) ?></span>
+                        <span style="display:inline-flex;align-items:center;gap:3px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;color:#1E40AF"><?= Helpers::flag($_gc) ?> <?= strtoupper(htmlspecialchars($_gc,ENT_QUOTES,'UTF-8')) ?></span>
                         <?php endforeach; ?>
                         
                         <?php if(count($hiddenGeos) > 0): ?>
-                        <button type="button" id="btn-more-geo-<?= $o['id'] ?>" onclick="document.getElementById('more-geos-<?= $o['id'] ?>').style.display='contents'; this.style.display='none'" style="display:inline-flex;align-items:center;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:600;cursor:pointer;color:var(--text-muted)">+<?= count($hiddenGeos) ?> more</button>
+                        <button type="button" id="btn-more-geo-<?= $o['id'] ?>" onclick="document.getElementById('more-geos-<?= $o['id'] ?>').style.display='contents'; this.style.display='none'" style="display:inline-flex;align-items:center;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700;cursor:pointer;color:var(--text-muted)">+<?= count($hiddenGeos) ?> more</button>
                         <span id="more-geos-<?= $o['id'] ?>" style="display:none;">
                             <?php foreach($hiddenGeos as $_gc): ?>
-                            <span style="display:inline-flex;align-items:center;gap:2px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:600;white-space:nowrap;color:#1E40AF"><?= Helpers::flag($_gc) ?> <?= strtoupper(htmlspecialchars($_gc,ENT_QUOTES,'UTF-8')) ?></span>
+                            <span style="display:inline-flex;align-items:center;gap:3px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;color:#1E40AF"><?= Helpers::flag($_gc) ?> <?= strtoupper(htmlspecialchars($_gc,ENT_QUOTES,'UTF-8')) ?></span>
                             <?php endforeach; ?>
                         </span>
                         <?php endif; ?>
@@ -210,11 +238,11 @@ foreach ($offers as $o) {
                     <?php if(!empty($g_devTargeting)): ?>
                         <span style="color:#CBD5E1;margin:0 2px">|</span>
                         <?php
-                        $_dtIcons=['mobile'=>'&#128241;','tablet'=>'&#128242;','desktop'=>'&#128421;'];
+                        $_dtIcons=['mobile'=>'📱','tablet'=>'📲','desktop'=>'🖥️'];
                         foreach($g_devTargeting as $_dv):
-                            $_dvIcon = $_dtIcons[$_dv] ?? '&#128225;';
+                            $_dvIcon = $_dtIcons[$_dv] ?? '📡';
                         ?>
-                        <span style="display:inline-flex;align-items:center;gap:3px;background:#F8FAFC;border:1px solid #E2E8F0;color:#475569;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:600;white-space:nowrap">
+                        <span style="display:inline-flex;align-items:center;gap:3px;background:#F8FAFC;border:1px solid #E2E8F0;color:#475569;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap">
                             <?= $_dvIcon ?> <?= ucfirst($_dv) ?>
                         </span>
                         <?php endforeach; ?>
@@ -222,174 +250,56 @@ foreach ($offers as $o) {
                 </div>
             </div>
         </div>
-        <?php if(!empty($g_countries)): ?>
-        <div style="margin-bottom:8px">
-            <div class="stat-label" style="margin-bottom:4px">Your Country Rates</div>
-            <div style="display:flex;flex-wrap:wrap;gap:4px">
-            <?php foreach($g_countries as $cr): ?>
-            <span style="display:inline-flex;align-items:center;gap:3px;background:#EFF6FF;border:1px solid #BFDBFE;color:#1E40AF;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:600">
-                <?= Helpers::flag($cr['country']) ?> <?= Helpers::e($cr['country']) ?>: $<?= number_format((float)$cr['payout'],2) ?>
-            </span>
-            <?php endforeach; ?>
-            </div>
-        </div>
-        <?php endif; ?>
-        <?php if(!empty($g_devices)): ?>
-        <div style="margin-bottom:8px">
-            <div class="stat-label" style="margin-bottom:4px">Your Device Rates</div>
-            <div style="display:flex;flex-wrap:wrap;gap:4px">
-            <?php
-            $devIcons=['mobile'=>'&#128241;','tablet'=>'&#128242;','desktop'=>'&#128421;'];
-            foreach($g_devices as $dr):
-                $dIcon = $devIcons[$dr['device']] ?? '&#128225;';
-                $dGeo  = !empty($dr['country']) ? '/' . Helpers::flag($dr['country']) . $dr['country'] : '';
-            ?>
-            <span style="display:inline-flex;align-items:center;gap:3px;background:#F0FDF4;border:1px solid #BBF7D0;color:#15803D;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:600">
-                <?= $dIcon ?> <?= ucfirst($dr['device']) . $dGeo ?>: $<?= number_format((float)$dr['payout'],2) ?>
-            </span>
-            <?php endforeach; ?>
-            </div>
-        </div>
-        <?php endif; ?>
-        <?php if(!empty($g_offerCntPayouts)): ?>
-        <div style="margin-bottom:8px">
-            <div class="stat-label" style="margin-bottom:4px">Country Rates</div>
-            <div style="display:flex;flex-wrap:wrap;gap:4px">
-            <?php foreach($g_offerCntPayouts as $ocr): ?>
-            <span style="display:inline-flex;align-items:center;gap:3px;background:#EFF6FF;border:1px solid #BFDBFE;color:#1E40AF;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:600">
-                &#127757; <?= Helpers::e($ocr['country']) ?>: $<?= number_format((float)$ocr['payout'],2) ?>
-            </span>
-            <?php endforeach; ?>
-            </div>
-        </div>
-        <?php endif; ?>
-        <?php if(!empty($g_offerDevPayouts)): ?>
-        <div style="margin-bottom:8px">
-            <div class="stat-label" style="margin-bottom:4px">Device Rates</div>
-            <div style="display:flex;flex-wrap:wrap;gap:4px">
-            <?php
-            $odIcons=['mobile'=>'&#128241;','tablet'=>'&#128242;','desktop'=>'&#128421;'];
-            foreach($g_offerDevPayouts as $odev => $opay):
-                $odIcon = $odIcons[$odev] ?? '&#128225;';
-            ?>
-            <span style="display:inline-flex;align-items:center;gap:3px;background:#F0FDF4;border:1px solid #BBF7D0;color:#15803D;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:600">
-                <?= $odIcon ?> <?= ucfirst($odev) ?>: $<?= number_format((float)$opay,2) ?>
-            </span>
-            <?php endforeach; ?>
-            </div>
-        </div>
-        <?php endif; ?>
-        <?php if(!empty($g_offerLinks)): ?>
-        <div style="margin-bottom:10px">
-            <div class="stat-label" style="margin-bottom:5px">Payout by Device</div>
-            <div style="display:flex;flex-wrap:wrap;gap:4px">
-                <?php
-                $olIcons = ['mobile'=>'📱','tablet'=>'📲','desktop'=>'🖥️','all'=>'🌐'];
-                foreach($g_offerLinks as $ol):
-                    $olIcon = $olIcons[$ol['device_type']] ?? '📡';
-                    $olDev  = ucfirst($ol['device_type'] === 'all' ? 'All' : $ol['device_type']);
-                    $olPay  = (float)$ol['payout_rate'];
-                    $olGeo  = !empty($ol['geo_country']) ? '/' . Helpers::flag($ol['geo_country']) . strtoupper($ol['geo_country']) : '';
-                ?>
-                <span style="display:inline-flex;align-items:center;gap:4px;background:#F0FDF4;border:1px solid #BBF7D0;color:#15803D;border-radius:5px;padding:3px 9px;font-size:12px;font-weight:600">
-                    <?= $olIcon ?>&nbsp;<?= $olDev . $olGeo ?>: $<?= number_format($olPay,2) ?>
-                </span>
-                <?php endforeach; ?>
-            </div>
-        </div>
-        <?php endif; ?>
+
         <?php if($g_effCap > 0): ?>
-        <div class="text-sm text-muted mb-1">
+        <div class="text-sm text-muted">
             Daily Cap: <strong><?= number_format($g_effCap) ?></strong>
-            <?php if($g_affCap > 0): ?><span style="font-size:10px;background:#EDE9FE;color:#5B21B6;padding:1px 6px;border-radius:8px;margin-left:4px">Your Cap</span><?php endif; ?>
+            <?php if($g_affCap > 0): ?><span style="font-size:10px;background:#EDE9FE;color:#5B21B6;padding:1px 6px;border-radius:6px;margin-left:4px;font-weight:700">Your Cap</span><?php endif; ?>
         </div>
         <?php endif; ?>
 
         <?php if($o['terms'] ?? ''): ?>
-        <details style="margin-top:8px">
-            <summary style="cursor:pointer;font-size:12px;font-weight:600;color:#64748B;list-style:none;display:flex;align-items:center;gap:4px">
-                <span>&#128221;</span> Terms &amp; Conditions
+        <details>
+            <summary style="cursor:pointer;font-size:12px;font-weight:700;color:#64748B;list-style:none;display:flex;align-items:center;gap:4px">
+                <span>📝</span> Terms &amp; Conditions
             </summary>
-            <div style="margin-top:6px;padding:10px 12px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:6px;font-size:12px;color:#78350F;line-height:1.6;white-space:pre-line;max-height:200px;overflow-y:auto">
+            <div style="margin-top:6px;padding:10px 12px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;font-size:12px;color:#78350F;line-height:1.6;white-space:pre-line;max-height:200px;overflow-y:auto">
                 <?= Helpers::e($o['terms']) ?>
             </div>
         </details>
         <?php endif; ?>
     </div>
-    <div style="padding:16px;border-top:1px solid var(--border);background:var(--bg)">
+
+    <!-- Card Action Footer -->
+    <div style="padding:16px 22px;border-top:1px solid var(--border,#e2e8f0);background:rgba(248,250,252,0.7)">
         <?php if($g_hasAccess): ?>
-            <?php if(count($g_lpList)>1): ?>
-            <div style="margin-bottom:8px">
-                <label style="font-size:11px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:3px">Landing Page</label>
-                <select id="lp-sel-<?= $o['id'] ?>" class="form-control" style="font-size:12px" onchange="updateTrackUrl(<?= $o['id'] ?>)">
-                    <option value="">Auto (Rotation)</option>
-                    <?php foreach($g_lpList as $lpI=>$lpUrl): ?>
-                    <option value="<?= $lpI ?>">Landing Page <?= $lpI+1 ?></option>
-                    <?php endforeach; ?>
-                </select>
+            <div class="text-sm text-muted" style="margin-bottom:8px;font-size:12.5px;color:#065F46;font-weight:700;display:flex;align-items:center;gap:4px">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Approved — <?= number_format($o['today_clicks']) ?> clicks today</span>
             </div>
-            <?php endif; ?>
-            <div class="copy-group" style="margin-bottom:6px">
-                <input type="text" id="ol-<?= $o['id'] ?>" class="form-control" value="<?= Helpers::e($g_trackUrl) ?>" readonly style="font-size:11px">
-                <button class="btn btn-secondary btn-sm" data-copy="ol-<?= $o['id'] ?>">Copy</button>
-                <button class="btn btn-sm" onclick="openGenModal(<?= $o['id'] ?>, '<?= Helpers::e($g_trackUrl) ?>', <?= (int)count($g_lpList) ?>)" style="white-space:nowrap;background:#0EA5E9;border-color:#0EA5E9;color:#fff" title="Build link with tracking parameters">&#128279; Build</button>
+            <div class="copy-group" style="gap:6px">
+                <input type="text" id="ol-<?= $o['id'] ?>" class="form-control" value="<?= Helpers::e($g_trackUrl) ?>" readonly style="font-size:12px;border-radius:8px;background:#fff">
+                <button class="btn btn-secondary btn-sm" data-copy="ol-<?= $o['id'] ?>" style="border-radius:8px;font-weight:700">Copy</button>
+                <button class="btn btn-sm" onclick="openGenModal(<?= $o['id'] ?>, '<?= Helpers::e($g_trackUrl) ?>', <?= (int)count($g_lpList) ?>)" style="white-space:nowrap;background:#0EA5E9;border:none;color:#fff;border-radius:8px;font-weight:700;padding:0 12px" title="Build link with tracking parameters">🔗 Build</button>
                 <?php if($shortenerEnabled): ?>
-                <button class="btn btn-primary btn-sm" onclick="shortenLink(<?= $o['id'] ?>, '<?= Helpers::e($g_trackUrl) ?>', 'grid')" id="shorten-btn-grid-<?= $o['id'] ?>" style="white-space:nowrap;background:#7C3AED;border-color:#7C3AED;color:#fff">&#9986; Short</button>
+                <button class="btn btn-sm" onclick="shortenLink(<?= $o['id'] ?>, '<?= Helpers::e($g_trackUrl) ?>', 'grid')" id="shorten-btn-grid-<?= $o['id'] ?>" style="white-space:nowrap;background:#7C3AED;border:none;color:#fff;border-radius:8px;font-weight:700;padding:0 12px">✂ Short</button>
                 <?php endif; ?>
             </div>
-            <?php if($shortenerEnabled): ?>
-            <div id="short-result-grid-<?= $o['id'] ?>" style="display:none;margin-bottom:6px">
-                <div style="display:flex;align-items:center;gap:6px">
-                    <span style="font-size:11px;font-weight:600;color:#7C3AED;white-space:nowrap">&#128279; Short:</span>
-                    <input type="text" id="short-url-grid-<?= $o['id'] ?>" class="form-control" readonly style="font-size:11px;border-color:#7C3AED;background:#F5F3FF">
-                    <button class="btn btn-sm" data-copy="short-url-grid-<?= $o['id'] ?>" style="background:#7C3AED;color:#fff;border:none;white-space:nowrap">Copy</button>
-                    <a id="short-open-grid-<?= $o['id'] ?>" href="#" target="_blank" style="background:#5B21B6;color:#fff;padding:4px 8px;border-radius:4px;font-size:12px;text-decoration:none">&#8599;</a>
-                </div>
-            </div>
-            <?php endif; ?>
-            <div class="text-sm text-muted" style="margin-bottom:8px">&#9989; Approved — <?= number_format($o['today_clicks']) ?> clicks today</div>
-            <?php if(!empty($g_banners)): ?>
-            <details style="margin-bottom:8px">
-                <summary style="cursor:pointer;font-size:12px;font-weight:600;color:var(--primary)">&#128444; Banners (<?= count($g_banners) ?>)</summary>
-                <div style="margin-top:8px;display:flex;flex-direction:column;gap:8px">
-                    <?php foreach($g_banners as $sz=>$url): ?>
-                    <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;padding:8px">
-                        <div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:4px"><?= Helpers::e($sz) ?></div>
-                        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-                            <input type="text" value="<?= Helpers::e($url) ?>" readonly class="form-control" id="bn-<?= $o['id'] ?>-<?= str_replace('x','_',$sz) ?>" style="font-size:11px;flex:1;min-width:180px">
-                            <button class="btn btn-secondary btn-sm" data-copy="bn-<?= $o['id'] ?>-<?= str_replace('x','_',$sz) ?>">Copy</button>
-                            <a href="<?= Helpers::e($url) ?>" target="_blank" class="btn btn-secondary btn-sm">View</a>
-                        </div>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-            </details>
-            <?php endif; ?>
-            <?php if(!empty($o['iframe_url'])): ?>
-            <details>
-                <summary style="cursor:pointer;font-size:12px;font-weight:600;color:var(--primary)">&#9707; Iframe Creative</summary>
-                <div style="margin-top:8px">
-                    <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
-                        <input type="text" value="<?= Helpers::e($o['iframe_url']) ?>" readonly class="form-control" id="if-<?= $o['id'] ?>" style="font-size:11px">
-                        <button class="btn btn-secondary btn-sm" data-copy="if-<?= $o['id'] ?>">Copy</button>
-                    </div>
-                    <div style="width:100%;overflow:hidden"><iframe src="<?= Helpers::e($o['iframe_url']) ?>" width="<?= (int)($o['iframe_width']??728) ?>" height="<?= (int)($o['iframe_height']??90) ?>" style="border:1px solid #CBD5E1;display:block;max-width:100%;width:100%" sandbox="allow-scripts allow-same-origin"></iframe></div>
-                </div>
-            </details>
-            <?php endif; ?>
         <?php elseif($g_isPending): ?>
-            <div class="alert alert-warning mb-0" style="padding:10px">&#9203; Pending Approval — waiting for admin review</div>
+            <div style="background:linear-gradient(135deg,#FEF9C3,#FEF08A);border:1px solid #FDE047;border-radius:10px;padding:10px 14px;font-size:12.5px;color:#713F12;font-weight:700">
+                ⏳ Pending Approval — waiting for admin review
+            </div>
         <?php elseif($g_isBlocked): ?>
-            <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:8px">
-                <span style="font-size:16px">&#128683;</span>
-                <span style="font-size:13px;color:#B91C1C;font-weight:600">Access Blocked</span>
+            <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:8px">
+                <span style="font-size:16px">🚫</span>
+                <span style="font-size:13px;color:#B91C1C;font-weight:700">Access Blocked</span>
             </div>
         <?php else: ?>
             <?php if(!empty($o['require_approval'])): ?>
-            <button class="btn btn-primary" style="width:100%" onclick="requestApproval(<?= $o['id'] ?>)">Request Access</button>
+            <button class="btn btn-primary" style="width:100%;border-radius:10px;padding:11px 18px;font-size:14px;font-weight:800;background:linear-gradient(135deg,#7C3AED 0%,#6D28D9 100%);box-shadow:0 4px 14px rgba(124,58,237,0.35);justify-content:center" onclick="requestApproval(<?= $o['id'] ?>)">Request Access</button>
             <?php else: ?>
             <form method="POST"><?= Helpers::csrf() ?><input type="hidden" name="offer_id" value="<?= $o['id'] ?>">
-                <button class="btn btn-primary" style="width:100%">Get Tracking Link</button>
+                <button class="btn btn-primary" style="width:100%;border-radius:10px;padding:11px 18px;font-size:14px;font-weight:800;background:linear-gradient(135deg,#7C3AED 0%,#6D28D9 100%);box-shadow:0 4px 14px rgba(124,58,237,0.35);justify-content:center">⚡ Get Tracking Link</button>
             </form>
             <?php endif; ?>
         <?php endif; ?>
