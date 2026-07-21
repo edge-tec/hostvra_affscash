@@ -916,10 +916,117 @@ textarea.form-control { min-height: 100px; resize: vertical; }
 .gap-2 { gap: 8px; }
 .gap-3 { gap: 12px; }
 
-/* ── Copy input ── */
-.copy-group { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-.copy-group .form-control { flex: 1; min-width: 140px; font-family: monospace; font-size: 12px; background: #F8FAFC; }
-.copy-group .btn { flex-shrink: 0; white-space: nowrap; }
+/* ══════════════════════════════════════════════════════════════════
+   3D COPY GROUP ACTION BAR SYSTEM
+   ══════════════════════════════════════════════════════════════════ */
+.copy-group {
+    display: flex !important;
+    gap: 8px !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    width: 100% !important;
+}
+
+.copy-group .form-control {
+    flex: 1 !important;
+    min-width: 160px !important;
+    height: 38px !important;
+    padding: 8px 14px !important;
+    font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: #1e293b !important;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+    border: 1.5px solid #cbd5e1 !important;
+    border-radius: 10px !important;
+    box-shadow: inset 0 1.5px 3px rgba(0, 0, 0, 0.05) !important;
+    transition: all 0.18s ease !important;
+}
+
+.copy-group .form-control:focus {
+    border-color: #7c3aed !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 3.5px rgba(124, 58, 237, 0.15), inset 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+}
+
+/* 3D Action Buttons inside Copy Group */
+.copy-group .btn,
+.copy-group button {
+    height: 38px !important;
+    padding: 0 16px !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    border-radius: 10px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease !important;
+}
+
+/* Copy button secondary 3D style */
+.copy-group [data-copy],
+.copy-group .btn-secondary {
+    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%) !important;
+    color: #334155 !important;
+    border: 1.5px solid #cbd5e1 !important;
+    box-shadow: 0 2.5px 7px rgba(0, 0, 0, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+}
+
+.copy-group [data-copy]:hover,
+.copy-group .btn-secondary:hover {
+    background: #ffffff !important;
+    border-color: #94a3b8 !important;
+    color: #0f172a !important;
+    transform: translateY(-1.5px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+}
+
+/* 3D Cyan Build button */
+.copy-group button[onclick*="GenModal"],
+.copy-group button[onclick*="ihOpenBuildModal"],
+.copy-group button[onclick*="openGenModal"] {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 4px 14px rgba(14, 165, 233, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+.copy-group button[onclick*="GenModal"]:hover,
+.copy-group button[onclick*="ihOpenBuildModal"]:hover,
+.copy-group button[onclick*="openGenModal"]:hover {
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 7px 20px rgba(14, 165, 233, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+}
+
+/* 3D Purple Short button */
+.copy-group button[id*="shorten-btn"],
+.copy-group button[onclick*="shortenLink"],
+.copy-group button[onclick*="GenerateShort"] {
+    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+.copy-group button[id*="shorten-btn"]:hover,
+.copy-group button[onclick*="shortenLink"]:hover,
+.copy-group button[onclick*="GenerateShort"]:hover {
+    background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 7px 20px rgba(124, 58, 237, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+}
+
+.copy-group .btn:active,
+.copy-group button:active {
+    transform: translateY(1px) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+}
 
 /* ── Charts ── */
 .chart-container { position: relative; height: 260px; }
