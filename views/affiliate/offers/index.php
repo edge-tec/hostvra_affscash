@@ -1023,21 +1023,24 @@ function showOfferDetailsModal(id) {
 </script>
 
 <!-- Offer Details Modal -->
-<div id="offer-details-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;padding:20px">
-    <div style="background:#fff;border-radius:12px;padding:24px;max-width:600px;width:100%;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 10px 25px rgba(0,0,0,.2)">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <h3 id="od-modal-title" style="margin:0;font-size:18px;font-weight:700"></h3>
-            <button type="button" onclick="document.getElementById('offer-details-modal').style.display='none'" style="background:none;border:none;font-size:24px;line-height:1;cursor:pointer;color:#94A3B8">&times;</button>
+<div id="offer-details-modal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,0.65);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:9999;align-items:center;justify-content:center;padding:20px;animation:modalFadeIn 0.25s ease">
+    <div class="modal-3d-box" style="background:linear-gradient(145deg,#ffffff 0%,#f8fafc 100%);border-radius:20px;border:1px solid rgba(226,232,240,0.85);padding:26px;max-width:620px;width:100%;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25),0 12px 24px -8px rgba(124,58,237,0.2),inset 0 1px 0 rgba(255,255,255,0.95);animation:modalPop3D 0.28s cubic-bezier(0.34,1.56,0.64,1)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border,#e2e8f0)">
+            <div style="display:flex;align-items:center;gap:10px">
+                <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#7C3AED,#6D28D9);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 12px rgba(124,58,237,0.3)">📄</div>
+                <h3 id="od-modal-title" style="margin:0;font-size:18.5px;font-weight:800;color:#0F172A;line-height:1.3"></h3>
+            </div>
+            <button type="button" onclick="document.getElementById('offer-details-modal').style.display='none'" style="width:32px;height:32px;border-radius:50%;background:#F1F5F9;border:1px solid #E2E8F0;font-size:18px;line-height:1;cursor:pointer;color:#64748B;display:flex;align-items:center;justify-content:center;transition:all 0.15s ease" onmouseover="this.style.background='#EF4444';this.style.color='#fff';this.style.borderColor='#EF4444'" onmouseout="this.style.background='#F1F5F9';this.style.color='#64748B';this.style.borderColor='#E2E8F0'">&times;</button>
         </div>
-        <div style="overflow-y:auto;flex:1;padding-right:8px;font-size:13px;color:#334155;line-height:1.6">
-            <div id="od-modal-desc" style="margin-bottom:20px;white-space:pre-wrap"></div>
-            <div id="od-modal-terms-wrap" style="display:none;background:#FFFBEB;border:1px solid #FDE68A;border-radius:6px;padding:12px">
-                <div style="font-weight:700;color:#92400E;margin-bottom:8px">&#128221; Terms &amp; Conditions</div>
-                <div id="od-modal-terms" style="color:#78350F;white-space:pre-line"></div>
+        <div style="overflow-y:auto;flex:1;padding-right:4px">
+            <div id="od-modal-desc" style="font-size:14px;color:#334155;line-height:1.65;margin-bottom:16px;white-space:pre-wrap"></div>
+            <div id="od-modal-terms-wrap" style="display:none;background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border:1px solid #FDE68A;border-radius:14px;padding:16px;margin-top:14px;box-shadow:inset 0 1px 2px rgba(255,255,255,0.7)">
+                <div style="font-weight:800;color:#92400E;font-size:12px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.07em;display:flex;align-items:center;gap:5px"><span>📝</span> Terms &amp; Conditions</div>
+                <div id="od-modal-terms" style="font-size:13px;color:#78350F;line-height:1.65;white-space:pre-wrap"></div>
             </div>
         </div>
-        <div style="margin-top:20px;text-align:right">
-            <button type="button" class="btn btn-secondary" onclick="document.getElementById('offer-details-modal').style.display='none'">Close</button>
+        <div style="margin-top:20px;padding-top:14px;border-top:1px solid var(--border,#e2e8f0);text-align:right">
+            <button type="button" onclick="document.getElementById('offer-details-modal').style.display='none'" class="btn btn-secondary" style="border-radius:10px;padding:9px 22px;font-weight:700">Close</button>
         </div>
     </div>
 </div>
