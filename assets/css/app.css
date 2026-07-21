@@ -3064,3 +3064,63 @@ html[data-theme="dark"] .smartlink-card {
     background: rgba(15, 23, 42, 0.75) !important;
     border-color: rgba(255, 255, 255, 0.12) !important;
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   OFFERS SECTION — ADVANCED & BEAUTIFUL RESPONSIVE STYLING
+   ══════════════════════════════════════════════════════════════════ */
+#tbl-offers, table.dataTable {
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    border-radius: 12px;
+}
+
+/* Modern ID badge style */
+span[style*="OFF-"] {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important;
+    color: #1d4ed8 !important;
+    border: 1px solid #bfdbfe !important;
+    border-radius: 6px !important;
+    padding: 3px 8px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    font-family: monospace !important;
+    display: inline-block !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Modern Details, Preview, and T&C action buttons */
+button[onclick*="showOfferDetailsModal"],
+button[onclick*="toggleListTerms"],
+a[href*="preview_url"] {
+    border-radius: 8px !important;
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    padding: 4px 10px !important;
+    transition: all 0.15s ease !important;
+}
+
+button[onclick*="showOfferDetailsModal"]:hover {
+    background: #4f46e5 !important;
+    color: #ffffff !important;
+    border-color: #4f46e5 !important;
+}
+
+@media (max-width: 768px) {
+    #tbl-offers, .table-wrap table {
+        font-size: 12.5px !important;
+    }
+    #tbl-offers th, .table-wrap th {
+        padding: 10px 12px !important;
+        font-size: 10.5px !important;
+        letter-spacing: .05em !important;
+        background: #f8fafc !important;
+    }
+    #tbl-offers td, .table-wrap td {
+        padding: 11px 12px !important;
+        vertical-align: middle !important;
+    }
+    .table-wrap {
+        border-radius: 12px !important;
+        border: 1px solid var(--border, #e2e8f0) !important;
+    }
+}
