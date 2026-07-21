@@ -26,25 +26,39 @@ var _ihTrackDomains = <?= $_ihDomainListJson ?>;
 </div>
 
 <!-- Filter Bar -->
-<div class="card mb-3">
-    <div class="card-body" style="padding:12px 16px">
+<div class="card mb-3 filter-card filter-open" id="inhouse-filter-card">
+    <button type="button" class="filter-toggle-btn" onclick="this.closest('.filter-card').classList.toggle('filter-open')">
+        <span class="filter-toggle-left">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            <span>Filter In-House Offers</span>
+        </span>
+        <span class="filter-toggle-icon">▲</span>
+    </button>
+    <div class="card-body">
         <form method="GET" style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
-            <div><label style="font-size:11px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:3px">Search</label>
-                <input type="text" name="q" class="form-control" placeholder="Search in-house offers..."
-                       value="<?= Helpers::e($qFilter ?? '') ?>" style="min-width:200px;height:36px"></div>
-            <div><label style="font-size:11px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:3px">Offer ID</label>
-                <input type="number" name="offer_id" class="form-control" placeholder="ID..." value="<?= ($idFilter ?? 0) > 0 ? (int)$idFilter : '' ?>" min="1" style="width:80px;height:36px"></div>
-            <div><label style="font-size:11px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:3px">Access</label>
-                <select name="access_filter" class="form-control" style="height:36px">
+            <div class="form-group mb-0">
+                <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Search</label>
+                <input type="text" name="q" class="form-control" placeholder="Search in-house offers..." value="<?= Helpers::e($qFilter ?? '') ?>" style="min-width:200px">
+            </div>
+            <div class="form-group mb-0">
+                <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Offer ID</label>
+                <input type="number" name="offer_id" class="form-control" placeholder="ID..." value="<?= ($idFilter ?? 0) > 0 ? (int)$idFilter : '' ?>" min="1" style="width:80px">
+            </div>
+            <div class="form-group mb-0">
+                <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Access</label>
+                <select name="access_filter" class="form-control">
                     <option value="">All Offers</option>
                     <option value="active" <?= ($accessFilter ?? '') === 'active' ? 'selected' : '' ?>>Active Offers</option>
                     <option value="request" <?= ($accessFilter ?? '') === 'request' ? 'selected' : '' ?>>Request / Need Approval</option>
                     <option value="all_access" <?= ($accessFilter ?? '') === 'all_access' ? 'selected' : '' ?>>Access for All</option>
-                </select></div>
-            <button type="submit" class="btn btn-primary btn-sm" style="height:36px">Filter</button>
-            <?php if ($qFilter || ($idFilter ?? 0) > 0 || ($accessFilter ?? '')): ?>
-            <a href="/affiliate/inhouse-offers" class="btn btn-secondary btn-sm" style="height:36px;line-height:24px">Clear</a>
-            <?php endif; ?>
+                </select>
+            </div>
+            <div style="align-self:flex-end;display:flex;gap:8px">
+                <button type="submit" class="btn btn-primary">Filter</button>
+                <?php if ($qFilter || ($idFilter ?? 0) > 0 || ($accessFilter ?? '')): ?>
+                <a href="/affiliate/inhouse-offers" class="btn btn-secondary">Clear</a>
+                <?php endif; ?>
+            </div>
         </form>
     </div>
 </div>
@@ -107,166 +121,134 @@ foreach ($offers as $o) {
 </div>
 <?php else: ?>
 <?php foreach ($offers as $o): $d = $_ihData[$o['id']]; ?>
-<div class="card" style="display:flex;flex-direction:column;min-width:0;border:1px solid <?= $d['hasAccess'] ? '#A7F3D0' : 'var(--border)' ?>">
-    <div style="padding:20px;flex:1">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:4px;margin-bottom:8px">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px">
-            <span style="font-size:10px;color:#94A3B8;font-family:monospace;font-weight:600">#<?= $o['id'] ?></span>
-        </div>
-        <div style="display:flex;gap:4px;flex-wrap:wrap">
-                <span style="background:#EDE9FE;color:#5B21B6;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px">&#127968; IN-HOUSE</span>
-                <span class="badge badge-info"><?= Helpers::e($o['payout_type']) ?></span>
+<div class="card offer-3d-card" style="display:flex;flex-direction:column;min-width:0;border-radius:18px;border:1px solid rgba(226,232,240,0.85);background:linear-gradient(145deg,#ffffff 0%,#f8fafc 100%);box-shadow:0 10px 25px -5px rgba(0,0,0,0.05),0 8px 10px -6px rgba(0,0,0,0.02);transition:all 0.28s ease;overflow:hidden">
+    <div style="padding:22px;flex:1;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px">
+            <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
+                <span style="background:linear-gradient(135deg,#EDE9FE,#DDD6FE);color:#5B21B6;border:1px solid #C4B5FD;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:20px">🏠 IN-HOUSE</span>
+                <span class="badge badge-info" style="border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;background:linear-gradient(135deg,#DBEAFE,#EFF6FF);color:#1D4ED8;border:1px solid #BFDBFE"><?= Helpers::e($o['payout_type']) ?></span>
                 <?php if (!empty($o['offer_type'])): ?>
-                <span style="background:#F0FDF4;color:#15803D;border:1px solid #BBF7D0;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px"><?= Helpers::e($o['offer_type']) ?></span>
+                <span style="background:linear-gradient(135deg,#DCFCE7,#F0FDF4);color:#15803D;border:1px solid #BBF7D0;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px"><?= Helpers::e($o['offer_type']) ?></span>
                 <?php endif; ?>
                 <?php if (!empty($o['require_approval'])): ?>
-                <span class="badge badge-warning" style="font-size:10px">Approval Required</span>
+                <span class="badge badge-warning" style="border-radius:20px;padding:3px 9px;font-size:10px;font-weight:700;background:linear-gradient(135deg,#FEF9C3,#FFFBE0);color:#92400E;border:1px solid #FDE68A">Approval Required</span>
                 <?php endif; ?>
             </div>
-            <?php if ($o['category']): ?><span class="badge badge-muted"><?= Helpers::e($o['category']) ?></span><?php endif; ?>
-        </div>
-        <h3 style="font-size:16px;font-weight:700;margin-bottom:6px"><?= Helpers::e($o['name']) ?></h3>
-        <?php if ($o['description']): ?>
-        <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px">
-            <span id="ih-gdesc-short-<?= $o['id'] ?>"><?= Helpers::e(substr($o['description'], 0, 120)) ?><?= mb_strlen($o['description']) > 120 ? '...' : '' ?></span>
-            <button type="button" onclick="showOfferDetailsModal(<?= $o['id'] ?>)" style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;color:#4F46E5;background:#EEF2FF;border:1px solid #C7D2FE;cursor:pointer;margin-left:4px">&#128196; Details</button>
-        </div>
-        <?php endif; ?>
-        <?php if (!empty($o['preview_url'])): ?>
-        <div style="margin-bottom:8px">
-            <a href="<?= Helpers::e($o['preview_url']) ?>" target="_blank" rel="noopener"
-               style="display:inline-block;font-size:11px;font-weight:700;padding:2px 10px;border-radius:10px;background:#0EA5E9;color:#fff;text-decoration:none">&#128065; Preview Offer</a>
-        </div>
-        <?php endif; ?>
-        <?php if (!empty($o['terms_conditions'])): ?>
-        <details style="margin-bottom:10px;font-size:12px">
-            <summary style="cursor:pointer;font-weight:600;color:var(--text-muted)">&#128220; Terms &amp; Conditions</summary>
-            <div style="margin-top:6px;padding:8px 10px;background:#FFFBEB;border:1px solid #FCD34D;border-radius:6px;color:#78350F;white-space:pre-wrap"><?= Helpers::e($o['terms_conditions']) ?></div>
-        </details>
-        <?php endif ?>
-        <div style="display:flex;gap:16px;margin-bottom:10px">
-            <div>
-                <div class="stat-label">Payout</div>
-                <div style="font-size:20px;font-weight:700;color:var(--secondary)">$<?= number_format($d['payout'], 2) ?></div>
-                <?php if($d['isCustom']): ?><span style="font-size:10px;background:#D1FAE5;color:#065F46;padding:1px 6px;border-radius:8px;font-weight:700">&#10003; Custom Rate</span><?php endif; ?>
-            </div>
-            <div style="flex:1;min-width:0">
-                <div class="stat-label">GEO</div>
-                <?php if(empty($d['geos'])): ?>
-                <span style="font-size:13px;color:var(--text-muted)">Global</span>
-                <?php else: ?>
-                <div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:3px">
-                    <?php foreach($d['geos'] as $_gc): ?><span style="display:inline-flex;align-items:center;gap:2px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:600;white-space:nowrap"><?= Helpers::flag($_gc) ?> <?= strtoupper(htmlspecialchars($_gc,ENT_QUOTES,'UTF-8')) ?></span><?php endforeach; ?>
-                </div>
-                <?php endif; ?>
-            </div>
-            <?php if (!empty($d['devs'])): ?>
-            <div><div class="stat-label">Devices</div><div style="font-size:13px;font-weight:600"><?= implode(', ', array_map('ucfirst', $d['devs'])) ?></div></div>
+            <?php if ($o['category']): ?>
+            <span class="badge badge-muted" style="border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;background:#F1F5F9;color:#64748B;border:1px solid #E2E8F0"><?= Helpers::e($o['category']) ?></span>
             <?php endif; ?>
         </div>
-        <?php if($d['effCap'] > 0): ?>
-        <div class="text-sm text-muted mb-1">
-            Daily Cap: <strong><?= number_format($d['effCap']) ?></strong>
-            <?php if($d['affCap'] > 0): ?><span style="font-size:10px;background:#EDE9FE;color:#5B21B6;padding:1px 6px;border-radius:8px;margin-left:4px">Your Cap</span><?php endif; ?>
+
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+            <h3 style="font-size:16.5px;font-weight:800;color:var(--text);margin:0;line-height:1.35"><?= Helpers::e($o['name']) ?></h3>
+            <span style="font-size:11px;background:linear-gradient(135deg,#EFF6FF,#DBEAFE);color:#1D4ED8;border:1px solid #BFDBFE;border-radius:6px;padding:2px 7px;font-weight:700;font-family:monospace;white-space:nowrap;flex-shrink:0">#<?= $o['id'] ?></span>
+        </div>
+
+        <?php if ($o['description']): ?>
+        <div style="font-size:13px;color:var(--text-muted);line-height:1.5">
+            <span id="ih-gdesc-short-<?= $o['id'] ?>"><?= Helpers::e(mb_substr($o['description'], 0, 120)) ?><?= mb_strlen($o['description']) > 120 ? '...' : '' ?></span>
+            <button type="button" onclick="showOfferDetailsModal(<?= $o['id'] ?>)" style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:8px;color:#4F46E5;background:#EEF2FF;border:1px solid #C7D2FE;cursor:pointer;margin-left:4px" title="View details">📄 Details</button>
         </div>
         <?php endif; ?>
-        <?php if(!empty($d['countries'])): ?>
-        <div style="margin-bottom:8px">
-            <div class="stat-label" style="margin-bottom:4px">Your Country Rates</div>
-            <div style="display:flex;flex-wrap:wrap;gap:4px">
-            <?php foreach($d['countries'] as $cr): ?>
-            <span style="display:inline-flex;align-items:center;gap:3px;background:#EFF6FF;border:1px solid #BFDBFE;color:#1E40AF;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:600">
-                &#127757; <?= Helpers::e($cr['country']) ?>: $<?= number_format((float)$cr['payout'],2) ?>
-            </span>
-            <?php endforeach; ?>
-            </div>
+
+        <?php if (!empty($o['preview_url'])): ?>
+        <div>
+            <a href="<?= Helpers::e($o['preview_url']) ?>" target="_blank" rel="noopener"
+               style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:#0EA5E9;text-decoration:none;background:#F0F9FF;border:1px solid #BAE6FD;border-radius:8px;padding:4px 10px">
+                👁 Preview Offer
+            </a>
         </div>
         <?php endif; ?>
-        <?php if(!empty($d['devices'])): ?>
-        <div style="margin-bottom:8px">
-            <div class="stat-label" style="margin-bottom:4px">Your Device Rates</div>
-            <div style="display:flex;flex-wrap:wrap;gap:4px">
-            <?php
-            $ihDevIcons=['mobile'=>'&#128241;','tablet'=>'&#128242;','desktop'=>'&#128421;'];
-            foreach($d['devices'] as $dr):
-                $ihDIcon = $ihDevIcons[$dr['device']] ?? '&#128225;';
-                $ihDGeo  = !empty($dr['country']) ? '/'.$dr['country'] : '';
-            ?>
-            <span style="display:inline-flex;align-items:center;gap:3px;background:#F0FDF4;border:1px solid #BBF7D0;color:#15803D;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:600">
-                <?= $ihDIcon ?> <?= ucfirst($dr['device']) . $ihDGeo ?>: $<?= number_format((float)$dr['payout'],2) ?>
-            </span>
-            <?php endforeach; ?>
+
+        <!-- 3D Payout Box -->
+        <div style="display:flex;gap:14px;background:linear-gradient(135deg,#F0FDF4 0%,#ECFDF5 100%);border:1px solid #A7F3D0;border-radius:14px;padding:12px 16px;box-shadow:inset 0 1px 2px rgba(255,255,255,0.7);margin-top:auto">
+            <div>
+                <div class="stat-label" style="font-size:10px;font-weight:800;color:#047857;letter-spacing:.05em;text-transform:uppercase">PAYOUT</div>
+                <div style="font-size:22px;font-weight:800;color:#059669">$<?= number_format($d['payout'], 2) ?></div>
+                <?php if($d['isCustom']): ?><span style="font-size:10px;background:#D1FAE5;color:#065F46;padding:1px 6px;border-radius:8px;font-weight:700">✓ Custom</span><?php endif; ?>
             </div>
-        </div>
-        <?php endif; ?>
-        <?php if(!empty($d['offerCntPayouts'])): ?>
-        <div style="margin-bottom:8px">
-            <div class="stat-label" style="margin-bottom:4px">Country Rates</div>
-            <div style="display:flex;flex-wrap:wrap;gap:4px">
-            <?php foreach($d['offerCntPayouts'] as $ocr): ?>
-            <span style="display:inline-flex;align-items:center;gap:3px;background:#EFF6FF;border:1px solid #BFDBFE;color:#1E40AF;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:600">
-                &#127757; <?= Helpers::e($ocr['country']) ?>: $<?= number_format((float)$ocr['payout'],2) ?>
-            </span>
-            <?php endforeach; ?>
-            </div>
-        </div>
-        <?php endif; ?>
-        <?php if(!empty($d['offerDevPayouts'])): ?>
-        <div style="margin-bottom:8px">
-            <div class="stat-label" style="margin-bottom:4px">Device Rates</div>
-            <div style="display:flex;flex-wrap:wrap;gap:4px">
-            <?php
-            $ihOdIcons=['mobile'=>'&#128241;','tablet'=>'&#128242;','desktop'=>'&#128421;'];
-            foreach($d['offerDevPayouts'] as $odev => $opay):
-                $ihOdIcon = $ihOdIcons[$odev] ?? '&#128225;';
-            ?>
-            <span style="display:inline-flex;align-items:center;gap:3px;background:#F0FDF4;border:1px solid #BBF7D0;color:#15803D;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:600">
-                <?= $ihOdIcon ?> <?= ucfirst($odev) ?>: $<?= number_format((float)$opay,2) ?>
-            </span>
-            <?php endforeach; ?>
-            </div>
-        </div>
-        <?php endif; ?>
-        <?php if ($o['today_clicks'] > 0): ?>
-        <div class="text-sm text-muted mb-1">Today: <strong><?= (int)$o['today_clicks'] ?></strong> clicks</div>
-        <?php endif; ?>
-    </div>
-    <div style="padding:16px;border-top:1px solid var(--border);background:var(--bg)">
-        <?php if ($d['hasAccess']): ?>
-            <!-- Tracking link input row -->
-            <div class="copy-group" style="margin-bottom:8px">
-                <input type="text" id="ih-ol-<?= $o['id'] ?>" class="form-control"
-                       value="<?= Helpers::e($d['baseUrl']) ?>" readonly style="font-size:11px">
-                <button class="btn btn-secondary btn-sm" data-copy="ih-ol-<?= $o['id'] ?>">Copy</button>
-                <button class="btn btn-sm"
-                        onclick="ihOpenBuildModal(<?= $o['id'] ?>, '<?= Helpers::e($d['baseUrl']) ?>')"
-                        style="white-space:nowrap;background:#0EA5E9;border-color:#0EA5E9;color:#fff"
-                        title="Build link with tracking parameters">&#128279; Build</button>
-                <button class="btn btn-primary btn-sm"
-                        onclick="ihGenerateShort(<?= $o['id'] ?>)"
-                        id="ih-shorten-btn-<?= $o['id'] ?>"
-                        style="white-space:nowrap;background:#7C3AED;border-color:#7C3AED">&#9986; Short</button>
-            </div>
-            <div id="ih-short-result-<?= $o['id'] ?>" style="display:none;margin-bottom:6px">
-                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-                    <span style="font-size:11px;font-weight:600;color:#7C3AED;white-space:nowrap">&#128279; Short:</span>
-                    <input type="text" id="ih-short-url-<?= $o['id'] ?>" class="form-control" readonly
-                           style="font-size:11px;border-color:#7C3AED;background:#F5F3FF;min-width:120px;flex:1">
-                    <button class="btn btn-sm" data-copy="ih-short-url-<?= $o['id'] ?>"
-                            style="background:#7C3AED;color:#fff;border:none;white-space:nowrap;flex-shrink:0">Copy</button>
-                    <a id="ih-short-open-<?= $o['id'] ?>" href="#" target="_blank"
-                       style="background:#5B21B6;color:#fff;padding:4px 8px;border-radius:4px;font-size:12px;text-decoration:none;flex-shrink:0">&#8599;</a>
+            <div style="flex:1;min-width:0">
+                <div class="stat-label" style="font-size:10px;font-weight:800;color:#64748B;letter-spacing:.05em;text-transform:uppercase">GEO &amp; DEVICES</div>
+                <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">
+                    <?php if(empty($d['geos'])): ?>
+                    <span style="display:inline-flex;align-items:center;background:#F1F5F9;border:1px solid #E2E8F0;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700;color:var(--text-muted)">Global</span>
+                    <?php else: ?>
+                        <?php 
+                        $visibleIhGeos = array_slice($d['geos'], 0, 4);
+                        $hiddenIhGeos = array_slice($d['geos'], 4);
+                        foreach($visibleIhGeos as $_gc): 
+                        ?>
+                        <span style="display:inline-flex;align-items:center;gap:3px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;color:#1E40AF"><?= Helpers::flag($_gc) ?> <?= strtoupper(htmlspecialchars($_gc,ENT_QUOTES,'UTF-8')) ?></span>
+                        <?php endforeach; ?>
+                        
+                        <?php if(count($hiddenIhGeos) > 0): ?>
+                        <button type="button" onclick="this.nextElementSibling.style.display='contents'; this.style.display='none'" style="display:inline-flex;align-items:center;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700;cursor:pointer;color:var(--text-muted)">+<?= count($hiddenIhGeos) ?> more</button>
+                        <span style="display:none;">
+                            <?php foreach($hiddenIhGeos as $_gc): ?>
+                            <span style="display:inline-flex;align-items:center;gap:3px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap;color:#1E40AF"><?= Helpers::flag($_gc) ?> <?= strtoupper(htmlspecialchars($_gc,ENT_QUOTES,'UTF-8')) ?></span>
+                            <?php endforeach; ?>
+                        </span>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
+                    <?php if (!empty($d['devs'])): ?>
+                        <span style="color:#CBD5E1;margin:0 2px">|</span>
+                        <?php
+                        $_ihDevIcons=['mobile'=>'📱','tablet'=>'📲','desktop'=>'🖥️'];
+                        foreach($d['devs'] as $_dv):
+                            $_dvIcon = $_ihDevIcons[$_dv] ?? '📡';
+                        ?>
+                        <span style="display:inline-flex;align-items:center;gap:3px;background:#F8FAFC;border:1px solid #E2E8F0;color:#475569;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700;white-space:nowrap">
+                            <?= $_dvIcon ?> <?= ucfirst($_dv) ?>
+                        </span>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
             </div>
-            <div class="text-sm text-muted">&#9989; Approved — <?= (int)$o['today_clicks'] ?> clicks today</div>
+        </div>
+
+        <?php if($d['effCap'] > 0): ?>
+        <div class="text-sm text-muted">
+            Daily Cap: <strong><?= number_format($d['effCap']) ?></strong>
+            <?php if($d['affCap'] > 0): ?><span style="font-size:10px;background:#EDE9FE;color:#5B21B6;padding:1px 6px;border-radius:6px;margin-left:4px;font-weight:700">Your Cap</span><?php endif; ?>
+        </div>
+        <?php endif; ?>
+
+        <?php if (!empty($o['terms_conditions'])): ?>
+        <details>
+            <summary style="cursor:pointer;font-size:12px;font-weight:700;color:#64748B;list-style:none;display:flex;align-items:center;gap:4px">
+                <span>📝</span> Terms &amp; Conditions
+            </summary>
+            <div style="margin-top:6px;padding:10px 12px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;font-size:12px;color:#78350F;line-height:1.6;white-space:pre-line;max-height:200px;overflow-y:auto">
+                <?= Helpers::e($o['terms_conditions']) ?>
+            </div>
+        </details>
+        <?php endif ?>
+    </div>
+
+    <!-- Footer Action -->
+    <div style="padding:16px 22px;border-top:1px solid var(--border,#e2e8f0);background:rgba(248,250,252,0.7)">
+        <?php if ($d['hasAccess']): ?>
+            <div class="text-sm text-muted" style="margin-bottom:8px;font-size:12.5px;color:#065F46;font-weight:700;display:flex;align-items:center;gap:4px">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Approved — <?= (int)$o['today_clicks'] ?> clicks today</span>
+            </div>
+            <div class="copy-group" style="gap:6px">
+                <input type="text" id="ih-ol-<?= $o['id'] ?>" class="form-control" value="<?= Helpers::e($d['baseUrl']) ?>" readonly style="font-size:12px;border-radius:8px;background:#fff">
+                <button class="btn btn-secondary btn-sm" data-copy="ih-ol-<?= $o['id'] ?>" style="border-radius:8px;font-weight:700">Copy</button>
+                <button class="btn btn-sm" onclick="ihOpenBuildModal(<?= $o['id'] ?>, '<?= Helpers::e($d['baseUrl']) ?>')" style="white-space:nowrap;background:#0EA5E9;border:none;color:#fff;border-radius:8px;font-weight:700;padding:0 12px" title="Build link with tracking parameters">🔗 Build</button>
+                <button class="btn btn-sm" onclick="ihGenerateShort(<?= $o['id'] ?>)" id="ih-shorten-btn-<?= $o['id'] ?>" style="white-space:nowrap;background:#7C3AED;border:none;color:#fff;border-radius:8px;font-weight:700;padding:0 12px">✂ Short</button>
+            </div>
         <?php elseif ($d['isPending']): ?>
-            <div class="alert alert-warning mb-0" style="padding:10px;text-align:center">&#9203; Pending Approval — waiting for admin review</div>
+            <div style="background:linear-gradient(135deg,#FEF9C3,#FEF08A);border:1px solid #FDE047;border-radius:10px;padding:10px 14px;font-size:12.5px;color:#713F12;font-weight:700;text-align:center">
+                ⏳ Pending Approval — waiting for admin review
+            </div>
         <?php else: ?>
             <form method="POST" action="/affiliate/inhouse-offers">
                 <?= Helpers::csrf() ?>
                 <input type="hidden" name="offer_id" value="<?= $o['id'] ?>">
-                <button type="submit" class="btn btn-primary" style="width:100%">
-                    <?= $o['require_approval'] ? 'Apply for Access' : 'Get Tracking Link' ?>
+                <button type="submit" class="btn btn-primary" style="width:100%;border-radius:10px;padding:11px 18px;font-size:14px;font-weight:800;background:linear-gradient(135deg,#7C3AED 0%,#6D28D9 100%);box-shadow:0 4px 14px rgba(124,58,237,0.35);justify-content:center">
+                    <?= $o['require_approval'] ? 'Apply for Access' : '⚡ Get Tracking Link' ?>
                 </button>
             </form>
         <?php endif; ?>
