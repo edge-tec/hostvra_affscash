@@ -84,10 +84,19 @@ var _trackDomains = <?= $_domainListJson ?>;
             </div>
             <div class="form-group mb-0">
                 <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Access</label>
-                <select name="access" class="form-control">
+                <select name="access_filter" class="form-control">
                     <option value="">All Offers</option>
-            <?php endif; ?>
-        </form>
+                    <option value="active" <?= ($accessFilter ?? '') === 'active' ? 'selected' : '' ?>>Active Offers</option>
+                    <option value="request" <?= ($accessFilter ?? '') === 'request' ? 'selected' : '' ?>>Request / Need Approval</option>
+                    <option value="all_access" <?= ($accessFilter ?? '') === 'all_access' ? 'selected' : '' ?>>Access for All</option>
+                </select>
+            </div>
+            <div style="align-self:flex-end;display:flex;gap:8px">
+                <button type="submit" class="btn btn-primary">Filter</button>
+                <?php if ($qFilter || $catFilter || $typeFilter || $offerTypeFilter || $countryFilter || $deviceFilter || ($idFilter ?? 0) > 0 || ($accessFilter ?? '')): ?>
+                <a href="/affiliate/offers" class="btn btn-secondary">Reset</a>
+                <?php endif; ?>
+            </div>
     </div>
 </div>
 
