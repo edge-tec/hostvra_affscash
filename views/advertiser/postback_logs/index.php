@@ -25,7 +25,7 @@ $statusStyle = [
 </div>
 
 <!-- Stats -->
-<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:24px">
+<div class="stat-grid-5">
     <div class="card" style="margin:0"><div class="card-body" style="padding:16px 20px">
         <div class="text-muted" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px">Total Postbacks</div>
         <div style="font-size:26px;font-weight:700;color:#1E293B;margin-top:4px"><?= number_format($stats['total'] ?? 0) ?></div>

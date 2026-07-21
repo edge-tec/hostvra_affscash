@@ -27,7 +27,7 @@ $acceptRate = ($stats['total'] ?? 0) > 0
 </div>
 
 <!-- Stats -->
-<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:24px">
+<div class="stat-grid-6">
     <div class="card" style="margin:0"><div class="card-body" style="padding:14px 18px">
         <div class="text-muted" style="font-size:11px;font-weight:700;text-transform:uppercase">Total</div>
         <div style="font-size:24px;font-weight:700;margin-top:4px"><?= number_format($stats['total'] ?? 0) ?></div>

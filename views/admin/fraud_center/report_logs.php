@@ -42,7 +42,7 @@ include BASE_PATH . '/views/partials/fraud_filter_bar.php';
 </form>
 
 <!-- KPI strip -->
-<div class="fds-kpi-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px">
+<div class="fds-kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-bottom:16px">
     <div class="fds-kpi"><div class="fds-kpi-label">Total Reports</div><div class="fds-kpi-val"><?= number_format($kpis['total_reports']) ?></div></div>
     <div class="fds-kpi"><div class="fds-kpi-label">🖱 Click Reports</div><div class="fds-kpi-val"><?= number_format($kpis['click_reports']) ?></div></div>
     <div class="fds-kpi fds-kpi-warn"><div class="fds-kpi-label">💰 Conversion Reports</div><div class="fds-kpi-val"><?= number_format($kpis['conv_reports']) ?></div></div>

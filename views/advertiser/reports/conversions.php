@@ -8,7 +8,7 @@
 .cr-actions{display:flex;gap:8px;flex-wrap:wrap;}
 
 /* KPI strip */
-.cr-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px;}
+.cr-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px;}
 .cr-stat{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:14px 16px;position:relative;overflow:hidden;}
 .cr-stat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--cr-tint,#4F46E5);}
 .cr-stat .lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);}
