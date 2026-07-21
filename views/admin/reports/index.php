@@ -55,7 +55,11 @@ $tabIcons = [
 </div>
 
 <!-- Filter bar -->
-<div class="card mb-3">
+<div class="card mb-3 filter-card" id="report-filter-card">
+    <button type="button" class="filter-toggle-btn" onclick="this.closest('.filter-card').classList.toggle('filter-open')">
+        <span>🔍 Filters</span>
+        <span class="filter-toggle-icon">▼</span>
+    </button>
     <div class="card-body">
         <form method="GET" id="report-filter-form" class="d-flex gap-3 align-center" style="flex-wrap:wrap">
             <input type="hidden" name="tab" value="<?= Helpers::e($tab) ?>">

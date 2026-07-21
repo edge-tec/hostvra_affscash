@@ -75,7 +75,11 @@
 </style>
 
 <!-- Filters -->
-<div class="card mb-3">
+<div class="card mb-3 filter-card" id="fsr-filter-card">
+    <button type="button" class="filter-toggle-btn" onclick="this.closest('.filter-card').classList.toggle('filter-open')">
+        <span>🔍 Filters</span>
+        <span class="filter-toggle-icon">▼</span>
+    </button>
     <div class="card-body" style="padding:16px 20px">
         <form method="GET" id="fsr-filter-form" style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
             <div style="width:100%">

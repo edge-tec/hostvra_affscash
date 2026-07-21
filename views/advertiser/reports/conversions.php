@@ -152,7 +152,11 @@
 </div>
 
 <!-- ── Filters ──────────────────────────────────────────────────────── -->
-<div class="card mb-3">
+<div class="card mb-3 filter-card" id="adv-cr-filter-card">
+    <button type="button" class="filter-toggle-btn" onclick="this.closest('.filter-card').classList.toggle('filter-open')">
+        <span>🔍 Filters</span>
+        <span class="filter-toggle-icon">▼</span>
+    </button>
     <div class="card-body">
         <form method="GET" class="cr-filters">
             <div class="form-group"><label>From</label><input type="date" name="from" class="form-control" value="<?= Helpers::e($from) ?>"></div>

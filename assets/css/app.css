@@ -2753,3 +2753,117 @@ html[data-theme="dark"] .galaxy-glow-btn:hover {
     }
 }
 
+/* ══════════════════════════════════════════════════════════════════
+   COLLAPSIBLE MOBILE FILTERS
+   On ≤768px, filter cards get a toggle button; body is hidden by
+   default and slides open when .filter-open is toggled.
+   ══════════════════════════════════════════════════════════════════ */
+.filter-toggle-btn {
+    display: none; /* hidden on desktop */
+}
+
+@media (max-width: 768px) {
+    /* Toggle button: visible on mobile */
+    .filter-toggle-btn {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 12px 16px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--primary);
+        letter-spacing: .01em;
+    }
+    .filter-toggle-btn .filter-toggle-icon {
+        font-size: 11px;
+        transition: transform .25s ease;
+        color: var(--text-muted);
+    }
+    .filter-toggle-btn .filter-toggle-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 20px;
+        height: 20px;
+        padding: 0 6px;
+        border-radius: 10px;
+        background: var(--primary);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        margin-left: 6px;
+    }
+
+    /* Filter body: collapsed by default on mobile */
+    .card.filter-card .card-body {
+        max-height: 0;
+        overflow: hidden;
+        padding-top: 0;
+        padding-bottom: 0;
+        transition: max-height .3s ease, padding .2s ease;
+    }
+    .card.filter-card.filter-open .card-body {
+        max-height: 2000px;
+        padding-top: 14px;
+        padding-bottom: 14px;
+        overflow: visible;
+    }
+    .card.filter-card.filter-open .filter-toggle-icon {
+        transform: rotate(180deg);
+    }
+
+    /* Date presets: horizontal scroll on mobile instead of wrapping */
+    .drp-presets {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        flex-wrap: nowrap !important;
+        padding-bottom: 4px;
+    }
+    .drp-presets::-webkit-scrollbar { display: none; }
+    .drp-btn {
+        flex-shrink: 0;
+    }
+
+    /* Filter form: 2-col grid on mobile instead of flex */
+    .filter-card form.d-flex,
+    .filter-card form[style*="display:flex"] {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+    .filter-card form .drp-presets {
+        grid-column: 1 / -1;
+    }
+    .filter-card form .form-group {
+        margin-bottom: 0;
+    }
+    .filter-card form > div:last-child {
+        grid-column: 1 / -1;
+    }
+
+    /* Make form-group fill width properly */
+    .filter-card .form-group.mb-0 {
+        width: 100%;
+        min-width: 0 !important;
+    }
+    .filter-card .form-group.mb-0 .form-control {
+        width: 100%;
+    }
+    .filter-card .form-group.mb-0 input[style*="width:130px"],
+    .filter-card .form-group.mb-0 input[style*="width:110px"] {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .filter-card form.d-flex,
+    .filter-card form[style*="display:flex"] {
+        grid-template-columns: 1fr;
+    }
+}
+
