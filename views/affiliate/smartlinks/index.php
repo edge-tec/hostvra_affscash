@@ -17,30 +17,38 @@
     $approved  = $reqStatus === 'approved';
     $smartUrl  = $approved ? ($appUrl.'/smartlink/'.$sl['slug'].'?aff='.$aff['affiliate_code'].'&sub1=') : '';
 ?>
-<div class="card" style="border:1px solid <?= $approved ? '#D1FAE5' : '#E2E8F0' ?>">
-    <div class="card-body">
-        <div class="d-flex justify-between align-center mb-2">
-            <div>
-                <div style="font-size:10px;color:#94A3B8;font-family:monospace;font-weight:600;margin-bottom:2px">#<?= $sl['id'] ?></div>
-                <h3 style="font-size:15px;font-weight:700"><?= Helpers::e($sl['name']) ?></h3>
+<div class="card smartlink-card" style="border-radius:16px;box-shadow:0 4px 20px -2px rgba(0,0,0,0.06);border:1px solid <?= $approved ? '#A7F3D0' : '#E2E8F0' ?>;transition:all 0.25s ease;overflow:hidden">
+    <div class="card-body" style="padding:22px">
+        <div class="d-flex justify-between align-center mb-2" style="flex-wrap:wrap;gap:8px">
+            <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:11px;color:#64748B;font-family:monospace;font-weight:700;background:#F1F5F9;padding:2px 8px;border-radius:6px">#<?= $sl['id'] ?></span>
+                <h3 style="font-size:16px;font-weight:800;color:var(--text);margin:0"><?= Helpers::e($sl['name']) ?></h3>
             </div>
-            <span class="badge badge-info"><?= $sl['rotation_type'] ?></span>
+            <span class="badge badge-info" style="border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;background:linear-gradient(135deg,#DBEAFE,#EFF6FF);color:#1D4ED8;border:1px solid #BFDBFE"><?= $sl['rotation_type'] ?></span>
         </div>
+
         <?php if($sl['description']): ?>
-        <div class="text-sm text-muted mb-2">
+        <div class="text-sm text-muted mb-3" style="line-height:1.5;font-size:13px">
             <span id="sl-desc-short-<?= $sl['id'] ?>"><?= Helpers::e(substr($sl['description'], 0, 120)) ?><?= mb_strlen($sl['description']) > 120 ? '...' : '' ?></span>
-            <button type="button" onclick="showOfferDetailsModal(<?= $sl['id'] ?>)" style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;color:#4F46E5;background:#EEF2FF;border:1px solid #C7D2FE;cursor:pointer;margin-left:4px">&#128196; Details</button>
+            <button type="button" onclick="showOfferDetailsModal(<?= $sl['id'] ?>)" style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:8px;color:#4F46E5;background:#EEF2FF;border:1px solid #C7D2FE;cursor:pointer;margin-left:6px;transition:all .15s" title="View details">📄 Details</button>
         </div>
         <?php endif; ?>
-        <div class="text-sm mb-3"><strong><?= $sl['offer_count'] ?></strong> active offers in rotation</div>
+
+        <div style="display:inline-flex;align-items:center;gap:6px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:#475569;margin-bottom:14px">
+            <span style="width:8px;height:8px;border-radius:50%;background:#10B981;display:inline-block"></span>
+            <strong><?= $sl['offer_count'] ?></strong> active offers in rotation
+        </div>
+
         <?php if (isset($slPayoutMap[$sl['id']])): $slp = $slPayoutMap[$sl['id']]; ?>
-        <div style="display:inline-flex;align-items:center;gap:10px;background:#F0FDF4;border:1px solid #6EE7B7;border-radius:8px;padding:6px 14px;margin-bottom:12px">
-            <div><div style="font-size:10px;font-weight:700;color:#6B7280;letter-spacing:.5px">YOUR PAYOUT</div>
-                 <div style="font-size:18px;font-weight:700;color:#059669">$<?= number_format((float)$slp['payout'],2) ?></div></div>
+        <div style="display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#F0FDF4,#ECFDF5);border:1px solid #A7F3D0;border-radius:12px;padding:10px 16px;margin-bottom:14px">
+            <div>
+                <div style="font-size:10px;font-weight:800;color:#047857;letter-spacing:.05em;text-transform:uppercase">YOUR PAYOUT</div>
+                <div style="font-size:20px;font-weight:800;color:#059669">$<?= number_format((float)$slp['payout'],2) ?></div>
+            </div>
             <?php if ((float)$slp['revenue'] > 0): ?>
-            <div style="border-left:1px solid #A7F3D0;padding-left:10px">
-                <div style="font-size:10px;font-weight:700;color:#6B7280;letter-spacing:.5px">REVENUE</div>
-                <div style="font-size:16px;font-weight:600;color:#374151">$<?= number_format((float)$slp['revenue'],2) ?></div>
+            <div style="border-left:1px solid #6EE7B7;padding-left:14px">
+                <div style="font-size:10px;font-weight:800;color:#64748B;letter-spacing:.05em;text-transform:uppercase">REVENUE</div>
+                <div style="font-size:17px;font-weight:700;color:#334155">$<?= number_format((float)$slp['revenue'],2) ?></div>
             </div>
             <?php endif; ?>
         </div>
@@ -48,47 +56,39 @@
 
         <!-- Access Status -->
         <?php if ($approved): ?>
-        <div style="background:#D1FAE5;border:1px solid #6EE7B7;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:#065F46;font-weight:600">
-            &#10003; Access Granted — you can use this smartlink
+        <div style="background:linear-gradient(135deg,#ECFDF5,#D1FAE5);border:1px solid #A7F3D0;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:12.5px;color:#065F46;font-weight:700;display:flex;align-items:center;gap:6px">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Access Granted — you can use this smartlink</span>
         </div>
-        <div class="copy-group">
-            <input type="text" id="sl-<?= $sl['id'] ?>" class="form-control" value="<?= Helpers::e($smartUrl) ?>" readonly style="font-size:11px">
-            <button class="btn btn-secondary btn-sm" data-copy="sl-<?= $sl['id'] ?>">Copy</button>
-            <button class="btn btn-sm" onclick="openSlGenModal(<?= $sl['id'] ?>, document.getElementById('sl-<?= $sl['id'] ?>').value)" style="background:#0EA5E9;color:#fff;border:none;cursor:pointer;padding:0 10px;white-space:nowrap" title="Build link with tracking parameters">&#128279; Build</button>
+        <div class="copy-group" style="gap:8px">
+            <input type="text" id="sl-<?= $sl['id'] ?>" class="form-control" value="<?= Helpers::e($smartUrl) ?>" readonly style="font-size:12px;border-radius:8px;background:#F8FAFC">
+            <button class="btn btn-secondary btn-sm" data-copy="sl-<?= $sl['id'] ?>" style="border-radius:8px;font-weight:700">Copy</button>
+            <button class="btn btn-sm" onclick="openSlGenModal(<?= $sl['id'] ?>, document.getElementById('sl-<?= $sl['id'] ?>').value)" style="background:#0EA5E9;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;padding:0 12px;white-space:nowrap" title="Build link with tracking parameters">🔗 Build</button>
             <?php if (!empty($shortenerEnabled)): ?>
-            <button id="sl-short-btn-<?= $sl['id'] ?>" class="btn btn-sm" style="background:#7C3AED;color:#fff;border:none;cursor:pointer;padding:0 10px" onclick="shortenSmartlink(<?= $sl['id'] ?>, document.getElementById('sl-<?= $sl['id'] ?>').value)">&#9986; Short</button>
+            <button id="sl-short-btn-<?= $sl['id'] ?>" class="btn btn-sm" style="background:#7C3AED;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;padding:0 12px" onclick="shortenSmartlink(<?= $sl['id'] ?>, document.getElementById('sl-<?= $sl['id'] ?>').value)">✂ Short</button>
             <?php endif; ?>
         </div>
-        <div class="form-hint mt-1">Replace <code>sub1=</code> with your sub-parameter value</div>
-        <?php if (!empty($shortenerEnabled)): ?>
-        <div id="sl-short-result-<?= $sl['id'] ?>" style="display:none;margin-top:10px">
-            <div class="copy-group">
-                <input type="text" id="sl-short-url-<?= $sl['id'] ?>" class="form-control" readonly style="font-size:11px">
-                <button class="btn btn-secondary btn-sm" data-copy="sl-short-url-<?= $sl['id'] ?>">Copy</button>
-                <a id="sl-short-open-<?= $sl['id'] ?>" href="#" target="_blank" class="btn btn-sm btn-secondary">Open</a>
-            </div>
-        </div>
-        <?php endif; ?>
+        <div class="form-hint mt-1" style="font-size:11.5px">Replace <code>sub1=</code> with your sub-parameter value</div>
 
         <?php elseif ($reqStatus === 'pending'): ?>
-        <div style="background:#FEF9C3;border:1px solid #FDE047;border-radius:8px;padding:10px 12px;font-size:12px;color:#713F12">
-            &#9201; <strong>Request Pending</strong> — your access request is under review. You'll be notified once approved.
+        <div style="background:linear-gradient(135deg,#FEF9C3,#FEF08A);border:1px solid #FDE047;border-radius:10px;padding:12px 14px;font-size:12.5px;color:#713F12;font-weight:600">
+            ⏳ <strong>Request Pending</strong> — your access request is under review. You'll be notified once approved.
         </div>
 
         <?php elseif ($reqStatus === 'rejected'): ?>
-        <div style="background:#FEE2E2;border:1px solid #FCA5A5;border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:#7F1D1D">
-            &#10005; <strong>Request Rejected</strong><?= $req['admin_note'] ? ' — ' . Helpers::e($req['admin_note']) : '' ?>
+        <div style="background:linear-gradient(135deg,#FEE2E2,#FECACA);border:1px solid #FCA5A5;border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:12.5px;color:#7F1D1D;font-weight:600">
+            ✕ <strong>Request Rejected</strong><?= $req['admin_note'] ? ' — ' . Helpers::e($req['admin_note']) : '' ?>
         </div>
-        <button type="button" class="btn btn-secondary btn-sm" onclick="openRequestModal(<?= $sl['id'] ?>, '<?= htmlspecialchars(addslashes($sl['name'])) ?>')">&#8635; Re-apply for Access</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="openRequestModal(<?= $sl['id'] ?>, '<?= htmlspecialchars(addslashes($sl['name'])) ?>')" style="border-radius:8px;font-weight:700">↺ Re-apply for Access</button>
 
         <?php else:
             $autoApprove = empty($sl['require_approval']);
         ?>
-        <div style="background:#F1F5F9;border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:#475569">
-            <?= $autoApprove ? '&#9889; Instant Access — click below to get your link immediately' : '&#128274; Access Required — send a request to use this smartlink' ?>
+        <div style="background:linear-gradient(135deg,#FAF5FF 0%,#F3E8FF 100%);border:1px solid #E9D5FF;border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:12.5px;color:#6B21A8;font-weight:600">
+            <?= $autoApprove ? '⚡ Instant Access — click below to get your link immediately' : '🔒 Access Required — send a request to use this smartlink' ?>
         </div>
-        <button type="button" class="btn btn-primary btn-sm" onclick="openRequestModal(<?= $sl['id'] ?>, '<?= htmlspecialchars(addslashes($sl['name'])) ?>')">
-            <?= $autoApprove ? '&#9889; Get Instant Access' : '&#128338; Request Access' ?>
+        <button type="button" class="btn btn-primary" onclick="openRequestModal(<?= $sl['id'] ?>, '<?= htmlspecialchars(addslashes($sl['name'])) ?>')" style="width:100%;border-radius:10px;padding:11px 18px;font-size:14px;font-weight:700;background:linear-gradient(135deg,#7C3AED 0%,#6D28D9 100%);box-shadow:0 4px 14px rgba(124,58,237,0.35);justify-content:center">
+            <?= $autoApprove ? '⚡ Get Instant Access' : '⏳ Request Access' ?>
         </button>
         <?php endif; ?>
     </div>
