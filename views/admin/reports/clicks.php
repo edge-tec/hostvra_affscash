@@ -33,7 +33,14 @@
 </div>
 
 <!-- Filters -->
-<div class="card mb-3">
+<div class="card mb-3 filter-card filter-open" id="click-report-filter-card">
+    <button type="button" class="filter-toggle-btn" onclick="this.closest('.filter-card').classList.toggle('filter-open')">
+        <span class="filter-toggle-left">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            <span>Filter Parameters</span>
+        </span>
+        <span class="filter-toggle-icon">▲</span>
+    </button>
     <div class="card-body">
         <form method="GET" id="click-report-form" class="d-flex gap-3 align-center" style="flex-wrap:wrap">
             <?php $drpFromId='cr-from'; $drpToId='cr-to'; $drpFormId='click-report-form'; include BASE_PATH.'/views/partials/date_range_picker.php'; ?>

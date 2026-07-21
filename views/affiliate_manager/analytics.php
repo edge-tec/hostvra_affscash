@@ -14,29 +14,47 @@
 </div>
 
 <!-- Filter Bar -->
-<div class="card mb-3">
-    <div class="card-body" style="padding:12px 16px">
-        <form method="GET" style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
-            <div><label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">From</label>
-                <input type="date" name="from" class="form-control" value="<?= Helpers::e($from) ?>"></div>
-            <div><label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">To</label>
-                <input type="date" name="to" class="form-control" value="<?= Helpers::e($to) ?>"></div>
-            <div><label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Offer</label>
+<div class="card mb-3 filter-card filter-open" id="mgr-an-filter-card">
+    <button type="button" class="filter-toggle-btn" onclick="this.closest('.filter-card').classList.toggle('filter-open')">
+        <span class="filter-toggle-left">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            <span>Filter Parameters</span>
+        </span>
+        <span class="filter-toggle-icon">▲</span>
+    </button>
+    <div class="card-body">
+        <form method="GET" id="mgr-an-form" class="d-flex gap-3 align-center" style="flex-wrap:wrap">
+            <?php $drpFromId='mgr-an-from'; $drpToId='mgr-an-to'; $drpFormId='mgr-an-form'; include BASE_PATH.'/views/partials/date_range_picker.php'; ?>
+            <div class="form-group mb-0">
+                <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">From</label>
+                <input type="date" id="mgr-an-from" name="from" class="form-control" value="<?= Helpers::e($from) ?>">
+            </div>
+            <div class="form-group mb-0">
+                <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">To</label>
+                <input type="date" id="mgr-an-to" name="to" class="form-control" value="<?= Helpers::e($to) ?>">
+            </div>
+            <div class="form-group mb-0">
+                <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Offer</label>
                 <select name="offer_id" class="form-control" style="min-width:160px">
                     <option value="">All Offers</option>
                     <?php foreach ($offersList as $o): ?>
                     <option value="<?= $o['id'] ?>" <?= $offerId==$o['id']?'selected':'' ?>><?= Helpers::e($o['name']) ?></option>
                     <?php endforeach; ?>
-                </select></div>
-            <div><label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Affiliate</label>
+                </select>
+            </div>
+            <div class="form-group mb-0">
+                <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Affiliate</label>
                 <select name="affiliate_id" class="form-control" style="min-width:180px">
                     <option value="">All My Affiliates</option>
                     <?php foreach ($affiliatesList as $a): ?>
                     <option value="<?= $a['id'] ?>" <?= $selAffId==$a['id']?'selected':'' ?>><?= Helpers::e($a['label']) ?></option>
                     <?php endforeach; ?>
-                </select></div>
-            <button class="btn btn-primary">Apply Filter</button>
-            <a href="/affiliate_manager/analytics" class="btn btn-secondary">Reset</a>
+                </select>
+            </div>
+            <div style="align-self:flex-end;display:flex;gap:8px">
+                <button type="submit" class="btn btn-primary">Apply Filter</button>
+                <a href="/affiliate_manager/analytics" class="btn btn-secondary">Reset</a>
+            </div>
         </form>
     </div>
 </div>
