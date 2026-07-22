@@ -364,9 +364,9 @@ fun MainScreen(
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(24.dp),
-                    color = Color.White.copy(alpha = 0.94f),
-                    shadowElevation = 8.dp,
-                    border = BorderStroke(1.dp, Color.White.copy(alpha = 0.8f))
+                    color = Color.White,
+                    shadowElevation = 4.dp,
+                    border = BorderStroke(1.dp, Color(0xFFE2E8F0))
                 ) {
                     NavigationBar(
                         containerColor = Color.Transparent,

@@ -42,21 +42,21 @@ import com.patrykandpatrick.vico.core.entry.FloatEntry
 import com.patrykandpatrick.vico.core.entry.entryModelOf
 
 object PremiumUI {
-    // 3D Glassmorphism Gradients
-    val PageBackground = Color(0xFFF1F5F9)
-    val GlassCardBg = Color(0xFFFFFFFF).copy(alpha = 0.92f)
-    val GlassBorder = BorderStroke(1.dp, Color.White.copy(alpha = 0.8f))
+    // Soft Slate & Pure White Tokens (No Harsh White Glow)
+    val PageBackground = Color(0xFFF8FAFC)
+    val GlassCardBg = Color(0xFFFFFFFF)
+    val GlassBorder = BorderStroke(1.dp, Color(0xFFE2E8F0))
     
     val BackgroundGradient = Brush.verticalGradient(
-        colors = listOf(Color(0xFFF8FAFC), Color(0xFFEFF6FF), Color(0xFFE0E7FF))
+        colors = listOf(Color(0xFFF8FAFC), Color(0xFFF1F5F9), Color(0xFFE2E8F0))
     )
 
     val CardGradient = Brush.linearGradient(
-        colors = listOf(Color(0xFFFFFFFF), Color(0xFAFFFFFF), Color(0xF2FFFFFF))
+        colors = listOf(Color(0xFFFFFFFF), Color(0xFFFFFFFF))
     )
 
     val PastelHeader = Brush.horizontalGradient(
-        colors = listOf(Color(0xFFAED3E8), Color(0xFFC9C7DB), Color(0xFFD5B4B8))
+        colors = listOf(Color(0xFF4F46E5), Color(0xFF6366F1), Color(0xFF818CF8))
     )
 
     val HeaderGradient = Brush.horizontalGradient(
@@ -91,10 +91,10 @@ object PremiumUI {
         colors = listOf(Color(0xFFF43F5E), Color(0xFFE11D48))
     )
 
-    // Rounded Corner Shapes (18-24dp as requested)
-    val CardShape = RoundedCornerShape(20.dp)
+    // Rounded Corner Shapes (18-24dp)
+    val CardShape = RoundedCornerShape(18.dp)
     val PillShape = RoundedCornerShape(50.dp)
-    val ButtonShape = RoundedCornerShape(16.dp)
+    val ButtonShape = RoundedCornerShape(14.dp)
 
     // Status Colors
     val StatusApproved = Color(0xFF10B981)
@@ -132,14 +132,14 @@ object PremiumUI {
 }
 
 /**
- * 3D Glassmorphism Card Container with soft drop shadow, glass background, and border
+ * Clean Card Container without white glow or harsh drop shadows
  */
 @Composable
 fun GlassCard(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
-    elevation: Dp = 4.dp,
-    containerColor: Color = Color.White.copy(alpha = 0.92f),
+    elevation: Dp = 2.dp,
+    containerColor: Color = Color.White,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Card(
@@ -152,8 +152,7 @@ fun GlassCard(
         colors = CardDefaults.cardColors(containerColor = containerColor),
         elevation = CardDefaults.cardElevation(
             defaultElevation = elevation,
-            pressedElevation = 1.dp,
-            hoveredElevation = elevation + 2.dp
+            pressedElevation = 1.dp
         ),
         border = PremiumUI.GlassBorder
     ) {
@@ -165,7 +164,7 @@ fun GlassCard(
 }
 
 /**
- * Modern 3D KPI Metric Card with gradient icon container, dynamic value, trend pill, and 3D shadow
+ * Modern 3D KPI Metric Card with clean borders and no white shadow halo
  */
 @Composable
 fun KPICard3D(
@@ -182,8 +181,8 @@ fun KPICard3D(
         modifier = modifier
             .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier),
         shape = PremiumUI.CardShape,
-        colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.94f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp, pressedElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp, pressedElevation = 1.dp),
         border = PremiumUI.GlassBorder
     ) {
         Column(
@@ -278,7 +277,7 @@ fun KPICard3D(
 }
 
 /**
- * 3D Segmented Control Row for Date Filters (Today, Yesterday, 7D, 15D, 30D, 90D, etc.)
+ * Segmented Control Row for Date Filters
  */
 @Composable
 fun Segmented3DDateFilter(
@@ -292,15 +291,15 @@ fun Segmented3DDateFilter(
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = PremiumUI.CardShape,
-        color = Color.White.copy(alpha = 0.85f),
-        shadowElevation = 4.dp,
+        color = Color.White,
+        shadowElevation = 2.dp,
         border = PremiumUI.GlassBorder
     ) {
         Row(
             modifier = Modifier
                 .horizontalScroll(scrollState)
-                .padding(6.dp),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                .padding(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             options.forEach { option ->
@@ -308,7 +307,7 @@ fun Segmented3DDateFilter(
 
                 Box(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(14.dp))
+                        .clip(RoundedCornerShape(12.dp))
                         .background(
                             if (isSelected) PremiumUI.PrimaryGradient
                             else Brush.linearGradient(listOf(Color.Transparent, Color.Transparent))
@@ -369,7 +368,7 @@ fun BarChartCard3D(labels: List<String>, data: List<Float>) {
     }
     val model = entryModelOf(entries)
 
-    GlassCard(elevation = 6.dp) {
+    GlassCard(elevation = 2.dp) {
         Box(modifier = Modifier.fillMaxWidth().height(150.dp)) {
             Chart(
                 chart = columnChart(),
@@ -389,7 +388,7 @@ fun BarChartCard3D(labels: List<String>, data: List<Float>) {
 
 @Composable
 fun PieChartCard3D(labels: List<String>, data: List<Int>, customColors: List<Color>? = null) {
-    GlassCard(elevation = 6.dp) {
+    GlassCard(elevation = 2.dp) {
         if (labels.isEmpty() || data.isEmpty() || data.sum() == 0) {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize().height(120.dp)) {
                 Text("No data", color = Color.Gray)
