@@ -13,11 +13,11 @@ import java.io.FileInputStream
 
 android {
     namespace = "net.affscash.android"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         applicationId = "net.affscash.android"
         minSdk = 23
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 11
         versionName = "2.0.3"
 
