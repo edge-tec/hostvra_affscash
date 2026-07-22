@@ -121,16 +121,36 @@ try {
     $offers = Database::fetchAll("SELECT id, name FROM offers ORDER BY name") ?: [];
     $advertisers = Database::fetchAll("SELECT ad.id, COALESCE(ad.company_name, CONCAT(u.first_name, ' ', u.last_name)) as name FROM advertisers ad JOIN users u ON u.id = ad.user_id ORDER BY name") ?: [];
 
-    $chatSources = ['telegram', 'whatsapp', 'messenger', 'discord', 'signal', 'viber'];
+    $chatSources = [
+        'Unknown',
+        'Direct',
+        'WhatsApp',
+        'Telegram',
+        'Facebook Messenger',
+        'Instagram Direct',
+        'Threads',
+        'Discord',
+        'Skype',
+        'Signal',
+        'WeChat',
+        'LINE',
+        'Viber',
+        'Reddit',
+        'TikTok'
+    ];
+
     $overrideDestinations = [
-        ['key' => 'organic', 'label' => 'SEO / Organic'],
-        ['key' => 'paid_ads', 'label' => 'Paid Ads'],
-        ['key' => 'display', 'label' => 'Display'],
-        ['key' => 'email', 'label' => 'Email'],
-        ['key' => 'social', 'label' => 'Social'],
-        ['key' => 'native_ads', 'label' => 'Native Ads'],
-        ['key' => 'push', 'label' => 'Push'],
-        ['key' => 'other', 'label' => 'Other']
+        ['key' => 'Gmail', 'label' => 'Gmail'],
+        ['key' => 'Email', 'label' => 'Email'],
+        ['key' => 'Google Search', 'label' => 'Google Search'],
+        ['key' => 'Google Ads', 'label' => 'Google Ads'],
+        ['key' => 'Paid Ads', 'label' => 'Paid Ads'],
+        ['key' => 'Display Ads', 'label' => 'Display Ads'],
+        ['key' => 'Organic', 'label' => 'SEO / Organic'],
+        ['key' => 'Social', 'label' => 'Social'],
+        ['key' => 'Native Ads', 'label' => 'Native Ads'],
+        ['key' => 'Push', 'label' => 'Push'],
+        ['key' => 'Other', 'label' => 'Other']
     ];
 
     $deviceTypes = ['Mobile', 'Desktop', 'Tablet'];

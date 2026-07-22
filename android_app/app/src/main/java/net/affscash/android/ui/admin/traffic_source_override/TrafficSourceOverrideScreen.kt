@@ -37,6 +37,38 @@ import net.affscash.android.data.model.TrafficSourceOverrideRule
 import net.affscash.android.ui.components.CompactTopBar
 import net.affscash.android.ui.dashboard.PremiumUI
 
+val DEFAULT_TARGET_SOURCES = listOf(
+    "Unknown",
+    "Direct",
+    "WhatsApp",
+    "Telegram",
+    "Facebook Messenger",
+    "Instagram Direct",
+    "Threads",
+    "Discord",
+    "Skype",
+    "Signal",
+    "WeChat",
+    "LINE",
+    "Viber",
+    "Reddit",
+    "TikTok"
+)
+
+val DEFAULT_DESTINATIONS = listOf(
+    TrafficSourceOverrideDestination("Gmail", "Gmail"),
+    TrafficSourceOverrideDestination("Email", "Email"),
+    TrafficSourceOverrideDestination("Google Search", "Google Search"),
+    TrafficSourceOverrideDestination("Google Ads", "Google Ads"),
+    TrafficSourceOverrideDestination("Paid Ads", "Paid Ads"),
+    TrafficSourceOverrideDestination("Display Ads", "Display Ads"),
+    TrafficSourceOverrideDestination("Organic", "SEO / Organic"),
+    TrafficSourceOverrideDestination("Social", "Social"),
+    TrafficSourceOverrideDestination("Native Ads", "Native Ads"),
+    TrafficSourceOverrideDestination("Push", "Push"),
+    TrafficSourceOverrideDestination("Other", "Other")
+)
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TrafficSourceOverrideScreen(
@@ -197,7 +229,7 @@ fun TrafficSourceOverrideScreen(
                             }
                         }
                     } else {
-                        val destinationMap = data.destinations.associate { it.key to it.label }
+                        val destinationMap = (data.destinations.ifEmpty { DEFAULT_DESTINATIONS }).associate { it.key to it.label }
                         items(data.rules) { rule ->
                             RuleCardItem(
                                 rule = rule,
@@ -219,8 +251,8 @@ fun TrafficSourceOverrideScreen(
     if (showAddDialog) {
         AddEditRuleDialog(
             rule = editingRule,
-            chatSources = uiState.data?.chatSources ?: listOf("telegram", "whatsapp", "messenger", "discord", "signal", "viber"),
-            destinations = uiState.data?.destinations ?: emptyList(),
+            chatSources = if (!uiState.data?.chatSources.isNullOrEmpty()) uiState.data!!.chatSources else DEFAULT_TARGET_SOURCES,
+            destinations = if (!uiState.data?.destinations.isNullOrEmpty()) uiState.data!!.destinations else DEFAULT_DESTINATIONS,
             affiliates = uiState.data?.affiliates ?: emptyList(),
             offers = uiState.data?.offers ?: emptyList(),
             advertisers = uiState.data?.advertisers ?: emptyList(),
@@ -389,8 +421,11 @@ private fun AddEditRuleDialog(
     ) -> Unit
 ) {
     var name by remember { mutableStateOf(rule?.name ?: "") }
-    var selectedSources by remember { mutableStateOf(rule?.targetOriginalSources?.toSet() ?: setOf("whatsapp")) }
-    var selectedOverride by remember { mutableStateOf(rule?.overrideSource ?: (destinations.firstOrNull()?.key ?: "paid_ads")) }
+    var selectedSources by remember { mutableStateOf(rule?.targetOriginalSources?.toSet() ?: setOf("WhatsApp")) }
+    var customSourceInput by remember { mutableStateOf("") }
+
+    var selectedOverride by remember { mutableStateOf(rule?.overrideSource ?: (destinations.firstOrNull()?.key ?: "Paid Ads")) }
+    var customOverrideInput by remember { mutableStateOf("") }
     var priorityText by remember { mutableStateOf((rule?.priority ?: 0).toString()) }
 
     var selectedAffiliates by remember { mutableStateOf(rule?.conditions?.affiliateIds?.toSet() ?: emptySet()) }
@@ -435,18 +470,44 @@ private fun AddEditRuleDialog(
 
                 // Target Original Sources
                 Text("Target Original Sources", fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                Text("Leave blank to apply to ALL sources.", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("Select options or type custom ones... (Leave blank to apply to ALL sources)", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
 
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    chatSources.forEach { src ->
+                    val allSourcesList = (DEFAULT_TARGET_SOURCES + chatSources + selectedSources).distinct()
+                    allSourcesList.forEach { src ->
                         val isSelected = selectedSources.contains(src)
                         FilterChip(
                             selected = isSelected,
                             onClick = {
                                 selectedSources = if (isSelected) selectedSources - src else selectedSources + src
                             },
-                            label = { Text(src.uppercase(), fontSize = 11.sp) }
+                            label = { Text(src, fontSize = 11.sp) }
                         )
+                    }
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedTextField(
+                        value = customSourceInput,
+                        onValueChange = { customSourceInput = it },
+                        placeholder = { Text("Or type custom source...", fontSize = 11.sp) },
+                        singleLine = true,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Button(
+                        onClick = {
+                            if (customSourceInput.isNotBlank()) {
+                                selectedSources = selectedSources + customSourceInput.trim()
+                                customSourceInput = ""
+                            }
+                        },
+                        contentPadding = PaddingValues(horizontal = 12.dp)
+                    ) {
+                        Text("Add", fontSize = 11.sp)
                     }
                 }
 
@@ -454,13 +515,39 @@ private fun AddEditRuleDialog(
                 Text("Override As (Destination)", fontSize = 12.sp, fontWeight = FontWeight.Bold)
 
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    destinations.forEach { dest ->
+                    val allDestinationsList = (DEFAULT_DESTINATIONS + destinations).distinctBy { it.key }
+                    allDestinationsList.forEach { dest ->
                         val isSelected = selectedOverride == dest.key
                         FilterChip(
                             selected = isSelected,
                             onClick = { selectedOverride = dest.key },
                             label = { Text(dest.label, fontSize = 11.sp) }
                         )
+                    }
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedTextField(
+                        value = customOverrideInput,
+                        onValueChange = { customOverrideInput = it },
+                        placeholder = { Text("Or type custom destination...", fontSize = 11.sp) },
+                        singleLine = true,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Button(
+                        onClick = {
+                            if (customOverrideInput.isNotBlank()) {
+                                selectedOverride = customOverrideInput.trim()
+                                customOverrideInput = ""
+                            }
+                        },
+                        contentPadding = PaddingValues(horizontal = 12.dp)
+                    ) {
+                        Text("Set", fontSize = 11.sp)
                     }
                 }
 
