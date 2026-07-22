@@ -14,7 +14,9 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -357,17 +359,19 @@ fun MainScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .navigationBarsPadding()
+                    .padding(horizontal = 12.dp, vertical = 6.dp)
             ) {
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(0.dp),
-                    color = MaterialTheme.colorScheme.surface,
-                    shadowElevation = 0.dp
+                    shape = RoundedCornerShape(24.dp),
+                    color = Color.White.copy(alpha = 0.94f),
+                    shadowElevation = 8.dp,
+                    border = BorderStroke(1.dp, Color.White.copy(alpha = 0.8f))
                 ) {
                     NavigationBar(
-                        containerColor = MaterialTheme.colorScheme.surface,
+                        containerColor = Color.Transparent,
                         tonalElevation = 0.dp,
-                        modifier = Modifier.height(48.dp),
+                        modifier = Modifier.height(58.dp),
                         windowInsets = WindowInsets(0.dp)
                     ) {
                         val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -375,24 +379,24 @@ fun MainScreen(
                         mainItems.forEach { screen ->
                             val isSelected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
                             NavigationBarItem(
-                                alwaysShowLabel = false,
+                                alwaysShowLabel = true,
                                 icon = { 
                                     Box(
                                         contentAlignment = Alignment.Center,
-                                        modifier = Modifier.size(if (isSelected) 22.dp else 20.dp)
+                                        modifier = Modifier.size(24.dp)
                                     ) {
                                         Icon(
                                             screen.icon, 
                                             contentDescription = null, 
-                                            modifier = Modifier.size(if (isSelected) 22.dp else 20.dp)
+                                            modifier = Modifier.size(22.dp)
                                         ) 
                                     }
                                 },
                                 label = { 
                                     Text(
                                         screen.title, 
-                                        fontSize = androidx.compose.ui.unit.TextUnit(10f, androidx.compose.ui.unit.TextUnitType.Sp), 
-                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 10.sp, 
+                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
                                         maxLines = 1,
                                         textAlign = TextAlign.Center
                                     ) 
@@ -408,35 +412,35 @@ fun MainScreen(
                                     }
                                 },
                                 colors = NavigationBarItemDefaults.colors(
-                                    indicatorColor = Color.Transparent,
-                                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-                                    selectedTextColor = MaterialTheme.colorScheme.primary,
-                                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                                    indicatorColor = Color(0xFF4F46E5).copy(alpha = 0.15f),
+                                    selectedIconColor = Color(0xFF4F46E5),
+                                    unselectedIconColor = Color(0xFF64748B),
+                                    selectedTextColor = Color(0xFF4F46E5),
+                                    unselectedTextColor = Color(0xFF64748B)
                                 )
                             )
                         }
                         if (moreItems.isNotEmpty()) {
                             val isSelected = currentDestination?.route?.let { route -> moreItems.any { it.route == route } } == true
                             NavigationBarItem(
-                                alwaysShowLabel = false,
+                                alwaysShowLabel = true,
                                 icon = { 
                                     Box(
                                         contentAlignment = Alignment.Center,
-                                        modifier = Modifier.size(if (isSelected) 22.dp else 20.dp)
+                                        modifier = Modifier.size(24.dp)
                                     ) {
                                         Icon(
                                             Icons.Filled.Menu, 
                                             contentDescription = "Menu", 
-                                            modifier = Modifier.size(if (isSelected) 22.dp else 20.dp)
+                                            modifier = Modifier.size(22.dp)
                                         ) 
                                     }
                                 },
                                 label = { 
                                     Text(
                                         "Menu", 
-                                        fontSize = androidx.compose.ui.unit.TextUnit(10f, androidx.compose.ui.unit.TextUnitType.Sp),
-                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 10.sp,
+                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
                                         maxLines = 1,
                                         textAlign = TextAlign.Center
                                     ) 
@@ -444,11 +448,11 @@ fun MainScreen(
                                 selected = isSelected,
                                 onClick = { showMoreSheet = true },
                                 colors = NavigationBarItemDefaults.colors(
-                                    indicatorColor = Color.Transparent,
-                                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-                                    selectedTextColor = MaterialTheme.colorScheme.primary,
-                                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                                    indicatorColor = Color(0xFF4F46E5).copy(alpha = 0.15f),
+                                    selectedIconColor = Color(0xFF4F46E5),
+                                    unselectedIconColor = Color(0xFF64748B),
+                                    selectedTextColor = Color(0xFF4F46E5),
+                                    unselectedTextColor = Color(0xFF64748B)
                                 )
                             )
                         }
