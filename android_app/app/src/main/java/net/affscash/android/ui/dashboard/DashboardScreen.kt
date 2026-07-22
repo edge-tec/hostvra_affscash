@@ -71,8 +71,8 @@ fun DashboardScreen(
                         Surface(
                             modifier = Modifier.fillMaxWidth(),
                             shape = PremiumUI.CardShape,
-                            color = Color.White.copy(alpha = 0.90f),
-                            shadowElevation = 6.dp,
+                            color = Color.White,
+                            shadowElevation = 2.dp,
                             border = PremiumUI.GlassBorder
                         ) {
                             Row(
