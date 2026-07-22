@@ -59,6 +59,9 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            ndk {
+                debugSymbolLevel = "FULL"
+            }
             
             val keystoreFile = rootProject.file("keystore.properties")
             if (keystoreFile.exists()) {
