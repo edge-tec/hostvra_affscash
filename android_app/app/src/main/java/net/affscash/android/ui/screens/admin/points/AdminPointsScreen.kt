@@ -1,11 +1,15 @@
 package net.affscash.android.ui.screens.admin.points
 
+import android.app.DatePickerDialog
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -13,21 +17,24 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Info
-import android.app.DatePickerDialog
-import java.util.Calendar
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import net.affscash.android.data.model.AdminPointsBalance
-import net.affscash.android.ui.dashboard.PremiumUI
 import net.affscash.android.data.model.AdminPointsTransaction
+import net.affscash.android.ui.dashboard.GlassCard
+import net.affscash.android.ui.dashboard.PremiumUI
+import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,57 +48,126 @@ fun AdminPointsScreen(
     var selectedTab by remember { mutableStateOf(0) }
     val tabs = listOf("Balances", "Recent Activity", "Tools")
 
-    Scaffold(
-        topBar = {
-            net.affscash.android.ui.components.CompactTopBar(
-                title = { Text("Points Module") },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            )
-        }
-    ) { padding ->
-        Column(
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(PremiumUI.PageBackground)
+    ) {
+        // 3D Glass Header Bar
+        Surface(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            shape = PremiumUI.CardShape,
+            color = Color.White,
+            shadowElevation = 2.dp,
+            border = PremiumUI.GlassBorder
         ) {
-            TabRow(selectedTabIndex = selectedTab) {
-                tabs.forEachIndexed { index, title ->
-                    Tab(
-                        selected = selectedTab == index,
-                        onClick = { selectedTab = index },
-                        text = { Text(title) }
-                    )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color(0xFF0F172A))
+                    }
+                    Box(
+                        modifier = Modifier
+                            .size(38.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(PremiumUI.HeaderGradient),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            Icons.Outlined.Stars,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Column {
+                        Text(
+                            text = "Points Module",
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF0F172A)
+                        )
+                        Text(
+                            text = "Rewards, balances & sync tools",
+                            fontSize = 11.sp,
+                            color = Color(0xFF64748B)
+                        )
+                    }
                 }
             }
+        }
 
-            if (uiState.isLoading && uiState.balances.isEmpty() && uiState.recent.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
-            } else if (uiState.error != null) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(uiState.error!!, color = MaterialTheme.colorScheme.error)
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Button(onClick = { viewModel.loadData() }) {
-                            Text("Retry")
+        // 3D Segmented Tab Pills
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 4.dp),
+            shape = RoundedCornerShape(16.dp),
+            color = Color(0xFFF1F5F9),
+            border = BorderStroke(1.dp, Color(0xFFE2E8F0))
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                tabs.forEachIndexed { index, title ->
+                    val isSelected = selectedTab == index
+                    Surface(
+                        onClick = { selectedTab = index },
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(12.dp),
+                        color = if (isSelected) Color.White else Color.Transparent,
+                        shadowElevation = if (isSelected) 2.dp else 0.dp
+                    ) {
+                        Box(
+                            modifier = Modifier.padding(vertical = 8.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = title,
+                                fontSize = 12.sp,
+                                fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.Medium,
+                                color = if (isSelected) Color(0xFF4F46E5) else Color(0xFF64748B)
+                            )
                         }
                     }
                 }
-            } else {
+            }
+        }
+
+        if (uiState.isLoading && uiState.balances.isEmpty() && uiState.recent.isEmpty()) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(color = Color(0xFF4F46E5))
+            }
+        } else if (uiState.error != null) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(uiState.error!!, color = Color(0xFFEF4444))
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Button(
+                        onClick = { viewModel.loadData() },
+                        shape = PremiumUI.ButtonShape,
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F46E5))
+                    ) {
+                        Text("Retry")
+                    }
+                }
+            }
+        } else {
+            Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
                 when (selectedTab) {
-                    0 -> BalancesList(uiState.balances)
-                    1 -> TransactionsList(uiState.recent)
-                    2 -> ToolsSection(uiState, viewModel, context)
+                    0 -> BalancesList3D(uiState.balances)
+                    1 -> TransactionsList3D(uiState.recent)
+                    2 -> ToolsSection3D(uiState, viewModel, context)
                 }
             }
         }
@@ -100,17 +176,20 @@ fun AdminPointsScreen(
         if (uiState.syncLog.isNotEmpty()) {
             AlertDialog(
                 onDismissRequest = { viewModel.clearSyncLog() },
-                title = { Text("Sync Log") },
+                title = { Text("Sync Log", fontWeight = FontWeight.Bold) },
                 text = {
-                    LazyColumn {
+                    LazyColumn(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         items(uiState.syncLog) { log ->
-                            Text(log, style = MaterialTheme.typography.bodySmall)
-                            Divider(modifier = Modifier.padding(vertical = 2.dp))
+                            Text(log, fontSize = 12.sp, color = Color(0xFF334155))
+                            HorizontalDivider(color = Color(0xFFF1F5F9))
                         }
                     }
                 },
                 confirmButton = {
-                    TextButton(onClick = { viewModel.clearSyncLog() }) {
+                    Button(
+                        onClick = { viewModel.clearSyncLog() },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F46E5))
+                    ) {
                         Text("Close")
                     }
                 }
@@ -120,10 +199,10 @@ fun AdminPointsScreen(
 }
 
 @Composable
-fun BalancesList(balances: List<AdminPointsBalance>) {
+fun BalancesList3D(balances: List<AdminPointsBalance>) {
     if (balances.isEmpty()) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("No balances found.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("No balances found.", color = Color(0xFF64748B))
         }
         return
     }
@@ -131,56 +210,52 @@ fun BalancesList(balances: List<AdminPointsBalance>) {
     val numberFormat = java.text.NumberFormat.getNumberInstance(java.util.Locale.US)
     
     LazyColumn(
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp),
+        contentPadding = PaddingValues(top = 4.dp, bottom = 80.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(balances) { balance ->
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-            ) {
+            GlassCard(elevation = 2.dp) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = "#${balance.affiliateId} · ${balance.name ?: ""}",
-                            fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.titleSmall
-                        )
-                        Text(
-                            text = balance.email ?: "N/A",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Surface(
+                                shape = RoundedCornerShape(6.dp),
+                                color = Color(0xFFEEF2FF)
+                            ) {
+                                Text("#${balance.affiliateId}", modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp), fontSize = 11.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF4F46E5))
+                            }
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(balance.name ?: "Unknown Affiliate", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color(0xFF0F172A), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        }
+                        
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(balance.email ?: "N/A", fontSize = 12.sp, color = Color(0xFF64748B))
+                        
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "Earned: ${numberFormat.format(balance.lifetimeEarned)} | Spent: ${numberFormat.format(balance.lifetimeSpent)}",
-                            style = MaterialTheme.typography.labelSmall
+                            text = "Earned: ${numberFormat.format(balance.lifetimeEarned)} • Spent: ${numberFormat.format(balance.lifetimeSpent)}",
+                            fontSize = 11.sp,
+                            color = Color(0xFF475569)
                         )
-                        if (!balance.updatedAt.isNullOrEmpty()) {
-                            Text(
-                                text = "Last Updated: ${balance.updatedAt}",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
                     }
+
                     Column(horizontalAlignment = Alignment.End) {
                         Text(
                             text = numberFormat.format(balance.balance),
-                            fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.headlineSmall,
-                            color = Color(0xFF388E3C)
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 18.sp,
+                            color = Color(0xFF059669)
                         )
                         Text(
-                            text = "Points",
-                            style = MaterialTheme.typography.labelSmall
+                            text = "POINTS",
+                            fontSize = 9.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF94A3B8)
                         )
                     }
                 }
@@ -190,69 +265,71 @@ fun BalancesList(balances: List<AdminPointsBalance>) {
 }
 
 @Composable
-fun TransactionsList(transactions: List<AdminPointsTransaction>) {
+fun TransactionsList3D(transactions: List<AdminPointsTransaction>) {
     if (transactions.isEmpty()) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("No recent transactions.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("No recent transactions.", color = Color(0xFF64748B))
         }
         return
     }
+    
     LazyColumn(
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp),
+        contentPadding = PaddingValues(top = 4.dp, bottom = 80.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(transactions) { tx ->
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-            ) {
+            GlassCard(elevation = 2.dp) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            val typeColor = if (tx.amount > 0) Color(0xFF388E3C) else Color(0xFFD32F2F)
-                            Box(
-                                modifier = Modifier
-                                    .background(typeColor.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
-                                    .padding(horizontal = 6.dp, vertical = 2.dp)
+                            val isPositive = tx.amount > 0
+                            val badgeBg = if (isPositive) Color(0xFFD1FAE5) else Color(0xFFFEE2E2)
+                            val badgeColor = if (isPositive) Color(0xFF059669) else Color(0xFFDC2626)
+                            
+                            Surface(
+                                shape = RoundedCornerShape(6.dp),
+                                color = badgeBg
                             ) {
                                 Text(
                                     text = tx.type.uppercase(),
-                                    color = typeColor,
+                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                                     fontSize = 10.sp,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.ExtraBold,
+                                    color = badgeColor
                                 )
                             }
-                            Spacer(modifier = Modifier.width(4.dp))
+                            Spacer(modifier = Modifier.width(6.dp))
                             Text(
                                 text = "Affiliate #${tx.affiliateId}",
-                                style = MaterialTheme.typography.labelMedium,
-                                fontWeight = FontWeight.Bold
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF0F172A)
                             )
                         }
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = tx.reason ?: "No reason provided",
-                            style = MaterialTheme.typography.bodySmall
+                            fontSize = 12.sp,
+                            color = Color(0xFF475569)
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = tx.createdAt,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            fontSize = 11.sp,
+                            color = Color(0xFF94A3B8)
                         )
                     }
+
                     Text(
                         text = if (tx.amount > 0) "+${tx.amount}" else tx.amount.toString(),
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.titleSmall,
-                        color = if (tx.amount > 0) Color(0xFF388E3C) else Color(0xFFD32F2F)
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 16.sp,
+                        color = if (tx.amount > 0) Color(0xFF059669) else Color(0xFFDC2626)
                     )
                 }
             }
@@ -261,7 +338,7 @@ fun TransactionsList(transactions: List<AdminPointsTransaction>) {
 }
 
 @Composable
-fun ToolsSection(
+fun ToolsSection3D(
     uiState: AdminPointsUiState,
     viewModel: AdminPointsViewModel,
     context: android.content.Context
@@ -269,32 +346,44 @@ fun ToolsSection(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(8.dp)
+            .padding(horizontal = 12.dp, vertical = 4.dp)
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         // Config Card
         var enabled by remember(uiState.config) { mutableStateOf(uiState.config?.enabled ?: false) }
         var usdPerPointStr by remember(uiState.config) { mutableStateOf(uiState.config?.usdPerPoint?.toString() ?: "1") }
 
-        Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)) {
-            Column(modifier = Modifier.padding(8.dp)) {
-                Text("Conversion Rule", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(4.dp))
+        GlassCard(elevation = 2.dp) {
+            Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text("Conversion Rule", fontSize = 15.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF0F172A))
+                
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Switch(checked = enabled, onCheckedChange = { enabled = it })
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("Points module enabled")
+                    Switch(
+                        checked = enabled,
+                        onCheckedChange = { enabled = it },
+                        colors = SwitchDefaults.colors(checkedThumbColor = Color(0xFF4F46E5), checkedTrackColor = Color(0xFFEEF2FF))
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Points module enabled", fontSize = 13.sp, fontWeight = FontWeight.Medium, color = Color(0xFF334155))
                 }
-                Spacer(modifier = Modifier.height(4.dp))
+                
                 OutlinedTextField(
                     value = usdPerPointStr,
                     onValueChange = { usdPerPointStr = it },
-                    label = { Text("USD per Point") },
+                    placeholder = { Text("USD per Point", fontSize = 13.sp) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFF4F46E5),
+                        unfocusedBorderColor = Color(0xFFE2E8F0),
+                        focusedContainerColor = Color(0xFFF8FAFC),
+                        unfocusedContainerColor = Color(0xFFF8FAFC)
+                    )
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+
                 Button(
                     onClick = {
                         val usd = usdPerPointStr.toIntOrNull() ?: 1
@@ -305,9 +394,13 @@ fun ToolsSection(
                             onError = { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
                         )
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().height(44.dp),
+                    shape = PremiumUI.ButtonShape,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F46E5))
                 ) {
-                    Text("Save Rule")
+                    Icon(Icons.Outlined.Save, contentDescription = null, modifier = Modifier.size(16.dp))
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text("Save Rule", fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -317,34 +410,58 @@ fun ToolsSection(
         var adjustDelta by remember { mutableStateOf("") }
         var adjustReason by remember { mutableStateOf("") }
 
-        Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)) {
-            Column(modifier = Modifier.padding(8.dp)) {
-                Text("Manual Adjustment", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(4.dp))
+        GlassCard(elevation = 2.dp) {
+            Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text("Manual Adjustment", fontSize = 15.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF0F172A))
+                
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedTextField(
                         value = adjustAffId,
                         onValueChange = { adjustAffId = it },
-                        label = { Text("Affiliate ID") },
+                        placeholder = { Text("Affiliate ID", fontSize = 13.sp) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFF4F46E5),
+                            unfocusedBorderColor = Color(0xFFE2E8F0),
+                            focusedContainerColor = Color(0xFFF8FAFC),
+                            unfocusedContainerColor = Color(0xFFF8FAFC)
+                        )
                     )
                     OutlinedTextField(
                         value = adjustDelta,
                         onValueChange = { adjustDelta = it },
-                        label = { Text("Delta (+ or -)") },
+                        placeholder = { Text("Delta (+ or -)", fontSize = 13.sp) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFF4F46E5),
+                            unfocusedBorderColor = Color(0xFFE2E8F0),
+                            focusedContainerColor = Color(0xFFF8FAFC),
+                            unfocusedContainerColor = Color(0xFFF8FAFC)
+                        )
                     )
                 }
-                Spacer(modifier = Modifier.height(4.dp))
+
                 OutlinedTextField(
                     value = adjustReason,
                     onValueChange = { adjustReason = it },
-                    label = { Text("Reason") },
-                    modifier = Modifier.fillMaxWidth()
+                    placeholder = { Text("Reason", fontSize = 13.sp) },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFF4F46E5),
+                        unfocusedBorderColor = Color(0xFFE2E8F0),
+                        focusedContainerColor = Color(0xFFF8FAFC),
+                        unfocusedContainerColor = Color(0xFFF8FAFC)
+                    )
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+
                 Button(
                     onClick = {
                         val affId = adjustAffId.toIntOrNull() ?: 0
@@ -361,10 +478,13 @@ fun ToolsSection(
                             Toast.makeText(context, "Invalid Affiliate ID or Delta", Toast.LENGTH_SHORT).show()
                         }
                     },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+                    modifier = Modifier.fillMaxWidth().height(44.dp),
+                    shape = PremiumUI.ButtonShape,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF475569))
                 ) {
-                    Text("Apply Adjustment")
+                    Icon(Icons.Outlined.Tune, contentDescription = null, modifier = Modifier.size(16.dp))
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text("Apply Adjustment", fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -373,12 +493,11 @@ fun ToolsSection(
         var syncSince by remember { mutableStateOf("") }
         var dryRun by remember { mutableStateOf(true) }
 
-        Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)) {
-            Column(modifier = Modifier.padding(8.dp)) {
-                Text("Auto-Points Sync", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(4.dp))
-                Text("Scans all approved conversions and automatically credits missing points following the active rule.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Spacer(modifier = Modifier.height(4.dp))
+        GlassCard(elevation = 2.dp) {
+            Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text("Auto-Points Sync", fontSize = 15.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF0F172A))
+                Text("Scans all approved conversions and automatically credits missing points following the active rule.", fontSize = 12.sp, color = Color(0xFF64748B))
+
                 var showDatePicker by remember { mutableStateOf(false) }
 
                 if (showDatePicker) {
@@ -400,20 +519,33 @@ fun ToolsSection(
                 OutlinedTextField(
                     value = syncSince,
                     onValueChange = { syncSince = it },
-                    label = { Text("Only since date (optional, YYYY-MM-DD)") },
+                    placeholder = { Text("Only since date (YYYY-MM-DD)", fontSize = 13.sp) },
                     modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFF4F46E5),
+                        unfocusedBorderColor = Color(0xFFE2E8F0),
+                        focusedContainerColor = Color(0xFFF8FAFC),
+                        unfocusedContainerColor = Color(0xFFF8FAFC)
+                    ),
                     trailingIcon = {
                         IconButton(onClick = { showDatePicker = true }) {
-                            Icon(Icons.Default.DateRange, contentDescription = "Select Date")
+                            Icon(Icons.Default.DateRange, contentDescription = "Select Date", tint = Color(0xFF4F46E5))
                         }
                     }
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(checked = dryRun, onCheckedChange = { dryRun = it })
-                    Text("Dry Run (preview only)")
+                    Checkbox(
+                        checked = dryRun,
+                        onCheckedChange = { dryRun = it },
+                        colors = CheckboxDefaults.colors(checkedColor = Color(0xFF4F46E5))
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text("Dry Run (preview only)", fontSize = 13.sp, color = Color(0xFF334155))
                 }
-                Spacer(modifier = Modifier.height(4.dp))
+
                 Button(
                     onClick = {
                         viewModel.syncPoints(
@@ -423,14 +555,17 @@ fun ToolsSection(
                             onError = { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
                         )
                     },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary)
+                    modifier = Modifier.fillMaxWidth().height(44.dp),
+                    shape = PremiumUI.ButtonShape,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0284C7))
                 ) {
-                    Text("Run Auto-Sync")
+                    Icon(Icons.Outlined.Sync, contentDescription = null, modifier = Modifier.size(16.dp))
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text("Run Auto-Sync", fontWeight = FontWeight.Bold)
                 }
             }
         }
         
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(80.dp))
     }
 }
