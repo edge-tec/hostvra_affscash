@@ -264,8 +264,8 @@ class Activity {
         } catch (Exception $e) { return true; }
     }
 
-    // ── Clean expired sessions (> 10 min inactive) ────────────────────────────
-    public static function cleanExpired(int $minutes = 10): void {
+    // ── Clean expired sessions (> 5 min inactive) ─────────────────────────────
+    public static function cleanExpired(int $minutes = 5): void {
         try {
             // Get sessions that have expired
             $expired = Database::fetchAll(

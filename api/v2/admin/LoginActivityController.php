@@ -1,17 +1,19 @@
 <?php
 /**
- * Admin App API — Login Activity & Live Users
+ * Admin App API — Login Activity & Real-Time Live Users
  */
 Auth::check('admin');
 require_once BASE_PATH . '/core/Activity.php';
 
 Activity::ensureTables();
-Activity::cleanExpired(10);
+// Strictly purge any sessions that have been idle > 5 minutes
+Activity::cleanExpired(5);
 
 try {
     $action = $_GET['action'] ?? 'live_users';
 
     if ($action === 'live_users') {
+        // Query active sessions updated within the last 5 minutes
         $rows = Database::fetchAll(
             "SELECT s.id, s.session_id, s.user_id, s.role, s.user_name, s.ip_address,
                     s.country, s.country_code, s.city,
@@ -26,16 +28,28 @@ try {
              FROM user_active_sessions s
              JOIN users u ON u.id = s.user_id
              LEFT JOIN affiliates af ON af.user_id = s.user_id
-             ORDER BY s.last_active DESC"
+            WHERE s.last_active >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)
+         ORDER BY s.last_active DESC"
         ) ?: [];
 
         $formatted = [];
         foreach ($rows as $r) {
+            $idleSec = (int)($r['idle_sec'] ?? 0);
+            if ($idleSec < 0) $idleSec = 0;
+
+            if ($idleSec < 15) {
+                $activeText = 'Active now (Live)';
+            } else if ($idleSec < 60) {
+                $activeText = $idleSec . 's ago';
+            } else {
+                $activeText = floor($idleSec / 60) . 'm ago';
+            }
+
             $formatted[] = [
                 'id' => (int)$r['id'],
                 'session_id' => $r['session_id'],
                 'user_id' => (int)$r['user_id'],
-                'user_name' => $r['user_name'] ?? 'User',
+                'user_name' => !empty($r['user_name']) ? trim($r['user_name']) : ('User #' . $r['user_id']),
                 'email' => $r['email'] ?? '',
                 'role' => strtoupper($r['role'] ?? 'USER'),
                 'affiliate_code' => $r['affiliate_code'] ?? '',
@@ -49,13 +63,20 @@ try {
                 'platform_source' => $r['platform_source'] ?? 'Web',
                 'current_page' => $r['current_page'] ?? '/',
                 'logged_in_at' => date('M d, H:i', strtotime($r['logged_in_at'])),
-                'last_active' => date('M d, H:i:s', strtotime($r['last_active'])),
-                'idle_sec' => (int)($r['idle_sec'] ?? 0),
+                'last_active' => $activeText,
+                'idle_sec' => $idleSec,
                 'session_sec' => (int)($r['session_sec'] ?? 0)
             ];
         }
 
-        Helpers::json(['status' => 'success', 'data' => ['live_users' => $formatted, 'total' => count($formatted)]]);
+        Helpers::json([
+            'status' => 'success',
+            'data' => [
+                'live_users' => $formatted,
+                'total' => count($formatted),
+                'server_time' => date('H:i:s')
+            ]
+        ]);
         exit;
     }
 
@@ -87,7 +108,7 @@ try {
              FROM user_login_logs l
              JOIN users u ON u.id = l.user_id
              LEFT JOIN affiliates af ON af.user_id = l.user_id
-             LEFT JOIN user_active_sessions s ON s.session_id = l.session_id
+             LEFT JOIN user_active_sessions s ON s.session_id = l.session_id AND s.last_active >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)
              WHERE $wStr
              ORDER BY l.login_time DESC
              LIMIT 500",

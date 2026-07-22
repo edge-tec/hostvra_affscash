@@ -151,7 +151,7 @@ private fun LiveUsersTabContent(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
                         Surface(
                             shape = CircleShape,
                             color = Color(0xFF10B981),
@@ -173,9 +173,32 @@ private fun LiveUsersTabContent(
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                             Text(
-                                text = "Real-time active sessions on web & mobile app",
+                                text = "Real-time active sessions (within last 5 mins)",
                                 fontSize = 11.sp,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+
+                    Surface(
+                        color = Color(0xFF10B981).copy(alpha = 0.15f),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Surface(
+                                shape = CircleShape,
+                                color = Color(0xFF10B981),
+                                modifier = Modifier.size(6.dp)
+                            ) {}
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "LIVE (5s)",
+                                color = Color(0xFF10B981),
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold
                             )
                         }
                     }
