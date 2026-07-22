@@ -1019,6 +1019,16 @@ interface ApiService {
 
     @POST("api/v2/admin/invoices?action=create")
     suspend fun createAdminInvoice(@Body request: net.affscash.android.data.model.AdminCreateInvoiceRequest): net.affscash.android.data.model.AdminCreateInvoiceResponse
+
+    @GET("api/v2/admin/invoices?action=list_requests")
+    suspend fun getAdminInvoiceRequestsList(): net.affscash.android.data.model.AdminInvoiceRequestsResponse
+
+    @POST("api/v2/admin/invoices?action=approve_request")
+    suspend fun approveAdminInvoiceRequest(@Body request: net.affscash.android.data.model.AdminApproveInvoiceRequestPayload): net.affscash.android.data.model.AdminInvoiceStatusResponse
+
+    @POST("api/v2/admin/invoices?action=reject_request")
+    suspend fun rejectAdminInvoiceRequest(@Body request: net.affscash.android.data.model.AdminRejectInvoiceRequestPayload): net.affscash.android.data.model.AdminInvoiceStatusResponse
+
     // --- ADMIN: Affiliate Managers ---
     @GET("api/v2/admin/affiliate-managers?action=list")
     suspend fun getAdminAffiliateManagers(): net.affscash.android.data.model.AdminAffiliateManagerResponse

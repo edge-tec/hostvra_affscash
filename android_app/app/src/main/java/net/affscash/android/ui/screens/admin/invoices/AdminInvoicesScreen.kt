@@ -1,10 +1,14 @@
 package net.affscash.android.ui.screens.admin.invoices
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -13,45 +17,82 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import net.affscash.android.data.model.AdminInvoiceRequestRow
+import net.affscash.android.data.model.AdminInvoiceRow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminInvoicesScreen(
-    viewModel: AdminInvoicesViewModel = viewModel(),
+    viewModel: AdminInvoicesViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
     onCreateInvoice: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(uiState.error) {
+    var requestToApprove by remember { mutableStateOf<AdminInvoiceRequestRow?>(null) }
+    var requestToReject by remember { mutableStateOf<AdminInvoiceRequestRow?>(null) }
+
+    LaunchedEffect(uiState.error, uiState.successMessage) {
         uiState.error?.let {
             snackbarHostState.showSnackbar(it)
-            viewModel.clearError()
+            viewModel.clearMessages()
+        }
+        uiState.successMessage?.let {
+            snackbarHostState.showSnackbar(it)
+            viewModel.clearMessages()
         }
     }
 
     Scaffold(
         topBar = {
-            net.affscash.android.ui.components.CompactTopBar(
-                title = { Text(if (uiState.invoiceDetail != null) "Invoice Details" else "Invoices") },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        if (uiState.invoiceDetail != null) {
-                            viewModel.closeDetails()
-                        } else {
-                            onNavigateBack()
+            Column {
+                net.affscash.android.ui.components.CompactTopBar(
+                    title = { Text(if (uiState.invoiceDetail != null) "Invoice Details" else "Invoices & Requests") },
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            if (uiState.invoiceDetail != null) {
+                                viewModel.closeDetails()
+                            } else {
+                                onNavigateBack()
+                            }
+                        }) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
                         }
-                    }) {
-                        Icon(Icons.Default.ArrowBack, "Back")
+                    }
+                )
+
+                if (uiState.invoiceDetail == null) {
+                    val pendingCount = uiState.requests.count { it.status == "pending" }
+                    PrimaryTabRow(selectedTabIndex = uiState.selectedTab) {
+                        Tab(
+                            selected = uiState.selectedTab == 0,
+                            onClick = { viewModel.setTab(0) },
+                            text = { Text("Invoices (${uiState.invoices.size})") }
+                        )
+                        Tab(
+                            selected = uiState.selectedTab == 1,
+                            onClick = { viewModel.setTab(1) },
+                            text = {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text("Invoice Requests")
+                                    if (pendingCount > 0) {
+                                        Spacer(modifier = Modifier.width(6.dp))
+                                        Badge(containerColor = MaterialTheme.colorScheme.error) {
+                                            Text("$pendingCount", color = Color.White)
+                                        }
+                                    }
+                                }
+                            }
+                        )
                     }
                 }
-            )
+            }
         },
         floatingActionButton = {
-            if (uiState.invoiceDetail == null) {
+            if (uiState.invoiceDetail == null && uiState.selectedTab == 0) {
                 FloatingActionButton(onClick = onCreateInvoice) {
                     Icon(Icons.Default.Add, contentDescription = "Create Invoice")
                 }
@@ -70,15 +111,234 @@ fun AdminInvoicesScreen(
                     onStatusChange = { viewModel.updateInvoiceStatus(uiState.invoiceDetail!!.id, it) },
                     onDelete = { viewModel.deleteInvoice(uiState.invoiceDetail!!.id) }
                 )
+            } else if (uiState.selectedTab == 0) {
+                if (uiState.invoices.isEmpty() && !uiState.isLoading) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text("No generated invoices found", color = Color.Gray)
+                    }
+                } else {
+                    LazyColumn(contentPadding = PaddingValues(8.dp)) {
+                        items(uiState.invoices) { invoice ->
+                            AdminInvoiceCard(
+                                invoice = invoice,
+                                onView = { viewModel.viewInvoiceDetails(invoice.id) },
+                                onStatusChange = { viewModel.updateInvoiceStatus(invoice.id, it) },
+                                onDelete = { viewModel.deleteInvoice(invoice.id) }
+                            )
+                        }
+                    }
+                }
             } else {
-                LazyColumn(contentPadding = PaddingValues(8.dp)) {
-                    items(uiState.invoices) { invoice ->
-                        AdminInvoiceCard(
-                            invoice = invoice,
-                            onView = { viewModel.viewInvoiceDetails(invoice.id) },
-                            onStatusChange = { viewModel.updateInvoiceStatus(invoice.id, it) },
-                            onDelete = { viewModel.deleteInvoice(invoice.id) }
+                if (uiState.requests.isEmpty() && !uiState.isLoading) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text("No invoice requests found", color = Color.Gray)
+                    }
+                } else {
+                    LazyColumn(contentPadding = PaddingValues(8.dp)) {
+                        items(uiState.requests) { request ->
+                            AdminInvoiceRequestCard(
+                                request = request,
+                                onApprove = { requestToApprove = request },
+                                onReject = { requestToReject = request }
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    requestToApprove?.let { req ->
+        var amountText by remember { mutableStateOf(req.amount) }
+        var adminNote by remember { mutableStateOf("") }
+
+        AlertDialog(
+            onDismissRequest = { requestToApprove = null },
+            title = { Text("Approve Invoice Request") },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("Manager: ${req.managerName ?: "N/A"}")
+                    if (!req.affiliateName.isNullOrEmpty()) {
+                        Text("Affiliate: ${req.affiliateName} (${req.affiliateCode ?: ""})")
+                    }
+                    Text("Period: ${req.periodStart} to ${req.periodEnd}")
+
+                    OutlinedTextField(
+                        value = amountText,
+                        onValueChange = { amountText = it },
+                        label = { Text("Approved Amount ($)") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    OutlinedTextField(
+                        value = adminNote,
+                        onValueChange = { adminNote = it },
+                        label = { Text("Admin Note (Optional)") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        val amount = amountText.toDoubleOrNull()
+                        viewModel.approveRequest(req.id, amount, adminNote.ifBlank { null })
+                        requestToApprove = null
+                    }
+                ) {
+                    Text("Approve & Create Invoice")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { requestToApprove = null }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+
+    requestToReject?.let { req ->
+        var adminNote by remember { mutableStateOf("") }
+
+        AlertDialog(
+            onDismissRequest = { requestToReject = null },
+            title = { Text("Reject Invoice Request") },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("Manager: ${req.managerName ?: "N/A"}")
+                    Text("Amount: $${req.amount}")
+
+                    OutlinedTextField(
+                        value = adminNote,
+                        onValueChange = { adminNote = it },
+                        label = { Text("Reason for Rejection (Optional)") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        viewModel.rejectRequest(req.id, adminNote.ifBlank { null })
+                        requestToReject = null
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                ) {
+                    Text("Reject Request")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { requestToReject = null }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun AdminInvoiceRequestCard(
+    request: AdminInvoiceRequestRow,
+    onApprove: () -> Unit,
+    onReject: () -> Unit
+) {
+    val statusColor = when (request.status) {
+        "approved" -> Color(0xFF388E3C)
+        "rejected" -> Color(0xFFD32F2F)
+        else -> Color(0xFFF57C00)
+    }
+
+    Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Request #${request.id}",
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        text = "Manager: ${request.managerName ?: "Manager #${request.managerId}"}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium
+                    )
+                    if (!request.managerEmail.isNullOrEmpty()) {
+                        Text(
+                            text = request.managerEmail,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Gray
                         )
+                    }
+                }
+
+                Badge(containerColor = statusColor) {
+                    Text(
+                        text = request.status.uppercase(),
+                        color = Color.White,
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                    )
+                }
+            }
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+            if (!request.affiliateName.isNullOrEmpty()) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text("For Affiliate:", fontSize = 12.sp, color = Color.Gray)
+                    Text("${request.affiliateName} (${request.affiliateCode ?: ""})", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                }
+            }
+
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("Requested Amount:", fontSize = 12.sp, color = Color.Gray)
+                Text("$${request.amount}", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+            }
+
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("Earnings Period:", fontSize = 12.sp, color = Color.Gray)
+                Text("${request.periodStart} to ${request.periodEnd}", fontSize = 12.sp)
+            }
+
+            if (!request.notes.isNullOrEmpty()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text("Notes: ${request.notes}", fontSize = 11.sp, color = Color.Gray)
+            }
+
+            if (!request.adminNote.isNullOrEmpty()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text("Admin Note: ${request.adminNote}", fontSize = 11.sp, color = MaterialTheme.colorScheme.tertiary)
+            }
+
+            if (request.status == "pending") {
+                Spacer(modifier = Modifier.height(10.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedButton(
+                        onClick = onReject,
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error)
+                    ) {
+                        Icon(Icons.Default.Close, contentDescription = null, modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Reject")
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Button(
+                        onClick = onApprove,
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF388E3C))
+                    ) {
+                        Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Approve")
                     }
                 }
             }
@@ -88,7 +348,7 @@ fun AdminInvoicesScreen(
 
 @Composable
 fun AdminInvoiceCard(
-    invoice: net.affscash.android.data.model.AdminInvoiceRow,
+    invoice: AdminInvoiceRow,
     onView: () -> Unit,
     onStatusChange: (String) -> Unit,
     onDelete: () -> Unit
@@ -102,8 +362,8 @@ fun AdminInvoiceCard(
         else -> Color(0xFFF57C00)
     }
 
-    Card(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
-        Column(modifier = Modifier.padding(8.dp)) {
+    Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Text(invoice.invoice_number, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleSmall)
                 Box {
@@ -125,7 +385,7 @@ fun AdminInvoiceCard(
             Text("Recipient: ${invoice.recipient_name ?: "Unknown"}", style = MaterialTheme.typography.bodyMedium)
             Text("Type: ${invoice.type.uppercase()}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
             
-            Divider(modifier = Modifier.padding(vertical = 8.dp))
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
             
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
@@ -183,7 +443,7 @@ fun AdminInvoiceDetailView(
             
             Spacer(Modifier.height(16.dp))
             Text("Line Items", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-            Divider(modifier = Modifier.padding(vertical = 8.dp))
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
         }
 
         items(detail.items) { item ->
@@ -194,7 +454,7 @@ fun AdminInvoiceDetailView(
                 }
                 Text("$${(( item.amount )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontWeight = FontWeight.Bold)
             }
-            Divider(color = Color.LightGray.copy(alpha = 0.5f))
+            HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
         }
 
         item {

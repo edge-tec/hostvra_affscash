@@ -55,6 +55,8 @@ sealed class Screen(val route: String, val title: String, val icon: ImageVector)
     object AffiliateReferral : Screen("affiliate_referral", "Referral Program", Icons.Filled.PersonAdd)
     object AffiliateInvoices : Screen("affiliate_invoices", "Invoices", Icons.Filled.ShoppingCart)
     object AdminInvoices : Screen("admin_invoices", "Invoices", Icons.Default.Receipt)
+    object AdminInvoiceRequests : Screen("admin_invoice_requests", "Invoice Requests", Icons.Default.ReceiptLong)
+
     object AdminSettings : Screen("admin_settings", "Settings", Icons.Default.Settings)
     object AdminReferral : Screen("admin_referral", "Referral System", Icons.Default.Share)
     object FraudReport : Screen("fraud_report", "Fraud Report", Icons.Filled.Assessment)
@@ -206,7 +208,7 @@ fun MainScreen(
     }
 
     val allItems = when (role) {
-        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminPrivateOffers, Screen.AdminSmartlinks, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminShop, Screen.AdminAffiliateManagers, Screen.AdminSupport, Screen.AdminConversions, Screen.AdminReports, Screen.AdminAffiliateReport, Screen.AdminFraudReport, Screen.AdminDuplicateConversions, Screen.AdminVpnLogs, Screen.AdminVpnSkipList, Screen.AdminLoginActivity, Screen.AdminTrafficSourceOverride, Screen.AdminTrafficSourceOverrideLogs, Screen.AdminAccountDeleteRequests, Screen.AdminPoints, Screen.AdminAutoHide, Screen.AdminInvoices, Screen.AdminPlatformSettings, Screen.AdminPaymentSettings, Screen.AdminSettings, Screen.AdminReferral)
+        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminPrivateOffers, Screen.AdminSmartlinks, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminShop, Screen.AdminAffiliateManagers, Screen.AdminSupport, Screen.AdminConversions, Screen.AdminReports, Screen.AdminAffiliateReport, Screen.AdminFraudReport, Screen.AdminDuplicateConversions, Screen.AdminVpnLogs, Screen.AdminVpnSkipList, Screen.AdminLoginActivity, Screen.AdminTrafficSourceOverride, Screen.AdminTrafficSourceOverrideLogs, Screen.AdminAccountDeleteRequests, Screen.AdminPoints, Screen.AdminAutoHide, Screen.AdminInvoices, Screen.AdminInvoiceRequests, Screen.AdminPlatformSettings, Screen.AdminPaymentSettings, Screen.AdminSettings, Screen.AdminReferral)
         "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerSupport, Screen.ManagerSmartlinks, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerReports, Screen.ManagerVpnLogs, Screen.ManagerTrafficSourceOverride, Screen.ManagerTrafficSourceOverrideLogs, Screen.ManagerReferral, Screen.ManagerInvoices, Screen.ManagerSettings)
         else -> listOf(Screen.Dashboard, Screen.Offers, Screen.AffiliateInHouseOffers, Screen.Smartlinks, Screen.Reports, Screen.AffiliateDuplicateConversions, Screen.AffiliateReferral, Screen.AffiliateSettings)
     }
@@ -785,6 +787,17 @@ fun MainScreen(
             }
             composable(Screen.AdminInvoices.route) {
                 val viewModel: net.affscash.android.ui.screens.admin.invoices.AdminInvoicesViewModel = hiltViewModel()
+                net.affscash.android.ui.screens.admin.invoices.AdminInvoicesScreen(
+                    viewModel = viewModel,
+                    onNavigateBack = { navController.popBackStack() },
+                    onCreateInvoice = { navController.navigate(Screen.AdminCreateInvoice.route) }
+                )
+            }
+            composable(Screen.AdminInvoiceRequests.route) {
+                val viewModel: net.affscash.android.ui.screens.admin.invoices.AdminInvoicesViewModel = hiltViewModel()
+                LaunchedEffect(Unit) {
+                    viewModel.setTab(1)
+                }
                 net.affscash.android.ui.screens.admin.invoices.AdminInvoicesScreen(
                     viewModel = viewModel,
                     onNavigateBack = { navController.popBackStack() },

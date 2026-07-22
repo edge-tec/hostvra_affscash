@@ -25,6 +25,55 @@ class AdminInvoiceRepository @Inject constructor(private val apiService: ApiServ
         }
     }
 
+    suspend fun getInvoiceRequests(): Result<List<AdminInvoiceRequestRow>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.getAdminInvoiceRequestsList()
+                if (response.status == "success") {
+                    Result.success(response.data ?: emptyList())
+                } else {
+                    Result.failure(Exception(response.message ?: "Failed to fetch invoice requests"))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
+    suspend fun approveInvoiceRequest(requestId: Int, amount: Double? = null, adminNote: String? = null): Result<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.approveAdminInvoiceRequest(
+                    AdminApproveInvoiceRequestPayload(requestId = requestId, amount = amount, adminNote = adminNote)
+                )
+                if (response.status == "success") {
+                    Result.success(response.message ?: "Invoice request approved")
+                } else {
+                    Result.failure(Exception(response.message ?: "Failed to approve invoice request"))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
+    suspend fun rejectInvoiceRequest(requestId: Int, adminNote: String? = null): Result<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.rejectAdminInvoiceRequest(
+                    AdminRejectInvoiceRequestPayload(requestId = requestId, adminNote = adminNote)
+                )
+                if (response.status == "success") {
+                    Result.success(response.message ?: "Invoice request rejected")
+                } else {
+                    Result.failure(Exception(response.message ?: "Failed to reject invoice request"))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
     suspend fun getInvoiceDetail(id: Int): Result<AdminInvoiceDetail> {
         return withContext(Dispatchers.IO) {
             try {

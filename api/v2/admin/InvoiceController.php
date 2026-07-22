@@ -1,12 +1,12 @@
 <?php
 /**
- * Admin App API — Invoices
+ * Admin App API — Invoices & Invoice Requests
  */
 Auth::check('admin');
 
 try {
     // Read JSON input if any
-    $input = json_decode(file_get_contents('php://input'), true);
+    $input = json_decode(file_get_contents('php://input'), true) ?? [];
     $action = $_GET['action'] ?? ($input['action'] ?? 'list');
 
     if ($action === 'list') {
@@ -35,6 +35,267 @@ try {
         }
 
         Helpers::json(['status' => 'success', 'data' => $invoices]);
+        exit;
+    }
+
+    if ($action === 'list_requests' || $action === 'requests') {
+        try {
+            Database::query("CREATE TABLE IF NOT EXISTS `manager_invoice_requests` (
+                `id`           INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                `manager_id`   INT UNSIGNED NOT NULL,
+                `affiliate_id` INT UNSIGNED NULL DEFAULT NULL,
+                `amount`       DECIMAL(12,4) NOT NULL DEFAULT 0.0000,
+                `period_start` DATE NOT NULL,
+                `period_end`   DATE NOT NULL,
+                `notes`        TEXT NULL,
+                `status`       ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+                `admin_note`   TEXT NULL,
+                `reviewed_by`  INT UNSIGNED NULL,
+                `reviewed_at`  DATETIME NULL,
+                `invoice_id`   INT UNSIGNED NULL,
+                `created_at`   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                INDEX `idx_manager_id` (`manager_id`),
+                INDEX `idx_status`     (`status`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+        } catch (\Throwable $_e) {}
+
+        $requests = Database::fetchAll(
+            "SELECT mir.*,
+                    CONCAT(um.first_name, ' ', um.last_name) AS manager_name, um.email AS manager_email,
+                    CONCAT(ua.first_name, ' ', ua.last_name) AS affiliate_name, af.affiliate_code
+             FROM manager_invoice_requests mir
+             JOIN affiliate_managers am ON am.id = mir.manager_id
+             JOIN users um ON um.id = am.user_id
+             LEFT JOIN affiliates af ON af.id = mir.affiliate_id
+             LEFT JOIN users ua ON ua.id = af.user_id
+             ORDER BY mir.created_at DESC"
+        );
+
+        foreach ($requests as &$req) {
+            $req['id'] = (int)$req['id'];
+            $req['manager_id'] = (int)$req['manager_id'];
+            $req['affiliate_id'] = $req['affiliate_id'] ? (int)$req['affiliate_id'] : null;
+            $req['amount'] = (string)$req['amount'];
+            $req['invoice_id'] = $req['invoice_id'] ? (int)$req['invoice_id'] : null;
+        }
+
+        Helpers::json(['status' => 'success', 'data' => $requests]);
+        exit;
+    }
+
+    if ($action === 'approve_request') {
+        $reqId  = (int)($input['request_id'] ?? 0);
+        $note   = trim((string)($input['admin_note'] ?? ''));
+        $dueDate = !empty($input['due_date']) ? $input['due_date'] : null;
+
+        $req = Database::fetchOne(
+            "SELECT mir.*, am.id AS mgr_id, am.balance AS mgr_balance,
+                    u.first_name, u.last_name, u.email
+             FROM manager_invoice_requests mir
+             JOIN affiliate_managers am ON am.id = mir.manager_id
+             JOIN users u ON u.id = am.user_id
+             WHERE mir.id = ? AND mir.status = 'pending'",
+            [$reqId]
+        );
+
+        if (!$req) {
+            Helpers::json(['status' => 'error', 'message' => 'Request not found or already reviewed']);
+            exit;
+        }
+
+        $amount      = round((float)($input['amount'] ?? $req['amount']), 4);
+        $periodStart = $input['period_start'] ?? $req['period_start'];
+        $periodEnd   = $input['period_end'] ?? $req['period_end'];
+        $mgrId       = (int)$req['mgr_id'];
+        $affiliateId = (int)($req['affiliate_id'] ?? 0);
+
+        if ($affiliateId > 0) {
+            $affRow = Database::fetchOne(
+                "SELECT af.id, af.balance, af.payment_method, af.payment_details,
+                        af.affiliate_code, u.email, u.first_name, u.last_name
+                 FROM affiliates af JOIN users u ON u.id = af.user_id
+                 WHERE af.id = ?",
+                [$affiliateId]
+            );
+
+            if (!$affRow) {
+                Helpers::json(['status' => 'error', 'message' => 'Affiliate not found']);
+                exit;
+            }
+
+            $affBalance = (float)$affRow['balance'];
+            if ($amount <= 0 || $amount > $affBalance + 0.0001) {
+                Helpers::json(['status' => 'error', 'message' => sprintf('Amount ($%s) exceeds available balance ($%s)', number_format($amount, 2), number_format($affBalance, 2))]);
+                exit;
+            }
+
+            $balanceBefore = $affBalance;
+            $balanceAfter  = max(0.0, round($balanceBefore - $amount, 4));
+
+            $lineNotes = "Affiliate Balance Before: $" . number_format($balanceBefore, 2)
+                       . "\nPayout Amount: $"          . number_format($amount, 2)
+                       . "\nAffiliate Balance After: $" . number_format($balanceAfter, 2);
+            if ($note) $lineNotes .= "\n\nAdmin Note: " . $note;
+
+            $items = [[
+                'description' => 'Affiliate Payout — ' . date('M j, Y', strtotime($periodStart)) . ' to ' . date('M j, Y', strtotime($periodEnd)),
+                'qty'    => 1,
+                'rate'   => $amount,
+                'amount' => $amount,
+            ]];
+
+            $invNum     = 'INV-' . date('Ym') . '-' . strtoupper(substr(bin2hex(random_bytes(3)), 0, 6));
+            $entityName  = trim($affRow['first_name'] . ' ' . $affRow['last_name']);
+            $entityEmail = $affRow['email'] ?? '';
+
+            Database::begin();
+            try {
+                $upd = Database::query(
+                    "UPDATE affiliates SET balance = GREATEST(0, balance - ?) WHERE id = ? AND balance >= ?",
+                    [$amount, $affiliateId, $amount]
+                );
+                if ($upd->rowCount() === 0) {
+                    throw new \RuntimeException('Affiliate balance insufficient or changed');
+                }
+
+                $invId = Database::insert('invoices', [
+                    'invoice_number'  => $invNum,
+                    'type'            => 'affiliate_payout',
+                    'affiliate_id'    => $affiliateId,
+                    'manager_id'      => null,
+                    'advertiser_id'   => null,
+                    'entity_name'     => $entityName,
+                    'entity_email'    => $entityEmail,
+                    'period_start'    => $periodStart,
+                    'period_end'      => $periodEnd,
+                    'items'           => json_encode($items),
+                    'subtotal'        => $amount,
+                    'tax_rate'        => 0,
+                    'tax_amount'      => 0,
+                    'total'           => $amount,
+                    'status'          => 'sent',
+                    'notes'           => $lineNotes,
+                    'due_date'        => $dueDate,
+                    'balance_before'  => $balanceBefore,
+                    'balance_after'   => $balanceAfter,
+                    'balance_deducted'=> 1,
+                    'created_by'      => Auth::id(),
+                ]);
+
+                Database::update('manager_invoice_requests', [
+                    'status'      => 'approved',
+                    'admin_note'  => $note ?: null,
+                    'reviewed_by' => Auth::id(),
+                    'reviewed_at' => date('Y-m-d H:i:s'),
+                    'invoice_id'  => $invId,
+                ], 'id=?', [$reqId]);
+
+                Database::commit();
+                Helpers::json(['status' => 'success', 'message' => 'Invoice request approved and invoice generated']);
+                exit;
+            } catch (\Throwable $e) {
+                Database::rollback();
+                Helpers::json(['status' => 'error', 'message' => $e->getMessage()]);
+                exit;
+            }
+        } else {
+            // General manager request
+            $mgrBalance = (float)$req['mgr_balance'];
+            if ($amount <= 0 || $amount > $mgrBalance + 0.0001) {
+                Helpers::json(['status' => 'error', 'message' => sprintf('Amount ($%s) exceeds manager available balance ($%s)', number_format($amount, 2), number_format($mgrBalance, 2))]);
+                exit;
+            }
+
+            $balanceBefore = $mgrBalance;
+            $balanceAfter  = max(0.0, round($balanceBefore - $amount, 4));
+
+            $lineNotes = "Manager Balance Before: $" . number_format($balanceBefore, 2)
+                       . "\nPayout Amount: $"         . number_format($amount, 2)
+                       . "\nManager Balance After: $"  . number_format($balanceAfter, 2);
+            if ($note) $lineNotes .= "\n\nAdmin Note: " . $note;
+
+            $items = [[
+                'description' => 'Manager Payout — ' . date('M j, Y', strtotime($periodStart)) . ' to ' . date('M j, Y', strtotime($periodEnd)),
+                'qty'    => 1,
+                'rate'   => $amount,
+                'amount' => $amount,
+            ]];
+
+            $invNum     = 'INV-' . date('Ym') . '-' . strtoupper(substr(bin2hex(random_bytes(3)), 0, 6));
+            $entityName  = trim($req['first_name'] . ' ' . $req['last_name']);
+            $entityEmail = $req['email'] ?? '';
+
+            Database::begin();
+            try {
+                $upd = Database::query(
+                    "UPDATE affiliate_managers SET balance = GREATEST(0, balance - ?) WHERE id = ? AND balance >= ?",
+                    [$amount, $mgrId, $amount]
+                );
+                if ($upd->rowCount() === 0) {
+                    throw new \RuntimeException('Manager balance insufficient or changed');
+                }
+
+                $invId = Database::insert('invoices', [
+                    'invoice_number'  => $invNum,
+                    'type'            => 'manager_fee',
+                    'affiliate_id'    => null,
+                    'manager_id'      => $mgrId,
+                    'advertiser_id'   => null,
+                    'entity_name'     => $entityName,
+                    'entity_email'    => $entityEmail,
+                    'period_start'    => $periodStart,
+                    'period_end'      => $periodEnd,
+                    'items'           => json_encode($items),
+                    'subtotal'        => $amount,
+                    'tax_rate'        => 0,
+                    'tax_amount'      => 0,
+                    'total'           => $amount,
+                    'status'          => 'sent',
+                    'notes'           => $lineNotes,
+                    'due_date'        => $dueDate,
+                    'balance_before'  => $balanceBefore,
+                    'balance_after'   => $balanceAfter,
+                    'balance_deducted'=> 1,
+                    'created_by'      => Auth::id(),
+                ]);
+
+                Database::update('manager_invoice_requests', [
+                    'status'      => 'approved',
+                    'admin_note'  => $note ?: null,
+                    'reviewed_by' => Auth::id(),
+                    'reviewed_at' => date('Y-m-d H:i:s'),
+                    'invoice_id'  => $invId,
+                ], 'id=?', [$reqId]);
+
+                Database::commit();
+                Helpers::json(['status' => 'success', 'message' => 'Invoice request approved and invoice generated']);
+                exit;
+            } catch (\Throwable $e) {
+                Database::rollback();
+                Helpers::json(['status' => 'error', 'message' => $e->getMessage()]);
+                exit;
+            }
+        }
+    }
+
+    if ($action === 'reject_request') {
+        $reqId = (int)($input['request_id'] ?? 0);
+        $note  = trim((string)($input['admin_note'] ?? ''));
+
+        $req = Database::fetchOne("SELECT id FROM manager_invoice_requests WHERE id = ? AND status = 'pending'", [$reqId]);
+        if (!$req) {
+            Helpers::json(['status' => 'error', 'message' => 'Request not found or already reviewed']);
+            exit;
+        }
+
+        Database::update('manager_invoice_requests', [
+            'status'      => 'rejected',
+            'admin_note'  => $note ?: null,
+            'reviewed_by' => Auth::id(),
+            'reviewed_at' => date('Y-m-d H:i:s'),
+        ], 'id=?', [$reqId]);
+
+        Helpers::json(['status' => 'success', 'message' => 'Invoice request rejected']);
         exit;
     }
 
@@ -314,7 +575,7 @@ try {
         Helpers::json(['status' => 'success', 'message' => "Invoice {$invNum} created successfully.", 'data' => ['invoice_id' => $newId]]);
         exit;
     }
-    
+
     Helpers::json(['status' => 'error', 'message' => 'Invalid action'], 400);
 
 } catch (\Throwable $e) {
