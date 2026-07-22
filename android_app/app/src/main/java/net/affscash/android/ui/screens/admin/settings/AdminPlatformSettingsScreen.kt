@@ -1,21 +1,31 @@
 package net.affscash.android.ui.screens.admin.settings
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import net.affscash.android.data.model.*
+import net.affscash.android.ui.dashboard.GlassCard
 import net.affscash.android.ui.dashboard.PremiumUI
 import kotlinx.coroutines.launch
 
@@ -41,59 +51,110 @@ fun AdminPlatformSettingsScreen(
     }
 
     Scaffold(
-        topBar = {
-            net.affscash.android.ui.components.CompactTopBar(
-                title = { Text("Platform Settings") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            )
-        },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         floatingActionButton = {
             if (uiState is AdminPlatformSettingsUiState.Success) {
-                FloatingActionButton(
+                Surface(
                     onClick = {
                         val currentState = (uiState as AdminPlatformSettingsUiState.Success).config
                         viewModel.saveSettings(currentState)
                     },
-                    containerColor = MaterialTheme.colorScheme.primary
+                    shape = RoundedCornerShape(16.dp),
+                    color = Color.Transparent,
+                    shadowElevation = 6.dp
                 ) {
-                    if (isSaving) {
-                        CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(24.dp))
-                    } else {
-                        Icon(Icons.Default.Save, contentDescription = "Save")
+                    Box(
+                        modifier = Modifier
+                            .size(56.dp)
+                            .background(PremiumUI.PrimaryGradient),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (isSaving) {
+                            CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+                        } else {
+                            Icon(Icons.Default.Save, contentDescription = "Save", tint = Color.White, modifier = Modifier.size(26.dp))
+                        }
                     }
                 }
             }
         }
     ) { paddingValues ->
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(PremiumUI.PageBackground)
                 .padding(paddingValues)
         ) {
+            // 3D Glass Header Bar
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                shape = PremiumUI.CardShape,
+                color = Color.White,
+                shadowElevation = 2.dp,
+                border = PremiumUI.GlassBorder
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 14.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        IconButton(onClick = { navController.navigateUp() }) {
+                            Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color(0xFF0F172A))
+                        }
+                        Box(
+                            modifier = Modifier
+                                .size(38.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(PremiumUI.HeaderGradient),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                Icons.Outlined.Tune,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Column {
+                            Text(
+                                text = "Platform Settings",
+                                fontSize = 17.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF0F172A)
+                            )
+                            Text(
+                                text = "Global configuration & rules",
+                                fontSize = 11.sp,
+                                color = Color(0xFF64748B)
+                            )
+                        }
+                    }
+                }
+            }
+
             when (uiState) {
                 is AdminPlatformSettingsUiState.Loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = Color(0xFF4F46E5))
+                    }
                 }
                 is AdminPlatformSettingsUiState.Error -> {
-                    Text(
-                        text = (uiState as AdminPlatformSettingsUiState.Error).message,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = (uiState as AdminPlatformSettingsUiState.Error).message,
+                            color = Color(0xFFEF4444)
+                        )
+                    }
                 }
                 is AdminPlatformSettingsUiState.Success -> {
                     val config = (uiState as AdminPlatformSettingsUiState.Success).config
-                    SettingsContent(config = config)
+                    SettingsContent3D(config = config)
                 }
             }
         }
@@ -101,21 +162,36 @@ fun AdminPlatformSettingsScreen(
 }
 
 @Composable
-fun SettingsContent(config: AdminPlatformConfig) {
+fun SettingsContent3D(config: AdminPlatformConfig) {
     val tabs = listOf("General", "Security", "SMTP", "Conversion", "Fraud", "Turnstile", "Shortener", "VPN")
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        ScrollableTabRow(
-            selectedTabIndex = selectedTabIndex,
-            edgePadding = 8.dp
+        // 3D Segmented Scrollable Tab Row
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+                .padding(horizontal = 12.dp, vertical = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             tabs.forEachIndexed { index, title ->
-                Tab(
-                    selected = selectedTabIndex == index,
+                val isSelected = selectedTabIndex == index
+                Surface(
                     onClick = { selectedTabIndex = index },
-                    text = { Text(title) }
-                )
+                    shape = RoundedCornerShape(12.dp),
+                    color = if (isSelected) Color(0xFF4F46E5) else Color.White,
+                    border = BorderStroke(1.dp, if (isSelected) Color(0xFF4F46E5) else Color(0xFFE2E8F0)),
+                    shadowElevation = if (isSelected) 3.dp else 1.dp
+                ) {
+                    Text(
+                        text = title,
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                        fontSize = 12.sp,
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                        color = if (isSelected) Color.White else Color(0xFF475569)
+                    )
+                }
             }
         }
 
@@ -123,19 +199,23 @@ fun SettingsContent(config: AdminPlatformConfig) {
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(8.dp)
+                .padding(horizontal = 12.dp, vertical = 6.dp)
         ) {
-            when (selectedTabIndex) {
-                0 -> GeneralSettingsTab(config)
-                1 -> SecuritySettingsTab(config)
-                2 -> SmtpSettingsTab(config)
-                3 -> ConversionSettingsTab(config)
-                4 -> FraudSettingsTab(config)
-                5 -> TurnstileSettingsTab(config)
-                6 -> ShortenerSettingsTab(config)
-                7 -> VpnSettingsTab(config)
+            GlassCard(elevation = 2.dp) {
+                Column(modifier = Modifier.fillMaxWidth().padding(4.dp)) {
+                    when (selectedTabIndex) {
+                        0 -> GeneralSettingsTab(config)
+                        1 -> SecuritySettingsTab(config)
+                        2 -> SmtpSettingsTab(config)
+                        3 -> ConversionSettingsTab(config)
+                        4 -> FraudSettingsTab(config)
+                        5 -> TurnstileSettingsTab(config)
+                        6 -> ShortenerSettingsTab(config)
+                        7 -> VpnSettingsTab(config)
+                    }
+                }
             }
-            Spacer(modifier = Modifier.height(80.dp)) // Space for FAB
+            Spacer(modifier = Modifier.height(90.dp))
         }
     }
 }
@@ -148,35 +228,31 @@ fun GeneralSettingsTab(config: AdminPlatformConfig) {
         config.app = app
     }
 
-    Text("General Configuration", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(4.dp))
+    Text("General Configuration", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))
+    Spacer(modifier = Modifier.height(8.dp))
 
     AdminStyledTextField(
         value = app.name ?: "",
         onValueChange = { app = app.copy(name = it) },
-        label = { Text("Site Name") },
-        modifier = Modifier.fillMaxWidth()
+        label = { Text("Site Name") }
     )
-    Spacer(modifier = Modifier.height(4.dp))
+    Spacer(modifier = Modifier.height(8.dp))
     AdminStyledTextField(
         value = app.url ?: "",
         onValueChange = { app = app.copy(url = it) },
-        label = { Text("Site URL") },
-        modifier = Modifier.fillMaxWidth()
+        label = { Text("Site URL") }
     )
-    Spacer(modifier = Modifier.height(4.dp))
+    Spacer(modifier = Modifier.height(8.dp))
     AdminStyledTextField(
         value = app.timezone ?: "",
         onValueChange = { app = app.copy(timezone = it) },
-        label = { Text("Timezone") },
-        modifier = Modifier.fillMaxWidth()
+        label = { Text("Timezone") }
     )
-    Spacer(modifier = Modifier.height(4.dp))
+    Spacer(modifier = Modifier.height(8.dp))
     AdminStyledTextField(
         value = app.contactEmail ?: "",
         onValueChange = { app = app.copy(contactEmail = it) },
-        label = { Text("Contact Email") },
-        modifier = Modifier.fillMaxWidth()
+        label = { Text("Contact Email") }
     )
 }
 
@@ -188,8 +264,8 @@ fun SecuritySettingsTab(config: AdminPlatformConfig) {
         config.app = app
     }
 
-    Text("Security & Registration", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(4.dp))
+    Text("Security & Registration", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))
+    Spacer(modifier = Modifier.height(8.dp))
 
     SettingSwitch("Enable 2FA", app.twoFaEnabled) { app = app.copy(twoFaEnabled = it) }
     SettingSwitch("Email Verification", app.emailVerification) { app = app.copy(emailVerification = it) }
@@ -205,35 +281,31 @@ fun SmtpSettingsTab(config: AdminPlatformConfig) {
         config.smtp = smtp
     }
 
-    Text("SMTP Configuration", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(4.dp))
+    Text("SMTP Configuration", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))
+    Spacer(modifier = Modifier.height(8.dp))
 
     AdminStyledTextField(
         value = smtp.host ?: "",
         onValueChange = { smtp = smtp.copy(host = it) },
-        label = { Text("Host") },
-        modifier = Modifier.fillMaxWidth()
+        label = { Text("Host") }
     )
-    Spacer(modifier = Modifier.height(4.dp))
+    Spacer(modifier = Modifier.height(8.dp))
     AdminStyledTextField(
         value = smtp.port ?: "",
         onValueChange = { smtp = smtp.copy(port = it) },
-        label = { Text("Port") },
-        modifier = Modifier.fillMaxWidth()
+        label = { Text("Port") }
     )
-    Spacer(modifier = Modifier.height(4.dp))
+    Spacer(modifier = Modifier.height(8.dp))
     AdminStyledTextField(
         value = smtp.username ?: "",
         onValueChange = { smtp = smtp.copy(username = it) },
-        label = { Text("Username") },
-        modifier = Modifier.fillMaxWidth()
+        label = { Text("Username") }
     )
-    Spacer(modifier = Modifier.height(4.dp))
+    Spacer(modifier = Modifier.height(8.dp))
     AdminStyledTextField(
         value = smtp.password ?: "",
         onValueChange = { smtp = smtp.copy(password = it) },
-        label = { Text("Password") },
-        modifier = Modifier.fillMaxWidth()
+        label = { Text("Password") }
     )
 }
 
@@ -245,16 +317,15 @@ fun ConversionSettingsTab(config: AdminPlatformConfig) {
         config.conversion = conv
     }
 
-    Text("Conversion Settings", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(4.dp))
+    Text("Conversion Settings", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))
+    Spacer(modifier = Modifier.height(8.dp))
 
     AdminStyledTextField(
         value = conv.approvalMode ?: "",
         onValueChange = { conv = conv.copy(approvalMode = it) },
-        label = { Text("Approval Mode (auto/manual)") },
-        modifier = Modifier.fillMaxWidth()
+        label = { Text("Approval Mode (auto/manual)") }
     )
-    Spacer(modifier = Modifier.height(4.dp))
+    Spacer(modifier = Modifier.height(8.dp))
     SettingSwitch("One Lead Per IP", conv.onePerIpEnabled) { conv = conv.copy(onePerIpEnabled = it) }
     SettingSwitch("Hide Fraud Rejected Reports", conv.hideFraudRejectedReports) { conv = conv.copy(hideFraudRejectedReports = it) }
 }
@@ -267,17 +338,16 @@ fun FraudSettingsTab(config: AdminPlatformConfig) {
         config.fraudReports = fraud
     }
 
-    Text("Fraud Reports", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(4.dp))
+    Text("Fraud Reports", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))
+    Spacer(modifier = Modifier.height(8.dp))
 
     SettingSwitch("Enable Fraud Reports", fraud.enabled) { fraud = fraud.copy(enabled = it) }
     SettingSwitch("Send Email Alerts", fraud.sendEmail) { fraud = fraud.copy(sendEmail = it) }
-    Spacer(modifier = Modifier.height(4.dp))
+    Spacer(modifier = Modifier.height(8.dp))
     AdminStyledTextField(
         value = fraud.intervalHours ?: "",
         onValueChange = { fraud = fraud.copy(intervalHours = it) },
-        label = { Text("Interval Hours") },
-        modifier = Modifier.fillMaxWidth()
+        label = { Text("Interval Hours") }
     )
 }
 
@@ -289,23 +359,21 @@ fun TurnstileSettingsTab(config: AdminPlatformConfig) {
         config.turnstile = turnstile
     }
 
-    Text("Cloudflare Turnstile", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(4.dp))
+    Text("Cloudflare Turnstile", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))
+    Spacer(modifier = Modifier.height(8.dp))
 
     SettingSwitch("Enable Turnstile", turnstile.enabled) { turnstile = turnstile.copy(enabled = it) }
-    Spacer(modifier = Modifier.height(4.dp))
+    Spacer(modifier = Modifier.height(8.dp))
     AdminStyledTextField(
         value = turnstile.siteKey ?: "",
         onValueChange = { turnstile = turnstile.copy(siteKey = it) },
-        label = { Text("Site Key") },
-        modifier = Modifier.fillMaxWidth()
+        label = { Text("Site Key") }
     )
-    Spacer(modifier = Modifier.height(4.dp))
+    Spacer(modifier = Modifier.height(8.dp))
     AdminStyledTextField(
         value = turnstile.secretKey ?: "",
         onValueChange = { turnstile = turnstile.copy(secretKey = it) },
-        label = { Text("Secret Key") },
-        modifier = Modifier.fillMaxWidth()
+        label = { Text("Secret Key") }
     )
 }
 
@@ -317,16 +385,15 @@ fun ShortenerSettingsTab(config: AdminPlatformConfig) {
         config.shortener = shortener
     }
 
-    Text("URL Shortener", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(4.dp))
+    Text("URL Shortener", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))
+    Spacer(modifier = Modifier.height(8.dp))
 
     SettingSwitch("Enable Shortener", shortener.enabled) { shortener = shortener.copy(enabled = it) }
-    Spacer(modifier = Modifier.height(4.dp))
+    Spacer(modifier = Modifier.height(8.dp))
     AdminStyledTextField(
         value = shortener.apiKey ?: "",
         onValueChange = { shortener = shortener.copy(apiKey = it) },
-        label = { Text("API Key") },
-        modifier = Modifier.fillMaxWidth()
+        label = { Text("API Key") }
     )
 }
 
@@ -338,8 +405,8 @@ fun VpnSettingsTab(config: AdminPlatformConfig) {
         config.vpnDetection = vpn
     }
 
-    Text("VPN Detection", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(4.dp))
+    Text("VPN Detection", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))
+    Spacer(modifier = Modifier.height(8.dp))
 
     SettingSwitch("Enable VPN Detection", vpn.enabled) { vpn = vpn.copy(enabled = it) }
 }
@@ -350,14 +417,15 @@ fun SettingSwitch(label: String, value: String?, onValueChange: (String) -> Unit
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = label, style = MaterialTheme.typography.bodyLarge)
+        Text(text = label, fontSize = 13.sp, fontWeight = FontWeight.Medium, color = Color(0xFF334155))
         Switch(
             checked = isChecked,
-            onCheckedChange = { onValueChange(if (it) "true" else "false") }
+            onCheckedChange = { onValueChange(if (it) "true" else "false") },
+            colors = SwitchDefaults.colors(checkedThumbColor = Color(0xFF4F46E5), checkedTrackColor = Color(0xFFEEF2FF))
         )
     }
 }
@@ -374,14 +442,14 @@ fun AdminStyledTextField(
         onValueChange = onValueChange,
         label = label,
         modifier = modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.medium,
+        shape = RoundedCornerShape(12.dp),
         singleLine = true,
-        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 12.sp),
+        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp),
         colors = OutlinedTextFieldDefaults.colors(
-            unfocusedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+            focusedBorderColor = Color(0xFF4F46E5),
+            unfocusedBorderColor = Color(0xFFE2E8F0),
+            focusedContainerColor = Color(0xFFF8FAFC),
+            unfocusedContainerColor = Color(0xFFF8FAFC)
         )
     )
 }
