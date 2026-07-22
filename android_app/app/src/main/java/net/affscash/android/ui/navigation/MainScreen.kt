@@ -46,130 +46,132 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.hilt.navigation.compose.hiltViewModel
 
+import androidx.compose.material.icons.outlined.*
+
 sealed class Screen(val route: String, val title: String, val icon: ImageVector) {
     // Affiliate Screens
-    object Dashboard : Screen("dashboard", "Dashboard", Icons.Filled.Home)
-    object Offers : Screen("offers", "Offers", Icons.Filled.LocalOffer)
-    object Smartlinks : Screen("smartlinks", "Smartlinks", Icons.Filled.Link)
-    object Reports : Screen("reports", "Reports", Icons.Filled.Assessment)
-    object AffiliateReports : Screen("affiliate_reports", "Reports", Icons.Filled.BarChart)
-    object AffiliateDuplicateConversions : Screen("affiliate_duplicate_conversions", "Duplicate Conversions", Icons.Filled.Warning)
-    object AffiliateReferral : Screen("affiliate_referral", "Referral Program", Icons.Filled.PersonAdd)
-    object AffiliateInvoices : Screen("affiliate_invoices", "Invoices", Icons.Filled.ShoppingCart)
-    object AdminInvoices : Screen("admin_invoices", "Invoices", Icons.Default.Receipt)
-    object AdminInvoiceRequests : Screen("admin_invoice_requests", "Invoice Requests", Icons.Default.ReceiptLong)
+    object Dashboard : Screen("dashboard", "Dashboard", Icons.Outlined.Dashboard)
+    object Offers : Screen("offers", "Offers", Icons.Outlined.LocalOffer)
+    object Smartlinks : Screen("smartlinks", "Smartlinks", Icons.Outlined.Link)
+    object Reports : Screen("reports", "Reports", Icons.Outlined.BarChart)
+    object AffiliateReports : Screen("affiliate_reports", "Reports", Icons.Outlined.Analytics)
+    object AffiliateDuplicateConversions : Screen("affiliate_duplicate_conversions", "Duplicate Conversions", Icons.Outlined.Warning)
+    object AffiliateReferral : Screen("affiliate_referral", "Referral Program", Icons.Outlined.PersonAdd)
+    object AffiliateInvoices : Screen("affiliate_invoices", "Invoices", Icons.Outlined.ReceiptLong)
+    object AdminInvoices : Screen("admin_invoices", "Invoices", Icons.Outlined.Receipt)
+    object AdminInvoiceRequests : Screen("admin_invoice_requests", "Invoice Requests", Icons.Outlined.ReceiptLong)
 
-    object AdminSettings : Screen("admin_settings", "Settings", Icons.Default.Settings)
-    object AdminReferral : Screen("admin_referral", "Referral System", Icons.Default.Share)
-    object FraudReport : Screen("fraud_report", "Fraud Report", Icons.Filled.Assessment)
-    object Rewards : Screen("rewards", "Milestones", Icons.Filled.MonetizationOn)
-    object Shop : Screen("shop", "Rewards Shop", Icons.Filled.LocalOffer)
-    object News : Screen("news", "News", Icons.Filled.Article)
-    object Notifications : Screen("notifications", "Notifications", Icons.Filled.Notifications)
-    object Chat : Screen("chat", "Chat", Icons.Filled.Chat)
+    object AdminSettings : Screen("admin_settings", "Settings", Icons.Outlined.Settings)
+    object AdminReferral : Screen("admin_referral", "Referral System", Icons.Outlined.Share)
+    object FraudReport : Screen("fraud_report", "Fraud Report", Icons.Outlined.Shield)
+    object Rewards : Screen("rewards", "Milestones", Icons.Outlined.MonetizationOn)
+    object Shop : Screen("shop", "Rewards Shop", Icons.Outlined.ShoppingCart)
+    object News : Screen("news", "News", Icons.Outlined.Article)
+    object Notifications : Screen("notifications", "Notifications", Icons.Outlined.Notifications)
+    object Chat : Screen("chat", "Chat", Icons.Outlined.Chat)
 
     // Admin Screens
-    object AdminDashboard : Screen("admin_dashboard", "Dashboard", Icons.Filled.Home)
-    object AdminOffers : Screen("admin_offers", "Offers", Icons.Filled.LocalOffer)
-    object AdminPrivateOffers : Screen("admin_private_offers", "Private Offers", Icons.Filled.VpnKey)
-    object AdminInHouseOffers : Screen("admin_inhouse_offers", "In-House Offers", Icons.Filled.HomeRepairService)
-    object AdminOfferApprovals : Screen("admin_offer_approvals", "Approvals", Icons.Filled.CheckCircle)
-    object AdminSmartlinks : Screen("admin_smartlinks", "Smartlinks", Icons.Filled.Link)
-    object AdminSmartlinkRequests : Screen("admin_smartlink_requests", "SL Requests", Icons.Filled.Assessment)
-    object AdminSmartlinkCreate : Screen("admin_smartlink_create", "Create Smartlink", Icons.Filled.Add)
-    class AdminSmartlinkEdit(id: Int) : Screen("admin_smartlink_edit/$id", "Edit Smartlink", Icons.Filled.Edit) {
+    object AdminDashboard : Screen("admin_dashboard", "Dashboard", Icons.Outlined.Dashboard)
+    object AdminOffers : Screen("admin_offers", "Offers", Icons.Outlined.LocalOffer)
+    object AdminPrivateOffers : Screen("admin_private_offers", "Private Offers", Icons.Outlined.VpnKey)
+    object AdminInHouseOffers : Screen("admin_inhouse_offers", "In-House Offers", Icons.Outlined.Storefront)
+    object AdminOfferApprovals : Screen("admin_offer_approvals", "Approvals", Icons.Outlined.CheckCircle)
+    object AdminSmartlinks : Screen("admin_smartlinks", "Smartlinks", Icons.Outlined.Link)
+    object AdminSmartlinkRequests : Screen("admin_smartlink_requests", "SL Requests", Icons.Outlined.BarChart)
+    object AdminSmartlinkCreate : Screen("admin_smartlink_create", "Create Smartlink", Icons.Outlined.Add)
+    class AdminSmartlinkEdit(id: Int) : Screen("admin_smartlink_edit/$id", "Edit Smartlink", Icons.Outlined.Edit) {
         companion object {
             const val route = "admin_smartlink_edit/{smartlinkId}"
             fun createRoute(smartlinkId: Int) = "admin_smartlink_edit/$smartlinkId"
         }
     }
-    object AdminOfferCreate : Screen("admin_offer_create", "Create Offer", Icons.Filled.Add)
-    object AdminInHouseOfferCreate : Screen("admin_inhouse_offer_create", "Create In-House Offer", Icons.Filled.Add)
-    class AdminOfferEdit(id: Int) : Screen("admin_offer_edit/$id", "Edit Offer", Icons.Filled.Edit) {
+    object AdminOfferCreate : Screen("admin_offer_create", "Create Offer", Icons.Outlined.Add)
+    object AdminInHouseOfferCreate : Screen("admin_inhouse_offer_create", "Create In-House Offer", Icons.Outlined.Add)
+    class AdminOfferEdit(id: Int) : Screen("admin_offer_edit/$id", "Edit Offer", Icons.Outlined.Edit) {
         companion object {
             const val route = "admin_offer_edit/{offerId}"
             fun createRoute(offerId: Int) = "admin_offer_edit/$offerId"
         }
     }
-    class AdminPrivateOfferDetail(id: Int) : Screen("admin_private_offer_detail/$id", "Manage Private Offer", Icons.Filled.Settings) {
+    class AdminPrivateOfferDetail(id: Int) : Screen("admin_private_offer_detail/$id", "Manage Private Offer", Icons.Outlined.Settings) {
         companion object {
             const val route = "admin_private_offer_detail/{offerId}"
             fun createRoute(offerId: Int) = "admin_private_offer_detail/$offerId"
         }
     }
-    object AdminUsers : Screen("admin_users", "Affiliates", Icons.Filled.People)
-    object AdminAdvertisers : Screen("admin_advertisers", "Advertisers", Icons.Filled.SupervisorAccount)
-    object AdminAdvertiserCreate : Screen("admin_create", "Create", Icons.Filled.Add)
-    class AdminAdvertiserEdit(id: Int) : Screen("admin_edit/$id", "Edit", Icons.Filled.Edit) {
+    object AdminUsers : Screen("admin_users", "Affiliates", Icons.Outlined.People)
+    object AdminAdvertisers : Screen("admin_advertisers", "Advertisers", Icons.Outlined.Badge)
+    object AdminAdvertiserCreate : Screen("admin_create", "Create", Icons.Outlined.Add)
+    class AdminAdvertiserEdit(id: Int) : Screen("admin_edit/$id", "Edit", Icons.Outlined.Edit) {
         companion object {
             const val route = "admin_edit/{advertiserId}"
             fun createRoute(advertiserId: Int) = "admin_edit/$advertiserId"
         }
     }
-    class AdminAdvertiserDetails(id: Int) : Screen("admin_details/$id", "Advertiser Details", Icons.Filled.Info) {
+    class AdminAdvertiserDetails(id: Int) : Screen("admin_details/$id", "Advertiser Details", Icons.Outlined.Info) {
         companion object {
             const val route = "admin_details/{advId}"
             fun createRoute(advId: Int) = "admin_details/$advId"
         }
     }
-    object AdminConversions : Screen("admin_conversions", "Conv", Icons.Filled.MonetizationOn)
-    object AdminFraudReport : Screen("admin_fraud", "Fraud Score Report", Icons.Filled.Shield)
-    object AdminDuplicateConversions : Screen("admin_duplicate_conversions", "Duplicate Conversions", Icons.Filled.Warning)
-    object AdminReports : Screen("admin_reports", "Reports", Icons.Filled.Assessment)
-    object AdminVpnLogs : Screen("admin_vpn_logs", "VPN & Proxy Log", Icons.Filled.Security)
-    object AdminVpnSkipList : Screen("admin_vpn_skip_list", "VPN/Proxy Skip List", Icons.Filled.Security)
-    object AdminLoginActivity : Screen("admin_login_activity", "Login Activity & Live Users", Icons.Filled.People)
-    object AdminTrafficSourceOverride : Screen("admin_traffic_source_override", "Traffic Source Override", Icons.Filled.AltRoute)
-    object AdminTrafficSourceOverrideLogs : Screen("admin_traffic_source_override_logs", "Traffic Source Override Logs", Icons.Filled.History)
-    object AdminAccountDeleteRequests : Screen("admin_account_delete_requests", "Delete Requests", Icons.Filled.DeleteOutline)
-    object AdminPoints : Screen("admin_points", "Points Module", Icons.Filled.Stars)
-    object AdminAffiliateReport : Screen("admin_aff_report", "Aff Rpt", Icons.Filled.Group)
-    object AdminAutoHide : Screen("admin_autohide", "Hide", Icons.Filled.VisibilityOff)
-    object AdminCreateInvoice : Screen("admin_create_invoice", "Create Invoice", Icons.Filled.Add)
-    object AdminAffiliateManagers : Screen("admin_managers", "Managers", Icons.Filled.SupervisorAccount)
-    object AdminSupport : Screen("admin_support", "Live Support", Icons.Filled.SupportAgent)
-    class AdminChat(id: Int, affId: Int, name: String) : Screen("admin_chat/$id/$affId/$name", "Chat", Icons.Filled.Chat) {
+    object AdminConversions : Screen("admin_conversions", "Conv", Icons.Outlined.Paid)
+    object AdminFraudReport : Screen("admin_fraud", "Fraud Score Report", Icons.Outlined.Shield)
+    object AdminDuplicateConversions : Screen("admin_duplicate_conversions", "Duplicate Conversions", Icons.Outlined.Warning)
+    object AdminReports : Screen("admin_reports", "Reports", Icons.Outlined.BarChart)
+    object AdminVpnLogs : Screen("admin_vpn_logs", "VPN & Proxy Log", Icons.Outlined.Security)
+    object AdminVpnSkipList : Screen("admin_vpn_skip_list", "VPN/Proxy Skip List", Icons.Outlined.Security)
+    object AdminLoginActivity : Screen("admin_login_activity", "Login Activity & Live Users", Icons.Outlined.People)
+    object AdminTrafficSourceOverride : Screen("admin_traffic_source_override", "Traffic Source Override", Icons.Outlined.AltRoute)
+    object AdminTrafficSourceOverrideLogs : Screen("admin_traffic_source_override_logs", "Traffic Source Override Logs", Icons.Outlined.History)
+    object AdminAccountDeleteRequests : Screen("admin_account_delete_requests", "Delete Requests", Icons.Outlined.DeleteOutline)
+    object AdminPoints : Screen("admin_points", "Points Module", Icons.Outlined.Stars)
+    object AdminAffiliateReport : Screen("admin_aff_report", "Aff Rpt", Icons.Outlined.Group)
+    object AdminAutoHide : Screen("admin_autohide", "Hide", Icons.Outlined.VisibilityOff)
+    object AdminCreateInvoice : Screen("admin_create_invoice", "Create Invoice", Icons.Outlined.Add)
+    object AdminAffiliateManagers : Screen("admin_managers", "Managers", Icons.Outlined.Badge)
+    object AdminSupport : Screen("admin_support", "Live Support", Icons.Outlined.SupportAgent)
+    class AdminChat(id: Int, affId: Int, name: String) : Screen("admin_chat/$id/$affId/$name", "Chat", Icons.Outlined.Chat) {
         companion object {
             const val route = "admin_chat/{convId}/{affId}/{name}"
             fun createRoute(convId: Int, affId: Int, name: String) = "admin_chat/$convId/$affId/$name"
         }
     }
-    object AdminPlatformSettings : Screen("admin_platform_settings", "Platform Settings", Icons.Filled.Settings)
-    object AdminPaymentSettings : Screen("admin_payment_settings", "Payment Settings", Icons.Filled.ShoppingCart)
-    object AdminShop : Screen("admin_shop", "Affiliate Shop", Icons.Filled.ShoppingCart)
+    object AdminPlatformSettings : Screen("admin_platform_settings", "Platform Settings", Icons.Outlined.Tune)
+    object AdminPaymentSettings : Screen("admin_payment_settings", "Payment Settings", Icons.Outlined.AccountBalance)
+    object AdminShop : Screen("admin_shop", "Affiliate Shop", Icons.Outlined.ShoppingCart)
     class AdminShopProductForm(id: Int? = null) : Screen(
         if (id == null) "admin_shop_product_form" else "admin_shop_product_form?id=$id",
         if (id == null) "Create Product" else "Edit Product",
-        Icons.Filled.Edit
+        Icons.Outlined.Edit
     ) {
         companion object {
             const val routePattern = "admin_shop_product_form?id={id}"
             fun createRoute(id: Int?) = if (id == null) "admin_shop_product_form" else "admin_shop_product_form?id=$id"
         }
     }
-    object AdminShopOrders : Screen("admin_shop_orders", "Shop Orders", Icons.Filled.List)
+    object AdminShopOrders : Screen("admin_shop_orders", "Shop Orders", Icons.Outlined.List)
 
     // Manager Screens
-    object ManagerDashboard : Screen("manager_dashboard", "Dashboard", Icons.Filled.Home)
-    object ManagerOffers : Screen("manager_offers", "Offers", Icons.Filled.LocalOffer)
-    object ManagerSmartlinks : Screen("manager_smartlinks", "Smartlinks", Icons.Filled.Link)
-    object ManagerSmartlinkRequests : Screen("manager_smartlink_requests", "Requests", Icons.Filled.Assessment)
-    object ManagerAffiliates : Screen("manager_affiliates", "Affiliates", Icons.Filled.People)
-    object ManagerConversions : Screen("manager_conversions", "Conversions", Icons.Filled.TrendingUp)
-    object ManagerReports : Screen("manager_reports", "Reports", Icons.Filled.BarChart)
-    object ManagerVpnLogs : Screen("manager_vpn_logs", "VPN & Proxy Log", Icons.Filled.Security)
-    object ManagerTrafficSourceOverride : Screen("manager_traffic_source_override", "Traffic Source Override", Icons.Filled.AltRoute)
-    object ManagerTrafficSourceOverrideLogs : Screen("manager_traffic_source_override_logs", "Traffic Source Override Logs", Icons.Filled.History)
-    object ManagerReferral : Screen("manager_referral", "Referral Link", Icons.Filled.PersonAdd)
-    object ManagerInvoices : Screen("manager_invoices", "Invoices", Icons.Filled.Receipt)
-    object ManagerSupport : Screen("manager_support", "Support", Icons.Filled.SupportAgent)
-    object ManagerChat : Screen("manager_chat", "Chat", Icons.Filled.Chat)
-    object ManagerSettings : Screen("manager_settings", "Settings", Icons.Filled.Settings)
+    object ManagerDashboard : Screen("manager_dashboard", "Dashboard", Icons.Outlined.Dashboard)
+    object ManagerOffers : Screen("manager_offers", "Offers", Icons.Outlined.LocalOffer)
+    object ManagerSmartlinks : Screen("manager_smartlinks", "Smartlinks", Icons.Outlined.Link)
+    object ManagerSmartlinkRequests : Screen("manager_smartlink_requests", "Requests", Icons.Outlined.BarChart)
+    object ManagerAffiliates : Screen("manager_affiliates", "Affiliates", Icons.Outlined.People)
+    object ManagerConversions : Screen("manager_conversions", "Conversions", Icons.Outlined.TrendingUp)
+    object ManagerReports : Screen("manager_reports", "Reports", Icons.Outlined.Analytics)
+    object ManagerVpnLogs : Screen("manager_vpn_logs", "VPN & Proxy Log", Icons.Outlined.Security)
+    object ManagerTrafficSourceOverride : Screen("manager_traffic_source_override", "Traffic Source Override", Icons.Outlined.AltRoute)
+    object ManagerTrafficSourceOverrideLogs : Screen("manager_traffic_source_override_logs", "Traffic Source Override Logs", Icons.Outlined.History)
+    object ManagerReferral : Screen("manager_referral", "Referral Link", Icons.Outlined.PersonAdd)
+    object ManagerInvoices : Screen("manager_invoices", "Invoices", Icons.Outlined.ReceiptLong)
+    object ManagerSupport : Screen("manager_support", "Support", Icons.Outlined.SupportAgent)
+    object ManagerChat : Screen("manager_chat", "Chat", Icons.Outlined.Chat)
+    object ManagerSettings : Screen("manager_settings", "Settings", Icons.Outlined.Settings)
     
     // Affiliate Screens
-    object Invoices : Screen("invoices", "Invoices", Icons.Filled.PictureAsPdf)
-    object AffiliateSettings : Screen("affiliate_settings", "Settings", Icons.Filled.Settings)
-    object AffiliateInHouseOffers : Screen("affiliate_inhouse_offers", "In-House Offers", Icons.Filled.HomeRepairService)
+    object Invoices : Screen("invoices", "Invoices", Icons.Outlined.Receipt)
+    object AffiliateSettings : Screen("affiliate_settings", "Settings", Icons.Outlined.Settings)
+    object AffiliateInHouseOffers : Screen("affiliate_inhouse_offers", "In-House Offers", Icons.Outlined.Storefront)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -430,7 +432,7 @@ fun MainScreen(
                                         modifier = Modifier.size(24.dp)
                                     ) {
                                         Icon(
-                                            Icons.Filled.Menu, 
+                                            Icons.Outlined.Widgets, 
                                             contentDescription = "Menu", 
                                             modifier = Modifier.size(22.dp)
                                         ) 
