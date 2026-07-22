@@ -89,9 +89,11 @@ data class DuplicateConversionRow(
     @SerialName("affiliate_name") val affiliateName: String,
     @SerialName("affiliate_code") val affiliateCode: String,
     val payout: Double,
+    val revenue: Double? = null,
     val status: String,
-    @SerialName("transaction_id") val transactionId: String?,
-    @SerialName("goal_name") val goalName: String?,
+    @SerialName("transaction_id") val transactionId: String? = null,
+    @SerialName("goal_name") val goalName: String? = null,
+    @SerialName("rejection_reason") val rejectionReason: String? = null,
     @SerialName("converted_at") val convertedAt: String
 )
 

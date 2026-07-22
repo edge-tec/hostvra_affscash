@@ -414,10 +414,20 @@ interface ApiService {
     suspend fun stopImpersonate(): Response<ImpersonateResponse>
 
     @GET("api/v2/admin/conversions")
-    suspend fun getAdminConversions(): Response<ConversionResponse>
+    suspend fun getAdminConversions(
+        @Query("from") from: String? = null,
+        @Query("to") to: String? = null,
+        @Query("start_date") startDate: String? = null,
+        @Query("end_date") endDate: String? = null
+    ): Response<ConversionResponse>
 
     @GET("api/v2/manager/conversions")
-    suspend fun getManagerConversions(): Response<ConversionResponse>
+    suspend fun getManagerConversions(
+        @Query("from") from: String? = null,
+        @Query("to") to: String? = null,
+        @Query("start_date") startDate: String? = null,
+        @Query("end_date") endDate: String? = null
+    ): Response<ConversionResponse>
 
     @GET("api/v2/admin/settings")
     suspend fun getAdminSettings(): Response<net.affscash.android.data.model.AdminPlatformSettingsResponse>
@@ -667,11 +677,95 @@ interface ApiService {
         @Query("to") to: String
     ): Response<DuplicateConversionsResponse>
 
+    @GET("api/v2/admin/duplicate_conversions")
+    suspend fun getAdminDuplicateConversions(
+        @Query("from") from: String? = null,
+        @Query("to") to: String? = null,
+        @Query("start_date") startDate: String? = null,
+        @Query("end_date") endDate: String? = null
+    ): Response<DuplicateConversionsResponse>
+
+    @GET("api/v2/admin/traffic-source-override")
+    suspend fun getAdminTrafficSourceOverride(): Response<net.affscash.android.data.model.TrafficSourceOverrideResponse>
+
+    @POST("api/v2/admin/traffic-source-override")
+    suspend fun postAdminTrafficSourceOverride(
+        @Body body: Map<String, @JvmSuppressWildcards Any?>
+    ): Response<net.affscash.android.data.model.GenericResponse>
+
+    @GET("api/v2/admin/traffic-source-override-logs")
+    suspend fun getAdminTrafficSourceOverrideLogs(
+        @Query("from") from: String? = null,
+        @Query("to") to: String? = null,
+        @Query("start_date") startDate: String? = null,
+        @Query("end_date") endDate: String? = null,
+        @Query("affiliate_id") affiliateId: Int? = null,
+        @Query("offer_id") offerId: Int? = null
+    ): Response<net.affscash.android.data.model.TrafficSourceOverrideLogsResponse>
+
+    @GET("api/v2/manager/traffic-source-override")
+    suspend fun getManagerTrafficSourceOverride(): Response<net.affscash.android.data.model.TrafficSourceOverrideResponse>
+
+    @POST("api/v2/manager/traffic-source-override")
+    suspend fun postManagerTrafficSourceOverride(
+        @Body body: Map<String, @JvmSuppressWildcards Any?>
+    ): Response<net.affscash.android.data.model.GenericResponse>
+
+    @GET("api/v2/manager/traffic-source-override-logs")
+    suspend fun getManagerTrafficSourceOverrideLogs(
+        @Query("from") from: String? = null,
+        @Query("to") to: String? = null,
+        @Query("start_date") startDate: String? = null,
+        @Query("end_date") endDate: String? = null,
+        @Query("affiliate_id") affiliateId: Int? = null,
+        @Query("offer_id") offerId: Int? = null
+    ): Response<net.affscash.android.data.model.TrafficSourceOverrideLogsResponse>
+
+    @GET("api/v2/admin/login-activity?action=live_users")
+    suspend fun getAdminLiveUsers(): Response<net.affscash.android.data.model.LiveUsersResponse>
+
+    @GET("api/v2/admin/login-activity?action=login_logs")
+    suspend fun getAdminLoginLogs(
+        @Query("from") from: String? = null,
+        @Query("to") to: String? = null,
+        @Query("start_date") startDate: String? = null,
+        @Query("end_date") endDate: String? = null,
+        @Query("search") search: String? = null
+    ): Response<net.affscash.android.data.model.LoginLogsResponse>
+
+    @POST("api/v2/admin/login-activity?action=force_logout")
+    suspend fun forceLogoutUser(
+        @Body body: Map<String, @JvmSuppressWildcards Any?>
+    ): Response<net.affscash.android.data.model.GenericResponse>
+
+    @GET("api/v2/admin/vpn-proxy-skip?action=list")
+    suspend fun getAdminVpnSkipList(): Response<net.affscash.android.data.model.VpnSkipListResponse>
+
+    @POST("api/v2/admin/vpn-proxy-skip?action=add")
+    suspend fun addAdminVpnSkipEntry(
+        @Body body: Map<String, @JvmSuppressWildcards Any?>
+    ): Response<net.affscash.android.data.model.GenericResponse>
+
+    @POST("api/v2/admin/vpn-proxy-skip?action=remove")
+    suspend fun removeAdminVpnSkipEntry(
+        @Body body: Map<String, @JvmSuppressWildcards Any?>
+    ): Response<net.affscash.android.data.model.GenericResponse>
+
     @GET("api/v2/manager/fraud-report")
-    suspend fun getManagerFraudReport(): Response<ManagerFraudReportResponse>
+    suspend fun getManagerFraudReport(
+        @Query("from") from: String? = null,
+        @Query("to") to: String? = null,
+        @Query("start_date") startDate: String? = null,
+        @Query("end_date") endDate: String? = null
+    ): Response<ManagerFraudReportResponse>
 
     @GET("api/v2/fraud-report")
-    suspend fun getFraudReport(): Response<net.affscash.android.data.model.FraudReportResponse>
+    suspend fun getFraudReport(
+        @Query("from") from: String? = null,
+        @Query("to") to: String? = null,
+        @Query("start_date") startDate: String? = null,
+        @Query("end_date") endDate: String? = null
+    ): Response<net.affscash.android.data.model.FraudReportResponse>
 
     @GET("api/v2/duplicate-conversions")
     suspend fun getDuplicateConversions(

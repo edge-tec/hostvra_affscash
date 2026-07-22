@@ -115,6 +115,24 @@ try {
         exit;
     }
 
+    if ($action === 'update_permissions') {
+        $mgrId = isset($input['mgr_id']) ? (int)$input['mgr_id'] : 0;
+        $permissions = $input['permissions'] ?? [];
+        if ($mgrId <= 0 || !is_array($permissions)) {
+            Helpers::json(['status' => 'error', 'message' => 'Invalid parameters']);
+            exit;
+        }
+
+        require_once BASE_PATH . '/core/ManagerPermissions.php';
+        ManagerPermissions::setAll($mgrId, $permissions, (int)Auth::id());
+
+        // Update JSON permissions column in affiliate_managers
+        Database::update('affiliate_managers', ['permissions' => json_encode($permissions)], 'id=?', [$mgrId]);
+
+        Helpers::json(['status' => 'success', 'message' => 'Manager permissions updated successfully.']);
+        exit;
+    }
+
     Helpers::json(['status' => 'error', 'message' => 'Invalid action'], 400);
 
 

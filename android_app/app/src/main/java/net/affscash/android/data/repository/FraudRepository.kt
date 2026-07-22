@@ -7,9 +7,9 @@ import javax.inject.Inject
 class FraudRepository @Inject constructor(
     private val apiService: ApiService
 ) {
-    suspend fun getFraudReport(): Result<FraudReportResponse> {
+    suspend fun getFraudReport(from: String? = null, to: String? = null): Result<FraudReportResponse> {
         return try {
-            val response = apiService.getFraudReport()
+            val response = apiService.getFraudReport(from = from, to = to, startDate = from, endDate = to)
             if (response.isSuccessful && response.body() != null) {
                 Result.success(response.body()!!)
             } else {

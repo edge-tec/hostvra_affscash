@@ -2,20 +2,22 @@ package net.affscash.android.ui.screens.admin.fraud
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import net.affscash.android.data.model.AdminFraudActionRequest
-import net.affscash.android.data.model.AdminFraudConversion
-import net.affscash.android.data.model.AdminFraudFilterItem
-import net.affscash.android.data.model.AdminFraudStats
-import net.affscash.android.data.repository.AdminFraudRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import net.affscash.android.data.local.DateRangePreferenceManager
+import net.affscash.android.data.model.AdminFraudActionRequest
+import net.affscash.android.data.model.AdminFraudConversion
+import net.affscash.android.data.model.AdminFraudFilterItem
+import net.affscash.android.data.model.AdminFraudStats
+import net.affscash.android.data.model.DateRangeOption
+import net.affscash.android.data.model.DateRangeState
+import net.affscash.android.data.repository.AdminFraudRepository
 import javax.inject.Inject
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 data class AdminFraudReportState(
     val isLoading: Boolean = false,
@@ -27,8 +29,7 @@ data class AdminFraudReportState(
     val successMessage: String? = null,
     
     // Filters
-    val from: String = LocalDate.now().minusDays(30).format(DateTimeFormatter.ISO_LOCAL_DATE),
-    val to: String = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
+    val dateRangeState: DateRangeState = DateRangeState(),
     val status: String = "all",
     val affiliateId: Int? = null,
     val offerId: Int? = null,
@@ -41,23 +42,47 @@ data class AdminFraudReportState(
 
 @HiltViewModel
 class AdminFraudReportViewModel @Inject constructor(
-    private val repository: AdminFraudRepository
+    private val repository: AdminFraudRepository,
+    private val dateRangePrefManager: DateRangePreferenceManager
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(AdminFraudReportState())
+    private val initialDateRangeState = dateRangePrefManager.getDateRangeState("admin_fraud")
+    private val _uiState = MutableStateFlow(AdminFraudReportState(dateRangeState = initialDateRangeState))
     val uiState: StateFlow<AdminFraudReportState> = _uiState.asStateFlow()
+
+    private var fetchJob: Job? = null
 
     init {
         loadReport()
     }
 
+    fun setDateRangeOption(option: DateRangeOption) {
+        val newState = _uiState.value.dateRangeState.copy(option = option)
+        _uiState.update { it.copy(dateRangeState = newState) }
+        dateRangePrefManager.saveDateRangeState("admin_fraud", newState)
+        loadReport()
+    }
+
+    fun setCustomDateRange(startDate: String, endDate: String) {
+        val newState = _uiState.value.dateRangeState.copy(
+            option = DateRangeOption.CUSTOM,
+            customStartDate = startDate,
+            customEndDate = endDate
+        )
+        _uiState.update { it.copy(dateRangeState = newState) }
+        dateRangePrefManager.saveDateRangeState("admin_fraud", newState)
+        loadReport()
+    }
+
     fun loadReport() {
-        viewModelScope.launch {
+        fetchJob?.cancel()
+        fetchJob = viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null, successMessage = null) }
             val state = _uiState.value
+            val (from, to) = state.dateRangeState.getFormattedDates()
             val result = repository.getFraudScoreReport(
-                from = state.from,
-                to = state.to,
+                from = from,
+                to = to,
                 status = if (state.status == "all") null else state.status,
                 affiliateId = state.affiliateId,
                 offerId = state.offerId,
@@ -85,8 +110,6 @@ class AdminFraudReportViewModel @Inject constructor(
     }
 
     fun updateFilter(
-        from: String? = null,
-        to: String? = null,
         status: String? = null,
         affiliateId: Int? = null,
         offerId: Int? = null,
@@ -100,8 +123,6 @@ class AdminFraudReportViewModel @Inject constructor(
     ) {
         _uiState.update { state ->
             state.copy(
-                from = from ?: state.from,
-                to = to ?: state.to,
                 status = status ?: state.status,
                 affiliateId = if (clearAffiliate) null else (affiliateId ?: state.affiliateId),
                 offerId = if (clearOffer) null else (offerId ?: state.offerId),

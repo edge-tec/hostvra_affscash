@@ -558,6 +558,11 @@ Router::any('/api/v2/admin/referral', function() { require BASE_PATH . '/api/v2/
 Router::any('/api/v2/admin/points', function() { require BASE_PATH . '/api/v2/admin/PointsController.php'; });
 Router::any('/api/v2/admin/payment-settings', function() { require BASE_PATH . '/api/v2/admin/PaymentSettingsController.php'; });
 Router::any('/api/v2/admin/vpn-logs', function() { require BASE_PATH . '/api/v2/admin/VpnLogController.php'; });
+Router::any('/api/v2/admin/duplicate_conversions', function() { require BASE_PATH . '/api/v2/admin/DuplicateConversionsController.php'; });
+Router::any('/api/v2/admin/traffic-source-override', function() { require BASE_PATH . '/api/v2/admin/TrafficSourceOverrideController.php'; });
+Router::any('/api/v2/admin/traffic-source-override-logs', function() { require BASE_PATH . '/api/v2/admin/TrafficSourceOverrideLogsController.php'; });
+Router::any('/api/v2/admin/login-activity', function() { require BASE_PATH . '/api/v2/admin/LoginActivityController.php'; });
+Router::any('/api/v2/admin/vpn-proxy-skip', function() { require BASE_PATH . '/api/v2/admin/VpnProxySkipController.php'; });
 
 // Native App API Routes (v2) - Manager
 Router::any('/api/v2/manager/dashboard', function() { require BASE_PATH . '/api/v2/manager/DashboardController.php'; });
@@ -567,6 +572,8 @@ Router::any('/api/v2/manager/affiliate-actions', function() { require BASE_PATH 
 Router::any('/api/v2/manager/conversions', function() { require BASE_PATH . '/api/v2/manager/ConversionController.php'; });
 Router::any('/api/v2/manager/invoices', function() { require BASE_PATH . '/api/v2/manager/InvoiceController.php'; });
 Router::any('/api/v2/manager/profile', function() { require BASE_PATH . '/api/v2/manager/ProfileController.php'; });
+Router::any('/api/v2/manager/traffic-source-override', function() { require BASE_PATH . '/api/v2/manager/TrafficSourceOverrideController.php'; });
+Router::any('/api/v2/manager/traffic-source-override-logs', function() { require BASE_PATH . '/api/v2/manager/TrafficSourceOverrideLogsController.php'; });
 Router::any('/api/v2/manager/reports', function() { require BASE_PATH . '/api/v2/manager/ReportController.php'; });
 Router::any('/api/v2/manager/referral', function() { require BASE_PATH . '/api/v2/manager/ReferralController.php'; });
 Router::any('/api/v2/manager/vpn-logs', function() { require BASE_PATH . '/api/v2/manager/VpnLogController.php'; });

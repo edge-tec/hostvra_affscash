@@ -110,8 +110,13 @@ sealed class Screen(val route: String, val title: String, val icon: ImageVector)
     }
     object AdminConversions : Screen("admin_conversions", "Conv", Icons.Filled.MonetizationOn)
     object AdminFraudReport : Screen("admin_fraud", "Fraud Score Report", Icons.Filled.Shield)
+    object AdminDuplicateConversions : Screen("admin_duplicate_conversions", "Duplicate Conversions", Icons.Filled.Warning)
     object AdminReports : Screen("admin_reports", "Reports", Icons.Filled.Assessment)
     object AdminVpnLogs : Screen("admin_vpn_logs", "VPN & Proxy Log", Icons.Filled.Security)
+    object AdminVpnSkipList : Screen("admin_vpn_skip_list", "VPN/Proxy Skip List", Icons.Filled.Security)
+    object AdminLoginActivity : Screen("admin_login_activity", "Login Activity & Live Users", Icons.Filled.People)
+    object AdminTrafficSourceOverride : Screen("admin_traffic_source_override", "Traffic Source Override", Icons.Filled.AltRoute)
+    object AdminTrafficSourceOverrideLogs : Screen("admin_traffic_source_override_logs", "Traffic Source Override Logs", Icons.Filled.History)
     object AdminAccountDeleteRequests : Screen("admin_account_delete_requests", "Delete Requests", Icons.Filled.DeleteOutline)
     object AdminPoints : Screen("admin_points", "Points Module", Icons.Filled.Stars)
     object AdminAffiliateReport : Screen("admin_aff_report", "Aff Rpt", Icons.Filled.Group)
@@ -149,6 +154,8 @@ sealed class Screen(val route: String, val title: String, val icon: ImageVector)
     object ManagerConversions : Screen("manager_conversions", "Conversions", Icons.Filled.TrendingUp)
     object ManagerReports : Screen("manager_reports", "Reports", Icons.Filled.BarChart)
     object ManagerVpnLogs : Screen("manager_vpn_logs", "VPN & Proxy Log", Icons.Filled.Security)
+    object ManagerTrafficSourceOverride : Screen("manager_traffic_source_override", "Traffic Source Override", Icons.Filled.AltRoute)
+    object ManagerTrafficSourceOverrideLogs : Screen("manager_traffic_source_override_logs", "Traffic Source Override Logs", Icons.Filled.History)
     object ManagerReferral : Screen("manager_referral", "Referral Link", Icons.Filled.PersonAdd)
     object ManagerInvoices : Screen("manager_invoices", "Invoices", Icons.Filled.Receipt)
     object ManagerSupport : Screen("manager_support", "Support", Icons.Filled.SupportAgent)
@@ -199,8 +206,8 @@ fun MainScreen(
     }
 
     val allItems = when (role) {
-        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminPrivateOffers, Screen.AdminSmartlinks, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminShop, Screen.AdminAffiliateManagers, Screen.AdminSupport, Screen.AdminConversions, Screen.AdminReports, Screen.AdminAffiliateReport, Screen.AdminFraudReport, Screen.AdminVpnLogs, Screen.AdminAccountDeleteRequests, Screen.AdminPoints, Screen.AdminAutoHide, Screen.AdminInvoices, Screen.AdminPlatformSettings, Screen.AdminPaymentSettings, Screen.AdminSettings, Screen.AdminReferral)
-        "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerSupport, Screen.ManagerSmartlinks, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerReports, Screen.ManagerVpnLogs, Screen.ManagerReferral, Screen.ManagerInvoices, Screen.ManagerSettings)
+        "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminPrivateOffers, Screen.AdminSmartlinks, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminShop, Screen.AdminAffiliateManagers, Screen.AdminSupport, Screen.AdminConversions, Screen.AdminReports, Screen.AdminAffiliateReport, Screen.AdminFraudReport, Screen.AdminDuplicateConversions, Screen.AdminVpnLogs, Screen.AdminVpnSkipList, Screen.AdminLoginActivity, Screen.AdminTrafficSourceOverride, Screen.AdminTrafficSourceOverrideLogs, Screen.AdminAccountDeleteRequests, Screen.AdminPoints, Screen.AdminAutoHide, Screen.AdminInvoices, Screen.AdminPlatformSettings, Screen.AdminPaymentSettings, Screen.AdminSettings, Screen.AdminReferral)
+        "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerSupport, Screen.ManagerSmartlinks, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerReports, Screen.ManagerVpnLogs, Screen.ManagerTrafficSourceOverride, Screen.ManagerTrafficSourceOverrideLogs, Screen.ManagerReferral, Screen.ManagerInvoices, Screen.ManagerSettings)
         else -> listOf(Screen.Dashboard, Screen.Offers, Screen.AffiliateInHouseOffers, Screen.Smartlinks, Screen.Reports, Screen.AffiliateDuplicateConversions, Screen.AffiliateReferral, Screen.AffiliateSettings)
     }
     
@@ -729,8 +736,36 @@ fun MainScreen(
                     onNavigateBack = { navController.popBackStack() }
                 )
             }
+            composable(Screen.AdminDuplicateConversions.route) {
+                net.affscash.android.ui.admin.duplicate_conversions.AdminDuplicateConversionsScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
             composable(Screen.AdminVpnLogs.route) {
                 net.affscash.android.ui.screens.admin.vpn.AdminVpnLogScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(Screen.AdminVpnSkipList.route) {
+                net.affscash.android.ui.admin.vpn_skip_list.AdminVpnSkipListScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(Screen.AdminLoginActivity.route) {
+                net.affscash.android.ui.admin.login_activity.AdminLoginActivityScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(Screen.AdminTrafficSourceOverride.route) {
+                net.affscash.android.ui.admin.traffic_source_override.TrafficSourceOverrideScreen(
+                    isManager = false,
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToLogs = { navController.navigate(Screen.AdminTrafficSourceOverrideLogs.route) }
+                )
+            }
+            composable(Screen.AdminTrafficSourceOverrideLogs.route) {
+                net.affscash.android.ui.admin.traffic_source_override.TrafficSourceOverrideLogsScreen(
+                    isManager = false,
                     onNavigateBack = { navController.popBackStack() }
                 )
             }
@@ -876,6 +911,19 @@ fun MainScreen(
                 net.affscash.android.ui.manager.vpn.ManagerVpnLogScreen(
                     onNavigateBack = { navController.popBackStack() }
                 ) 
+            }
+            composable(Screen.ManagerTrafficSourceOverride.route) {
+                net.affscash.android.ui.admin.traffic_source_override.TrafficSourceOverrideScreen(
+                    isManager = true,
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToLogs = { navController.navigate(Screen.ManagerTrafficSourceOverrideLogs.route) }
+                )
+            }
+            composable(Screen.ManagerTrafficSourceOverrideLogs.route) {
+                net.affscash.android.ui.admin.traffic_source_override.TrafficSourceOverrideLogsScreen(
+                    isManager = true,
+                    onNavigateBack = { navController.popBackStack() }
+                )
             }
             composable(Screen.ManagerReferral.route) { 
                 net.affscash.android.ui.manager.referral.ManagerReferralScreen() 

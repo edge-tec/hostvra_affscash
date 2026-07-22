@@ -2,18 +2,20 @@ package net.affscash.android.ui.screens.admin.reports
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import net.affscash.android.data.model.AdminReportFilterOption
-import net.affscash.android.data.model.AdminReportTotals
-import net.affscash.android.data.repository.AdminReportRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.serialization.json.JsonObject
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import kotlinx.serialization.json.JsonObject
+import net.affscash.android.data.local.DateRangePreferenceManager
+import net.affscash.android.data.model.AdminReportFilterOption
+import net.affscash.android.data.model.AdminReportTotals
+import net.affscash.android.data.model.DateRangeOption
+import net.affscash.android.data.model.DateRangeState
+import net.affscash.android.data.repository.AdminReportRepository
 import javax.inject.Inject
 
 data class AdminReportsState(
@@ -21,8 +23,7 @@ data class AdminReportsState(
     val tab: String = "performance",
     
     // Filters state
-    val from: String = LocalDate.now().withDayOfMonth(1).format(DateTimeFormatter.ISO_LOCAL_DATE),
-    val to: String = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
+    val dateRangeState: DateRangeState = DateRangeState(),
     val groupBy: String = "date",
     val offerId: Int? = null,
     val affiliateId: Int? = null,
@@ -43,11 +44,15 @@ data class AdminReportsState(
 
 @HiltViewModel
 class AdminReportsViewModel @Inject constructor(
-    private val repository: AdminReportRepository
+    private val repository: AdminReportRepository,
+    private val dateRangePrefManager: DateRangePreferenceManager
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(AdminReportsState())
+    private val initialDateRangeState = dateRangePrefManager.getDateRangeState("admin_reports")
+    private val _uiState = MutableStateFlow(AdminReportsState(dateRangeState = initialDateRangeState))
     val uiState: StateFlow<AdminReportsState> = _uiState.asStateFlow()
+
+    private var fetchJob: Job? = null
 
     init {
         loadFilters()
@@ -70,13 +75,15 @@ class AdminReportsViewModel @Inject constructor(
     }
 
     fun loadReport() {
-        viewModelScope.launch {
+        fetchJob?.cancel()
+        fetchJob = viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             val state = _uiState.value
+            val (from, to) = state.dateRangeState.getFormattedDates()
             val result = repository.getReports(
                 tab = state.tab,
-                from = state.from,
-                to = state.to,
+                from = from,
+                to = to,
                 groupBy = state.groupBy,
                 offerId = state.offerId,
                 affiliateId = state.affiliateId,
@@ -98,14 +105,30 @@ class AdminReportsViewModel @Inject constructor(
         }
     }
 
+    fun setDateRangeOption(option: DateRangeOption) {
+        val newState = _uiState.value.dateRangeState.copy(option = option)
+        _uiState.update { it.copy(dateRangeState = newState) }
+        dateRangePrefManager.saveDateRangeState("admin_reports", newState)
+        loadReport()
+    }
+
+    fun setCustomDateRange(startDate: String, endDate: String) {
+        val newState = _uiState.value.dateRangeState.copy(
+            option = DateRangeOption.CUSTOM,
+            customStartDate = startDate,
+            customEndDate = endDate
+        )
+        _uiState.update { it.copy(dateRangeState = newState) }
+        dateRangePrefManager.saveDateRangeState("admin_reports", newState)
+        loadReport()
+    }
+
     fun updateTab(tab: String) {
         _uiState.update { it.copy(tab = tab) }
         loadReport()
     }
 
     fun updateFilter(
-        from: String? = null,
-        to: String? = null,
         groupBy: String? = null,
         offerId: Int? = null,
         affiliateId: Int? = null,
@@ -119,8 +142,6 @@ class AdminReportsViewModel @Inject constructor(
     ) {
         _uiState.update { state ->
             state.copy(
-                from = from ?: state.from,
-                to = to ?: state.to,
                 groupBy = groupBy ?: state.groupBy,
                 offerId = if (clearOffer) null else (offerId ?: state.offerId),
                 affiliateId = if (clearAffiliate) null else (affiliateId ?: state.affiliateId),
@@ -129,6 +150,7 @@ class AdminReportsViewModel @Inject constructor(
                 slId = if (clearSlId) null else (slId ?: state.slId)
             )
         }
+        loadReport()
     }
 
     fun clearError() {

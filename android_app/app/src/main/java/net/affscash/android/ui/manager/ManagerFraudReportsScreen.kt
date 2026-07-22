@@ -51,8 +51,8 @@ fun ManagerFraudReportsScreen(
     if (showFilters) {
         FraudReportFilterSheet(
             uiState = uiState,
-            onUpdateFilters = { from, to, clickId, status, aff, affCode, offer, sMin, sMax, sort ->
-                viewModel.updateFilters(from, to, clickId, status, aff, affCode, offer, sMin, sMax, sort)
+            onUpdateFilters = { clickId, status, aff, affCode, offer, sMin, sMax, sort ->
+                viewModel.updateFilters(clickId, status, aff, affCode, offer, sMin, sMax, sort)
             },
             onDismiss = { showFilters = false }
         )
@@ -92,6 +92,13 @@ fun ManagerFraudReportsScreen(
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues).fillMaxSize().background(PremiumUI.PageBackground)) {
+            net.affscash.android.ui.components.DateRangeFilterComponent(
+                state = uiState.dateRangeState,
+                onOptionSelected = { viewModel.setDateRangeOption(it) },
+                onCustomRangeSelected = { start, end -> viewModel.setCustomDateRange(start, end) },
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+            )
+
             // Search and Filter Bar removed to use BottomSheet
             // Loading / Error / Data
             Box(modifier = Modifier.fillMaxSize().weight(1f)) {
@@ -147,8 +154,7 @@ fun ManagerFraudReportsScreen(
                             val scoreMax = uiState.scoreMax.toIntOrNull()
                             val matchScoreMax = scoreMax == null || score <= scoreMax
                             
-                            val qFromDate = uiState.fromDate
-                            val qToDate = uiState.toDate
+                            val (qFromDate, qToDate) = uiState.dateRangeState.getFormattedDates()
                             val datePart = cv.convertedAt.take(10)
                             val matchDate = (qFromDate.isEmpty() || datePart >= qFromDate) &&
                                             (qToDate.isEmpty() || datePart <= qToDate)
@@ -359,7 +365,7 @@ fun ManagerFraudConversionItem(cv: ManagerFraudConversion) {
 @Composable
 fun FraudReportFilterSheet(
     uiState: ManagerFraudReportsUiState,
-    onUpdateFilters: (String, String, String, String, String, String, String, String, String, String) -> Unit,
+    onUpdateFilters: (String, String, String, String, String, String, String, String) -> Unit,
     onDismiss: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -385,57 +391,35 @@ fun FraudReportFilterSheet(
     ) {
         Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp).verticalScroll(rememberScrollState())) {
             Text("Filters", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-            Spacer(modifier = Modifier.height(4.dp))
-            
-            Text("Date Range", fontSize = 12.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Spacer(modifier = Modifier.height(4.dp))
-            ScrollableRow(listOf("Today", "Yesterday", "Last 7 Days", "Last 15 Days", "This Month", "Last Month", "Last 90 Days", "This Year", "Last Year")) { range ->
-                FilterChip(
-modifier = Modifier.height(32.dp),
-                    selected = false,
-                    onClick = {
-                        val (from, to) = getPresetDateRange(range)
-                        onUpdateFilters(from, to, uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy)
-                    },
-                    label = { Text(range, fontSize = 12.sp) },
-                    shape = PremiumUI.CardShape
-                )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                StyledTextField(value = uiState.clickId, onValueChange = { onUpdateFilters(it, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "Click ID", modifier = Modifier.weight(1f))
+                DropdownFilterField(value = uiState.statusFilter, onValueChange = { onUpdateFilters(uiState.clickId, it, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "Status", options = statuses, modifier = Modifier.weight(1f))
             }
             
             Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                StyledTextField(value = uiState.fromDate, onValueChange = { onUpdateFilters(it, uiState.toDate, uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "From Date", modifier = Modifier.weight(1f))
-                StyledTextField(value = uiState.toDate, onValueChange = { onUpdateFilters(uiState.fromDate, it, uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "To Date", modifier = Modifier.weight(1f))
-            }
-            
-            Spacer(modifier = Modifier.height(4.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                StyledTextField(value = uiState.clickId, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, it, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "Click ID", modifier = Modifier.weight(1f))
-                DropdownFilterField(value = uiState.statusFilter, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, uiState.clickId, it, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "Status", options = statuses, modifier = Modifier.weight(1f))
-            }
-            
-            Spacer(modifier = Modifier.height(4.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                DropdownFilterField(value = uiState.affiliate, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, uiState.clickId, uiState.statusFilter, it, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "Affiliate", options = affiliates, modifier = Modifier.weight(1f))
-                StyledTextField(value = uiState.affCode, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, uiState.clickId, uiState.statusFilter, uiState.affiliate, it, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "Aff Code", modifier = Modifier.weight(1f))
+                DropdownFilterField(value = uiState.affiliate, onValueChange = { onUpdateFilters(uiState.clickId, uiState.statusFilter, it, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "Affiliate", options = affiliates, modifier = Modifier.weight(1f))
+                StyledTextField(value = uiState.affCode, onValueChange = { onUpdateFilters(uiState.clickId, uiState.statusFilter, uiState.affiliate, it, uiState.offer, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "Aff Code", modifier = Modifier.weight(1f))
             }
 
             Spacer(modifier = Modifier.height(4.dp))
-            DropdownFilterField(value = uiState.offer, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, it, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "Offer", options = offers, modifier = Modifier.fillMaxWidth())
+            DropdownFilterField(value = uiState.offer, onValueChange = { onUpdateFilters(uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, it, uiState.scoreMin, uiState.scoreMax, uiState.sortBy) }, label = "Offer", options = offers, modifier = Modifier.fillMaxWidth())
 
             Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                StyledTextField(value = uiState.scoreMin, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, it, uiState.scoreMax, uiState.sortBy) }, label = "Score Min", modifier = Modifier.weight(1f))
-                StyledTextField(value = uiState.scoreMax, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, it, uiState.sortBy) }, label = "Score Max", modifier = Modifier.weight(1f))
+                StyledTextField(value = uiState.scoreMin, onValueChange = { onUpdateFilters(uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, it, uiState.scoreMax, uiState.sortBy) }, label = "Score Min", modifier = Modifier.weight(1f))
+                StyledTextField(value = uiState.scoreMax, onValueChange = { onUpdateFilters(uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, it, uiState.sortBy) }, label = "Score Max", modifier = Modifier.weight(1f))
             }
             
             Spacer(modifier = Modifier.height(4.dp))
-            DropdownFilterField(value = uiState.sortBy, onValueChange = { onUpdateFilters(uiState.fromDate, uiState.toDate, uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, it) }, label = "Sort By", options = sortOptions, modifier = Modifier.fillMaxWidth())
+            DropdownFilterField(value = uiState.sortBy, onValueChange = { onUpdateFilters(uiState.clickId, uiState.statusFilter, uiState.affiliate, uiState.affCode, uiState.offer, uiState.scoreMin, uiState.scoreMax, it) }, label = "Sort By", options = sortOptions, modifier = Modifier.fillMaxWidth())
             
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = onDismiss, 
-                modifier = Modifier.fillMaxWidth().height(48.dp), 
+                modifier = Modifier.fillMaxWidth().height(48.dp),  
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp)
             ) {
                 Text("Apply Filters", fontSize = 13.sp, fontWeight = FontWeight.Bold)

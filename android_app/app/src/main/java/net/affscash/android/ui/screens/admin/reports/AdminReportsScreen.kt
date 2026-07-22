@@ -53,6 +53,13 @@ fun AdminReportsScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
         Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+            net.affscash.android.ui.components.DateRangeFilterComponent(
+                state = uiState.dateRangeState,
+                onOptionSelected = { viewModel.setDateRangeOption(it) },
+                onCustomRangeSelected = { start, end -> viewModel.setCustomDateRange(start, end) },
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+            )
+
             // Tabs as Dropdown
             var reportTypeExpanded by remember { mutableStateOf(false) }
             val tabs = listOf(

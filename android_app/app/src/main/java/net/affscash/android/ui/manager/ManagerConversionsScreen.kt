@@ -109,6 +109,14 @@ fun ManagerConversionsScreen(
         }
     ) { paddingValues ->
         Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+            val dateRangeState by viewModel.dateRangeState.collectAsState()
+            net.affscash.android.ui.components.DateRangeFilterComponent(
+                state = dateRangeState,
+                onOptionSelected = { viewModel.setDateRangeOption(it) },
+                onCustomRangeSelected = { start, end -> viewModel.setCustomDateRange(start, end) },
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+            )
+
             // Tabs
         ScrollableTabRow(
             selectedTabIndex = when(statusFilter) {

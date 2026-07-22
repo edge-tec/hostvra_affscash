@@ -77,6 +77,13 @@ fun AdminFraudReportScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
+            net.affscash.android.ui.components.DateRangeFilterComponent(
+                state = uiState.dateRangeState,
+                onOptionSelected = { viewModel.setDateRangeOption(it) },
+                onCustomRangeSelected = { start, end -> viewModel.setCustomDateRange(start, end) },
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+            )
+
             if (uiState.isLoading && uiState.conversions.isEmpty()) {
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
             }

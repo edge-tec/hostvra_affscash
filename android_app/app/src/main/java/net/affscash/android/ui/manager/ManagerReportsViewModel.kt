@@ -2,18 +2,19 @@ package net.affscash.android.ui.manager
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import net.affscash.android.data.model.ReportFiltersResponse
-import net.affscash.android.data.model.ReportResponse
-import net.affscash.android.data.repository.ManagerReportRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+import net.affscash.android.data.local.DateRangePreferenceManager
+import net.affscash.android.data.model.DateRangeOption
+import net.affscash.android.data.model.DateRangeState
+import net.affscash.android.data.model.ReportFiltersResponse
+import net.affscash.android.data.model.ReportResponse
+import net.affscash.android.data.repository.ManagerReportRepository
 import javax.inject.Inject
 
 data class ManagerReportsUiState(
@@ -29,8 +30,7 @@ data class ManagerReportsUiState(
     val currentTab: String = "day",
     val selectedMetric: String = "Clicks",
     val selectedView: String = "Chart View",
-    val fromDate: String = "",
-    val toDate: String = "",
+    val dateRangeState: DateRangeState = DateRangeState(),
     val selectedOfferId: Int = 0,
     val selectedAffiliateId: Int = 0,
     val selectedCountry: String = "",
@@ -38,18 +38,18 @@ data class ManagerReportsUiState(
 )
 
 @HiltViewModel
-class ManagerReportsViewModel @Inject constructor(private val repository: ManagerReportRepository) : ViewModel() {
-    private val _uiState = MutableStateFlow(ManagerReportsUiState())
+class ManagerReportsViewModel @Inject constructor(
+    private val repository: ManagerReportRepository,
+    private val dateRangePrefManager: DateRangePreferenceManager
+) : ViewModel() {
+
+    private val initialDateRangeState = dateRangePrefManager.getDateRangeState("manager_reports")
+    private val _uiState = MutableStateFlow(ManagerReportsUiState(dateRangeState = initialDateRangeState))
     val uiState: StateFlow<ManagerReportsUiState> = _uiState.asStateFlow()
 
-    init {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val cal = Calendar.getInstance()
-        val toDateStr = dateFormat.format(cal.time)
-        cal.set(Calendar.DAY_OF_MONTH, 1)
-        val fromDateStr = dateFormat.format(cal.time)
+    private var fetchJob: Job? = null
 
-        _uiState.update { it.copy(fromDate = fromDateStr, toDate = toDateStr) }
+    init {
         loadFilters()
     }
 
@@ -69,13 +69,15 @@ class ManagerReportsViewModel @Inject constructor(private val repository: Manage
     }
 
     fun loadReport() {
-        viewModelScope.launch {
+        fetchJob?.cancel()
+        fetchJob = viewModelScope.launch {
             _uiState.update { it.copy(isLoadingReport = true, reportError = null) }
             val state = _uiState.value
+            val (from, to) = state.dateRangeState.getFormattedDates()
             repository.getManagerReports(
                 tab = state.currentTab,
-                from = state.fromDate,
-                to = state.toDate,
+                from = from,
+                to = to,
                 offerId = if (state.selectedOfferId > 0) state.selectedOfferId else null,
                 affiliateId = if (state.selectedAffiliateId > 0) state.selectedAffiliateId else null,
                 country = if (state.selectedCountry.isNotEmpty()) state.selectedCountry else null,
@@ -91,16 +93,29 @@ class ManagerReportsViewModel @Inject constructor(private val repository: Manage
         }
     }
 
+    fun setDateRangeOption(option: DateRangeOption) {
+        val newState = _uiState.value.dateRangeState.copy(option = option)
+        _uiState.update { it.copy(dateRangeState = newState) }
+        dateRangePrefManager.saveDateRangeState("manager_reports", newState)
+        loadReport()
+    }
+
+    fun setCustomDateRange(startDate: String, endDate: String) {
+        val newState = _uiState.value.dateRangeState.copy(
+            option = DateRangeOption.CUSTOM,
+            customStartDate = startDate,
+            customEndDate = endDate
+        )
+        _uiState.update { it.copy(dateRangeState = newState) }
+        dateRangePrefManager.saveDateRangeState("manager_reports", newState)
+        loadReport()
+    }
+
     fun setTab(tab: String) {
         if (_uiState.value.currentTab != tab) {
             _uiState.update { it.copy(currentTab = tab) }
             loadReport()
         }
-    }
-
-    fun setDateRange(from: String, to: String) {
-        _uiState.update { it.copy(fromDate = from, toDate = to) }
-        loadReport()
     }
 
     fun setFilter(offerId: Int, affiliateId: Int, country: String, sub1: String) {

@@ -1,5 +1,6 @@
 package net.affscash.android.ui.admin
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,10 +12,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.foundation.clickable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,100 +27,6 @@ import net.affscash.android.data.model.Conversion
 import net.affscash.android.ui.conversions.AdminConversionsUiState
 import net.affscash.android.ui.conversions.AdminConversionsViewModel
 import net.affscash.android.ui.dashboard.PremiumUI
-
-@Composable
-fun AdminConversionsScreen(
-    viewModel: AdminConversionsViewModel = hiltViewModel()
-) {
-    val uiState by viewModel.uiState.collectAsState()
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        when (val state = uiState) {
-            is AdminConversionsUiState.Loading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            }
-            is AdminConversionsUiState.Error -> {
-                Column(
-                    modifier = Modifier.align(Alignment.Center),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = "Error: ${state.message}", color = MaterialTheme.colorScheme.error)
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Button(onClick = { viewModel.loadConversions() }) {
-                        Text("Retry")
-                    }
-                }
-            }
-            is AdminConversionsUiState.Success -> {
-                val conversions = state.data.data
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(bottom = 80.dp)
-                ) {
-                    item {
-                        Surface(
-                            modifier = Modifier.fillMaxWidth(),
-                            color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-                            shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 32.dp)
-                            ) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Surface(
-                                        shape = PremiumUI.CardShape,
-                                        color = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier.size(48.dp)
-                                    ) {
-                                        Icon(
-                                            Icons.Default.TrendingUp,
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.onPrimary,
-                                            modifier = Modifier.padding(8.dp)
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Column {
-                                        Text(
-                                            text = "All Conversions",
-                                            style = MaterialTheme.typography.headlineSmall,
-                                            fontWeight = FontWeight.Bold,
-                                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                                        )
-                                        Text(
-                                            text = "Track network-wide affiliate performance",
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    if (conversions.isEmpty()) {
-                        item {
-                            Box(modifier = Modifier.fillMaxWidth().height(300.dp), contentAlignment = Alignment.Center) {
-                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Icon(Icons.Outlined.Analytics, contentDescription = null, modifier = Modifier.size(64.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    Text("No conversions found", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                }
-                            }
-                        }
-                    } else {
-                        item { Spacer(modifier = Modifier.height(4.dp)) }
-                        items(conversions) { conversion ->
-                            AdminConversionItem(conversion = conversion)
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun AdminConversionItem(conversion: Conversion) {
@@ -335,6 +241,110 @@ fun AdminConversionItem(conversion: Conversion) {
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF10B981)
                         )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun AdminConversionsScreen(
+    viewModel: AdminConversionsViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    val dateRangeState by viewModel.dateRangeState.collectAsState()
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        net.affscash.android.ui.components.DateRangeFilterComponent(
+            state = dateRangeState,
+            onOptionSelected = { viewModel.setDateRangeOption(it) },
+            onCustomRangeSelected = { start, end -> viewModel.setCustomDateRange(start, end) },
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+        )
+
+        Box(modifier = Modifier.fillMaxSize().weight(1f)) {
+            when (val state = uiState) {
+                is AdminConversionsUiState.Loading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+                is AdminConversionsUiState.Error -> {
+                    Column(
+                        modifier = Modifier.align(Alignment.Center),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(text = "Error: ${state.message}", color = MaterialTheme.colorScheme.error)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Button(onClick = { viewModel.loadConversions() }) {
+                            Text("Retry")
+                        }
+                    }
+                }
+                is AdminConversionsUiState.Success -> {
+                    val conversions = state.data.data
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(bottom = 80.dp)
+                    ) {
+                        item {
+                            Surface(
+                                modifier = Modifier.fillMaxWidth(),
+                                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                                shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 32.dp)
+                                ) {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Surface(
+                                            shape = PremiumUI.CardShape,
+                                            color = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier.size(48.dp)
+                                        ) {
+                                            Icon(
+                                                Icons.Default.TrendingUp,
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.onPrimary,
+                                                modifier = Modifier.padding(8.dp)
+                                            )
+                                        }
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Column {
+                                            Text(
+                                                text = "All Conversions",
+                                                style = MaterialTheme.typography.headlineSmall,
+                                                fontWeight = FontWeight.Bold,
+                                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                                            )
+                                            Text(
+                                                text = "Track network-wide affiliate performance",
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (conversions.isEmpty()) {
+                            item {
+                                Box(modifier = Modifier.fillMaxWidth().height(300.dp), contentAlignment = Alignment.Center) {
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Icon(Icons.Outlined.Analytics, contentDescription = null, modifier = Modifier.size(64.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        Text("No conversions found", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                    }
+                                }
+                            }
+                        } else {
+                            item { Spacer(modifier = Modifier.height(4.dp)) }
+                            items(conversions) { conversion ->
+                                AdminConversionItem(conversion = conversion)
+                            }
+                        }
                     }
                 }
             }

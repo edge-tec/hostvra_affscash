@@ -40,9 +40,9 @@ fun ReportScreen(
     viewModel: ReportViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val dateRangeState by viewModel.dateRangeState.collectAsState()
+    val (fromDate, toDate) = dateRangeState.getFormattedDates()
     val selectedTab by viewModel.selectedTab.collectAsState()
-    val fromDate by viewModel.fromDate.collectAsState()
-    val toDate by viewModel.toDate.collectAsState()
     val selectedOfferId by viewModel.selectedOfferId.collectAsState()
     val selectedCountry by viewModel.selectedCountry.collectAsState()
     val selectedCity by viewModel.selectedCity.collectAsState()
@@ -90,6 +90,14 @@ fun ReportScreen(
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues).fillMaxSize().background(PremiumUI.PageBackground)) {
+            val dateRangeState by viewModel.dateRangeState.collectAsState()
+            net.affscash.android.ui.components.DateRangeFilterComponent(
+                state = dateRangeState,
+                onOptionSelected = { viewModel.setDateRangeOption(it) },
+                onCustomRangeSelected = { start, end -> viewModel.setCustomDateRange(start, end) },
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+            )
+
             var filtersExpanded by remember { mutableStateOf(false) }
             Card(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
@@ -175,9 +183,9 @@ fun ReportScreen(
                                                         else -> to
                                                     }
                                                     if (range == "Yesterday") {
-                                                        viewModel.setDateRange(from, from)
+                                                        viewModel.setCustomDateRange(from, from)
                                                     } else {
-                                                        viewModel.setDateRange(from, to)
+                                                        viewModel.setCustomDateRange(from, to)
                                                     }
                                                     dateExpanded = false
                                                 }

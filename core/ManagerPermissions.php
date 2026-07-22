@@ -37,6 +37,7 @@ class ManagerPermissions
         'view_payment_history'   => ['label' => 'View payment history',             'default' => 1, 'group' => 'access'],
         'view_offer_performance' => ['label' => 'View offer performance',           'default' => 1, 'group' => 'access'],
         'access_affiliate_tickets' => ['label' => 'Access affiliate tickets',       'default' => 1, 'group' => 'support'],
+        'traffic_source_override'  => ['label' => 'Traffic Source Override',        'default' => 1, 'group' => 'access'],
         // Optional "elevated" permissions — admin must opt-in.
         'edit_affiliate_payouts' => ['label' => 'Edit affiliate payouts',           'default' => 0, 'group' => 'access'],
         'generate_invoices'      => ['label' => 'Allow invoice generator access',   'default' => 0, 'group' => 'invoice'],

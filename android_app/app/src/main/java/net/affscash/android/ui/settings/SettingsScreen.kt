@@ -23,6 +23,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.clickable
 import androidx.fragment.app.FragmentActivity
+import androidx.compose.foundation.text.selection.SelectionContainer
+import android.content.Intent
+import android.content.ActivityNotFoundException
+import android.net.Uri
+import android.content.ClipboardManager
+import android.content.ClipData
+import android.content.Context
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import net.affscash.android.ui.components.QrCodeImage
 import net.affscash.android.ui.dashboard.PremiumUI
 import net.affscash.android.data.model.*
@@ -337,8 +346,8 @@ fun SecurityTab(viewModel: SettingsViewModel) {
                 if (biometricCap.isFingerprintSupported || biometricCap.isAvailable) {
                     Row(
                         modifier = Modifier.fillMaxWidth().clickable {
-                            activity?.let {
-                                viewModel.toggleBiometric(it, !biometricEnabled) { msg ->
+                            if (activity != null) {
+                                viewModel.toggleBiometric(activity, !biometricEnabled) { msg ->
                                     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                                 }
                             }
@@ -353,8 +362,8 @@ fun SecurityTab(viewModel: SettingsViewModel) {
                         Switch(
                             checked = biometricEnabled && biometricCap.isFingerprintSupported,
                             onCheckedChange = { enabled ->
-                                activity?.let {
-                                    viewModel.toggleBiometric(it, enabled) { msg ->
+                                if (activity != null) {
+                                    viewModel.toggleBiometric(activity, enabled) { msg ->
                                         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                                     }
                                 }
@@ -370,8 +379,8 @@ fun SecurityTab(viewModel: SettingsViewModel) {
                 if (biometricCap.isFaceSupported) {
                     Row(
                         modifier = Modifier.fillMaxWidth().clickable {
-                            activity?.let {
-                                viewModel.toggleBiometric(it, !biometricEnabled) { msg ->
+                            if (activity != null) {
+                                viewModel.toggleBiometric(activity, !biometricEnabled) { msg ->
                                     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                                 }
                             }
@@ -386,8 +395,8 @@ fun SecurityTab(viewModel: SettingsViewModel) {
                         Switch(
                             checked = biometricEnabled && biometricCap.isFaceSupported,
                             onCheckedChange = { enabled ->
-                                activity?.let {
-                                    viewModel.toggleBiometric(it, enabled) { msg ->
+                                if (activity != null) {
+                                    viewModel.toggleBiometric(activity, enabled) { msg ->
                                         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                                     }
                                 }
@@ -861,104 +870,175 @@ fun MacroItem(macro: String, desc: String) {
 
 @Composable
 fun ManagerTab(manager: ManagerInfo?) {
-    Column {
+    val context = LocalContext.current
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
         Text("Your Affiliate Manager", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(4.dp))
 
         if (manager == null) {
-            Text("No manager assigned to your account.")
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = PremiumUI.CardShape,
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+            ) {
+                Text(
+                    text = "No affiliate manager is currently assigned to your account. If you have questions, please reach out to Live Support.",
+                    modifier = Modifier.padding(16.dp),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         } else {
             // Header Banner
             Card(
-                modifier = Modifier.fillMaxWidth().height(200.dp),
+                modifier = Modifier.fillMaxWidth(),
                 shape = PremiumUI.CardShape,
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF1E213A))
             ) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "YOUR DEDICATED MANAGER",
+                        color = Color(0xFF94A3B8),
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.5.sp
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(64.dp)
+                            .background(Color(0xFF6B46C1), shape = CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Text(
-                            text = "YOUR DEDICATED MANAGER",
-                            color = Color.Gray,
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold,
-                            letterSpacing = 1.5.sp
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Box(
-                            modifier = Modifier
-                                .size(64.dp)
-                                .background(Color(0xFF6B46C1), shape = androidx.compose.foundation.shape.CircleShape),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = manager.firstName?.take(1)?.uppercase() ?: "",
-                                color = Color.White,
-                                fontSize = 28.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = "${manager.firstName ?: ""} ${manager.lastName ?: ""}",
+                            text = manager.firstName?.take(1)?.uppercase() ?: "M",
                             color = Color.White,
-                            style = MaterialTheme.typography.titleSmall,
+                            fontSize = 28.sp,
                             fontWeight = FontWeight.Bold
                         )
-                        Text(
-                            text = "Affiliate Manager",
-                            color = Color.Gray,
-                            fontSize = 12.sp
-                        )
                     }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "${manager.firstName ?: ""} ${manager.lastName ?: ""}".trim().ifEmpty { "Affiliate Manager" },
+                        color = Color.White,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = if (!manager.company.isNullOrBlank()) manager.company else "Dedicated Account Manager",
+                        color = Color(0xFF94A3B8),
+                        fontSize = 12.sp
+                    )
                 }
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
-
-            // Contact Cards
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                ContactCard(
-                    modifier = Modifier.weight(1f),
-                    icon = Icons.Default.Email,
-                    title = "EMAIL",
-                    value = manager.email ?: ""
-                )
-                if (!manager.telegram.isNullOrBlank()) {
+            // Contact Cards Column (Full-Width Responsive Cards for complete email and handle visibility)
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                // Email Card
+                if (!manager.email.isNullOrBlank()) {
+                    val cleanEmail = manager.email.trim()
                     ContactCard(
-                        modifier = Modifier.weight(1f),
+                        icon = Icons.Default.Email,
+                        title = "EMAIL ADDRESS",
+                        value = cleanEmail,
+                        onClick = {
+                            val intent = Intent(Intent.ACTION_SENDTO).apply {
+                                data = Uri.parse("mailto:$cleanEmail")
+                            }
+                            try {
+                                context.startActivity(intent)
+                            } catch (e: Exception) {
+                                Toast.makeText(context, "No email app found on your device", Toast.LENGTH_SHORT).show()
+                            }
+                        },
+                        onCopy = {
+                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            val clip = ClipData.newPlainText("Manager Email", cleanEmail)
+                            clipboard.setPrimaryClip(clip)
+                            Toast.makeText(context, "Email copied to clipboard", Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                }
+
+                // Telegram Card
+                if (!manager.telegram.isNullOrBlank()) {
+                    val rawTg = manager.telegram.trim()
+                    val cleanTg = rawTg.removePrefix("https://t.me/").removePrefix("t.me/").removePrefix("@")
+                    val displayTg = if (rawTg.startsWith("@")) rawTg else "@$cleanTg"
+
+                    ContactCard(
                         icon = Icons.Default.Send,
                         title = "TELEGRAM",
-                        value = manager.telegram
+                        value = displayTg,
+                        onClick = {
+                            if (cleanTg.isNotEmpty()) {
+                                val tgIntent = Intent(Intent.ACTION_VIEW, Uri.parse("tg://resolve?domain=$cleanTg"))
+                                try {
+                                    context.startActivity(tgIntent)
+                                } catch (e: ActivityNotFoundException) {
+                                    val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/$cleanTg"))
+                                    try {
+                                        context.startActivity(webIntent)
+                                    } catch (ex: Exception) {
+                                        Toast.makeText(context, "Unable to open Telegram profile", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            }
+                        },
+                        onCopy = {
+                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            val clip = ClipData.newPlainText("Manager Telegram", displayTg)
+                            clipboard.setPrimaryClip(clip)
+                            Toast.makeText(context, "Telegram handle copied to clipboard", Toast.LENGTH_SHORT).show()
+                        }
                     )
-                } else if (!manager.skype.isNullOrBlank()) {
+                }
+
+                // Skype Card (if available)
+                if (!manager.skype.isNullOrBlank()) {
+                    val cleanSkype = manager.skype.trim()
                     ContactCard(
-                        modifier = Modifier.weight(1f),
                         icon = Icons.Default.ChatBubble,
                         title = "SKYPE",
-                        value = manager.skype
+                        value = cleanSkype,
+                        onCopy = {
+                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            val clip = ClipData.newPlainText("Manager Skype", cleanSkype)
+                            clipboard.setPrimaryClip(clip)
+                            Toast.makeText(context, "Skype handle copied", Toast.LENGTH_SHORT).show()
+                        }
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
-
-            // Info Box
+            // Info Note Box
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFEEF2FF)),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)),
                 shape = PremiumUI.CardShape
             ) {
-                Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.Top) {
+                Row(
+                    modifier = Modifier.padding(14.dp),
+                    verticalAlignment = Alignment.Top
+                ) {
                     Icon(
                         imageVector = Icons.Default.Info,
                         contentDescription = "Help",
-                        tint = Color(0xFF6B46C1),
-                        modifier = Modifier.size(24.dp)
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(20.dp)
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
                     Text(
-                        text = "Need help? Your affiliate manager is your dedicated point of contact for offers, payments, and account questions. Reach out via any channel above and we'll get back to you shortly.",
-                        color = Color(0xFF4338CA),
+                        text = "Need help? Your affiliate manager is your dedicated point of contact for custom payout increases, special offer approvals, fast invoice processing, and traffic optimization. Reach out directly via Email or Telegram!",
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 12.sp,
                         lineHeight = 18.sp
                     )
@@ -969,31 +1049,78 @@ fun ManagerTab(manager: ManagerInfo?) {
 }
 
 @Composable
-fun ContactCard(modifier: Modifier = Modifier, icon: androidx.compose.ui.graphics.vector.ImageVector, title: String, value: String) {
+fun ContactCard(
+    modifier: Modifier = Modifier,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    title: String,
+    value: String,
+    onClick: (() -> Unit)? = null,
+    onCopy: (() -> Unit)? = null
+) {
     Card(
-        modifier = modifier,
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE5E7EB)),
-        shape = PremiumUI.CardShape
+        modifier = modifier
+            .fillMaxWidth()
+            .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)),
+        shape = PremiumUI.CardShape,
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Row(
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier.padding(14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .size(36.dp)
-                    .background(Color(0xFFE0E7FF), shape = PremiumUI.CardShape),
+                    .size(42.dp)
+                    .background(MaterialTheme.colorScheme.primaryContainer, shape = CircleShape),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(icon, contentDescription = title, tint = Color(0xFF4F46E5), modifier = Modifier.size(20.dp))
+                Icon(
+                    icon,
+                    contentDescription = title,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.size(22.dp)
+                )
             }
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(title, color = Color.Gray, fontSize = 10.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
-                Text(value, color = Color.Black, fontSize = 12.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                Text(
+                    text = title.uppercase(),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.2.sp
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                SelectionContainer {
+                    Text(
+                        text = value,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        lineHeight = 18.sp
+                    )
+                }
             }
-            Icon(Icons.Default.ChevronRight, contentDescription = "Go", tint = Color.LightGray, modifier = Modifier.size(16.dp))
+            if (onCopy != null) {
+                IconButton(onClick = onCopy, modifier = Modifier.size(32.dp)) {
+                    Icon(
+                        Icons.Default.ContentCopy,
+                        contentDescription = "Copy",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
+            if (onClick != null) {
+                Icon(
+                    Icons.AutoMirrored.Filled.OpenInNew,
+                    contentDescription = "Open",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
         }
     }
 }

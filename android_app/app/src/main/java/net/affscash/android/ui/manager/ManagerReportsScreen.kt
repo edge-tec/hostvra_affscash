@@ -92,11 +92,18 @@ fun ManagerReportsScreen(
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
-                            }
-}
+            }
         }
+    }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues).fillMaxSize().background(PremiumUI.PageBackground)) {
+            net.affscash.android.ui.components.DateRangeFilterComponent(
+                state = uiState.dateRangeState,
+                onOptionSelected = { viewModel.setDateRangeOption(it) },
+                onCustomRangeSelected = { start, end -> viewModel.setCustomDateRange(start, end) },
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+            )
+
             // Expandable Filters Section
             var filtersExpanded by remember { mutableStateOf(false) }
             Card(
@@ -160,7 +167,8 @@ fun ManagerReportsScreen(
                                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                     ) {
                                         Row(modifier = Modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                                            Text("${uiState.fromDate} to ${uiState.toDate}", modifier = Modifier.weight(1f), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            val (fromD, toD) = uiState.dateRangeState.getFormattedDates()
+                                            Text("$fromD to $toD", modifier = Modifier.weight(1f), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                             Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                         }
                                     }
@@ -182,9 +190,9 @@ fun ManagerReportsScreen(
                                                         else -> to
                                                     }
                                                     if (range == "Yesterday") {
-                                                        viewModel.setDateRange(from, from)
+                                                        viewModel.setCustomDateRange(from, from)
                                                     } else {
-                                                        viewModel.setDateRange(from, to)
+                                                        viewModel.setCustomDateRange(from, to)
                                                     }
                                                     dateExpanded = false
                                                 }

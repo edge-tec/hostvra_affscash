@@ -89,9 +89,9 @@ class ManagerReportRepository @Inject constructor(private val apiService: ApiSer
         }
     }
 
-    fun getManagerFraudReport(): Flow<Result<ManagerFraudReportResponse>> = flow {
+    fun getManagerFraudReport(from: String? = null, to: String? = null): Flow<Result<ManagerFraudReportResponse>> = flow {
         try {
-            val response = apiService.getManagerFraudReport()
+            val response = apiService.getManagerFraudReport(from = from, to = to, startDate = from, endDate = to)
             if (response.isSuccessful && response.body() != null) {
                 val body = response.body()!!
                 if (body.success) {

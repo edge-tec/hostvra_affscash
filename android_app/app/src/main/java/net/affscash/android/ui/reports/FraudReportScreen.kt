@@ -52,6 +52,14 @@ fun FraudReportScreen(
                 .padding(paddingValues)
                 .background(Color(0xFFF5F6FA))
         ) {
+            val dateRangeState by viewModel.dateRangeState.collectAsState()
+            net.affscash.android.ui.components.DateRangeFilterComponent(
+                state = dateRangeState,
+                onOptionSelected = { viewModel.setDateRangeOption(it) },
+                onCustomRangeSelected = { start, end -> viewModel.setCustomDateRange(start, end) },
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+            )
+
             when (val state = uiState) {
                 is FraudReportState.Loading -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
