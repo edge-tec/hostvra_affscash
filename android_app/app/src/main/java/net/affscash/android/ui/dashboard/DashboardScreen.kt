@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -486,35 +487,42 @@ fun HeaderIconWithBadge(
 ) {
     Box(
         modifier = Modifier
-            .padding(horizontal = 4.dp)
-            .size(34.dp)
-            .clip(CircleShape)
-            .background(Color(0xFFF1F5F9))
-            .clickable(onClick = onClick),
+            .padding(horizontal = 3.dp)
+            .wrapContentSize(),
         contentAlignment = Alignment.Center
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = "Header Icon",
-            tint = Color(0xFF475569),
-            modifier = Modifier.size(20.dp)
-        )
+        Box(
+            modifier = Modifier
+                .size(36.dp)
+                .clip(CircleShape)
+                .background(Color(0xFFF1F5F9))
+                .clickable(onClick = onClick),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = "Header Icon",
+                tint = Color(0xFF334155),
+                modifier = Modifier.size(19.dp)
+            )
+        }
         if (count > 0) {
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .offset(x = 2.dp, y = (-2).dp)
-                    .defaultMinSize(minWidth = 16.dp, minHeight = 16.dp)
+                    .offset(x = 5.dp, y = (-3).dp)
+                    .defaultMinSize(minWidth = 18.dp, minHeight = 18.dp)
                     .background(badgeColor, CircleShape)
-                    .padding(horizontal = 3.dp, vertical = 1.dp),
+                    .padding(horizontal = 4.dp, vertical = 1.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = if (count > 99) "99+" else count.toString(),
                     color = Color.White,
-                    fontSize = 9.sp,
+                    fontSize = 10.sp,
                     fontWeight = FontWeight.Bold,
-                    maxLines = 1
+                    maxLines = 1,
+                    textAlign = TextAlign.Center
                 )
             }
         }
