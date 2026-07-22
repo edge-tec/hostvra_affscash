@@ -192,5 +192,8 @@ dependencies {
   // Biometric & Security Crypto
   implementation(libs.androidx.biometric)
   implementation(libs.androidx.security.crypto)
+
+  // Play In-App Update
+  implementation(libs.play.app.update)
 }
 

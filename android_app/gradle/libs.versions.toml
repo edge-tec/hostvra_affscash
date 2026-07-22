@@ -25,9 +25,11 @@ firebaseBom = "33.5.1"
 workManager = "2.9.1"
 biometric = "1.2.0-alpha05"
 securityCrypto = "1.1.0-alpha06"
+playAppUpdate = "2.1.0"
 
 
 [libraries]
+play-app-update = { module = "com.google.android.play:app-update-ktx", version.ref = "playAppUpdate" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidxActivity" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }

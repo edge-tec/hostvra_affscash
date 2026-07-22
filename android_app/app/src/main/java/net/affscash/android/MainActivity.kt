@@ -82,6 +82,19 @@ class MainActivity : FragmentActivity() {
 
         enableEdgeToEdge()
         setContent {
+            val showUpdateDialog = androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+            val availableVersion = androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<String?>(null) }
+
+            LaunchedEffect(Unit) {
+                val updateManager = net.affscash.android.util.InAppUpdateManager(this@MainActivity)
+                updateManager.checkForAppUpdate { isAvailable, ver ->
+                    if (isAvailable) {
+                        showUpdateDialog.value = true
+                        availableVersion.value = ver
+                    }
+                }
+            }
+
             LaunchedEffect(Unit) {
                 userManager.unauthFlow.collect {
                     userManager.clearUser()
@@ -107,6 +120,16 @@ class MainActivity : FragmentActivity() {
                         initialDeepLink = deepLink
                     )
                     
+                    if (showUpdateDialog.value) {
+                        net.affscash.android.util.AppUpdateDialog3D(
+                            versionName = availableVersion.value ?: "latest",
+                            onUpdateNow = {
+                                net.affscash.android.util.InAppUpdateManager.openPlayStore(this@MainActivity)
+                            },
+                            onDismiss = { showUpdateDialog.value = false }
+                        )
+                    }
+
                     LaunchedEffect(deepLink) {
                         if (deepLink != null) {
                             pendingDeepLink.value = null
