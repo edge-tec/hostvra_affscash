@@ -7,6 +7,8 @@ import net.affscash.android.data.network.SessionCookieJar
 import net.affscash.android.data.local.UserManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import net.affscash.android.data.local.SecureStorageManager
+import net.affscash.android.data.model.User
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,9 +16,10 @@ import javax.inject.Singleton
 class AuthRepository @Inject constructor(
     private val apiService: ApiService,
     private val sessionCookieJar: SessionCookieJar,
-    private val userManager: UserManager
+    private val userManager: UserManager,
+    private val secureStorageManager: SecureStorageManager
 ) {
-    suspend fun login(email: String, password: String): Result<AuthResponse> = withContext(Dispatchers.IO) {
+    suspend fun login(email: String, password: String, rememberMe: Boolean = false): Result<AuthResponse> = withContext(Dispatchers.IO) {
         try {
             // Clear any old session before logging in
             sessionCookieJar.clearSession()
@@ -25,7 +28,20 @@ class AuthRepository @Inject constructor(
                 response.body()?.let {
                     if (it.success) {
                         it.user?.let { user -> 
-                            userManager.saveUser(user.role, user.email, "${user.firstName} ${user.lastName}")
+                            val fullName = "${user.firstName} ${user.lastName}".trim()
+                            userManager.saveUser(user.role, user.email, fullName)
+                            
+                            // Save remember me flag & secure session
+                            secureStorageManager.isRememberMeEnabled = rememberMe
+                            if (rememberMe) {
+                                secureStorageManager.saveAuthSession(
+                                    role = user.role,
+                                    email = user.email,
+                                    name = fullName,
+                                    token = "session_active",
+                                    userId = user.id?.toString()
+                                )
+                            }
                         }
                         return@withContext Result.success(it)
                     }
@@ -51,24 +67,46 @@ class AuthRepository @Inject constructor(
         }
     }
 
+    fun hasValidSavedSession(): Boolean {
+        return secureStorageManager.hasValidSession()
+    }
+
+    fun getSavedUser(): User? {
+        val role = secureStorageManager.getUserRole() ?: userManager.getRole() ?: return null
+        val email = secureStorageManager.getUserEmail() ?: ""
+        val name = secureStorageManager.getUserName() ?: ""
+        val nameParts = name.split(" ")
+        val firstName = nameParts.firstOrNull() ?: ""
+        val lastName = nameParts.drop(1).joinToString(" ")
+        return User(
+            id = 1,
+            firstName = firstName,
+            lastName = lastName,
+            email = email,
+            role = role,
+            status = "active"
+        )
+    }
+
     suspend fun logout(): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            // Unregister token first before clearing session
             try {
-                // We use an API call directly here to avoid circular dependencies
-                val token = net.affscash.android.AffscashApp.getBadgeManager()?.let {
-                    // Try to unregister, ignore failure
-                }
+                val token = net.affscash.android.AffscashApp.getBadgeManager()?.let {}
             } catch (e: Exception) {}
 
             apiService.logout()
             sessionCookieJar.clearSession()
             userManager.clearUser()
+            secureStorageManager.clearSession()
             Result.success(Unit)
         } catch (e: Exception) {
+            sessionCookieJar.clearSession()
+            userManager.clearUser()
+            secureStorageManager.clearSession()
             Result.failure(e)
         }
     }
+
 
     suspend fun forgotPassword(email: String): Result<net.affscash.android.data.model.BasicResponse> = withContext(Dispatchers.IO) {
         try {

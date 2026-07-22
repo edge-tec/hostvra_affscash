@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.clickable
+import androidx.fragment.app.FragmentActivity
 import net.affscash.android.ui.components.QrCodeImage
 import net.affscash.android.ui.dashboard.PremiumUI
 import net.affscash.android.data.model.*
@@ -286,86 +288,253 @@ fun ProfileTab(profile: ProfileInfo?, viewModel: SettingsViewModel) {
         }
     }
 }
-
+ 
 @Composable
 fun SecurityTab(viewModel: SettingsViewModel) {
     val context = LocalContext.current
+    val activity = context as? FragmentActivity
+
+    val rememberMe by viewModel.rememberMe.collectAsState()
+    val biometricEnabled by viewModel.biometricEnabled.collectAsState()
+    val autoLoginEnabled by viewModel.autoLoginEnabled.collectAsState()
+    val biometricCap = viewModel.biometricCap
+
     var currentPass by remember { mutableStateOf("") }
     var newPass by remember { mutableStateOf("") }
     var confirmPass by remember { mutableStateOf("") }
     var isUpdating by remember { mutableStateOf(false) }
 
-    Card(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
-        shape = PremiumUI.CardShape,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
-    ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            Text("Change Password", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, fontSize = 15.sp)
-            Spacer(modifier = Modifier.height(4.dp))
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        // App Security & Biometric Settings
+        Card(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
+            shape = PremiumUI.CardShape,
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+        ) {
+            Column(modifier = Modifier.padding(12.dp)) {
+                Text("App Security & Biometrics", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Text("Manage your biometric sign-in and session preferences.", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                Spacer(modifier = Modifier.height(8.dp))
 
-            StyledTextField(
-                value = currentPass,
-                onValueChange = { currentPass = it },
-                label = "Current Password *",
-                visualTransformation = PasswordVisualTransformation()
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-
-            StyledTextField(
-                value = newPass,
-                onValueChange = { newPass = it },
-                label = "New Password *",
-                visualTransformation = PasswordVisualTransformation()
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-
-            StyledTextField(
-                value = confirmPass,
-                onValueChange = { confirmPass = it },
-                label = "Confirm New Password *",
-                visualTransformation = PasswordVisualTransformation()
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-
-            StyledButton(
-                text = if (isUpdating) "Updating..." else "Change Password",
-                enabled = !isUpdating,
-                onClick = {
-                    if (currentPass.isBlank() || newPass.isBlank() || confirmPass.isBlank()) {
-                        Toast.makeText(context, "All fields are required", Toast.LENGTH_SHORT).show()
-                        return@StyledButton
+                // Remember Me
+                Row(
+                    modifier = Modifier.fillMaxWidth().clickable { viewModel.toggleRememberMe(!rememberMe) }.padding(vertical = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text("Remember Me", fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodyMedium)
+                        Text("Keep session saved securely on this device", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                     }
-                    if (newPass != confirmPass) {
-                        Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
-                        return@StyledButton
-                    }
-                    if (newPass.length < 8) {
-                        Toast.makeText(context, "Password must be at least 8 characters", Toast.LENGTH_SHORT).show()
-                        return@StyledButton
-                    }
-                    isUpdating = true
-                    viewModel.updateSecurity(
-                        UpdateSecurityRequest(currentPass, newPass),
-                        onSuccess = { 
-                            isUpdating = false
-                            currentPass = ""
-                            newPass = ""
-                            confirmPass = ""
-                            Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
-                        },
-                        onError = { 
-                            isUpdating = false
-                            Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
-                        }
-                    )
+                    Switch(checked = rememberMe, onCheckedChange = { viewModel.toggleRememberMe(it) })
                 }
-            )
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+
+                // Fingerprint Login
+                if (biometricCap.isFingerprintSupported || biometricCap.isAvailable) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().clickable {
+                            activity?.let {
+                                viewModel.toggleBiometric(it, !biometricEnabled) { msg ->
+                                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }.padding(vertical = 4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text("Enable Fingerprint Login", fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodyMedium)
+                            Text("Log in with fingerprint authentication", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                        }
+                        Switch(
+                            checked = biometricEnabled && biometricCap.isFingerprintSupported,
+                            onCheckedChange = { enabled ->
+                                activity?.let {
+                                    viewModel.toggleBiometric(it, enabled) { msg ->
+                                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            },
+                            enabled = biometricCap.isAvailable
+                        )
+                    }
+
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                }
+
+                // Face ID Login
+                if (biometricCap.isFaceSupported) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().clickable {
+                            activity?.let {
+                                viewModel.toggleBiometric(it, !biometricEnabled) { msg ->
+                                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }.padding(vertical = 4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text("Enable Face ID Login", fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodyMedium)
+                            Text("Log in with facial recognition", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                        }
+                        Switch(
+                            checked = biometricEnabled && biometricCap.isFaceSupported,
+                            onCheckedChange = { enabled ->
+                                activity?.let {
+                                    viewModel.toggleBiometric(it, enabled) { msg ->
+                                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            },
+                            enabled = biometricCap.isAvailable
+                        )
+                    }
+
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                }
+
+                // Auto Login
+                Row(
+                    modifier = Modifier.fillMaxWidth().clickable { viewModel.toggleAutoLogin(!autoLoginEnabled) }.padding(vertical = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text("Auto Login", fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodyMedium)
+                        Text("Bypass login screen automatically if session is valid", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                    }
+                    Switch(checked = autoLoginEnabled, onCheckedChange = { viewModel.toggleAutoLogin(it) })
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Action Buttons
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    OutlinedButton(
+                        onClick = {
+                            viewModel.disableBiometrics { msg ->
+                                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                            }
+                        },
+                        modifier = Modifier.weight(1f),
+                        shape = PremiumUI.CardShape
+                    ) {
+                        Text("Disable Biometrics", fontSize = 12.sp)
+                    }
+
+                    OutlinedButton(
+                        onClick = {
+                            viewModel.removeSavedSession { msg ->
+                                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                            }
+                        },
+                        modifier = Modifier.weight(1f),
+                        shape = PremiumUI.CardShape
+                    ) {
+                        Text("Remove Session", fontSize = 12.sp)
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Button(
+                    onClick = {
+                        viewModel.logoutAllDevices { msg ->
+                            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                    shape = PremiumUI.CardShape
+                ) {
+                    Text("Logout All Devices", fontWeight = FontWeight.Bold)
+                }
+            }
+        }
+
+        // Change Password Card
+        Card(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
+            shape = PremiumUI.CardShape,
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+        ) {
+            Column(modifier = Modifier.padding(12.dp)) {
+                Text("Change Password", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(4.dp))
+
+                StyledTextField(
+                    value = currentPass,
+                    onValueChange = { currentPass = it },
+                    label = "Current Password *",
+                    visualTransformation = PasswordVisualTransformation()
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+
+                StyledTextField(
+                    value = newPass,
+                    onValueChange = { newPass = it },
+                    label = "New Password *",
+                    visualTransformation = PasswordVisualTransformation()
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+
+                StyledTextField(
+                    value = confirmPass,
+                    onValueChange = { confirmPass = it },
+                    label = "Confirm New Password *",
+                    visualTransformation = PasswordVisualTransformation()
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+
+                StyledButton(
+                    text = if (isUpdating) "Updating..." else "Change Password",
+                    enabled = !isUpdating,
+                    onClick = {
+                        if (currentPass.isBlank() || newPass.isBlank() || confirmPass.isBlank()) {
+                            Toast.makeText(context, "All fields are required", Toast.LENGTH_SHORT).show()
+                            return@StyledButton
+                        }
+                        if (newPass != confirmPass) {
+                            Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                            return@StyledButton
+                        }
+                        if (newPass.length < 8) {
+                            Toast.makeText(context, "Password must be at least 8 characters", Toast.LENGTH_SHORT).show()
+                            return@StyledButton
+                        }
+                        isUpdating = true
+                        viewModel.updateSecurity(
+                            UpdateSecurityRequest(currentPass, newPass),
+                            onSuccess = { 
+                                isUpdating = false
+                                currentPass = ""
+                                newPass = ""
+                                confirmPass = ""
+                                Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
+                            },
+                            onError = { 
+                                isUpdating = false
+                                Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
+                            }
+                        )
+                    }
+                )
+            }
         }
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

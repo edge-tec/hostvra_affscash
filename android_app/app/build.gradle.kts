@@ -184,4 +184,9 @@ dependencies {
   implementation(libs.work.runtime.ktx)
   implementation(libs.hilt.work)
   ksp(libs.hilt.work.compiler)
+
+  // Biometric & Security Crypto
+  implementation(libs.androidx.biometric)
+  implementation(libs.androidx.security.crypto)
 }
+

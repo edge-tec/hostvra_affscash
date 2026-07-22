@@ -12,6 +12,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+import androidx.fragment.app.FragmentActivity
+import kotlinx.coroutines.flow.asStateFlow
+import net.affscash.android.data.local.SecureStorageManager
+import net.affscash.android.util.BiometricAuthManager
+import net.affscash.android.util.BiometricCapability
+
 sealed class SettingsUiState {
     object Loading : SettingsUiState()
     data class Success(
@@ -31,17 +37,83 @@ sealed class SettingsUiState {
 class SettingsViewModel @Inject constructor(
     private val affiliateRepository: AffiliateRepository,
     private val settingsRepository: SettingsRepository,
-    private val userManager: UserManager
+    private val userManager: UserManager,
+    private val secureStorageManager: SecureStorageManager,
+    private val biometricAuthManager: BiometricAuthManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<SettingsUiState>(SettingsUiState.Loading)
     val uiState: StateFlow<SettingsUiState> = _uiState
+
+    private val _rememberMe = MutableStateFlow(secureStorageManager.isRememberMeEnabled)
+    val rememberMe: StateFlow<Boolean> = _rememberMe.asStateFlow()
+
+    private val _biometricEnabled = MutableStateFlow(secureStorageManager.isBiometricEnabled)
+    val biometricEnabled: StateFlow<Boolean> = _biometricEnabled.asStateFlow()
+
+    private val _autoLoginEnabled = MutableStateFlow(secureStorageManager.isAutoLoginEnabled)
+    val autoLoginEnabled: StateFlow<Boolean> = _autoLoginEnabled.asStateFlow()
+
+    val biometricCap: BiometricCapability get() = biometricAuthManager.checkBiometricCapability()
+
+    fun toggleRememberMe(enabled: Boolean) {
+        secureStorageManager.isRememberMeEnabled = enabled
+        _rememberMe.value = enabled
+    }
+
+    fun toggleAutoLogin(enabled: Boolean) {
+        secureStorageManager.isAutoLoginEnabled = enabled
+        _autoLoginEnabled.value = enabled
+    }
+
+    fun toggleBiometric(activity: FragmentActivity, enable: Boolean, onComplete: (String) -> Unit) {
+        if (enable) {
+            biometricAuthManager.authenticate(
+                activity = activity,
+                title = "Enable Biometrics",
+                subtitle = "Authenticate to enable biometric login",
+                onSuccess = {
+                    secureStorageManager.isBiometricEnabled = true
+                    _biometricEnabled.value = true
+                    onComplete("Biometric login enabled successfully.")
+                },
+                onError = { err -> onComplete("Failed: $err") }
+            )
+        } else {
+            secureStorageManager.clearBiometricData()
+            _biometricEnabled.value = false
+            onComplete("Biometric login disabled and secure keys removed.")
+        }
+    }
+
+    fun disableBiometrics(onComplete: (String) -> Unit) {
+        secureStorageManager.clearBiometricData()
+        _biometricEnabled.value = false
+        onComplete("Biometric login disabled.")
+    }
+
+    fun removeSavedSession(onComplete: (String) -> Unit) {
+        secureStorageManager.clearSession()
+        _rememberMe.value = false
+        _biometricEnabled.value = false
+        _autoLoginEnabled.value = false
+        onComplete("Saved session and security credentials removed.")
+    }
+
+    fun logoutAllDevices(onComplete: (String) -> Unit) {
+        viewModelScope.launch {
+            removeSavedSession { }
+            userManager.triggerUnauth()
+            onComplete("Logged out from all devices.")
+        }
+    }
 
     init {
         loadSettings()
     }
 
     fun loadSettings() {
+
         viewModelScope.launch {
             _uiState.value = SettingsUiState.Loading
             settingsRepository.getSettings()

@@ -1,30 +1,31 @@
 package net.affscash.android
 
+import android.Manifest
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import androidx.activity.ComponentActivity
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
-import androidx.activity.result.contract.ActivityResultContracts
-import android.Manifest
-import android.os.Build
-import android.util.Log
-import net.affscash.android.ui.navigation.AffscashNavGraph
+import androidx.fragment.app.FragmentActivity
 import dagger.hilt.android.AndroidEntryPoint
-
-import javax.inject.Inject
+import net.affscash.android.data.local.SecureStorageManager
 import net.affscash.android.data.local.UserManager
 import net.affscash.android.service.FcmTokenManager
+import net.affscash.android.ui.navigation.AffscashNavGraph
+import net.affscash.android.util.BiometricAuthManager
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
 
     @Inject
     lateinit var userManager: UserManager
@@ -32,13 +33,18 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var fcmTokenManager: FcmTokenManager
 
-    // Deep link route from notification tap
+    @Inject
+    lateinit var secureStorageManager: SecureStorageManager
+
+    @Inject
+    lateinit var biometricAuthManager: BiometricAuthManager
+
     private val pendingDeepLink = mutableStateOf<String?>(null)
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
-        // Handle the result if needed
+        // Handle post notification permission result
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,11 +60,11 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        // Handle notification deep link from cold start
         handleNotificationIntent(intent)
 
-        // Ensure token is registered on every startup if logged in
-        if (userManager.getRole() != null) {
+        val isSessionActive = userManager.getRole() != null || secureStorageManager.hasValidSession()
+
+        if (isSessionActive) {
             fcmTokenManager.ensureTokenRegistered()
         }
 
@@ -67,7 +73,7 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(Unit) {
                 userManager.unauthFlow.collect {
                     userManager.clearUser()
-                    // Restart Activity
+                    secureStorageManager.clearSession()
                     val restartIntent = Intent(this@MainActivity, MainActivity::class.java)
                     restartIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     startActivity(restartIntent)
@@ -79,15 +85,16 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize().safeDrawingPadding(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val role = userManager.getRole()
-                    val startDest = if (role != null) "main_screen" else "login"
+                    val role = userManager.getRole() ?: secureStorageManager.getUserRole()
+                    val startDest = if (role != null && (secureStorageManager.isAutoLoginEnabled || !secureStorageManager.isRememberMeEnabled)) "main_screen" else "login"
                     val deepLink = pendingDeepLink.value
+                    
                     AffscashNavGraph(
                         startDestination = startDest,
                         userManager = userManager,
                         initialDeepLink = deepLink
                     )
-                    // Consume deep link after passing it
+                    
                     LaunchedEffect(deepLink) {
                         if (deepLink != null) {
                             pendingDeepLink.value = null
@@ -118,7 +125,6 @@ class MainActivity : ComponentActivity() {
             if (!deepLinkRoute.isNullOrEmpty()) {
                 pendingDeepLink.value = deepLinkRoute
             } else if (!notificationType.isNullOrEmpty()) {
-                // Fallback: navigate to notifications screen
                 pendingDeepLink.value = "notifications"
             }
         }
