@@ -73,7 +73,19 @@ class TrafficSourceOverrideViewModel @Inject constructor(
         }
     }
 
-    fun saveRule(name: String, targetSources: List<String>, overrideSource: String, priority: Int, ruleId: Int? = null, isManager: Boolean = false) {
+    fun saveRule(
+        name: String,
+        targetSources: List<String>,
+        overrideSource: String,
+        priority: Int,
+        affiliateIds: List<Int> = emptyList(),
+        offerIds: List<Int> = emptyList(),
+        advertiserIds: List<Int> = emptyList(),
+        countries: List<String> = emptyList(),
+        deviceTypes: List<String> = emptyList(),
+        ruleId: Int? = null,
+        isManager: Boolean = false
+    ) {
         viewModelScope.launch {
             val body = mutableMapOf<String, Any?>(
                 "action" to if (ruleId == null) "add_rule" else "edit_rule",
@@ -81,7 +93,12 @@ class TrafficSourceOverrideViewModel @Inject constructor(
                 "target_original_sources" to targetSources,
                 "override_source" to overrideSource,
                 "priority" to priority,
-                "enabled" to 1
+                "enabled" to 1,
+                "affiliate_ids" to affiliateIds,
+                "offer_ids" to offerIds,
+                "advertiser_ids" to advertiserIds,
+                "countries" to countries,
+                "device_types" to deviceTypes
             )
             if (ruleId != null) body["rule_id"] = ruleId
 

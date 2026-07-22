@@ -6,8 +6,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -28,6 +30,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import net.affscash.android.data.model.CountryOptionItem
+import net.affscash.android.data.model.SimpleOptionItem
+import net.affscash.android.data.model.TrafficSourceOverrideDestination
 import net.affscash.android.data.model.TrafficSourceOverrideRule
 import net.affscash.android.ui.components.CompactTopBar
 import net.affscash.android.ui.dashboard.PremiumUI
@@ -153,7 +158,7 @@ fun TrafficSourceOverrideScreen(
                         }
                     }
 
-                    // Section Title
+                    // Rules List Header
                     item {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -161,59 +166,42 @@ fun TrafficSourceOverrideScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "ACTIVE OVERRIDE RULES (${data.rules.size})",
-                                fontSize = 13.sp,
+                                text = "Configured Override Rules (${data.rules.size})",
+                                style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurface
                             )
-
-                            Button(
-                                onClick = onNavigateToLogs,
-                                colors = ButtonDefaults.outlinedButtonColors()
-                            ) {
-                                Icon(Icons.Default.History, contentDescription = null, modifier = Modifier.size(16.dp))
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Text("View Logs", fontSize = 12.sp)
-                            }
                         }
                     }
 
                     if (data.rules.isEmpty()) {
                         item {
-                            Card(
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
-                                shape = PremiumUI.CardShape,
-                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                            Box(
+                                modifier = Modifier.fillMaxWidth().padding(32.dp),
+                                contentAlignment = Alignment.Center
                             ) {
-                                Column(
-                                    modifier = Modifier.padding(24.dp).fillMaxWidth(),
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     Icon(
                                         Icons.Default.Tune,
                                         contentDescription = null,
-                                        modifier = Modifier.size(40.dp),
+                                        modifier = Modifier.size(48.dp),
                                         tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                                     )
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Text(
-                                        "No traffic override rules found.",
-                                        fontWeight = FontWeight.Medium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                    Text(
-                                        "Tap + button to create a new override rule.",
-                                        fontSize = 12.sp,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                                        text = "No override rules created yet.\nTap + to add a new rule.",
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        style = MaterialTheme.typography.bodyMedium
                                     )
                                 }
                             }
                         }
                     } else {
+                        val destinationMap = data.destinations.associate { it.key to it.label }
                         items(data.rules) { rule ->
                             RuleCardItem(
                                 rule = rule,
-                                destinations = data.destinations.associate { it.key to it.label },
+                                destinations = destinationMap,
                                 onToggle = { viewModel.toggleRule(rule.id, isManager) },
                                 onDelete = { viewModel.deleteRule(rule.id, isManager) },
                                 onEdit = {
@@ -233,9 +221,26 @@ fun TrafficSourceOverrideScreen(
             rule = editingRule,
             chatSources = uiState.data?.chatSources ?: listOf("telegram", "whatsapp", "messenger", "discord", "signal", "viber"),
             destinations = uiState.data?.destinations ?: emptyList(),
+            affiliates = uiState.data?.affiliates ?: emptyList(),
+            offers = uiState.data?.offers ?: emptyList(),
+            advertisers = uiState.data?.advertisers ?: emptyList(),
+            countries = uiState.data?.countries ?: emptyList(),
+            deviceTypes = uiState.data?.deviceTypes ?: listOf("Mobile", "Desktop", "Tablet"),
             onDismiss = { showAddDialog = false },
-            onSave = { name, targets, overrideSrc, priority ->
-                viewModel.saveRule(name, targets, overrideSrc, priority, editingRule?.id, isManager)
+            onSave = { name, targets, overrideSrc, priority, affIds, offerIds, advIds, cCodes, devs ->
+                viewModel.saveRule(
+                    name = name,
+                    targetSources = targets,
+                    overrideSource = overrideSrc,
+                    priority = priority,
+                    affiliateIds = affIds,
+                    offerIds = offerIds,
+                    advertiserIds = advIds,
+                    countries = cCodes,
+                    deviceTypes = devs,
+                    ruleId = editingRule?.id,
+                    isManager = isManager
+                )
                 showAddDialog = false
             }
         )
@@ -281,7 +286,7 @@ private fun RuleCardItem(
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Switch(
-                        checked = rule.enabled == 1,
+                        checked = rule.enabled,
                         onCheckedChange = { onToggle() },
                         modifier = Modifier.height(24.dp)
                     )
@@ -303,18 +308,33 @@ private fun RuleCardItem(
             ) {
                 // Target Sources Badges
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    rule.targetOriginalSources.forEach { src ->
+                    if (rule.targetOriginalSources.isEmpty()) {
                         Surface(
-                            color = MaterialTheme.colorScheme.primaryContainer,
+                            color = MaterialTheme.colorScheme.secondaryContainer,
                             shape = RoundedCornerShape(4.dp)
                         ) {
                             Text(
-                                text = src.uppercase(),
+                                text = "ALL SOURCES",
                                 fontSize = 10.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
                                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                             )
+                        }
+                    } else {
+                        rule.targetOriginalSources.forEach { src ->
+                            Surface(
+                                color = MaterialTheme.colorScheme.primaryContainer,
+                                shape = RoundedCornerShape(4.dp)
+                            ) {
+                                Text(
+                                    text = src.uppercase(),
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                )
+                            }
                         }
                     }
                 }
@@ -344,37 +364,78 @@ private fun RuleCardItem(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun AddEditRuleDialog(
     rule: TrafficSourceOverrideRule?,
     chatSources: List<String>,
-    destinations: List<net.affscash.android.data.model.TrafficSourceOverrideDestination>,
+    destinations: List<TrafficSourceOverrideDestination>,
+    affiliates: List<SimpleOptionItem>,
+    offers: List<SimpleOptionItem>,
+    advertisers: List<SimpleOptionItem>,
+    countries: List<CountryOptionItem>,
+    deviceTypes: List<String>,
     onDismiss: () -> Unit,
-    onSave: (name: String, targetSources: List<String>, overrideSource: String, priority: Int) -> Unit
+    onSave: (
+        name: String,
+        targetSources: List<String>,
+        overrideSource: String,
+        priority: Int,
+        affiliateIds: List<Int>,
+        offerIds: List<Int>,
+        advertiserIds: List<Int>,
+        countryCodes: List<String>,
+        devices: List<String>
+    ) -> Unit
 ) {
     var name by remember { mutableStateOf(rule?.name ?: "") }
-    var selectedSources by remember { mutableStateOf(rule?.targetOriginalSources?.toSet() ?: setOf("telegram")) }
-    var selectedOverride by remember { mutableStateOf(rule?.overrideSource ?: (destinations.firstOrNull()?.key ?: "organic")) }
+    var selectedSources by remember { mutableStateOf(rule?.targetOriginalSources?.toSet() ?: setOf("whatsapp")) }
+    var selectedOverride by remember { mutableStateOf(rule?.overrideSource ?: (destinations.firstOrNull()?.key ?: "paid_ads")) }
     var priorityText by remember { mutableStateOf((rule?.priority ?: 0).toString()) }
+
+    var selectedAffiliates by remember { mutableStateOf(rule?.conditions?.affiliateIds?.toSet() ?: emptySet()) }
+    var selectedOffers by remember { mutableStateOf(rule?.conditions?.offerIds?.toSet() ?: emptySet()) }
+    var selectedAdvertisers by remember { mutableStateOf(rule?.conditions?.advertiserIds?.toSet() ?: emptySet()) }
+    var selectedCountries by remember { mutableStateOf(rule?.conditions?.countries?.toSet() ?: emptySet()) }
+    var selectedDeviceTypes by remember { mutableStateOf(rule?.conditions?.deviceTypes?.toSet() ?: emptySet()) }
+
+    val scrollState = rememberScrollState()
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (rule == null) "Add Override Rule" else "Edit Override Rule") },
+        title = { Text(if (rule == null) "+ Add Override Rule" else "Edit Override Rule") },
         text = {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 480.dp)
+                    .verticalScroll(scrollState),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
+                // Rule Name
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text("Rule Name") },
+                    placeholder = { Text("e.g. Map WhatsApp to Paid Ads") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Text("Target Original Chat Sources:", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                // Priority
+                OutlinedTextField(
+                    value = priorityText,
+                    onValueChange = { priorityText = it },
+                    label = { Text("Priority") },
+                    placeholder = { Text("0") },
+                    supportingText = { Text("Higher number = higher priority. Evaluated first.", fontSize = 10.sp) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                // Target Original Sources
+                Text("Target Original Sources", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                Text("Leave blank to apply to ALL sources.", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
 
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     chatSources.forEach { src ->
@@ -389,7 +450,8 @@ private fun AddEditRuleDialog(
                     }
                 }
 
-                Text("Override Destination Source:", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                // Override As (Destination)
+                Text("Override As (Destination)", fontSize = 12.sp, fontWeight = FontWeight.Bold)
 
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     destinations.forEach { dest ->
@@ -402,24 +464,121 @@ private fun AddEditRuleDialog(
                     }
                 }
 
-                OutlinedTextField(
-                    value = priorityText,
-                    onValueChange = { priorityText = it },
-                    label = { Text("Priority (Higher runs first)") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+
+                // OPTIONAL CONDITIONS
+                Text(
+                    text = "OPTIONAL CONDITIONS",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    letterSpacing = 1.sp
                 )
+
+                // 1. Affiliates
+                if (affiliates.isNotEmpty()) {
+                    Text("Affiliates", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        affiliates.forEach { aff ->
+                            val isSelected = selectedAffiliates.contains(aff.id)
+                            FilterChip(
+                                selected = isSelected,
+                                onClick = {
+                                    selectedAffiliates = if (isSelected) selectedAffiliates - aff.id else selectedAffiliates + aff.id
+                                },
+                                label = { Text("${aff.name} (${aff.affiliateCode ?: aff.id})", fontSize = 10.sp) }
+                            )
+                        }
+                    }
+                }
+
+                // 2. Offers
+                if (offers.isNotEmpty()) {
+                    Text("Offers", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        offers.take(15).forEach { offer ->
+                            val isSelected = selectedOffers.contains(offer.id)
+                            FilterChip(
+                                selected = isSelected,
+                                onClick = {
+                                    selectedOffers = if (isSelected) selectedOffers - offer.id else selectedOffers + offer.id
+                                },
+                                label = { Text("${offer.name} (#${offer.id})", fontSize = 10.sp) }
+                            )
+                        }
+                    }
+                }
+
+                // 3. Advertisers
+                if (advertisers.isNotEmpty()) {
+                    Text("Advertisers", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        advertisers.forEach { adv ->
+                            val isSelected = selectedAdvertisers.contains(adv.id)
+                            FilterChip(
+                                selected = isSelected,
+                                onClick = {
+                                    selectedAdvertisers = if (isSelected) selectedAdvertisers - adv.id else selectedAdvertisers + adv.id
+                                },
+                                label = { Text(adv.name, fontSize = 10.sp) }
+                            )
+                        }
+                    }
+                }
+
+                // 4. Countries
+                if (countries.isNotEmpty()) {
+                    Text("Countries (GEO)", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        countries.forEach { country ->
+                            val isSelected = selectedCountries.contains(country.code)
+                            FilterChip(
+                                selected = isSelected,
+                                onClick = {
+                                    selectedCountries = if (isSelected) selectedCountries - country.code else selectedCountries + country.code
+                                },
+                                label = { Text("${country.name} (${country.code})", fontSize = 10.sp) }
+                            )
+                        }
+                    }
+                }
+
+                // 5. Device Types
+                Text("Device Types", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    val devicesList = if (deviceTypes.isNotEmpty()) deviceTypes else listOf("Mobile", "Desktop", "Tablet")
+                    devicesList.forEach { dev ->
+                        val isSelected = selectedDeviceTypes.contains(dev)
+                        FilterChip(
+                            selected = isSelected,
+                            onClick = {
+                                selectedDeviceTypes = if (isSelected) selectedDeviceTypes - dev else selectedDeviceTypes + dev
+                            },
+                            label = { Text(dev, fontSize = 11.sp) }
+                        )
+                    }
+                }
             }
         },
         confirmButton = {
             Button(
                 onClick = {
-                    if (name.isNotBlank() && selectedSources.isNotEmpty()) {
-                        onSave(name, selectedSources.toList(), selectedOverride, priorityText.toIntOrNull() ?: 0)
+                    if (name.isNotBlank()) {
+                        onSave(
+                            name,
+                            selectedSources.toList(),
+                            selectedOverride,
+                            priorityText.toIntOrNull() ?: 0,
+                            selectedAffiliates.toList(),
+                            selectedOffers.toList(),
+                            selectedAdvertisers.toList(),
+                            selectedCountries.toList(),
+                            selectedDeviceTypes.toList()
+                        )
                     }
                 }
             ) {
-                Text("Save")
+                Text("Save Override Rule")
             }
         },
         dismissButton = {

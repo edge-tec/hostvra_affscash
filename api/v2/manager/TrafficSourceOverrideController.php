@@ -27,7 +27,7 @@ try {
 
         if ($action === 'add_rule' || $action === 'edit_rule') {
             $data = [
-                'name' => $input['name'] ?? Helpers::post('name'),
+                'name' => $input['name'] ?? Helpers::post('name', 'Override Rule'),
                 'enabled' => (int)($input['enabled'] ?? Helpers::post('enabled', 1)),
                 'priority' => (int)($input['priority'] ?? Helpers::post('priority', 0)),
                 'override_source' => $input['override_source'] ?? Helpers::post('override_source'),
@@ -41,11 +41,36 @@ try {
             }
 
             $conditions = [];
-            $affIds = $input['affiliate_ids'] ?? ($_POST['affiliate_ids'] ?? []);
-            if (is_array($affIds)) $conditions['affiliate_ids'] = array_values(array_filter(array_map('intval', $affIds)));
-            
-            $offerIds = $input['offer_ids'] ?? ($_POST['offer_ids'] ?? []);
-            if (is_array($offerIds)) $conditions['offer_ids'] = array_values(array_filter(array_map('intval', $offerIds)));
+
+            // Affiliates condition
+            $affIds = $input['affiliate_ids'] ?? ($_POST['affiliate_ids'] ?? ($input['conditions']['affiliate_ids'] ?? []));
+            if (is_array($affIds) && !empty($affIds)) {
+                $conditions['affiliate_ids'] = array_values(array_filter(array_map('intval', $affIds)));
+            }
+
+            // Offers condition
+            $offerIds = $input['offer_ids'] ?? ($_POST['offer_ids'] ?? ($input['conditions']['offer_ids'] ?? []));
+            if (is_array($offerIds) && !empty($offerIds)) {
+                $conditions['offer_ids'] = array_values(array_filter(array_map('intval', $offerIds)));
+            }
+
+            // Advertisers condition
+            $advIds = $input['advertiser_ids'] ?? ($_POST['advertiser_ids'] ?? ($input['conditions']['advertiser_ids'] ?? []));
+            if (is_array($advIds) && !empty($advIds)) {
+                $conditions['advertiser_ids'] = array_values(array_filter(array_map('intval', $advIds)));
+            }
+
+            // Countries condition
+            $countries = $input['countries'] ?? ($_POST['countries'] ?? ($input['conditions']['countries'] ?? []));
+            if (is_array($countries) && !empty($countries)) {
+                $conditions['countries'] = array_values(array_filter(array_map('trim', $countries)));
+            }
+
+            // Device Types condition
+            $deviceTypes = $input['device_types'] ?? ($_POST['device_types'] ?? ($input['conditions']['device_types'] ?? []));
+            if (is_array($deviceTypes) && !empty($deviceTypes)) {
+                $conditions['device_types'] = array_values(array_filter(array_map('trim', $deviceTypes)));
+            }
 
             $data['conditions'] = $conditions;
 
@@ -77,10 +102,24 @@ try {
 
     // List action
     $globalEnabled = AdvancedTrafficSourceOverride::isGlobalEnabled();
-    $rules = AdvancedTrafficSourceOverride::getAllRules();
+    $rawRules = AdvancedTrafficSourceOverride::getAllRules();
+
+    $rules = [];
+    foreach ($rawRules as $r) {
+        $rules[] = [
+            'id' => (int)$r['id'],
+            'name' => $r['name'] ?? '',
+            'enabled' => (int)($r['enabled'] ?? 1) === 1,
+            'priority' => (int)($r['priority'] ?? 0),
+            'target_original_sources' => json_decode($r['target_original_sources'] ?? '[]', true) ?: [],
+            'override_source' => $r['override_source'] ?? '',
+            'conditions' => json_decode($r['conditions'] ?? '{}', true) ?: (object)[]
+        ];
+    }
 
     $affiliates = Database::fetchAll("SELECT af.id, CONCAT(u.first_name, ' ', u.last_name) as name, af.affiliate_code FROM affiliates af JOIN users u ON u.id = af.user_id ORDER BY name") ?: [];
     $offers = Database::fetchAll("SELECT id, name FROM offers ORDER BY name") ?: [];
+    $advertisers = Database::fetchAll("SELECT ad.id, COALESCE(ad.company_name, CONCAT(u.first_name, ' ', u.last_name)) as name FROM advertisers ad JOIN users u ON u.id = ad.user_id ORDER BY name") ?: [];
 
     $chatSources = ['telegram', 'whatsapp', 'messenger', 'discord', 'signal', 'viber'];
     $overrideDestinations = [
@@ -94,6 +133,20 @@ try {
         ['key' => 'other', 'label' => 'Other']
     ];
 
+    $deviceTypes = ['Mobile', 'Desktop', 'Tablet'];
+    $countries = [
+        ['code' => 'US', 'name' => 'United States'],
+        ['code' => 'GB', 'name' => 'United Kingdom'],
+        ['code' => 'CA', 'name' => 'Canada'],
+        ['code' => 'AU', 'name' => 'Australia'],
+        ['code' => 'DE', 'name' => 'Germany'],
+        ['code' => 'FR', 'name' => 'France'],
+        ['code' => 'BD', 'name' => 'Bangladesh'],
+        ['code' => 'IN', 'name' => 'India'],
+        ['code' => 'BR', 'name' => 'Brazil'],
+        ['code' => 'AE', 'name' => 'United Arab Emirates']
+    ];
+
     Helpers::json([
         'status' => 'success',
         'data' => [
@@ -102,7 +155,10 @@ try {
             'chat_sources' => $chatSources,
             'destinations' => $overrideDestinations,
             'affiliates' => $affiliates,
-            'offers' => $offers
+            'offers' => $offers,
+            'advertisers' => $advertisers,
+            'countries' => $countries,
+            'device_types' => $deviceTypes
         ]
     ]);
 

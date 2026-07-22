@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class TrafficSourceOverrideRule(
     val id: Int = 0,
     val name: String = "",
-    val enabled: Int = 1,
+    val enabled: Boolean = true,
     val priority: Int = 0,
     @SerialName("override_source") val overrideSource: String = "",
     @SerialName("target_original_sources") val targetOriginalSources: List<String> = emptyList(),
@@ -18,7 +18,10 @@ data class TrafficSourceOverrideRule(
 @Serializable
 data class TrafficSourceOverrideConditions(
     @SerialName("affiliate_ids") val affiliateIds: List<Int>? = null,
-    @SerialName("offer_ids") val offerIds: List<Int>? = null
+    @SerialName("offer_ids") val offerIds: List<Int>? = null,
+    @SerialName("advertiser_ids") val advertiserIds: List<Int>? = null,
+    val countries: List<String>? = null,
+    @SerialName("device_types") val deviceTypes: List<String>? = null
 )
 
 @Serializable
@@ -35,13 +38,22 @@ data class SimpleOptionItem(
 )
 
 @Serializable
+data class CountryOptionItem(
+    val code: String,
+    val name: String
+)
+
+@Serializable
 data class TrafficSourceOverrideData(
     @SerialName("global_enabled") val globalEnabled: Boolean = false,
     val rules: List<TrafficSourceOverrideRule> = emptyList(),
     @SerialName("chat_sources") val chatSources: List<String> = emptyList(),
     val destinations: List<TrafficSourceOverrideDestination> = emptyList(),
     val affiliates: List<SimpleOptionItem> = emptyList(),
-    val offers: List<SimpleOptionItem> = emptyList()
+    val offers: List<SimpleOptionItem> = emptyList(),
+    val advertisers: List<SimpleOptionItem> = emptyList(),
+    val countries: List<CountryOptionItem> = emptyList(),
+    @SerialName("device_types") val deviceTypes: List<String> = emptyList()
 )
 
 @Serializable
