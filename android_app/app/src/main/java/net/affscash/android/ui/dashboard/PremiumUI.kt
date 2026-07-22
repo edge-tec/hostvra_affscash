@@ -390,19 +390,23 @@ fun BarChartCard3D(labels: List<String>, data: List<Float>) {
 fun PieChartCard3D(labels: List<String>, data: List<Int>, customColors: List<Color>? = null) {
     GlassCard(elevation = 2.dp) {
         if (labels.isEmpty() || data.isEmpty() || data.sum() == 0) {
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize().height(120.dp)) {
-                Text("No data", color = Color.Gray)
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize().height(140.dp)) {
+                Text("No data available", color = Color(0xFF64748B), fontSize = 13.sp)
             }
         } else {
             val colors = customColors ?: listOf(Color(0xFF4F46E5), Color(0xFF10B981), Color(0xFFF59E0B), Color(0xFFEF4444), Color(0xFF8B5CF6))
-            val total = data.sum().toFloat()
+            val totalSum = data.sum()
+            val total = totalSum.toFloat()
             
             Column(
-                modifier = Modifier.fillMaxWidth().height(150.dp),
+                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Box(modifier = Modifier.size(80.dp)) {
+                Box(
+                    modifier = Modifier.size(96.dp),
+                    contentAlignment = Alignment.Center
+                ) {
                     Canvas(modifier = Modifier.fillMaxSize()) {
                         var startAngle = -90f
                         data.forEachIndexed { index, value ->
@@ -412,23 +416,62 @@ fun PieChartCard3D(labels: List<String>, data: List<Int>, customColors: List<Col
                                 startAngle = startAngle,
                                 sweepAngle = sweepAngle,
                                 useCenter = false,
-                                style = Stroke(width = 18f, cap = StrokeCap.Butt),
+                                style = Stroke(width = 20f, cap = StrokeCap.Round),
                                 size = Size(size.width, size.height)
                             )
                             startAngle += sweepAngle
                         }
                     }
+                    
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "$totalSum",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = Color(0xFF0F172A)
+                        )
+                        Text(
+                            text = "TOTAL",
+                            fontSize = 9.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF94A3B8)
+                        )
+                    }
                 }
-                Spacer(modifier = Modifier.height(8.dp))
+                
+                Spacer(modifier = Modifier.height(10.dp))
+                
                 Row(
-                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.Center
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     labels.take(4).forEachIndexed { index, label ->
-                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 6.dp)) {
-                            Box(modifier = Modifier.size(8.dp).background(colors[index % colors.size], CircleShape))
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(label, fontSize = 11.sp, color = Color(0xFF475569), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        val itemVal = if (index < data.size) data[index] else 0
+                        val pct = if (totalSum > 0) (itemVal.toFloat() / totalSum * 100).toInt() else 0
+                        
+                        Surface(
+                            color = Color(0xFFF8FAFC),
+                            shape = RoundedCornerShape(8.dp),
+                            modifier = Modifier.padding(horizontal = 4.dp),
+                            border = BorderStroke(1.dp, Color(0xFFE2E8F0))
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                            ) {
+                                Box(modifier = Modifier.size(8.dp).background(colors[index % colors.size], CircleShape))
+                                Spacer(modifier = Modifier.width(5.dp))
+                                Text(
+                                    text = "$label: $itemVal ($pct%)",
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color(0xFF334155),
+                                    maxLines = 1
+                                )
+                            }
                         }
                     }
                 }

@@ -422,9 +422,9 @@ fun LineChartCard3D(trendData: DashboardTrendChartResponse) {
 
 @Composable
 fun OffersTable3D(offers: List<net.affscash.android.data.model.DashboardOfferRow>) {
-    GlassCard(elevation = 6.dp) {
+    GlassCard(elevation = 2.dp) {
         if (offers.isEmpty()) {
-            Text("No offers available", modifier = Modifier.padding(4.dp), color = Color.Gray, fontSize = 13.sp)
+            Text("No offers available", modifier = Modifier.padding(4.dp), color = Color(0xFF64748B), fontSize = 13.sp)
         } else {
             offers.forEachIndexed { index, offer ->
                 Row(
@@ -434,15 +434,56 @@ fun OffersTable3D(offers: List<net.affscash.android.data.model.DashboardOfferRow
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(offer.name, modifier = Modifier.weight(1f), style = PremiumUI.DataBold, color = Color(0xFF0F172A), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Surface(
+                        color = when(index) {
+                            0 -> Color(0xFFFEF3C7)
+                            1 -> Color(0xFFF1F5F9)
+                            2 -> Color(0xFFFFEDD5)
+                            else -> Color(0xFFEEF2FF)
+                        },
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "#${index + 1}",
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = when(index) {
+                                0 -> Color(0xFFD97706)
+                                1 -> Color(0xFF475569)
+                                2 -> Color(0xFFC2410C)
+                                else -> Color(0xFF4F46E5)
+                            },
+                            modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(offer.name, modifier = Modifier.weight(1f), fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("C: ${offer.clicks} | Cv: ${offer.conv}", style = PremiumUI.SecondaryText)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("$${(( offer.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontWeight = FontWeight.Bold, color = Color(0xFF059669), fontSize = 13.sp)
+                        Surface(
+                            color = Color(0xFFF8FAFC),
+                            shape = RoundedCornerShape(6.dp),
+                            border = BorderStroke(1.dp, Color(0xFFE2E8F0))
+                        ) {
+                            Text(
+                                text = "C: ${offer.clicks} | Cv: ${offer.conv}",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color(0xFF475569),
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = "$${(( offer.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }",
+                            fontWeight = FontWeight.ExtraBold,
+                            color = Color(0xFF10B981),
+                            fontSize = 13.sp
+                        )
                     }
                 }
                 if (index < offers.lastIndex) {
-                    HorizontalDivider(color = Color(0xFFE2E8F0))
+                    HorizontalDivider(color = Color(0xFFF1F5F9))
                 }
             }
         }
@@ -451,9 +492,9 @@ fun OffersTable3D(offers: List<net.affscash.android.data.model.DashboardOfferRow
 
 @Composable
 fun CountriesTable3D(countries: List<net.affscash.android.data.model.DashboardCountryRow>) {
-    GlassCard(elevation = 6.dp) {
+    GlassCard(elevation = 2.dp) {
         if (countries.isEmpty()) {
-            Text("No countries data available", modifier = Modifier.padding(4.dp), color = Color.Gray, fontSize = 13.sp)
+            Text("No countries data available", modifier = Modifier.padding(4.dp), color = Color(0xFF64748B), fontSize = 13.sp)
         } else {
             countries.forEachIndexed { index, row ->
                 Row(
@@ -463,15 +504,59 @@ fun CountriesTable3D(countries: List<net.affscash.android.data.model.DashboardCo
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(row.country.ifEmpty { "Unknown" }, modifier = Modifier.weight(1f), style = PremiumUI.DataBold, color = Color(0xFF0F172A), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Surface(
+                        color = Color(0xFFEEF2FF),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = row.country.ifEmpty { "XX" }.uppercase(),
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = Color(0xFF4F46E5),
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = row.country.ifEmpty { "Unknown" },
+                        modifier = Modifier.weight(1f),
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF0F172A),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("C: ${row.clicks} | U: ${row.unique}", style = PremiumUI.SecondaryText)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Cv: ${row.conv}", fontWeight = FontWeight.Bold, color = Color(0xFF4F46E5), fontSize = 13.sp)
+                        Surface(
+                            color = Color(0xFFF8FAFC),
+                            shape = RoundedCornerShape(6.dp),
+                            border = BorderStroke(1.dp, Color(0xFFE2E8F0))
+                        ) {
+                            Text(
+                                text = "Clicks: ${row.clicks}",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color(0xFF475569),
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Surface(
+                            color = Color(0xFFD1FAE5),
+                            shape = RoundedCornerShape(6.dp)
+                        ) {
+                            Text(
+                                text = "Conv: ${row.conv}",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF059669),
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                            )
+                        }
                     }
                 }
                 if (index < countries.lastIndex) {
-                    HorizontalDivider(color = Color(0xFFE2E8F0))
+                    HorizontalDivider(color = Color(0xFFF1F5F9))
                 }
             }
         }
