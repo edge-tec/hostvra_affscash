@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -13,6 +14,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -59,42 +61,106 @@ fun SettingsScreen(
         list
     }
 
-    Scaffold(
-        topBar = {
-            net.affscash.android.ui.components.CompactTopBar(
-                title = { Text("My Settings") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            )
-        }
-    ) { paddingValues ->
-        Column(
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(PremiumUI.PageBackground)
+    ) {
+        // 3D Glass Header Bar
+        Surface(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            shape = PremiumUI.CardShape,
+            color = Color.White,
+            shadowElevation = 2.dp,
+            border = PremiumUI.GlassBorder
         ) {
-            ScrollableTabRow(
-                selectedTabIndex = selectedTabIndex,
-                edgePadding = 8.dp,
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                contentColor = MaterialTheme.colorScheme.primary
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                tabs.forEachIndexed { index, title ->
-                    Tab(
-                        selected = selectedTabIndex == index,
-                        onClick = { selectedTabIndex = index },
-                        text = { 
-                            if (title == "Delete Account") {
-                                Text(title, color = MaterialTheme.colorScheme.error)
-                            } else {
-                                Text(title)
-                            }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(42.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(PremiumUI.HeaderGradient),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            Icons.Default.Settings,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Column {
+                        Text(
+                            text = "My Settings",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF0F172A)
+                        )
+                        Text(
+                            text = "Profile, security, payments & preferences",
+                            fontSize = 12.sp,
+                            color = Color(0xFF64748B)
+                        )
+                    }
+                }
+            }
+        }
+
+        // 3D Scrollable Segmented Tab Row
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+                .padding(horizontal = 12.dp, vertical = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            tabs.forEachIndexed { index, title ->
+                val isSelected = selectedTabIndex == index
+                val isDelete = title == "Delete Account"
+
+                Surface(
+                    onClick = { selectedTabIndex = index },
+                    shape = RoundedCornerShape(12.dp),
+                    color = when {
+                        isSelected && isDelete -> Color(0xFFDC2626)
+                        isSelected -> Color(0xFF4F46E5)
+                        else -> Color.White
+                    },
+                    border = BorderStroke(
+                        1.dp,
+                        when {
+                            isSelected && isDelete -> Color(0xFFDC2626)
+                            isSelected -> Color(0xFF4F46E5)
+                            isDelete -> Color(0xFFFCA5A5)
+                            else -> Color(0xFFE2E8F0)
+                        }
+                    ),
+                    shadowElevation = if (isSelected) 3.dp else 1.dp
+                ) {
+                    Text(
+                        text = title,
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                        fontSize = 12.sp,
+                        fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.Medium,
+                        color = when {
+                            isSelected -> Color.White
+                            isDelete -> Color(0xFFDC2626)
+                            else -> Color(0xFF475569)
                         }
                     )
                 }
             }
+        }
 
             Box(modifier = Modifier.weight(1f)) {
                 when (val state = uiState) {
@@ -201,7 +267,6 @@ fun SettingsScreen(
                                     Spacer(modifier = Modifier.width(4.dp))
                                     Text("Logout")
                                 }
-                            }
                         }
                     }
                 }
