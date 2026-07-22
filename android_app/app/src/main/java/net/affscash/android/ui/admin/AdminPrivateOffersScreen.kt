@@ -1,25 +1,30 @@
 package net.affscash.android.ui.admin
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.*
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.hilt.navigation.compose.hiltViewModel
+import net.affscash.android.ui.dashboard.GlassCard
 import net.affscash.android.ui.dashboard.PremiumUI
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,87 +48,103 @@ fun AdminPrivateOffersScreen(
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(PremiumUI.PageBackground)
+    ) {
+        // 3D Glass Header Bar
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            shape = PremiumUI.CardShape,
+            color = Color.White,
+            shadowElevation = 2.dp,
+            border = PremiumUI.GlassBorder
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(42.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(PremiumUI.HeaderGradient),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        Icons.Outlined.VpnKey,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                Column {
+                    Text(
+                        text = "Private Offers",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF0F172A)
+                    )
+                    Text(
+                        text = "Manage restricted-access offers",
+                        fontSize = 12.sp,
+                        color = Color(0xFF64748B)
+                    )
+                }
+            }
+        }
+
         when (val state = uiState) {
             is AdminPrivateOffersUiState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(color = Color(0xFF4F46E5))
                 }
             }
             is AdminPrivateOffersUiState.Error -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(state.message, color = MaterialTheme.colorScheme.error)
+                    Text(state.message, color = Color(0xFFEF4444))
                 }
             }
             is AdminPrivateOffersUiState.Success -> {
                 val data = state.data
-                
-                // Top Header
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-                    shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 24.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Surface(
-                            shape = PremiumUI.CardShape,
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(48.dp)
-                        ) {
-                            Icon(
-                                Icons.Default.VpnKey,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier.padding(8.dp)
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Column {
-                            Text(
-                                text = "Private Offers",
-                                style = MaterialTheme.typography.headlineSmall,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                            Text(
-                                text = "Manage restricted-access offers.",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
-                            )
-                        }
-                    }
-                }
 
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp),
-                    contentPadding = PaddingValues(vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 12.dp),
+                    contentPadding = PaddingValues(top = 4.dp, bottom = 80.dp),
+                    verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
                     // Convert Section
                     item {
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = PremiumUI.CardShape,
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-                        ) {
-                            Column(modifier = Modifier.padding(20.dp)) {
+                        GlassCard(elevation = 3.dp) {
+                            Column(modifier = Modifier.fillMaxWidth()) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(Icons.Default.Security, contentDescription = null, tint = MaterialTheme.colorScheme.secondary)
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text("Convert Offer to Private", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                                    Box(
+                                        modifier = Modifier
+                                            .size(32.dp)
+                                            .clip(CircleShape)
+                                            .background(Color(0xFFEEF2FF)),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(Icons.Outlined.Security, contentDescription = null, tint = Color(0xFF4F46E5), modifier = Modifier.size(18.dp))
+                                    }
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text("Convert Offer to Private", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))
                                 }
-                                Spacer(modifier = Modifier.height(4.dp))
+                                
+                                Spacer(modifier = Modifier.height(12.dp))
                                 
                                 var expanded by remember { mutableStateOf(false) }
                                 var selectedOfferId by remember { mutableStateOf<Int?>(null) }
                                 
-                                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                                     ExposedDropdownMenuBox(
                                         expanded = expanded,
                                         onExpandedChange = { expanded = !expanded },
@@ -135,11 +156,14 @@ fun AdminPrivateOffersScreen(
                                             onValueChange = {},
                                             readOnly = true,
                                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                                            leadingIcon = { Icon(Icons.Default.LocalOffer, contentDescription = null, tint = MaterialTheme.colorScheme.outline) },
+                                            leadingIcon = { Icon(Icons.Outlined.LocalOffer, contentDescription = null, tint = Color(0xFF64748B)) },
                                             modifier = Modifier.menuAnchor().fillMaxWidth(),
-                                            shape = PremiumUI.CardShape,
+                                            shape = RoundedCornerShape(12.dp),
                                             colors = OutlinedTextFieldDefaults.colors(
-                                                unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                                                focusedBorderColor = Color(0xFF4F46E5),
+                                                unfocusedBorderColor = Color(0xFFE2E8F0),
+                                                focusedContainerColor = Color(0xFFF8FAFC),
+                                                unfocusedContainerColor = Color(0xFFF8FAFC)
                                             )
                                         )
                                         ExposedDropdownMenu(
@@ -164,130 +188,155 @@ fun AdminPrivateOffersScreen(
                                             selectedOfferId = null
                                         },
                                         enabled = selectedOfferId != null,
-                                        modifier = Modifier.fillMaxWidth().height(50.dp),
-                                        shape = PremiumUI.CardShape
+                                        modifier = Modifier.fillMaxWidth().height(46.dp),
+                                        shape = PremiumUI.ButtonShape,
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(0xFF4F46E5),
+                                            disabledContainerColor = Color(0xFFE2E8F0)
+                                        )
                                     ) {
-                                        Icon(Icons.Default.Lock, contentDescription = null, modifier = Modifier.size(18.dp))
-                                        Spacer(modifier = Modifier.width(4.dp))
-                                        Text("Mark as Private")
+                                        Icon(Icons.Outlined.Lock, contentDescription = null, modifier = Modifier.size(18.dp))
+                                        Spacer(modifier = Modifier.width(6.dp))
+                                        Text("Mark as Private", fontWeight = FontWeight.Bold)
                                     }
                                 }
                                 
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Row(verticalAlignment = Alignment.Top, modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), RoundedCornerShape(8.dp)).padding(8.dp)) {
-                                    Icon(Icons.Default.Info, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(16.dp))
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text(
-                                        "Once private, the offer is hidden from all affiliates. You must manually grant access from the offer's manage page.",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
+                                Spacer(modifier = Modifier.height(10.dp))
+                                Surface(
+                                    color = Color(0xFFF8FAFC),
+                                    shape = RoundedCornerShape(10.dp),
+                                    border = BorderStroke(1.dp, Color(0xFFE2E8F0))
+                                ) {
+                                    Row(
+                                        verticalAlignment = Alignment.Top,
+                                        modifier = Modifier.padding(10.dp)
+                                    ) {
+                                        Icon(Icons.Outlined.Info, contentDescription = null, tint = Color(0xFF64748B), modifier = Modifier.size(16.dp))
+                                        Spacer(modifier = Modifier.width(6.dp))
+                                        Text(
+                                            "Once private, the offer is hidden from all affiliates. You must manually grant access from the offer's manage page.",
+                                            fontSize = 12.sp,
+                                            color = Color(0xFF64748B),
+                                            lineHeight = 16.sp
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
 
-                    // Active Private Offers
+                    // Active Private Offers Section
                     item {
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = PremiumUI.CardShape,
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-                        ) {
-                            Column(modifier = Modifier.padding(vertical = 8.dp)) {
+                        GlassCard(elevation = 3.dp) {
+                            Column(modifier = Modifier.fillMaxWidth()) {
                                 Row(
-                                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                                    modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Icon(Icons.Default.VerifiedUser, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                                        Spacer(modifier = Modifier.width(4.dp))
-                                        Text("Active Private Offers", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                                        Box(
+                                            modifier = Modifier
+                                                .size(32.dp)
+                                                .clip(CircleShape)
+                                                .background(Color(0xFFD1FAE5)),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Icon(Icons.Outlined.VerifiedUser, contentDescription = null, tint = Color(0xFF059669), modifier = Modifier.size(18.dp))
+                                        }
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text("Active Private Offers", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))
                                     }
+                                    
                                     Surface(
-                                        shape = PremiumUI.CardShape,
-                                        color = MaterialTheme.colorScheme.primaryContainer
+                                        shape = RoundedCornerShape(12.dp),
+                                        color = Color(0xFFEEF2FF)
                                     ) {
                                         Text(
                                             "${data.privateOffers.size}",
                                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                                            style = MaterialTheme.typography.labelMedium,
-                                            fontWeight = FontWeight.Bold,
-                                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                                            fontSize = 12.sp,
+                                            fontWeight = FontWeight.ExtraBold,
+                                            color = Color(0xFF4F46E5)
                                         )
                                     }
                                 }
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Divider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+                                
+                                Spacer(modifier = Modifier.height(10.dp))
+                                HorizontalDivider(color = Color(0xFFF1F5F9))
+                                Spacer(modifier = Modifier.height(10.dp))
 
                                 if (data.privateOffers.isEmpty()) {
-                                    Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
+                                    Box(modifier = Modifier.fillMaxWidth().padding(24.dp), contentAlignment = Alignment.Center) {
                                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                            Icon(Icons.Outlined.VisibilityOff, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f), modifier = Modifier.size(48.dp))
+                                            Icon(Icons.Outlined.VisibilityOff, contentDescription = null, tint = Color(0xFF94A3B8), modifier = Modifier.size(40.dp))
                                             Spacer(modifier = Modifier.height(4.dp))
-                                            Text("No private offers currently.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            Text("No private offers currently.", color = Color(0xFF64748B), fontSize = 13.sp)
                                         }
                                     }
                                 } else {
                                     data.privateOffers.forEachIndexed { index, offer ->
-                                        Column(
-                                            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 16.dp)
-                                        ) {
-                                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Top) {
-                                                Column(modifier = Modifier.weight(1f)) {
-                                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                                        Surface(
-                                                            shape = RoundedCornerShape(6.dp),
-                                                            color = MaterialTheme.colorScheme.secondaryContainer
-                                                        ) {
-                                                            Text("OFF-${offer.id}", modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSecondaryContainer)
-                                                        }
-                                                        Spacer(modifier = Modifier.width(4.dp))
-                                                        Text(offer.name, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                        Column(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+                                                    Surface(
+                                                        shape = RoundedCornerShape(6.dp),
+                                                        color = Color(0xFFEEF2FF)
+                                                    ) {
+                                                        Text("OFF-${offer.id}", modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp), fontSize = 11.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF4F46E5))
                                                     }
-                                                    Spacer(modifier = Modifier.height(6.dp))
-                                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                                        Icon(Icons.Default.MonetizationOn, contentDescription = null, modifier = Modifier.size(14.dp), tint = Color.Gray)
-                                                        Spacer(modifier = Modifier.width(4.dp))
-                                                        Text("${offer.payout_type} ${offer.payout ?: "0"}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                                                        Spacer(modifier = Modifier.width(4.dp))
-                                                        Icon(Icons.Default.People, contentDescription = null, modifier = Modifier.size(14.dp), tint = MaterialTheme.colorScheme.tertiary)
-                                                        Spacer(modifier = Modifier.width(4.dp))
-                                                        Text("${offer.access_count ?: 0} Granted", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.tertiary, fontWeight = FontWeight.Medium)
-                                                    }
+                                                    Spacer(modifier = Modifier.width(6.dp))
+                                                    Text(offer.name, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color(0xFF0F172A), maxLines = 1, overflow = TextOverflow.Ellipsis)
                                                 }
                                             }
                                             
                                             Spacer(modifier = Modifier.height(4.dp))
+                                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                                Text("${offer.payout_type} ${offer.payout ?: "0"}", fontSize = 12.sp, color = Color(0xFF64748B))
+                                                Spacer(modifier = Modifier.width(10.dp))
+                                                Surface(color = Color(0xFFECFDF5), shape = RoundedCornerShape(4.dp)) {
+                                                    Text("${offer.access_count ?: 0} Granted", modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp), fontSize = 11.sp, color = Color(0xFF059669), fontWeight = FontWeight.Bold)
+                                                }
+                                            }
                                             
-                                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
+                                            Spacer(modifier = Modifier.height(8.dp))
+                                            
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.End,
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
                                                 OutlinedButton(
                                                     onClick = { viewModel.makeOfferPublic(offer.id) },
-                                                    shape = RoundedCornerShape(20.dp),
-                                                    modifier = Modifier.height(36.dp),
-                                                    contentPadding = PaddingValues(horizontal = 16.dp)
+                                                    shape = RoundedCornerShape(10.dp),
+                                                    modifier = Modifier.height(34.dp),
+                                                    contentPadding = PaddingValues(horizontal = 12.dp),
+                                                    border = BorderStroke(1.dp, Color(0xFFCBD5E1))
                                                 ) {
-                                                    Icon(Icons.Default.Public, contentDescription = null, modifier = Modifier.size(16.dp))
-                                                    Spacer(modifier = Modifier.width(6.dp))
-                                                    Text("Make Public", fontSize = 12.sp)
+                                                    Icon(Icons.Outlined.Public, contentDescription = null, modifier = Modifier.size(14.dp), tint = Color(0xFF475569))
+                                                    Spacer(modifier = Modifier.width(4.dp))
+                                                    Text("Make Public", fontSize = 12.sp, color = Color(0xFF475569))
                                                 }
-                                                Spacer(modifier = Modifier.width(4.dp))
+                                                Spacer(modifier = Modifier.width(6.dp))
                                                 Button(
                                                     onClick = { onNavigateToDetail(offer.id) },
-                                                    shape = RoundedCornerShape(20.dp),
-                                                    modifier = Modifier.height(36.dp),
-                                                    contentPadding = PaddingValues(horizontal = 16.dp)
+                                                    shape = RoundedCornerShape(10.dp),
+                                                    modifier = Modifier.height(34.dp),
+                                                    contentPadding = PaddingValues(horizontal = 12.dp),
+                                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F46E5))
                                                 ) {
-                                                    Icon(Icons.Default.ManageAccounts, contentDescription = null, modifier = Modifier.size(16.dp))
-                                                    Spacer(modifier = Modifier.width(6.dp))
-                                                    Text("Manage Access", fontSize = 12.sp)
+                                                    Icon(Icons.Outlined.ManageAccounts, contentDescription = null, modifier = Modifier.size(14.dp))
+                                                    Spacer(modifier = Modifier.width(4.dp))
+                                                    Text("Manage Access", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                                                 }
                                             }
                                         }
                                         if (index < data.privateOffers.lastIndex) {
-                                            Divider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f), modifier = Modifier.padding(horizontal = 20.dp))
+                                            HorizontalDivider(color = Color(0xFFF1F5F9), modifier = Modifier.padding(vertical = 6.dp))
                                         }
                                     }
                                 }
@@ -295,70 +344,76 @@ fun AdminPrivateOffersScreen(
                         }
                     }
 
-                    // Recent Activity
+                    // Recent Activity Log
                     item {
-                        Card(
-                            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
-                            shape = PremiumUI.CardShape,
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-                        ) {
-                            Column(modifier = Modifier.padding(vertical = 8.dp)) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(Icons.Default.History, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text("Recent Activity Log", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                        GlassCard(elevation = 3.dp) {
+                            Column(modifier = Modifier.fillMaxWidth()) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(32.dp)
+                                            .clip(CircleShape)
+                                            .background(Color(0xFFFEF3C7)),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(Icons.Outlined.History, contentDescription = null, tint = Color(0xFFD97706), modifier = Modifier.size(18.dp))
+                                    }
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text("Recent Activity Log", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))
                                 }
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Divider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+                                
+                                Spacer(modifier = Modifier.height(10.dp))
+                                HorizontalDivider(color = Color(0xFFF1F5F9))
+                                Spacer(modifier = Modifier.height(10.dp))
                                 
                                 if (data.recentLog.isEmpty()) {
-                                    Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
-                                        Text("No recent activity.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                    Box(modifier = Modifier.fillMaxWidth().padding(24.dp), contentAlignment = Alignment.Center) {
+                                        Text("No recent activity.", color = Color(0xFF64748B), fontSize = 13.sp)
                                     }
                                 } else {
                                     data.recentLog.forEachIndexed { index, log ->
-                                        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 16.dp), verticalAlignment = Alignment.Top) {
-                                            // Status Icon
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                                            verticalAlignment = Alignment.Top
+                                        ) {
                                             val isNegative = log.action == "deny" || log.action == "disable" || log.action == "remove"
-                                            val iconColor = if (isNegative) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
-                                            val iconBg = if (isNegative) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.primaryContainer
-                                            val icon = if (isNegative) Icons.Default.Block else Icons.Default.CheckCircle
+                                            val badgeBg = if (isNegative) Color(0xFFFEE2E2) else Color(0xFFD1FAE5)
+                                            val badgeText = if (isNegative) Color(0xFFDC2626) else Color(0xFF059669)
                                             
                                             Surface(
-                                                shape = PremiumUI.CardShape,
-                                                color = iconBg,
-                                                modifier = Modifier.size(40.dp)
+                                                shape = RoundedCornerShape(6.dp),
+                                                color = badgeBg
                                             ) {
-                                                Box(contentAlignment = Alignment.Center) {
-                                                    Icon(icon, contentDescription = null, tint = iconColor, modifier = Modifier.size(20.dp))
-                                                }
+                                                Text(
+                                                    text = log.action.uppercase(),
+                                                    fontSize = 10.sp,
+                                                    fontWeight = FontWeight.ExtraBold,
+                                                    color = badgeText,
+                                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp)
+                                                )
                                             }
                                             
-                                            Spacer(modifier = Modifier.width(4.dp))
+                                            Spacer(modifier = Modifier.width(8.dp))
                                             
                                             Column(modifier = Modifier.weight(1f)) {
-                                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                                                    Text(log.action.uppercase(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = iconColor)
-                                                    Text(log.created_at, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                                Row(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                                    verticalAlignment = Alignment.CenterVertically
+                                                ) {
+                                                    Text(log.offer_name ?: "Unknown Offer", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                                    Text(log.created_at, fontSize = 11.sp, color = Color(0xFF94A3B8))
                                                 }
-                                                Spacer(modifier = Modifier.height(4.dp))
-                                                Text("Offer: ${log.offer_name ?: "Unknown"}", fontWeight = FontWeight.Medium, style = MaterialTheme.typography.bodyMedium)
                                                 if (log.aff_name != null) {
-                                                    Text("Affiliate: ${log.aff_name} (${log.affiliate_code})", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f))
+                                                    Text("Affiliate: ${log.aff_name} (${log.affiliate_code})", fontSize = 12.sp, color = Color(0xFF475569))
                                                 }
                                                 if (log.details != null) {
-                                                    Spacer(modifier = Modifier.height(2.dp))
-                                                    Text(log.details, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                                    Text(log.details, fontSize = 11.sp, color = Color(0xFF64748B))
                                                 }
-                                                Text("By: ${log.source}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.outline, modifier = Modifier.padding(top = 4.dp))
                                             }
                                         }
                                         if (index < data.recentLog.lastIndex) {
-                                            Divider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f), modifier = Modifier.padding(horizontal = 76.dp))
+                                            HorizontalDivider(color = Color(0xFFF1F5F9), modifier = Modifier.padding(vertical = 4.dp))
                                         }
                                     }
                                 }

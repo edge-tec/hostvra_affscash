@@ -1,24 +1,32 @@
 package net.affscash.android.ui.screens.admin.reports
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.affscash.android.ui.components.CustomDropdownMenu
+import net.affscash.android.ui.dashboard.GlassCard
 import net.affscash.android.ui.dashboard.PremiumUI
 import kotlinx.serialization.json.*
 
@@ -39,28 +47,79 @@ fun AdminReportsScreen(
     }
 
     Scaffold(
-        topBar = {
-            net.affscash.android.ui.components.CompactTopBar(
-                title = { Text("Reports") },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) { Icon(Icons.Default.ArrowBack, "Back") }
-                },
-                actions = {
-                    IconButton(onClick = { viewModel.loadReport() }) { Icon(Icons.Default.Refresh, "Refresh") }
-                }
-            )
-        },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
-        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(PremiumUI.PageBackground)
+                .padding(padding)
+        ) {
+            // 3D Glass Header Bar
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                shape = PremiumUI.CardShape,
+                color = Color.White,
+                shadowElevation = 2.dp,
+                border = PremiumUI.GlassBorder
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 14.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        IconButton(onClick = onNavigateBack) {
+                            Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color(0xFF0F172A))
+                        }
+                        Box(
+                            modifier = Modifier
+                                .size(38.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(PremiumUI.HeaderGradient),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                Icons.Outlined.Assessment,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Column {
+                            Text(
+                                text = "Performance Reports",
+                                fontSize = 17.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF0F172A)
+                            )
+                            Text(
+                                text = "Detailed analytics & metrics",
+                                fontSize = 11.sp,
+                                color = Color(0xFF64748B)
+                            )
+                        }
+                    }
+
+                    IconButton(onClick = { viewModel.loadReport() }) {
+                        Icon(Icons.Default.Refresh, contentDescription = "Refresh", tint = Color(0xFF4F46E5))
+                    }
+                }
+            }
+
             net.affscash.android.ui.components.DateRangeFilterComponent(
                 state = uiState.dateRangeState,
                 onOptionSelected = { viewModel.setDateRangeOption(it) },
                 onCustomRangeSelected = { start, end -> viewModel.setCustomDateRange(start, end) },
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
             )
 
-            // Tabs as Dropdown
+            // Report Type Dropdown & Filter Toggle
             var reportTypeExpanded by remember { mutableStateOf(false) }
             val tabs = listOf(
                 "performance" to "Performance",
@@ -76,185 +135,140 @@ fun AdminReportsScreen(
                 "sl_affiliates" to "SmartLink Affiliates"
             )
             val currentTabName = tabs.find { it.first == uiState.tab }?.second ?: "Report Type"
-            Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp)) {
-                OutlinedButton(
-                    onClick = { reportTypeExpanded = true },
-                    modifier = Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(horizontal = 16.dp)
-                ) {
-                    Text(currentTabName, modifier = Modifier.weight(1f))
-                    Icon(Icons.Default.ArrowDropDown, contentDescription = null)
-                }
-                DropdownMenu(expanded = reportTypeExpanded, onDismissRequest = { reportTypeExpanded = false }) {
-                    tabs.forEach { tabInfo ->
-                        DropdownMenuItem(
-                            text = { Text(tabInfo.second) },
-                            onClick = { viewModel.updateTab(tabInfo.first); reportTypeExpanded = false }
-                        )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Box(modifier = Modifier.weight(1f)) {
+                    Surface(
+                        onClick = { reportTypeExpanded = true },
+                        shape = RoundedCornerShape(12.dp),
+                        color = Color.White,
+                        border = BorderStroke(1.dp, Color(0xFFE2E8F0))
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 10.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(currentTabName, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))
+                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = Color(0xFF64748B))
+                        }
+                    }
+
+                    DropdownMenu(
+                        expanded = reportTypeExpanded,
+                        onDismissRequest = { reportTypeExpanded = false }
+                    ) {
+                        tabs.forEach { tabInfo ->
+                            DropdownMenuItem(
+                                text = { Text(tabInfo.second) },
+                                onClick = { viewModel.updateTab(tabInfo.first); reportTypeExpanded = false }
+                            )
+                        }
                     }
                 }
             }
 
             if (uiState.isLoading) {
-                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth(), color = Color(0xFF4F46E5))
             }
 
-            // Filters Toggle
-            var showFilters by remember { mutableStateOf(false) }
-            Button(
-                onClick = { showFilters = !showFilters },
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
-                variant = if (showFilters) ButtonDefaults.filledTonalButtonColors() else ButtonDefaults.buttonColors()
-            ) {
-                Icon(Icons.Default.FilterList, contentDescription = null)
-                Spacer(Modifier.width(8.dp))
-                Text(if (showFilters) "Hide Filters" else "Show Filters")
-            }
-
-            if (showFilters) {
-                Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-                    Column(modifier = Modifier.padding(8.dp)) {
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                            CustomDropdownMenu(
-                                options = listOf("date" to "Day", "offer" to "Offer", "affiliate" to "Affiliate", "country" to "Country"),
-                                selectedOption = uiState.groupBy,
-                                onOptionSelected = { viewModel.updateFilter(groupBy = it) },
-                                label = "Group By",
-                                modifier = Modifier.weight(1f)
-                            )
-                            Spacer(Modifier.width(8.dp))
-                            Button(onClick = { viewModel.loadReport() }, modifier = Modifier.weight(1f)) {
-                                Text("Apply")
-                            }
-                        }
-                        // Other filters can be added here (Offer, Affiliate, Dates)
-                    }
-                }
-            }
-
-            // Stats Cards
+            // Stats KPI Cards
             uiState.totals?.let { totals ->
                 Row(
-                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState())
+                        .padding(horizontal = 12.dp, vertical = 6.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    StatCard("Clicks", totals.clicks.toString())
-                    StatCard("Unique", totals.uclicks.toString())
-                    StatCard("Conversions", totals.conversions.toString(), Color(0xFF388E3C))
-                    StatCard("Payout", "$${(( totals.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }")
-                    StatCard("Revenue", "$${(( totals.revenue )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }")
-                    StatCard("Profit", "$${(( totals.profit )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", if (totals.profit >= 0) Color(0xFF388E3C) else Color.Red)
+                    ReportStatCard3D("Clicks", "${totals.clicks.toInt()}", Color(0xFF4F46E5), Modifier.width(110.dp))
+                    ReportStatCard3D("Unique", "${totals.uclicks.toInt()}", Color(0xFF0284C7), Modifier.width(110.dp))
+                    ReportStatCard3D("Conversions", "${totals.conversions.toInt()}", Color(0xFF10B981), Modifier.width(110.dp))
+                    ReportStatCard3D("Payout", "$${"%.2f".format(totals.payout)}", Color(0xFFD97706), Modifier.width(120.dp))
+                    ReportStatCard3D("Revenue", "$${"%.2f".format(totals.revenue)}", Color(0xFF059669), Modifier.width(120.dp))
                 }
             }
 
             // Data List
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(8.dp)
-            ) {
-                items(uiState.rows) { row ->
-                    ReportRowCard(tab = uiState.tab, row = row)
+            Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                if (uiState.rows.isEmpty()) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text("No report data available.", color = Color(0xFF64748B))
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 12.dp),
+                        contentPadding = PaddingValues(top = 4.dp, bottom = 80.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(uiState.rows) { row ->
+                            ReportRowCard3D(row)
+                        }
+                    }
                 }
             }
         }
     }
 }
 
-// Ensure Button component does not error on variant by not using variant but colors if needed
 @Composable
-fun Button(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    variant: ButtonColors = ButtonDefaults.buttonColors(),
-    content: @Composable RowScope.() -> Unit
-) {
-    androidx.compose.material3.Button(onClick = onClick, modifier = modifier, colors = variant, content = content)
-}
-
-@Composable
-fun StatCard(label: String, value: String, valueColor: Color = Color.Unspecified) {
-    Card {
+fun ReportStatCard3D(title: String, value: String, accentColor: Color, modifier: Modifier = Modifier) {
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(14.dp),
+        color = Color.White,
+        shadowElevation = 2.dp,
+        border = BorderStroke(1.dp, Color(0xFFE2E8F0))
+    ) {
         Column(
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier.padding(vertical = 10.dp, horizontal = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(label, style = MaterialTheme.typography.labelSmall)
-            Text(
-                value,
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
-                color = valueColor
-            )
+            Text(title, fontSize = 10.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF64748B))
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(value, fontSize = 15.sp, fontWeight = FontWeight.ExtraBold, color = accentColor)
         }
     }
 }
 
 @Composable
-fun ReportRowCard(tab: String, row: JsonObject) {
-    Card(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            when (tab) {
-                "performance" -> {
-                    Text(row["label"].asString("Unknown"), fontWeight = FontWeight.Bold)
-                    Spacer(Modifier.height(4.dp))
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text("Clicks: ${row["clicks"].asString()}", style = MaterialTheme.typography.bodySmall)
-                        Text("Conv: ${row["conversions"].asString()}", style = MaterialTheme.typography.bodySmall)
-                        Text("Profit: $${(( row["revenue"].asDouble() - row["payout"].asDouble() )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.bodySmall)
+fun ReportRowCard3D(row: JsonObject) {
+    val date = row["date"]?.jsonPrimitive?.contentOrNull ?: row["created_at"]?.jsonPrimitive?.contentOrNull ?: "Summary"
+    val clicks = row["clicks"]?.jsonPrimitive?.contentOrNull ?: row["total_clicks"]?.jsonPrimitive?.contentOrNull ?: "0"
+    val conv = row["conversions"]?.jsonPrimitive?.contentOrNull ?: row["total_conversions"]?.jsonPrimitive?.contentOrNull ?: "0"
+    val profit = row["profit"]?.jsonPrimitive?.contentOrNull ?: row["revenue"]?.jsonPrimitive?.contentOrNull ?: "0.00"
+
+    GlassCard(elevation = 2.dp) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(date, fontSize = 13.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF0F172A))
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Surface(color = Color(0xFFF8FAFC), shape = RoundedCornerShape(6.dp), border = BorderStroke(1.dp, Color(0xFFE2E8F0))) {
+                        Text("Clicks: $clicks", modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp), fontSize = 11.sp, color = Color(0xFF475569))
+                    }
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Surface(color = Color(0xFFEEF2FF), shape = RoundedCornerShape(6.dp)) {
+                        Text("Conv: $conv", modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp), fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color(0xFF4F46E5))
                     }
                 }
-                "offer_report" -> {
-                    Text(row["offer_name"].asString("Unknown Offer"), fontWeight = FontWeight.Bold)
-                    Text("Status: ${row["offer_status"].asString()}", style = MaterialTheme.typography.labelSmall)
-                    Spacer(Modifier.height(4.dp))
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text("Clicks: ${row["clicks"].asString()}", style = MaterialTheme.typography.bodySmall)
-                        Text("Conv: ${row["conversions"].asString()}", style = MaterialTheme.typography.bodySmall)
-                        Text("Payout: $${(( row["payout"].asString() )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.bodySmall)
-                    }
-                }
-                "clicks", "sl_clicks" -> {
-                    Text("IP: ${row["ip_address"].asString()}", fontWeight = FontWeight.Bold)
-                    Text("Affiliate: ID ${row["affiliate_id"].asString()} - ${row["aff_name"].asString()}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
-                    Text("Offer: ${row["offer_name"].asString()}", style = MaterialTheme.typography.bodySmall)
-                    Text("Time: ${row["clicked_at"].asString()}", style = MaterialTheme.typography.bodySmall)
-                }
-                "conversions", "rejected", "pending", "autohide", "sl_conversions" -> {
-                    Text("Conv ID: ${row["conversion_id"].asString()}", fontWeight = FontWeight.Bold)
-                    Text("Affiliate: ID ${row["affiliate_id"].asString()} - ${row["aff_name"].asString()}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
-                    Text("Offer: ${row["offer_name"].asString()}", style = MaterialTheme.typography.bodySmall)
-                    Text("Payout: $${(( row["payout"].asString() )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } } | Status: ${row["status"].asString()}", style = MaterialTheme.typography.bodySmall)
-                }
-                "postback" -> {
-                    Text("URL: ${row["fired_url"].asString().take(50)}...", fontWeight = FontWeight.Bold)
-                    Text("Status: ${row["http_status"].asString()} | Success: ${row["is_success"].asString()}", style = MaterialTheme.typography.bodySmall)
-                }
-                "sl_affiliates" -> {
-                    Text("Affiliate: ${row["aff_name"].asString()}", fontWeight = FontWeight.Bold)
-                    Text("SmartLink: ${row["smartlink_name"].asString()}", style = MaterialTheme.typography.bodySmall)
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text("Clicks: ${row["clicks"].asString()}", style = MaterialTheme.typography.bodySmall)
-                        Text("Conv: ${row["conversions"].asString()}", style = MaterialTheme.typography.bodySmall)
-                        Text("Payout: $${(( row["payout"].asString() )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", style = MaterialTheme.typography.bodySmall)
-                    }
-                }
-                else -> {
-                    Text(row.toString(), style = MaterialTheme.typography.bodySmall)
-                }
+            }
+
+            Column(horizontalAlignment = Alignment.End) {
+                Text("Profit / Rev", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Color(0xFF94A3B8))
+                Text("$$profit", fontSize = 14.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF10B981))
             }
         }
     }
-}
-
-private fun JsonElement?.asString(default: String = ""): String {
-    return this?.jsonPrimitive?.contentOrNull ?: default
-}
-
-private fun JsonElement?.asDouble(): Double {
-    return this?.jsonPrimitive?.doubleOrNull ?: 0.0
-}
-
-fun getTabIndex(tab: String): Int {
-    val tabs = listOf("performance", "clicks", "conversions", "rejected", "pending", "autohide", "offer_report", "postback", "sl_clicks", "sl_conversions", "sl_affiliates")
-    return tabs.indexOf(tab).takeIf { it >= 0 } ?: 0
 }
