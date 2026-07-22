@@ -441,6 +441,7 @@ Router::any('/affiliate_manager/conversions', function() { require BASE_PATH . '
 Router::any('/affiliate_manager/reports', function() { require BASE_PATH . '/controllers/affiliate_manager/ReportsController.php'; });
 Router::any('/affiliate_manager/duplicate-conversions', function() { require BASE_PATH . '/controllers/affiliate_manager/DuplicateConversionsController.php'; });
 Router::any('/affiliate_manager/fraud-report', function() { require BASE_PATH . '/controllers/admin/fraud/FraudReportsController.php'; });
+Router::any('/affiliate_manager/vpn-log', function() { require BASE_PATH . '/controllers/affiliate_manager/VpnLogController.php'; });
 Router::any('/affiliate_manager/offers/{id}', function($id) { $_GET['id']=$id; require BASE_PATH . '/controllers/affiliate_manager/OfferOverviewController.php'; });
 Router::any('/affiliate_manager/analytics', function() { require BASE_PATH . '/controllers/affiliate_manager/AnalyticsController.php'; });
 Router::any('/affiliate_manager/click_report', function() { require BASE_PATH . '/controllers/affiliate_manager/ClickReportController.php'; });
@@ -568,6 +569,7 @@ Router::any('/api/v2/manager/invoices', function() { require BASE_PATH . '/api/v
 Router::any('/api/v2/manager/profile', function() { require BASE_PATH . '/api/v2/manager/ProfileController.php'; });
 Router::any('/api/v2/manager/reports', function() { require BASE_PATH . '/api/v2/manager/ReportController.php'; });
 Router::any('/api/v2/manager/referral', function() { require BASE_PATH . '/api/v2/manager/ReferralController.php'; });
+Router::any('/api/v2/manager/vpn-logs', function() { require BASE_PATH . '/api/v2/manager/VpnLogController.php'; });
 Router::any('/api/v2/manager/smartlinks', function() { require BASE_PATH . '/api/v2/manager/SmartlinkController.php'; });
 Router::any('/api/v2/manager/offer-approvals', function() { require BASE_PATH . '/api/v2/manager/OfferApprovalController.php'; });
 Router::any('/api/v2/manager/duplicate_conversions', function() { require BASE_PATH . '/api/v2/manager/DuplicateConversionsController.php'; });

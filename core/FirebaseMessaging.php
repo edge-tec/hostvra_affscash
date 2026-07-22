@@ -102,7 +102,11 @@ class FirebaseMessaging {
                     'direct_boot_ok' => true,      // Deliver even if device is locked
                     'notification' => [
                         'channel_id' => $channelId, // Explicitly route to correct channel
-                        'click_action' => 'android.intent.action.MAIN' // Open app on click
+                        'click_action' => 'android.intent.action.MAIN', // Open app on click
+                        'default_sound' => true,
+                        'default_vibrate_timings' => true,
+                        'notification_priority' => 'PRIORITY_MAX',
+                        'visibility' => 'PUBLIC',
                     ]
                 ],
             ]

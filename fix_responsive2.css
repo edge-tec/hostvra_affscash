@@ -1,0 +1,10 @@
+
+@media (max-width: 768px) {
+    /* Absolute fallback: if ANY form or card-body contains an inline grid, force it to stack */
+    form div[style*="display:grid"],
+    form div[style*="display: grid"],
+    .card-body div[style*="display:grid"],
+    .card-body div[style*="display: grid"] {
+        grid-template-columns: 1fr !important;
+    }
+}

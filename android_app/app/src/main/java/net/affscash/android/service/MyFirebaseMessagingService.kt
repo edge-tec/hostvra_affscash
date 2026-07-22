@@ -1,11 +1,14 @@
 package net.affscash.android.service
 
-import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
+import android.os.PowerManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,14 +24,17 @@ import net.affscash.android.R
 import javax.inject.Inject
 
 /**
- * Handles FCM messages (both data-only and notification+data payloads).
+ * Handles real-time FCM push notifications across all app states
+ * (Foreground, Background, and Completely Closed / Killed).
  *
- * Data-only payloads are used by the backend so notifications arrive even when
- * the app is killed. This service manually constructs system notifications
- * and includes deep-link routing data in the pending intent extras.
- *
- * All received notifications are also persisted locally in Room database
- * for offline viewing and reliable badge counts.
+ * Implements:
+ * - Immediate Heads-Up popup notification with sound & vibration
+ * - Deep link intent routing for screen navigation
+ * - Local Room DB persistence for offline notification history
+ * - Instant badge count updates
+ * - Notification grouping & stack summaries
+ * - Transient WakeLock to wake the screen for urgent alerts
+ * - Full Android 10-15+ compatibility
  */
 @AndroidEntryPoint
 class MyFirebaseMessagingService : FirebaseMessagingService() {
@@ -45,14 +51,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         super.onNewToken(token)
         Log.d(TAG, "Refreshed FCM token: $token")
 
-        // Save token locally and schedule reliable registration
+        // Save token locally and register with backend
         fcmTokenManager.onTokenRefreshed(token)
         fcmTokenManager.ensureTokenRegistered()
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        Log.d(TAG, "FCM Message Received from: ${remoteMessage.from}")
-        Log.d(TAG, "Message ID: ${remoteMessage.messageId}")
+        Log.d(TAG, "FCM Message Received from: ${remoteMessage.from}, ID: ${remoteMessage.messageId}")
 
         val data = remoteMessage.data
         if (data.isNotEmpty()) {
@@ -60,12 +65,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
 
         remoteMessage.notification?.let {
-            Log.d(TAG, "Message Notification Title: ${it.title}")
-            Log.d(TAG, "Message Notification Body: ${it.body}")
-            Log.d(TAG, "Message Notification Channel: ${it.channelId}")
+            Log.d(TAG, "Message Notification Title: ${it.title}, Body: ${it.body}")
         }
 
-        // Extract exact counts from payload (if provided)
+        // Extract exact badge counts from payload (if provided)
         val notifs = data["unread_notifs"]?.toIntOrNull()
         val chats = data["unread_chats"]?.toIntOrNull()
         val alerts = data["unread_alerts"]?.toIntOrNull()
@@ -76,7 +79,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             Log.d(TAG, "Updating badge counts from payload: notifs=$notifs, chats=$chats")
             badgeManager.updateCounts(notifs, chats, alerts, approvals)
         } else {
-            // Fallback for legacy generic payloads
+            // Fallback: Increment unread count for generic payloads
             Log.d(TAG, "Incrementing unread count (legacy/unspecified payload)")
             badgeManager.updateCounts(
                 notifs = (badgeManager.unreadNotifs.value + 1),
@@ -91,42 +94,30 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             return
         }
 
-        // Data-only payload (backend sends these for reliable delivery when killed)
-        if (data.isNotEmpty()) {
-            val title = data["title"] ?: remoteMessage.notification?.title ?: "AffsCash"
-            val body = data["body"] ?: remoteMessage.notification?.body ?: ""
-            val notificationType = data["notification_type"] ?: type
-            val deepLinkRoute = data["deep_link_route"] ?: ""
-            val notificationId = data["notification_id"] ?: ""
+        // Extract message fields from Data or Notification payload
+        val title = data["title"] ?: remoteMessage.notification?.title ?: "AffsCash"
+        val body = data["body"] ?: remoteMessage.notification?.body ?: ""
+        val notificationType = data["notification_type"] ?: type
+        val deepLinkRoute = data["deep_link_route"] ?: ""
+        val notificationId = data["notification_id"] ?: remoteMessage.messageId ?: ""
 
-            // Skip empty title/body (shouldn't happen except for silent_sync already handled above)
-            if (title.isBlank() && body.isBlank()) {
-                Log.d(TAG, "Skipping notification: title and body are both empty")
-                return
-            }
-
-            Log.d(TAG, "Manually building notification: $title")
-            // Save notification locally
-            saveNotificationLocally(notificationId, title, body, type, notificationType, deepLinkRoute)
-
-            // Show system notification with deep link data
-            showNotification(title, body, notificationType, deepLinkRoute, notificationId)
+        // Skip completely empty messages
+        if (title.isBlank() && body.isBlank()) {
+            Log.d(TAG, "Skipping notification: title and body are both empty")
             return
         }
 
-        // Notification payload (system handles this in background, we handle it in foreground)
-        remoteMessage.notification?.let {
-            Log.d(TAG, "Handling system notification payload in foreground")
-            showNotification(
-                it.title ?: "AffsCash",
-                it.body ?: "",
-                "", "", ""
-            )
-        }
+        Log.d(TAG, "Processing push notification: title='$title', type='$notificationType', deepLink='$deepLinkRoute'")
+
+        // Save notification locally for offline history
+        saveNotificationLocally(notificationId, title, body, type, notificationType, deepLinkRoute)
+
+        // Show system notification with Heads-Up popup, sound & vibration
+        showNotification(title, body, notificationType, deepLinkRoute, notificationId)
     }
 
     /**
-     * Saves a received push notification to local Room database.
+     * Saves a received push notification to local Room database for notification history.
      */
     private fun saveNotificationLocally(
         notificationId: String,
@@ -138,7 +129,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     ) {
         serviceScope.launch {
             try {
-                val id = notificationId.toIntOrNull() ?: return@launch
+                val id = notificationId.toIntOrNull() ?: (System.currentTimeMillis() % 1000000).toInt()
                 val dao = NotificationDatabase.getInstance(applicationContext).notificationDao()
                 dao.insert(
                     LocalNotification(
@@ -157,13 +148,17 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                         }.format(java.util.Date())
                     )
                 )
-                Log.d(TAG, "Notification saved locally: id=$id")
+                Log.d(TAG, "Notification saved to local Room DB: id=$id")
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to save notification locally: ${e.message}")
             }
         }
     }
 
+    /**
+     * Constructs and posts a High-Priority system notification with Heads-Up popup,
+     * custom sound, vibration, lockscreen visibility, and deep link navigation intent.
+     */
     private fun showNotification(
         title: String,
         body: String,
@@ -171,28 +166,35 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         deepLinkRoute: String,
         notificationId: String
     ) {
+        // Ensure all channels are initialized
+        NotificationChannelManager.createAllChannels(this)
+
+        // Determine specific channel ID for notification type
+        val channelId = NotificationChannelManager.getChannelForType(notificationType)
+
+        // Intent for deep link routing upon tapping notification
         val intent = Intent(this, MainActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
             putExtra("notification_type", notificationType)
             putExtra("deep_link_route", deepLinkRoute)
             putExtra("notification_id", notificationId)
-            putExtra("from_notification", true)
+            putExtra("from_notification", "true")
+            putExtra("from_notification_bool", true)
         }
 
-        val requestCode = (System.currentTimeMillis() % Integer.MAX_VALUE).toInt()
-        val notificationIdInt = requestCode
+        val notificationIdInt = notificationId.toIntOrNull() ?: (System.currentTimeMillis() % 1000000).toInt()
+        val requestCode = notificationIdInt
+
         val pendingIntent = PendingIntent.getActivity(
-            this, requestCode, intent,
+            this,
+            requestCode,
+            intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        // Use centralized channel manager for consistent channel mapping
-        val channelId = NotificationChannelManager.getChannelForType(notificationType)
-
-        // Ensure channels exist
-        NotificationChannelManager.createAllChannels(this)
-
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        val vibrationPattern = longArrayOf(0, 250, 250, 250)
+
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(title)
@@ -200,46 +202,74 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .setStyle(NotificationCompat.BigTextStyle().bigText(body))
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
+            .setVibrate(vibrationPattern)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
             .setContentIntent(pendingIntent)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setGroup(GROUP_KEY)
 
-        // Add icon color for brand consistency
         try {
-            notificationBuilder.setColor(getColor(R.color.primary))
+            notificationBuilder.setColor(ContextCompat.getColor(this, R.color.primary))
         } catch (_: Exception) {}
 
-        val notificationManager = androidx.core.app.NotificationManagerCompat.from(this)
-
+        // Check POST_NOTIFICATIONS permission on Android 13+ (Tiramisu+)
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            if (androidx.core.content.ContextCompat.checkSelfPermission(
-                    this,
-                    android.Manifest.permission.POST_NOTIFICATIONS
-                ) != android.content.pm.PackageManager.PERMISSION_GRANTED
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
+                != android.content.pm.PackageManager.PERMISSION_GRANTED
             ) {
-                Log.e(TAG, "Missing POST_NOTIFICATIONS permission. Cannot show notification.")
+                Log.e(TAG, "Missing POST_NOTIFICATIONS permission on Android 13+. Cannot display notification.")
                 return
             }
         }
 
+        // Wake lock: Turn screen on briefly for high-priority / heads-up notification
+        wakeScreenForNotification()
+
+        val notificationManager = NotificationManagerCompat.from(this)
         try {
+            // Display notification
             notificationManager.notify(notificationIdInt, notificationBuilder.build())
-            Log.d(TAG, "Notification delivered to system manager. id=$notificationIdInt")
+            Log.d(TAG, "Notification successfully posted to system manager: id=$notificationIdInt, channel=$channelId")
+
+            // Display group summary if needed
+            val summaryNotification = NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setStyle(NotificationCompat.InboxStyle().setSummaryText("AffsCash Notifications"))
+                .setGroup(GROUP_KEY)
+                .setGroupSummary(true)
+                .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .build()
+
+            notificationManager.notify(SUMMARY_ID, summaryNotification)
         } catch (e: Exception) {
             Log.e(TAG, "FATAL ERROR posting notification to system: ${e.message}", e)
         }
     }
 
     /**
-     * Creates a summary notification for grouped notifications.
-     * Only shows when there are 2+ notifications in the group.
+     * Acquires a temporary WakeLock to wake up device screen for urgent notifications.
      */
+    private fun wakeScreenForNotification() {
+        try {
+            val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+            @Suppress("DEPRECATION")
+            val wakeLock = powerManager.newWakeLock(
+                PowerManager.SCREEN_BRIGHT_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP,
+                "AffsCash:NotificationWakeLock"
+            )
+            wakeLock.acquire(3000L) // Wake screen for 3 seconds
+            Log.d(TAG, "Acquired WakeLock to wake device screen")
+        } catch (e: Exception) {
+            Log.w(TAG, "Could not acquire WakeLock: ${e.message}")
+        }
+    }
 
     companion object {
         private const val TAG = "MyFirebaseMsgService"
         private const val GROUP_KEY = "net.affscash.android.NOTIFICATIONS"
+        private const val SUMMARY_ID = 99999
     }
 }
-

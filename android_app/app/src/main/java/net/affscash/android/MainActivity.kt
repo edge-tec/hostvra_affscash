@@ -20,7 +20,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import net.affscash.android.data.local.SecureStorageManager
 import net.affscash.android.data.local.UserManager
 import net.affscash.android.service.FcmTokenManager
+import net.affscash.android.service.NotificationChannelManager
 import net.affscash.android.ui.navigation.AffscashNavGraph
+import net.affscash.android.util.AutoStartHelper
 import net.affscash.android.util.BiometricAuthManager
 import javax.inject.Inject
 
@@ -44,12 +46,19 @@ class MainActivity : FragmentActivity() {
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
-        // Handle post notification permission result
+        Log.d("MainActivity", "POST_NOTIFICATIONS permission granted: $isGranted")
+        if (isGranted) {
+            fcmTokenManager.ensureTokenRegistered()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Ensure notification channels exist
+        NotificationChannelManager.createAllChannels(this)
+
+        // Automatically request POST_NOTIFICATIONS permission on Android 13+ (API 33+)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (androidx.core.content.ContextCompat.checkSelfPermission(
                     this,
@@ -59,6 +68,9 @@ class MainActivity : FragmentActivity() {
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
+
+        // Request battery optimization exemption for reliable background push notifications
+        AutoStartHelper.requestIgnoreBatteryOptimizations(this)
 
         handleNotificationIntent(intent)
 
@@ -114,6 +126,7 @@ class MainActivity : FragmentActivity() {
         val fromNotificationStr = intent?.getStringExtra("from_notification")
         val notificationTypeStr = intent?.getStringExtra("notification_type")
         val fromNotification = intent?.getBooleanExtra("from_notification", false) == true || 
+                               intent?.getBooleanExtra("from_notification_bool", false) == true ||
                                fromNotificationStr == "true" ||
                                !notificationTypeStr.isNullOrEmpty()
 

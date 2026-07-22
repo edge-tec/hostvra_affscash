@@ -21,24 +21,27 @@ import androidx.core.app.NotificationManagerCompat
 object NotificationChannelManager {
 
     // Channel IDs — must match backend FirebaseMessaging.php
-    const val CHANNEL_DEFAULT      = "affscash_default"
-    const val CHANNEL_GENERAL      = "affscash_general"
-    const val CHANNEL_CONVERSIONS  = "affscash_conversions"
-    const val CHANNEL_WITHDRAWALS  = "affscash_withdrawals"
-    const val CHANNEL_NEWS         = "affscash_news"
-    const val CHANNEL_SUPPORT      = "affscash_support"
+    const val CHANNEL_DEFAULT       = "affscash_default"
+    const val CHANNEL_GENERAL       = "affscash_general"
+    const val CHANNEL_CONVERSIONS   = "affscash_conversions"
+    const val CHANNEL_WITHDRAWALS   = "affscash_withdrawals"
+    const val CHANNEL_NEWS          = "affscash_news"
+    const val CHANNEL_SUPPORT       = "affscash_support"
     const val CHANNEL_ANNOUNCEMENTS = "affscash_announcements"
-    const val CHANNEL_SECURITY     = "affscash_security"
-    const val CHANNEL_MESSAGES     = "affscash_messages"
+    const val CHANNEL_SECURITY      = "affscash_security"
+    const val CHANNEL_MESSAGES      = "affscash_messages"
 
     // Channel group IDs
-    private const val GROUP_TRANSACTIONS = "group_transactions"
+    private const val GROUP_TRANSACTIONS  = "group_transactions"
     private const val GROUP_COMMUNICATION = "group_communication"
-    private const val GROUP_SYSTEM = "group_system"
+    private const val GROUP_SYSTEM        = "group_system"
+
+    private val vibrationPattern = longArrayOf(0, 250, 250, 250)
 
     /**
-     * Creates all notification channels. Safe to call multiple times —
-     * existing channels are not modified (user preferences are preserved).
+     * Creates all notification channels with IMPORTANCE_HIGH to ensure
+     * Heads-Up popup notifications, sound, vibration, and lock screen visibility
+     * work across Android 8 through 15+.
      */
     fun createAllChannels(context: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
@@ -67,6 +70,7 @@ object NotificationChannelManager {
                 group = GROUP_SYSTEM
                 setSound(soundUri, audioAttributes)
                 enableVibration(true)
+                vibrationPattern = NotificationChannelManager.vibrationPattern
                 setShowBadge(true)
                 lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
             },
@@ -79,6 +83,7 @@ object NotificationChannelManager {
                 group = GROUP_SYSTEM
                 setSound(soundUri, audioAttributes)
                 enableVibration(true)
+                vibrationPattern = NotificationChannelManager.vibrationPattern
                 setShowBadge(true)
                 lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
             },
@@ -92,6 +97,7 @@ object NotificationChannelManager {
                 group = GROUP_TRANSACTIONS
                 setSound(soundUri, audioAttributes)
                 enableVibration(true)
+                vibrationPattern = NotificationChannelManager.vibrationPattern
                 setShowBadge(true)
                 lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
             },
@@ -105,6 +111,7 @@ object NotificationChannelManager {
                 group = GROUP_TRANSACTIONS
                 setSound(soundUri, audioAttributes)
                 enableVibration(true)
+                vibrationPattern = NotificationChannelManager.vibrationPattern
                 setShowBadge(true)
                 lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
             },
@@ -118,6 +125,7 @@ object NotificationChannelManager {
                 group = GROUP_COMMUNICATION
                 setSound(soundUri, audioAttributes)
                 enableVibration(true)
+                vibrationPattern = NotificationChannelManager.vibrationPattern
                 setShowBadge(true)
                 lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
             },
@@ -131,29 +139,37 @@ object NotificationChannelManager {
                 group = GROUP_COMMUNICATION
                 setSound(soundUri, audioAttributes)
                 enableVibration(true)
+                vibrationPattern = NotificationChannelManager.vibrationPattern
                 setShowBadge(true)
                 lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
             },
 
-            // News & Announcements — default priority
+            // News — High Priority
             NotificationChannel(
                 CHANNEL_NEWS, "News",
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = "News and promotional notifications"
                 group = GROUP_COMMUNICATION
                 setSound(soundUri, audioAttributes)
+                enableVibration(true)
+                vibrationPattern = NotificationChannelManager.vibrationPattern
                 setShowBadge(true)
+                lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
             },
 
+            // Announcements — High Priority
             NotificationChannel(
                 CHANNEL_ANNOUNCEMENTS, "Announcements",
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = "System announcements and updates"
                 group = GROUP_COMMUNICATION
                 setSound(soundUri, audioAttributes)
+                enableVibration(true)
+                vibrationPattern = NotificationChannelManager.vibrationPattern
                 setShowBadge(true)
+                lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
             },
 
             // Security — max priority
@@ -165,6 +181,7 @@ object NotificationChannelManager {
                 group = GROUP_SYSTEM
                 setSound(soundUri, audioAttributes)
                 enableVibration(true)
+                vibrationPattern = NotificationChannelManager.vibrationPattern
                 setShowBadge(true)
                 lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
             }

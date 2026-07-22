@@ -148,6 +148,7 @@ sealed class Screen(val route: String, val title: String, val icon: ImageVector)
     object ManagerAffiliates : Screen("manager_affiliates", "Affiliates", Icons.Filled.People)
     object ManagerConversions : Screen("manager_conversions", "Conversions", Icons.Filled.TrendingUp)
     object ManagerReports : Screen("manager_reports", "Reports", Icons.Filled.BarChart)
+    object ManagerVpnLogs : Screen("manager_vpn_logs", "VPN & Proxy Log", Icons.Filled.Security)
     object ManagerReferral : Screen("manager_referral", "Referral Link", Icons.Filled.PersonAdd)
     object ManagerInvoices : Screen("manager_invoices", "Invoices", Icons.Filled.Receipt)
     object ManagerSupport : Screen("manager_support", "Support", Icons.Filled.SupportAgent)
@@ -199,7 +200,7 @@ fun MainScreen(
 
     val allItems = when (role) {
         "admin" -> listOf(Screen.AdminDashboard, Screen.AdminOffers, Screen.AdminInHouseOffers, Screen.AdminPrivateOffers, Screen.AdminSmartlinks, Screen.AdminOfferApprovals, Screen.AdminUsers, Screen.AdminAdvertisers, Screen.AdminShop, Screen.AdminAffiliateManagers, Screen.AdminSupport, Screen.AdminConversions, Screen.AdminReports, Screen.AdminAffiliateReport, Screen.AdminFraudReport, Screen.AdminVpnLogs, Screen.AdminAccountDeleteRequests, Screen.AdminPoints, Screen.AdminAutoHide, Screen.AdminInvoices, Screen.AdminPlatformSettings, Screen.AdminPaymentSettings, Screen.AdminSettings, Screen.AdminReferral)
-        "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerSupport, Screen.ManagerSmartlinks, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerReports, Screen.ManagerReferral, Screen.ManagerInvoices, Screen.ManagerSettings)
+        "affiliate_manager" -> listOf(Screen.ManagerDashboard, Screen.ManagerOffers, Screen.ManagerSupport, Screen.ManagerSmartlinks, Screen.ManagerAffiliates, Screen.ManagerConversions, Screen.ManagerReports, Screen.ManagerVpnLogs, Screen.ManagerReferral, Screen.ManagerInvoices, Screen.ManagerSettings)
         else -> listOf(Screen.Dashboard, Screen.Offers, Screen.AffiliateInHouseOffers, Screen.Smartlinks, Screen.Reports, Screen.AffiliateDuplicateConversions, Screen.AffiliateReferral, Screen.AffiliateSettings)
     }
     
@@ -868,6 +869,11 @@ fun MainScreen(
             }
             composable(Screen.ManagerReports.route) { 
                 net.affscash.android.ui.manager.ManagerReportsScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                ) 
+            }
+            composable(Screen.ManagerVpnLogs.route) { 
+                net.affscash.android.ui.manager.vpn.ManagerVpnLogScreen(
                     onNavigateBack = { navController.popBackStack() }
                 ) 
             }
