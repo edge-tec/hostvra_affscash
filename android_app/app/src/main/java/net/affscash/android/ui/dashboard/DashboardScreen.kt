@@ -292,8 +292,8 @@ fun PeriodTabs(selectedPeriod: String, onPeriodSelected: (String) -> Unit) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = PremiumUI.CardShape,
-        color = Color.White.copy(alpha = 0.85f),
-        shadowElevation = 4.dp,
+        color = Color.White,
+        shadowElevation = 2.dp,
         border = PremiumUI.GlassBorder
     ) {
         Row(
