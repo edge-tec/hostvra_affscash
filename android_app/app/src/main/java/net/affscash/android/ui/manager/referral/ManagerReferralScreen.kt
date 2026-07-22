@@ -27,10 +27,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.hilt.navigation.compose.hiltViewModel
-import net.affscash.android.data.model.ReferredAffiliate
+import net.affscash.android.ui.dashboard.GlassCard
 import net.affscash.android.ui.dashboard.PremiumUI
-import net.affscash.android.ui.affiliate.referral.ReferredAffiliateItem
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -240,7 +240,21 @@ fun ManagerReferralScreen(
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             items(data.referredAffiliates) { aff ->
-                                ReferredAffiliateItem(aff)
+                                GlassCard(elevation = 2.dp) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Column {
+                                            Text(aff.name, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color(0xFF0F172A))
+                                            Text("Joined: ${aff.joinedAt}", fontSize = 11.sp, color = Color(0xFF64748B))
+                                        }
+                                        Surface(color = Color(0xFFD1FAE5), shape = RoundedCornerShape(6.dp)) {
+                                            Text("ACTIVE", modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp), fontSize = 10.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF059669))
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
