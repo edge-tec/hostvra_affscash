@@ -1,5 +1,6 @@
 package net.affscash.android.ui.screens.admin.support
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,8 +9,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.SupportAgent
+import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -24,12 +26,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.data.model.AdminSupportConversationRow
+import net.affscash.android.ui.dashboard.GlassCard
 import net.affscash.android.ui.dashboard.PremiumUI
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminSupportScreen(
     onNavigateBack: () -> Unit,
@@ -38,117 +40,160 @@ fun AdminSupportScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Scaffold(
-        topBar = {
-            net.affscash.android.ui.components.CompactTopBar(
-                title = { Text("Live Support") },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            )
-        }
-    ) { paddingValues ->
-        Column(
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(PremiumUI.PageBackground)
+    ) {
+        // 3D Glass Header Bar
+        Surface(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            shape = PremiumUI.CardShape,
+            color = Color.White,
+            shadowElevation = 2.dp,
+            border = PremiumUI.GlassBorder
         ) {
-            // Main Tabs
-            TabRow(
-                selectedTabIndex = when (uiState.selectedTab) {
-                    "affiliate" -> 0
-                    "advertiser" -> 1
-                    else -> 2
-                }
-            ) {
-                Tab(
-                    selected = uiState.selectedTab == "affiliate",
-                    onClick = { viewModel.setTab("affiliate") },
-                    text = { Text("Affiliates") }
-                )
-                Tab(
-                    selected = uiState.selectedTab == "advertiser",
-                    onClick = { viewModel.setTab("advertiser") },
-                    text = { Text("Advertisers") }
-                )
-                Tab(
-                    selected = uiState.selectedTab == "manager",
-                    onClick = { viewModel.setTab("manager") },
-                    text = { Text("Managers") }
-                )
-            }
-
-            // Sub Tabs (Filters)
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
-                    .padding(8.dp),
-                horizontalArrangement = Arrangement.Center
+                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                FilterChip(
-                    selected = uiState.selectedFilter == "open",
-                    onClick = { viewModel.setFilter("open") },
-                    label = { Text("Open") },
+                IconButton(onClick = onNavigateBack) {
+                    Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back", tint = Color(0xFF0F172A))
+                }
+                Spacer(modifier = Modifier.width(4.dp))
+                Box(
                     modifier = Modifier
-                        .height(32.dp)
-                        .padding(end = 8.dp)
-                )
-                FilterChip(
-                    selected = uiState.selectedFilter == "closed",
-                    onClick = { viewModel.setFilter("closed") },
-                    label = { Text("Closed") },
-                    modifier = Modifier.height(32.dp)
-                )
-            }
-
-            // Error display
-            if (uiState.error != null) {
-                Card(
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(PremiumUI.HeaderGradient),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Row(
-                        modifier = Modifier.padding(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(Icons.Filled.Warning, contentDescription = null, tint = MaterialTheme.colorScheme.error)
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(uiState.error ?: "", color = MaterialTheme.colorScheme.onErrorContainer)
+                    Icon(Icons.Outlined.SupportAgent, contentDescription = null, tint = Color.White, modifier = Modifier.size(22.dp))
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                Column {
+                    Text(text = "Live Support", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))
+                    Text(text = "Manage support conversations", fontSize = 12.sp, color = Color(0xFF64748B))
+                }
+            }
+        }
+
+        // 3D Main Role Tabs
+        val roleTabs = listOf("affiliate" to "Affiliates", "advertiser" to "Advertisers", "manager" to "Managers")
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            roleTabs.forEach { (key, label) ->
+                val isSelected = uiState.selectedTab == key
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(
+                            if (isSelected) PremiumUI.PrimaryGradient
+                            else androidx.compose.ui.graphics.Brush.linearGradient(listOf(Color.White, Color.White))
+                        )
+                        .clickable { viewModel.setTab(key) }
+                        .padding(vertical = 10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = label,
+                        fontSize = 13.sp,
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                        color = if (isSelected) Color.White else Color(0xFF475569)
+                    )
+                }
+            }
+        }
+
+        // 3D Filter Sub-Tabs (Open / Closed)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 4.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(14.dp),
+                color = Color.White,
+                shadowElevation = 1.dp,
+                border = PremiumUI.GlassBorder
+            ) {
+                Row(
+                    modifier = Modifier.padding(4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    listOf("open" to "Open", "closed" to "Closed").forEach { (filterKey, filterLabel) ->
+                        val isFilterSelected = uiState.selectedFilter == filterKey
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(if (isFilterSelected) Color(0xFFEEF2FF) else Color.Transparent)
+                                .clickable { viewModel.setFilter(filterKey) }
+                                .padding(vertical = 8.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = filterLabel,
+                                fontSize = 12.sp,
+                                fontWeight = if (isFilterSelected) FontWeight.Bold else FontWeight.Medium,
+                                color = if (isFilterSelected) Color(0xFF4F46E5) else Color(0xFF64748B)
+                            )
+                        }
                     }
                 }
             }
+        }
 
-            // Content
-            if (uiState.isLoadingConversations && uiState.conversations.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
+        // Error display
+        if (uiState.error != null) {
+            GlassCard(
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                containerColor = Color(0xFFFEE2E2)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Outlined.Warning, contentDescription = null, tint = Color(0xFFDC2626))
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(uiState.error ?: "", color = Color(0xFFDC2626), fontSize = 12.sp)
                 }
-            } else if (uiState.conversations.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("No ${uiState.selectedFilter} conversations found.", color = Color.Gray)
-                }
-            } else {
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(uiState.conversations) { conv ->
-                        ConversationItem(
-                            conv = conv,
-                            onClick = {
-                                viewModel.selectConversation(conv.conversationId, conv.affiliateId, conv.name)
-                                onNavigateToChat(conv.conversationId, conv.affiliateId, conv.name)
-                            }
-                        )
-                    }
+            }
+        }
+
+        // Content
+        if (uiState.isLoadingConversations && uiState.conversations.isEmpty()) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(color = Color(0xFF4F46E5))
+            }
+        } else if (uiState.conversations.isEmpty()) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("No ${uiState.selectedFilter} conversations found.", color = Color(0xFF64748B))
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 12.dp),
+                contentPadding = PaddingValues(top = 6.dp, bottom = 80.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(uiState.conversations) { conv ->
+                    ConversationItem(
+                        conv = conv,
+                        onClick = {
+                            viewModel.selectConversation(conv.conversationId, conv.affiliateId, conv.name)
+                            onNavigateToChat(conv.conversationId, conv.affiliateId, conv.name)
+                        }
+                    )
                 }
             }
         }
@@ -157,42 +202,28 @@ fun AdminSupportScreen(
 
 @Composable
 fun ConversationItem(conv: AdminSupportConversationRow, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 6.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        shape = PremiumUI.CardShape,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        border = androidx.compose.foundation.BorderStroke(
-            width = 1.dp, 
-            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
-        )
-    ) {
+    GlassCard(elevation = 2.dp, onClick = onClick) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Avatar
+            // 3D Avatar
             Box(
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(44.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer),
+                    .background(PremiumUI.PrimaryGradient),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = conv.name.take(1).uppercase(),
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    color = Color.White,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
+                    fontSize = 16.sp
                 )
             }
 
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(12.dp))
 
             // Details
             Column(modifier = Modifier.weight(1f)) {
@@ -203,54 +234,65 @@ fun ConversationItem(conv: AdminSupportConversationRow, onClick: () -> Unit) {
                 ) {
                     Text(
                         text = conv.name,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 15.sp,
-                        color = MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp,
+                        color = Color(0xFF0F172A),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f)
                     )
                     if (conv.unread > 0) {
-                        Spacer(modifier = Modifier.width(4.dp))
+                        Spacer(modifier = Modifier.width(6.dp))
                         Box(
                             modifier = Modifier
-                                .size(22.dp)
+                                .size(20.dp)
                                 .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.error),
+                                .background(Color(0xFFEF4444)),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = conv.unread.toString(),
-                                color = MaterialTheme.colorScheme.onError,
-                                fontSize = 12.sp,
+                                color = Color.White,
+                                fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold
                             )
                         }
                     }
                 }
+                
                 Spacer(modifier = Modifier.height(2.dp))
+                
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = conv.affiliateCode,
-                        fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    Surface(
+                        color = Color(0xFFEEF2FF),
+                        shape = RoundedCornerShape(6.dp)
+                    ) {
+                        Text(
+                            text = conv.affiliateCode,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFF4F46E5),
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                        )
+                    }
                     Text(
                         text = formatDate(conv.lastMessageAt),
-                        fontSize = 12.sp,
+                        fontSize = 11.sp,
                         fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = Color(0xFF64748B)
                     )
                 }
-                Spacer(modifier = Modifier.height(6.dp))
+                
+                Spacer(modifier = Modifier.height(4.dp))
+                
                 Text(
                     text = conv.lastMsg.orEmpty().ifEmpty { "No messages yet." },
-                    fontSize = 13.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+                    fontSize = 12.sp,
+                    color = Color(0xFF475569),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
