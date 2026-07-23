@@ -18,10 +18,24 @@
 </div>
 <?php endif; ?>
 
+<style>
+.admin-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+    align-items: start;
+}
+@media (max-width: 991px) {
+    .admin-form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
 <form method="POST" enctype="multipart/form-data" id="blog-form">
     <?= Helpers::csrf() ?>
 
-    <div style="display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start">
+    <div class="admin-form-grid">
 
         <!-- Main content -->
         <div>

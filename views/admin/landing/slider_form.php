@@ -14,10 +14,34 @@
 </div>
 <?php endif; ?>
 
+<style>
+.admin-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+    align-items: start;
+}
+.form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+@media (max-width: 991px) {
+    .admin-form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+@media (max-width: 576px) {
+    .form-row-2 {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
 <form method="POST" enctype="multipart/form-data" id="slider-form">
     <?= Helpers::csrf() ?>
 
-    <div style="display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start">
+    <div class="admin-form-grid">
 
         <!-- Main content -->
         <div>
@@ -50,7 +74,7 @@
             <div class="card mb-3">
                 <div class="card-header"><span class="card-title">Badges</span></div>
                 <div class="card-body">
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                    <div class="form-row-2">
                         <div class="form-group" style="margin-bottom:0">
                             <label style="font-weight:700">Badge 1</label>
                             <input type="text" name="badge1" class="form-control"
