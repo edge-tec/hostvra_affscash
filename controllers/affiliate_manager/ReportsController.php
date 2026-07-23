@@ -262,17 +262,21 @@ if ($tab === 'click') {
                     c.os, c.browser, c.user_agent, c.device_type,
                     c.ip_address, c.country, c.city, c.region,
                     c.clicked_at, c.status,
-                    o.name as offer_name,
+                    IF(COALESCE(c.smartlink_id, cv.smartlink_id, so.smartlink_id) IS NOT NULL AND COALESCE(c.smartlink_id, cv.smartlink_id, so.smartlink_id) > 0, COALESCE(CONCAT('[SL-', LPAD(COALESCE(sl.id, sl2.id, c.smartlink_id, cv.smartlink_id, so.smartlink_id), 4, '0'), '] ', COALESCE(sl.name, sl2.name, 'SmartLink')), 'SmartLink'), o.name) as offer_name,
                     CONCAT(u.first_name,' ',u.last_name) as aff_name, af.affiliate_code,
                     cv.status       as conv_status,
                     cv.payout       as conv_payout,
                     cv.converted_at as conv_time
              FROM clicks c
+             LEFT JOIN smartlinks sl ON sl.id = c.smartlink_id
+             LEFT JOIN smartlink_offers so ON so.offer_id = c.offer_id
+             LEFT JOIN smartlinks sl2 ON sl2.id = so.smartlink_id
              LEFT JOIN offers o ON o.id = c.offer_id
              JOIN affiliates af ON af.id = c.affiliate_id
              JOIN users u ON u.id = af.user_id
              LEFT JOIN conversions cv ON cv.click_id = c.click_id AND cv.is_hidden = 0
              WHERE $whereStr
+             GROUP BY c.click_id
              ORDER BY c.clicked_at DESC LIMIT $limit",
             $clkParams
         );
@@ -303,17 +307,21 @@ if ($tab === 'conversion') {
         $convRows = Database::fetchAll(
             "SELECT cv.conversion_id, cv.click_id, cv.status, cv.payout,
                     cv.is_fraud, cv.transaction_id, cv.goal_name, cv.converted_at,
-                    o.name as offer_name,
+                    IF(COALESCE(cv.smartlink_id, ck.smartlink_id, so.smartlink_id) IS NOT NULL AND COALESCE(cv.smartlink_id, ck.smartlink_id, so.smartlink_id) > 0, COALESCE(CONCAT('[SL-', LPAD(COALESCE(sl.id, sl2.id, cv.smartlink_id, ck.smartlink_id, so.smartlink_id), 4, '0'), '] ', COALESCE(sl.name, sl2.name, 'SmartLink')), 'SmartLink'), o.name) as offer_name,
                     CONCAT(u.first_name,' ',u.last_name) as aff_name, af.affiliate_code,
                     ck.sub1, ck.sub2, ck.sub3, ck.sub4, ck.referer,
                     ck.os, ck.browser, ck.user_agent, ck.device_type,
                     ck.ip_address, ck.country, ck.city, ck.region
              FROM conversions cv
-             JOIN offers o ON o.id=cv.offer_id
+             LEFT JOIN clicks ck ON ck.click_id=cv.click_id
+             LEFT JOIN smartlinks sl ON sl.id = COALESCE(cv.smartlink_id, ck.smartlink_id)
+             LEFT JOIN smartlink_offers so ON so.offer_id = cv.offer_id
+             LEFT JOIN smartlinks sl2 ON sl2.id = so.smartlink_id
+             LEFT JOIN offers o ON o.id=cv.offer_id
              JOIN affiliates af ON af.id=cv.affiliate_id
              JOIN users u ON u.id=af.user_id
-             LEFT JOIN clicks ck ON ck.click_id=cv.click_id
              WHERE $whereStr AND cv.is_hidden=0
+             GROUP BY cv.conversion_id
              ORDER BY cv.converted_at DESC LIMIT $limit",
             $cvParams
         );
@@ -376,27 +384,30 @@ if ($tab === 'sl_report' && $hasAffiliates) {
             "SELECT c.click_id, c.sub1, c.sub2, c.source,
                     c.ip_address, c.country, c.city, c.os, c.browser, c.device_type,
                     c.clicked_at, c.is_fraud,
-                    COALESCE(sl.name,'— Unknown —') as smartlink_name,
-                    COALESCE(o.name,'— Custom URL —') as offer_name,
+                    COALESCE(CONCAT('[SL-', LPAD(COALESCE(sl.id, sl2.id, c.smartlink_id, cv.smartlink_id, so.smartlink_id), 4, '0'), '] ', COALESCE(sl.name, sl2.name, 'SmartLink')), 'SmartLink') as smartlink_name,
+                    COALESCE(CONCAT('[SL-', LPAD(COALESCE(sl.id, sl2.id, c.smartlink_id, cv.smartlink_id, so.smartlink_id), 4, '0'), '] ', COALESCE(sl.name, sl2.name, 'SmartLink')), 'SmartLink') as offer_name,
                     CONCAT(u.first_name,' ',u.last_name) as aff_name, af.affiliate_code,
                     COALESCE(cv.status,'') as conv_status,
                     (cv.conversion_id IS NOT NULL) as has_conversion
              FROM clicks c
              LEFT JOIN smartlinks sl ON sl.id = c.smartlink_id
+             LEFT JOIN smartlink_offers so ON so.offer_id = c.offer_id
+             LEFT JOIN smartlinks sl2 ON sl2.id = so.smartlink_id
              LEFT JOIN offers o ON o.id = c.offer_id
              JOIN affiliates af ON af.id = c.affiliate_id
              JOIN users u ON u.id = af.user_id
              LEFT JOIN conversions cv ON cv.click_id = c.click_id AND cv.is_hidden = 0
              WHERE $slClkWhere
+             GROUP BY c.click_id
              ORDER BY c.clicked_at DESC LIMIT $limit",
             $slClkParams
         );
     } catch (\Throwable $_e) { $slClicks = []; }
 
     // ── Conversion log ──
-    $slCvWhere  = ["cv.affiliate_id IN ($activeInSql)", 'ck.smartlink_id IS NOT NULL', 'cv.converted_at BETWEEN ? AND ?', 'cv.is_hidden=0'];
+    $slCvWhere  = ["cv.affiliate_id IN ($activeInSql)", '(cv.smartlink_id IS NOT NULL OR ck.smartlink_id IS NOT NULL OR so.smartlink_id IS NOT NULL)', 'cv.converted_at BETWEEN ? AND ?', 'cv.is_hidden=0'];
     $slCvParams = array_merge($activeAffIds, [$dateFrom, $dateTo]);
-    if ($slId    > 0)    { $slCvWhere[] = 'ck.smartlink_id=?'; $slCvParams[] = $slId; }
+    if ($slId    > 0)    { $slCvWhere[] = 'COALESCE(cv.smartlink_id, ck.smartlink_id, so.smartlink_id)=?'; $slCvParams[] = $slId; }
     if ($country !== '') { $slCvWhere[] = 'ck.country=?';       $slCvParams[] = strtoupper($country); }
     $slCvWhere = implode(' AND ', $slCvWhere);
 
@@ -404,17 +415,20 @@ if ($tab === 'sl_report' && $hasAffiliates) {
         $slConversions = Database::fetchAll(
             "SELECT cv.conversion_id, cv.click_id, cv.status, cv.payout, cv.converted_at,
                     cv.goal_name, cv.transaction_id,
-                    COALESCE(sl.name,'— Unknown —') as smartlink_name,
-                    COALESCE(o.name,'— Custom URL —') as offer_name,
+                    COALESCE(CONCAT('[SL-', LPAD(COALESCE(sl.id, sl2.id, cv.smartlink_id, ck.smartlink_id, so.smartlink_id), 4, '0'), '] ', COALESCE(sl.name, sl2.name, 'SmartLink')), 'SmartLink') as smartlink_name,
+                    COALESCE(CONCAT('[SL-', LPAD(COALESCE(sl.id, sl2.id, cv.smartlink_id, ck.smartlink_id, so.smartlink_id), 4, '0'), '] ', COALESCE(sl.name, sl2.name, 'SmartLink')), 'SmartLink') as offer_name,
                     CONCAT(u.first_name,' ',u.last_name) as aff_name, af.affiliate_code,
                     ck.sub1, ck.country, ck.os, ck.browser, ck.device_type
              FROM conversions cv
              JOIN clicks ck ON ck.click_id = cv.click_id
-             LEFT JOIN smartlinks sl ON sl.id = ck.smartlink_id
+             LEFT JOIN smartlinks sl ON sl.id = COALESCE(cv.smartlink_id, ck.smartlink_id)
+             LEFT JOIN smartlink_offers so ON so.offer_id = cv.offer_id
+             LEFT JOIN smartlinks sl2 ON sl2.id = so.smartlink_id
              LEFT JOIN offers o ON o.id = cv.offer_id
              JOIN affiliates af ON af.id = cv.affiliate_id
              JOIN users u ON u.id = af.user_id
              WHERE $slCvWhere
+             GROUP BY cv.conversion_id
              ORDER BY cv.converted_at DESC LIMIT $limit",
             $slCvParams
         );
