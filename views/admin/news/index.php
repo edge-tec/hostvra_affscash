@@ -22,7 +22,7 @@
 </div>
 <?php else: ?>
 
-<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px">
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%, 300px),1fr));gap:20px">
 <?php foreach ($newsList as $n): ?>
 <div class="card" style="overflow:hidden;display:flex;flex-direction:column">
     <?php if ($n['image']): ?>

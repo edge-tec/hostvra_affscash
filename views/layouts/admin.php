@@ -10,6 +10,11 @@
 <?php require BASE_PATH . '/views/partials/theme_head.php'; ?>
 <style>
 
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: flex-start; }
+@media (max-width: 991px) {
+    .grid-2 { grid-template-columns: 1fr !important; }
+}
+
 /* ── Sidebar Accordion ───────────────────────────────────────── */
 .sidebar-group { margin-bottom: 2px; }
 .sidebar-group-header {

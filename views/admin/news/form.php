@@ -21,7 +21,21 @@
 <form method="POST" enctype="multipart/form-data" id="news-form">
     <?= Helpers::csrf() ?>
 
-    <div style="display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start">
+    <style>
+    .news-form-grid {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 20px;
+        align-items: start;
+    }
+    @media (max-width: 991px) {
+        .news-form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    </style>
+
+    <div class="news-form-grid">
 
         <!-- Main content -->
         <div>
@@ -101,26 +115,6 @@
                 </div>
             </div>
 
-<script>
-function syncPublishBtn() {
-    var sel = document.getElementById('news-status-select');
-    var btn = document.getElementById('news-submit-btn');
-    var warn = document.getElementById('draft-warning');
-    if (!sel || !btn) return;
-    var isDraft = sel.value === 'draft';
-    warn.style.display = isDraft ? 'block' : 'none';
-    <?php if (!$newsId): ?>
-    btn.textContent = isDraft ? '💾 Save as Draft' : '🚀 Publish News';
-    btn.style.background = isDraft ? '#64748B' : '';
-    btn.style.borderColor = isDraft ? '#64748B' : '';
-    <?php endif; ?>
-}
-// Run on page load to set correct initial state
-document.addEventListener('DOMContentLoaded', syncPublishBtn);
-</script>
-                </div>
-            </div>
-
             <!-- Featured image -->
             <div class="card">
                 <div class="card-header"><span class="card-title">Featured Image</span></div>
@@ -138,6 +132,7 @@ document.addEventListener('DOMContentLoaded', syncPublishBtn);
                 </div>
             </div>
         </div>
+
     </div>
 </form>
 
@@ -167,6 +162,22 @@ if (existingBody) quill.root.innerHTML = existingBody;
 document.getElementById('news-form').addEventListener('submit', function() {
     document.getElementById('body-input').value = quill.root.innerHTML;
 });
+
+// ── Sync Publish Button ───────────────────────────────────────────────────
+function syncPublishBtn() {
+    var sel = document.getElementById('news-status-select');
+    var btn = document.getElementById('news-submit-btn');
+    var warn = document.getElementById('draft-warning');
+    if (!sel || !btn) return;
+    var isDraft = sel.value === 'draft';
+    if (warn) warn.style.display = isDraft ? 'block' : 'none';
+    <?php if (!$newsId): ?>
+    btn.textContent = isDraft ? '💾 Save as Draft' : '🚀 Publish News';
+    btn.style.background = isDraft ? '#64748B' : '';
+    btn.style.borderColor = isDraft ? '#64748B' : '';
+    <?php endif; ?>
+}
+document.addEventListener('DOMContentLoaded', syncPublishBtn);
 
 // ── Image preview ──────────────────────────────────────────────────────────
 document.getElementById('img-input').addEventListener('change', function() {
