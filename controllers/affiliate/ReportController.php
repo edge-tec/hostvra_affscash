@@ -64,11 +64,11 @@ if (in_array($tab, $perfTabs)) {
         // From stats_daily + live approved payout from conversions
         $selectMap = [
             'day'   => 'sd.stat_date as label',
-            'offer' => 'o.name as label',
+            'offer' => 'IF(so.smartlink_id IS NOT NULL, COALESCE(sl.name, "SmartLink"), o.name) as label',
         ];
         $groupMap = [
             'day'   => 'sd.stat_date',
-            'offer' => 'sd.offer_id, o.name',
+            'offer' => 'sd.offer_id, IF(so.smartlink_id IS NOT NULL, COALESCE(sl.name, "SmartLink"), o.name)',
         ];
         $orderMap = [
             'day'   => 'sd.stat_date DESC, payout DESC',
@@ -76,7 +76,7 @@ if (in_array($tab, $perfTabs)) {
         ];
         $joinMap = [
             'day'   => '',
-            'offer' => 'JOIN offers o ON o.id=sd.offer_id',
+            'offer' => 'JOIN offers o ON o.id=sd.offer_id LEFT JOIN smartlink_offers so ON so.offer_id=o.id LEFT JOIN smartlinks sl ON sl.id=so.smartlink_id',
         ];
 
         $sdWhere  = ['sd.affiliate_id=?', 'sd.stat_date BETWEEN ? AND ?'];

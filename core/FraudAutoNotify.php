@@ -61,8 +61,12 @@ final class FraudAutoNotify
                 "SELECT cv.conversion_id, cv.fraud_score, cv.ipquery_risk_score, cv.fraudlabspro_score, cv.proxycheck_score, cv.scamalytics_score, cv.frauddefense_score, cv.affiliate_id, cv.payout,
                         cv.fraud_checked_at,
                         af.user_id, af.affiliate_code,
-                        o.name AS offer_name
+                        IF(COALESCE(cv.smartlink_id, ck.smartlink_id) IS NOT NULL AND COALESCE(cv.smartlink_id, ck.smartlink_id) > 0, COALESCE(sl.name, 'SmartLink'), IF(so.smartlink_id IS NOT NULL, COALESCE(sl2.name, 'SmartLink'), o.name)) AS offer_name
                  FROM conversions cv
+                 LEFT JOIN clicks     ck ON ck.click_id = cv.click_id
+                 LEFT JOIN smartlinks sl ON sl.id = COALESCE(cv.smartlink_id, ck.smartlink_id)
+                 LEFT JOIN smartlink_offers so ON so.offer_id = cv.offer_id
+                 LEFT JOIN smartlinks sl2 ON sl2.id = so.smartlink_id
                  LEFT JOIN affiliates af ON af.id = cv.affiliate_id
                  LEFT JOIN offers     o  ON o.id  = cv.offer_id
                  WHERE cv.conversion_id = ? LIMIT 1",
@@ -182,9 +186,13 @@ final class FraudAutoNotify
                 "SELECT cv.conversion_id, cv.fraud_score, cv.ipquery_risk_score, cv.fraudlabspro_score, cv.proxycheck_score, cv.scamalytics_score, cv.frauddefense_score, cv.affiliate_id, cv.offer_id,
                         cv.fraud_checked_at, cv.converted_at,
                         af.user_id, af.affiliate_code,
-                        o.name AS offer_name
+                        IF(COALESCE(cv.smartlink_id, ck.smartlink_id) IS NOT NULL AND COALESCE(cv.smartlink_id, ck.smartlink_id) > 0, COALESCE(sl.name, 'SmartLink'), IF(so.smartlink_id IS NOT NULL, COALESCE(sl2.name, 'SmartLink'), o.name)) AS offer_name
                  FROM conversions cv
                  INNER JOIN affiliates af ON af.id = cv.affiliate_id
+                 LEFT  JOIN clicks     ck ON ck.click_id = cv.click_id
+                 LEFT  JOIN smartlinks sl ON sl.id = COALESCE(cv.smartlink_id, ck.smartlink_id)
+                 LEFT  JOIN smartlink_offers so ON so.offer_id = cv.offer_id
+                 LEFT  JOIN smartlinks sl2 ON sl2.id = so.smartlink_id
                  LEFT  JOIN offers     o  ON o.id  = cv.offer_id
                  LEFT  JOIN notifications n
                    ON n.category = 'fraud'

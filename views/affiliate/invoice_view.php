@@ -15,7 +15,8 @@ if (isset($_GET['print'])):
 <strong>Due:</strong> <?= $invoice['due_date'] ? date('M j, Y', strtotime($invoice['due_date'])) : '—' ?></p>
 <table><thead><tr><th>Offer / Description</th><th>Offer ID</th><th>Conversions</th><th>Rate</th><th>Amount</th></tr></thead><tbody>
 <?php foreach ($items as $item):
-    $pOffCode = !empty($item['offer_id']) ? 'OFF-' . str_pad((int)$item['offer_id'], 4, '0', STR_PAD_LEFT) : '—';
+    $isSl     = !empty($item['smartlink_id']) || (isset($item['description']) && stripos($item['description'], 'smartlink') !== false);
+    $pOffCode = (!$isSl && !empty($item['offer_id'])) ? 'OFF-' . str_pad((int)$item['offer_id'], 4, '0', STR_PAD_LEFT) : '—';
     $pConvIds = !empty($item['conversion_ids']) && is_array($item['conversion_ids']) ? implode(', ', array_slice($item['conversion_ids'], 0, 3)) . (count($item['conversion_ids']) > 3 ? ' +' . (count($item['conversion_ids']) - 3) . ' more' : '') : '';
 ?>
 <tr>
@@ -87,7 +88,8 @@ if (isset($_GET['print'])):
             </thead>
             <tbody>
             <?php foreach ($items as $item):
-                $hasDetail  = !empty($item['offer_id']);
+                $isSl       = !empty($item['smartlink_id']) || (isset($item['description']) && stripos($item['description'], 'smartlink') !== false);
+                $hasDetail  = !$isSl && !empty($item['offer_id']);
                 $convIds    = $item['conversion_ids'] ?? [];
                 $convCount  = (int)($item['conversion_count'] ?? ($item['qty'] ?? 1));
                 $offCode    = $hasDetail ? 'OFF-' . str_pad((int)$item['offer_id'], 4, '0', STR_PAD_LEFT) : null;
