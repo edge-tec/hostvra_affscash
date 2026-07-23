@@ -4,8 +4,10 @@ $pageTitle = 'My Reports';
 $affId = Auth::affiliateId();
 
 // Schema migrations
-try { Database::query("ALTER TABLE conversions ADD COLUMN IF NOT EXISTS is_hidden TINYINT(1) NOT NULL DEFAULT 0"); } catch(Exception $e) {}
-try { Database::query("ALTER TABLE clicks ADD COLUMN IF NOT EXISTS source VARCHAR(255) DEFAULT '' AFTER sub5"); } catch(Exception $e) {}
+try { Database::query("ALTER TABLE conversions ADD COLUMN is_hidden TINYINT(1) NOT NULL DEFAULT 0"); } catch(Exception $e) {}
+try { Database::query("ALTER TABLE clicks ADD COLUMN source VARCHAR(255) DEFAULT '' AFTER sub5"); } catch(Exception $e) {}
+try { Database::query("ALTER TABLE conversions ADD COLUMN smartlink_id INT UNSIGNED DEFAULT NULL AFTER affiliate_id"); } catch (\Throwable $_e) {}
+try { Database::query("UPDATE conversions c JOIN clicks ck ON ck.click_id = c.click_id SET c.smartlink_id = ck.smartlink_id WHERE c.smartlink_id IS NULL AND ck.smartlink_id IS NOT NULL"); } catch (\Throwable $_e) {}
 
 $tab         = Helpers::get('tab') ?: 'day';
 $from        = Helpers::get('from') ?: date('Y-m-01');

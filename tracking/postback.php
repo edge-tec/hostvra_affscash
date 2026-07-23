@@ -668,6 +668,8 @@ try { Database::query("ALTER TABLE `conversions` ADD COLUMN `utm_campaign`      
 try { Database::query("ALTER TABLE `conversions` ADD COLUMN `utm_content`         VARCHAR(255)  DEFAULT NULL");       } catch (\Throwable $_e) {}
 try { Database::query("ALTER TABLE `conversions` ADD COLUMN `utm_term`            VARCHAR(255)  DEFAULT NULL");       } catch (\Throwable $_e) {}
 
+try { Database::query("ALTER TABLE `conversions` ADD COLUMN `smartlink_id` INT UNSIGNED DEFAULT NULL AFTER `affiliate_id`"); } catch (\Throwable $_e) {}
+
 Database::begin();
 try {
     $newConvDbId = Database::insert('conversions', [
@@ -675,6 +677,7 @@ try {
         'click_id'       => $clickId,
         'offer_id'       => $click['offer_id'],
         'affiliate_id'   => $click['affiliate_id'],
+        'smartlink_id'   => $click['smartlink_id'] ?? null,
         'advertiser_id'  => $click['advertiser_id'],
         'payout'         => $payout,
         'revenue'        => $revenue,
