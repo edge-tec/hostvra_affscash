@@ -198,16 +198,19 @@ if (in_array($tab, $perfTabs)) {
     $clicks = Database::fetchAll(
         "SELECT c.click_id, c.sub1, c.sub2, c.source,
                 c.os, c.browser, c.device_type, c.ip_address, c.country, c.city, c.region, c.clicked_at,
-                IF(c.smartlink_id IS NOT NULL AND c.smartlink_id > 0, COALESCE(CONCAT('SmartLink: ', sl.name), 'SmartLink'), o.name) as offer_name,
-                IF(c.smartlink_id IS NOT NULL AND c.smartlink_id > 0, NULL, o.id) as offer_id,
+                IF(c.smartlink_id IS NOT NULL AND c.smartlink_id > 0, COALESCE(sl.name, 'SmartLink'), IF(so.smartlink_id IS NOT NULL, COALESCE(sl2.name, 'SmartLink'), o.name)) as offer_name,
+                IF(c.smartlink_id IS NOT NULL OR so.smartlink_id IS NOT NULL, NULL, o.id) as offer_id,
                 cv.status       as conv_status,
                 cv.payout       as conv_payout,
                 cv.converted_at as conv_time
          FROM clicks c
          LEFT JOIN smartlinks sl ON sl.id = c.smartlink_id
+         LEFT JOIN smartlink_offers so ON so.offer_id = c.offer_id
+         LEFT JOIN smartlinks sl2 ON sl2.id = so.smartlink_id
          LEFT JOIN offers o ON o.id = c.offer_id
          LEFT JOIN conversions cv ON cv.click_id = c.click_id AND cv.is_hidden = 0
          WHERE $whereStr
+         GROUP BY c.click_id
          ORDER BY c.clicked_at DESC
          LIMIT $limit",
         $clkParams
@@ -240,8 +243,8 @@ if (in_array($tab, $perfTabs)) {
 
     $convRows = Database::fetchAll(
         "SELECT cv.conversion_id, cv.click_id, cv.status, cv.payout, cv.converted_at,
-                IF(COALESCE(cv.smartlink_id, ck.smartlink_id) IS NOT NULL AND COALESCE(cv.smartlink_id, ck.smartlink_id) > 0, COALESCE(CONCAT('SmartLink: ', sl.name), 'SmartLink'), o.name) as offer_name,
-                IF(COALESCE(cv.smartlink_id, ck.smartlink_id) IS NOT NULL AND COALESCE(cv.smartlink_id, ck.smartlink_id) > 0, NULL, o.id) as offer_id,
+                IF(COALESCE(cv.smartlink_id, ck.smartlink_id) IS NOT NULL AND COALESCE(cv.smartlink_id, ck.smartlink_id) > 0, COALESCE(sl.name, 'SmartLink'), IF(so.smartlink_id IS NOT NULL, COALESCE(sl2.name, 'SmartLink'), o.name)) as offer_name,
+                IF(COALESCE(cv.smartlink_id, ck.smartlink_id) IS NOT NULL OR so.smartlink_id IS NOT NULL, NULL, o.id) as offer_id,
                 ck.sub1, ck.os, ck.browser, ck.source,
                 COALESCE(NULLIF(cv.device_type,''), ck.device_type) as device_type, 
                 COALESCE(NULLIF(cv.ip_address,''), ck.ip_address) as ip_address, 
@@ -251,8 +254,11 @@ if (in_array($tab, $perfTabs)) {
          FROM conversions cv
          LEFT JOIN clicks ck ON ck.click_id = cv.click_id
          LEFT JOIN smartlinks sl ON sl.id = COALESCE(cv.smartlink_id, ck.smartlink_id)
+         LEFT JOIN smartlink_offers so ON so.offer_id = cv.offer_id
+         LEFT JOIN smartlinks sl2 ON sl2.id = so.smartlink_id
          LEFT JOIN offers o ON o.id = cv.offer_id
          WHERE $whereStr
+         GROUP BY cv.conversion_id
          ORDER BY cv.converted_at DESC
          LIMIT $limit",
         $cvParams

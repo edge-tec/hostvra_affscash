@@ -480,7 +480,7 @@ $_slFraud = count(array_filter($slClicks ?? [], fn($r) => $r['is_fraud']));
     <div class="table-wrap" style="overflow-x:auto">
         <table id="tbl-sl-clicks" style="font-size:12px;min-width:1200px">
             <thead><tr>
-                <th>SMARTLINK</th><th>OFFER</th><th>CLICK ID</th><th>SUB1</th><th>SUB2</th>
+                <th>SMARTLINK</th><th>CLICK ID</th><th>SUB1</th><th>SUB2</th>
                 <th>SOURCE</th>
                 <?php if (!$hideFraudRejected): ?><th>FRAUD</th><?php endif; ?>
                 <th>OS</th><th>BROWSER</th><th>DEVICE</th>
@@ -488,11 +488,10 @@ $_slFraud = count(array_filter($slClicks ?? [], fn($r) => $r['is_fraud']));
             </tr></thead>
             <tbody>
             <?php if (empty($slClicks)): ?>
-            <tr><td colspan="<?= $hideFraudRejected ? 15 : 16 ?>" class="text-center text-muted" style="padding:28px">No SmartLink clicks for the selected period</td></tr>
+            <tr><td colspan="<?= $hideFraudRejected ? 14 : 15 ?>" class="text-center text-muted" style="padding:28px">No SmartLink clicks for the selected period</td></tr>
             <?php else: foreach ($slClicks as $c): ?>
             <tr style="<?= $c['is_fraud']?'background:#FFF5F5':'' ?>">
                 <td><span style="background:#EEF2FF;color:#4F46E5;border-radius:4px;padding:1px 7px;font-size:11px;font-weight:700;white-space:nowrap"><?= Helpers::e($c['smartlink_name']) ?></span></td>
-                <td style="font-size:11px;white-space:nowrap"><?= Helpers::e($c['offer_name']) ?></td>
                 <td><code style="font-size:10px;background:#F1F5F9;padding:1px 4px;border-radius:3px"><?= Helpers::e($c['click_id']) ?></code></td>
                 <td><?= Helpers::e($c['sub1']?:'—') ?></td>
                 <td><?= Helpers::e($c['sub2']?:'—') ?></td>
@@ -525,19 +524,18 @@ $_slFraud = count(array_filter($slClicks ?? [], fn($r) => $r['is_fraud']));
     <div class="table-wrap" style="overflow-x:auto">
         <table id="tbl-sl-conv" style="font-size:12px">
             <thead><tr>
-                <th>SMARTLINK</th><th>OFFER</th><th>CLICK ID</th><th>CONV ID</th>
+                <th>SMARTLINK</th><th>CLICK ID</th><th>CONV ID</th>
                 <th>SUB1</th><th>SUB2</th><th>STATUS</th><th>PAYOUT</th>
                 <th>GOAL</th><th>TXN ID</th><th>COUNTRY</th><th>OS</th><th>DEVICE</th><th>CONVERTED AT</th>
             </tr></thead>
             <tbody>
             <?php if (empty($slConversions)): ?>
-            <tr><td colspan="14" class="text-center text-muted" style="padding:28px">No SmartLink conversions for the selected period</td></tr>
+            <tr><td colspan="13" class="text-center text-muted" style="padding:28px">No SmartLink conversions for the selected period</td></tr>
             <?php else: foreach ($slConversions as $r):
                 $bm=['approved'=>'success','pending'=>'warning','rejected'=>'danger'];
             ?>
             <tr>
                 <td><span style="background:#EEF2FF;color:#4F46E5;border-radius:4px;padding:1px 7px;font-size:11px;font-weight:700;white-space:nowrap"><?= Helpers::e($r['smartlink_name']) ?></span></td>
-                <td style="font-size:11px"><?= Helpers::e($r['offer_name']) ?></td>
                 <td><code style="font-size:10px;background:#F1F5F9;padding:1px 4px;border-radius:3px"><?= Helpers::e($r['click_id']) ?></code></td>
                 <td><code style="font-size:10px;background:#F1F5F9;padding:1px 4px;border-radius:3px"><?= Helpers::e($r['conversion_id']) ?></code></td>
                 <td><?= Helpers::e($r['sub1']?:'—') ?></td>
@@ -571,8 +569,8 @@ $(function() {
     dtInit('tbl-perf',      { destroy:true, pageLength:50, order:[], language:{search:'Search:',lengthMenu:'Show _MENU_ entries',emptyTable:'No data for selected filters'} });
     dtInit('tbl-clicks',    { destroy:true, pageLength:50, order:[[14,'desc']], scrollX:true, language:{search:'Search:',lengthMenu:'Show _MENU_ entries',emptyTable:'No clicks found for selected filters'} });
     dtInit('tbl-conv',      { destroy:true, pageLength:50, order:[[21,'desc']], scrollX:true, columnDefs:[{orderable:false,targets:[6,10,11]}], language:{search:'Search:',lengthMenu:'Show _MENU_ entries',emptyTable:'No conversions found for selected filters'} });
-    dtInit('tbl-sl-clicks', { destroy:true, pageLength:50, order:[[15,'desc']], scrollX:true, language:{search:'Search:',lengthMenu:'Show _MENU_ entries',emptyTable:'No SmartLink clicks found'} });
-    dtInit('tbl-sl-conv',   { destroy:true, pageLength:50, order:[[13,'desc']], scrollX:true, language:{search:'Search:',lengthMenu:'Show _MENU_ entries',emptyTable:'No SmartLink conversions found'} });
+    dtInit('tbl-sl-clicks', { destroy:true, pageLength:50, order:[[14,'desc']], scrollX:true, language:{search:'Search:',lengthMenu:'Show _MENU_ entries',emptyTable:'No SmartLink clicks found'} });
+    dtInit('tbl-sl-conv',   { destroy:true, pageLength:50, order:[[12,'desc']], scrollX:true, language:{search:'Search:',lengthMenu:'Show _MENU_ entries',emptyTable:'No SmartLink conversions found'} });
 });
 </script>
 

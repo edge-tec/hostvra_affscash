@@ -474,11 +474,11 @@ if ($action === 'conversions') {
                     CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END AS fraud_flag,
                     COALESCE(ck.country, NULLIF(c.ipquery_country_code,'')) as country,
                     ck.device_type as device_type,
-                    COALESCE(NULLIF(ck.city,''), NULLIF(c.ipquery_city,'')) as city,
-                    COALESCE(NULLIF(ck.region,''), NULLIF(c.ipquery_state,'')) as region,
-                    o.id as offer_id, o.name as offer_name
+                    IF(COALESCE(c.smartlink_id, ck.smartlink_id) IS NOT NULL AND COALESCE(c.smartlink_id, ck.smartlink_id) > 0, COALESCE(CONCAT('SmartLink: ', sl.name), 'SmartLink'), o.name) as offer_name,
+                    IF(COALESCE(c.smartlink_id, ck.smartlink_id) IS NOT NULL AND COALESCE(c.smartlink_id, ck.smartlink_id) > 0, NULL, o.id) as offer_id
              FROM conversions c
              LEFT JOIN clicks ck ON ck.click_id = c.click_id
+             LEFT JOIN smartlinks sl ON sl.id = COALESCE(c.smartlink_id, ck.smartlink_id)
              LEFT JOIN offers o ON o.id = c.offer_id
              WHERE c.affiliate_id = ?
                AND c.converted_at BETWEEN ? AND ?
