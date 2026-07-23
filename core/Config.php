@@ -37,9 +37,7 @@ class Config {
             $ref = &$ref[$part];
         }
         $ref = $value;
-        self::$cache[$file] = $data;
-        $path = self::$configDir . '/' . $file . '.json';
-        return (bool) file_put_contents($path, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), LOCK_EX);
+        return self::write($file, $data);
     }
 
     public static function write(string $file, array $data): bool {
@@ -48,11 +46,27 @@ class Config {
         // file_put_contents() fails silently if the directory is missing.
         $dir = dirname($path);
         if (!is_dir($dir)) {
-            @mkdir($dir, 0755, true);
+            @mkdir($dir, 0775, true);
         }
         self::$cache[$file] = $data;
+
+        // Try setting write permission if file exists but is read-only for current PHP process
+        if (file_exists($path) && !is_writable($path)) {
+            @chmod($path, 0666);
+        }
+
         $result = @file_put_contents($path, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), LOCK_EX);
-        if ($result === false) {
+
+        // Fallback: If write failed, attempt unlinking existing file if parent directory is writable
+        if ($result === false && file_exists($path) && is_writable($dir)) {
+            @chmod($path, 0666);
+            @unlink($path);
+            $result = @file_put_contents($path, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), LOCK_EX);
+        }
+
+        if ($result !== false) {
+            @chmod($path, 0666);
+        } else {
             $err = error_get_last();
             $errMsg = $err ? $err['message'] : 'Unknown error';
             error_log('[Config] Failed to write config file: ' . $path . ' — ' . $errMsg);

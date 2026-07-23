@@ -30,6 +30,7 @@ if (!file_exists($_fraudCfgPath)) {
         'fraudlabspro_enabled'    => false,
         'fraudlabspro_api_key'    => '',
     ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), LOCK_EX);
+    @chmod($_fraudCfgPath, 0666);
 }
 
 $fraudCfg  = Config::get('fraud') ?? [];
