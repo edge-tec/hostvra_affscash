@@ -677,7 +677,7 @@ try {
         'click_id'       => $clickId,
         'offer_id'       => $click['offer_id'],
         'affiliate_id'   => $click['affiliate_id'],
-        'smartlink_id'   => $click['smartlink_id'] ?? null,
+        'smartlink_id'   => $click['smartlink_id'] ?: (Database::fetchOne("SELECT smartlink_id FROM smartlink_offers WHERE offer_id=? LIMIT 1", [$click['offer_id']])['smartlink_id'] ?? null),
         'advertiser_id'  => $click['advertiser_id'],
         'payout'         => $payout,
         'revenue'        => $revenue,

@@ -933,7 +933,7 @@ Database::insert('clicks', [
     'click_id'         => $clickId,
     'offer_id'         => $offerId,
     'affiliate_id'     => $affiliate['id'],
-    'smartlink_id'     => ($GLOBALS['_sl_id'] ?? (int)($_GET['sl'] ?? $_GET['smartlink_id'] ?? 0) ?: null),
+    'smartlink_id'     => ($GLOBALS['_sl_id'] ?? (int)($_GET['sl'] ?? $_GET['smartlink_id'] ?? 0) ?: (Database::fetchOne("SELECT smartlink_id FROM smartlink_offers WHERE offer_id=? LIMIT 1", [$offerId])['smartlink_id'] ?? null)),
     'source'           => substr($source, 0, 255), // original raw param
     'original_source'          => null, // Deprecated
     'source_override_applied'  => 0, // Deprecated
