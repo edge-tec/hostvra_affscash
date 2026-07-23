@@ -226,11 +226,13 @@ if ($tab === 'click') {
                 c.ip_address, c.country, c.city, c.region, c.clicked_at,
                 COALESCE(cv.rejection_reason, '') AS rejection_reason,
                 cv.rejected_at,
-                o.name as offer_name,
+                IF(c.smartlink_id IS NOT NULL AND c.smartlink_id > 0, COALESCE(CONCAT('SmartLink: ', sl.name), 'SmartLink'), o.name) as offer_name,
+                IF(c.smartlink_id IS NOT NULL AND c.smartlink_id > 0, NULL, o.id) as offer_id,
                 cv.status       as conv_status,
                 cv.payout       as conv_payout,
                 cv.converted_at as conv_time
          FROM clicks c
+         LEFT JOIN smartlinks sl ON sl.id = c.smartlink_id
          LEFT JOIN offers o ON o.id = c.offer_id
          LEFT JOIN conversions cv ON cv.click_id = c.click_id AND cv.is_hidden = 0
          WHERE $whereStr
@@ -297,15 +299,17 @@ if ($tab === 'conversion') {
                 cv.goal_name, cv.transaction_id,
                 /* Surface rejection metadata so the affiliate can see exactly
                    why the conversion was rejected and when. */
-                COALESCE(cv.rejection_reason, '') AS rejection_reason,
-                cv.rejected_at,
-                o.name as offer_name,
-                ck.sub1, ck.sub2, ck.sub3, ck.source,
-                ck.os, ck.browser, ck.user_agent, ck.device_type,
-                ck.ip_address, ck.country, ck.city, ck.region, ck.referer
-         FROM conversions cv
-         JOIN offers o ON o.id = cv.offer_id
-         LEFT JOIN clicks ck ON ck.click_id = cv.click_id
+                 COALESCE(cv.rejection_reason, '') AS rejection_reason,
+                 cv.rejected_at,
+                 IF(COALESCE(cv.smartlink_id, ck.smartlink_id) IS NOT NULL AND COALESCE(cv.smartlink_id, ck.smartlink_id) > 0, COALESCE(CONCAT('SmartLink: ', sl.name), 'SmartLink'), o.name) as offer_name,
+                 IF(COALESCE(cv.smartlink_id, ck.smartlink_id) IS NOT NULL AND COALESCE(cv.smartlink_id, ck.smartlink_id) > 0, NULL, o.id) as offer_id,
+                 ck.sub1, ck.sub2, ck.sub3, ck.source,
+                 ck.os, ck.browser, ck.user_agent, ck.device_type,
+                 ck.ip_address, ck.country, ck.city, ck.region, ck.referer
+          FROM conversions cv
+          LEFT JOIN clicks ck ON ck.click_id = cv.click_id
+          LEFT JOIN smartlinks sl ON sl.id = COALESCE(cv.smartlink_id, ck.smartlink_id)
+          LEFT JOIN offers o ON o.id = cv.offer_id
          WHERE $whereStr
          ORDER BY cv.converted_at DESC
          LIMIT $limit",
@@ -354,7 +358,7 @@ if ($tab === 'sl_report') {
                     c.ip_address, c.country, c.city, c.os, c.browser, c.device_type,
                     c.clicked_at, c.is_fraud,
                     COALESCE(sl.name,'— Unknown —') as smartlink_name,
-                    COALESCE(o.name, '— Custom URL —') as offer_name,
+                    COALESCE(sl.name, 'SmartLink') as offer_name,
                     COALESCE(cv.status,'') as conv_status,
                     COALESCE(cv.payout, 0) as conv_payout,
                     (cv.conversion_id IS NOT NULL) as has_conversion
@@ -380,7 +384,7 @@ if ($tab === 'sl_report') {
             "SELECT cv.conversion_id, cv.click_id, cv.status, cv.payout, cv.converted_at,
                     cv.goal_name, cv.transaction_id,
                     COALESCE(sl.name,'— Unknown —') as smartlink_name,
-                    COALESCE(o.name,'— Custom URL —') as offer_name,
+                    COALESCE(sl.name,'SmartLink') as offer_name,
                     ck.sub1, ck.sub2, ck.country, ck.os, ck.browser, ck.device_type
              FROM conversions cv
              JOIN clicks ck ON ck.click_id = cv.click_id

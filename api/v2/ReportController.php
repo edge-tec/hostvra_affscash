@@ -198,11 +198,13 @@ if (in_array($tab, $perfTabs)) {
     $clicks = Database::fetchAll(
         "SELECT c.click_id, c.sub1, c.sub2, c.source,
                 c.os, c.browser, c.device_type, c.ip_address, c.country, c.city, c.region, c.clicked_at,
-                o.name as offer_name,
+                IF(c.smartlink_id IS NOT NULL AND c.smartlink_id > 0, COALESCE(CONCAT('SmartLink: ', sl.name), 'SmartLink'), o.name) as offer_name,
+                IF(c.smartlink_id IS NOT NULL AND c.smartlink_id > 0, NULL, o.id) as offer_id,
                 cv.status       as conv_status,
                 cv.payout       as conv_payout,
                 cv.converted_at as conv_time
          FROM clicks c
+         LEFT JOIN smartlinks sl ON sl.id = c.smartlink_id
          LEFT JOIN offers o ON o.id = c.offer_id
          LEFT JOIN conversions cv ON cv.click_id = c.click_id AND cv.is_hidden = 0
          WHERE $whereStr
@@ -238,7 +240,8 @@ if (in_array($tab, $perfTabs)) {
 
     $convRows = Database::fetchAll(
         "SELECT cv.conversion_id, cv.click_id, cv.status, cv.payout, cv.converted_at,
-                o.name as offer_name,
+                IF(COALESCE(cv.smartlink_id, ck.smartlink_id) IS NOT NULL AND COALESCE(cv.smartlink_id, ck.smartlink_id) > 0, COALESCE(CONCAT('SmartLink: ', sl.name), 'SmartLink'), o.name) as offer_name,
+                IF(COALESCE(cv.smartlink_id, ck.smartlink_id) IS NOT NULL AND COALESCE(cv.smartlink_id, ck.smartlink_id) > 0, NULL, o.id) as offer_id,
                 ck.sub1, ck.os, ck.browser, ck.source,
                 COALESCE(NULLIF(cv.device_type,''), ck.device_type) as device_type, 
                 COALESCE(NULLIF(cv.ip_address,''), ck.ip_address) as ip_address, 
@@ -246,8 +249,9 @@ if (in_array($tab, $perfTabs)) {
                 COALESCE(NULLIF(ck.city,''), NULLIF(cv.ipquery_city,'')) as city, 
                 COALESCE(NULLIF(ck.region,''), NULLIF(cv.ipquery_state,'')) as region
          FROM conversions cv
-         JOIN offers o ON o.id = cv.offer_id
          LEFT JOIN clicks ck ON ck.click_id = cv.click_id
+         LEFT JOIN smartlinks sl ON sl.id = COALESCE(cv.smartlink_id, ck.smartlink_id)
+         LEFT JOIN offers o ON o.id = cv.offer_id
          WHERE $whereStr
          ORDER BY cv.converted_at DESC
          LIMIT $limit",
@@ -270,7 +274,7 @@ if (in_array($tab, $perfTabs)) {
     $slClicks = Database::fetchAll(
         "SELECT c.click_id, c.sub1, c.source, c.ip_address, c.country, c.city, c.os, c.browser, c.device_type, c.clicked_at,
                 COALESCE(sl.name,'— Unknown —') as smartlink_name,
-                COALESCE(o.name, '— Custom URL —') as offer_name,
+                COALESCE(sl.name, 'SmartLink') as offer_name,
                 COALESCE(cv.status,'') as conv_status,
                 COALESCE(cv.payout, 0) as conv_payout
          FROM clicks c

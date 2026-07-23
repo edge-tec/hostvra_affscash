@@ -18,9 +18,11 @@ $rows = Database::fetchAll(
     "SELECT cv.id, cv.conversion_id, cv.offer_id,
             cv.payout, cv.status, cv.ip_address, cv.converted_at,
             cv.transaction_id, cv.goal_name,
-            o.name AS offer_name,
+            IF(COALESCE(cv.smartlink_id, ck.smartlink_id) IS NOT NULL AND COALESCE(cv.smartlink_id, ck.smartlink_id) > 0, COALESCE(CONCAT('SmartLink: ', sl.name), 'SmartLink'), o.name) AS offer_name,
             dup.dup_count
      FROM conversions cv
+     LEFT JOIN clicks ck ON ck.click_id = cv.click_id
+     LEFT JOIN smartlinks sl ON sl.id = COALESCE(cv.smartlink_id, ck.smartlink_id)
      JOIN (
         SELECT offer_id, ip_address, COUNT(*) AS dup_count
         FROM conversions

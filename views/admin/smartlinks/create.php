@@ -116,8 +116,10 @@ $_validPay = ['default', 'fixed', 'percent', 'skip'];
                             <?php else: ?>
                             <select name="offer_ids[]" class="form-control">
                                 <option value="">— Select offer —</option>
-                                <?php foreach($activeOffers as $o): ?>
-                                <option value="<?= $o['id'] ?>" <?= $o['id'] == $row['offer_id'] ? 'selected' : '' ?>><?= Helpers::e($o['name']) ?> ($<?= number_format($o['payout_amount'],2) ?>)</option>
+                                <?php foreach($activeOffers as $o): 
+                                    $isPriv = ($o['visibility'] ?? 'public') === 'private';
+                                ?>
+                                <option value="<?= $o['id'] ?>" <?= $o['id'] == $row['offer_id'] ? 'selected' : '' ?>><?= $isPriv ? '🔒 ' : '' ?><?= Helpers::e($o['name']) ?><?= $isPriv ? ' [Private]' : '' ?> ($<?= number_format($o['payout_amount'],2) ?>)</option>
                                 <?php endforeach; ?>
                             </select>
                             <?php endif; ?>
@@ -229,7 +231,7 @@ $_validPay = ['default', 'fixed', 'percent', 'skip'];
 
 <script>
 // PHP-generated offer options for dynamically added rows
-const slOfferOptions = `<option value="">— Select offer —</option><?php foreach($activeOffers as $o): ?><option value="<?= $o['id'] ?>"><?= addslashes(htmlspecialchars($o['name'],ENT_QUOTES)) ?> ($<?= number_format($o['payout_amount'],2) ?>)</option><?php endforeach; ?>`;
+const slOfferOptions = `<option value="">— Select offer —</option><?php foreach($activeOffers as $o): $isPriv = ($o['visibility'] ?? 'public') === 'private'; ?><option value="<?= $o['id'] ?>"><?= $isPriv ? '🔒 ' : '' ?><?= addslashes(htmlspecialchars($o['name'],ENT_QUOTES)) ?><?= $isPriv ? ' [Private]' : '' ?> ($<?= number_format($o['payout_amount'],2) ?>)</option><?php endforeach; ?>`;
 
 const slSettingsPanelHtml =
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">' +

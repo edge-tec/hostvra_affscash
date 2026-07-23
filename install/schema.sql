@@ -235,6 +235,7 @@ CREATE TABLE IF NOT EXISTS `conversions` (
     `click_id`          CHAR(36) NOT NULL,
     `offer_id`          INT UNSIGNED NOT NULL,
     `affiliate_id`      INT UNSIGNED NOT NULL,
+    `smartlink_id`      INT UNSIGNED NULL DEFAULT NULL,
     `advertiser_id`     INT UNSIGNED NOT NULL,
     `payout`            DECIMAL(10,4) NOT NULL DEFAULT 0.0000,
     `revenue`           DECIMAL(10,4) NOT NULL DEFAULT 0.0000,
@@ -254,6 +255,7 @@ CREATE TABLE IF NOT EXISTS `conversions` (
     INDEX `idx_status` (`status`),
     INDEX `idx_converted_at` (`converted_at`),
     INDEX `idx_offer_id` (`offer_id`),
+    INDEX `idx_smartlink_id` (`smartlink_id`),
     INDEX `idx_aff_converted` (`affiliate_id`,`converted_at`),
     INDEX `idx_offer_converted` (`offer_id`,`converted_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -71,7 +71,7 @@ elseif ($action === 'create') {
     $errors  = [];
     $appUrl  = Config::get('config','app.url') ?? '';
     $activeOffers = Database::fetchAll(
-        "SELECT o.id,o.name,o.payout_amount FROM offers o WHERE o.status='active' ORDER BY o.name"
+        "SELECT o.id,o.name,o.payout_amount,COALESCE(o.visibility,'public') as visibility FROM offers o WHERE o.status='active' ORDER BY o.name"
     );
 
     if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
@@ -143,7 +143,7 @@ elseif ($action === 'edit') {
     );
 
     $activeOffers = Database::fetchAll(
-        "SELECT o.id,o.name,o.payout_amount FROM offers o WHERE o.status='active' ORDER BY o.name"
+        "SELECT o.id,o.name,o.payout_amount,COALESCE(o.visibility,'public') as visibility FROM offers o WHERE o.status='active' ORDER BY o.name"
     );
 
     if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
