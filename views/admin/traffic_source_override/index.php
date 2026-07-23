@@ -24,7 +24,21 @@
 </div>
 <?php endif; ?>
 
-<div style="display:grid;grid-template-columns:380px 1fr;gap:16px;align-items:flex-start">
+<style>
+.tso-grid {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 16px;
+    align-items: flex-start;
+}
+@media (max-width: 991px) {
+    .tso-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="tso-grid">
 
     <!-- ── Add New Rule ──────────────────────────────────────────────── -->
     <div class="card">
@@ -173,7 +187,7 @@
                 No override rules configured yet.
             </div>
             <?php else: ?>
-            <div class="table-wrap">
+            <div class="table-wrap" style="overflow-x:auto">
             <table class="table" style="margin:0">
                 <thead>
                     <tr>
