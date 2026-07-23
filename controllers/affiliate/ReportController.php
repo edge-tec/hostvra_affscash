@@ -7,6 +7,7 @@ $affId = Auth::affiliateId();
 try { Database::query("ALTER TABLE conversions ADD COLUMN is_hidden TINYINT(1) NOT NULL DEFAULT 0"); } catch(Exception $e) {}
 try { Database::query("ALTER TABLE clicks ADD COLUMN source VARCHAR(255) DEFAULT '' AFTER sub5"); } catch(Exception $e) {}
 try { Database::query("ALTER TABLE conversions ADD COLUMN smartlink_id INT UNSIGNED DEFAULT NULL AFTER affiliate_id"); } catch (\Throwable $_e) {}
+try { Database::query("UPDATE clicks c JOIN smartlink_offers so ON so.offer_id = c.offer_id SET c.smartlink_id = so.smartlink_id WHERE c.smartlink_id IS NULL"); } catch (\Throwable $_e) {}
 try { Database::query("UPDATE conversions c JOIN clicks ck ON ck.click_id = c.click_id SET c.smartlink_id = ck.smartlink_id WHERE c.smartlink_id IS NULL AND ck.smartlink_id IS NOT NULL"); } catch (\Throwable $_e) {}
 
 $tab         = Helpers::get('tab') ?: 'day';
@@ -66,11 +67,11 @@ if (in_array($tab, $perfTabs)) {
         // From stats_daily + live approved payout from conversions
         $selectMap = [
             'day'   => 'sd.stat_date as label',
-            'offer' => 'IF(so.smartlink_id IS NOT NULL, COALESCE(sl.name, "SmartLink"), o.name) as label',
+            'offer' => 'IF(so.smartlink_id IS NOT NULL, COALESCE(CONCAT("[SL-", LPAD(sl.id, 4, "0"), "] ", sl.name), "SmartLink"), o.name) as label',
         ];
         $groupMap = [
             'day'   => 'sd.stat_date',
-            'offer' => 'sd.offer_id, IF(so.smartlink_id IS NOT NULL, COALESCE(sl.name, "SmartLink"), o.name)',
+            'offer' => 'sd.offer_id, IF(so.smartlink_id IS NOT NULL, COALESCE(CONCAT("[SL-", LPAD(sl.id, 4, "0"), "] ", sl.name), "SmartLink"), o.name)',
         ];
         $orderMap = [
             'day'   => 'sd.stat_date DESC, payout DESC',
@@ -228,17 +229,17 @@ if ($tab === 'click') {
                 c.ip_address, c.country, c.city, c.region, c.clicked_at,
                 COALESCE(cv.rejection_reason, '') AS rejection_reason,
                 cv.rejected_at,
-                IF(c.smartlink_id IS NOT NULL AND c.smartlink_id > 0, COALESCE(sl.name, 'SmartLink'), IF(so.smartlink_id IS NOT NULL, COALESCE(sl2.name, 'SmartLink'), o.name)) as offer_name,
-                IF(c.smartlink_id IS NOT NULL OR so.smartlink_id IS NOT NULL, NULL, o.id) as offer_id,
+                IF(COALESCE(c.smartlink_id, cv.smartlink_id, so.smartlink_id) IS NOT NULL AND COALESCE(c.smartlink_id, cv.smartlink_id, so.smartlink_id) > 0, COALESCE(CONCAT('[SL-', LPAD(COALESCE(sl.id, sl2.id), 4, '0'), '] ', COALESCE(sl.name, sl2.name)), 'SmartLink'), o.name) as offer_name,
+                IF(COALESCE(c.smartlink_id, cv.smartlink_id, so.smartlink_id) IS NOT NULL AND COALESCE(c.smartlink_id, cv.smartlink_id, so.smartlink_id) > 0, NULL, o.id) as offer_id,
                 cv.status       as conv_status,
                 cv.payout       as conv_payout,
                 cv.converted_at as conv_time
          FROM clicks c
-         LEFT JOIN smartlinks sl ON sl.id = c.smartlink_id
+         LEFT JOIN conversions cv ON cv.click_id = c.click_id AND cv.is_hidden = 0
+         LEFT JOIN smartlinks sl ON sl.id = COALESCE(c.smartlink_id, cv.smartlink_id)
          LEFT JOIN smartlink_offers so ON so.offer_id = c.offer_id
          LEFT JOIN smartlinks sl2 ON sl2.id = so.smartlink_id
          LEFT JOIN offers o ON o.id = c.offer_id
-         LEFT JOIN conversions cv ON cv.click_id = c.click_id AND cv.is_hidden = 0
          WHERE $whereStr
          GROUP BY c.click_id
          ORDER BY c.clicked_at DESC
@@ -259,7 +260,7 @@ if ($tab === 'click') {
         header('Content-Disposition: attachment; filename="my-clicks-'.date('Y-m-d').'.csv"');
         $f = fopen('php://output','w');
         fputcsv($f, [
-            'OFFER','CLICK ID','SUB1','SUB2','SUB3','SOURCE',
+            'OFFER / SMARTLINK','CLICK ID','SUB1','SUB2','SUB3','SOURCE',
             'OS','BROWSER','DEVICE','IP','COUNTRY','CITY','REGION',
             'CONV STATUS','PAYOUT','CLICK TIME','CONV TIME',
         ]);
@@ -306,8 +307,8 @@ if ($tab === 'conversion') {
                    why the conversion was rejected and when. */
                  COALESCE(cv.rejection_reason, '') AS rejection_reason,
                  cv.rejected_at,
-                 IF(COALESCE(cv.smartlink_id, ck.smartlink_id) IS NOT NULL AND COALESCE(cv.smartlink_id, ck.smartlink_id) > 0, COALESCE(sl.name, 'SmartLink'), IF(so.smartlink_id IS NOT NULL, COALESCE(sl2.name, 'SmartLink'), o.name)) as offer_name,
-                 IF(COALESCE(cv.smartlink_id, ck.smartlink_id) IS NOT NULL OR so.smartlink_id IS NOT NULL, NULL, o.id) as offer_id,
+                 IF(COALESCE(cv.smartlink_id, ck.smartlink_id, so.smartlink_id) IS NOT NULL AND COALESCE(cv.smartlink_id, ck.smartlink_id, so.smartlink_id) > 0, COALESCE(CONCAT('[SL-', LPAD(COALESCE(sl.id, sl2.id), 4, '0'), '] ', COALESCE(sl.name, sl2.name)), 'SmartLink'), o.name) as offer_name,
+                 IF(COALESCE(cv.smartlink_id, ck.smartlink_id, so.smartlink_id) IS NOT NULL AND COALESCE(cv.smartlink_id, ck.smartlink_id, so.smartlink_id) > 0, NULL, o.id) as offer_id,
                  ck.sub1, ck.sub2, ck.sub3, ck.source,
                  ck.os, ck.browser, ck.user_agent, ck.device_type,
                  ck.ip_address, ck.country, ck.city, ck.region, ck.referer
@@ -329,7 +330,7 @@ if ($tab === 'conversion') {
         header('Content-Disposition: attachment; filename="my-conversions-'.date('Y-m-d').'.csv"');
         $f = fopen('php://output','w');
         fputcsv($f, [
-            'OFFER','CLICK ID','SUB1','SUB2','SUB3','SOURCE',
+            'OFFER / SMARTLINK','CLICK ID','SUB1','SUB2','SUB3','SOURCE',
             'OS','BROWSER','DEVICE','IP','COUNTRY','CITY','REGION',
             'PAYOUT','STATUS','REJECTION REASON','REJECTED AT','GOAL','TXN ID','CONVERT TIME',
         ]);
@@ -354,9 +355,9 @@ if ($tab === 'conversion') {
 $slClicks = $slConversions = null;
 if ($tab === 'sl_report') {
     // ── Clicks ──
-    $slClkWhere  = ['c.affiliate_id=?', 'c.smartlink_id IS NOT NULL', 'c.clicked_at BETWEEN ? AND ?'];
+    $slClkWhere  = ['c.affiliate_id=?', '(c.smartlink_id IS NOT NULL OR so.smartlink_id IS NOT NULL)', 'c.clicked_at BETWEEN ? AND ?'];
     $slClkParams = [$affId, $dateFrom, $dateTo];
-    if ($slId    > 0)    { $slClkWhere[] = 'c.smartlink_id=?'; $slClkParams[] = $slId; }
+    if ($slId    > 0)    { $slClkWhere[] = 'COALESCE(c.smartlink_id, so.smartlink_id)=?'; $slClkParams[] = $slId; }
     if ($country !== '') { $slClkWhere[] = 'c.country=?';       $slClkParams[] = strtoupper($country); }
     $slClkWhere = implode(' AND ', $slClkWhere);
 
@@ -365,25 +366,28 @@ if ($tab === 'sl_report') {
             "SELECT c.click_id, c.sub1, c.sub2, c.source,
                     c.ip_address, c.country, c.city, c.os, c.browser, c.device_type,
                     c.clicked_at, c.is_fraud,
-                    COALESCE(sl.name,'— Unknown —') as smartlink_name,
-                    COALESCE(sl.name, 'SmartLink') as offer_name,
+                    COALESCE(CONCAT('[SL-', LPAD(COALESCE(sl.id, sl2.id), 4, '0'), '] ', COALESCE(sl.name, sl2.name)), 'SmartLink') as smartlink_name,
+                    COALESCE(CONCAT('[SL-', LPAD(COALESCE(sl.id, sl2.id), 4, '0'), '] ', COALESCE(sl.name, sl2.name)), 'SmartLink') as offer_name,
                     COALESCE(cv.status,'') as conv_status,
                     COALESCE(cv.payout, 0) as conv_payout,
                     (cv.conversion_id IS NOT NULL) as has_conversion
              FROM clicks c
              LEFT JOIN smartlinks sl ON sl.id = c.smartlink_id
+             LEFT JOIN smartlink_offers so ON so.offer_id = c.offer_id
+             LEFT JOIN smartlinks sl2 ON sl2.id = so.smartlink_id
              LEFT JOIN offers o ON o.id = c.offer_id
              LEFT JOIN conversions cv ON cv.click_id = c.click_id AND cv.is_hidden = 0
              WHERE $slClkWhere
+             GROUP BY c.click_id
              ORDER BY c.clicked_at DESC LIMIT $limit",
             $slClkParams
         );
     } catch (\Throwable $_e) { $slClicks = []; }
 
     // ── Conversions ──
-    $slCvWhere  = ['cv.affiliate_id=?', 'ck.smartlink_id IS NOT NULL', 'cv.converted_at BETWEEN ? AND ?', 'cv.is_hidden=0'];
+    $slCvWhere  = ['cv.affiliate_id=?', '(cv.smartlink_id IS NOT NULL OR ck.smartlink_id IS NOT NULL OR so.smartlink_id IS NOT NULL)', 'cv.converted_at BETWEEN ? AND ?', 'cv.is_hidden=0'];
     $slCvParams = [$affId, $dateFrom, $dateTo];
-    if ($slId    > 0)    { $slCvWhere[] = 'ck.smartlink_id=?'; $slCvParams[] = $slId; }
+    if ($slId    > 0)    { $slCvWhere[] = 'COALESCE(cv.smartlink_id, ck.smartlink_id, so.smartlink_id)=?'; $slCvParams[] = $slId; }
     if ($country !== '') { $slCvWhere[] = 'ck.country=?';       $slCvParams[] = strtoupper($country); }
     $slCvWhere = implode(' AND ', $slCvWhere);
 
@@ -391,14 +395,17 @@ if ($tab === 'sl_report') {
         $slConversions = Database::fetchAll(
             "SELECT cv.conversion_id, cv.click_id, cv.status, cv.payout, cv.converted_at,
                     cv.goal_name, cv.transaction_id,
-                    COALESCE(sl.name,'— Unknown —') as smartlink_name,
-                    COALESCE(sl.name,'SmartLink') as offer_name,
+                    COALESCE(CONCAT('[SL-', LPAD(COALESCE(sl.id, sl2.id), 4, '0'), '] ', COALESCE(sl.name, sl2.name)), 'SmartLink') as smartlink_name,
+                    COALESCE(CONCAT('[SL-', LPAD(COALESCE(sl.id, sl2.id), 4, '0'), '] ', COALESCE(sl.name, sl2.name)), 'SmartLink') as offer_name,
                     ck.sub1, ck.sub2, ck.country, ck.os, ck.browser, ck.device_type
              FROM conversions cv
              JOIN clicks ck ON ck.click_id = cv.click_id
-             LEFT JOIN smartlinks sl ON sl.id = ck.smartlink_id
+             LEFT JOIN smartlinks sl ON sl.id = COALESCE(cv.smartlink_id, ck.smartlink_id)
+             LEFT JOIN smartlink_offers so ON so.offer_id = cv.offer_id
+             LEFT JOIN smartlinks sl2 ON sl2.id = so.smartlink_id
              LEFT JOIN offers o ON o.id = cv.offer_id
              WHERE $slCvWhere
+             GROUP BY cv.conversion_id
              ORDER BY cv.converted_at DESC LIMIT $limit",
             $slCvParams
         );
@@ -411,14 +418,14 @@ if ($tab === 'sl_report') {
         $f = fopen('php://output', 'w');
         fwrite($f, "\xEF\xBB\xBF");
         if ($exportType === 'conversions') {
-            fputcsv($f, ['SMARTLINK','OFFER','CLICK ID','CONV ID','SUB1','SUB2','STATUS','PAYOUT','GOAL','TXN ID','COUNTRY','OS','BROWSER','DEVICE','CONVERTED AT']);
+            fputcsv($f, ['SMARTLINK','CLICK ID','CONV ID','SUB1','SUB2','STATUS','PAYOUT','GOAL','TXN ID','COUNTRY','OS','BROWSER','DEVICE','CONVERTED AT']);
             foreach ($slConversions as $r) {
-                fputcsv($f, [$r['smartlink_name'],$r['offer_name'],$r['click_id'],$r['conversion_id'],$r['sub1'],$r['sub2'],$r['status'],number_format((float)$r['payout'],4),$r['goal_name'],$r['transaction_id'],$r['country'],$r['os'],$r['browser'],$r['device_type'],$r['converted_at']]);
+                fputcsv($f, [$r['smartlink_name'],$r['click_id'],$r['conversion_id'],$r['sub1'],$r['sub2'],$r['status'],number_format((float)$r['payout'],4),$r['goal_name'],$r['transaction_id'],$r['country'],$r['os'],$r['browser'],$r['device_type'],$r['converted_at']]);
             }
         } else {
-            fputcsv($f, ['SMARTLINK','OFFER','CLICK ID','SUB1','SUB2','SOURCE','FRAUD','OS','BROWSER','DEVICE','IP','COUNTRY','CITY','CONVERTED','CONV STATUS','PAYOUT','CLICK TIME']);
+            fputcsv($f, ['SMARTLINK','CLICK ID','SUB1','SUB2','SOURCE','FRAUD','OS','BROWSER','DEVICE','IP','COUNTRY','CITY','CONVERTED','CONV STATUS','PAYOUT','CLICK TIME']);
             foreach ($slClicks as $r) {
-                fputcsv($f, [$r['smartlink_name'],$r['offer_name'],$r['click_id'],$r['sub1'],$r['sub2'],$r['source'],$r['is_fraud']?'Fraud':'Clean',$r['os'],$r['browser'],$r['device_type'],$r['ip_address'],$r['country'],$r['city'],$r['has_conversion']?'Yes':'No',$r['conv_status']?:'—',number_format((float)$r['conv_payout'],4),$r['clicked_at']]);
+                fputcsv($f, [$r['smartlink_name'],$r['click_id'],$r['sub1'],$r['sub2'],$r['source'],$r['is_fraud']?'Fraud':'Clean',$r['os'],$r['browser'],$r['device_type'],$r['ip_address'],$r['country'],$r['city'],$r['has_conversion']?'Yes':'No',$r['conv_status']?:'—',number_format((float)$r['conv_payout'],4),$r['clicked_at']]);
             }
         }
         fclose($f); exit;

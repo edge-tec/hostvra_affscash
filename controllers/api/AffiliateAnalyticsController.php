@@ -474,11 +474,13 @@ if ($action === 'conversions') {
                     CASE WHEN COALESCE(c.fraud_score,0) >= 60 THEN 1 ELSE 0 END AS fraud_flag,
                     COALESCE(ck.country, NULLIF(c.ipquery_country_code,'')) as country,
                     ck.device_type as device_type,
-                    IF(COALESCE(c.smartlink_id, ck.smartlink_id) IS NOT NULL AND COALESCE(c.smartlink_id, ck.smartlink_id) > 0, COALESCE(CONCAT('SmartLink: ', sl.name), 'SmartLink'), o.name) as offer_name,
-                    IF(COALESCE(c.smartlink_id, ck.smartlink_id) IS NOT NULL AND COALESCE(c.smartlink_id, ck.smartlink_id) > 0, NULL, o.id) as offer_id
+                    IF(COALESCE(c.smartlink_id, ck.smartlink_id, so.smartlink_id) IS NOT NULL AND COALESCE(c.smartlink_id, ck.smartlink_id, so.smartlink_id) > 0, COALESCE(CONCAT('[SL-', LPAD(COALESCE(sl.id, sl2.id), 4, '0'), '] ', COALESCE(sl.name, sl2.name)), 'SmartLink'), o.name) as offer_name,
+                    IF(COALESCE(c.smartlink_id, ck.smartlink_id, so.smartlink_id) IS NOT NULL AND COALESCE(c.smartlink_id, ck.smartlink_id, so.smartlink_id) > 0, NULL, o.id) as offer_id
              FROM conversions c
              LEFT JOIN clicks ck ON ck.click_id = c.click_id
              LEFT JOIN smartlinks sl ON sl.id = COALESCE(c.smartlink_id, ck.smartlink_id)
+             LEFT JOIN smartlink_offers so ON so.offer_id = c.offer_id
+             LEFT JOIN smartlinks sl2 ON sl2.id = so.smartlink_id
              LEFT JOIN offers o ON o.id = c.offer_id
              WHERE c.affiliate_id = ?
                AND c.converted_at BETWEEN ? AND ?

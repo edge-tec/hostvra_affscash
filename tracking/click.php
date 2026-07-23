@@ -933,7 +933,7 @@ Database::insert('clicks', [
     'click_id'         => $clickId,
     'offer_id'         => $offerId,
     'affiliate_id'     => $affiliate['id'],
-    'smartlink_id'     => ($GLOBALS['_sl_id'] ?? null),
+    'smartlink_id'     => ($GLOBALS['_sl_id'] ?? (int)($_GET['sl'] ?? $_GET['smartlink_id'] ?? 0) ?: null),
     'source'           => substr($source, 0, 255), // original raw param
     'original_source'          => null, // Deprecated
     'source_override_applied'  => 0, // Deprecated

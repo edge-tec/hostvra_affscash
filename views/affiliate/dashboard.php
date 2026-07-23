@@ -721,7 +721,7 @@ $_dashFraudRiskSql = FraudAutoNotify::highRiskWhereSql('cv');
 try {
     $_dashFraud = Database::fetchAll(
         "SELECT cv.conversion_id, cv.payout, cv.converted_at, cv.country, cv.ip_address,
-                IF(COALESCE(cv.smartlink_id, ck.smartlink_id) IS NOT NULL AND COALESCE(cv.smartlink_id, ck.smartlink_id) > 0, COALESCE(sl.name, 'SmartLink'), IF(so.smartlink_id IS NOT NULL, COALESCE(sl2.name, 'SmartLink'), o.name)) AS offer_name
+                IF(COALESCE(cv.smartlink_id, ck.smartlink_id, so.smartlink_id) IS NOT NULL AND COALESCE(cv.smartlink_id, ck.smartlink_id, so.smartlink_id) > 0, COALESCE(CONCAT('[SL-', LPAD(COALESCE(sl.id, sl2.id), 4, '0'), '] ', COALESCE(sl.name, sl2.name)), 'SmartLink'), o.name) AS offer_name
          FROM conversions cv
          LEFT JOIN clicks ck ON ck.click_id = cv.click_id
          LEFT JOIN smartlinks sl ON sl.id = COALESCE(cv.smartlink_id, ck.smartlink_id)

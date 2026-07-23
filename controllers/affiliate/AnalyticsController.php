@@ -117,7 +117,7 @@ if ($from === $to) {
 }
 
 $byOffer = Database::fetchAll(
-    "SELECT IF(c.smartlink_id IS NOT NULL AND c.smartlink_id > 0, COALESCE(sl.name, 'SmartLink'), IF(so.smartlink_id IS NOT NULL, COALESCE(sl2.name, 'SmartLink'), o.name)) as name, c.offer_id, COUNT(*) as clicks, SUM(c.is_unique) as unique_c, SUM(c.is_fraud) as fraud
+    "SELECT IF(COALESCE(c.smartlink_id, so.smartlink_id) IS NOT NULL AND COALESCE(c.smartlink_id, so.smartlink_id) > 0, COALESCE(CONCAT('[SL-', LPAD(COALESCE(sl.id, sl2.id), 4, '0'), '] ', COALESCE(sl.name, sl2.name)), 'SmartLink'), o.name) as name, c.offer_id, COUNT(*) as clicks, SUM(c.is_unique) as unique_c, SUM(c.is_fraud) as fraud
      FROM clicks c
      LEFT JOIN smartlinks sl ON sl.id = c.smartlink_id
      LEFT JOIN smartlink_offers so ON so.offer_id = c.offer_id
@@ -235,7 +235,7 @@ foreach ($monthlyClicksRaw as $r) {
 
 // --- Top offers ---
 $toClicksRaw = Database::fetchAll(
-    "SELECT c.offer_id, IF(c.smartlink_id IS NOT NULL AND c.smartlink_id > 0, COALESCE(sl.name, 'SmartLink'), IF(so.smartlink_id IS NOT NULL, COALESCE(sl2.name, 'SmartLink'), o.name)) as name, COUNT(*) as clicks, SUM(c.is_unique) as uclicks
+    "SELECT c.offer_id, IF(COALESCE(c.smartlink_id, so.smartlink_id) IS NOT NULL AND COALESCE(c.smartlink_id, so.smartlink_id) > 0, COALESCE(CONCAT('[SL-', LPAD(COALESCE(sl.id, sl2.id), 4, '0'), '] ', COALESCE(sl.name, sl2.name)), 'SmartLink'), o.name) as name, COUNT(*) as clicks, SUM(c.is_unique) as uclicks
      FROM clicks c
      LEFT JOIN smartlinks sl ON sl.id = c.smartlink_id
      LEFT JOIN smartlink_offers so ON so.offer_id = c.offer_id
