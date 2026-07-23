@@ -27,8 +27,8 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 $offerId = (int)($_GET['offer_id'] ?? 0);
 
 // ── Affiliate identification ───────────────────────────────────────────────
-// Primary: aff_id=  |  Legacy alias: aff=
-$affCode = Helpers::get('aff_id') ?: Helpers::get('aff');
+// Primary: aff_id=  |  Legacy aliases: aff=, affiliate_id=, ref=
+$affCode = Helpers::get('aff_id') ?: Helpers::get('aff') ?: Helpers::get('affiliate_id') ?: Helpers::get('ref');
 
 // ── Affiliate tracker click ID (CRITICAL for postback matching) ───────────
 // Only click_id= and its direct alias sub1= map here.
@@ -773,7 +773,7 @@ if ($isVpnSignal) {
             Database::insert('vpn_blocked_log', [
                 'affiliate_id'   => $affiliate['id'] ?? null,
                 'offer_id'       => $offerId ?: null,
-                'offer_name'     => $offer['name'] ?? null,
+                'offer_name'     => $offer['name'] ?? ($offerId ? ('Offer #' . $offerId) : null),
                 'ip_address'     => $ip,
                 'detection_type' => $vpnDetectionType,
                 'user_agent'     => substr($ua ?? '', 0, 1000),

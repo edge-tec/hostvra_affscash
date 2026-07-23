@@ -57,11 +57,22 @@ Blocklist::enforceClick([
 // query param identifying an affiliate that's on the VPN/Proxy skip list, the
 // hard block is suppressed for that visitor. The skip list is managed by admins
 // at /admin/vpn-proxy-skip.
-$_skAffCode    = Helpers::get('aff') ?: Helpers::get('aff_id');
+$_skAffCode    = Helpers::get('aff') ?: Helpers::get('aff_id') ?: Helpers::get('affiliate_id') ?: Helpers::get('ref');
 $_vpnSkipForSL = $_skAffCode ? VpnSkipList::isSkippedByCode($_skAffCode) : false;
 
 if ((Config::get('config', 'vpn_detection.enabled') ?? '0') === '1' && !$_vpnSkipForSL) {
     if (($geo['proxy'] ?? false) || ($geo['hosting'] ?? false)) {
+        // Resolve affiliate ID if code was provided in request
+        $_slAffId = null;
+        if ($_skAffCode) {
+            try {
+                $_affRow = Database::fetchOne("SELECT id FROM affiliates WHERE affiliate_code=? OR CAST(id AS CHAR)=? LIMIT 1", [$_skAffCode, $_skAffCode]);
+                if ($_affRow) {
+                    $_slAffId = (int)$_affRow['id'];
+                }
+            } catch (\Throwable $e) {}
+        }
+
         // Log the blocked attempt using the same table as click.php
         try {
             Database::query("CREATE TABLE IF NOT EXISTS `vpn_blocked_log` (
@@ -78,9 +89,9 @@ if ((Config::get('config', 'vpn_detection.enabled') ?? '0') === '1' && !$_vpnSki
                 INDEX `idx_aff` (`affiliate_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
             Database::insert('vpn_blocked_log', [
-                'affiliate_id'   => null,
+                'affiliate_id'   => $_slAffId,
                 'offer_id'       => null,
-                'offer_name'     => $sl['name'] ?? null,
+                'offer_name'     => !empty($sl['name']) ? ('Smartlink: ' . $sl['name']) : 'Smartlink',
                 'ip_address'     => $ip,
                 'detection_type' => ($geo['proxy'] ? 'Proxy' : 'VPN/Hosting'),
                 'user_agent'     => substr($ua ?? '', 0, 1000),

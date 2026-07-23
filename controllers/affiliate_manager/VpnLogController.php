@@ -51,10 +51,12 @@ $whereStr = implode(' AND ', $where);
 $logs = Database::fetchAll(
     "SELECT v.*,
             CONCAT(u.first_name, ' ', u.last_name) as aff_name,
-            af.affiliate_code
+            af.affiliate_code,
+            o.name as db_offer_name
      FROM vpn_blocked_log v
      LEFT JOIN affiliates af ON af.id = v.affiliate_id
      LEFT JOIN users u ON u.id = af.user_id
+     LEFT JOIN offers o ON o.id = v.offer_id
      WHERE $whereStr
      ORDER BY v.blocked_at DESC
      LIMIT 1000",
@@ -65,10 +67,12 @@ if (Helpers::get('export') === '1') {
     $exportLogs = Database::fetchAll(
         "SELECT v.*,
                 CONCAT(u.first_name, ' ', u.last_name) as aff_name,
-                af.affiliate_code
+                af.affiliate_code,
+                o.name as db_offer_name
          FROM vpn_blocked_log v
          LEFT JOIN affiliates af ON af.id = v.affiliate_id
          LEFT JOIN users u ON u.id = af.user_id
+         LEFT JOIN offers o ON o.id = v.offer_id
          WHERE $whereStr
          ORDER BY v.blocked_at DESC
          LIMIT 50000",

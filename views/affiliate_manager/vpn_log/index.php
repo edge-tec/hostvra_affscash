@@ -125,20 +125,32 @@
                 <td style="color:#94A3B8;font-size:11px"><?= (int)$log['id'] ?></td>
                 <td style="white-space:nowrap;font-size:12px"><?= Helpers::e($log['blocked_at']) ?></td>
                 <td>
-                    <?php if ($log['affiliate_id']): ?>
+                    <?php if (!empty($log['affiliate_id'])): ?>
                     <a href="/affiliate_manager/affiliates?q=<?= (int)$log['affiliate_id'] ?>"
                        style="color:#4F46E5;font-weight:600;text-decoration:none">
-                        <?= Helpers::e($log['aff_name'] ?? 'Affiliate #' . $log['affiliate_id']) ?>
+                        <?= Helpers::e(!empty($log['aff_name']) ? $log['aff_name'] : ('Affiliate #' . $log['affiliate_id'])) ?>
                     </a>
-                    <div style="font-size:11px;color:#94A3B8"><?= Helpers::e($log['affiliate_code'] ?? '') ?></div>
+                    <?php if (!empty($log['affiliate_code'])): ?>
+                    <div style="font-size:11px;color:#94A3B8"><?= Helpers::e($log['affiliate_code']) ?></div>
+                    <?php endif; ?>
+                    <?php elseif (!empty($log['aff_name']) || !empty($log['affiliate_code'])): ?>
+                    <div style="font-weight:600"><?= Helpers::e($log['aff_name'] ?? 'Unknown Affiliate') ?></div>
+                    <?php if (!empty($log['affiliate_code'])): ?>
+                    <div style="font-size:11px;color:#94A3B8"><?= Helpers::e($log['affiliate_code']) ?></div>
+                    <?php endif; ?>
                     <?php else: ?>
                     <span class="text-muted text-sm">—</span>
                     <?php endif; ?>
                 </td>
                 <td>
-                    <?php if ($log['offer_id']): ?>
-                    <div style="font-weight:600"><?= Helpers::e($log['offer_name'] ?? 'Offer #' . $log['offer_id']) ?></div>
+                    <?php 
+                    $effOfferName = !empty($log['offer_name']) ? $log['offer_name'] : (!empty($log['db_offer_name']) ? $log['db_offer_name'] : '');
+                    ?>
+                    <?php if ($effOfferName !== '' || !empty($log['offer_id'])): ?>
+                    <div style="font-weight:600"><?= Helpers::e($effOfferName !== '' ? $effOfferName : ('Offer #' . $log['offer_id'])) ?></div>
+                    <?php if (!empty($log['offer_id'])): ?>
                     <div style="font-size:11px;color:#94A3B8">ID: <?= (int)$log['offer_id'] ?></div>
+                    <?php endif; ?>
                     <?php else: ?>
                     <span class="text-muted text-sm">—</span>
                     <?php endif; ?>
