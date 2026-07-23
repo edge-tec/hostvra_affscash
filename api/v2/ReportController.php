@@ -272,19 +272,21 @@ if (in_array($tab, $perfTabs)) {
     exit;
 
 } elseif ($tab === 'sl_report') {
-    $slClkWhere  = ['c.affiliate_id=?', 'c.smartlink_id IS NOT NULL', 'c.clicked_at BETWEEN ? AND ?'];
+    $slClkWhere  = ['c.affiliate_id=?', '(c.smartlink_id IS NOT NULL OR so.smartlink_id IS NOT NULL)', 'c.clicked_at BETWEEN ? AND ?'];
     $slClkParams = [$affId, $dateFrom, $dateTo];
     if ($country !== '') { $slClkWhere[] = 'c.country=?';       $slClkParams[] = strtoupper($country); }
     $slClkWhere = implode(' AND ', $slClkWhere);
 
     $slClicks = Database::fetchAll(
         "SELECT c.click_id, c.sub1, c.source, c.ip_address, c.country, c.city, c.os, c.browser, c.device_type, c.clicked_at,
-                COALESCE(CONCAT('[SL-', LPAD(sl.id, 4, '0'), '] ', sl.name), 'SmartLink') as smartlink_name,
-                COALESCE(CONCAT('[SL-', LPAD(sl.id, 4, '0'), '] ', sl.name), 'SmartLink') as offer_name,
+                COALESCE(CONCAT('[SL-', LPAD(COALESCE(sl.id, sl2.id, c.smartlink_id, so.smartlink_id), 4, '0'), '] ', COALESCE(sl.name, sl2.name, 'SmartLink')), 'SmartLink') as smartlink_name,
+                COALESCE(CONCAT('[SL-', LPAD(COALESCE(sl.id, sl2.id, c.smartlink_id, so.smartlink_id), 4, '0'), '] ', COALESCE(sl.name, sl2.name, 'SmartLink')), 'SmartLink') as offer_name,
                 COALESCE(cv.status,'') as conv_status,
                 COALESCE(cv.payout, 0) as conv_payout
          FROM clicks c
          LEFT JOIN smartlinks sl ON sl.id = c.smartlink_id
+         LEFT JOIN smartlink_offers so ON so.offer_id = c.offer_id
+         LEFT JOIN smartlinks sl2 ON sl2.id = so.smartlink_id
          LEFT JOIN conversions cv ON cv.click_id = c.click_id AND cv.is_hidden = 0
          WHERE $slClkWhere
          GROUP BY c.click_id
