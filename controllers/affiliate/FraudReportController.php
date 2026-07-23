@@ -15,7 +15,7 @@ if (Helpers::get('export') === 'csv') {
         $rows = Database::fetchAll(
             "SELECT cv.conversion_id, cv.click_id, cv.status, cv.payout, cv.converted_at,
                     cv.ip_address, ck.country,
-                    IF(COALESCE(cv.smartlink_id, ck.smartlink_id) IS NOT NULL AND COALESCE(cv.smartlink_id, ck.smartlink_id) > 0, COALESCE(sl.name, 'SmartLink'), IF(so.smartlink_id IS NOT NULL, COALESCE(sl2.name, 'SmartLink'), o.name)) AS offer_name
+                    IF(COALESCE(cv.smartlink_id, ck.smartlink_id, so.smartlink_id) IS NOT NULL AND COALESCE(cv.smartlink_id, ck.smartlink_id, so.smartlink_id) > 0, COALESCE(CONCAT('[SL-', LPAD(COALESCE(sl.id, sl2.id), 4, '0'), '] ', COALESCE(sl.name, sl2.name)), 'SmartLink'), o.name) AS offer_name
              FROM conversions cv
              LEFT JOIN clicks ck ON ck.click_id = cv.click_id
              LEFT JOIN smartlinks sl ON sl.id = COALESCE(cv.smartlink_id, ck.smartlink_id)
@@ -46,7 +46,7 @@ try {
                 cv.converted_at, cv.ip_address, ck.country,
                 COALESCE(cv.rejection_reason, '') AS rejection_reason,
                 cv.rejected_at,
-                IF(COALESCE(cv.smartlink_id, ck.smartlink_id) IS NOT NULL AND COALESCE(cv.smartlink_id, ck.smartlink_id) > 0, COALESCE(sl.name, 'SmartLink'), IF(so.smartlink_id IS NOT NULL, COALESCE(sl2.name, 'SmartLink'), o.name)) AS offer_name
+                IF(COALESCE(cv.smartlink_id, ck.smartlink_id, so.smartlink_id) IS NOT NULL AND COALESCE(cv.smartlink_id, ck.smartlink_id, so.smartlink_id) > 0, COALESCE(CONCAT('[SL-', LPAD(COALESCE(sl.id, sl2.id), 4, '0'), '] ', COALESCE(sl.name, sl2.name)), 'SmartLink'), o.name) AS offer_name
          FROM conversions cv
          LEFT JOIN clicks ck ON ck.click_id = cv.click_id
          LEFT JOIN smartlinks sl ON sl.id = COALESCE(cv.smartlink_id, ck.smartlink_id)
