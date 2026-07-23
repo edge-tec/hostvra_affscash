@@ -15,11 +15,25 @@ $statusColors = ['draft'=>'#94A3B8','sent'=>'#3B82F6','paid'=>'#10B981','void'=>
     </div>
 </div>
 
+<style>
+.edit-inv-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+@media (max-width: 991px) {
+    .edit-inv-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
 <form method="POST" action="/admin/invoices?action=edit&id=<?= $invoice['id'] ?>">
     <?= Helpers::csrf() ?>
     <input type="hidden" name="invoice_id" value="<?= $invoice['id'] ?>">
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+    <div class="edit-inv-grid">
 
         <!-- Left: Details -->
         <div class="card">
@@ -67,31 +81,33 @@ $statusColors = ['draft'=>'#94A3B8','sent'=>'#3B82F6','paid'=>'#10B981','void'=>
                 <button type="button" class="btn btn-secondary btn-sm" onclick="addRow()">+ Add Row</button>
             </div>
             <div class="card-body" style="padding:0">
-                <table style="width:100%;font-size:13px;border-collapse:collapse" id="itemsTable">
-                    <thead style="background:#F8FAFC">
-                        <tr>
-                            <th style="padding:8px 12px;text-align:left;font-weight:600;border-bottom:1px solid #E2E8F0">Description</th>
-                            <th style="padding:8px 8px;text-align:center;font-weight:600;border-bottom:1px solid #E2E8F0;width:60px">Qty</th>
-                            <th style="padding:8px 8px;text-align:right;font-weight:600;border-bottom:1px solid #E2E8F0;width:80px">Rate</th>
-                            <th style="padding:8px 8px;text-align:right;font-weight:600;border-bottom:1px solid #E2E8F0;width:80px">Amount</th>
-                            <th style="padding:8px 8px;border-bottom:1px solid #E2E8F0;width:36px"></th>
+                <div style="overflow-x:auto">
+                    <table style="width:100%;font-size:13px;border-collapse:collapse;min-width:380px" id="itemsTable">
+                        <thead style="background:#F8FAFC">
+                            <tr>
+                                <th style="padding:8px 12px;text-align:left;font-weight:600;border-bottom:1px solid #E2E8F0">Description</th>
+                                <th style="padding:8px 8px;text-align:center;font-weight:600;border-bottom:1px solid #E2E8F0;width:60px">Qty</th>
+                                <th style="padding:8px 8px;text-align:right;font-weight:600;border-bottom:1px solid #E2E8F0;width:80px">Rate</th>
+                                <th style="padding:8px 8px;text-align:right;font-weight:600;border-bottom:1px solid #E2E8F0;width:80px">Amount</th>
+                                <th style="padding:8px 8px;border-bottom:1px solid #E2E8F0;width:36px"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemsBody">
+                        <?php foreach ($items as $item): ?>
+                        <tr class="item-row">
+                            <td style="padding:6px 12px"><input type="text" name="item_desc[]" class="form-control" style="font-size:12px" value="<?= Helpers::e($item['description']) ?>" required></td>
+                            <td style="padding:6px 8px"><input type="number" name="item_qty[]" class="form-control item-qty" style="font-size:12px;text-align:center" step="0.01" min="0" value="<?= (float)$item['qty'] ?>" oninput="recalc()"></td>
+                            <td style="padding:6px 8px"><input type="number" name="item_rate[]" class="form-control item-rate" style="font-size:12px;text-align:right" step="0.0001" min="0" value="<?= (float)$item['rate'] ?>" oninput="recalc()"></td>
+                            <td style="padding:6px 8px;text-align:right" class="item-amount">$<?= number_format((float)$item['amount'],2) ?></td>
+                            <td style="padding:6px 8px;text-align:center"><button type="button" onclick="this.closest('tr').remove();recalc()" style="background:none;border:none;color:#EF4444;cursor:pointer;font-size:16px">×</button></td>
                         </tr>
-                    </thead>
-                    <tbody id="itemsBody">
-                    <?php foreach ($items as $item): ?>
-                    <tr class="item-row">
-                        <td style="padding:6px 12px"><input type="text" name="item_desc[]" class="form-control" style="font-size:12px" value="<?= Helpers::e($item['description']) ?>" required></td>
-                        <td style="padding:6px 8px"><input type="number" name="item_qty[]" class="form-control item-qty" style="font-size:12px;text-align:center" step="0.01" min="0" value="<?= (float)$item['qty'] ?>" oninput="recalc()"></td>
-                        <td style="padding:6px 8px"><input type="number" name="item_rate[]" class="form-control item-rate" style="font-size:12px;text-align:right" step="0.0001" min="0" value="<?= (float)$item['rate'] ?>" oninput="recalc()"></td>
-                        <td style="padding:6px 8px;text-align:right" class="item-amount">$<?= number_format((float)$item['amount'],2) ?></td>
-                        <td style="padding:6px 8px;text-align:center"><button type="button" onclick="this.closest('tr').remove();recalc()" style="background:none;border:none;color:#EF4444;cursor:pointer;font-size:16px">×</button></td>
-                    </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div class="card-body" style="border-top:1px solid #E2E8F0;background:#F8FAFC">
-                <div style="display:flex;justify-content:flex-end;gap:24px;font-size:13px">
+                <div style="display:flex;justify-content:flex-end;gap:16px;font-size:13px;flex-wrap:wrap">
                     <div>Subtotal: <strong id="dispSubtotal">$<?= number_format((float)$invoice['subtotal'],2) ?></strong></div>
                     <div>Tax: <strong id="dispTax">$<?= number_format((float)$invoice['tax_amount'],2) ?></strong></div>
                     <div style="font-size:15px">Total: <strong id="dispTotal" style="color:var(--primary)">$<?= number_format((float)$invoice['total'],2) ?></strong></div>
@@ -100,7 +116,7 @@ $statusColors = ['draft'=>'#94A3B8','sent'=>'#3B82F6','paid'=>'#10B981','void'=>
         </div>
     </div>
 
-    <div style="display:flex;gap:12px;justify-content:flex-end">
+    <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:16px">
         <a href="/admin/invoices/<?= $invoice['id'] ?>" class="btn btn-secondary">Cancel</a>
         <button type="submit" class="btn btn-primary">Save Changes</button>
     </div>
