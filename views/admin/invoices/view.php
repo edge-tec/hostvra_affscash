@@ -58,8 +58,41 @@ $csrfToken         = Auth::generateCsrf();
 <?php endif; ?>
 
 <!-- Invoice document -->
+<style>
+.inv-card-body {
+    padding: 32px;
+}
+.inv-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+.inv-meta-right {
+    text-align: right;
+}
+.inv-meta-right table {
+    margin-left: auto;
+    font-size: 13px;
+}
+@media (max-width: 768px) {
+    .inv-card-body {
+        padding: 16px !important;
+    }
+    .inv-meta-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    .inv-meta-right {
+        text-align: left;
+    }
+    .inv-meta-right table {
+        margin-left: 0;
+    }
+}
+</style>
 <div class="card" style="<?= $isPrint ? 'box-shadow:none;border:none' : '' ?>">
-    <div class="card-body" style="padding:32px">
+    <div class="card-body inv-card-body">
         <!-- Header -->
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;flex-wrap:wrap;gap:16px">
             <div>
@@ -79,7 +112,7 @@ $csrfToken         = Auth::generateCsrf();
         </div>
 
         <!-- Bill To / Details -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:32px">
+        <div class="inv-meta-grid">
             <div>
                 <div style="font-size:11px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">Bill To</div>
                 <div style="font-weight:700;font-size:15px"><?= Helpers::e($entityName) ?></div>
@@ -100,8 +133,8 @@ $csrfToken         = Auth::generateCsrf();
                 </div>
                 <?php endif; ?>
             </div>
-            <div style="text-align:right">
-                <table style="margin-left:auto;font-size:13px">
+            <div class="inv-meta-right">
+                <table style="font-size:13px">
                     <tr><td style="color:#64748B;padding:2px 8px 2px 0">Invoice Date:</td><td style="font-weight:600"><?= date('M j, Y',strtotime($invoice['created_at'])) ?></td></tr>
                     <?php if ($invoice['due_date']): ?>
                     <tr><td style="color:#64748B;padding:2px 8px 2px 0">Due Date:</td><td style="font-weight:600;color:<?= strtotime($invoice['due_date'])<time()&&$invoice['status']!=='paid'?'#EF4444':'inherit' ?>"><?= date('M j, Y',strtotime($invoice['due_date'])) ?></td></tr>
@@ -117,26 +150,28 @@ $csrfToken         = Auth::generateCsrf();
         </div>
 
         <!-- Line items -->
-        <table style="width:100%;border-collapse:collapse;margin-bottom:24px">
-            <thead>
-                <tr style="background:#F8FAFC;border-bottom:2px solid #E2E8F0">
-                    <th style="padding:10px 12px;text-align:left;font-size:12px;color:#64748B;text-transform:uppercase;letter-spacing:.5px">Description</th>
-                    <th style="padding:10px 12px;text-align:right;font-size:12px;color:#64748B;width:70px">Qty</th>
-                    <th style="padding:10px 12px;text-align:right;font-size:12px;color:#64748B;width:100px">Rate</th>
-                    <th style="padding:10px 12px;text-align:right;font-size:12px;color:#64748B;width:110px">Amount</th>
+        <div style="overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse;margin-bottom:24px;min-width:400px">
+                <thead>
+                    <tr style="background:#F8FAFC;border-bottom:2px solid #E2E8F0">
+                        <th style="padding:10px 12px;text-align:left;font-size:12px;color:#64748B;text-transform:uppercase;letter-spacing:.5px">Description</th>
+                        <th style="padding:10px 12px;text-align:right;font-size:12px;color:#64748B;width:70px">Qty</th>
+                        <th style="padding:10px 12px;text-align:right;font-size:12px;color:#64748B;width:100px">Rate</th>
+                        <th style="padding:10px 12px;text-align:right;font-size:12px;color:#64748B;width:110px">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($items as $item): ?>
+                <tr style="border-bottom:1px solid #F1F5F9">
+                    <td style="padding:10px 12px;font-size:14px"><?= Helpers::e($item['description']) ?></td>
+                    <td style="padding:10px 12px;text-align:right;font-size:14px"><?= $item['qty'] ?></td>
+                    <td style="padding:10px 12px;text-align:right;font-size:14px">$<?= number_format($item['rate'],2) ?></td>
+                    <td style="padding:10px 12px;text-align:right;font-size:14px;font-weight:600">$<?= number_format($item['amount'],2) ?></td>
                 </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($items as $item): ?>
-            <tr style="border-bottom:1px solid #F1F5F9">
-                <td style="padding:10px 12px;font-size:14px"><?= Helpers::e($item['description']) ?></td>
-                <td style="padding:10px 12px;text-align:right;font-size:14px"><?= $item['qty'] ?></td>
-                <td style="padding:10px 12px;text-align:right;font-size:14px">$<?= number_format($item['rate'],2) ?></td>
-                <td style="padding:10px 12px;text-align:right;font-size:14px;font-weight:600">$<?= number_format($item['amount'],2) ?></td>
-            </tr>
-            <?php endforeach; ?>
-            </tbody>
-        </table>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
 
         <!-- Totals -->
         <div style="display:flex;justify-content:flex-end">

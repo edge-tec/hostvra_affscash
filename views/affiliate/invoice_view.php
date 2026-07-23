@@ -75,7 +75,8 @@ if (isset($_GET['print'])):
             <?php endif; ?>
         </div>
 
-        <table style="width:100%;border-collapse:collapse;margin-bottom:16px">
+        <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;margin-bottom:16px;min-width:420px">
             <thead>
                 <tr style="background:#F8FAFC;border-bottom:2px solid #E2E8F0">
                     <th style="padding:10px 12px;text-align:left;font-size:13px">Offer / Description</th>
@@ -123,6 +124,7 @@ if (isset($_GET['print'])):
                 <tr style="background:#F8FAFC;font-weight:700;font-size:16px"><td colspan="3" style="padding:10px 12px;text-align:right">Total</td><td style="padding:10px 12px;text-align:right;color:#10B981">$<?= number_format($invoice['total'],2) ?></td></tr>
             </tfoot>
         </table>
+        </div>
 
         <?php if ($invoice['notes']): ?>
         <div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:6px;padding:12px 16px;font-size:13px"><?= Helpers::e($invoice['notes']) ?></div>
