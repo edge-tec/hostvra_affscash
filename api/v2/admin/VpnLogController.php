@@ -18,7 +18,7 @@ try {
 
         if ($qIp)     { $where[] = 'v.ip_address LIKE ?';     $params[] = '%' . $qIp . '%'; }
         if ($qType)   { $where[] = 'v.detection_type = ?';    $params[] = $qType; }
-        if ($qAff)    { $where[] = "(u.first_name LIKE ? OR u.last_name LIKE ? OR CAST(v.affiliate_id AS CHAR) LIKE ? OR af.affiliate_code LIKE ?)";
+        if ($qAff)    { $where[] = "(u.first_name LIKE ? OR u.last_name LIKE ? OR CAST(COALESCE(v.affiliate_id, mapped_c.affiliate_id) AS CHAR) LIKE ? OR af.affiliate_code LIKE ?)";
                         $params = array_merge($params, ['%'.$qAff.'%','%'.$qAff.'%','%'.$qAff.'%','%'.$qAff.'%']); }
         if ($dateFrom){ $where[] = 'DATE(v.blocked_at) >= ?'; $params[] = $dateFrom; }
         if ($dateTo)  { $where[] = 'DATE(v.blocked_at) <= ?'; $params[] = $dateTo; }
@@ -27,11 +27,22 @@ try {
 
         $logs = Database::fetchAll(
             "SELECT v.*,
-                    CONCAT(u.first_name, ' ', u.last_name) as aff_name,
+                    COALESCE(v.affiliate_id, mapped_c.affiliate_id) AS effective_affiliate_id,
+                    CONCAT(u.first_name, ' ', u.last_name) AS aff_name,
                     af.affiliate_code,
-                    o.name as db_offer_name
+                    COALESCE(v.smartlink_id, mapped_c.smartlink_id, sl_off.smartlink_id) AS effective_smartlink_id,
+                    COALESCE(v.smartlink_name, sl.name) AS effective_smartlink_name,
+                    o.name AS db_offer_name
              FROM vpn_blocked_log v
-             LEFT JOIN affiliates af ON af.id = v.affiliate_id
+             LEFT JOIN clicks mapped_c ON v.affiliate_id IS NULL
+                 AND mapped_c.id = (
+                     SELECT c_sub.id FROM clicks c_sub
+                     WHERE c_sub.ip_address = v.ip_address
+                     ORDER BY c_sub.id DESC LIMIT 1
+                 )
+             LEFT JOIN smartlink_offers sl_off ON sl_off.offer_id = v.offer_id
+             LEFT JOIN smartlinks sl ON sl.id = COALESCE(v.smartlink_id, mapped_c.smartlink_id, sl_off.smartlink_id)
+             LEFT JOIN affiliates af ON af.id = COALESCE(v.affiliate_id, mapped_c.affiliate_id)
              LEFT JOIN users u ON u.id = af.user_id
              LEFT JOIN offers o ON o.id = v.offer_id
              WHERE $whereStr
@@ -39,6 +50,14 @@ try {
              LIMIT 1000",
             $params
         );
+
+        // Normalize affiliate_id, smartlink_id, smartlink_name for JSON consumer
+        foreach ($logs as &$logItem) {
+            $logItem['affiliate_id']   = !empty($logItem['effective_affiliate_id']) ? (int)$logItem['effective_affiliate_id'] : ($logItem['affiliate_id'] ? (int)$logItem['affiliate_id'] : null);
+            $logItem['smartlink_id']   = !empty($logItem['effective_smartlink_id']) ? (int)$logItem['effective_smartlink_id'] : ($logItem['smartlink_id'] ? (int)$logItem['smartlink_id'] : null);
+            $logItem['smartlink_name'] = !empty($logItem['effective_smartlink_name']) ? $logItem['effective_smartlink_name'] : ($logItem['smartlink_name'] ?? null);
+        }
+        unset($logItem);
 
         echo json_encode(['success' => true, 'data' => $logs]);
         exit;

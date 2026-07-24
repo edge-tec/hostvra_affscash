@@ -57,22 +57,25 @@ Blocklist::enforceClick([
 // query param identifying an affiliate that's on the VPN/Proxy skip list, the
 // hard block is suppressed for that visitor. The skip list is managed by admins
 // at /admin/vpn-proxy-skip.
-$_skAffCode    = Helpers::get('aff') ?: Helpers::get('aff_id') ?: Helpers::get('affiliate_id') ?: Helpers::get('ref');
-$_vpnSkipForSL = $_skAffCode ? VpnSkipList::isSkippedByCode($_skAffCode) : false;
+$_skAffCode    = Helpers::get('aff') ?: Helpers::get('aff_id') ?: Helpers::get('affiliate_id') ?: Helpers::get('affiliate') ?: Helpers::get('ref');
+$_slAffId      = null;
+$_slAffRow     = null;
+if ($_skAffCode) {
+    try {
+        $_slAffRow = Database::fetchOne(
+            "SELECT af.id, af.affiliate_code FROM affiliates af JOIN users u ON u.id = af.user_id WHERE af.affiliate_code=? OR CAST(af.id AS CHAR)=? OR CAST(af.user_id AS CHAR)=? LIMIT 1",
+            [$_skAffCode, $_skAffCode, $_skAffCode]
+        );
+        if ($_slAffRow) {
+            $_slAffId = (int)$_slAffRow['id'];
+        }
+    } catch (\Throwable $e) {}
+}
+
+$_vpnSkipForSL = $_slAffId ? VpnSkipList::isSkipped($_slAffId) : ($_skAffCode ? VpnSkipList::isSkippedByCode($_skAffCode) : false);
 
 if ((Config::get('config', 'vpn_detection.enabled') ?? '0') === '1' && !$_vpnSkipForSL) {
     if (($geo['proxy'] ?? false) || ($geo['hosting'] ?? false)) {
-        // Resolve affiliate ID if code was provided in request
-        $_slAffId = null;
-        if ($_skAffCode) {
-            try {
-                $_affRow = Database::fetchOne("SELECT id FROM affiliates WHERE affiliate_code=? OR CAST(id AS CHAR)=? LIMIT 1", [$_skAffCode, $_skAffCode]);
-                if ($_affRow) {
-                    $_slAffId = (int)$_affRow['id'];
-                }
-            } catch (\Throwable $e) {}
-        }
-
         // Log the blocked attempt using the same table as click.php
         try {
             Database::query("CREATE TABLE IF NOT EXISTS `vpn_blocked_log` (
@@ -80,18 +83,26 @@ if ((Config::get('config', 'vpn_detection.enabled') ?? '0') === '1' && !$_vpnSki
                 `affiliate_id`   INT UNSIGNED NULL,
                 `offer_id`       INT UNSIGNED NULL,
                 `offer_name`     VARCHAR(255) NULL,
+                `smartlink_id`   INT UNSIGNED NULL,
+                `smartlink_name` VARCHAR(255) NULL,
                 `ip_address`     VARCHAR(45) NOT NULL,
                 `detection_type` VARCHAR(50) NOT NULL DEFAULT 'VPN',
                 `user_agent`     VARCHAR(1000) NULL,
                 `country`        VARCHAR(4) NOT NULL DEFAULT '',
                 `blocked_at`     DATETIME DEFAULT CURRENT_TIMESTAMP,
                 INDEX `idx_blocked_at` (`blocked_at`),
-                INDEX `idx_aff` (`affiliate_id`)
+                INDEX `idx_aff` (`affiliate_id`),
+                INDEX `idx_smartlink` (`smartlink_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+            try { Database::query("ALTER TABLE `vpn_blocked_log` ADD COLUMN `smartlink_id` INT UNSIGNED NULL AFTER `offer_name`"); } catch (\Throwable $_e) {}
+            try { Database::query("ALTER TABLE `vpn_blocked_log` ADD COLUMN `smartlink_name` VARCHAR(255) NULL AFTER `smartlink_id`"); } catch (\Throwable $_e) {}
+
             Database::insert('vpn_blocked_log', [
                 'affiliate_id'   => $_slAffId,
                 'offer_id'       => null,
-                'offer_name'     => !empty($sl['name']) ? ('Smartlink: ' . $sl['name']) : 'Smartlink',
+                'offer_name'     => null,
+                'smartlink_id'   => (int)$sl['id'],
+                'smartlink_name' => $sl['name'] ?? ('Smartlink #' . $sl['id']),
                 'ip_address'     => $ip,
                 'detection_type' => ($geo['proxy'] ? 'Proxy' : 'VPN/Hosting'),
                 'user_agent'     => substr($ua ?? '', 0, 1000),
@@ -173,9 +184,9 @@ if (!$isCustomEntry && $directUrl !== '') {
 }
 
 // ── Route to affiliate click tracking or direct offer URL ─────────────────
-$affCode   = Helpers::get('aff') ?: Helpers::get('aff_id');
+$affCode   = Helpers::get('aff') ?: Helpers::get('aff_id') ?: Helpers::get('affiliate_id') ?: Helpers::get('affiliate') ?: Helpers::get('ref');
 $affiliate = $affCode
-    ? Database::fetchOne("SELECT * FROM `affiliates` WHERE affiliate_code=?", [$affCode])
+    ? Database::fetchOne("SELECT af.*, u.status FROM `affiliates` af JOIN `users` u ON u.id=af.user_id WHERE (af.affiliate_code=? OR CAST(af.id AS CHAR)=? OR CAST(af.user_id AS CHAR)=?) AND u.status='active'", [$affCode, $affCode, $affCode])
     : null;
 
 // ── Custom URL entry: track click if affiliate present, then redirect ──────
@@ -323,7 +334,8 @@ if (!$affiliate) {
 }
 
 // Delegate to click.php for full tracking (geo, fraud, cap checks, stats)
-$_GET['offer_id']  = $selected['offer_id'];
-$_GET['aff']       = $affCode;
-$GLOBALS['_sl_id'] = (int)$sl['id'];   // pass smartlink ID so click.php can record it
+$_GET['offer_id']    = $selected['offer_id'];
+$_GET['aff']         = $affiliate['affiliate_code'] ?? $affCode;
+$GLOBALS['_sl_id']   = (int)$sl['id'];   // pass smartlink ID so click.php can record it
+$GLOBALS['_sl_name'] = $sl['name'] ?? null;
 require __DIR__ . '/click.php';

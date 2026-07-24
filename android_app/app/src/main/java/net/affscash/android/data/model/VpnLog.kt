@@ -9,6 +9,8 @@ data class VpnLogItem(
     @SerialName("affiliate_id") val affiliateId: Int? = null,
     @SerialName("offer_id") val offerId: Int? = null,
     @SerialName("offer_name") val offerName: String? = null,
+    @SerialName("smartlink_id") val smartlinkId: Int? = null,
+    @SerialName("smartlink_name") val smartlinkName: String? = null,
     @SerialName("ip_address") val ipAddress: String,
     @SerialName("detection_type") val detectionType: String,
     @SerialName("user_agent") val userAgent: String? = null,

@@ -125,18 +125,22 @@
                 <td style="color:#94A3B8;font-size:11px"><?= (int)$log['id'] ?></td>
                 <td style="white-space:nowrap;font-size:12px"><?= Helpers::e($log['blocked_at']) ?></td>
                 <td>
-                    <?php if (!empty($log['affiliate_id'])): ?>
-                    <a href="/affiliate_manager/affiliates?q=<?= (int)$log['affiliate_id'] ?>"
-                       style="color:#4F46E5;font-weight:600;text-decoration:none">
-                        <?= Helpers::e(!empty($log['aff_name']) ? $log['aff_name'] : ('Affiliate #' . $log['affiliate_id'])) ?>
+                    <?php 
+                    $affId = !empty($log['effective_affiliate_id']) ? (int)$log['effective_affiliate_id'] : (!empty($log['affiliate_id']) ? (int)$log['affiliate_id'] : null);
+                    $affName = !empty($log['aff_name']) ? trim($log['aff_name']) : '';
+                    $affCode = !empty($log['affiliate_code']) ? trim($log['affiliate_code']) : '';
+                    ?>
+                    <?php if ($affId): ?>
+                    <a href="/affiliate_manager/affiliates?q=<?= $affId ?>" style="color:#4F46E5;font-weight:600;text-decoration:none">
+                        <?= Helpers::e($affName !== '' ? $affName : ('Affiliate #' . $affId)) ?>
                     </a>
-                    <?php if (!empty($log['affiliate_code'])): ?>
-                    <div style="font-size:11px;color:#94A3B8"><?= Helpers::e($log['affiliate_code']) ?></div>
-                    <?php endif; ?>
-                    <?php elseif (!empty($log['aff_name']) || !empty($log['affiliate_code'])): ?>
-                    <div style="font-weight:600"><?= Helpers::e($log['aff_name'] ?? 'Unknown Affiliate') ?></div>
-                    <?php if (!empty($log['affiliate_code'])): ?>
-                    <div style="font-size:11px;color:#94A3B8"><?= Helpers::e($log['affiliate_code']) ?></div>
+                    <div style="font-size:11px;color:#94A3B8">
+                        <?= Helpers::e($affCode !== '' ? ($affCode . ' (ID: ' . $affId . ')') : ('ID: ' . $affId)) ?>
+                    </div>
+                    <?php elseif ($affName !== '' || $affCode !== ''): ?>
+                    <div style="font-weight:600"><?= Helpers::e($affName !== '' ? $affName : 'Unknown Affiliate') ?></div>
+                    <?php if ($affCode !== ''): ?>
+                    <div style="font-size:11px;color:#94A3B8"><?= Helpers::e($affCode) ?></div>
                     <?php endif; ?>
                     <?php else: ?>
                     <span class="text-muted text-sm">—</span>
@@ -144,12 +148,28 @@
                 </td>
                 <td>
                     <?php 
-                    $effOfferName = !empty($log['offer_name']) ? $log['offer_name'] : (!empty($log['db_offer_name']) ? $log['db_offer_name'] : '');
+                    $slId   = !empty($log['effective_smartlink_id']) ? (int)$log['effective_smartlink_id'] : (!empty($log['smartlink_id']) ? (int)$log['smartlink_id'] : null);
+                    $slName = !empty($log['effective_smartlink_name']) ? trim($log['effective_smartlink_name']) : (!empty($log['smartlink_name']) ? trim($log['smartlink_name']) : '');
+                    $offId  = !empty($log['offer_id']) ? (int)$log['offer_id'] : null;
+                    $offName = !empty($log['offer_name']) ? trim($log['offer_name']) : (!empty($log['db_offer_name']) ? trim($log['db_offer_name']) : '');
                     ?>
-                    <?php if ($effOfferName !== '' || !empty($log['offer_id'])): ?>
-                    <div style="font-weight:600"><?= Helpers::e($effOfferName !== '' ? $effOfferName : ('Offer #' . $log['offer_id'])) ?></div>
-                    <?php if (!empty($log['offer_id'])): ?>
-                    <div style="font-size:11px;color:#94A3B8">ID: <?= (int)$log['offer_id'] ?></div>
+                    <?php if ($slId || $slName !== ''): ?>
+                    <div style="display:inline-flex;align-items:center;gap:4px">
+                        <span style="background:#F0FDF4;color:#166534;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;border:1px solid #BBF7D0">SmartLink</span>
+                        <span style="font-weight:600;color:#0F172A"><?= Helpers::e($slName !== '' ? $slName : ('SmartLink #' . $slId)) ?></span>
+                    </div>
+                    <?php if ($slId): ?>
+                    <div style="font-size:11px;color:#64748B">SmartLink ID: <?= $slId ?></div>
+                    <?php endif; ?>
+                    <?php if ($offName !== '' || $offId): ?>
+                    <div style="font-size:11px;color:#94A3B8;margin-top:2px">
+                        Selected Offer: <?= Helpers::e($offName !== '' ? $offName : ('Offer #' . $offId)) ?> <?= $offId ? '(ID: '.$offId.')' : '' ?>
+                    </div>
+                    <?php endif; ?>
+                    <?php elseif ($offName !== '' || $offId): ?>
+                    <div style="font-weight:600"><?= Helpers::e($offName !== '' ? $offName : ('Offer #' . $offId)) ?></div>
+                    <?php if ($offId): ?>
+                    <div style="font-size:11px;color:#94A3B8">ID: <?= $offId ?></div>
                     <?php endif; ?>
                     <?php else: ?>
                     <span class="text-muted text-sm">—</span>

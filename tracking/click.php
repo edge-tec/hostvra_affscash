@@ -170,8 +170,8 @@ if (!$offer) {
 
 // Validate affiliate
 $affiliate = Database::fetchOne(
-    "SELECT af.*, u.status FROM `affiliates` af JOIN `users` u ON u.id=af.user_id WHERE af.affiliate_code=? AND u.status='active'",
-    [$affCode]
+    "SELECT af.*, u.status FROM `affiliates` af JOIN `users` u ON u.id=af.user_id WHERE (af.affiliate_code=? OR CAST(af.id AS CHAR)=? OR CAST(af.user_id AS CHAR)=?) AND u.status='active'",
+    [$affCode, $affCode, $affCode]
 );
 if (!$affiliate) {
     trafficBack('Invalid affiliate.', 403, true);
@@ -762,18 +762,35 @@ if ($isVpnSignal) {
                 `affiliate_id`   INT UNSIGNED NULL,
                 `offer_id`       INT UNSIGNED NULL,
                 `offer_name`     VARCHAR(255) NULL,
+                `smartlink_id`   INT UNSIGNED NULL,
+                `smartlink_name` VARCHAR(255) NULL,
                 `ip_address`     VARCHAR(45) NOT NULL,
                 `detection_type` VARCHAR(50) NOT NULL DEFAULT 'VPN',
                 `user_agent`     VARCHAR(1000) NULL,
                 `country`        VARCHAR(4) NOT NULL DEFAULT '',
                 `blocked_at`     DATETIME DEFAULT CURRENT_TIMESTAMP,
                 INDEX `idx_blocked_at` (`blocked_at`),
-                INDEX `idx_aff` (`affiliate_id`)
+                INDEX `idx_aff` (`affiliate_id`),
+                INDEX `idx_smartlink` (`smartlink_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+            try { Database::query("ALTER TABLE `vpn_blocked_log` ADD COLUMN `smartlink_id` INT UNSIGNED NULL AFTER `offer_name`"); } catch (\Throwable $_e) {}
+            try { Database::query("ALTER TABLE `vpn_blocked_log` ADD COLUMN `smartlink_name` VARCHAR(255) NULL AFTER `smartlink_id`"); } catch (\Throwable $_e) {}
+
+            $slId = $GLOBALS['_sl_id'] ?? (int)($_GET['sl'] ?? $_GET['smartlink_id'] ?? 0) ?: null;
+            $slName = $GLOBALS['_sl_name'] ?? null;
+            if ($slId && !$slName) {
+                try {
+                    $slRow = Database::fetchOne("SELECT name FROM smartlinks WHERE id=?", [$slId]);
+                    if ($slRow) $slName = $slRow['name'];
+                } catch (\Throwable $e) {}
+            }
+
             Database::insert('vpn_blocked_log', [
                 'affiliate_id'   => $affiliate['id'] ?? null,
                 'offer_id'       => $offerId ?: null,
                 'offer_name'     => $offer['name'] ?? ($offerId ? ('Offer #' . $offerId) : null),
+                'smartlink_id'   => $slId,
+                'smartlink_name' => $slName,
                 'ip_address'     => $ip,
                 'detection_type' => $vpnDetectionType,
                 'user_agent'     => substr($ua ?? '', 0, 1000),

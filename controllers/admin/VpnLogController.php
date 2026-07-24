@@ -2,21 +2,26 @@
 Auth::check('admin');
 $pageTitle = 'VPN & Proxy Blocked Log';
 
-// Ensure table exists
+// Ensure table exists & has updated columns
 try {
     Database::query("CREATE TABLE IF NOT EXISTS `vpn_blocked_log` (
         `id`             INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
         `affiliate_id`   INT UNSIGNED NULL,
         `offer_id`       INT UNSIGNED NULL,
         `offer_name`     VARCHAR(255) NULL,
+        `smartlink_id`   INT UNSIGNED NULL,
+        `smartlink_name` VARCHAR(255) NULL,
         `ip_address`     VARCHAR(45) NOT NULL,
         `detection_type` VARCHAR(50) NOT NULL DEFAULT 'VPN',
         `user_agent`     VARCHAR(1000) NULL,
         `country`        VARCHAR(4) NOT NULL DEFAULT '',
         `blocked_at`     DATETIME DEFAULT CURRENT_TIMESTAMP,
         INDEX `idx_blocked_at` (`blocked_at`),
-        INDEX `idx_aff` (`affiliate_id`)
+        INDEX `idx_aff` (`affiliate_id`),
+        INDEX `idx_smartlink` (`smartlink_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+    try { Database::query("ALTER TABLE `vpn_blocked_log` ADD COLUMN `smartlink_id` INT UNSIGNED NULL AFTER `offer_name`"); } catch (\Throwable $_e) {}
+    try { Database::query("ALTER TABLE `vpn_blocked_log` ADD COLUMN `smartlink_name` VARCHAR(255) NULL AFTER `smartlink_id`"); } catch (\Throwable $_e) {}
 } catch (\Throwable $e) {}
 
 // Filters
@@ -31,55 +36,58 @@ $params = [];
 
 if ($qIp)     { $where[] = 'v.ip_address LIKE ?';     $params[] = '%' . $qIp . '%'; }
 if ($qType)   { $where[] = 'v.detection_type = ?';    $params[] = $qType; }
-if ($qAff)    { $where[] = "(u.first_name LIKE ? OR u.last_name LIKE ? OR CAST(v.affiliate_id AS CHAR) LIKE ? OR af.affiliate_code LIKE ?)";
+if ($qAff)    { $where[] = "(u.first_name LIKE ? OR u.last_name LIKE ? OR CAST(COALESCE(v.affiliate_id, mapped_c.affiliate_id) AS CHAR) LIKE ? OR af.affiliate_code LIKE ?)";
                 $params = array_merge($params, ['%'.$qAff.'%','%'.$qAff.'%','%'.$qAff.'%','%'.$qAff.'%']); }
 if ($dateFrom){ $where[] = 'DATE(v.blocked_at) >= ?'; $params[] = $dateFrom; }
 if ($dateTo)  { $where[] = 'DATE(v.blocked_at) <= ?'; $params[] = $dateTo; }
 
 $whereStr = implode(' AND ', $where);
 
-$logs = Database::fetchAll(
-    "SELECT v.*,
-            CONCAT(u.first_name, ' ', u.last_name) as aff_name,
-            af.affiliate_code,
-            o.name as db_offer_name
-     FROM vpn_blocked_log v
-     LEFT JOIN affiliates af ON af.id = v.affiliate_id
-     LEFT JOIN users u ON u.id = af.user_id
-     LEFT JOIN offers o ON o.id = v.offer_id
-     WHERE $whereStr
-     ORDER BY v.blocked_at DESC
-     LIMIT 1000",
-    $params
-);
+$selectSql = "SELECT v.*,
+             COALESCE(v.affiliate_id, mapped_c.affiliate_id) AS effective_affiliate_id,
+             CONCAT(u.first_name, ' ', u.last_name) AS aff_name,
+             af.affiliate_code,
+             COALESCE(v.smartlink_id, mapped_c.smartlink_id, sl_off.smartlink_id) AS effective_smartlink_id,
+             COALESCE(v.smartlink_name, sl.name) AS effective_smartlink_name,
+             o.name AS db_offer_name
+      FROM vpn_blocked_log v
+      LEFT JOIN clicks mapped_c ON v.affiliate_id IS NULL
+          AND mapped_c.id = (
+              SELECT c_sub.id FROM clicks c_sub
+              WHERE c_sub.ip_address = v.ip_address
+              ORDER BY c_sub.id DESC LIMIT 1
+          )
+      LEFT JOIN smartlink_offers sl_off ON sl_off.offer_id = v.offer_id
+      LEFT JOIN smartlinks sl ON sl.id = COALESCE(v.smartlink_id, mapped_c.smartlink_id, sl_off.smartlink_id)
+      LEFT JOIN affiliates af ON af.id = COALESCE(v.affiliate_id, mapped_c.affiliate_id)
+      LEFT JOIN users u ON u.id = af.user_id
+      LEFT JOIN offers o ON o.id = v.offer_id
+      WHERE $whereStr
+      ORDER BY v.blocked_at DESC";
+
+$logs = Database::fetchAll($selectSql . " LIMIT 1000", $params);
 
 if (Helpers::get('export') === '1') {
-    $exportLogs = Database::fetchAll(
-        "SELECT v.*,
-                CONCAT(u.first_name, ' ', u.last_name) as aff_name,
-                af.affiliate_code,
-                o.name as db_offer_name
-         FROM vpn_blocked_log v
-         LEFT JOIN affiliates af ON af.id = v.affiliate_id
-         LEFT JOIN users u ON u.id = af.user_id
-         LEFT JOIN offers o ON o.id = v.offer_id
-         WHERE $whereStr
-         ORDER BY v.blocked_at DESC
-         LIMIT 50000",
-        $params
-    );
+    $exportLogs = Database::fetchAll($selectSql . " LIMIT 50000", $params);
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename=vpn_blocked_log_' . date('Y-m-d') . '.csv');
     $output = fopen('php://output', 'w');
-    fputcsv($output, ['ID', 'Date & Time', 'Affiliate ID', 'Affiliate Name', 'Offer ID', 'Offer Name', 'IP Address', 'Country', 'Detection Type', 'User Agent']);
+    fputcsv($output, ['ID', 'Date & Time', 'Affiliate ID', 'Affiliate Name', 'Affiliate Code', 'SmartLink ID', 'SmartLink Name', 'Offer ID', 'Offer Name', 'IP Address', 'Country', 'Detection Type', 'User Agent']);
     foreach ($exportLogs as $log) {
+        $effAffId  = $log['effective_affiliate_id'] ?? $log['affiliate_id'] ?? '';
+        $effSlId   = $log['effective_smartlink_id'] ?? $log['smartlink_id'] ?? '';
+        $effSlName = $log['effective_smartlink_name'] ?? $log['smartlink_name'] ?? '';
+        $effOffName = !empty($log['offer_name']) ? $log['offer_name'] : ($log['db_offer_name'] ?? '');
         fputcsv($output, [
             $log['id'],
             $log['blocked_at'],
-            $log['affiliate_id'] ?? '',
+            $effAffId,
             $log['aff_name'] ?? '',
+            $log['affiliate_code'] ?? '',
+            $effSlId,
+            $effSlName,
             $log['offer_id'] ?? '',
-            $log['offer_name'] ?? '',
+            $effOffName,
             $log['ip_address'],
             $log['country'],
             $log['detection_type'],
