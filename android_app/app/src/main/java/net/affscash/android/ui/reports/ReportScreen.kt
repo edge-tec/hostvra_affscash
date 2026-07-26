@@ -366,36 +366,34 @@ fun ReportScreen(
 
 @Composable
 fun SummaryCard(title: String, value: String, subtitle: String, valueColor: Color = Color.Black) {
-    Box(
+    Surface(
         modifier = Modifier
-            .width(120.dp)
-            .heightIn(min = 84.dp)
-            .background(
-                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
-                shape = PremiumUI.CardShape
-            )
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
-                shape = PremiumUI.CardShape
-            )
+            .width(125.dp)
+            .height(84.dp),
+        shape = PremiumUI.CardShape,
+        color = Color.White,
+        shadowElevation = 4.dp,
+        border = PremiumUI.Card3DBorder
     ) {
         Column(
-            modifier = Modifier.padding(8.dp).fillMaxWidth().wrapContentHeight(),
+            modifier = Modifier
+                .background(PremiumUI.CardGradient)
+                .padding(10.dp)
+                .fillMaxSize(),
             verticalArrangement = Arrangement.Center
         ) {
-            Text(title, fontSize = 9.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(title, fontSize = 9.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF64748B), letterSpacing = 0.5.sp)
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = value,
                 fontSize = 18.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = valueColor,
+                fontWeight = FontWeight.Black,
+                color = if (valueColor == Color.Black) Color(0xFF0F172A) else valueColor,
                 maxLines = 1,
                 overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
             )
             if (subtitle.isNotEmpty()) {
-                Text(subtitle, fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(subtitle, fontSize = 9.sp, fontWeight = FontWeight.Medium, color = Color(0xFF94A3B8))
             }
         }
     }
@@ -403,23 +401,22 @@ fun SummaryCard(title: String, value: String, subtitle: String, valueColor: Colo
 
 @Composable
 fun PerformanceRowItem(row: ReportRow) {
-    Card(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
-        shape = PremiumUI.CardShape,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    net.affscash.android.ui.dashboard.GlassCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp)
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            Text(row.label, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+        Column(modifier = Modifier.padding(12.dp)) {
+            Text(row.label, fontSize = 14.sp, fontWeight = FontWeight.Black, color = Color(0xFF0F172A))
             Spacer(modifier = Modifier.height(6.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
-                    Text("Clicks: ${row.clicks} / Unique: ${row.uclicks}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text("Conversions: ${row.conv}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Clicks: ${row.clicks} / Unique: ${row.uclicks}", fontSize = 12.sp, fontWeight = FontWeight.Medium, color = Color(0xFF475569))
+                    Text("Conversions: ${row.conv}", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFF334155))
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text("Payout: $${"%.2f".format(row.payout)}", fontSize = 12.sp, color = Color(0xFF10B981), fontWeight = FontWeight.Bold)
-                    Text("App: ${row.approved} | Rej: ${row.rejected}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Payout: $${"%.2f".format(row.payout)}", fontSize = 14.sp, color = Color(0xFF059669), fontWeight = FontWeight.Black)
+                    Text("App: ${row.approved} | Rej: ${row.rejected}", fontSize = 11.sp, fontWeight = FontWeight.Medium, color = Color(0xFF64748B))
                 }
             }
         }
@@ -428,44 +425,29 @@ fun PerformanceRowItem(row: ReportRow) {
 
 @Composable
 fun ClickRowItem(click: ClickRow) {
-    Card(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
-        shape = PremiumUI.CardShape,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    net.affscash.android.ui.dashboard.GlassCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp)
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            Text(click.offerName ?: "Custom URL", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-            Text("Click ID: ${click.clickId}", fontSize = 10.sp, color = Color.Gray)
-            Spacer(modifier = Modifier.height(4.dp))
+        Column(modifier = Modifier.padding(12.dp)) {
+            Text(click.offerName ?: "Custom URL", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Color(0xFF0F172A))
+            Text("Click ID: ${click.clickId}", fontSize = 10.sp, color = Color(0xFF94A3B8), fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)
+            Spacer(modifier = Modifier.height(6.dp))
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top)),
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
-                    Text("Sub1: ${click.sub1 ?: "-"}", fontSize = 12.sp, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
-                    Text("${click.country ?: "-"} | ${click.os ?: "-"} | ${click.browser ?: "-"}", fontSize = 12.sp, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                    Text("Sub1: ${click.sub1 ?: "-"}", fontSize = 12.sp, fontWeight = FontWeight.Medium, color = Color(0xFF334155), maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                    Text("${click.country ?: "-"} | ${click.os ?: "-"} | ${click.browser ?: "-"}", fontSize = 11.sp, color = Color(0xFF64748B), maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    val statusColor = if (click.convStatus == "approved") Color(0xFF10B981) else Color(0xFFEF4444)
-                    val statusBg = statusColor.copy(alpha = 0.15f)
-                    Surface(
-                        color = statusBg,
-                        shape = PremiumUI.CardShape,
-                        modifier = Modifier.padding(bottom = 4.dp)
-                    ) {
-                        Text(
-                            (click.convStatus ?: "no conv").uppercase(), 
-                            fontSize = 10.sp, 
-                            fontWeight = FontWeight.Bold, 
-                            color = statusColor,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                        )
-                    }
+                    net.affscash.android.ui.dashboard.StatusBadge(status = click.convStatus ?: "no conv")
                     if (click.convPayout != null && click.convPayout > 0) {
-                        Text("$${"%.2f".format(click.convPayout)}", fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text("$${"%.2f".format(click.convPayout)}", fontSize = 13.sp, fontWeight = FontWeight.Black, color = Color(0xFF059669))
                     }
                 }
             }
@@ -476,33 +458,31 @@ fun ClickRowItem(click: ClickRow) {
 @Composable
 fun ConversionRowItem(conv: ConversionRow) {
     var expandIds by remember { mutableStateOf(false) }
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = PremiumUI.CardShape,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    net.affscash.android.ui.dashboard.GlassCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp)
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            Text(conv.offerName ?: "Unknown", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+        Column(modifier = Modifier.padding(12.dp)) {
+            Text(conv.offerName ?: "Unknown Offer", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Color(0xFF0F172A))
             
             Column(modifier = Modifier.clickable { expandIds = !expandIds }.fillMaxWidth()) {
                 val convIdText = if (expandIds) conv.conversionId else if (conv.conversionId.length > 12) conv.conversionId.take(12) + "..." else conv.conversionId
-                Text("Conv ID: $convIdText", fontSize = 10.sp, color = Color.Gray, fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)
+                Text("Conv ID: $convIdText", fontSize = 10.sp, color = Color(0xFF94A3B8), fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)
                 
                 val clickIdText = if (expandIds) conv.clickId else if (conv.clickId.length > 12) conv.clickId.take(12) + "..." else conv.clickId
-                Text("Click ID: $clickIdText", fontSize = 10.sp, color = Color.Gray, fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)
+                Text("Click ID: $clickIdText", fontSize = 10.sp, color = Color(0xFF94A3B8), fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)
             }
             
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             
-            // New Location / Device Info
             val country = conv.country?.takeIf { it.isNotBlank() && it.lowercase() != "unknown" } ?: "Unknown Country"
             val state = conv.region?.takeIf { it.isNotBlank() && it.lowercase() != "unknown" } ?: "Unknown State"
             val city = conv.city?.takeIf { it.isNotBlank() && it.lowercase() != "unknown" }
             val ipAddress = conv.ipAddress?.takeIf { it.isNotBlank() } ?: "Unknown IP"
             
             val locStr = listOfNotNull(country, state, city).joinToString(" | ")
-            Text("$ipAddress | $locStr", fontSize = 11.sp, color = Color.Gray)
+            Text("$ipAddress | $locStr", fontSize = 11.sp, color = Color(0xFF64748B))
             
             val devInfo = listOfNotNull(
                 conv.deviceType?.replaceFirstChar { it.uppercase() }?.takeIf { it.isNotBlank() },
@@ -510,44 +490,25 @@ fun ConversionRowItem(conv: ConversionRow) {
                 conv.browser?.takeIf { it.isNotBlank() }
             ).joinToString(" | ")
             if (devInfo.isNotEmpty()) {
-                Text(devInfo, fontSize = 11.sp, color = Color.Gray)
+                Text(devInfo, fontSize = 11.sp, color = Color(0xFF64748B))
             }
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top)),
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
-                    Text("Date: ${conv.convertedAt}", fontSize = 12.sp)
+                    Text("Date: ${conv.convertedAt}", fontSize = 11.sp, fontWeight = FontWeight.Medium, color = Color(0xFF334155))
                     if (!conv.sub1.isNullOrBlank()) {
-                        Text("Sub1: ${conv.sub1}", fontSize = 12.sp, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                        Text("Sub1: ${conv.sub1}", fontSize = 11.sp, color = Color(0xFF64748B), maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
                     }
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    val statusColor = when(conv.status) {
-                        "approved" -> Color(0xFF10B981)
-                        "rejected" -> Color(0xFFEF4444)
-                        else -> Color(0xFFF59E0B)
-                    }
-                    val statusBg = statusColor.copy(alpha = 0.15f)
-                    
-                    Surface(
-                        color = statusBg,
-                        shape = PremiumUI.CardShape,
-                        modifier = Modifier.padding(bottom = 4.dp)
-                    ) {
-                        Text(
-                            conv.status.uppercase(), 
-                            fontSize = 10.sp, 
-                            fontWeight = FontWeight.Bold, 
-                            color = statusColor,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                        )
-                    }
-                    Text("$${(( conv.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                    net.affscash.android.ui.dashboard.StatusBadge(status = conv.status)
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text("$${(( conv.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Color(0xFF4F46E5))
                 }
             }
         }
@@ -556,44 +517,29 @@ fun ConversionRowItem(conv: ConversionRow) {
 
 @Composable
 fun SmartlinkRowItem(sl: SmartlinkClickRow) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = PremiumUI.CardShape,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    net.affscash.android.ui.dashboard.GlassCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp)
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            Text(sl.smartlinkName ?: "Unknown Smartlink", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-            Text("Routed to: ${sl.offerName ?: "Custom URL"}", fontSize = 12.sp)
-            Spacer(modifier = Modifier.height(4.dp))
+        Column(modifier = Modifier.padding(12.dp)) {
+            Text(sl.smartlinkName ?: "Unknown Smartlink", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Color(0xFF0F172A))
+            Text("Routed to: ${sl.offerName ?: "Custom URL"}", fontSize = 12.sp, color = Color(0xFF475569))
+            Spacer(modifier = Modifier.height(6.dp))
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top)),
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
-                    Text("${sl.country ?: "-"} | Sub1: ${sl.sub1 ?: "-"}", fontSize = 12.sp, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                    Text("${sl.country ?: "-"} | Sub1: ${sl.sub1 ?: "-"}", fontSize = 11.sp, color = Color(0xFF64748B), maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    val statusText = sl.convStatus?.takeIf { it.isNotBlank() } ?: "No conv"
-                    val statusColor = if (statusText.lowercase() == "approved") Color(0xFF10B981) else Color(0xFFEF4444)
-                    val statusBg = statusColor.copy(alpha = 0.15f)
-                    Surface(
-                        color = statusBg,
-                        shape = PremiumUI.CardShape,
-                        modifier = Modifier.padding(bottom = 4.dp)
-                    ) {
-                        Text(
-                            statusText.uppercase(), 
-                            fontSize = 10.sp, 
-                            fontWeight = FontWeight.Bold, 
-                            color = statusColor,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                        )
-                    }
+                    val statusText = sl.convStatus?.takeIf { it.isNotBlank() } ?: "no conv"
+                    net.affscash.android.ui.dashboard.StatusBadge(status = statusText)
                     if (sl.convPayout != null && sl.convPayout > 0) {
-                        Text("$${(( sl.convPayout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text("$${(( sl.convPayout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Color(0xFF059669))
                     }
                 }
             }
