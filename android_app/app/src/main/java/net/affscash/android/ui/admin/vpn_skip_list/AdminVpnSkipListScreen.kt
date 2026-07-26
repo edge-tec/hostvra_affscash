@@ -39,8 +39,25 @@ fun AdminVpnSkipListScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var showAddDialog by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(uiState.actionMessage) {
+        uiState.actionMessage?.let { msg ->
+            snackbarHostState.showSnackbar(msg)
+            viewModel.clearActionMessage()
+        }
+    }
+
+    LaunchedEffect(uiState.error) {
+        uiState.error?.let { err ->
+            if (uiState.skipData != null) {
+                snackbarHostState.showSnackbar(err)
+            }
+        }
+    }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             CompactTopBar(
                 title = { Text("VPN/Proxy Skip List") },
@@ -293,7 +310,20 @@ private fun AddVpnSkipDialog(
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedAffiliate by remember { mutableStateOf<AvailableSkipAffiliate?>(null) }
+    var searchText by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
+
+    val filteredAffiliates = remember(availableAffiliates, searchText) {
+        if (searchText.isBlank()) {
+            availableAffiliates
+        } else {
+            availableAffiliates.filter {
+                it.name.contains(searchText, ignoreCase = true) ||
+                it.affiliateCode.contains(searchText, ignoreCase = true) ||
+                it.email.contains(searchText, ignoreCase = true)
+            }
+        }
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -309,30 +339,65 @@ private fun AddVpnSkipDialog(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
-                ExposedDropdownMenuBox(
-                    expanded = expanded,
-                    onExpandedChange = { expanded = !expanded }
-                ) {
-                    OutlinedTextField(
-                        value = selectedAffiliate?.let { "${it.name} (${it.affiliateCode})" } ?: "Select Affiliate",
-                        onValueChange = {},
-                        readOnly = true,
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                        modifier = Modifier.menuAnchor().fillMaxWidth()
-                    )
-
-                    ExposedDropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
+                if (availableAffiliates.isEmpty()) {
+                    Surface(
+                        color = MaterialTheme.colorScheme.warningContainer.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        availableAffiliates.forEach { aff ->
-                            DropdownMenuItem(
-                                text = { Text("${aff.name} (${aff.affiliateCode})", fontSize = 13.sp) },
-                                onClick = {
-                                    selectedAffiliate = aff
-                                    expanded = false
-                                }
-                            )
+                        Text(
+                            text = "All active affiliates are already on the skip list.",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.onWarningContainer,
+                            modifier = Modifier.padding(12.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                } else {
+                    ExposedDropdownMenuBox(
+                        expanded = expanded,
+                        onExpandedChange = { expanded = !expanded }
+                    ) {
+                        OutlinedTextField(
+                            value = if (selectedAffiliate != null && !expanded) {
+                                "${selectedAffiliate!!.name} (${selectedAffiliate!!.affiliateCode})"
+                            } else {
+                                searchText
+                            },
+                            onValueChange = {
+                                searchText = it
+                                selectedAffiliate = null
+                                expanded = true
+                            },
+                            label = { Text("Select / Search Affiliate") },
+                            placeholder = { Text("Type name or code...") },
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                            modifier = Modifier.menuAnchor().fillMaxWidth(),
+                            singleLine = true
+                        )
+
+                        ExposedDropdownMenu(
+                            expanded = expanded && filteredAffiliates.isNotEmpty(),
+                            onDismissRequest = { expanded = false },
+                            modifier = Modifier.heightIn(max = 240.dp)
+                        ) {
+                            filteredAffiliates.forEach { aff ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Column {
+                                            Text("${aff.name} (${aff.affiliateCode})", fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                                            if (aff.email.isNotBlank()) {
+                                                Text(aff.email, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            }
+                                        }
+                                    },
+                                    onClick = {
+                                        selectedAffiliate = aff
+                                        searchText = "${aff.name} (${aff.affiliateCode})"
+                                        expanded = false
+                                    }
+                                )
+                            }
                         }
                     }
                 }

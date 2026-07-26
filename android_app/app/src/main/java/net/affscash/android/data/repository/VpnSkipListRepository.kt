@@ -29,7 +29,13 @@ class VpnSkipListRepository @Inject constructor(
             val body = mapOf("affiliate_id" to affiliateId, "note" to note)
             val response = apiService.addAdminVpnSkipEntry(body)
             if (response.isSuccessful) {
-                response.body()?.let { return@withContext Result.success(it) }
+                val res = response.body()
+                if (res != null) {
+                    if (res.status == "error") {
+                        return@withContext Result.failure(Exception(res.message ?: "Failed to add exemption"))
+                    }
+                    return@withContext Result.success(res)
+                }
             }
             Result.failure(Exception("Network error: ${response.code()}"))
         } catch (e: Exception) {
@@ -42,7 +48,13 @@ class VpnSkipListRepository @Inject constructor(
             val body = mapOf("id" to id)
             val response = apiService.removeAdminVpnSkipEntry(body)
             if (response.isSuccessful) {
-                response.body()?.let { return@withContext Result.success(it) }
+                val res = response.body()
+                if (res != null) {
+                    if (res.status == "error") {
+                        return@withContext Result.failure(Exception(res.message ?: "Failed to remove exemption"))
+                    }
+                    return@withContext Result.success(res)
+                }
             }
             Result.failure(Exception("Network error: ${response.code()}"))
         } catch (e: Exception) {
