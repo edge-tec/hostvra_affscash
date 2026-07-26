@@ -690,7 +690,7 @@ interface ApiService {
 
     @POST("api/v2/admin/traffic-source-override")
     suspend fun postAdminTrafficSourceOverride(
-        @Body body: Map<String, @JvmSuppressWildcards Any?>
+        @Body body: kotlinx.serialization.json.JsonObject
     ): Response<net.affscash.android.data.model.GenericResponse>
 
     @GET("api/v2/admin/traffic-source-override-logs")
@@ -708,7 +708,7 @@ interface ApiService {
 
     @POST("api/v2/manager/traffic-source-override")
     suspend fun postManagerTrafficSourceOverride(
-        @Body body: Map<String, @JvmSuppressWildcards Any?>
+        @Body body: kotlinx.serialization.json.JsonObject
     ): Response<net.affscash.android.data.model.GenericResponse>
 
     @GET("api/v2/manager/traffic-source-override-logs")
@@ -735,7 +735,7 @@ interface ApiService {
 
     @POST("api/v2/admin/login-activity?action=force_logout")
     suspend fun forceLogoutUser(
-        @Body body: Map<String, @JvmSuppressWildcards Any?>
+        @Body body: kotlinx.serialization.json.JsonObject
     ): Response<net.affscash.android.data.model.GenericResponse>
 
     @GET("api/v2/admin/vpn-proxy-skip?action=list")
@@ -743,12 +743,12 @@ interface ApiService {
 
     @POST("api/v2/admin/vpn-proxy-skip?action=add")
     suspend fun addAdminVpnSkipEntry(
-        @Body body: Map<String, @JvmSuppressWildcards Any?>
+        @Body request: net.affscash.android.data.model.AddVpnSkipRequest
     ): Response<net.affscash.android.data.model.GenericResponse>
 
     @POST("api/v2/admin/vpn-proxy-skip?action=remove")
     suspend fun removeAdminVpnSkipEntry(
-        @Body body: Map<String, @JvmSuppressWildcards Any?>
+        @Body request: net.affscash.android.data.model.RemoveVpnSkipRequest
     ): Response<net.affscash.android.data.model.GenericResponse>
 
     @GET("api/v2/manager/fraud-report")

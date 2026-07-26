@@ -36,3 +36,14 @@ data class VpnSkipListResponse(
     val message: String? = null,
     val data: VpnSkipListData? = null
 )
+
+@Serializable
+data class AddVpnSkipRequest(
+    @SerialName("affiliate_id") val affiliateId: Int,
+    val note: String? = null
+)
+
+@Serializable
+data class RemoveVpnSkipRequest(
+    val id: Int
+)

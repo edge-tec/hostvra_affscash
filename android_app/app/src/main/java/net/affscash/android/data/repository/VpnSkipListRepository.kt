@@ -2,7 +2,9 @@ package net.affscash.android.data.repository
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import net.affscash.android.data.model.AddVpnSkipRequest
 import net.affscash.android.data.model.GenericResponse
+import net.affscash.android.data.model.RemoveVpnSkipRequest
 import net.affscash.android.data.model.VpnSkipListResponse
 import net.affscash.android.data.network.ApiService
 import javax.inject.Inject
@@ -26,8 +28,7 @@ class VpnSkipListRepository @Inject constructor(
 
     suspend fun addVpnSkipEntry(affiliateId: Int, note: String?): Result<GenericResponse> = withContext(Dispatchers.IO) {
         try {
-            val body = mapOf("affiliate_id" to affiliateId, "note" to note)
-            val response = apiService.addAdminVpnSkipEntry(body)
+            val response = apiService.addAdminVpnSkipEntry(AddVpnSkipRequest(affiliateId, note))
             if (response.isSuccessful) {
                 val res = response.body()
                 if (res != null) {
@@ -45,8 +46,7 @@ class VpnSkipListRepository @Inject constructor(
 
     suspend fun removeVpnSkipEntry(id: Int): Result<GenericResponse> = withContext(Dispatchers.IO) {
         try {
-            val body = mapOf("id" to id)
-            val response = apiService.removeAdminVpnSkipEntry(body)
+            val response = apiService.removeAdminVpnSkipEntry(RemoveVpnSkipRequest(id))
             if (response.isSuccessful) {
                 val res = response.body()
                 if (res != null) {

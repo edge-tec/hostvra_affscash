@@ -9,10 +9,40 @@ import net.affscash.android.data.network.ApiService
 import javax.inject.Inject
 import javax.inject.Singleton
 
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+
 @Singleton
 class TrafficSourceOverrideRepository @Inject constructor(
     private val apiService: ApiService
 ) {
+    private fun Map<String, Any?>.toJsonObject(): JsonObject {
+        val content = mutableMapOf<String, JsonElement>()
+        for ((key, value) in this) {
+            if (value == null) continue
+            when (value) {
+                is String -> content[key] = JsonPrimitive(value)
+                is Number -> content[key] = JsonPrimitive(value)
+                is Boolean -> content[key] = JsonPrimitive(value)
+                is List<*> -> {
+                    val jsonArr = value.mapNotNull {
+                        when (it) {
+                            is String -> JsonPrimitive(it)
+                            is Number -> JsonPrimitive(it)
+                            is Boolean -> JsonPrimitive(it)
+                            else -> null
+                        }
+                    }
+                    content[key] = JsonArray(jsonArr)
+                }
+                else -> content[key] = JsonPrimitive(value.toString())
+            }
+        }
+        return JsonObject(content)
+    }
+
     suspend fun getAdminTrafficSourceOverride(): Result<TrafficSourceOverrideResponse> = withContext(Dispatchers.IO) {
         try {
             val response = apiService.getAdminTrafficSourceOverride()
@@ -27,7 +57,7 @@ class TrafficSourceOverrideRepository @Inject constructor(
 
     suspend fun postAdminTrafficSourceOverride(body: Map<String, Any?>): Result<GenericResponse> = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.postAdminTrafficSourceOverride(body)
+            val response = apiService.postAdminTrafficSourceOverride(body.toJsonObject())
             if (response.isSuccessful) {
                 response.body()?.let { return@withContext Result.success(it) }
             }
@@ -63,7 +93,7 @@ class TrafficSourceOverrideRepository @Inject constructor(
 
     suspend fun postManagerTrafficSourceOverride(body: Map<String, Any?>): Result<GenericResponse> = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.postManagerTrafficSourceOverride(body)
+            val response = apiService.postManagerTrafficSourceOverride(body.toJsonObject())
             if (response.isSuccessful) {
                 response.body()?.let { return@withContext Result.success(it) }
             }
