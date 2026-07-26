@@ -203,41 +203,6 @@ fun SettingsScreen(
                             if (selectedTabIndex == 0) { // Show general actions at bottom of Profile tab
                                 Divider(modifier = Modifier.padding(vertical = 8.dp))
                                 
-                                if (role == "affiliate") {
-                                    Button(
-                                        onClick = onNavigateToInvoices,
-                                        modifier = Modifier.fillMaxWidth(),
-                                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
-                                    ) {
-                                        Icon(Icons.Default.PictureAsPdf, contentDescription = "Invoices")
-                                        Spacer(modifier = Modifier.width(4.dp))
-                                        Text("My Invoices")
-                                    }
-                                    Spacer(modifier = Modifier.height(4.dp))
-
-                                    Button(
-                                        onClick = onNavigateToRewards,
-                                        modifier = Modifier.fillMaxWidth(),
-                                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
-                                    ) {
-                                        Icon(Icons.Default.MonetizationOn, contentDescription = "Rewards")
-                                        Spacer(modifier = Modifier.width(4.dp))
-                                        Text("My Rewards (Milestones)")
-                                    }
-                                    Spacer(modifier = Modifier.height(4.dp))
-
-                                    Button(
-                                        onClick = onNavigateToShop,
-                                        modifier = Modifier.fillMaxWidth(),
-                                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6C43E8))
-                                    ) {
-                                        Icon(Icons.Default.LocalOffer, contentDescription = "Shop")
-                                        Spacer(modifier = Modifier.width(4.dp))
-                                        Text("Rewards Shop")
-                                    }
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                }
-
                                 if (state.isImpersonating) {
                                     Button(
                                         onClick = {
