@@ -61,72 +61,105 @@ fun ManagerProfileScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.background,
-                shadowElevation = 2.dp
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(PremiumUI.PageBackground)
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))
+    ) {
+        // 3D Glass Header Bar
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            shape = PremiumUI.CardShape,
+            color = Color.White,
+            shadowElevation = 2.dp,
+            border = PremiumUI.GlassBorder
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 12.dp)
+                            .size(42.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(PremiumUI.HeaderGradient),
+                        contentAlignment = Alignment.Center
                     ) {
+                        Icon(
+                            Icons.Default.Settings,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Column {
                         Text(
-                            text = "Settings",
-                            style = PremiumUI.TitleMedium,
+                            text = "My Settings",
                             fontSize = 18.sp,
-                            color = MaterialTheme.colorScheme.onSurface
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF0F172A)
+                        )
+                        Text(
+                            text = "Profile, security, payments & preferences",
+                            fontSize = 12.sp,
+                            color = Color(0xFF64748B)
                         )
                     }
                 }
             }
         }
-    ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues).fillMaxSize().background(Color(0xFFF8FAFC))) {
-            val tabs = listOf("Profile", "Security", "Payment", "Authenticator")
-            
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp, horizontal = 12.dp)
-                    .horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                tabs.forEachIndexed { index, title ->
-                    val isSelected = selectedTab == index
-                    val icon = when (index) {
-                        0 -> Icons.Default.Person
-                        1 -> Icons.Default.Lock
-                        2 -> Icons.Default.ShoppingCart
-                        else -> Icons.Default.VerifiedUser
-                    }
-                    
-                    Surface(
-                        shape = PremiumUI.CardShape,
-                        color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                        modifier = Modifier.clickable { viewModel.setTab(index) }
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
-                        ) {
-                            Icon(icon, contentDescription = null, modifier = Modifier.size(16.dp), tint = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant)
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Text(
-                                text = title,
-                                fontSize = 13.sp,
-                                color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
-                                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium
-                            )
+
+        val tabs = listOf("Profile", "Security", "Payment", "Authenticator")
+        // 3D Scrollable Segmented Tab Row
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+                .padding(horizontal = 12.dp, vertical = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            tabs.forEachIndexed { index, title ->
+                val isSelected = selectedTab == index
+
+                Surface(
+                    onClick = { viewModel.setTab(index) },
+                    shape = RoundedCornerShape(12.dp),
+                    color = when {
+                        isSelected -> Color(0xFF4F46E5)
+                        else -> Color.White
+                    },
+                    border = androidx.compose.foundation.BorderStroke(
+                        1.dp,
+                        when {
+                            isSelected -> Color(0xFF4F46E5)
+                            else -> Color(0xFFE2E8F0)
                         }
-                    }
+                    ),
+                    shadowElevation = if (isSelected) 3.dp else 1.dp
+                ) {
+                    Text(
+                        text = title,
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                        fontSize = 12.sp,
+                        fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.Medium,
+                        color = when {
+                            isSelected -> Color.White
+                            else -> Color(0xFF475569)
+                        }
+                    )
                 }
             }
+        }
 
+        Box(modifier = Modifier.weight(1f)) {
             when (val state = uiState) {
                 is ManagerProfileUiState.Loading -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
