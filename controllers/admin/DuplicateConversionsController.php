@@ -92,12 +92,11 @@ $rows = Database::fetchAll(
      WHERE COALESCE(cv.is_hidden, 0) = 0
        AND (
            cv.converted_at BETWEEN ? AND ?
-           OR cv.rejected_at BETWEEN ? AND ?
-           OR cv.created_at BETWEEN ? AND ?
+           OR (cv.rejected_at IS NOT NULL AND cv.rejected_at BETWEEN ? AND ?)
        )
            $statusClause
      ORDER BY cv.offer_id, cv.ip_address, cv.converted_at DESC",
-    array_merge([$dateFrom, $dateTo, $dateFrom, $dateTo, $dateFrom, $dateTo], ($statusClause ? [$status] : []))
+    array_merge([$dateFrom, $dateTo, $dateFrom, $dateTo], ($statusClause ? [$status] : []))
 ) ?: [];
 
 // Group rows by (offer_id, ip_address) so the view can render one block per
