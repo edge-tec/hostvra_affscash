@@ -230,10 +230,15 @@ fun TrafficSourceOverrideScreen(
                         }
                     } else {
                         val destinationMap = (data.destinations.ifEmpty { DEFAULT_DESTINATIONS }).associate { it.key to it.label }
+                        val affiliateMap = remember(data.affiliates) { data.affiliates.associateBy { it.id } }
+                        val offerMap = remember(data.offers) { data.offers.associateBy { it.id } }
+
                         items(data.rules) { rule ->
                             RuleCardItem(
                                 rule = rule,
                                 destinations = destinationMap,
+                                affiliateMap = affiliateMap,
+                                offerMap = offerMap,
                                 onToggle = { viewModel.toggleRule(rule.id, isManager) },
                                 onDelete = { viewModel.deleteRule(rule.id, isManager) },
                                 onEdit = {
@@ -284,6 +289,8 @@ fun TrafficSourceOverrideScreen(
 private fun RuleCardItem(
     rule: TrafficSourceOverrideRule,
     destinations: Map<String, String>,
+    affiliateMap: Map<Int, SimpleOptionItem>,
+    offerMap: Map<Int, SimpleOptionItem>,
     onToggle: () -> Unit,
     onDelete: () -> Unit,
     onEdit: () -> Unit
@@ -328,6 +335,58 @@ private fun RuleCardItem(
                     IconButton(onClick = onDelete) {
                         Icon(Icons.Default.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(20.dp))
                     }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+            // Affiliate & Offer Target Scope Badges
+            val affCond = rule.conditions?.affiliateIds
+            val offerCond = rule.conditions?.offerIds
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Surface(
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
+                    shape = RoundedCornerShape(4.dp)
+                ) {
+                    val affText = if (affCond.isNullOrEmpty()) {
+                        "Affiliate: ALL"
+                    } else {
+                        "Affiliate: " + affCond.map { affiliateMap[it]?.let { a -> "${a.name} (${a.affiliateCode ?: a.id})" } ?: "#$it" }.joinToString(", ")
+                    }
+                    Text(
+                        text = affText,
+                        fontSize = 10.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
+                Surface(
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
+                    shape = RoundedCornerShape(4.dp)
+                ) {
+                    val offerText = if (offerCond.isNullOrEmpty()) {
+                        "Offer: ALL"
+                    } else {
+                        "Offer: " + offerCond.map { offerMap[it]?.name ?: "#$it" }.joinToString(", ")
+                    }
+                    Text(
+                        text = offerText,
+                        fontSize = 10.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
             }
 
@@ -434,6 +493,31 @@ private fun AddEditRuleDialog(
     var selectedCountries by remember { mutableStateOf(rule?.conditions?.countries?.toSet() ?: emptySet()) }
     var selectedDeviceTypes by remember { mutableStateOf(rule?.conditions?.deviceTypes?.toSet() ?: emptySet()) }
 
+    // Affiliate Dropdown Search State
+    var affSearchText by remember { mutableStateOf("") }
+    var affDropdownExpanded by remember { mutableStateOf(false) }
+
+    val filteredAffiliates = remember(affiliates, affSearchText) {
+        if (affSearchText.isBlank()) affiliates
+        else affiliates.filter {
+            it.name.contains(affSearchText, ignoreCase = true) ||
+            (it.affiliateCode ?: "").contains(affSearchText, ignoreCase = true) ||
+            it.id.toString() == affSearchText.trim()
+        }
+    }
+
+    // Offer Dropdown Search State
+    var offerSearchText by remember { mutableStateOf("") }
+    var offerDropdownExpanded by remember { mutableStateOf(false) }
+
+    val filteredOffers = remember(offers, offerSearchText) {
+        if (offerSearchText.isBlank()) offers
+        else offers.filter {
+            it.name.contains(offerSearchText, ignoreCase = true) ||
+            it.id.toString() == offerSearchText.trim()
+        }
+    }
+
     val scrollState = rememberScrollState()
 
     AlertDialog(
@@ -467,6 +551,198 @@ private fun AddEditRuleDialog(
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+
+                // TARGET AFFILIATE ACCOUNT SELECTION
+                Text(
+                    text = "TARGET AFFILIATE ACCOUNT",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    letterSpacing = 1.sp
+                )
+                Text(
+                    text = "Select specific affiliate(s) or leave empty to apply rule to ALL affiliates.",
+                    fontSize = 10.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                // Selected Affiliates Chips
+                if (selectedAffiliates.isNotEmpty()) {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        selectedAffiliates.forEach { affId ->
+                            val affObj = affiliates.find { it.id == affId }
+                            val labelText = affObj?.let { "${it.name} (${it.affiliateCode ?: it.id})" } ?: "Affiliate #$affId"
+                            InputChip(
+                                selected = true,
+                                onClick = { selectedAffiliates = selectedAffiliates - affId },
+                                label = { Text(labelText, fontSize = 11.sp) },
+                                trailingIcon = { Text(" ✕", fontSize = 10.sp, fontWeight = FontWeight.Bold) }
+                            )
+                        }
+                    }
+                } else {
+                    Surface(
+                        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(6.dp)
+                    ) {
+                        Text(
+                            text = "✓ Applies to ALL Affiliates",
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        )
+                    }
+                }
+
+                // Affiliate Search & Select Dropdown
+                if (affiliates.isNotEmpty()) {
+                    ExposedDropdownMenuBox(
+                        expanded = affDropdownExpanded,
+                        onExpandedChange = { affDropdownExpanded = !affDropdownExpanded }
+                    ) {
+                        OutlinedTextField(
+                            value = affSearchText,
+                            onValueChange = {
+                                affSearchText = it
+                                affDropdownExpanded = true
+                            },
+                            label = { Text("Search & Select Affiliate") },
+                            placeholder = { Text("Type name, code, or ID...") },
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = affDropdownExpanded) },
+                            modifier = Modifier.menuAnchor().fillMaxWidth(),
+                            singleLine = true
+                        )
+
+                        ExposedDropdownMenu(
+                            expanded = affDropdownExpanded && filteredAffiliates.isNotEmpty(),
+                            onDismissRequest = { affDropdownExpanded = false },
+                            modifier = Modifier.heightIn(max = 200.dp)
+                        ) {
+                            filteredAffiliates.forEach { aff ->
+                                val isSelected = selectedAffiliates.contains(aff.id)
+                                DropdownMenuItem(
+                                    text = {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text("${aff.name} (${aff.affiliateCode ?: aff.id})", fontSize = 12.sp)
+                                            if (isSelected) {
+                                                Text("Selected", fontSize = 10.sp, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+                                            }
+                                        }
+                                    },
+                                    onClick = {
+                                        selectedAffiliates = if (isSelected) selectedAffiliates - aff.id else selectedAffiliates + aff.id
+                                        affSearchText = ""
+                                        affDropdownExpanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+
+                // TARGET OFFER SELECTION
+                Text(
+                    text = "TARGET OFFER",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    letterSpacing = 1.sp
+                )
+                Text(
+                    text = "Select specific offer(s) or leave empty to apply rule to ALL offers.",
+                    fontSize = 10.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                // Selected Offers Chips
+                if (selectedOffers.isNotEmpty()) {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        selectedOffers.forEach { offerId ->
+                            val offerObj = offers.find { it.id == offerId }
+                            val labelText = offerObj?.let { "${it.name} (#${it.id})" } ?: "Offer #$offerId"
+                            InputChip(
+                                selected = true,
+                                onClick = { selectedOffers = selectedOffers - offerId },
+                                label = { Text(labelText, fontSize = 11.sp) },
+                                trailingIcon = { Text(" ✕", fontSize = 10.sp, fontWeight = FontWeight.Bold) }
+                            )
+                        }
+                    }
+                } else {
+                    Surface(
+                        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(6.dp)
+                    ) {
+                        Text(
+                            text = "✓ Applies to ALL Offers",
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        )
+                    }
+                }
+
+                // Offer Search & Select Dropdown
+                if (offers.isNotEmpty()) {
+                    ExposedDropdownMenuBox(
+                        expanded = offerDropdownExpanded,
+                        onExpandedChange = { offerDropdownExpanded = !offerDropdownExpanded }
+                    ) {
+                        OutlinedTextField(
+                            value = offerSearchText,
+                            onValueChange = {
+                                offerSearchText = it
+                                offerDropdownExpanded = true
+                            },
+                            label = { Text("Search & Select Offer") },
+                            placeholder = { Text("Type offer name or ID...") },
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = offerDropdownExpanded) },
+                            modifier = Modifier.menuAnchor().fillMaxWidth(),
+                            singleLine = true
+                        )
+
+                        ExposedDropdownMenu(
+                            expanded = offerDropdownExpanded && filteredOffers.isNotEmpty(),
+                            onDismissRequest = { offerDropdownExpanded = false },
+                            modifier = Modifier.heightIn(max = 200.dp)
+                        ) {
+                            filteredOffers.forEach { offer ->
+                                val isSelected = selectedOffers.contains(offer.id)
+                                DropdownMenuItem(
+                                    text = {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text("${offer.name} (#${offer.id})", fontSize = 12.sp)
+                                            if (isSelected) {
+                                                Text("Selected", fontSize = 10.sp, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+                                            }
+                                        }
+                                    },
+                                    onClick = {
+                                        selectedOffers = if (isSelected) selectedOffers - offer.id else selectedOffers + offer.id
+                                        offerSearchText = ""
+                                        offerDropdownExpanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
 
                 // Target Original Sources
                 Text("Target Original Sources", fontSize = 12.sp, fontWeight = FontWeight.Bold)
@@ -553,50 +829,16 @@ private fun AddEditRuleDialog(
 
                 HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
 
-                // OPTIONAL CONDITIONS
+                // ADDITIONAL CONDITIONS
                 Text(
-                    text = "OPTIONAL CONDITIONS",
+                    text = "ADDITIONAL CONDITIONS",
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
                     letterSpacing = 1.sp
                 )
 
-                // 1. Affiliates
-                if (affiliates.isNotEmpty()) {
-                    Text("Affiliates", fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                        affiliates.forEach { aff ->
-                            val isSelected = selectedAffiliates.contains(aff.id)
-                            FilterChip(
-                                selected = isSelected,
-                                onClick = {
-                                    selectedAffiliates = if (isSelected) selectedAffiliates - aff.id else selectedAffiliates + aff.id
-                                },
-                                label = { Text("${aff.name} (${aff.affiliateCode ?: aff.id})", fontSize = 10.sp) }
-                            )
-                        }
-                    }
-                }
-
-                // 2. Offers
-                if (offers.isNotEmpty()) {
-                    Text("Offers", fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                        offers.take(15).forEach { offer ->
-                            val isSelected = selectedOffers.contains(offer.id)
-                            FilterChip(
-                                selected = isSelected,
-                                onClick = {
-                                    selectedOffers = if (isSelected) selectedOffers - offer.id else selectedOffers + offer.id
-                                },
-                                label = { Text("${offer.name} (#${offer.id})", fontSize = 10.sp) }
-                            )
-                        }
-                    }
-                }
-
-                // 3. Advertisers
+                // Advertisers
                 if (advertisers.isNotEmpty()) {
                     Text("Advertisers", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                     FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -613,7 +855,7 @@ private fun AddEditRuleDialog(
                     }
                 }
 
-                // 4. Countries
+                // Countries
                 if (countries.isNotEmpty()) {
                     Text("Countries (GEO)", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                     FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -630,7 +872,7 @@ private fun AddEditRuleDialog(
                     }
                 }
 
-                // 5. Device Types
+                // Device Types
                 Text("Device Types", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     val devicesList = if (deviceTypes.isNotEmpty()) deviceTypes else listOf("Mobile", "Desktop", "Tablet")
