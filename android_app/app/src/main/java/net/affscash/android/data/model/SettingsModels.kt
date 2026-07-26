@@ -40,7 +40,9 @@ data class ProfileInfo(
     @SerialName("last_name") val lastName: String? = null,
     val email: String? = null,
     val company: String? = null,
-    val phone: String? = null
+    val phone: String? = null,
+    val skype: String? = null,
+    val telegram: String? = null
 )
 
 @Serializable
@@ -74,7 +76,9 @@ data class UpdateProfileRequest(
     @SerialName("first_name") val firstName: String,
     @SerialName("last_name") val lastName: String,
     val company: String,
-    val phone: String
+    val phone: String,
+    val skype: String,
+    val telegram: String
 )
 
 @Serializable

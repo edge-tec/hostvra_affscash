@@ -2,7 +2,6 @@ package net.affscash.android.ui.admin.traffic_source_override
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,9 +11,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.AltRoute
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AltRoute
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.Delete
@@ -38,7 +37,6 @@ import net.affscash.android.data.model.CountryOptionItem
 import net.affscash.android.data.model.SimpleOptionItem
 import net.affscash.android.data.model.TrafficSourceOverrideDestination
 import net.affscash.android.data.model.TrafficSourceOverrideRule
-import net.affscash.android.ui.components.CompactTopBar
 import net.affscash.android.ui.dashboard.PremiumUI
 
 val DEFAULT_TARGET_SOURCES = listOf(
@@ -192,7 +190,7 @@ fun TrafficSourceOverrideScreen(
                                         modifier = Modifier.size(40.dp)
                                     ) {
                                         Icon(
-                                            Icons.Default.AltRoute,
+                                            Icons.AutoMirrored.Filled.AltRoute,
                                             contentDescription = null,
                                             tint = Color.White,
                                             modifier = Modifier.padding(8.dp)
@@ -279,6 +277,7 @@ fun TrafficSourceOverrideScreen(
                 }
             }
         }
+    }
     LaunchedEffect(showAddDialog) {
         if (showAddDialog && (uiState.data?.affiliates.isNullOrEmpty() || uiState.data?.offers.isNullOrEmpty())) {
             viewModel.loadData(isManager)
@@ -651,8 +650,16 @@ private fun AddEditRuleDialog(
                                     )
                                 }
                             },
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { affDropdownExpanded = !affDropdownExpanded },
                             singleLine = true
+                        )
+                        // Invisible overlay to catch taps and open dropdown list immediately
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .clickable { affDropdownExpanded = !affDropdownExpanded }
                         )
                     }
                     Spacer(modifier = Modifier.width(6.dp))
@@ -707,12 +714,18 @@ private fun AddEditRuleDialog(
                             ) {
                                 if (filteredAffiliates.isEmpty()) {
                                     item {
-                                        Text(
-                                            text = "No affiliates found matching search.",
-                                            fontSize = 12.sp,
-                                            color = Color.Gray,
-                                            modifier = Modifier.padding(12.dp)
-                                        )
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(12.dp),
+                                            horizontalAlignment = Alignment.CenterHorizontally
+                                        ) {
+                                            Text(
+                                                text = if (affiliates.isEmpty()) "No affiliates found in system." else "No affiliates match search criteria.",
+                                                fontSize = 12.sp,
+                                                color = Color.Gray
+                                            )
+                                        }
                                     }
                                 } else {
                                     items(filteredAffiliates) { aff ->
@@ -823,8 +836,16 @@ private fun AddEditRuleDialog(
                                     )
                                 }
                             },
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { offerDropdownExpanded = !offerDropdownExpanded },
                             singleLine = true
+                        )
+                        // Invisible overlay to catch taps and open dropdown list immediately
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .clickable { offerDropdownExpanded = !offerDropdownExpanded }
                         )
                     }
                     Spacer(modifier = Modifier.width(6.dp))
@@ -1035,7 +1056,7 @@ private fun AddEditRuleDialog(
                                 onClick = {
                                     selectedAdvertisers = if (isSelected) selectedAdvertisers - adv.id else selectedAdvertisers + adv.id
                                 },
-                                label = { Text(adv.name, fontSize = 10.sp) }
+                                label = { Text(adv.name ?: "", fontSize = 10.sp) }
                             )
                         }
                     }

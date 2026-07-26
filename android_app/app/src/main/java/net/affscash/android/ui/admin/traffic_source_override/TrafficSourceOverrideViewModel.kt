@@ -27,10 +27,6 @@ class TrafficSourceOverrideViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(TrafficSourceOverrideUiState())
     val uiState: StateFlow<TrafficSourceOverrideUiState> = _uiState.asStateFlow()
 
-    init {
-        loadData()
-    }
-
     fun loadData(isManager: Boolean = false) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
