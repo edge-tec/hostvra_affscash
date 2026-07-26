@@ -32,8 +32,14 @@ class TrafficSourceOverrideViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true, error = null) }
             val result = if (isManager) repository.getManagerTrafficSourceOverride() else repository.getAdminTrafficSourceOverride()
             result.onSuccess { response ->
-                _uiState.update { it.copy(isLoading = false, data = response.data, error = response.message) }
+                android.util.Log.d("TSOverride", "API Response: status=${response.status}, affiliates=${response.data?.affiliates?.size}, offers=${response.data?.offers?.size}, advertisers=${response.data?.advertisers?.size}")
+                _uiState.update { it.copy(
+                    isLoading = false, 
+                    data = response.data, 
+                    error = if (response.status != "success") response.message else null
+                ) }
             }.onFailure { exception ->
+                android.util.Log.e("TSOverride", "API Failure: ${exception.message}", exception)
                 _uiState.update { it.copy(isLoading = false, error = exception.message ?: "Failed to load traffic source override rules") }
             }
         }

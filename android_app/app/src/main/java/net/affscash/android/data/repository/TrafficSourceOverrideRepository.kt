@@ -46,11 +46,17 @@ class TrafficSourceOverrideRepository @Inject constructor(
     suspend fun getAdminTrafficSourceOverride(): Result<TrafficSourceOverrideResponse> = withContext(Dispatchers.IO) {
         try {
             val response = apiService.getAdminTrafficSourceOverride()
+            android.util.Log.d("TSOverride", "Admin API HTTP code: ${response.code()}, isSuccessful: ${response.isSuccessful}")
             if (response.isSuccessful) {
-                response.body()?.let { return@withContext Result.success(it) }
+                response.body()?.let { body ->
+                    android.util.Log.d("TSOverride", "Admin API body: affiliates=${body.data?.affiliates?.size}, offers=${body.data?.offers?.size}")
+                    return@withContext Result.success(body)
+                }
             }
+            android.util.Log.e("TSOverride", "Admin API failed with code: ${response.code()}")
             Result.failure(Exception("Network error: ${response.code()}"))
         } catch (e: Exception) {
+            android.util.Log.e("TSOverride", "Admin API exception: ${e.message}", e)
             Result.failure(e)
         }
     }
@@ -82,11 +88,17 @@ class TrafficSourceOverrideRepository @Inject constructor(
     suspend fun getManagerTrafficSourceOverride(): Result<TrafficSourceOverrideResponse> = withContext(Dispatchers.IO) {
         try {
             val response = apiService.getManagerTrafficSourceOverride()
+            android.util.Log.d("TSOverride", "Manager API HTTP code: ${response.code()}, isSuccessful: ${response.isSuccessful}")
             if (response.isSuccessful) {
-                response.body()?.let { return@withContext Result.success(it) }
+                response.body()?.let { body ->
+                    android.util.Log.d("TSOverride", "Manager API body: affiliates=${body.data?.affiliates?.size}, offers=${body.data?.offers?.size}")
+                    return@withContext Result.success(body)
+                }
             }
+            android.util.Log.e("TSOverride", "Manager API failed with code: ${response.code()}")
             Result.failure(Exception("Network error: ${response.code()}"))
         } catch (e: Exception) {
+            android.util.Log.e("TSOverride", "Manager API exception: ${e.message}", e)
             Result.failure(e)
         }
     }

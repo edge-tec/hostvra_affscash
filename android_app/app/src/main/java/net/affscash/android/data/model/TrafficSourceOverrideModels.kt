@@ -1,13 +1,43 @@
 package net.affscash.android.data.model
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.intOrNull
+
+/**
+ * Handles both `"id": 5` (int) and `"id": "5"` (string) from PHP/MySQL JSON responses.
+ */
+object FlexibleIntSerializer : KSerializer<Int> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("FlexibleInt", PrimitiveKind.INT)
+    override fun serialize(encoder: Encoder, value: Int) = encoder.encodeInt(value)
+    override fun deserialize(decoder: Decoder): Int {
+        return when (val jsonDecoder = decoder as? JsonDecoder) {
+            null -> decoder.decodeInt()
+            else -> {
+                val element = jsonDecoder.decodeJsonElement()
+                if (element is JsonPrimitive) {
+                    element.intOrNull ?: element.content.toIntOrNull() ?: 0
+                } else 0
+            }
+        }
+    }
+}
 
 @Serializable
 data class TrafficSourceOverrideRule(
+    @Serializable(with = FlexibleIntSerializer::class)
     val id: Int = 0,
     val name: String = "",
     val enabled: Boolean = true,
+    @Serializable(with = FlexibleIntSerializer::class)
     val priority: Int = 0,
     @SerialName("override_source") val overrideSource: String = "",
     @SerialName("target_original_sources") val targetOriginalSources: List<String> = emptyList(),
@@ -15,11 +45,34 @@ data class TrafficSourceOverrideRule(
     @SerialName("created_at") val createdAt: String? = null
 )
 
+object FlexibleIntListSerializer : KSerializer<List<Int>> {
+    override val descriptor: SerialDescriptor = kotlinx.serialization.builtins.ListSerializer(kotlinx.serialization.builtins.serializer<Int>()).descriptor
+    override fun serialize(encoder: Encoder, value: List<Int>) {
+        encoder.encodeSerializableValue(kotlinx.serialization.builtins.ListSerializer(kotlinx.serialization.builtins.serializer<Int>()), value)
+    }
+    override fun deserialize(decoder: Decoder): List<Int> {
+        return when (val jsonDecoder = decoder as? JsonDecoder) {
+            null -> decoder.decodeSerializableValue(kotlinx.serialization.builtins.ListSerializer(kotlinx.serialization.builtins.serializer<Int>()))
+            else -> {
+                val arr = jsonDecoder.decodeJsonElement()
+                if (arr is kotlinx.serialization.json.JsonArray) {
+                    arr.mapNotNull { elem ->
+                        if (elem is JsonPrimitive) elem.intOrNull ?: elem.content.toIntOrNull() else null
+                    }
+                } else emptyList()
+            }
+        }
+    }
+}
+
 @Serializable
 data class TrafficSourceOverrideConditions(
-    @SerialName("affiliate_ids") val affiliateIds: List<Int>? = null,
-    @SerialName("offer_ids") val offerIds: List<Int>? = null,
-    @SerialName("advertiser_ids") val advertiserIds: List<Int>? = null,
+    @Serializable(with = FlexibleIntListSerializer::class)
+    @SerialName("affiliate_ids") val affiliateIds: List<Int> = emptyList(),
+    @Serializable(with = FlexibleIntListSerializer::class)
+    @SerialName("offer_ids") val offerIds: List<Int> = emptyList(),
+    @Serializable(with = FlexibleIntListSerializer::class)
+    @SerialName("advertiser_ids") val advertiserIds: List<Int> = emptyList(),
     val countries: List<String>? = null,
     @SerialName("device_types") val deviceTypes: List<String>? = null
 )
@@ -32,6 +85,7 @@ data class TrafficSourceOverrideDestination(
 
 @Serializable
 data class SimpleOptionItem(
+    @Serializable(with = FlexibleIntSerializer::class)
     val id: Int,
     val name: String? = "",
     @SerialName("affiliate_code") val affiliateCode: String? = null

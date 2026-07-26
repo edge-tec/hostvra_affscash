@@ -132,6 +132,7 @@ object NetworkModule {
             ignoreUnknownKeys = true
             isLenient = true 
             coerceInputValues = true
+            explicitNulls = false
         }
 
         return Retrofit.Builder()

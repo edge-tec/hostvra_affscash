@@ -106,6 +106,25 @@ try {
 
     $rules = [];
     foreach ($rawRules as $r) {
+        $rawConditions = json_decode($r['conditions'] ?? '{}', true) ?: [];
+        // Ensure all ID arrays in conditions are proper integers
+        $normalizedConditions = [];
+        if (!empty($rawConditions['affiliate_ids']) && is_array($rawConditions['affiliate_ids'])) {
+            $normalizedConditions['affiliate_ids'] = array_values(array_map('intval', $rawConditions['affiliate_ids']));
+        }
+        if (!empty($rawConditions['offer_ids']) && is_array($rawConditions['offer_ids'])) {
+            $normalizedConditions['offer_ids'] = array_values(array_map('intval', $rawConditions['offer_ids']));
+        }
+        if (!empty($rawConditions['advertiser_ids']) && is_array($rawConditions['advertiser_ids'])) {
+            $normalizedConditions['advertiser_ids'] = array_values(array_map('intval', $rawConditions['advertiser_ids']));
+        }
+        if (!empty($rawConditions['countries']) && is_array($rawConditions['countries'])) {
+            $normalizedConditions['countries'] = array_values($rawConditions['countries']);
+        }
+        if (!empty($rawConditions['device_types']) && is_array($rawConditions['device_types'])) {
+            $normalizedConditions['device_types'] = array_values($rawConditions['device_types']);
+        }
+
         $rules[] = [
             'id' => (int)$r['id'],
             'name' => $r['name'] ?? '',
@@ -113,7 +132,7 @@ try {
             'priority' => (int)($r['priority'] ?? 0),
             'target_original_sources' => json_decode($r['target_original_sources'] ?? '[]', true) ?: [],
             'override_source' => $r['override_source'] ?? '',
-            'conditions' => json_decode($r['conditions'] ?? '{}', true) ?: (object)[]
+            'conditions' => empty($normalizedConditions) ? (object)[] : $normalizedConditions
         ];
     }
 
@@ -195,9 +214,9 @@ try {
             'rules' => $rules,
             'chat_sources' => $chatSources,
             'destinations' => $overrideDestinations,
-            'affiliates' => $affiliates,
-            'offers' => $offers,
-            'advertisers' => $advertisers,
+            'affiliates' => array_values($affiliates),
+            'offers' => array_values($offers),
+            'advertisers' => array_values($advertisers),
             'countries' => $countries,
             'device_types' => $deviceTypes
         ]
