@@ -16,10 +16,10 @@ android {
     compileSdk = 36
     defaultConfig {
         applicationId = "net.affscash.android"
-        minSdk = 24
+        minSdk = 23
         targetSdk = 36
-        versionCode = 14
-        versionName = "2.0.6"
+        versionCode = 15
+        versionName = "2.0.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -76,6 +76,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -115,6 +116,7 @@ dependencies {
   val composeBom = platform(libs.androidx.compose.bom)
   implementation(composeBom)
   androidTestImplementation(composeBom)
+  coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
   // Core Android dependencies
   implementation(libs.androidx.core.ktx)
