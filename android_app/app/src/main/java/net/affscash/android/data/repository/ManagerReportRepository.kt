@@ -69,7 +69,7 @@ class ManagerReportRepository @Inject constructor(private val apiService: ApiSer
 
     fun getManagerDuplicateConversions(from: String, to: String): Flow<Result<DuplicateConversionsResponse>> = flow {
         try {
-            val response = apiService.getManagerDuplicateConversions(from, to)
+            val response = apiService.getManagerDuplicateConversions(from = from, to = to, startDate = from, endDate = to)
             if (response.isSuccessful && response.body() != null) {
                 val body = response.body()!!
                 if (body.success) {

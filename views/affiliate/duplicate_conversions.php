@@ -74,7 +74,7 @@
             ];
             foreach ($groups as $groupKey => $clusterRows):
                 $first = $clusterRows[0];
-                $clusterSize = (int)$first['dup_count'];
+                $clusterSize = count($clusterRows);
             ?>
                 <tr style="background:#FEF2F2;font-weight:600">
                     <td colspan="8" style="padding:8px 12px;color:#991B1B;border-top:2px solid #FECACA">

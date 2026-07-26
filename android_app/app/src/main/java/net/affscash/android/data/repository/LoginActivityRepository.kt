@@ -2,6 +2,8 @@ package net.affscash.android.data.repository
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import net.affscash.android.data.model.GenericResponse
 import net.affscash.android.data.model.LiveUsersResponse
 import net.affscash.android.data.model.LoginLogsResponse
@@ -39,7 +41,10 @@ class LoginActivityRepository @Inject constructor(
 
     suspend fun forceLogoutUser(sessionId: String, userId: Int): Result<GenericResponse> = withContext(Dispatchers.IO) {
         try {
-            val body = mapOf("session_id" to sessionId, "user_id" to userId)
+            val body = buildJsonObject {
+                put("session_id", sessionId)
+                put("user_id", userId)
+            }
             val response = apiService.forceLogoutUser(body)
             if (response.isSuccessful) {
                 response.body()?.let { return@withContext Result.success(it) }

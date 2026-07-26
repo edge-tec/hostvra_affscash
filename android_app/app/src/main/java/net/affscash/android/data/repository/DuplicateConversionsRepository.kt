@@ -13,7 +13,7 @@ class DuplicateConversionsRepository @Inject constructor(
 ) {
     suspend fun getDuplicateConversions(from: String, to: String): Result<AffiliateDuplicateConversionsResponse> = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.getDuplicateConversions(from, to)
+            val response = apiService.getDuplicateConversions(from = from, to = to, startDate = from, endDate = to)
             if (response.isSuccessful && response.body()?.success == true) {
                 Result.success(response.body()!!)
             } else {

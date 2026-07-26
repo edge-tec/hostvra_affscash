@@ -76,42 +76,12 @@ fun ManagerDuplicateConversionsScreen(
 ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues).fillMaxSize().background(PremiumUI.PageBackground)) {
             
-            // Date Range Picker Strip
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-                    .horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                val dateRanges = listOf("Today", "Yesterday", "Last 7 Days", "This Month", "Last 30 Days")
-                dateRanges.forEach { range ->
-                    FilterChip(
-modifier = Modifier.height(32.dp),
-                        selected = false,
-                        onClick = {
-                            val cal = Calendar.getInstance()
-                            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-                            val to = sdf.format(cal.time)
-                            val from = when (range) {
-                                "Today" -> to
-                                "Yesterday" -> { cal.add(Calendar.DAY_OF_YEAR, -1); sdf.format(cal.time).also { cal.add(Calendar.DAY_OF_YEAR, 1) } }
-                                "Last 7 Days" -> { cal.add(Calendar.DAY_OF_YEAR, -7); sdf.format(cal.time).also { cal.add(Calendar.DAY_OF_YEAR, 7) } }
-                                "This Month" -> { cal.set(Calendar.DAY_OF_MONTH, 1); sdf.format(cal.time) }
-                                "Last 30 Days" -> { cal.add(Calendar.DAY_OF_YEAR, -30); sdf.format(cal.time).also { cal.add(Calendar.DAY_OF_YEAR, 30) } }
-                                else -> to
-                            }
-                            if (range == "Yesterday") {
-                                viewModel.setDateRange(from, from)
-                            } else {
-                                viewModel.setDateRange(from, to)
-                            }
-                        },
-                        label = { Text(range) }
-                    )
-                }
-            }
+            // Date Range Picker Component
+            net.affscash.android.ui.components.DateRangeFilterComponent(
+                dateRangeState = uiState.dateRangeState,
+                onOptionSelected = { viewModel.setDateRangeOption(it) },
+                onCustomRangeSelected = { start, end -> viewModel.setCustomDateRange(start, end) }
+            )
 
             // Summary Info
             Row(

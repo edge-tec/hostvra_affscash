@@ -673,8 +673,10 @@ interface ApiService {
 
     @GET("api/v2/manager/duplicate_conversions")
     suspend fun getManagerDuplicateConversions(
-        @Query("from") from: String,
-        @Query("to") to: String
+        @Query("from") from: String? = null,
+        @Query("to") to: String? = null,
+        @Query("start_date") startDate: String? = null,
+        @Query("end_date") endDate: String? = null
     ): Response<DuplicateConversionsResponse>
 
     @GET("api/v2/admin/duplicate_conversions")
@@ -769,8 +771,10 @@ interface ApiService {
 
     @GET("api/v2/duplicate-conversions")
     suspend fun getDuplicateConversions(
-        @Query("from") from: String,
-        @Query("to") to: String
+        @Query("from") from: String? = null,
+        @Query("to") to: String? = null,
+        @Query("start_date") startDate: String? = null,
+        @Query("end_date") endDate: String? = null
     ): Response<AffiliateDuplicateConversionsResponse>
 
     @GET("api/v2/rewards")
