@@ -25,6 +25,7 @@ data class ManagerVpnLogUiState(
     // Filters
     val filterIp: String = "",
     val filterAffiliate: String = "",
+    val selectedAffiliateId: Int? = null,
     val filterType: String = "",
     val filterDateFrom: String = "",
     val filterDateTo: String = ""
@@ -74,7 +75,7 @@ class ManagerVpnLogViewModel @Inject constructor(
             
             repository.getVpnLogs(
                 ip = state.filterIp.takeIf { it.isNotBlank() },
-                affiliate = state.filterAffiliate.takeIf { it.isNotBlank() },
+                affiliate = state.selectedAffiliateId?.toString() ?: state.filterAffiliate.takeIf { it.isNotBlank() },
                 type = typeParam,
                 dateFrom = state.filterDateFrom.takeIf { it.isNotBlank() },
                 dateTo = state.filterDateTo.takeIf { it.isNotBlank() }
@@ -104,6 +105,29 @@ class ManagerVpnLogViewModel @Inject constructor(
             )
         }
         loadLogs()
+    }
+
+    fun setAffiliateFilter(id: Int?) {
+        _uiState.update { it.copy(selectedAffiliateId = id) }
+        loadLogs()
+    }
+
+    fun clearFilters() {
+        _uiState.update { 
+            it.copy(
+                filterIp = "",
+                selectedAffiliateId = null,
+                filterAffiliate = "",
+                filterType = "",
+                filterDateFrom = "",
+                filterDateTo = ""
+            )
+        }
+        loadLogs()
+    }
+
+    fun clearVpnLogs() {
+        clearOldLogs()
     }
 
     fun clearOldLogs() {

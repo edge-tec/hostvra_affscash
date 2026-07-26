@@ -3,13 +3,14 @@ package net.affscash.android.ui.invoices
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.Visibility
@@ -24,7 +25,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.data.model.Invoice
+import net.affscash.android.ui.dashboard.GlassCard
 import net.affscash.android.ui.dashboard.PremiumUI
+import net.affscash.android.ui.dashboard.StatusBadge
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,22 +41,41 @@ fun InvoiceScreen(
 
     Scaffold(
         topBar = {
-            net.affscash.android.ui.components.CompactTopBar(
-                title = { Text("My Invoices") },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.background,
+                shadowElevation = 2.dp
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 8.dp, end = 24.dp, top = 8.dp, bottom = 8.dp)
+                    ) {
+                        IconButton(onClick = onNavigateBack) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        }
+                        Text(
+                            text = "My Invoices",
+                            style = PremiumUI.HeaderStyle,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            )
+                }
+            }
         }
     ) { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+                .background(PremiumUI.PageBackground)
+        ) {
             when (val state = uiState) {
                 is InvoiceState.Loading -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -76,12 +98,13 @@ fun InvoiceScreen(
                         Text(
                             "No invoices found.",
                             modifier = Modifier.align(Alignment.Center),
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = Color.Gray
                         )
                     } else {
                         LazyColumn(
-                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             items(invoices) { invoice ->
                                 InvoiceCard(
@@ -127,96 +150,87 @@ fun InvoiceScreen(
 
 @Composable
 fun InvoiceCard(invoice: Invoice, onPdfClick: () -> Unit) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = PremiumUI.CardShape,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    GlassCard(
+        modifier = Modifier.fillMaxWidth()
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Column(modifier = Modifier.padding(14.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     text = invoice.invoiceNumber,
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = Color(0xFF4338CA)
                 )
                 
-                val statusColor = when (invoice.status.lowercase()) {
-                    "paid" -> Color(0xFF10B981)
-                    "pending" -> Color(0xFFF59E0B)
-                    "unpaid" -> Color(0xFFEF4444)
-                    else -> Color.Gray
-                }
-                
-                Box(
-                    modifier = Modifier
-                        .background(statusColor.copy(alpha = 0.2f), RoundedCornerShape(4.dp))
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
-                ) {
-                    Text(
-                        text = invoice.status.uppercase(),
-                        color = statusColor,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+                StatusBadge(status = invoice.status)
             }
             
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(8.dp))
+            HorizontalDivider(color = Color(0xFFE2E8F0))
+            Spacer(modifier = Modifier.height(8.dp))
             
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
-                    Text("Period", fontSize = 12.sp, color = Color.Gray)
+                    Text("Period", fontSize = 10.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF94A3B8))
                     Text(
                         text = if (invoice.periodStart != null && invoice.periodEnd != null) 
                             "${invoice.periodStart} to ${invoice.periodEnd}" 
                         else "-", 
-                        fontSize = 13.sp
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFF334155)
                     )
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text("Total", fontSize = 12.sp, color = Color.Gray)
+                    Text("Total Amount", fontSize = 10.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF94A3B8))
                     Text(
                         text = "$${(( invoice.total )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", 
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
+                        fontWeight = FontWeight.Black,
+                        color = Color(0xFF4F46E5)
                     )
                 }
             }
             
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
-                    Text("Issued On", fontSize = 12.sp, color = Color.Gray)
-                    Text(text = invoice.createdAt?.take(10) ?: "-", fontSize = 13.sp)
+                    Text("Issued On", fontSize = 10.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF94A3B8))
+                    Text(text = invoice.createdAt?.take(10) ?: "-", fontSize = 11.sp, fontWeight = FontWeight.Medium, color = Color(0xFF64748B))
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text("Due Date", fontSize = 12.sp, color = Color.Gray)
-                    Text(text = invoice.dueDate ?: "-", fontSize = 13.sp)
+                    Text("Due Date", fontSize = 10.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF94A3B8))
+                    Text(text = invoice.dueDate ?: "-", fontSize = 11.sp, fontWeight = FontWeight.Medium, color = Color(0xFF64748B))
                 }
             }
             
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 OutlinedButton(
                     onClick = onPdfClick,
                     modifier = Modifier.padding(end = 8.dp),
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
+                    shape = PremiumUI.ButtonShape,
+                    contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp)
                 ) {
-                    Icon(Icons.Default.Visibility, contentDescription = "View", modifier = Modifier.size(16.dp))
+                    Icon(Icons.Default.Visibility, contentDescription = "View", modifier = Modifier.size(15.dp))
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("View")
+                    Text("View", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 }
                 Button(
                     onClick = onPdfClick,
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
+                    shape = PremiumUI.ButtonShape,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F46E5)),
+                    contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp)
                 ) {
-                    Icon(Icons.Default.PictureAsPdf, contentDescription = "PDF", modifier = Modifier.size(16.dp))
+                    Icon(Icons.Default.PictureAsPdf, contentDescription = "PDF", modifier = Modifier.size(15.dp))
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("PDF")
+                    Text("PDF", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 }
             }
         }

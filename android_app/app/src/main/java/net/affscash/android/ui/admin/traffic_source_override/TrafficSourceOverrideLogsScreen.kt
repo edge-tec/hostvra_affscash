@@ -46,19 +46,39 @@ fun TrafficSourceOverrideLogsScreen(
 
     Scaffold(
         topBar = {
-            CompactTopBar(
-                title = { Text("Traffic Source Override Logs") },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { viewModel.loadLogs(isManager) }) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.background,
+                shadowElevation = 2.dp
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 8.dp, end = 12.dp, top = 8.dp, bottom = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            IconButton(onClick = onNavigateBack) {
+                                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                            }
+                            Text(
+                                text = "Traffic Source Override Logs",
+                                style = PremiumUI.HeaderStyle,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                        IconButton(onClick = { viewModel.loadLogs(isManager) }) {
+                            Icon(Icons.Default.Refresh, contentDescription = "Refresh", tint = MaterialTheme.colorScheme.primary)
+                        }
                     }
                 }
-            )
+            }
         }
     ) { paddingValues ->
         Column(
@@ -72,7 +92,7 @@ fun TrafficSourceOverrideLogsScreen(
                 state = uiState.dateRangeState,
                 onOptionSelected = { viewModel.setDateRangeOption(it, isManager) },
                 onCustomRangeSelected = { start, end -> viewModel.setCustomDateRange(start, end, isManager) },
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
             )
 
             Box(modifier = Modifier.fillMaxSize().weight(1f)) {
@@ -101,59 +121,21 @@ fun TrafficSourceOverrideLogsScreen(
                 } else if (uiState.logsData != null) {
                     val logsData = uiState.logsData!!
                     Column(modifier = Modifier.fillMaxSize()) {
-                        // Summary Stats Card
-                        Box(
+                        // 3D Summary Stats Card
+                        net.affscash.android.ui.dashboard.KPICard3D(
+                            title = "Total Overridden Click Logs",
+                            value = "${logsData.totalLogs}",
+                            icon = Icons.AutoMirrored.Filled.AltRoute,
+                            iconGradient = PremiumUI.PrimaryGradient,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 12.dp, vertical = 4.dp)
-                                .background(
-                                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
-                                    shape = PremiumUI.CardShape
-                                )
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
-                                    shape = PremiumUI.CardShape
-                                )
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(12.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Surface(
-                                    shape = PremiumUI.CardShape,
-                                    color = MaterialTheme.colorScheme.primaryContainer,
-                                    modifier = Modifier.size(40.dp)
-                                ) {
-                                    Icon(
-                                        Icons.AutoMirrored.Filled.AltRoute,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                                        modifier = Modifier.padding(10.dp)
-                                    )
-                                }
-                                Spacer(modifier = Modifier.width(12.dp))
-                                Column {
-                                    Text(
-                                        "${logsData.totalLogs}",
-                                        fontSize = 20.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onSurface
-                                    )
-                                    Text(
-                                        "Total Overridden Click Logs",
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.SemiBold,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
-                            }
-                        }
-
+                                .padding(horizontal = 16.dp, vertical = 6.dp)
+                        )
                         // Logs List
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(bottom = 80.dp)
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             if (logsData.logs.isEmpty()) {
                                 item {
