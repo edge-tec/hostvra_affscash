@@ -630,27 +630,27 @@ private fun AddEditRuleDialog(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    OutlinedTextField(
-                        value = affSearchText,
-                        onValueChange = {
-                            affSearchText = it
-                            affDropdownExpanded = true
-                        },
-                        label = { Text("Search / Select Affiliate") },
-                        placeholder = { Text("Type name, code, or ID...") },
-                        trailingIcon = {
-                            IconButton(onClick = { affDropdownExpanded = !affDropdownExpanded }) {
-                                Icon(
-                                    imageVector = if (affDropdownExpanded) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
-                                    contentDescription = "Toggle Affiliate List"
-                                )
-                            }
-                        },
-                        modifier = Modifier
-                            .weight(1f)
-                            .clickable { affDropdownExpanded = !affDropdownExpanded },
-                        singleLine = true
-                    )
+                    Box(modifier = Modifier.weight(1f)) {
+                        OutlinedTextField(
+                            value = affSearchText,
+                            onValueChange = {
+                                affSearchText = it
+                                affDropdownExpanded = true
+                            },
+                            label = { Text("Search / Select Affiliate") },
+                            placeholder = { Text("Type name, code, or ID...") },
+                            trailingIcon = {
+                                IconButton(onClick = { affDropdownExpanded = !affDropdownExpanded }) {
+                                    Icon(
+                                        imageVector = if (affDropdownExpanded) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
+                                        contentDescription = "Toggle Affiliate List"
+                                    )
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true
+                        )
+                    }
                     Spacer(modifier = Modifier.width(6.dp))
                     Button(
                         onClick = {
@@ -672,63 +672,78 @@ private fun AddEditRuleDialog(
                 }
 
                 // Inline Expandable Dropdown List for Affiliates
-                if (affDropdownExpanded) {
+                if (affDropdownExpanded || affSearchText.isNotEmpty()) {
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .heightIn(max = 220.dp),
+                            .heightIn(max = 240.dp),
                         shape = RoundedCornerShape(14.dp),
-                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.95f),
-                        border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)),
-                        shadowElevation = 6.dp
+                        color = Color.White,
+                        border = BorderStroke(1.5.dp, Color(0xFF4F46E5)),
+                        shadowElevation = 8.dp
                     ) {
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(6.dp)
-                        ) {
-                            if (filteredAffiliates.isEmpty()) {
-                                item {
-                                    Text(
-                                        text = "No affiliates found matching search.",
-                                        fontSize = 12.sp,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        modifier = Modifier.padding(12.dp)
-                                    )
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(Color(0xFFEEF2FF))
+                                    .padding(horizontal = 12.dp, vertical = 6.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text("All Affiliates (${filteredAffiliates.size})", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color(0xFF4338CA))
+                                TextButton(onClick = { affDropdownExpanded = false }) {
+                                    Text("Close ✕", fontSize = 10.sp, color = Color(0xFFEF4444), fontWeight = FontWeight.Bold)
                                 }
-                            } else {
-                                items(filteredAffiliates) { aff ->
-                                    val isSelected = selectedAffiliates.contains(aff.id)
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .clip(RoundedCornerShape(8.dp))
-                                            .background(
-                                                if (isSelected) MaterialTheme.colorScheme.primaryContainer
-                                                else Color.Transparent
-                                            )
-                                            .clickable {
-                                                selectedAffiliates = if (isSelected) selectedAffiliates - aff.id else selectedAffiliates + aff.id
-                                                affSearchText = ""
-                                                affDropdownExpanded = false
-                                            }
-                                            .padding(horizontal = 12.dp, vertical = 10.dp),
-                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
+                            }
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(4.dp)
+                            ) {
+                                if (filteredAffiliates.isEmpty()) {
+                                    item {
                                         Text(
-                                            text = "${aff.name} (${aff.affiliateCode ?: "ID: " + aff.id})",
+                                            text = "No affiliates found matching search.",
                                             fontSize = 12.sp,
-                                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                                            color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface
+                                            color = Color.Gray,
+                                            modifier = Modifier.padding(12.dp)
                                         )
-                                        if (isSelected) {
+                                    }
+                                } else {
+                                    items(filteredAffiliates) { aff ->
+                                        val isSelected = selectedAffiliates.contains(aff.id)
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .clip(RoundedCornerShape(8.dp))
+                                                .background(
+                                                    if (isSelected) Color(0xFFEEF2FF)
+                                                    else Color.Transparent
+                                                )
+                                                .clickable {
+                                                    selectedAffiliates = if (isSelected) selectedAffiliates - aff.id else selectedAffiliates + aff.id
+                                                    affSearchText = ""
+                                                    affDropdownExpanded = false
+                                                }
+                                                .padding(horizontal = 12.dp, vertical = 10.dp),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
                                             Text(
-                                                text = "✓ Selected",
-                                                fontSize = 11.sp,
-                                                color = MaterialTheme.colorScheme.primary,
-                                                fontWeight = FontWeight.Bold
+                                                text = "${aff.name} (${aff.affiliateCode ?: "ID: " + aff.id})",
+                                                fontSize = 12.sp,
+                                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                                                color = if (isSelected) Color(0xFF4338CA) else Color(0xFF0F172A)
                                             )
+                                            if (isSelected) {
+                                                Text(
+                                                    text = "✓ Selected",
+                                                    fontSize = 11.sp,
+                                                    color = Color(0xFF10B981),
+                                                    fontWeight = FontWeight.Bold
+                                                )
+                                            }
                                         }
                                     }
                                 }
@@ -787,27 +802,27 @@ private fun AddEditRuleDialog(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    OutlinedTextField(
-                        value = offerSearchText,
-                        onValueChange = {
-                            offerSearchText = it
-                            offerDropdownExpanded = true
-                        },
-                        label = { Text("Search / Select Offer") },
-                        placeholder = { Text("Type offer name or ID...") },
-                        trailingIcon = {
-                            IconButton(onClick = { offerDropdownExpanded = !offerDropdownExpanded }) {
-                                Icon(
-                                    imageVector = if (offerDropdownExpanded) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
-                                    contentDescription = "Toggle Offer List"
-                                )
-                            }
-                        },
-                        modifier = Modifier
-                            .weight(1f)
-                            .clickable { offerDropdownExpanded = !offerDropdownExpanded },
-                        singleLine = true
-                    )
+                    Box(modifier = Modifier.weight(1f)) {
+                        OutlinedTextField(
+                            value = offerSearchText,
+                            onValueChange = {
+                                offerSearchText = it
+                                offerDropdownExpanded = true
+                            },
+                            label = { Text("Search / Select Offer") },
+                            placeholder = { Text("Type offer name or ID...") },
+                            trailingIcon = {
+                                IconButton(onClick = { offerDropdownExpanded = !offerDropdownExpanded }) {
+                                    Icon(
+                                        imageVector = if (offerDropdownExpanded) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
+                                        contentDescription = "Toggle Offer List"
+                                    )
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true
+                        )
+                    }
                     Spacer(modifier = Modifier.width(6.dp))
                     Button(
                         onClick = {
@@ -829,63 +844,78 @@ private fun AddEditRuleDialog(
                 }
 
                 // Inline Expandable Dropdown List for Offers
-                if (offerDropdownExpanded) {
+                if (offerDropdownExpanded || offerSearchText.isNotEmpty()) {
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .heightIn(max = 220.dp),
+                            .heightIn(max = 240.dp),
                         shape = RoundedCornerShape(14.dp),
-                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.95f),
-                        border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)),
-                        shadowElevation = 6.dp
+                        color = Color.White,
+                        border = BorderStroke(1.5.dp, Color(0xFF4F46E5)),
+                        shadowElevation = 8.dp
                     ) {
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(6.dp)
-                        ) {
-                            if (filteredOffers.isEmpty()) {
-                                item {
-                                    Text(
-                                        text = "No offers found matching search.",
-                                        fontSize = 12.sp,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        modifier = Modifier.padding(12.dp)
-                                    )
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(Color(0xFFEEF2FF))
+                                    .padding(horizontal = 12.dp, vertical = 6.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text("All Offers (${filteredOffers.size})", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color(0xFF4338CA))
+                                TextButton(onClick = { offerDropdownExpanded = false }) {
+                                    Text("Close ✕", fontSize = 10.sp, color = Color(0xFFEF4444), fontWeight = FontWeight.Bold)
                                 }
-                            } else {
-                                items(filteredOffers) { offer ->
-                                    val isSelected = selectedOffers.contains(offer.id)
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .clip(RoundedCornerShape(8.dp))
-                                            .background(
-                                                if (isSelected) MaterialTheme.colorScheme.primaryContainer
-                                                else Color.Transparent
-                                            )
-                                            .clickable {
-                                                selectedOffers = if (isSelected) selectedOffers - offer.id else selectedOffers + offer.id
-                                                offerSearchText = ""
-                                                offerDropdownExpanded = false
-                                            }
-                                            .padding(horizontal = 12.dp, vertical = 10.dp),
-                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
+                            }
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(4.dp)
+                            ) {
+                                if (filteredOffers.isEmpty()) {
+                                    item {
                                         Text(
-                                            text = "${offer.name} (#${offer.id})",
+                                            text = "No offers found matching search.",
                                             fontSize = 12.sp,
-                                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                                            color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface
+                                            color = Color.Gray,
+                                            modifier = Modifier.padding(12.dp)
                                         )
-                                        if (isSelected) {
+                                    }
+                                } else {
+                                    items(filteredOffers) { offer ->
+                                        val isSelected = selectedOffers.contains(offer.id)
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .clip(RoundedCornerShape(8.dp))
+                                                .background(
+                                                    if (isSelected) Color(0xFFEEF2FF)
+                                                    else Color.Transparent
+                                                )
+                                                .clickable {
+                                                    selectedOffers = if (isSelected) selectedOffers - offer.id else selectedOffers + offer.id
+                                                    offerSearchText = ""
+                                                    offerDropdownExpanded = false
+                                                }
+                                                .padding(horizontal = 12.dp, vertical = 10.dp),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
                                             Text(
-                                                text = "✓ Selected",
-                                                fontSize = 11.sp,
-                                                color = MaterialTheme.colorScheme.primary,
-                                                fontWeight = FontWeight.Bold
+                                                text = "${offer.name} (#${offer.id})",
+                                                fontSize = 12.sp,
+                                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                                                color = if (isSelected) Color(0xFF4338CA) else Color(0xFF0F172A)
                                             )
+                                            if (isSelected) {
+                                                Text(
+                                                    text = "✓ Selected",
+                                                    fontSize = 11.sp,
+                                                    color = Color(0xFF10B981),
+                                                    fontWeight = FontWeight.Bold
+                                                )
+                                            }
                                         }
                                     }
                                 }
