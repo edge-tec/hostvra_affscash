@@ -688,7 +688,7 @@ interface ApiService {
     ): Response<DuplicateConversionsResponse>
 
     @GET("api/v2/admin/traffic-source-override")
-    suspend fun getAdminTrafficSourceOverride(): Response<net.affscash.android.data.model.TrafficSourceOverrideResponse>
+    suspend fun getAdminTrafficSourceOverride(): Response<okhttp3.ResponseBody>
 
     @POST("api/v2/admin/traffic-source-override")
     suspend fun postAdminTrafficSourceOverride(
@@ -706,7 +706,7 @@ interface ApiService {
     ): Response<net.affscash.android.data.model.TrafficSourceOverrideLogsResponse>
 
     @GET("api/v2/manager/traffic-source-override")
-    suspend fun getManagerTrafficSourceOverride(): Response<net.affscash.android.data.model.TrafficSourceOverrideResponse>
+    suspend fun getManagerTrafficSourceOverride(): Response<okhttp3.ResponseBody>
 
     @POST("api/v2/manager/traffic-source-override")
     suspend fun postManagerTrafficSourceOverride(

@@ -133,7 +133,9 @@ try {
         ];
     }
 
-    $rawAffiliates = Database::fetchAll("SELECT af.id, COALESCE(NULLIF(TRIM(CONCAT(COALESCE(u.first_name, ''), ' ', COALESCE(u.last_name, ''))), ''), u.username, u.email, CONCAT('Affiliate #', af.id)) as name, COALESCE(af.affiliate_code, CONCAT('AFF', af.id)) as affiliate_code FROM affiliates af JOIN users u ON u.id = af.user_id ORDER BY name") ?: [];
+    $rawAffiliates = Database::fetchAll("SELECT af.id, COALESCE(NULLIF(TRIM(CONCAT(COALESCE(u.first_name, ''), ' ', COALESCE(u.last_name, ''))), ''), u.username, u.email, CONCAT('Affiliate #', af.id)) as name, COALESCE(af.affiliate_code, CONCAT('AFF', af.id)) as affiliate_code FROM affiliates af JOIN users u ON u.id = af.user_id ORDER BY name");
+    error_log("[TSOverride] rawAffiliates type=" . gettype($rawAffiliates) . " count=" . (is_array($rawAffiliates) ? count($rawAffiliates) : 'N/A'));
+    if (!is_array($rawAffiliates)) $rawAffiliates = [];
     $affiliates = array_map(function($row) {
         return [
             'id' => (int)$row['id'],
@@ -142,7 +144,9 @@ try {
         ];
     }, $rawAffiliates);
 
-    $rawOffers = Database::fetchAll("SELECT id, COALESCE(NULLIF(TRIM(name), ''), CONCAT('Offer #', id)) as name FROM offers ORDER BY name") ?: [];
+    $rawOffers = Database::fetchAll("SELECT id, COALESCE(NULLIF(TRIM(name), ''), CONCAT('Offer #', id)) as name FROM offers ORDER BY name");
+    error_log("[TSOverride] rawOffers type=" . gettype($rawOffers) . " count=" . (is_array($rawOffers) ? count($rawOffers) : 'N/A'));
+    if (!is_array($rawOffers)) $rawOffers = [];
     $offers = array_map(function($row) {
         return [
             'id' => (int)$row['id'],
@@ -150,7 +154,8 @@ try {
         ];
     }, $rawOffers);
 
-    $rawAdvertisers = Database::fetchAll("SELECT ad.id, COALESCE(NULLIF(TRIM(ad.company_name), ''), NULLIF(TRIM(CONCAT(COALESCE(u.first_name, ''), ' ', COALESCE(u.last_name, ''))), ''), u.username, u.email, CONCAT('Advertiser #', ad.id)) as name FROM advertisers ad JOIN users u ON u.id = ad.user_id ORDER BY name") ?: [];
+    $rawAdvertisers = Database::fetchAll("SELECT ad.id, COALESCE(NULLIF(TRIM(ad.company_name), ''), NULLIF(TRIM(CONCAT(COALESCE(u.first_name, ''), ' ', COALESCE(u.last_name, ''))), ''), u.username, u.email, CONCAT('Advertiser #', ad.id)) as name FROM advertisers ad JOIN users u ON u.id = ad.user_id ORDER BY name");
+    if (!is_array($rawAdvertisers)) $rawAdvertisers = [];
     $advertisers = array_map(function($row) {
         return [
             'id' => (int)$row['id'],
@@ -203,6 +208,8 @@ try {
         ['code' => 'BR', 'name' => 'Brazil'],
         ['code' => 'AE', 'name' => 'United Arab Emirates']
     ];
+
+    error_log("[TSOverride] FINAL OUTPUT: affiliates=" . count($affiliates) . " offers=" . count($offers) . " advertisers=" . count($advertisers) . " rules=" . count($rules));
 
     Helpers::json([
         'status' => 'success',

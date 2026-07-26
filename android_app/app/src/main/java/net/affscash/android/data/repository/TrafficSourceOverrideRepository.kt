@@ -43,14 +43,137 @@ class TrafficSourceOverrideRepository @Inject constructor(
         return JsonObject(content)
     }
 
+    private fun parseTrafficSourceOverrideResponse(jsonString: String): TrafficSourceOverrideResponse {
+        val root = org.json.JSONObject(jsonString)
+        val status = root.optString("status", "error")
+        val message = root.optString("message", null).takeIf { it.isNotEmpty() }
+        
+        if (status != "success" || !root.has("data")) {
+            return TrafficSourceOverrideResponse(status = status, message = message, data = null)
+        }
+        
+        val dataObj = root.getJSONObject("data")
+        
+        val jsonParser = kotlinx.serialization.json.Json { ignoreUnknownKeys = true; isLenient = true; coerceInputValues = true; explicitNulls = false }
+        val rules = mutableListOf<net.affscash.android.data.model.TrafficSourceOverrideRule>()
+        val rulesArr = dataObj.optJSONArray("rules")
+        if (rulesArr != null) {
+            for (i in 0 until rulesArr.length()) {
+                try {
+                    rules.add(jsonParser.decodeFromString(rulesArr.getJSONObject(i).toString()))
+                } catch (e: Exception) {
+                    android.util.Log.e("TSOverride", "Failed to parse rule at $i", e)
+                }
+            }
+        }
+        
+        val chatSources = mutableListOf<String>()
+        val chatArr = dataObj.optJSONArray("chat_sources")
+        if (chatArr != null) {
+            for (i in 0 until chatArr.length()) { chatSources.add(chatArr.optString(i)) }
+        }
+        
+        val destinations = mutableListOf<net.affscash.android.data.model.TrafficSourceOverrideDestination>()
+        val destArr = dataObj.optJSONArray("destinations")
+        if (destArr != null) {
+            for (i in 0 until destArr.length()) {
+                try {
+                    destinations.add(jsonParser.decodeFromString(destArr.getJSONObject(i).toString()))
+                } catch (e: Exception) {}
+            }
+        }
+        
+        val affiliates = mutableListOf<net.affscash.android.data.model.SimpleOptionItem>()
+        val affArr = dataObj.optJSONArray("affiliates")
+        if (affArr != null) {
+            for (i in 0 until affArr.length()) {
+                try {
+                    val obj = affArr.getJSONObject(i)
+                    val idStr = obj.optString("id", "0")
+                    val id = idStr.toIntOrNull() ?: 0
+                    affiliates.add(net.affscash.android.data.model.SimpleOptionItem(
+                        id = id,
+                        name = obj.optString("name", ""),
+                        affiliateCode = obj.optString("affiliate_code", null).takeIf { it.isNotEmpty() }
+                    ))
+                } catch (e: Exception) {
+                    android.util.Log.e("TSOverride", "Failed to parse affiliate at $i", e)
+                }
+            }
+        }
+        
+        val offers = mutableListOf<net.affscash.android.data.model.SimpleOptionItem>()
+        val offArr = dataObj.optJSONArray("offers")
+        if (offArr != null) {
+            for (i in 0 until offArr.length()) {
+                try {
+                    val obj = offArr.getJSONObject(i)
+                    val idStr = obj.optString("id", "0")
+                    val id = idStr.toIntOrNull() ?: 0
+                    offers.add(net.affscash.android.data.model.SimpleOptionItem(
+                        id = id,
+                        name = obj.optString("name", "")
+                    ))
+                } catch (e: Exception) {}
+            }
+        }
+        
+        val advertisers = mutableListOf<net.affscash.android.data.model.SimpleOptionItem>()
+        val advArr = dataObj.optJSONArray("advertisers")
+        if (advArr != null) {
+            for (i in 0 until advArr.length()) {
+                try {
+                    val obj = advArr.getJSONObject(i)
+                    val idStr = obj.optString("id", "0")
+                    val id = idStr.toIntOrNull() ?: 0
+                    advertisers.add(net.affscash.android.data.model.SimpleOptionItem(
+                        id = id,
+                        name = obj.optString("name", "")
+                    ))
+                } catch (e: Exception) {}
+            }
+        }
+        
+        val countries = mutableListOf<net.affscash.android.data.model.CountryOptionItem>()
+        val ctryArr = dataObj.optJSONArray("countries")
+        if (ctryArr != null) {
+            for (i in 0 until ctryArr.length()) {
+                try {
+                    countries.add(jsonParser.decodeFromString(ctryArr.getJSONObject(i).toString()))
+                } catch (e: Exception) {}
+            }
+        }
+        
+        val deviceTypes = mutableListOf<String>()
+        val devArr = dataObj.optJSONArray("device_types")
+        if (devArr != null) {
+            for (i in 0 until devArr.length()) { deviceTypes.add(devArr.optString(i)) }
+        }
+        
+        val data = net.affscash.android.data.model.TrafficSourceOverrideData(
+            globalEnabled = dataObj.optBoolean("global_enabled", false),
+            rules = rules,
+            chatSources = chatSources,
+            destinations = destinations,
+            affiliates = affiliates,
+            offers = offers,
+            advertisers = advertisers,
+            countries = countries,
+            deviceTypes = deviceTypes
+        )
+        
+        return TrafficSourceOverrideResponse(status = status, message = message, data = data)
+    }
+
     suspend fun getAdminTrafficSourceOverride(): Result<TrafficSourceOverrideResponse> = withContext(Dispatchers.IO) {
         try {
             val response = apiService.getAdminTrafficSourceOverride()
             android.util.Log.d("TSOverride", "Admin API HTTP code: ${response.code()}, isSuccessful: ${response.isSuccessful}")
             if (response.isSuccessful) {
-                response.body()?.let { body ->
-                    android.util.Log.d("TSOverride", "Admin API body: affiliates=${body.data?.affiliates?.size}, offers=${body.data?.offers?.size}")
-                    return@withContext Result.success(body)
+                response.body()?.string()?.let { jsonString ->
+                    val parsed = parseTrafficSourceOverrideResponse(jsonString)
+                    android.util.Log.d("TSOverride", "Admin API manually parsed: affiliates=${parsed.data?.affiliates?.size}, offers=${parsed.data?.offers?.size}")
+                    return@withContext Result.success(parsed)
                 }
             }
             android.util.Log.e("TSOverride", "Admin API failed with code: ${response.code()}")
@@ -90,9 +213,10 @@ class TrafficSourceOverrideRepository @Inject constructor(
             val response = apiService.getManagerTrafficSourceOverride()
             android.util.Log.d("TSOverride", "Manager API HTTP code: ${response.code()}, isSuccessful: ${response.isSuccessful}")
             if (response.isSuccessful) {
-                response.body()?.let { body ->
-                    android.util.Log.d("TSOverride", "Manager API body: affiliates=${body.data?.affiliates?.size}, offers=${body.data?.offers?.size}")
-                    return@withContext Result.success(body)
+                response.body()?.string()?.let { jsonString ->
+                    val parsed = parseTrafficSourceOverrideResponse(jsonString)
+                    android.util.Log.d("TSOverride", "Manager API manually parsed: affiliates=${parsed.data?.affiliates?.size}, offers=${parsed.data?.offers?.size}")
+                    return@withContext Result.success(parsed)
                 }
             }
             android.util.Log.e("TSOverride", "Manager API failed with code: ${response.code()}")

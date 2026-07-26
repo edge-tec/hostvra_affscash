@@ -3,6 +3,8 @@ package net.affscash.android.data.model
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -46,13 +48,13 @@ data class TrafficSourceOverrideRule(
 )
 
 object FlexibleIntListSerializer : KSerializer<List<Int>> {
-    override val descriptor: SerialDescriptor = kotlinx.serialization.builtins.ListSerializer(kotlinx.serialization.builtins.serializer<Int>()).descriptor
+    override val descriptor: SerialDescriptor = ListSerializer(Int.serializer()).descriptor
     override fun serialize(encoder: Encoder, value: List<Int>) {
-        encoder.encodeSerializableValue(kotlinx.serialization.builtins.ListSerializer(kotlinx.serialization.builtins.serializer<Int>()), value)
+        encoder.encodeSerializableValue(ListSerializer(Int.serializer()), value)
     }
     override fun deserialize(decoder: Decoder): List<Int> {
         return when (val jsonDecoder = decoder as? JsonDecoder) {
-            null -> decoder.decodeSerializableValue(kotlinx.serialization.builtins.ListSerializer(kotlinx.serialization.builtins.serializer<Int>()))
+            null -> decoder.decodeSerializableValue(ListSerializer(Int.serializer()))
             else -> {
                 val arr = jsonDecoder.decodeJsonElement()
                 if (arr is kotlinx.serialization.json.JsonArray) {
