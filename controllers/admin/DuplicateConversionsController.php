@@ -11,8 +11,8 @@
 Auth::check('admin');
 $pageTitle = 'Duplicate Conversions';
 
-$from   = Helpers::get('from') ?: date('Y-m-01');
-$to     = Helpers::get('to')   ?: date('Y-m-d');
+$from   = Helpers::get('start_date') ?: (Helpers::get('from') ?: date('Y-m-01'));
+$to     = Helpers::get('end_date')   ?: (Helpers::get('to')   ?: date('Y-m-d'));
 $status = Helpers::get('status') ?: '';   // optional filter
 
 $dateFrom = date('Y-m-d 00:00:00', strtotime($from));
@@ -25,10 +25,6 @@ if (in_array($status, ['approved','pending','rejected','chargebacked'], true)) {
     $params[] = $status;
 }
 
-// All conversions that share (offer_id, ip_address) with at least one other
-// conversion in the date range. SmartLink / custom-URL conversions (offer_id
-// null or 0) are excluded — there is no meaningful "same offer" grouping for
-// them.
 $rows = Database::fetchAll(
     "SELECT cv.id, cv.conversion_id, cv.offer_id, cv.affiliate_id,
             cv.payout, cv.revenue, cv.status, cv.ip_address, cv.converted_at,
@@ -40,21 +36,29 @@ $rows = Database::fetchAll(
             dup.dup_count
      FROM conversions cv
      JOIN (
-        SELECT offer_id, ip_address, COUNT(*) AS dup_count
-        FROM conversions
-        WHERE offer_id IS NOT NULL AND offer_id > 0
-          AND ip_address IS NOT NULL AND ip_address <> ''
-          AND converted_at BETWEEN ? AND ?
-        GROUP BY offer_id, ip_address
+        SELECT c.offer_id, c.ip_address, COUNT(*) AS dup_count
+        FROM conversions c
+        JOIN (
+            SELECT DISTINCT offer_id, ip_address
+            FROM conversions
+            WHERE converted_at BETWEEN ? AND ?
+              AND offer_id IS NOT NULL AND offer_id > 0
+              AND ip_address IS NOT NULL AND ip_address <> ''
+              AND COALESCE(is_hidden, 0) = 0
+        ) active ON active.offer_id = c.offer_id AND active.ip_address = c.ip_address
+        WHERE c.offer_id IS NOT NULL AND c.offer_id > 0
+          AND c.ip_address IS NOT NULL AND c.ip_address <> ''
+          AND COALESCE(c.is_hidden, 0) = 0
+        GROUP BY c.offer_id, c.ip_address
         HAVING dup_count > 1
      ) dup ON dup.offer_id = cv.offer_id AND dup.ip_address = cv.ip_address
      LEFT JOIN offers o      ON o.id  = cv.offer_id
      LEFT JOIN affiliates af ON af.id = cv.affiliate_id
      LEFT JOIN users u       ON u.id  = af.user_id
-     WHERE cv.converted_at BETWEEN ? AND ?
+     WHERE COALESCE(cv.is_hidden, 0) = 0
            $statusClause
      ORDER BY cv.offer_id, cv.ip_address, cv.converted_at DESC",
-    array_merge([$dateFrom, $dateTo], $params)
+    $params
 ) ?: [];
 
 // Group rows by (offer_id, ip_address) so the view can render one block per

@@ -22,22 +22,28 @@ try {
                 dup.dup_count
          FROM conversions cv
          JOIN (
-            SELECT offer_id, ip_address, COUNT(*) AS dup_count
-            FROM conversions
-            WHERE offer_id IS NOT NULL AND offer_id > 0
-              AND ip_address IS NOT NULL AND ip_address <> ''
-              AND converted_at BETWEEN ? AND ?
-              AND COALESCE(is_hidden, 0) = 0
-            GROUP BY offer_id, ip_address
+            SELECT c.offer_id, c.ip_address, COUNT(*) AS dup_count
+            FROM conversions c
+            JOIN (
+                SELECT DISTINCT offer_id, ip_address
+                FROM conversions
+                WHERE converted_at BETWEEN ? AND ?
+                  AND offer_id IS NOT NULL AND offer_id > 0
+                  AND ip_address IS NOT NULL AND ip_address <> ''
+                  AND COALESCE(is_hidden, 0) = 0
+            ) active ON active.offer_id = c.offer_id AND active.ip_address = c.ip_address
+            WHERE c.offer_id IS NOT NULL AND c.offer_id > 0
+              AND c.ip_address IS NOT NULL AND c.ip_address <> ''
+              AND COALESCE(c.is_hidden, 0) = 0
+            GROUP BY c.offer_id, c.ip_address
             HAVING dup_count > 1
          ) dup ON dup.offer_id = cv.offer_id AND dup.ip_address = cv.ip_address
          LEFT JOIN offers o      ON o.id  = cv.offer_id
          LEFT JOIN affiliates af ON af.id = cv.affiliate_id
          LEFT JOIN users u       ON u.id  = af.user_id
-         WHERE cv.converted_at BETWEEN ? AND ?
-           AND COALESCE(cv.is_hidden, 0) = 0
+         WHERE COALESCE(cv.is_hidden, 0) = 0
          ORDER BY cv.offer_id, cv.ip_address, cv.converted_at DESC",
-        [$dateFrom, $dateTo, $dateFrom, $dateTo]
+        [$dateFrom, $dateTo]
     ) ?: [];
 } catch (\Throwable $e) {
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
