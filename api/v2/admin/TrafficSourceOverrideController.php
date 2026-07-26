@@ -114,9 +114,30 @@ try {
         ];
     }
 
-    $affiliates = Database::fetchAll("SELECT af.id, COALESCE(NULLIF(TRIM(CONCAT(COALESCE(u.first_name, ''), ' ', COALESCE(u.last_name, ''))), ''), u.username, u.email, CONCAT('Affiliate #', af.id)) as name, COALESCE(af.affiliate_code, CONCAT('AFF', af.id)) as affiliate_code FROM affiliates af JOIN users u ON u.id = af.user_id ORDER BY name") ?: [];
-    $offers = Database::fetchAll("SELECT id, COALESCE(NULLIF(TRIM(name), ''), CONCAT('Offer #', id)) as name FROM offers ORDER BY name") ?: [];
-    $advertisers = Database::fetchAll("SELECT ad.id, COALESCE(NULLIF(TRIM(ad.company_name), ''), NULLIF(TRIM(CONCAT(COALESCE(u.first_name, ''), ' ', COALESCE(u.last_name, ''))), ''), u.username, u.email, CONCAT('Advertiser #', ad.id)) as name FROM advertisers ad JOIN users u ON u.id = ad.user_id ORDER BY name") ?: [];
+    $rawAffiliates = Database::fetchAll("SELECT af.id, COALESCE(NULLIF(TRIM(CONCAT(COALESCE(u.first_name, ''), ' ', COALESCE(u.last_name, ''))), ''), u.username, u.email, CONCAT('Affiliate #', af.id)) as name, COALESCE(af.affiliate_code, CONCAT('AFF', af.id)) as affiliate_code FROM affiliates af JOIN users u ON u.id = af.user_id ORDER BY name") ?: [];
+    $affiliates = array_map(function($row) {
+        return [
+            'id' => (int)$row['id'],
+            'name' => (string)($row['name'] ?? ''),
+            'affiliate_code' => (string)($row['affiliate_code'] ?? '')
+        ];
+    }, $rawAffiliates);
+
+    $rawOffers = Database::fetchAll("SELECT id, COALESCE(NULLIF(TRIM(name), ''), CONCAT('Offer #', id)) as name FROM offers ORDER BY name") ?: [];
+    $offers = array_map(function($row) {
+        return [
+            'id' => (int)$row['id'],
+            'name' => (string)($row['name'] ?? '')
+        ];
+    }, $rawOffers);
+
+    $rawAdvertisers = Database::fetchAll("SELECT ad.id, COALESCE(NULLIF(TRIM(ad.company_name), ''), NULLIF(TRIM(CONCAT(COALESCE(u.first_name, ''), ' ', COALESCE(u.last_name, ''))), ''), u.username, u.email, CONCAT('Advertiser #', ad.id)) as name FROM advertisers ad JOIN users u ON u.id = ad.user_id ORDER BY name") ?: [];
+    $advertisers = array_map(function($row) {
+        return [
+            'id' => (int)$row['id'],
+            'name' => (string)($row['name'] ?? '')
+        ];
+    }, $rawAdvertisers);
 
     $chatSources = [
         'Unknown',

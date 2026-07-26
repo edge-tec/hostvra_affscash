@@ -206,7 +206,7 @@ fun ManagerReferralScreen(
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF0F172A),
-                        modifier = Modifier.padding(horizontal = 12.dp, top = 8.dp, bottom = 4.dp)
+                        modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 4.dp)
                     )
 
                     // Content List

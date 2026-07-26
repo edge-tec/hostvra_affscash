@@ -279,7 +279,7 @@ fun TrafficSourceOverrideScreen(
         }
     }
     LaunchedEffect(showAddDialog) {
-        if (showAddDialog && (uiState.data?.affiliates.isNullOrEmpty() || uiState.data?.offers.isNullOrEmpty())) {
+        if (showAddDialog) {
             viewModel.loadData(isManager)
         }
     }
