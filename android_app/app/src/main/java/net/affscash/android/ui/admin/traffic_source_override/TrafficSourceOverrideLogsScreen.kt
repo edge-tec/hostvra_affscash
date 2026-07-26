@@ -196,17 +196,14 @@ fun TrafficSourceOverrideLogsScreen(
 @Composable
 private fun TrafficSourceOverrideLogRowItem(log: TrafficSourceOverrideLog) {
     var expandId by remember { mutableStateOf(false) }
-    val displayId = if (expandId) log.clickId else if (log.clickId.length > 14) log.clickId.take(14) + "..." else log.clickId
 
-    Card(
+    GlassCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp, vertical = 6.dp),
-        shape = PremiumUI.CardShape,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = 3.dp
     ) {
-        Column(modifier = Modifier.padding(14.dp)) {
+        Column(modifier = Modifier.padding(2.dp)) {
             // Header: Offer Name & IP
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -217,6 +214,7 @@ private fun TrafficSourceOverrideLogRowItem(log: TrafficSourceOverrideLog) {
                     text = log.offerName,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
+                    color = Color(0xFF0F172A),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f)
@@ -227,19 +225,19 @@ private fun TrafficSourceOverrideLogRowItem(log: TrafficSourceOverrideLog) {
                         Icons.Default.Router,
                         contentDescription = null,
                         modifier = Modifier.size(12.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        tint = Color(0xFF64748B)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = log.ipAddress,
                         fontSize = 11.sp,
                         fontFamily = FontFamily.Monospace,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = Color(0xFF64748B)
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             // Override Badges: Original Source -> Override Source
             Row(
@@ -247,40 +245,44 @@ private fun TrafficSourceOverrideLogRowItem(log: TrafficSourceOverrideLog) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Surface(
-                    color = MaterialTheme.colorScheme.errorContainer,
-                    shape = RoundedCornerShape(4.dp)
+                    color = Color(0xFFFEE2E2),
+                    shape = RoundedCornerShape(8.dp),
+                    shadowElevation = 1.dp,
+                    border = BorderStroke(0.5.dp, Color(0xFFEF4444).copy(alpha = 0.3f))
                 ) {
                     Text(
                         text = log.originalSource.uppercase(),
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onErrorContainer,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                        color = Color(0xFFB91C1C),
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
                     )
                 }
 
                 Icon(
                     Icons.Default.SwapHoriz,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(18.dp)
+                    tint = Color(0xFF4F46E5),
+                    modifier = Modifier.size(20.dp)
                 )
 
                 Surface(
-                    color = Color(0xFF10B981).copy(alpha = 0.15f),
-                    shape = RoundedCornerShape(4.dp)
+                    color = Color(0xFFD1FAE5),
+                    shape = RoundedCornerShape(8.dp),
+                    shadowElevation = 1.dp,
+                    border = BorderStroke(0.5.dp, Color(0xFF10B981).copy(alpha = 0.3f))
                 ) {
                     Text(
                         text = log.overrideSource.uppercase(),
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF10B981),
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                        color = Color(0xFF047857),
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             // Footer: Affiliate Info & Timestamp
             Row(
@@ -293,13 +295,14 @@ private fun TrafficSourceOverrideLogRowItem(log: TrafficSourceOverrideLog) {
                         Icons.Default.Person,
                         contentDescription = null,
                         modifier = Modifier.size(13.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        tint = Color(0xFF64748B)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "${log.affiliateName} (${log.affiliateCode})",
                         fontSize = 11.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = Color(0xFF475569),
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -308,7 +311,7 @@ private fun TrafficSourceOverrideLogRowItem(log: TrafficSourceOverrideLog) {
                 Text(
                     text = log.clickedAt,
                     fontSize = 10.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = Color(0xFF94A3B8),
                     maxLines = 1
                 )
             }

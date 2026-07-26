@@ -322,38 +322,49 @@ fun MainScreen(
             if (isImpersonating) {
                 Surface(
                     color = Color(0xFFF59E0B),
-                    contentColor = Color(0xFF1F2937),
-                    modifier = Modifier.fillMaxWidth()
+                    contentColor = Color.White,
+                    modifier = Modifier.fillMaxWidth(),
+                    shadowElevation = 4.dp
                 ) {
                     Box(modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Filled.Visibility, contentDescription = "Impersonating", modifier = Modifier.size(20.dp))
-                            Spacer(Modifier.width(8.dp))
-                            Text("Viewing as Affiliate", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
-                        }
-                        Button(
-                            onClick = {
-                                viewModel.stopImpersonating(
-                                    onSuccess = { newRole -> 
-                                        if (newRole != null) onRoleChange(newRole) else onLogout() 
-                                    },
-                                    onError = { android.widget.Toast.makeText(context, it, android.widget.Toast.LENGTH_SHORT).show() }
-                                )
-                            },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1F2937), contentColor = Color.White),
-                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
-                            modifier = Modifier.height(32.dp)
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(PremiumUI.AmberGradient)
+                                .padding(horizontal = 16.dp, vertical = 10.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text("Return", fontSize = androidx.compose.ui.unit.TextUnit(12f, androidx.compose.ui.unit.TextUnitType.Sp), fontWeight = FontWeight.Bold)
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Filled.Visibility, contentDescription = "Impersonating", modifier = Modifier.size(20.dp), tint = Color.White)
+                                Spacer(Modifier.width(8.dp))
+                                Text("Viewing as Affiliate", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = Color.White)
+                            }
+                            Surface(
+                                onClick = {
+                                    viewModel.stopImpersonating(
+                                        onSuccess = { newRole -> 
+                                            if (newRole != null) onRoleChange(newRole) else onLogout() 
+                                        },
+                                        onError = { android.widget.Toast.makeText(context, it, android.widget.Toast.LENGTH_SHORT).show() }
+                                    )
+                                },
+                                color = Color(0xFF0F172A),
+                                shape = PremiumUI.PillShape,
+                                shadowElevation = 3.dp,
+                                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.3f))
+                            ) {
+                                Text(
+                                    text = "Return",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White,
+                                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
+                                )
+                            }
                         }
                     }
-                                }
-}
+                }
             }
         },
         bottomBar = {
@@ -361,19 +372,19 @@ fun MainScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .navigationBarsPadding()
-                    .padding(horizontal = 12.dp, vertical = 6.dp)
+                    .padding(horizontal = 14.dp, vertical = 8.dp)
             ) {
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(24.dp),
+                    shape = RoundedCornerShape(28.dp),
                     color = Color.White,
-                    shadowElevation = 4.dp,
-                    border = BorderStroke(1.dp, Color(0xFFE2E8F0))
+                    shadowElevation = 8.dp,
+                    border = PremiumUI.Card3DBorder
                 ) {
                     NavigationBar(
                         containerColor = Color.Transparent,
                         tonalElevation = 0.dp,
-                        modifier = Modifier.height(58.dp),
+                        modifier = Modifier.height(62.dp),
                         windowInsets = WindowInsets(0.dp)
                     ) {
                         val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -385,7 +396,7 @@ fun MainScreen(
                                 icon = { 
                                     Box(
                                         contentAlignment = Alignment.Center,
-                                        modifier = Modifier.size(24.dp)
+                                        modifier = Modifier.size(26.dp)
                                     ) {
                                         Icon(
                                             screen.icon, 
@@ -414,7 +425,7 @@ fun MainScreen(
                                     }
                                 },
                                 colors = NavigationBarItemDefaults.colors(
-                                    indicatorColor = Color(0xFF4F46E5).copy(alpha = 0.15f),
+                                    indicatorColor = Color(0xFF6366F1).copy(alpha = 0.18f),
                                     selectedIconColor = Color(0xFF4F46E5),
                                     unselectedIconColor = Color(0xFF64748B),
                                     selectedTextColor = Color(0xFF4F46E5),
@@ -429,7 +440,7 @@ fun MainScreen(
                                 icon = { 
                                     Box(
                                         contentAlignment = Alignment.Center,
-                                        modifier = Modifier.size(24.dp)
+                                        modifier = Modifier.size(26.dp)
                                     ) {
                                         Icon(
                                             Icons.Outlined.Widgets, 
@@ -450,7 +461,7 @@ fun MainScreen(
                                 selected = isSelected,
                                 onClick = { showMoreSheet = true },
                                 colors = NavigationBarItemDefaults.colors(
-                                    indicatorColor = Color(0xFF4F46E5).copy(alpha = 0.15f),
+                                    indicatorColor = Color(0xFF6366F1).copy(alpha = 0.18f),
                                     selectedIconColor = Color(0xFF4F46E5),
                                     unselectedIconColor = Color(0xFF64748B),
                                     selectedTextColor = Color(0xFF4F46E5),

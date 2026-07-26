@@ -42,17 +42,31 @@ import com.patrykandpatrick.vico.core.entry.FloatEntry
 import com.patrykandpatrick.vico.core.entry.entryModelOf
 
 object PremiumUI {
-    // Soft Slate & Pure White Tokens (No Harsh White Glow)
-    val PageBackground = Color(0xFFF8FAFC)
+    // 3D Soft Slate & Ambient Gradient Tokens
+    val PageBackground = Color(0xFFF1F5F9)
     val GlassCardBg = Color(0xFFFFFFFF)
-    val GlassBorder = BorderStroke(1.dp, Color(0xFFE2E8F0))
+    
+    // 3D Bevel Border (Light top highlight to subtle slate bottom shadow)
+    val GlassBorder = BorderStroke(
+        1.dp, 
+        Brush.verticalGradient(
+            colors = listOf(Color(0xFFFFFFFF), Color(0xFFCBD5E1))
+        )
+    )
+
+    val Card3DBorder = BorderStroke(
+        1.2.dp,
+        Brush.linearGradient(
+            colors = listOf(Color(0xFFFFFFFF), Color(0xFFE2E8F0), Color(0xFF94A3B8).copy(alpha = 0.3f))
+        )
+    )
     
     val BackgroundGradient = Brush.verticalGradient(
         colors = listOf(Color(0xFFF8FAFC), Color(0xFFF1F5F9), Color(0xFFE2E8F0))
     )
 
-    val CardGradient = Brush.linearGradient(
-        colors = listOf(Color(0xFFFFFFFF), Color(0xFFFFFFFF))
+    val CardGradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFFFFFFFF), Color(0xFFF8FAFC))
     )
 
     val PastelHeader = Brush.horizontalGradient(
@@ -61,47 +75,47 @@ object PremiumUI {
 
     val HeaderGradient = Brush.horizontalGradient(
         colors = listOf(
-            Color(0xFF4F46E5), // Indigo
-            Color(0xFF7C3AED), // Purple
-            Color(0xFFEC4899)  // Pink accent
+            Color(0xFF4338CA), // Deep Indigo
+            Color(0xFF6D28D9), // Vibrant Purple
+            Color(0xFFDB2777)  // Deep Pink
         )
     )
 
-    val PrimaryGradient = Brush.horizontalGradient(
-        colors = listOf(Color(0xFF4F46E5), Color(0xFF6366F1))
+    val PrimaryGradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFF6366F1), Color(0xFF4F46E5))
     )
 
-    val EmeraldGradient = Brush.horizontalGradient(
-        colors = listOf(Color(0xFF10B981), Color(0xFF059669))
+    val EmeraldGradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFF10B981), Color(0xFF047857))
     )
 
-    val CyanGradient = Brush.horizontalGradient(
-        colors = listOf(Color(0xFF06B6D4), Color(0xFF0284C7))
+    val CyanGradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFF06B6D4), Color(0xFF0369A1))
     )
 
-    val PurpleGradient = Brush.horizontalGradient(
-        colors = listOf(Color(0xFF8B5CF6), Color(0xFF6D28D9))
+    val PurpleGradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFF8B5CF6), Color(0xFF5B21B6))
     )
 
-    val AmberGradient = Brush.horizontalGradient(
-        colors = listOf(Color(0xFFF59E0B), Color(0xFFD97706))
+    val AmberGradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFFF59E0B), Color(0xFFB45309))
     )
 
-    val RoseGradient = Brush.horizontalGradient(
-        colors = listOf(Color(0xFFF43F5E), Color(0xFFE11D48))
+    val RoseGradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFFF43F5E), Color(0xFFBE123C))
     )
 
-    // Rounded Corner Shapes (18-24dp)
-    val CardShape = RoundedCornerShape(18.dp)
+    // Ultra-Modern 3D Corner Shapes
+    val CardShape = RoundedCornerShape(20.dp)
     val PillShape = RoundedCornerShape(50.dp)
-    val ButtonShape = RoundedCornerShape(14.dp)
+    val ButtonShape = RoundedCornerShape(16.dp)
 
     // Status Colors
-    val StatusApproved = Color(0xFF10B981)
+    val StatusApproved = Color(0xFF059669)
     val StatusApprovedBg = Color(0xFFD1FAE5)
-    val StatusRejected = Color(0xFFEF4444)
+    val StatusRejected = Color(0xFFDC2626)
     val StatusRejectedBg = Color(0xFFFEE2E2)
-    val StatusPending = Color(0xFFF59E0B)
+    val StatusPending = Color(0xFFD97706)
     val StatusPendingBg = Color(0xFFFEF3C7)
 
     // Typography
@@ -132,39 +146,55 @@ object PremiumUI {
 }
 
 /**
- * Clean Card Container without white glow or harsh drop shadows
+ * 3D Glass Container with press scale dynamics and multi-level ambient depth
  */
 @Composable
 fun GlassCard(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
-    elevation: Dp = 2.dp,
+    elevation: Dp = 4.dp,
     containerColor: Color = Color.White,
     content: @Composable ColumnScope.() -> Unit
 ) {
+    var isPressed by remember { mutableStateOf(false) }
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.98f else 1f,
+        animationSpec = tween(durationMillis = 100),
+        label = "cardScale"
+    )
+
     Card(
         modifier = modifier
             .fillMaxWidth()
+            .scale(scale)
             .then(
-                if (onClick != null) Modifier.clickable { onClick() } else Modifier
+                if (onClick != null) {
+                    Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = { onClick() }
+                    )
+                } else Modifier
             ),
         shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = containerColor),
         elevation = CardDefaults.cardElevation(
             defaultElevation = elevation,
-            pressedElevation = 1.dp
+            pressedElevation = 2.dp
         ),
-        border = PremiumUI.GlassBorder
+        border = PremiumUI.Card3DBorder
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier
+                .background(PremiumUI.CardGradient)
+                .padding(16.dp),
             content = content
         )
     }
 }
 
 /**
- * Modern 3D KPI Metric Card with clean borders and no white shadow halo
+ * Advanced 3D KPI Metric Card with bevel styling and high-contrast numerical metrics
  */
 @Composable
 fun KPICard3D(
@@ -182,11 +212,13 @@ fun KPICard3D(
             .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier),
         shape = PremiumUI.CardShape,
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp, pressedElevation = 1.dp),
-        border = PremiumUI.GlassBorder
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp, pressedElevation = 2.dp),
+        border = PremiumUI.Card3DBorder
     ) {
         Column(
-            modifier = Modifier.padding(14.dp),
+            modifier = Modifier
+                .background(PremiumUI.CardGradient)
+                .padding(14.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
@@ -194,12 +226,13 @@ fun KPICard3D(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Gradient Icon Box
+                // 3D Bevel Gradient Icon Box
                 Box(
                     modifier = Modifier
-                        .size(38.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(iconGradient),
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(iconGradient)
+                        .border(1.dp, Color.White.copy(alpha = 0.4f), RoundedCornerShape(14.dp)),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -210,15 +243,17 @@ fun KPICard3D(
                     )
                 }
 
-                // Trend Pill (if available)
+                // 3D Trend Pill (if available)
                 if (trendPercent != null) {
                     val isPositive = trendPercent >= 0
                     val badgeBg = if (isPositive) Color(0xFFD1FAE5) else Color(0xFFFEE2E2)
-                    val badgeColor = if (isPositive) Color(0xFF059669) else Color(0xFFDC2626)
+                    val badgeColor = if (isPositive) Color(0xFF047857) else Color(0xFFB91C1C)
 
                     Surface(
                         color = badgeBg,
-                        shape = PremiumUI.PillShape
+                        shape = PremiumUI.PillShape,
+                        shadowElevation = 1.dp,
+                        border = BorderStroke(0.5.dp, badgeColor.copy(alpha = 0.3f))
                     ) {
                         Row(
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
@@ -255,8 +290,8 @@ fun KPICard3D(
 
             Text(
                 text = value,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.ExtraBold,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Black,
                 color = Color(0xFF0F172A),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -277,7 +312,7 @@ fun KPICard3D(
 }
 
 /**
- * Segmented Control Row for Date Filters
+ * 3D Segmented Control Row for Date Filters
  */
 @Composable
 fun Segmented3DDateFilter(
@@ -291,14 +326,14 @@ fun Segmented3DDateFilter(
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = PremiumUI.CardShape,
-        color = Color.White,
-        shadowElevation = 2.dp,
-        border = PremiumUI.GlassBorder
+        color = Color(0xFFF1F5F9),
+        shadowElevation = 3.dp,
+        border = PremiumUI.Card3DBorder
     ) {
         Row(
             modifier = Modifier
                 .horizontalScroll(scrollState)
-                .padding(4.dp),
+                .padding(5.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -307,19 +342,24 @@ fun Segmented3DDateFilter(
 
                 Box(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(12.dp))
+                        .clip(RoundedCornerShape(14.dp))
                         .background(
                             if (isSelected) PremiumUI.PrimaryGradient
-                            else Brush.linearGradient(listOf(Color.Transparent, Color.Transparent))
+                            else Brush.verticalGradient(listOf(Color.White, Color(0xFFF8FAFC)))
+                        )
+                        .border(
+                            1.dp,
+                            if (isSelected) Color.White.copy(alpha = 0.4f) else Color(0xFFCBD5E1),
+                            RoundedCornerShape(14.dp)
                         )
                         .clickable { onOptionSelected(option) }
-                        .padding(horizontal = 14.dp, vertical = 8.dp),
+                        .padding(horizontal = 14.dp, vertical = 9.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = option.label,
                         fontSize = 12.sp,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.SemiBold,
                         color = if (isSelected) Color.White else Color(0xFF475569)
                     )
                 }

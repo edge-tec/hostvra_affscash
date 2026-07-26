@@ -33,18 +33,18 @@ fun DateRangeFilterComponent(
     val (startDate, endDate) = state.getFormattedDates()
 
     Column(modifier = modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-        // Horizontal Scrollable Filter Chips
+        // 3D Scrollable Filter Chips
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .horizontalScroll(rememberScrollState()),
+                .horizontalScroll(rememberScrollState())
+                .padding(vertical = 4.dp),
             horizontalArrangement = Arrangement.spacedBy(6.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             DateRangeOption.values().forEach { option ->
                 val isSelected = state.option == option
-                FilterChip(
-                    selected = isSelected,
+                Surface(
                     onClick = {
                         if (option == DateRangeOption.CUSTOM) {
                             showCustomDialog = true
@@ -52,23 +52,51 @@ fun DateRangeFilterComponent(
                             onOptionSelected(option)
                         }
                     },
-                    label = {
-                        Text(
-                            text = option.label,
-                            fontSize = 12.sp,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                        )
-                    },
-                    leadingIcon = if (isSelected) {
-                        { Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(14.dp)) }
-                    } else if (option == DateRangeOption.CUSTOM) {
-                        { Icon(Icons.Filled.DateRange, contentDescription = null, modifier = Modifier.size(14.dp)) }
-                    } else null,
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                        selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                )
+                    shape = RoundedCornerShape(14.dp),
+                    color = Color.Transparent,
+                    shadowElevation = if (isSelected) 3.dp else 1.dp,
+                    border = if (isSelected) {
+                        androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.5f))
+                    } else {
+                        net.affscash.android.ui.dashboard.PremiumUI.Card3DBorder
+                    }
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .androidx.compose.foundation.background(
+                                if (isSelected) net.affscash.android.ui.dashboard.PremiumUI.PrimaryGradient
+                                else androidx.compose.ui.graphics.Brush.verticalGradient(listOf(Color.White, Color(0xFFF8FAFC)))
+                            )
+                            .padding(horizontal = 14.dp, vertical = 8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            if (isSelected) {
+                                Icon(
+                                    Icons.Filled.Check,
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier.size(13.dp)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                            } else if (option == DateRangeOption.CUSTOM) {
+                                Icon(
+                                    Icons.Filled.DateRange,
+                                    contentDescription = null,
+                                    tint = Color(0xFF64748B),
+                                    modifier = Modifier.size(13.dp)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                            }
+                            Text(
+                                text = option.label,
+                                fontSize = 12.sp,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.SemiBold,
+                                color = if (isSelected) Color.White else Color(0xFF334155)
+                            )
+                        }
+                    }
+                }
             }
         }
 
