@@ -79,10 +79,14 @@ $rows = Database::fetchAll(
      ) dup ON dup.offer_id = cv.offer_id AND dup.ip_address = cv.ip_address
      LEFT JOIN offers o ON o.id = cv.offer_id
      WHERE cv.affiliate_id = ?
-       AND cv.converted_at BETWEEN ? AND ?
        AND COALESCE(cv.is_hidden, 0) = 0
+       AND (
+           cv.converted_at BETWEEN ? AND ?
+           OR cv.rejected_at BETWEEN ? AND ?
+           OR cv.created_at BETWEEN ? AND ?
+       )
      ORDER BY cv.offer_id, cv.ip_address, cv.converted_at DESC",
-    [$affId, $affId, $dateFrom, $dateTo]
+    [$affId, $affId, $dateFrom, $dateTo, $dateFrom, $dateTo, $dateFrom, $dateTo]
 ) ?: [];
 
 $groups = [];

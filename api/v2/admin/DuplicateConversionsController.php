@@ -80,10 +80,14 @@ try {
          LEFT JOIN offers o      ON o.id  = cv.offer_id
          LEFT JOIN affiliates af ON af.id = cv.affiliate_id
          LEFT JOIN users u       ON u.id  = af.user_id
-         WHERE cv.converted_at BETWEEN ? AND ?
-           AND COALESCE(cv.is_hidden, 0) = 0
+         WHERE COALESCE(cv.is_hidden, 0) = 0
+           AND (
+               cv.converted_at BETWEEN ? AND ?
+               OR cv.rejected_at BETWEEN ? AND ?
+               OR cv.created_at BETWEEN ? AND ?
+           )
          ORDER BY cv.offer_id, cv.ip_address, cv.converted_at DESC",
-        [$dateFrom, $dateTo]
+        [$dateFrom, $dateTo, $dateFrom, $dateTo, $dateFrom, $dateTo]
     ) ?: [];
 } catch (\Throwable $e) {
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
