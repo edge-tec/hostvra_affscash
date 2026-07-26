@@ -88,23 +88,24 @@ fun ManagerReferralScreen(
                 val data = state.data
                 
                 Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
-                    // Top Banner
-                    Card(
+                    // Top Banner Card
+                    GlassCard(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp),
-                        shape = PremiumUI.CardShape,
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f)),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.2f))
+                            .padding(16.dp)
                     ) {
-                        Column(modifier = Modifier.padding(20.dp)) {
-                            Text("Your Manager Referral Link", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(
+                                "Your Manager Referral Link",
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Black,
+                                color = Color(0xFF0F172A)
+                            )
                             Text(
                                 "When a new affiliate registers using your link, they are automatically assigned to your team — no manual assignment needed.",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
-                                modifier = Modifier.padding(top = 8.dp, bottom = 16.dp)
+                                fontSize = 11.sp,
+                                color = Color(0xFF64748B),
+                                modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
                             )
                             OutlinedTextField(
                                 value = data.referralLink,
@@ -112,12 +113,12 @@ fun ManagerReferralScreen(
                                 readOnly = true,
                                 modifier = Modifier.fillMaxWidth(),
                                 singleLine = true,
-                                textStyle = LocalTextStyle.current.copy(fontSize = 13.sp),
+                                textStyle = LocalTextStyle.current.copy(fontSize = 12.sp, fontWeight = FontWeight.Bold),
                                 colors = OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                    unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                                    focusedBorderColor = Color(0xFF6366F1),
+                                    unfocusedBorderColor = Color(0xFFCBD5E1)
                                 ),
-                                shape = PremiumUI.CardShape,
+                                shape = PremiumUI.ButtonShape,
                                 trailingIcon = {
                                     IconButton(onClick = {
                                         val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -125,96 +126,58 @@ fun ManagerReferralScreen(
                                         clipboardManager.setPrimaryClip(clipData)
                                         Toast.makeText(context, "Link copied to clipboard", Toast.LENGTH_SHORT).show()
                                     }) {
-                                        Icon(Icons.Outlined.ContentCopy, contentDescription = "Copy")
+                                        Icon(Icons.Outlined.ContentCopy, contentDescription = "Copy", tint = Color(0xFF4338CA))
                                     }
                                 }
                             )
-                            Spacer(modifier = Modifier.height(4.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                             Surface(
-                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                                shape = PremiumUI.CardShape
+                                color = Color(0xFFEEF2FF),
+                                border = BorderStroke(1.dp, Color(0xFFC7D2FE)),
+                                shape = PremiumUI.PillShape
                             ) {
                                 Text(
                                     "Code: ${data.referralCode}", 
-                                    style = MaterialTheme.typography.bodyMedium, 
-                                    fontWeight = FontWeight.Bold, 
-                                    color = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                                    fontSize = 11.sp, 
+                                    fontWeight = FontWeight.Black, 
+                                    color = Color(0xFF4338CA),
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 5.dp)
                                 )
                             }
                         }
                     }
 
-                    // Summary Cards
+                    // 3D Summary KPI Cards
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            .padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .background(
-                                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
-                                    shape = PremiumUI.CardShape
-                                )
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
-                                    shape = PremiumUI.CardShape
-                                )
-                        ) {
-                            Column(modifier = Modifier.padding(8.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                                Icon(Icons.Outlined.Group, contentDescription = null, tint = Color(0xFF3B82F6), modifier = Modifier.size(24.dp))
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text("${data.stats.totalReferrals}", style = MaterialTheme.typography.headlineMedium, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
-                                Text("Total Team", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            }
-                        }
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .background(
-                                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
-                                    shape = PremiumUI.CardShape
-                                )
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
-                                    shape = PremiumUI.CardShape
-                                )
-                        ) {
-                            Column(modifier = Modifier.padding(8.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                                Icon(Icons.Outlined.CheckCircle, contentDescription = null, tint = Color(0xFF10B981), modifier = Modifier.size(24.dp))
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text("${data.stats.activeReferrals}", style = MaterialTheme.typography.headlineMedium, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF10B981))
-                                Text("Active", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            }
-                        }
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .background(
-                                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
-                                    shape = PremiumUI.CardShape
-                                )
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
-                                    shape = PremiumUI.CardShape
-                                )
-                        ) {
-                            Column(modifier = Modifier.padding(8.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                                Icon(Icons.Outlined.MonetizationOn, contentDescription = null, tint = Color(0xFF8B5CF6), modifier = Modifier.size(24.dp))
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text("$${data.stats.totalEarned}", style = MaterialTheme.typography.headlineMedium, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF8B5CF6))
-                                Text("Earned", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            }
-                        }
+                        net.affscash.android.ui.dashboard.KPICard3D(
+                            title = "Total Team",
+                            value = "${data.stats.totalReferrals}",
+                            icon = Icons.Outlined.Group,
+                            iconGradient = PremiumUI.PrimaryGradient,
+                            modifier = Modifier.weight(1f)
+                        )
+                        net.affscash.android.ui.dashboard.KPICard3D(
+                            title = "Active",
+                            value = "${data.stats.activeReferrals}",
+                            icon = Icons.Outlined.CheckCircle,
+                            iconGradient = PremiumUI.EmeraldGradient,
+                            modifier = Modifier.weight(1f)
+                        )
+                        net.affscash.android.ui.dashboard.KPICard3D(
+                            title = "Earned",
+                            value = "$${data.stats.totalEarned}",
+                            icon = Icons.Outlined.MonetizationOn,
+                            iconGradient = PremiumUI.PurpleGradient,
+                            modifier = Modifier.weight(1f)
+                        )
                     }
 
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     // Section Title
                     Text(

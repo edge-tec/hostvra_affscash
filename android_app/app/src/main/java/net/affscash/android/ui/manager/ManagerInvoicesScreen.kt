@@ -185,107 +185,99 @@ fun ManagerInvoicesScreen(
 
 @Composable
 fun InvoiceSummaryCard(title: String, value: String, valueColor: Color) {
-    Box(
+    Surface(
         modifier = Modifier
-            .width(120.dp)
-            .height(80.dp)
-            .background(
-                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
-                shape = PremiumUI.CardShape
-            )
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
-                shape = PremiumUI.CardShape
-            )
+            .width(125.dp)
+            .height(84.dp),
+        shape = PremiumUI.CardShape,
+        color = Color.White,
+        shadowElevation = 4.dp,
+        border = PremiumUI.Card3DBorder
     ) {
         Column(
-            modifier = Modifier.padding(8.dp).fillMaxSize(),
+            modifier = Modifier
+                .background(PremiumUI.CardGradient)
+                .padding(10.dp)
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(value, fontSize = 18.sp, fontWeight = FontWeight.ExtraBold, color = valueColor)
+            Text(
+                value,
+                fontSize = 19.sp,
+                fontWeight = FontWeight.Black,
+                color = valueColor
+            )
             Spacer(modifier = Modifier.height(4.dp))
-            Text(title, fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold)
+            Text(
+                title,
+                fontSize = 9.sp,
+                color = Color(0xFF64748B),
+                fontWeight = FontWeight.ExtraBold,
+                letterSpacing = 0.5.sp
+            )
         }
     }
 }
 
 @Composable
 fun ManagerInvoiceDetailedItem(invoice: Invoice) {
-    Card(
+    net.affscash.android.ui.dashboard.GlassCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp),
-        shape = PremiumUI.CardShape,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border = BorderStroke(
-            width = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
-        )
+            .padding(horizontal = 16.dp, vertical = 6.dp)
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            // Header: Invoice Number & Status
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Text(invoice.invoiceNumber, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+        Column(modifier = Modifier.padding(12.dp)) {
+            // Header: Invoice Number & Status Badge
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    invoice.invoiceNumber,
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 13.sp,
+                    color = Color(0xFF4338CA)
+                )
                 
-                val statusColor = when(invoice.status) {
-                    "paid" -> Color(0xFF059669)
-                    "sent", "pending" -> Color(0xFFF59E0B)
-                    "void", "rejected" -> Color(0xFFEF4444)
-                    else -> MaterialTheme.colorScheme.onSurfaceVariant
-                }
-                val statusBg = when(invoice.status) {
-                    "paid" -> Color(0xFFD1FAE5)
-                    "sent", "pending" -> Color(0xFFFEF3C7)
-                    "void", "rejected" -> Color(0xFFFEE2E2)
-                    else -> MaterialTheme.colorScheme.surfaceVariant
-                }
-                
-                Surface(
-                    color = statusBg,
-                    shape = PremiumUI.CardShape
-                ) {
-                    Text(
-                        invoice.status.uppercase(), 
-                        style = MaterialTheme.typography.labelSmall, 
-                        fontWeight = FontWeight.Bold, 
-                        color = statusColor,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                    )
-                }
+                net.affscash.android.ui.dashboard.StatusBadge(status = invoice.status)
             }
             
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             
-            // Affiliate Name
-            Text(invoice.entityName ?: "Unknown", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+            // Affiliate / Entity Name
+            Text(
+                invoice.entityName ?: "Unknown Entity",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Black,
+                color = Color(0xFF0F172A)
+            )
             
-            Spacer(modifier = Modifier.height(4.dp))
-            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(6.dp))
+            HorizontalDivider(color = Color(0xFFE2E8F0))
+            Spacer(modifier = Modifier.height(6.dp))
             
             // Details Row
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
-                    Text("Period", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Period", fontSize = 10.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF94A3B8))
                     val pStart = invoice.periodStart ?: "N/A"
                     val pEnd = invoice.periodEnd ?: "N/A"
-                    Text("$pStart - $pEnd", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Medium)
+                    Text("$pStart - $pEnd", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFF334155))
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text("Amount", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text("$${"%.2f".format(invoice.total)}", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                    Text("Amount", fontSize = 10.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF94A3B8))
+                    Text("$${"%.2f".format(invoice.total)}", fontSize = 16.sp, fontWeight = FontWeight.Black, color = Color(0xFF4F46E5))
                 }
             }
             
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             
             // Dates Row
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("Created: ${invoice.createdAt?.take(10) ?: "N/A"}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f))
-                Text("Due: ${invoice.dueDate?.take(10) ?: "N/A"}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f))
+                Text("Created: ${invoice.createdAt?.take(10) ?: "N/A"}", fontSize = 11.sp, fontWeight = FontWeight.Medium, color = Color(0xFF64748B))
+                Text("Due: ${invoice.dueDate?.take(10) ?: "N/A"}", fontSize = 11.sp, fontWeight = FontWeight.Medium, color = Color(0xFF64748B))
             }
         }
     }

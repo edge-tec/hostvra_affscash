@@ -1,11 +1,14 @@
 package net.affscash.android.ui.manager.vpn
 
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,6 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.data.model.VpnLogItem
+import net.affscash.android.ui.dashboard.GlassCard
+import net.affscash.android.ui.dashboard.PremiumUI
+import net.affscash.android.ui.dashboard.StatusBadge
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,38 +45,53 @@ fun ManagerVpnLogScreen(
 
     Scaffold(
         topBar = {
-            net.affscash.android.ui.components.CompactTopBar(
-                title = { Text("VPN & Proxy Blocked Log") },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.background,
+                shadowElevation = 2.dp
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 8.dp, end = 24.dp, top = 8.dp, bottom = 8.dp)
+                    ) {
+                        IconButton(onClick = onNavigateBack) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        }
+                        Text(
+                            text = "VPN & Proxy Blocked Log",
+                            style = PremiumUI.HeaderStyle,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            )
+                }
+            }
         }
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .background(PremiumUI.PageBackground)
         ) {
-            // Stats Section
+            // 3D Stats Cards Section
             if (uiState.stats != null) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        .padding(horizontal = 16.dp, vertical = 10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    StatCard("TODAY", uiState.stats?.todayBlocked?.toString() ?: "0", MaterialTheme.colorScheme.error, Modifier.weight(1f))
-                    StatCard("30 DAYS", uiState.stats?.totalLast30Days?.toString() ?: "0", MaterialTheme.colorScheme.primary, Modifier.weight(1f))
-                    StatCard("VPN", uiState.stats?.vpnHostingCount?.toString() ?: "0", Color(0xFF673AB7), Modifier.weight(1f))
-                    StatCard("PROXY", uiState.stats?.proxyCount?.toString() ?: "0", Color(0xFF9C27B0), Modifier.weight(1f))
+                    StatCard3D("TODAY", uiState.stats?.todayBlocked?.toString() ?: "0", Color(0xFFEF4444), Modifier.weight(1f))
+                    StatCard3D("30 DAYS", uiState.stats?.totalLast30Days?.toString() ?: "0", Color(0xFF6366F1), Modifier.weight(1f))
+                    StatCard3D("VPN", uiState.stats?.vpnHostingCount?.toString() ?: "0", Color(0xFF8B5CF6), Modifier.weight(1f))
+                    StatCard3D("PROXY", uiState.stats?.proxyCount?.toString() ?: "0", Color(0xFFD946EF), Modifier.weight(1f))
                 }
             } else if (uiState.isLoadingStats) {
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
@@ -78,137 +99,96 @@ fun ManagerVpnLogScreen(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            // Filters Card
+            // Expandable Filters Card
             var isFiltersExpanded by remember { mutableStateOf(false) }
-            Card(
+            GlassCard(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                    .padding(horizontal = 16.dp, vertical = 4.dp)
             ) {
-                Column(modifier = Modifier.padding(8.dp)) {
+                Column(modifier = Modifier.padding(12.dp)) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Filters", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleSmall)
+                        Text("Filters & Search", fontWeight = FontWeight.ExtraBold, fontSize = 13.sp, color = Color(0xFF1E293B))
                         IconButton(onClick = { isFiltersExpanded = !isFiltersExpanded }) {
-                            Icon(if (isFiltersExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown, "Toggle Filters")
+                            Icon(
+                                if (isFiltersExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                                contentDescription = "Toggle Filters",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
                         }
                     }
                     if (isFiltersExpanded) {
-                        var ip by remember { mutableStateOf(uiState.filterIp) }
-                        var aff by remember { mutableStateOf(uiState.filterAffiliate) }
-                        var type by remember { mutableStateOf(uiState.filterType) }
-                        val types = listOf("All Types", "VPN", "Proxy", "Hosting")
-
-                        OutlinedTextField(
-                            value = ip,
-                            onValueChange = { ip = it },
-                            label = { Text("IP Address") },
-                            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-                            singleLine = true
-                        )
-                        OutlinedTextField(
-                            value = aff,
-                            onValueChange = { aff = it },
-                            label = { Text("Affiliate Name or ID") },
-                            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-                            singleLine = true
-                        )
-
-                        var typeExpanded by remember { mutableStateOf(false) }
-                        ExposedDropdownMenuBox(
-                            expanded = typeExpanded,
-                            onExpandedChange = { typeExpanded = !typeExpanded },
-                            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
-                        ) {
+                        Column(modifier = Modifier.padding(top = 8.dp)) {
+                            // Search Filter Input
                             OutlinedTextField(
-                                value = if (type.isEmpty()) "All Types" else type,
-                                onValueChange = {},
-                                readOnly = true,
-                                label = { Text("Detection Type") },
-                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = typeExpanded) },
-                                modifier = Modifier.menuAnchor().fillMaxWidth()
+                                value = uiState.selectedAffiliateId?.toString() ?: "",
+                                onValueChange = { val id = it.toIntOrNull(); viewModel.setAffiliateFilter(id) },
+                                label = { Text("Filter by Affiliate ID") },
+                                modifier = Modifier.fillMaxWidth(),
+                                singleLine = true,
+                                shape = PremiumUI.ButtonShape
                             )
-                            ExposedDropdownMenu(
-                                expanded = typeExpanded,
-                                onDismissRequest = { typeExpanded = false }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.End
                             ) {
-                                types.forEach { selectionOption ->
-                                    DropdownMenuItem(
-                                        text = { Text(selectionOption) },
-                                        onClick = {
-                                            type = selectionOption
-                                            typeExpanded = false
-                                        }
-                                    )
+                                Button(
+                                    onClick = { viewModel.clearFilters() },
+                                    shape = PremiumUI.ButtonShape,
+                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                                ) {
+                                    Text("Reset Filters", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
                                 }
                             }
-                        }
-
-                        Button(
-                            onClick = {
-                                viewModel.updateFilters(ip, aff, if (type == "All Types") "" else type, "", "")
-                                isFiltersExpanded = false
-                            },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text("Apply Filters")
                         }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
-
-            // Title & Clear Button
+            // Clear Log Button Header
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Blocked Attempts (Assigned Affiliates)",
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 13.sp
+                    text = "Blocked Attempts (${uiState.logs.size})",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = Color(0xFF475569)
                 )
                 TextButton(
-                    onClick = { viewModel.clearOldLogs() },
-                    enabled = !uiState.isClearing
+                    onClick = { viewModel.clearVpnLogs() }
                 ) {
-                    Icon(Icons.Filled.Delete, contentDescription = null, modifier = Modifier.size(16.dp))
+                    Icon(Icons.Default.Delete, contentDescription = null, tint = Color(0xFFEF4444), modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("Clear Old Entries")
+                    Text("Clear Old Entries", fontSize = 11.sp, color = Color(0xFFEF4444), fontWeight = FontWeight.Bold)
                 }
             }
-            HorizontalDivider()
 
-            // List
             if (uiState.isLoadingLogs) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
-            } else if (uiState.error != null) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(uiState.error ?: "", color = MaterialTheme.colorScheme.error)
-                }
             } else if (uiState.logs.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("No blocked attempts found for your affiliates.", color = Color.Gray)
+                    Text("No blocked attempts found for your affiliates.", color = Color.Gray, fontSize = 13.sp)
                 }
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     items(uiState.logs) { log ->
-                        VpnLogCard(log)
+                        VpnLogCard3D(log)
                     }
                 }
             }
@@ -217,30 +197,35 @@ fun ManagerVpnLogScreen(
 }
 
 @Composable
-private fun StatCard(title: String, value: String, color: Color, modifier: Modifier = Modifier) {
-    Card(
-        modifier = modifier,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+private fun StatCard3D(title: String, value: String, color: Color, modifier: Modifier = Modifier) {
+    Surface(
+        modifier = modifier.height(68.dp),
+        shape = PremiumUI.CardShape,
+        color = Color.White,
+        shadowElevation = 3.dp,
+        border = PremiumUI.Card3DBorder
     ) {
         Column(
-            modifier = Modifier.padding(8.dp).fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .background(PremiumUI.CardGradient)
+                .padding(8.dp)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Text(title, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.Gray, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(value, fontSize = 18.sp, fontWeight = FontWeight.Black, color = color)
             Spacer(modifier = Modifier.height(2.dp))
-            Text(value, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = color)
+            Text(title, fontSize = 9.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF64748B), maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
     }
 }
 
 @Composable
-private fun VpnLogCard(log: VpnLogItem) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+private fun VpnLogCard3D(log: VpnLogItem) {
+    GlassCard(
+        modifier = Modifier.fillMaxWidth()
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -248,45 +233,65 @@ private fun VpnLogCard(log: VpnLogItem) {
             ) {
                 Text(
                     text = log.ipAddress,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onSurface
+                    fontWeight = FontWeight.Black,
+                    fontSize = 15.sp,
+                    color = Color(0xFF0F172A)
                 )
-                Badge(
-                    containerColor = if (log.detectionType.equals("VPN", true) || log.detectionType.equals("Hosting", true)) Color(0xFF673AB7) else Color(0xFF9C27B0),
-                    contentColor = Color.White
+                
+                val isVpn = log.detectionType.equals("VPN", true) || log.detectionType.equals("Hosting", true)
+                Surface(
+                    color = if (isVpn) Color(0xFFF3E8FF) else Color(0xFFFCE7F3),
+                    border = BorderStroke(1.dp, if (isVpn) Color(0xFFC084FC) else Color(0xFFF472B6)),
+                    shape = PremiumUI.PillShape
                 ) {
-                    Text(log.detectionType, fontSize = 12.sp, modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp))
+                    Text(
+                        text = log.detectionType,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = if (isVpn) Color(0xFF7E22CE) else Color(0xFFBE185D),
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                    )
                 }
             }
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text("DATE & TIME", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
-                    Text(log.blockedAt, fontSize = 12.sp)
+                    Text("DATE & TIME", fontSize = 9.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF94A3B8))
+                    Text(log.blockedAt, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFF334155))
                 }
                 Column(modifier = Modifier.weight(1f)) {
-                    Text("COUNTRY", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
-                    Text(log.country.ifEmpty { "Unknown" }, fontSize = 12.sp)
+                    Text("COUNTRY", fontSize = 9.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF94A3B8))
+                    Text(log.country.ifEmpty { "Unknown" }, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFF334155))
                 }
             }
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
             if (log.affName != null || log.affiliateCode != null) {
-                Text("AFFILIATE", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
-                Text("${log.affName ?: "Unknown"} (${log.affiliateCode ?: "N/A"})", fontSize = 13.sp, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
-                Spacer(modifier = Modifier.height(4.dp))
+                Text("AFFILIATE", fontSize = 9.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF94A3B8))
+                Text(
+                    "${log.affName ?: "Unknown"} (${log.affiliateCode ?: "N/A"})",
+                    fontSize = 12.sp,
+                    color = Color(0xFF4338CA),
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(6.dp))
             }
 
             if (log.offerName != null) {
-                Text("OFFER", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
-                Text("${log.offerName} (ID: ${log.offerId})", fontSize = 12.sp)
-                Spacer(modifier = Modifier.height(4.dp))
+                Text("OFFER", fontSize = 9.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF94A3B8))
+                Text("${log.offerName} (ID: ${log.offerId})", fontSize = 12.sp, fontWeight = FontWeight.Medium, color = Color(0xFF1E293B))
+                Spacer(modifier = Modifier.height(6.dp))
             }
             
-            Text("USER AGENT", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
-            Text(log.userAgent ?: "Unknown", fontSize = 12.sp, color = Color.DarkGray, maxLines = 2, overflow = TextOverflow.Ellipsis)
+            Text("USER AGENT", fontSize = 9.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF94A3B8))
+            Text(
+                log.userAgent ?: "Unknown",
+                fontSize = 11.sp,
+                color = Color(0xFF64748B),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }
