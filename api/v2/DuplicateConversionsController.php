@@ -5,8 +5,50 @@ try {
     Auth::check('affiliate');
     $affId = Auth::affiliateId();
 
-    $from = $_GET['start_date'] ?? ($_GET['from'] ?? date('Y-m-01'));
-    $to   = $_GET['end_date']   ?? ($_GET['to']   ?? date('Y-m-d'));
+    $range = $_GET['range'] ?? (Helpers::get('range') ?: '');
+    if (!empty($range)) {
+        $today = date('Y-m-d');
+        switch (strtolower($range)) {
+            case 'today':
+                $from = $today;
+                $to   = $today;
+                break;
+            case 'yesterday':
+                $from = date('Y-m-d', strtotime('-1 day'));
+                $to   = $from;
+                break;
+            case 'last_7_days':
+            case '7days':
+                $from = date('Y-m-d', strtotime('-6 days'));
+                $to   = $today;
+                break;
+            case 'last_15_days':
+            case '15days':
+                $from = date('Y-m-d', strtotime('-14 days'));
+                $to   = $today;
+                break;
+            case 'this_month':
+                $from = date('Y-m-01');
+                $to   = $today;
+                break;
+            case 'last_month':
+                $from = date('Y-m-01', strtotime('first day of last month'));
+                $to   = date('Y-m-t', strtotime('last month'));
+                break;
+            case 'last_90_days':
+            case '90days':
+                $from = date('Y-m-d', strtotime('-89 days'));
+                $to   = $today;
+                break;
+            default:
+                $from = $_GET['start_date'] ?? ($_GET['from'] ?? date('Y-m-01'));
+                $to   = $_GET['end_date']   ?? ($_GET['to']   ?? date('Y-m-d'));
+                break;
+        }
+    } else {
+        $from = $_GET['start_date'] ?? ($_GET['from'] ?? date('Y-m-01'));
+        $to   = $_GET['end_date']   ?? ($_GET['to']   ?? date('Y-m-d'));
+    }
     
     $dateFrom = date('Y-m-d 00:00:00', strtotime($from));
     $dateTo   = date('Y-m-d 23:59:59', strtotime($to));

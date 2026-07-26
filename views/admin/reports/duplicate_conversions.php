@@ -10,14 +10,27 @@
 <!-- ── Filter bar ─────────────────────────────────────────────────────── -->
 <div class="card mb-3">
     <div class="card-body">
-        <form method="GET" class="d-flex gap-3 align-center" style="flex-wrap:wrap">
+        <form method="GET" id="dupFilterForm" class="d-flex gap-3 align-center" style="flex-wrap:wrap">
+            <div class="form-group mb-0">
+                <label>Date Preset</label>
+                <select id="quickPresetSelect" class="form-control" onchange="applyDatePreset(this.value)">
+                    <option value="custom">Custom Range</option>
+                    <option value="today">Today</option>
+                    <option value="yesterday">Yesterday</option>
+                    <option value="last_7_days">Last 7 Days</option>
+                    <option value="last_15_days">Last 15 Days</option>
+                    <option value="this_month">This Month</option>
+                    <option value="last_month">Last Month</option>
+                    <option value="last_90_days">Last 90 Days</option>
+                </select>
+            </div>
             <div class="form-group mb-0">
                 <label>From</label>
-                <input type="date" name="from" class="form-control" value="<?= Helpers::e($from) ?>">
+                <input type="date" id="inputFromDate" name="from" class="form-control" value="<?= Helpers::e($from) ?>">
             </div>
             <div class="form-group mb-0">
                 <label>To</label>
-                <input type="date" name="to" class="form-control" value="<?= Helpers::e($to) ?>">
+                <input type="date" id="inputToDate" name="to" class="form-control" value="<?= Helpers::e($to) ?>">
             </div>
             <div class="form-group mb-0">
                 <label>Status</label>
@@ -32,8 +45,71 @@
                 <button class="btn btn-primary">Apply</button>
             </div>
         </form>
+        <div class="d-flex gap-2 mt-2" style="flex-wrap:wrap;align-items:center">
+            <span class="text-muted text-sm fw-bold">Quick Ranges:</span>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="applyDatePreset('today')">Today</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="applyDatePreset('yesterday')">Yesterday</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="applyDatePreset('last_7_days')">Last 7 Days</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="applyDatePreset('last_15_days')">Last 15 Days</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="applyDatePreset('this_month')">This Month</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="applyDatePreset('last_month')">Last Month</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="applyDatePreset('last_90_days')">Last 90 Days</button>
+        </div>
     </div>
 </div>
+
+<script>
+function formatDate(d) {
+    let month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+    return [year, month, day].join('-');
+}
+
+function applyDatePreset(preset) {
+    if (!preset || preset === 'custom') return;
+    const now = new Date();
+    let fromDate = new Date();
+    let toDate = new Date();
+
+    if (preset === 'today') {
+        fromDate = now;
+        toDate = now;
+    } else if (preset === 'yesterday') {
+        let y = new Date();
+        y.setDate(now.getDate() - 1);
+        fromDate = y;
+        toDate = y;
+    } else if (preset === 'last_7_days') {
+        let d = new Date();
+        d.setDate(now.getDate() - 6);
+        fromDate = d;
+        toDate = now;
+    } else if (preset === 'last_15_days') {
+        let d = new Date();
+        d.setDate(now.getDate() - 14);
+        fromDate = d;
+        toDate = now;
+    } else if (preset === 'this_month') {
+        fromDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        toDate = now;
+    } else if (preset === 'last_month') {
+        fromDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        toDate = new Date(now.getFullYear(), now.getMonth(), 0);
+    } else if (preset === 'last_90_days') {
+        let d = new Date();
+        d.setDate(now.getDate() - 89);
+        fromDate = d;
+        toDate = now;
+    }
+
+    document.getElementById('inputFromDate').value = formatDate(fromDate);
+    document.getElementById('inputToDate').value = formatDate(toDate);
+    document.getElementById('dupFilterForm').submit();
+}
+</script>
 
 <!-- ── Summary cards ──────────────────────────────────────────────────── -->
 <div class="stats-grid mb-3" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">

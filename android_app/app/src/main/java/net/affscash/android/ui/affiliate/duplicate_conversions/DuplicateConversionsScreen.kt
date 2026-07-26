@@ -1,6 +1,5 @@
 package net.affscash.android.ui.affiliate.duplicate_conversions
 
-import android.app.DatePickerDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -12,67 +11,30 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AdsClick
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Layers
 import androidx.compose.material.icons.filled.Router
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.ui.dashboard.PremiumUI
 import net.affscash.android.data.model.AffiliateDuplicateConversionCluster
-import net.affscash.android.data.model.AffiliateDuplicateConversionRow
-import java.text.SimpleDateFormat
-import java.util.*
 
 @Composable
 fun DuplicateConversionsScreen(
     viewModel: DuplicateConversionsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val fromDate by viewModel.fromDate.collectAsState()
-    val toDate by viewModel.toDate.collectAsState()
-
-    val context = LocalContext.current
-    val calendar = Calendar.getInstance()
-    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-
-    val fromDatePicker = DatePickerDialog(
-        context,
-        { _, year, month, dayOfMonth ->
-            calendar.set(year, month, dayOfMonth)
-            viewModel.setFromDate(dateFormat.format(calendar.time))
-        },
-        calendar.get(Calendar.YEAR),
-        calendar.get(Calendar.MONTH),
-        calendar.get(Calendar.DAY_OF_MONTH)
-    )
-
-    val toDatePicker = DatePickerDialog(
-        context,
-        { _, year, month, dayOfMonth ->
-            calendar.set(year, month, dayOfMonth)
-            viewModel.setToDate(dateFormat.format(calendar.time))
-        },
-        calendar.get(Calendar.YEAR),
-        calendar.get(Calendar.MONTH),
-        calendar.get(Calendar.DAY_OF_MONTH)
-    )
 
     Column(modifier = Modifier.fillMaxSize()) {
         // Date Range Picker Component
         net.affscash.android.ui.components.DateRangeFilterComponent(
-            dateRangeState = uiState.dateRangeState,
+            state = uiState.dateRangeState,
             onOptionSelected = { viewModel.setDateRangeOption(it) },
             onCustomRangeSelected = { start, end -> viewModel.setCustomDateRange(start, end) }
         )
