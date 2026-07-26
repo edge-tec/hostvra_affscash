@@ -71,7 +71,6 @@ try {
             SELECT offer_id, ip_address, COUNT(*) AS dup_count
             FROM conversions
             WHERE affiliate_id = ?
-              AND converted_at BETWEEN ? AND ?
               AND offer_id IS NOT NULL AND offer_id > 0
               AND ip_address IS NOT NULL AND ip_address <> ''
               AND COALESCE(is_hidden, 0) = 0
@@ -83,7 +82,7 @@ try {
            AND cv.converted_at BETWEEN ? AND ?
            AND COALESCE(cv.is_hidden, 0) = 0
          ORDER BY cv.offer_id, cv.ip_address, cv.converted_at DESC",
-        [$affId, $dateFrom, $dateTo, $affId, $dateFrom, $dateTo]
+        [$affId, $affId, $dateFrom, $dateTo]
     ) ?: [];
 
     // Grouping for the JSON response

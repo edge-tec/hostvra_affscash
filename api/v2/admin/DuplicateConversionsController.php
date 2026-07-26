@@ -71,8 +71,7 @@ try {
          JOIN (
             SELECT offer_id, ip_address, COUNT(*) AS dup_count
             FROM conversions
-            WHERE converted_at BETWEEN ? AND ?
-              AND offer_id IS NOT NULL AND offer_id > 0
+            WHERE offer_id IS NOT NULL AND offer_id > 0
               AND ip_address IS NOT NULL AND ip_address <> ''
               AND COALESCE(is_hidden, 0) = 0
             GROUP BY offer_id, ip_address
@@ -84,7 +83,7 @@ try {
          WHERE cv.converted_at BETWEEN ? AND ?
            AND COALESCE(cv.is_hidden, 0) = 0
          ORDER BY cv.offer_id, cv.ip_address, cv.converted_at DESC",
-        [$dateFrom, $dateTo, $dateFrom, $dateTo]
+        [$dateFrom, $dateTo]
     ) ?: [];
 } catch (\Throwable $e) {
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);

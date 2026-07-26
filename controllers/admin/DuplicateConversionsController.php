@@ -61,7 +61,7 @@ $dateFrom = date('Y-m-d 00:00:00', strtotime($from));
 $dateTo   = date('Y-m-d 23:59:59', strtotime($to));
 
 $statusClause = '';
-$params = [$dateFrom, $dateTo, $dateFrom, $dateTo];
+$params = [$dateFrom, $dateTo];
 if (in_array($status, ['approved','pending','rejected','chargebacked'], true)) {
     $statusClause = ' AND cv.status = ?';
     $params[] = $status;
@@ -80,8 +80,7 @@ $rows = Database::fetchAll(
      JOIN (
         SELECT offer_id, ip_address, COUNT(*) AS dup_count
         FROM conversions
-        WHERE converted_at BETWEEN ? AND ?
-          AND offer_id IS NOT NULL AND offer_id > 0
+        WHERE offer_id IS NOT NULL AND offer_id > 0
           AND ip_address IS NOT NULL AND ip_address <> ''
           AND COALESCE(is_hidden, 0) = 0
         GROUP BY offer_id, ip_address

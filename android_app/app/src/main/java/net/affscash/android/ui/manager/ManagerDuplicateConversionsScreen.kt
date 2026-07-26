@@ -217,8 +217,7 @@ fun DuplicateClusterView(cluster: DuplicateConversionGroup) {
                 color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.4f),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Box(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))) {
-                    Row(
+                Row(
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -264,94 +263,93 @@ fun DuplicateClusterView(cluster: DuplicateConversionGroup) {
         }
 
         // Rows
-            cluster.conversions.forEachIndexed { index, conversion ->
-                Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
-                    var expandId by remember { mutableStateOf(false) }
-                    val displayId = if (expandId) conversion.conversionId else conversion.conversionId.take(10) + "..."
-                    
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
-                            Icon(Icons.Default.AdsClick, contentDescription = null, modifier = Modifier.size(14.dp), tint = Color.Gray)
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                displayId, 
-                                fontSize = 12.sp, 
-                                fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                modifier = Modifier.clickable { expandId = !expandId }
-                            )
-                        }
-                        
-                        Text(
-                            "$${(( conversion.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", 
-                            fontSize = 12.sp, 
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF10B981)
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
-                            Icon(Icons.Default.Person, contentDescription = null, modifier = Modifier.size(12.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                "${conversion.affiliateName} (#${conversion.affiliateId})", 
-                                fontSize = 11.sp,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
+        cluster.conversions.forEachIndexed { index, conversion ->
+            Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
+                var expandId by remember { mutableStateOf(false) }
+                val displayId = if (expandId) conversion.conversionId else conversion.conversionId.take(10) + "..."
+                
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+                        Icon(Icons.Default.AdsClick, contentDescription = null, modifier = Modifier.size(14.dp), tint = Color.Gray)
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            conversion.convertedAt, 
-                            fontSize = 10.sp, 
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 1
+                            displayId, 
+                            fontSize = 12.sp, 
+                            fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.clickable { expandId = !expandId }
                         )
                     }
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        val statusColor = when (conversion.status.lowercase()) {
-                            "approved" -> Color(0xFF10B981)
-                            "pending" -> Color(0xFFF59E0B)
-                            "rejected" -> MaterialTheme.colorScheme.error
-                            else -> MaterialTheme.colorScheme.onSurfaceVariant
-                        }
-                        
+                    
+                    Text(
+                        "$${(( conversion.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", 
+                        fontSize = 12.sp, 
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF10B981)
+                    )
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+                        Icon(Icons.Default.Person, contentDescription = null, modifier = Modifier.size(12.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text = conversion.status.uppercase(),
-                            fontSize = 10.sp,
-                            color = statusColor,
-                            fontWeight = FontWeight.Bold
+                            "${conversion.affiliateName} (#${conversion.affiliateId})", 
+                            fontSize = 11.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
-                        
-                        if (!conversion.transactionId.isNullOrEmpty()) {
-                            Text(
-                                "Txn: ${conversion.transactionId}",
-                                fontSize = 10.sp,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
+                    }
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        conversion.convertedAt, 
+                        fontSize = 10.sp, 
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1
+                    )
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    val statusColor = when (conversion.status.lowercase()) {
+                        "approved" -> Color(0xFF10B981)
+                        "pending" -> Color(0xFFF59E0B)
+                        "rejected" -> MaterialTheme.colorScheme.error
+                        else -> MaterialTheme.colorScheme.onSurfaceVariant
+                    }
+                    
+                    Text(
+                        text = conversion.status.uppercase(),
+                        fontSize = 10.sp,
+                        color = statusColor,
+                        fontWeight = FontWeight.Bold
+                    )
+                    
+                    if (!conversion.transactionId.isNullOrEmpty()) {
+                        Text(
+                            "Txn: ${conversion.transactionId}",
+                            fontSize = 10.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
                 }
-                if (index < cluster.conversions.size - 1) {
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha=0.3f))
-                }
+            }
+            if (index < cluster.conversions.size - 1) {
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha=0.3f))
             }
         }
     }
