@@ -412,11 +412,12 @@ if (!empty($click['ip_address']) && $click['ip_address'] !== '0.0.0.0') {
         // Auto-reject any prior approved/pending conversions in the cluster
         if ($existingConvs) {
             foreach ($existingConvs as $ec) {
-                // Update status to rejected
+                // Update status to rejected and ensure it is not hidden
                 Database::update('conversions', [
                     'status'           => 'rejected',
                     'rejection_reason' => 'Removed for duplicate conversion',
-                    'rejected_at'      => date('Y-m-d H:i:s')
+                    'rejected_at'      => date('Y-m-d H:i:s'),
+                    'is_hidden'        => 0
                 ], 'id=?', [$ec['id']]);
                 
                 // If it was already approved, we must reverse the affiliate balance
@@ -442,64 +443,60 @@ if (!empty($click['ip_address']) && $click['ip_address'] !== '0.0.0.0') {
 $isAutoHidden = false;
 $hideReason   = '';
 
-// Hard-hide traffic_back conversions from managers and affiliates.
-if (($click['source'] ?? '') === 'traffic_back') {
-    $isAutoHidden = true;
-    $hideReason   = 'traffic_back_url';
-}
-
-try {
-    $hideRules = Database::fetchAll(
-        "SELECT * FROM conversion_autohide_rules WHERE is_active=1
-         ORDER BY FIELD(type,'affiliate','offer','global')",
-        []
-    );
-    foreach ($hideRules as $rule) {
-        $matches = match($rule['type']) {
-            'affiliate' => ((int)$rule['affiliate_id'] === (int)$click['affiliate_id']),
-            'offer'     => ((int)$rule['offer_id']     === (int)$click['offer_id']),
-            'global'    => true,
-            default     => false,
-        };
-        if ($matches) {
-            $hidePct  = (float)$rule['hide_percent'];
-            // Use activated_at as the count window start so that conversions
-            // that arrived while the rule was inactive are not counted — this
-            // prevents a burst of hidden conversions when a rule is re-enabled.
-            $ruleDate = $rule['activated_at'] ?? $rule['created_at'] ?? '2000-01-01 00:00:00';
-            // Deterministic exact-ratio hiding: count conversions in scope since
-            // rule creation, hide this one only if hidden count is below the target.
-            // This guarantees the actual hide rate stays at exactly hide_percent%
-            // rather than fluctuating with random probability.
-            [$cntSql, $cntParams] = match($rule['type']) {
-                'affiliate' => [
-                    "SELECT COUNT(*) as total, COALESCE(SUM(is_hidden),0) as hidden
-                       FROM conversions WHERE affiliate_id=? AND converted_at>=?",
-                    [(int)$click['affiliate_id'], $ruleDate],
-                ],
-                'offer' => [
-                    "SELECT COUNT(*) as total, COALESCE(SUM(is_hidden),0) as hidden
-                       FROM conversions WHERE offer_id=? AND converted_at>=?",
-                    [(int)$click['offer_id'], $ruleDate],
-                ],
-                default => [
-                    "SELECT COUNT(*) as total, COALESCE(SUM(is_hidden),0) as hidden
-                       FROM conversions WHERE converted_at>=?",
-                    [$ruleDate],
-                ],
-            };
-            $ruleStats     = Database::fetchOne($cntSql, $cntParams);
-            $totalInclThis = (int)($ruleStats['total'] ?? 0) + 1; // +1 for this conversion
-            $targetHidden  = (int)floor($totalInclThis * $hidePct / 100);
-            if ((int)($ruleStats['hidden'] ?? 0) < $targetHidden) {
-                $isAutoHidden = true;
-                $hideReason   = $rule['reason'];
-            }
-            break;
-        }
+// Duplicate conversions must NEVER be automatically hidden.
+if ($convStatus !== 'rejected' && empty($rejectionReason)) {
+    // Hard-hide traffic_back conversions from managers and affiliates.
+    if (($click['source'] ?? '') === 'traffic_back') {
+        $isAutoHidden = true;
+        $hideReason   = 'traffic_back_url';
     }
-} catch (\Throwable $e) {
-    // auto-hide table not yet created — skip silently
+
+    try {
+        $hideRules = Database::fetchAll(
+            "SELECT * FROM conversion_autohide_rules WHERE is_active=1
+             ORDER BY FIELD(type,'affiliate','offer','global')",
+            []
+        );
+        foreach ($hideRules as $rule) {
+            $matches = match($rule['type']) {
+                'affiliate' => ((int)$rule['affiliate_id'] === (int)$click['affiliate_id']),
+                'offer'     => ((int)$rule['offer_id']     === (int)$click['offer_id']),
+                'global'    => true,
+                default     => false,
+            };
+            if ($matches) {
+                $hidePct  = (float)$rule['hide_percent'];
+                $ruleDate = $rule['activated_at'] ?? $rule['created_at'] ?? '2000-01-01 00:00:00';
+                [$cntSql, $cntParams] = match($rule['type']) {
+                    'affiliate' => [
+                        "SELECT COUNT(*) as total, COALESCE(SUM(is_hidden),0) as hidden
+                           FROM conversions WHERE affiliate_id=? AND converted_at>=?",
+                        [(int)$click['affiliate_id'], $ruleDate],
+                    ],
+                    'offer' => [
+                        "SELECT COUNT(*) as total, COALESCE(SUM(is_hidden),0) as hidden
+                           FROM conversions WHERE offer_id=? AND converted_at>=?",
+                        [(int)$click['offer_id'], $ruleDate],
+                    ],
+                    default => [
+                        "SELECT COUNT(*) as total, COALESCE(SUM(is_hidden),0) as hidden
+                           FROM conversions WHERE converted_at>=?",
+                        [$ruleDate],
+                    ],
+                };
+                $ruleStats     = Database::fetchOne($cntSql, $cntParams);
+                $totalInclThis = (int)($ruleStats['total'] ?? 0) + 1; // +1 for this conversion
+                $targetHidden  = (int)floor($totalInclThis * $hidePct / 100);
+                if ((int)($ruleStats['hidden'] ?? 0) < $targetHidden) {
+                    $isAutoHidden = true;
+                    $hideReason   = $rule['reason'];
+                }
+                break;
+            }
+        }
+    } catch (\Throwable $e) {
+        // auto-hide table not yet created — skip silently
+    }
 }
 
 // ── Advanced Payout Management: conversion_optimize_rules ─────────────────
