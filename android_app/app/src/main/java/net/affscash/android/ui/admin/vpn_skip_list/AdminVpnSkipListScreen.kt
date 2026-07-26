@@ -341,14 +341,14 @@ private fun AddVpnSkipDialog(
 
                 if (availableAffiliates.isEmpty()) {
                     Surface(
-                        color = MaterialTheme.colorScheme.warningContainer.copy(alpha = 0.5f),
+                        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
                         shape = RoundedCornerShape(8.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
                             text = "All active affiliates are already on the skip list.",
                             fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onWarningContainer,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
                             modifier = Modifier.padding(12.dp),
                             textAlign = TextAlign.Center
                         )

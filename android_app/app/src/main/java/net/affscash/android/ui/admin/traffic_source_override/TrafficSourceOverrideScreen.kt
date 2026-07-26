@@ -128,6 +128,10 @@ fun TrafficSourceOverrideScreen(
             }
 
             uiState.data?.let { data ->
+                val destinationMap = remember(data.destinations) { (data.destinations.ifEmpty { DEFAULT_DESTINATIONS }).associate { it.key to it.label } }
+                val affiliateMap = remember(data.affiliates) { data.affiliates.associateBy { it.id } }
+                val offerMap = remember(data.offers) { data.offers.associateBy { it.id } }
+
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 80.dp),
@@ -229,10 +233,6 @@ fun TrafficSourceOverrideScreen(
                             }
                         }
                     } else {
-                        val destinationMap = (data.destinations.ifEmpty { DEFAULT_DESTINATIONS }).associate { it.key to it.label }
-                        val affiliateMap = remember(data.affiliates) { data.affiliates.associateBy { it.id } }
-                        val offerMap = remember(data.offers) { data.offers.associateBy { it.id } }
-
                         items(data.rules) { rule ->
                             RuleCardItem(
                                 rule = rule,
