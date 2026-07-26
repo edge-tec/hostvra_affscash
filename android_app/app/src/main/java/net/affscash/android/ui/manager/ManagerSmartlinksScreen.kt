@@ -212,13 +212,10 @@ fun ManagerSmartlinkCard(
     var selectedAffiliate by remember { mutableStateOf<ManagedAffiliate?>(null) }
     val context = LocalContext.current
 
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = PremiumUI.CardShape,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    net.affscash.android.ui.dashboard.GlassCard(
+        modifier = Modifier.fillMaxWidth()
     ) {
-        Column(modifier = Modifier.padding(20.dp)) {
+        Column(modifier = Modifier.padding(14.dp)) {
             // Header
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -228,24 +225,11 @@ fun ManagerSmartlinkCard(
                 Text(
                     text = "#${smartlink.id}",
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = Color(0xFF4338CA),
                     fontWeight = FontWeight.Bold
                 )
-                if ((smartlink.status ?: "active").lowercase() == "active") {
-                    Surface(
-                        shape = PremiumUI.CardShape,
-                        color = Color(0xFF10B981).copy(alpha = 0.15f)
-                    ) {
-                        Text("ACTIVE", color = Color(0xFF10B981), fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp))
-                    }
-                } else {
-                    Surface(
-                        shape = PremiumUI.CardShape,
-                        color = Color(0xFF9E9E9E).copy(alpha = 0.15f)
-                    ) {
-                        Text("PAUSED", color = Color(0xFF757575), fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp))
-                    }
-                }
+                
+                net.affscash.android.ui.dashboard.StatusBadge(status = smartlink.status ?: "active")
             }
             
             Spacer(modifier = Modifier.height(4.dp))

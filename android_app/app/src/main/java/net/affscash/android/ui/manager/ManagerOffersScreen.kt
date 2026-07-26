@@ -188,39 +188,24 @@ fun ManagerOfferCard(
     var selectedAffiliate by remember { mutableStateOf<ManagedAffiliate?>(null) }
     val context = LocalContext.current
 
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = PremiumUI.CardShape,
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    net.affscash.android.ui.dashboard.GlassCard(
+        modifier = Modifier.fillMaxWidth()
     ) {
-        Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxWidth()) {
-            Column(modifier = Modifier.padding(14.dp)) {
-                // Header: ID and Status
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "#${offer.id}",
-                        style = PremiumUI.LabelSmall,
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Surface(
-                        shape = RoundedCornerShape(6.dp),
-                        color = if (offer.status == "active") PremiumUI.StatusApprovedBg else Color(0xFFF3F4F6)
-                    ) {
-                        Text(
-                            text = offer.status.uppercase(),
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
-                            color = if (offer.status == "active") PremiumUI.StatusApproved else Color(0xFF6B7280),
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
+        Column(modifier = Modifier.padding(14.dp)) {
+            // Header: ID and Status
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "#${offer.id}",
+                    style = PremiumUI.LabelSmall,
+                    color = Color(0xFF4338CA),
+                    fontWeight = FontWeight.Bold
+                )
+                net.affscash.android.ui.dashboard.StatusBadge(status = offer.status)
+            }
 
                 Spacer(modifier = Modifier.height(4.dp))
 

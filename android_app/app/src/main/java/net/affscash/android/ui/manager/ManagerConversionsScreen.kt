@@ -240,55 +240,29 @@ fun ManagerConversionsScreen(
 fun ManagerConversionItem(conversion: Conversion) {
     var expandClickId by remember { mutableStateOf(false) }
 
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = PremiumUI.CardShape,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    net.affscash.android.ui.dashboard.GlassCard(
+        modifier = Modifier.fillMaxWidth()
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp)
+                .padding(14.dp)
         ) {
             // Header Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = conversion.offerName ?: "Unknown Offer",
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.ExtraBold,
                     modifier = Modifier.weight(1f).padding(end = 8.dp),
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = Color(0xFF0F172A)
                 )
                 
-                val statusLower = conversion.status.lowercase()
-                val containerColor = when(statusLower) {
-                    "approved" -> Color(0xFF10B981).copy(alpha = 0.15f)
-                    "rejected" -> MaterialTheme.colorScheme.error.copy(alpha = 0.15f)
-                    else -> Color(0xFFF59E0B).copy(alpha = 0.15f)
-                }
-                val contentColor = when(statusLower) {
-                    "approved" -> Color(0xFF10B981)
-                    "rejected" -> MaterialTheme.colorScheme.error
-                    else -> Color(0xFFD97706)
-                }
-                
-                Surface(
-                    color = containerColor,
-                    shape = PremiumUI.CardShape
-                ) {
-                    Text(
-                        text = conversion.status.uppercase(),
-                        color = contentColor,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                        style = MaterialTheme.typography.labelSmall,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+                net.affscash.android.ui.dashboard.StatusBadge(status = conversion.status)
             }
             
             Spacer(modifier = Modifier.height(4.dp))

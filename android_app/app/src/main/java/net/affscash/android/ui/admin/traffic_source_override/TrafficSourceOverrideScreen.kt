@@ -91,22 +91,44 @@ fun TrafficSourceOverrideScreen(
 
     Scaffold(
         topBar = {
-            CompactTopBar(
-                title = { Text("Traffic Source Override") },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                actions = {
-                    IconButton(onClick = onNavigateToLogs) {
-                        Icon(Icons.Default.History, contentDescription = "Override Logs")
-                    }
-                    IconButton(onClick = { viewModel.loadData(isManager) }) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.background,
+                shadowElevation = 2.dp
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 8.dp, end = 12.dp, top = 8.dp, bottom = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            IconButton(onClick = onNavigateBack) {
+                                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                            }
+                            Text(
+                                text = "Traffic Source Override",
+                                style = PremiumUI.HeaderStyle,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                        Row {
+                            IconButton(onClick = onNavigateToLogs) {
+                                Icon(Icons.Default.History, contentDescription = "Override Logs", tint = MaterialTheme.colorScheme.primary)
+                            }
+                            IconButton(onClick = { viewModel.loadData(isManager) }) {
+                                Icon(Icons.Default.Refresh, contentDescription = "Refresh", tint = MaterialTheme.colorScheme.primary)
+                            }
+                        }
                     }
                 }
-            )
+            }
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -114,10 +136,12 @@ fun TrafficSourceOverrideScreen(
                     editingRule = null
                     showAddDialog = true
                 },
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
+                containerColor = Color(0xFF4F46E5),
+                contentColor = Color.White,
+                shape = RoundedCornerShape(16.dp),
+                elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 6.dp)
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Rule")
+                Icon(Icons.Default.Add, contentDescription = "Add Rule", modifier = Modifier.size(24.dp))
             }
         }
     ) { paddingValues ->
