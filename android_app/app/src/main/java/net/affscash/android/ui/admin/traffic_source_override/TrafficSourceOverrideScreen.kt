@@ -597,11 +597,14 @@ private fun AddEditRuleDialog(
                     }
                 }
 
-                // Affiliate Search & Select Dropdown
-                if (affiliates.isNotEmpty()) {
-                    ExposedDropdownMenuBox(
-                        expanded = affDropdownExpanded,
-                        onExpandedChange = { affDropdownExpanded = !affDropdownExpanded }
+                // Affiliate Search & Select Input Box (Always Visible)
+                ExposedDropdownMenuBox(
+                    expanded = affDropdownExpanded && filteredAffiliates.isNotEmpty(),
+                    onExpandedChange = { affDropdownExpanded = !affDropdownExpanded }
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         OutlinedTextField(
                             value = affSearchText,
@@ -609,15 +612,35 @@ private fun AddEditRuleDialog(
                                 affSearchText = it
                                 affDropdownExpanded = true
                             },
-                            label = { Text("Search & Select Affiliate") },
+                            label = { Text("Search / Select Affiliate") },
                             placeholder = { Text("Type name, code, or ID...") },
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = affDropdownExpanded) },
-                            modifier = Modifier.menuAnchor().fillMaxWidth(),
+                            modifier = Modifier.menuAnchor().weight(1f),
                             singleLine = true
                         )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Button(
+                            onClick = {
+                                val affIdInt = affSearchText.trim().toIntOrNull()
+                                if (affIdInt != null) {
+                                    selectedAffiliates = selectedAffiliates + affIdInt
+                                    affSearchText = ""
+                                    affDropdownExpanded = false
+                                } else if (filteredAffiliates.isNotEmpty()) {
+                                    selectedAffiliates = selectedAffiliates + filteredAffiliates.first().id
+                                    affSearchText = ""
+                                    affDropdownExpanded = false
+                                }
+                            },
+                            contentPadding = PaddingValues(horizontal = 12.dp)
+                        ) {
+                            Text("Add", fontSize = 11.sp)
+                        }
+                    }
 
+                    if (filteredAffiliates.isNotEmpty()) {
                         ExposedDropdownMenu(
-                            expanded = affDropdownExpanded && filteredAffiliates.isNotEmpty(),
+                            expanded = affDropdownExpanded,
                             onDismissRequest = { affDropdownExpanded = false },
                             modifier = Modifier.heightIn(max = 200.dp)
                         ) {
@@ -692,11 +715,14 @@ private fun AddEditRuleDialog(
                     }
                 }
 
-                // Offer Search & Select Dropdown
-                if (offers.isNotEmpty()) {
-                    ExposedDropdownMenuBox(
-                        expanded = offerDropdownExpanded,
-                        onExpandedChange = { offerDropdownExpanded = !offerDropdownExpanded }
+                // Offer Search & Select Input Box (Always Visible)
+                ExposedDropdownMenuBox(
+                    expanded = offerDropdownExpanded && filteredOffers.isNotEmpty(),
+                    onExpandedChange = { offerDropdownExpanded = !offerDropdownExpanded }
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         OutlinedTextField(
                             value = offerSearchText,
@@ -704,15 +730,35 @@ private fun AddEditRuleDialog(
                                 offerSearchText = it
                                 offerDropdownExpanded = true
                             },
-                            label = { Text("Search & Select Offer") },
+                            label = { Text("Search / Select Offer") },
                             placeholder = { Text("Type offer name or ID...") },
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = offerDropdownExpanded) },
-                            modifier = Modifier.menuAnchor().fillMaxWidth(),
+                            modifier = Modifier.menuAnchor().weight(1f),
                             singleLine = true
                         )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Button(
+                            onClick = {
+                                val offerIdInt = offerSearchText.trim().toIntOrNull()
+                                if (offerIdInt != null) {
+                                    selectedOffers = selectedOffers + offerIdInt
+                                    offerSearchText = ""
+                                    offerDropdownExpanded = false
+                                } else if (filteredOffers.isNotEmpty()) {
+                                    selectedOffers = selectedOffers + filteredOffers.first().id
+                                    offerSearchText = ""
+                                    offerDropdownExpanded = false
+                                }
+                            },
+                            contentPadding = PaddingValues(horizontal = 12.dp)
+                        ) {
+                            Text("Add", fontSize = 11.sp)
+                        }
+                    }
 
+                    if (filteredOffers.isNotEmpty()) {
                         ExposedDropdownMenu(
-                            expanded = offerDropdownExpanded && filteredOffers.isNotEmpty(),
+                            expanded = offerDropdownExpanded,
                             onDismissRequest = { offerDropdownExpanded = false },
                             modifier = Modifier.heightIn(max = 200.dp)
                         ) {
