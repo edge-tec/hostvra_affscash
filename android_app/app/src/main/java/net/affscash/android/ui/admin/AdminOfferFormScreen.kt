@@ -47,7 +47,7 @@ fun AdminOfferFormScreen(
                 title = { Text(if (offerId == null) "Create Offer" else "Edit Offer") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 }
             )

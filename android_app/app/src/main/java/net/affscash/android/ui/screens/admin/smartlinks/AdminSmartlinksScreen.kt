@@ -46,7 +46,7 @@ fun AdminSmartlinksScreen(
                             modifier = Modifier.padding(end = 16.dp)
                         ) {
                             IconButton(onClick = { navController.navigate("admin_smartlink_requests") }) {
-                                Icon(Icons.Default.Notifications, contentDescription = "Requests")
+                                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Notifications, contentDescription = "Requests")
                             }
                         }
                     }
@@ -55,7 +55,7 @@ fun AdminSmartlinksScreen(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { navController.navigate("admin_smartlink_create") }) {
-                Icon(Icons.Default.Add, contentDescription = "Create Smartlink")
+                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Add, contentDescription = "Create Smartlink")
             }
         }
     ) { padding ->
@@ -162,16 +162,16 @@ fun AdminSmartlinkItem(
                 horizontalArrangement = Arrangement.End
             ) {
                 IconButton(onClick = onToggleStatus) {
-                    Icon(
+                    net.affscash.android.ui.dashboard.GradientIcon(
                         imageVector = if (smartlink.status == "active") Icons.Default.Pause else Icons.Default.PlayArrow,
                         contentDescription = if (smartlink.status == "active") "Pause" else "Activate"
                     )
                 }
                 IconButton(onClick = onEdit) {
-                    Icon(Icons.Default.Edit, contentDescription = "Edit")
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Edit, contentDescription = "Edit")
                 }
                 IconButton(onClick = { showDeleteDialog = true }) {
-                    Icon(Icons.Default.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.error)
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.error)
                 }
             }
         }

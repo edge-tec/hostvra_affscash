@@ -77,7 +77,7 @@ fun AffiliateReferralScreen(
                                             .background(PremiumUI.HeaderGradient),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        Icon(
+                                        net.affscash.android.ui.dashboard.GradientIcon(
                                             Icons.Outlined.Share,
                                             contentDescription = null,
                                             tint = Color.White,
@@ -127,7 +127,7 @@ fun AffiliateReferralScreen(
                                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F46E5)),
                                             contentPadding = PaddingValues(horizontal = 12.dp)
                                         ) {
-                                            Icon(Icons.Default.ContentCopy, contentDescription = null, modifier = Modifier.size(14.dp))
+                                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ContentCopy, contentDescription = null, modifier = Modifier.size(14.dp))
                                             Spacer(modifier = Modifier.width(4.dp))
                                             Text("Copy Link", fontSize = 11.sp, fontWeight = FontWeight.Bold)
                                         }
@@ -227,7 +227,7 @@ fun AffiliateReferralScreen(
                                                 .background(Color(0xFFF1F5F9)),
                                             contentAlignment = Alignment.Center
                                         ) {
-                                            Icon(Icons.Outlined.Group, contentDescription = null, modifier = Modifier.size(28.dp), tint = Color(0xFF94A3B8))
+                                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.Group, contentDescription = null, modifier = Modifier.size(28.dp), tint = Color(0xFF94A3B8))
                                         }
                                         Spacer(modifier = Modifier.height(8.dp))
                                         Text("No referrals yet. Share your link to start earning!", fontSize = 13.sp, color = Color(0xFF64748B))
@@ -265,7 +265,7 @@ fun AffiliateReferralScreen(
                                                 .background(Color(0xFFF1F5F9)),
                                             contentAlignment = Alignment.Center
                                         ) {
-                                            Icon(Icons.Outlined.MonetizationOn, contentDescription = null, modifier = Modifier.size(28.dp), tint = Color(0xFF94A3B8))
+                                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.MonetizationOn, contentDescription = null, modifier = Modifier.size(28.dp), tint = Color(0xFF94A3B8))
                                         }
                                         Spacer(modifier = Modifier.height(8.dp))
                                         Text("No referral commissions earned yet.", fontSize = 13.sp, color = Color(0xFF64748B))

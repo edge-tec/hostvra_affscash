@@ -104,17 +104,17 @@ fun AdminSupportChatScreen(
                         viewModel.clearSelection()
                         onNavigateBack()
                     }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
                     if (isClosed) {
                         IconButton(onClick = { viewModel.reopenConversation() }) {
-                            Icon(Icons.Filled.LockOpen, contentDescription = "Reopen")
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Filled.LockOpen, contentDescription = "Reopen")
                         }
                     } else {
                         IconButton(onClick = { viewModel.closeConversation() }) {
-                            Icon(Icons.Filled.Lock, contentDescription = "Close")
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Filled.Lock, contentDescription = "Close")
                         }
                     }
                 },
@@ -145,7 +145,7 @@ fun AdminSupportChatScreen(
                         modifier = Modifier.padding(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(Icons.Filled.Warning, contentDescription = null, tint = MaterialTheme.colorScheme.error)
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Filled.Warning, contentDescription = null, tint = MaterialTheme.colorScheme.error)
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(uiState.error ?: "", color = MaterialTheme.colorScheme.onErrorContainer)
                         Spacer(modifier = Modifier.weight(1f))
@@ -196,14 +196,14 @@ fun AdminSupportChatScreen(
                             onClick = { launcher.launch("*/*") },
                             enabled = !uiState.isSendingMessage && !uiState.isUploading
                         ) {
-                            Icon(Icons.Default.AttachFile, contentDescription = "Attach File", tint = MaterialTheme.colorScheme.primary)
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.AttachFile, contentDescription = "Attach File", tint = MaterialTheme.colorScheme.primary)
                         }
 
                         IconButton(
                             onClick = { imageLauncher.launch(androidx.activity.result.PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
                             enabled = !uiState.isSendingMessage && !uiState.isUploading
                         ) {
-                            Icon(Icons.Default.Image, contentDescription = "Attach Image", tint = MaterialTheme.colorScheme.primary)
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Image, contentDescription = "Attach Image", tint = MaterialTheme.colorScheme.primary)
                         }
 
                         OutlinedTextField(
@@ -232,7 +232,7 @@ fun AdminSupportChatScreen(
                             if (uiState.isSendingMessage || uiState.isUploading) {
                                 CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
                             } else {
-                                Icon(Icons.Filled.Send, contentDescription = "Send")
+                                net.affscash.android.ui.dashboard.GradientIcon(Icons.Filled.Send, contentDescription = "Send")
                             }
                         }
                     }
@@ -393,7 +393,7 @@ fun MessageBubble(message: AdminSupportMessage, onDelete: () -> Unit = {}, onEdi
                                         },
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Icon(Icons.Default.InsertDriveFile, contentDescription = "File", tint = textColor, modifier = Modifier.size(24.dp))
+                                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.InsertDriveFile, contentDescription = "File", tint = textColor, modifier = Modifier.size(24.dp))
                                     Spacer(modifier = Modifier.width(4.dp))
                                     Text(
                                         text = message.attachmentName ?: "File",

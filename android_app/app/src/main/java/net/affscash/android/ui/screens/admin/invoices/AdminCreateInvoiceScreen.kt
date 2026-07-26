@@ -37,7 +37,7 @@ fun AdminCreateInvoiceScreen(
                 title = { Text("Create Invoice") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -146,7 +146,7 @@ fun AdminCreateInvoiceScreen(
                                     modifier = Modifier.weight(1f)
                                 )
                                 IconButton(onClick = { viewModel.removeLineItem(index) }) {
-                                    Icon(Icons.Default.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.error)
+                                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.error)
                                 }
                             }
                             
@@ -345,7 +345,7 @@ fun DatePickerField(
         modifier = modifier,
         trailingIcon = {
             IconButton(onClick = { showDialog = true }) {
-                Icon(Icons.Default.DateRange, contentDescription = "Select Date")
+                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.DateRange, contentDescription = "Select Date")
             }
         },
         interactionSource = remember { MutableInteractionSource() }.also { interactionSource ->

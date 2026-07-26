@@ -49,13 +49,13 @@ fun AdminAffiliateReportScreen(
                             onNavigateBack()
                         }
                     }) {
-                        Icon(Icons.Default.ArrowBack, "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowBack, "Back")
                     }
                 },
                 actions = {
                     if (uiState.viewingAffiliateId == null) {
                         IconButton(onClick = { viewModel.toggleFilters() }) {
-                            Icon(if (uiState.isFiltersExpanded) Icons.Default.Close else Icons.Default.FilterList, "Filters")
+                            net.affscash.android.ui.dashboard.GradientIcon(if (uiState.isFiltersExpanded) Icons.Default.Close else Icons.Default.FilterList, "Filters")
                         }
                     }
                 }

@@ -246,7 +246,7 @@ fun ProductCard(
                 },
                 error = {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Icon(Icons.Default.Image, contentDescription = "No Image", tint = Color.Gray, modifier = Modifier.size(48.dp))
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Image, contentDescription = "No Image", tint = Color.Gray, modifier = Modifier.size(48.dp))
                     }
                 }
             )

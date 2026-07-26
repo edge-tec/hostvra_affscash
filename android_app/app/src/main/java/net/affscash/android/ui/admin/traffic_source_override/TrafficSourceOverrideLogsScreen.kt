@@ -65,7 +65,7 @@ fun TrafficSourceOverrideLogsScreen(
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             IconButton(onClick = onNavigateBack) {
-                                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                                net.affscash.android.ui.dashboard.GradientIcon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                             }
                             Text(
                                 text = "Traffic Source Override Logs",
@@ -74,7 +74,7 @@ fun TrafficSourceOverrideLogsScreen(
                             )
                         }
                         IconButton(onClick = { viewModel.loadLogs(isManager) }) {
-                            Icon(Icons.Default.Refresh, contentDescription = "Refresh", tint = MaterialTheme.colorScheme.primary)
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Refresh, contentDescription = "Refresh", tint = MaterialTheme.colorScheme.primary)
                         }
                     }
                 }
@@ -146,7 +146,7 @@ fun TrafficSourceOverrideLogsScreen(
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                            Icon(
+                                            net.affscash.android.ui.dashboard.GradientIcon(
                                                 Icons.AutoMirrored.Filled.AltRoute,
                                                 contentDescription = null,
                                                 modifier = Modifier.size(40.dp),
@@ -194,7 +194,7 @@ private fun TrafficSourceOverrideLogRowItem(log: TrafficSourceOverrideLog) {
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Icon(
+                    net.affscash.android.ui.dashboard.GradientIcon(
                         Icons.Default.Router,
                         contentDescription = null,
                         modifier = Modifier.size(13.dp),
@@ -241,7 +241,7 @@ private fun TrafficSourceOverrideLogRowItem(log: TrafficSourceOverrideLog) {
                     )
                 }
 
-                Icon(
+                net.affscash.android.ui.dashboard.GradientIcon(
                     Icons.Default.SwapHoriz,
                     contentDescription = null,
                     tint = Color(0xFF4F46E5),
@@ -272,7 +272,7 @@ private fun TrafficSourceOverrideLogRowItem(log: TrafficSourceOverrideLog) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
-                    Icon(
+                    net.affscash.android.ui.dashboard.GradientIcon(
                         Icons.Default.Person,
                         contentDescription = null,
                         modifier = Modifier.size(12.dp),

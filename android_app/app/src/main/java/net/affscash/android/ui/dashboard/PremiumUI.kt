@@ -42,6 +42,10 @@ import com.patrykandpatrick.vico.compose.chart.column.columnChart
 import com.patrykandpatrick.vico.core.entry.FloatEntry
 import com.patrykandpatrick.vico.core.entry.entryModelOf
 
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.BlendMode
+
 object PremiumUI {
     // 3D Soft Slate & Ambient Gradient Tokens
     val PageBackground = Color(0xFFF1F5F9)
@@ -392,6 +396,46 @@ fun StatusBadge(status: String, modifier: Modifier = Modifier) {
         )
     }
 }
+
+/**
+ * Applies a beautiful gradient directly to any Material Icon
+ */
+@Composable
+fun GradientIcon(
+    imageVector: ImageVector,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+    tint: Color = Color.Unspecified, // Accepts tint to be drop-in replacement
+    gradient: Brush = PremiumUI.PrimaryGradient
+) {
+    // If a specific white/light tint is passed, we might want to just render normally
+    // But for a globally colorful app, we will apply the gradient unless it's explicitly white.
+    if (tint == Color.White) {
+        Icon(
+            imageVector = imageVector,
+            contentDescription = contentDescription,
+            modifier = modifier,
+            tint = tint
+        )
+    } else {
+        Icon(
+            imageVector = imageVector,
+            contentDescription = contentDescription,
+            modifier = modifier
+                .graphicsLayer(alpha = 0.99f)
+                .drawWithCache {
+                    onDrawWithContent {
+                        drawContent()
+                        drawRect(
+                            brush = gradient,
+                            blendMode = BlendMode.SrcAtop
+                        )
+                    }
+                }
+        )
+    }
+}
+
 
 @Composable
 fun BarChartCard3D(labels: List<String>, data: List<Float>) {

@@ -91,7 +91,7 @@ fun SettingsScreen(
                             .background(PremiumUI.HeaderGradient),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Default.Settings,
                             contentDescription = null,
                             tint = Color.White,
@@ -216,7 +216,7 @@ fun SettingsScreen(
                                         modifier = Modifier.fillMaxWidth(),
                                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
                                     ) {
-                                        Icon(Icons.Default.ExitToApp, contentDescription = "Return")
+                                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ExitToApp, contentDescription = "Return")
                                         Spacer(modifier = Modifier.width(4.dp))
                                         Text("Return to Dashboard")
                                     }
@@ -228,7 +228,7 @@ fun SettingsScreen(
                                     modifier = Modifier.fillMaxWidth(),
                                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error)
                                 ) {
-                                    Icon(Icons.Default.Logout, contentDescription = "Logout")
+                                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Logout, contentDescription = "Logout")
                                     Spacer(modifier = Modifier.width(4.dp))
                                     Text("Logout")
                                 }
@@ -308,7 +308,7 @@ fun ProfileTab(profile: ProfileInfo?, viewModel: SettingsViewModel) {
                     border = BorderStroke(1.2.dp, Color(0xFF4F46E5)),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                 ) {
-                    Icon(
+                    net.affscash.android.ui.dashboard.GradientIcon(
                         imageVector = Icons.Default.CloudUpload,
                         contentDescription = "Upload",
                         tint = Color(0xFF4F46E5),
@@ -354,7 +354,7 @@ fun ProfileTab(profile: ProfileInfo?, viewModel: SettingsViewModel) {
                     readOnly = true,
                     enabled = false,
                     trailingIcon = {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             imageVector = Icons.Default.Lock,
                             contentDescription = "Locked",
                             tint = Color.Gray,
@@ -1177,7 +1177,7 @@ fun ManagerTab(manager: ManagerInfo?) {
                     modifier = Modifier.padding(14.dp),
                     verticalAlignment = Alignment.Top
                 ) {
-                    Icon(
+                    net.affscash.android.ui.dashboard.GradientIcon(
                         imageVector = Icons.Default.Info,
                         contentDescription = "Help",
                         tint = MaterialTheme.colorScheme.primary,
@@ -1224,7 +1224,7 @@ fun ContactCard(
                     .background(MaterialTheme.colorScheme.primaryContainer, shape = CircleShape),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
+                net.affscash.android.ui.dashboard.GradientIcon(
                     icon,
                     contentDescription = title,
                     tint = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -1253,7 +1253,7 @@ fun ContactCard(
             }
             if (onCopy != null) {
                 IconButton(onClick = onCopy, modifier = Modifier.size(32.dp)) {
-                    Icon(
+                    net.affscash.android.ui.dashboard.GradientIcon(
                         Icons.Default.ContentCopy,
                         contentDescription = "Copy",
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -1262,7 +1262,7 @@ fun ContactCard(
                 }
             }
             if (onClick != null) {
-                Icon(
+                net.affscash.android.ui.dashboard.GradientIcon(
                     Icons.AutoMirrored.Filled.OpenInNew,
                     contentDescription = "Open",
                     tint = MaterialTheme.colorScheme.primary,
@@ -1359,7 +1359,7 @@ fun TwoFactorTab(isEnabled: Boolean, viewModel: SettingsViewModel) {
                     modifier = Modifier.padding(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(Icons.Default.CheckCircle, contentDescription = "Enabled", tint = Color(0xFF10B981))
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.CheckCircle, contentDescription = "Enabled", tint = Color(0xFF10B981))
                     Spacer(modifier = Modifier.width(4.dp))
                     Text("Two-Factor Authentication is ENABLED", color = Color(0xFF10B981), fontWeight = FontWeight.Bold)
                 }

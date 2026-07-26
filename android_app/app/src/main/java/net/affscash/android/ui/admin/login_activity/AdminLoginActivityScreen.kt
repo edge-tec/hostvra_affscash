@@ -50,12 +50,12 @@ fun AdminLoginActivityScreen(
                 title = { Text("Login Activity & Live Users") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
                     IconButton(onClick = { viewModel.loadData() }) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Refresh, contentDescription = "Refresh")
                     }
                 }
             )
@@ -93,7 +93,7 @@ fun AdminLoginActivityScreen(
                     onClick = { viewModel.setTab(LoginActivityTab.LOGIN_LOGS) },
                     text = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.History, contentDescription = null, modifier = Modifier.size(16.dp))
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.History, contentDescription = null, modifier = Modifier.size(16.dp))
                             Spacer(modifier = Modifier.width(6.dp))
                             Text("Login Logs", fontWeight = FontWeight.Bold)
                         }
@@ -157,7 +157,7 @@ private fun LiveUsersTabContent(
                             color = Color(0xFF10B981),
                             modifier = Modifier.size(42.dp)
                         ) {
-                            Icon(
+                            net.affscash.android.ui.dashboard.GradientIcon(
                                 Icons.Default.People,
                                 contentDescription = null,
                                 tint = Color.White,
@@ -299,7 +299,7 @@ private fun LiveUserCardItem(
                         onClick = { onForceLogout(session.sessionId, session.userId) },
                         modifier = Modifier.size(32.dp)
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Default.ExitToApp,
                             contentDescription = "Force Logout",
                             tint = MaterialTheme.colorScheme.error,
@@ -318,7 +318,7 @@ private fun LiveUserCardItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
+                    net.affscash.android.ui.dashboard.GradientIcon(
                         if (session.platformSource.contains("Android", ignoreCase = true)) Icons.Default.PhoneAndroid else Icons.Default.Language,
                         contentDescription = null,
                         modifier = Modifier.size(14.dp),
@@ -334,7 +334,7 @@ private fun LiveUserCardItem(
                 }
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
+                    net.affscash.android.ui.dashboard.GradientIcon(
                         Icons.Default.Router,
                         contentDescription = null,
                         modifier = Modifier.size(12.dp),
@@ -398,7 +398,7 @@ private fun LoginLogsTabContent(
             value = uiState.searchQuery,
             onValueChange = onSearchQueryChanged,
             placeholder = { Text("Search name, email, IP, country...", fontSize = 12.sp) },
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(18.dp)) },
+            leadingIcon = { net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(18.dp)) },
             singleLine = true,
             modifier = Modifier
                 .fillMaxWidth()
@@ -486,7 +486,7 @@ private fun LoginLogRowItem(log: LoginLogItem) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
+                    net.affscash.android.ui.dashboard.GradientIcon(
                         if (log.platformSource.contains("Android", ignoreCase = true)) Icons.Default.PhoneAndroid else Icons.Default.Language,
                         contentDescription = null,
                         modifier = Modifier.size(13.dp),

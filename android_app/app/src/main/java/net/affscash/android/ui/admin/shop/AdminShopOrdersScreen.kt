@@ -42,7 +42,7 @@ fun AdminShopOrdersScreen(
                 title = { Text("Shop Orders") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
@@ -134,7 +134,7 @@ fun AdminShopOrderDetailedCard(
                 }
                 
                 IconButton(onClick = onEditStatus) {
-                    Icon(Icons.Default.Edit, contentDescription = "Edit Order", tint = MaterialTheme.colorScheme.primary)
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Edit, contentDescription = "Edit Order", tint = MaterialTheme.colorScheme.primary)
                 }
             }
             

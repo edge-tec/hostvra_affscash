@@ -110,7 +110,7 @@ fun LoginScreen(
                     AssistChip(
                         onClick = { },
                         label = { Text("✓ Fingerprint", style = MaterialTheme.typography.labelSmall) },
-                        leadingIcon = { Icon(Icons.Default.Fingerprint, contentDescription = null, modifier = Modifier.size(16.dp)) },
+                        leadingIcon = { net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Fingerprint, contentDescription = null, modifier = Modifier.size(16.dp)) },
                         colors = AssistChipDefaults.assistChipColors(containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f))
                     )
                     Spacer(Modifier.width(8.dp))
@@ -119,7 +119,7 @@ fun LoginScreen(
                     AssistChip(
                         onClick = { },
                         label = { Text("✓ Face ID", style = MaterialTheme.typography.labelSmall) },
-                        leadingIcon = { Icon(Icons.Default.Face, contentDescription = null, modifier = Modifier.size(16.dp)) },
+                        leadingIcon = { net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Face, contentDescription = null, modifier = Modifier.size(16.dp)) },
                         colors = AssistChipDefaults.assistChipColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.5f))
                     )
                     Spacer(Modifier.width(8.dp))
@@ -128,7 +128,7 @@ fun LoginScreen(
                     AssistChip(
                         onClick = { },
                         label = { Text("✓ Remembered", style = MaterialTheme.typography.labelSmall) },
-                        leadingIcon = { Icon(Icons.Default.CheckCircle, contentDescription = null, modifier = Modifier.size(16.dp)) },
+                        leadingIcon = { net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.CheckCircle, contentDescription = null, modifier = Modifier.size(16.dp)) },
                         colors = AssistChipDefaults.assistChipColors(containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f))
                     )
                 }
@@ -138,7 +138,7 @@ fun LoginScreen(
                 value = email,
                 onValueChange = { email = it },
                 label = { Text("Email Address") },
-                leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email", tint = MaterialTheme.colorScheme.primary) },
+                leadingIcon = { net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Email, contentDescription = "Email", tint = MaterialTheme.colorScheme.primary) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 shape = PremiumUI.CardShape,
@@ -156,11 +156,11 @@ fun LoginScreen(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Password") },
-                leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Password", tint = MaterialTheme.colorScheme.primary) },
+                leadingIcon = { net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Lock, contentDescription = "Password", tint = MaterialTheme.colorScheme.primary) },
                 trailingIcon = {
                     val image = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(imageVector = image, contentDescription = "Toggle password visibility")
+                        net.affscash.android.ui.dashboard.GradientIcon(imageVector = image, contentDescription = "Toggle password visibility")
                     }
                 },
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -205,7 +205,7 @@ fun LoginScreen(
                     onDismissRequest = { viewModel.clearError() },
                     title = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Outlined.ErrorOutline, contentDescription = "Error", tint = MaterialTheme.colorScheme.error)
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.ErrorOutline, contentDescription = "Error", tint = MaterialTheme.colorScheme.error)
                             Spacer(Modifier.width(8.dp))
                             Text("Login Failed")
                         }
@@ -259,7 +259,7 @@ fun LoginScreen(
                         contentColor = MaterialTheme.colorScheme.primary
                     )
                 ) {
-                    Icon(
+                    net.affscash.android.ui.dashboard.GradientIcon(
                         imageVector = if (biometricCap.isFaceSupported) Icons.Default.Face else Icons.Default.Fingerprint,
                         contentDescription = "Biometric Login",
                         modifier = Modifier.size(24.dp)
@@ -296,7 +296,7 @@ fun LoginScreen(
         AlertDialog(
             onDismissRequest = { viewModel.dismissBiometricSetupDialog() },
             icon = {
-                Icon(
+                net.affscash.android.ui.dashboard.GradientIcon(
                     imageVector = Icons.Default.Security,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,

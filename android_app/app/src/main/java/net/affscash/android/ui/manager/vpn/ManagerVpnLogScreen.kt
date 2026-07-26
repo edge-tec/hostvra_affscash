@@ -62,7 +62,7 @@ fun ManagerVpnLogScreen(
                             .padding(start = 8.dp, end = 24.dp, top = 8.dp, bottom = 8.dp)
                     ) {
                         IconButton(onClick = onNavigateBack) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                         }
                         Text(
                             text = "VPN & Proxy Blocked Log",
@@ -114,7 +114,7 @@ fun ManagerVpnLogScreen(
                     ) {
                         Text("Filters & Search", fontWeight = FontWeight.ExtraBold, fontSize = 13.sp, color = Color(0xFF1E293B))
                         IconButton(onClick = { isFiltersExpanded = !isFiltersExpanded }) {
-                            Icon(
+                            net.affscash.android.ui.dashboard.GradientIcon(
                                 if (isFiltersExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
                                 contentDescription = "Toggle Filters",
                                 tint = MaterialTheme.colorScheme.primary
@@ -167,7 +167,7 @@ fun ManagerVpnLogScreen(
                 TextButton(
                     onClick = { viewModel.clearVpnLogs() }
                 ) {
-                    Icon(Icons.Default.Delete, contentDescription = null, tint = Color(0xFFEF4444), modifier = Modifier.size(16.dp))
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Delete, contentDescription = null, tint = Color(0xFFEF4444), modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(4.dp))
                     Text("Clear Old Entries", fontSize = 11.sp, color = Color(0xFFEF4444), fontWeight = FontWeight.Bold)
                 }

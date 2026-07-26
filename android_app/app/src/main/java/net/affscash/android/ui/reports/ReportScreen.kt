@@ -83,7 +83,7 @@ fun ReportScreen(
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     IconButton(onClick = onNavigateToFraudReport) {
-                        Icon(Icons.Default.Warning, contentDescription = "Fraud Report", tint = MaterialTheme.colorScheme.onSurface)
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Warning, contentDescription = "Fraud Report", tint = MaterialTheme.colorScheme.onSurface)
                     }
                 }
             }
@@ -114,7 +114,7 @@ fun ReportScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text("Filters & Options", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleSmall)
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             if (filtersExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                             contentDescription = "Toggle Filters",
                             tint = MaterialTheme.colorScheme.primary
@@ -135,10 +135,10 @@ fun ReportScreen(
                                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                     ) {
                                         Row(modifier = Modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                                            Icon(Icons.Default.List, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.List, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                             Spacer(modifier = Modifier.width(4.dp))
                                             Text(currentTabName, modifier = Modifier.weight(1f), maxLines = 1, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                         }
                                     }
                                     DropdownMenu(expanded = reportTypeExpanded, onDismissRequest = { reportTypeExpanded = false }) {
@@ -160,10 +160,10 @@ fun ReportScreen(
                                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                     ) {
                                         Row(modifier = Modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                                            Icon(Icons.Default.DateRange, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.DateRange, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                             Spacer(modifier = Modifier.width(4.dp))
                                             Text("$fromDate", modifier = Modifier.weight(1f), maxLines = 1, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                         }
                                     }
                                     DropdownMenu(expanded = dateExpanded, onDismissRequest = { dateExpanded = false }) {
@@ -205,10 +205,10 @@ fun ReportScreen(
                                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                     ) {
                                         Row(modifier = Modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                                            Icon(Icons.Default.ShoppingCart, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ShoppingCart, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                             Spacer(modifier = Modifier.width(4.dp))
                                             Text(offers.find { it.id == selectedOfferId }?.name ?: "All Offers", maxLines = 1, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
-                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                         }
                                     }
                                     DropdownMenu(expanded = offerExpanded, onDismissRequest = { offerExpanded = false }) {
@@ -228,10 +228,10 @@ fun ReportScreen(
                                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                     ) {
                                         Row(modifier = Modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                                            Icon(Icons.Default.Place, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Place, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                             Spacer(modifier = Modifier.width(4.dp))
                                             Text(selectedCountry ?: "All Geo", maxLines = 1, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
-                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                         }
                                     }
                                     DropdownMenu(expanded = countryExpanded, onDismissRequest = { countryExpanded = false }) {
@@ -253,10 +253,10 @@ fun ReportScreen(
                                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                     ) {
                                         Row(modifier = Modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                                            Icon(Icons.Default.Place, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Place, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                             Spacer(modifier = Modifier.width(4.dp))
                                             Text(selectedCity ?: "All Cities", maxLines = 1, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
-                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                         }
                                     }
                                     DropdownMenu(expanded = cityExpanded, onDismissRequest = { cityExpanded = false }) {
@@ -290,7 +290,7 @@ fun ReportScreen(
                                 shape = RoundedCornerShape(10.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                             ) {
-                                Icon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(18.dp))
+                                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(18.dp))
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text("Apply Filters", fontWeight = FontWeight.Bold)
                             }

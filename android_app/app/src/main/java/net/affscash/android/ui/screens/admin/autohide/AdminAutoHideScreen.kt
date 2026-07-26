@@ -80,7 +80,7 @@ fun AdminAutoHideScreen(
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(onClick = onNavigateBack) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color(0xFF0F172A))
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color(0xFF0F172A))
                         }
                         Box(
                             modifier = Modifier
@@ -89,7 +89,7 @@ fun AdminAutoHideScreen(
                                 .background(PremiumUI.HeaderGradient),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(
+                            net.affscash.android.ui.dashboard.GradientIcon(
                                 Icons.Outlined.VisibilityOff,
                                 contentDescription = null,
                                 tint = Color.White,
@@ -320,7 +320,7 @@ fun AdminAutoHideScreen(
                                                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F46E5)),
                                                 modifier = Modifier.fillMaxWidth().height(38.dp)
                                             ) {
-                                                Icon(Icons.Outlined.Restore, contentDescription = null, modifier = Modifier.size(16.dp))
+                                                net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.Restore, contentDescription = null, modifier = Modifier.size(16.dp))
                                                 Spacer(modifier = Modifier.width(6.dp))
                                                 Text("Unhide & Restore Balance", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                                             }
@@ -471,7 +471,7 @@ fun CreateRuleForm3D(uiState: AdminAutoHideState, viewModel: AdminAutoHideViewMo
                         Spacer(modifier = Modifier.width(6.dp))
                         Column {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(Icons.Default.Warning, contentDescription = null, tint = Color(0xFFEA580C), modifier = Modifier.size(16.dp))
+                                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Warning, contentDescription = null, tint = Color(0xFFEA580C), modifier = Modifier.size(16.dp))
                                 Spacer(Modifier.width(4.dp))
                                 Text("Apply to existing conversions retroactively", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = Color(0xFFEA580C))
                             }
@@ -504,7 +504,7 @@ fun CreateRuleForm3D(uiState: AdminAutoHideState, viewModel: AdminAutoHideViewMo
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F46E5)),
                     enabled = name.isNotBlank() && (type == "global" || (type == "offer" && offerId != null) || (type == "affiliate" && affiliateId != null))
                 ) {
-                    Icon(Icons.Outlined.AddCircle, contentDescription = null, modifier = Modifier.size(18.dp))
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.AddCircle, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(6.dp))
                     Text("Create Auto-Hide Rule", fontWeight = FontWeight.Bold)
                 }

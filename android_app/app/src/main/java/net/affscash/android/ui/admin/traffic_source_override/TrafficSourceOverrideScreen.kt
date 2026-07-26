@@ -108,7 +108,7 @@ fun TrafficSourceOverrideScreen(
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             IconButton(onClick = onNavigateBack) {
-                                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                                net.affscash.android.ui.dashboard.GradientIcon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                             }
                             Text(
                                 text = "Traffic Source Override",
@@ -118,10 +118,10 @@ fun TrafficSourceOverrideScreen(
                         }
                         Row {
                             IconButton(onClick = onNavigateToLogs) {
-                                Icon(Icons.Default.History, contentDescription = "Override Logs", tint = MaterialTheme.colorScheme.primary)
+                                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.History, contentDescription = "Override Logs", tint = MaterialTheme.colorScheme.primary)
                             }
                             IconButton(onClick = { viewModel.loadData(isManager) }) {
-                                Icon(Icons.Default.Refresh, contentDescription = "Refresh", tint = MaterialTheme.colorScheme.primary)
+                                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Refresh, contentDescription = "Refresh", tint = MaterialTheme.colorScheme.primary)
                             }
                         }
                     }
@@ -139,7 +139,7 @@ fun TrafficSourceOverrideScreen(
                 shape = RoundedCornerShape(16.dp),
                 elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 6.dp)
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Rule", modifier = Modifier.size(24.dp))
+                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Add, contentDescription = "Add Rule", modifier = Modifier.size(24.dp))
             }
         }
     ) { paddingValues ->
@@ -189,7 +189,7 @@ fun TrafficSourceOverrideScreen(
                                         color = if (data.globalEnabled) Color(0xFF10B981) else Color.Gray,
                                         modifier = Modifier.size(40.dp)
                                     ) {
-                                        Icon(
+                                        net.affscash.android.ui.dashboard.GradientIcon(
                                             Icons.AutoMirrored.Filled.AltRoute,
                                             contentDescription = null,
                                             tint = Color.White,
@@ -243,7 +243,7 @@ fun TrafficSourceOverrideScreen(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Icon(
+                                    net.affscash.android.ui.dashboard.GradientIcon(
                                         Icons.Default.Tune,
                                         contentDescription = null,
                                         modifier = Modifier.size(48.dp),
@@ -361,10 +361,10 @@ private fun RuleCardItem(
                         modifier = Modifier.height(24.dp)
                     )
                     IconButton(onClick = onEdit) {
-                        Icon(Icons.Default.Edit, contentDescription = "Edit", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Edit, contentDescription = "Edit", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
                     }
                     IconButton(onClick = onDelete) {
-                        Icon(Icons.Default.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(20.dp))
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(20.dp))
                     }
                 }
             }
@@ -461,7 +461,7 @@ private fun RuleCardItem(
                     }
                 }
 
-                Icon(
+                net.affscash.android.ui.dashboard.GradientIcon(
                     Icons.Default.SwapHoriz,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
@@ -644,7 +644,7 @@ private fun AddEditRuleDialog(
                             placeholder = { Text("Type name, code, or ID...") },
                             trailingIcon = {
                                 IconButton(onClick = { affDropdownExpanded = !affDropdownExpanded }) {
-                                    Icon(
+                                    net.affscash.android.ui.dashboard.GradientIcon(
                                         imageVector = if (affDropdownExpanded) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
                                         contentDescription = "Toggle Affiliate List"
                                     )
@@ -830,7 +830,7 @@ private fun AddEditRuleDialog(
                             placeholder = { Text("Type offer name or ID...") },
                             trailingIcon = {
                                 IconButton(onClick = { offerDropdownExpanded = !offerDropdownExpanded }) {
-                                    Icon(
+                                    net.affscash.android.ui.dashboard.GradientIcon(
                                         imageVector = if (offerDropdownExpanded) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
                                         contentDescription = "Toggle Offer List"
                                     )

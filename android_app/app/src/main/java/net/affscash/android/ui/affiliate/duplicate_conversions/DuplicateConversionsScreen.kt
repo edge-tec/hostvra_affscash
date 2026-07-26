@@ -75,7 +75,7 @@ fun DuplicateConversionsScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Surface(shape = PremiumUI.CardShape, color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f), modifier = Modifier.size(36.dp)) {
-                                Icon(Icons.Default.Layers, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(8.dp))
+                                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Layers, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(8.dp))
                             }
                             Spacer(modifier = Modifier.width(10.dp))
                             Column {
@@ -102,7 +102,7 @@ fun DuplicateConversionsScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Surface(shape = PremiumUI.CardShape, color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f), modifier = Modifier.size(36.dp)) {
-                                Icon(Icons.Default.Warning, contentDescription = null, tint = MaterialTheme.colorScheme.error, modifier = Modifier.padding(8.dp))
+                                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Warning, contentDescription = null, tint = MaterialTheme.colorScheme.error, modifier = Modifier.padding(8.dp))
                             }
                             Spacer(modifier = Modifier.width(10.dp))
                             Column {
@@ -168,7 +168,7 @@ fun DuplicateClusterCard(cluster: AffiliateDuplicateConversionCluster) {
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.Router, contentDescription = null, modifier = Modifier.size(12.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Router, contentDescription = null, modifier = Modifier.size(12.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 cluster.ipAddress,
@@ -209,7 +209,7 @@ fun DuplicateClusterCard(cluster: AffiliateDuplicateConversionCluster) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
-                            Icon(Icons.Default.AdsClick, contentDescription = null, modifier = Modifier.size(14.dp), tint = Color.Gray)
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.AdsClick, contentDescription = null, modifier = Modifier.size(14.dp), tint = Color.Gray)
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 displayId, 

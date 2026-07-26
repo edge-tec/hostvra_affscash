@@ -32,7 +32,7 @@ fun AdminSmartlinkRequestsScreen(
                 title = { Text("Smartlink Requests") },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
@@ -109,13 +109,13 @@ fun AdminSmartlinkRequestItem(
                     horizontalArrangement = Arrangement.End
                 ) {
                     TextButton(onClick = onReject) {
-                        Icon(Icons.Default.Close, contentDescription = "Reject", tint = MaterialTheme.colorScheme.error)
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Close, contentDescription = "Reject", tint = MaterialTheme.colorScheme.error)
                         Spacer(modifier = Modifier.width(4.dp))
                         Text("Reject", color = MaterialTheme.colorScheme.error)
                     }
                     Spacer(modifier = Modifier.width(4.dp))
                     Button(onClick = onApprove, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))) {
-                        Icon(Icons.Default.Check, contentDescription = "Approve")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Check, contentDescription = "Approve")
                         Spacer(modifier = Modifier.width(4.dp))
                         Text("Approve")
                     }

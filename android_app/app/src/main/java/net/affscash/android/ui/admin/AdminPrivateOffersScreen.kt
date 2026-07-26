@@ -76,7 +76,7 @@ fun AdminPrivateOffersScreen(
                         .background(PremiumUI.HeaderGradient),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
+                    net.affscash.android.ui.dashboard.GradientIcon(
                         Icons.Outlined.VpnKey,
                         contentDescription = null,
                         tint = Color.White,
@@ -133,7 +133,7 @@ fun AdminPrivateOffersScreen(
                                             .background(Color(0xFFEEF2FF)),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        Icon(Icons.Outlined.Security, contentDescription = null, tint = Color(0xFF4F46E5), modifier = Modifier.size(18.dp))
+                                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.Security, contentDescription = null, tint = Color(0xFF4F46E5), modifier = Modifier.size(18.dp))
                                     }
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text("Convert Offer to Private", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))
@@ -156,7 +156,7 @@ fun AdminPrivateOffersScreen(
                                             onValueChange = {},
                                             readOnly = true,
                                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                                            leadingIcon = { Icon(Icons.Outlined.LocalOffer, contentDescription = null, tint = Color(0xFF64748B)) },
+                                            leadingIcon = { net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.LocalOffer, contentDescription = null, tint = Color(0xFF64748B)) },
                                             modifier = Modifier.menuAnchor().fillMaxWidth(),
                                             shape = RoundedCornerShape(12.dp),
                                             colors = OutlinedTextFieldDefaults.colors(
@@ -195,7 +195,7 @@ fun AdminPrivateOffersScreen(
                                             disabledContainerColor = Color(0xFFE2E8F0)
                                         )
                                     ) {
-                                        Icon(Icons.Outlined.Lock, contentDescription = null, modifier = Modifier.size(18.dp))
+                                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.Lock, contentDescription = null, modifier = Modifier.size(18.dp))
                                         Spacer(modifier = Modifier.width(6.dp))
                                         Text("Mark as Private", fontWeight = FontWeight.Bold)
                                     }
@@ -211,7 +211,7 @@ fun AdminPrivateOffersScreen(
                                         verticalAlignment = Alignment.Top,
                                         modifier = Modifier.padding(10.dp)
                                     ) {
-                                        Icon(Icons.Outlined.Info, contentDescription = null, tint = Color(0xFF64748B), modifier = Modifier.size(16.dp))
+                                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.Info, contentDescription = null, tint = Color(0xFF64748B), modifier = Modifier.size(16.dp))
                                         Spacer(modifier = Modifier.width(6.dp))
                                         Text(
                                             "Once private, the offer is hidden from all affiliates. You must manually grant access from the offer's manage page.",
@@ -242,7 +242,7 @@ fun AdminPrivateOffersScreen(
                                                 .background(Color(0xFFD1FAE5)),
                                             contentAlignment = Alignment.Center
                                         ) {
-                                            Icon(Icons.Outlined.VerifiedUser, contentDescription = null, tint = Color(0xFF059669), modifier = Modifier.size(18.dp))
+                                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.VerifiedUser, contentDescription = null, tint = Color(0xFF059669), modifier = Modifier.size(18.dp))
                                         }
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Text("Active Private Offers", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))
@@ -269,7 +269,7 @@ fun AdminPrivateOffersScreen(
                                 if (data.privateOffers.isEmpty()) {
                                     Box(modifier = Modifier.fillMaxWidth().padding(24.dp), contentAlignment = Alignment.Center) {
                                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                            Icon(Icons.Outlined.VisibilityOff, contentDescription = null, tint = Color(0xFF94A3B8), modifier = Modifier.size(40.dp))
+                                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.VisibilityOff, contentDescription = null, tint = Color(0xFF94A3B8), modifier = Modifier.size(40.dp))
                                             Spacer(modifier = Modifier.height(4.dp))
                                             Text("No private offers currently.", color = Color(0xFF64748B), fontSize = 13.sp)
                                         }
@@ -317,7 +317,7 @@ fun AdminPrivateOffersScreen(
                                                     contentPadding = PaddingValues(horizontal = 12.dp),
                                                     border = BorderStroke(1.dp, Color(0xFFCBD5E1))
                                                 ) {
-                                                    Icon(Icons.Outlined.Public, contentDescription = null, modifier = Modifier.size(14.dp), tint = Color(0xFF475569))
+                                                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.Public, contentDescription = null, modifier = Modifier.size(14.dp), tint = Color(0xFF475569))
                                                     Spacer(modifier = Modifier.width(4.dp))
                                                     Text("Make Public", fontSize = 12.sp, color = Color(0xFF475569))
                                                 }
@@ -329,7 +329,7 @@ fun AdminPrivateOffersScreen(
                                                     contentPadding = PaddingValues(horizontal = 12.dp),
                                                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F46E5))
                                                 ) {
-                                                    Icon(Icons.Outlined.ManageAccounts, contentDescription = null, modifier = Modifier.size(14.dp))
+                                                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.ManageAccounts, contentDescription = null, modifier = Modifier.size(14.dp))
                                                     Spacer(modifier = Modifier.width(4.dp))
                                                     Text("Manage Access", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                                                 }
@@ -356,7 +356,7 @@ fun AdminPrivateOffersScreen(
                                             .background(Color(0xFFFEF3C7)),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        Icon(Icons.Outlined.History, contentDescription = null, tint = Color(0xFFD97706), modifier = Modifier.size(18.dp))
+                                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.History, contentDescription = null, tint = Color(0xFFD97706), modifier = Modifier.size(18.dp))
                                     }
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text("Recent Activity Log", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))

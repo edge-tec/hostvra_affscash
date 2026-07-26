@@ -71,14 +71,14 @@ fun AdminOfferApprovalsScreen(
                     placeholder = { Text("Search by name, email or code", fontSize = 13.sp) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = Color(0xFF64748B)) },
+                    leadingIcon = { net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Search, contentDescription = "Search", tint = Color(0xFF64748B)) },
                     trailingIcon = {
                         if (searchQuery.isNotEmpty()) {
                             IconButton(onClick = { 
                                 searchQuery = ""
                                 viewModel.loadData(aff = "") 
                             }) {
-                                Icon(Icons.Default.Clear, contentDescription = "Clear", tint = Color(0xFF64748B))
+                                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Clear, contentDescription = "Clear", tint = Color(0xFF64748B))
                             }
                         }
                     },
@@ -145,7 +145,7 @@ fun AdminOfferApprovalsScreen(
                     shape = PremiumUI.ButtonShape,
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F46E5))
                 ) {
-                    Icon(Icons.Default.FilterList, contentDescription = "Apply Filters", modifier = Modifier.size(18.dp))
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.FilterList, contentDescription = "Apply Filters", modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(6.dp))
                     Text("Apply Filters", fontWeight = FontWeight.Bold)
                 }
@@ -183,7 +183,7 @@ fun AdminOfferApprovalsScreen(
                             .background(PremiumUI.HeaderGradient),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Outlined.AssignmentTurnedIn,
                             contentDescription = null,
                             tint = Color.White,
@@ -216,7 +216,7 @@ fun AdminOfferApprovalsScreen(
                         modifier = Modifier.padding(10.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Outlined.FilterList,
                             contentDescription = "Filters",
                             tint = Color(0xFF4F46E5),
@@ -309,7 +309,7 @@ fun AdminOfferApprovalsScreen(
                                         .background(Color(0xFFF1F5F9)),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Icon(Icons.Outlined.Search, contentDescription = null, modifier = Modifier.size(32.dp), tint = Color(0xFF94A3B8))
+                                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.Search, contentDescription = null, modifier = Modifier.size(32.dp), tint = Color(0xFF94A3B8))
                                 }
                                 Spacer(modifier = Modifier.height(10.dp))
                                 Text("No requests found", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))

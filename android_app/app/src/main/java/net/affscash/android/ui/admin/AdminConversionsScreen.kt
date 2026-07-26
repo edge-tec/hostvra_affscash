@@ -58,7 +58,7 @@ fun AdminConversionItem(conversion: Conversion) {
                             .background(Color(0xFFEEF2FF)),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Outlined.LocalOffer,
                             contentDescription = null,
                             tint = Color(0xFF4F46E5),
@@ -108,7 +108,7 @@ fun AdminConversionItem(conversion: Conversion) {
                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(Icons.Outlined.Person, contentDescription = null, tint = Color(0xFF64748B), modifier = Modifier.size(16.dp))
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.Person, contentDescription = null, tint = Color(0xFF64748B), modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = "Affiliate:",
@@ -272,7 +272,7 @@ fun AdminConversionsScreen(
                                         .background(PremiumUI.HeaderGradient),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Icon(
+                                    net.affscash.android.ui.dashboard.GradientIcon(
                                         Icons.Outlined.TrendingUp,
                                         contentDescription = null,
                                         tint = Color.White,
@@ -301,7 +301,7 @@ fun AdminConversionsScreen(
                         item {
                             Box(modifier = Modifier.fillMaxWidth().height(250.dp), contentAlignment = Alignment.Center) {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Icon(Icons.Outlined.Analytics, contentDescription = null, modifier = Modifier.size(48.dp), tint = Color(0xFF94A3B8))
+                                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.Analytics, contentDescription = null, modifier = Modifier.size(48.dp), tint = Color(0xFF94A3B8))
                                     Spacer(modifier = Modifier.height(6.dp))
                                     Text("No conversions found", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))
                                 }

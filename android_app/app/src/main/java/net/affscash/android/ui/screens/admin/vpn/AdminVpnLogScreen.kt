@@ -68,7 +68,7 @@ fun AdminVpnLogScreen(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color(0xFF0F172A))
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color(0xFF0F172A))
                     }
                     Box(
                         modifier = Modifier
@@ -77,7 +77,7 @@ fun AdminVpnLogScreen(
                             .background(PremiumUI.HeaderGradient),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Outlined.Shield,
                             contentDescription = null,
                             tint = Color.White,
@@ -110,7 +110,7 @@ fun AdminVpnLogScreen(
                         modifier = Modifier.padding(8.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Outlined.FilterList,
                             contentDescription = "Filter",
                             tint = Color(0xFF4F46E5),
@@ -255,7 +255,7 @@ fun AdminVpnLogScreen(
                 onClick = { viewModel.clearOldLogs() },
                 enabled = !uiState.isClearing
             ) {
-                Icon(Icons.Outlined.DeleteSweep, contentDescription = null, modifier = Modifier.size(16.dp), tint = Color(0xFFDC2626))
+                net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.DeleteSweep, contentDescription = null, modifier = Modifier.size(16.dp), tint = Color(0xFFDC2626))
                 Spacer(modifier = Modifier.width(4.dp))
                 Text("Clear Old Entries", fontSize = 12.sp, color = Color(0xFFDC2626), fontWeight = FontWeight.Bold)
             }

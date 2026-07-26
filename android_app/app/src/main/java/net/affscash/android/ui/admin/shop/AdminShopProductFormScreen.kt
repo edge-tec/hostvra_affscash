@@ -67,7 +67,7 @@ fun AdminShopProductFormScreen(
                 title = { Text(if (productId == null) "Create Product" else "Edit Product") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 }
             )

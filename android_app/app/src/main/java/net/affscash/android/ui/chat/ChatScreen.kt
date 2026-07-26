@@ -105,7 +105,7 @@ fun ChatScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -170,7 +170,7 @@ fun ChatScreen(
                         modifier = Modifier.padding(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Default.InsertDriveFile,
                             contentDescription = "File",
                             tint = MaterialTheme.colorScheme.primary,
@@ -185,7 +185,7 @@ fun ChatScreen(
                             style = MaterialTheme.typography.bodySmall
                         )
                         IconButton(onClick = { viewModel.clearSelectedFile() }) {
-                            Icon(Icons.Default.Close, contentDescription = "Remove file")
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Close, contentDescription = "Remove file")
                         }
                     }
                 }
@@ -206,7 +206,7 @@ fun ChatScreen(
                         onClick = { launcher.launch("*/*") },
                         enabled = !uiState.isSending
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Default.AttachFile,
                             contentDescription = "Attach File",
                             tint = MaterialTheme.colorScheme.primary
@@ -217,7 +217,7 @@ fun ChatScreen(
                         onClick = { imageLauncher.launch(androidx.activity.result.PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
                         enabled = !uiState.isSending
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Default.Image,
                             contentDescription = "Attach Image",
                             tint = MaterialTheme.colorScheme.primary
@@ -254,7 +254,7 @@ fun ChatScreen(
                                 strokeWidth = 2.dp
                             )
                         } else {
-                            Icon(
+                            net.affscash.android.ui.dashboard.GradientIcon(
                                 Icons.Default.Send,
                                 contentDescription = "Send",
                                 tint = MaterialTheme.colorScheme.onPrimary
@@ -430,7 +430,7 @@ fun ChatMessageBubble(
                                         },
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Icon(
+                                    net.affscash.android.ui.dashboard.GradientIcon(
                                         Icons.Default.InsertDriveFile,
                                         contentDescription = "File",
                                         tint = textColor,

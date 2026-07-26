@@ -106,7 +106,7 @@ fun ManagerDashboardScreen(
                                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
-                                            Icon(
+                                            net.affscash.android.ui.dashboard.GradientIcon(
                                                 Icons.Outlined.MonetizationOn,
                                                 contentDescription = null,
                                                 tint = Color(0xFF059669),

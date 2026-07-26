@@ -80,7 +80,7 @@ fun OfferScreen(
                             .background(PremiumUI.HeaderGradient),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Outlined.LocalOffer,
                             contentDescription = null,
                             tint = Color.White,
@@ -110,7 +110,7 @@ fun OfferScreen(
                     border = BorderStroke(1.dp, Color(0xFFE2E8F0))
                 ) {
                     Box(modifier = Modifier.padding(10.dp), contentAlignment = Alignment.Center) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Outlined.FilterList,
                             contentDescription = "Filters",
                             tint = Color(0xFF4F46E5),
@@ -134,7 +134,7 @@ fun OfferScreen(
                 placeholder = { Text("Search offers by name, ID or category...", fontSize = 13.sp) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = Color(0xFF64748B), modifier = Modifier.size(20.dp)) },
+                leadingIcon = { net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Search, contentDescription = "Search", tint = Color(0xFF64748B), modifier = Modifier.size(20.dp)) },
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color(0xFF4F46E5),
@@ -205,7 +205,7 @@ fun OfferScreen(
                     if (offers.isEmpty()) {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Icon(Icons.Outlined.SearchOff, contentDescription = null, modifier = Modifier.size(48.dp), tint = Color(0xFF94A3B8))
+                                net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.SearchOff, contentDescription = null, modifier = Modifier.size(48.dp), tint = Color(0xFF94A3B8))
                                 Spacer(modifier = Modifier.height(6.dp))
                                 Text("No offers found matching search.", fontSize = 14.sp, color = Color(0xFF64748B))
                             }

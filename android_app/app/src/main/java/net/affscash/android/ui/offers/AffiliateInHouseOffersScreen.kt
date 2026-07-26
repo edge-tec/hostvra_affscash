@@ -82,7 +82,7 @@ fun AffiliateInHouseOffersScreen(
                             .background(PremiumUI.HeaderGradient),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Outlined.Storefront,
                             contentDescription = null,
                             tint = Color.White,
@@ -115,7 +115,7 @@ fun AffiliateInHouseOffersScreen(
                         modifier = Modifier.padding(10.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Outlined.FilterList,
                             contentDescription = "Filter",
                             tint = Color(0xFF4F46E5),
@@ -138,11 +138,11 @@ fun AffiliateInHouseOffersScreen(
                     placeholder = { Text("Search in-house offers...", fontSize = 13.sp) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
-                    leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = "Search", tint = Color(0xFF64748B)) },
+                    leadingIcon = { net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.Search, contentDescription = "Search", tint = Color(0xFF64748B)) },
                     trailingIcon = {
                         if (searchQuery.isNotEmpty()) {
                             IconButton(onClick = { viewModel.searchQuery.value = ""; viewModel.loadOffers() }) {
-                                Icon(Icons.Default.Clear, contentDescription = "Clear", tint = Color(0xFF64748B))
+                                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Clear, contentDescription = "Clear", tint = Color(0xFF64748B))
                             }
                         }
                     },

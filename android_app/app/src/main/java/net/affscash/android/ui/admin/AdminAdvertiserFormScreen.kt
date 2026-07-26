@@ -43,7 +43,7 @@ fun AdminAdvertiserFormScreen(
                 title = { Text(if (uiState.isEditMode) "Edit Advertiser" else "Create Advertiser") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(

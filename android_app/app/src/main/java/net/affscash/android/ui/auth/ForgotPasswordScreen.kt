@@ -45,7 +45,7 @@ fun ForgotPasswordScreen(
                 title = { Text("Forgot Password") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -111,7 +111,7 @@ fun ForgotPasswordScreen(
                                         viewModel.clearError() 
                                     },
                                     label = { Text("Email Address") },
-                                    leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
+                                    leadingIcon = { net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Email, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                                     modifier = Modifier.fillMaxWidth(),
                                     singleLine = true,
@@ -178,7 +178,7 @@ fun ForgotPasswordScreen(
                                         viewModel.clearError() 
                                     },
                                     label = { Text("New Password") },
-                                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
+                                    leadingIcon = { net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Lock, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                                     visualTransformation = PasswordVisualTransformation(),
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                                     modifier = Modifier.fillMaxWidth(),
@@ -198,7 +198,7 @@ fun ForgotPasswordScreen(
                                         viewModel.clearError() 
                                     },
                                     label = { Text("Confirm New Password") },
-                                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
+                                    leadingIcon = { net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Lock, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                                     visualTransformation = PasswordVisualTransformation(),
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                                     modifier = Modifier.fillMaxWidth(),
@@ -229,7 +229,7 @@ fun ForgotPasswordScreen(
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
-                                    Icon(
+                                    net.affscash.android.ui.dashboard.GradientIcon(
                                         imageVector = Icons.Default.CheckCircle,
                                         contentDescription = "Success",
                                         tint = Color(0xFF4CAF50),

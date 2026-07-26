@@ -69,11 +69,11 @@ fun ManagerOfferApprovalsScreen(
                     placeholder = { Text("Search by name, email or code") },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.primary) },
+                    leadingIcon = { net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.primary) },
                     trailingIcon = {
                         if (uiState.searchQuery.isNotEmpty()) {
                             IconButton(onClick = { viewModel.updateSearchQuery("") }) {
-                                Icon(Icons.Default.Clear, contentDescription = "Clear")
+                                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Clear, contentDescription = "Clear")
                             }
                         }
                     },
@@ -138,7 +138,7 @@ fun ManagerOfferApprovalsScreen(
                     modifier = Modifier.fillMaxWidth().height(56.dp),
                     shape = MaterialTheme.shapes.medium
                 ) {
-                    Icon(Icons.Default.FilterList, contentDescription = "Apply Filters", modifier = Modifier.size(18.dp))
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.FilterList, contentDescription = "Apply Filters", modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(4.dp))
                     Text("Apply Filters")
                 }
@@ -169,7 +169,7 @@ fun ManagerOfferApprovalsScreen(
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         IconButton(onClick = { showFilters = true }) {
-                            Icon(Icons.Default.FilterList, contentDescription = "Filters", tint = MaterialTheme.colorScheme.primary)
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.FilterList, contentDescription = "Filters", tint = MaterialTheme.colorScheme.primary)
                         }
                     }
                 }
@@ -219,7 +219,7 @@ fun ManagerOfferApprovalsScreen(
             } else if (uiState.requests.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(64.dp), tint = Color.Gray)
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(64.dp), tint = Color.Gray)
                         Spacer(modifier = Modifier.height(4.dp))
                         Text("No requests found", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                         Text("No approval requests at this time.", color = Color.Gray)

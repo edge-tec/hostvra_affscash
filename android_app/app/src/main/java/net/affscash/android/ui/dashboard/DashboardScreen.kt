@@ -114,7 +114,7 @@ fun DashboardScreen(
                                                 fontSize = 12.sp
                                             )
                                             Spacer(modifier = Modifier.width(2.dp))
-                                            Icon(
+                                            net.affscash.android.ui.dashboard.GradientIcon(
                                                 Icons.Default.ArrowDropDown,
                                                 contentDescription = "Dropdown",
                                                 tint = Color(0xFF059669),
@@ -584,7 +584,7 @@ fun HeaderIconWithBadge(
                 .clickable(onClick = onClick),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
+            net.affscash.android.ui.dashboard.GradientIcon(
                 imageVector = icon,
                 contentDescription = "Header Icon",
                 tint = Color(0xFF334155),

@@ -74,7 +74,7 @@ fun AdminReportsScreen(
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(onClick = onNavigateBack) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color(0xFF0F172A))
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color(0xFF0F172A))
                         }
                         Box(
                             modifier = Modifier
@@ -83,7 +83,7 @@ fun AdminReportsScreen(
                                 .background(PremiumUI.HeaderGradient),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(
+                            net.affscash.android.ui.dashboard.GradientIcon(
                                 Icons.Outlined.Assessment,
                                 contentDescription = null,
                                 tint = Color.White,
@@ -107,7 +107,7 @@ fun AdminReportsScreen(
                     }
 
                     IconButton(onClick = { viewModel.loadReport() }) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Refresh", tint = Color(0xFF4F46E5))
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Refresh, contentDescription = "Refresh", tint = Color(0xFF4F46E5))
                     }
                 }
             }
@@ -155,7 +155,7 @@ fun AdminReportsScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(currentTabName, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))
-                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = Color(0xFF64748B))
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowDropDown, contentDescription = null, tint = Color(0xFF64748B))
                         }
                     }
 

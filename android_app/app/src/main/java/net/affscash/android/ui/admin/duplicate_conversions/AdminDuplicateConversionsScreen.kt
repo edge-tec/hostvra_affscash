@@ -45,12 +45,12 @@ fun AdminDuplicateConversionsScreen(
                 title = { Text("Duplicate Conversions") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
                     IconButton(onClick = { viewModel.loadReport() }) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Refresh, contentDescription = "Refresh")
                     }
                 }
             )
@@ -126,7 +126,7 @@ fun AdminDuplicateConversionsScreen(
                                         color = MaterialTheme.colorScheme.primaryContainer,
                                         modifier = Modifier.size(36.dp)
                                     ) {
-                                        Icon(
+                                        net.affscash.android.ui.dashboard.GradientIcon(
                                             Icons.Default.Layers,
                                             contentDescription = null,
                                             tint = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -173,7 +173,7 @@ fun AdminDuplicateConversionsScreen(
                                         color = MaterialTheme.colorScheme.errorContainer,
                                         modifier = Modifier.size(36.dp)
                                     ) {
-                                        Icon(
+                                        net.affscash.android.ui.dashboard.GradientIcon(
                                             Icons.Default.Warning,
                                             contentDescription = null,
                                             tint = MaterialTheme.colorScheme.onErrorContainer,
@@ -215,7 +215,7 @@ fun AdminDuplicateConversionsScreen(
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                            Icon(
+                                            net.affscash.android.ui.dashboard.GradientIcon(
                                                 Icons.Default.Warning,
                                                 contentDescription = null,
                                                 modifier = Modifier.size(48.dp),
@@ -275,7 +275,7 @@ fun AdminDuplicateClusterView(cluster: DuplicateConversionGroup) {
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
+                            net.affscash.android.ui.dashboard.GradientIcon(
                                 Icons.Default.Router,
                                 contentDescription = null,
                                 modifier = Modifier.size(13.dp),
@@ -333,7 +333,7 @@ private fun AdminDuplicateRowView(conversion: DuplicateConversionRow) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
-                Icon(
+                net.affscash.android.ui.dashboard.GradientIcon(
                     Icons.Default.AdsClick,
                     contentDescription = null,
                     modifier = Modifier.size(14.dp),
@@ -376,7 +376,7 @@ private fun AdminDuplicateRowView(conversion: DuplicateConversionRow) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
-                Icon(
+                net.affscash.android.ui.dashboard.GradientIcon(
                     Icons.Default.Person,
                     contentDescription = null,
                     modifier = Modifier.size(12.dp),

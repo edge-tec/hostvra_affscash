@@ -60,7 +60,7 @@ fun AdminAdvertisersScreen(
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
                         modifier = Modifier.padding(end = 8.dp)
                     ) {
-                        Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(4.dp))
                         Text("Create Advertiser")
                     }
@@ -106,11 +106,11 @@ fun AdminAdvertisersScreen(
                         .fillMaxWidth()
                         .padding(8.dp),
                     placeholder = { Text("Search advertisers...") },
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.primary) },
+                    leadingIcon = { net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.primary) },
                     trailingIcon = {
                         if (uiState.searchQuery.isNotEmpty()) {
                             IconButton(onClick = { viewModel.updateSearchQuery("") }) {
-                                Icon(Icons.Default.Clear, contentDescription = "Clear")
+                                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Clear, contentDescription = "Clear")
                             }
                         }
                     },
@@ -223,7 +223,7 @@ fun AdminAdvertiserCard(
 
             Spacer(modifier = Modifier.height(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.DateRange, contentDescription = null, modifier = Modifier.size(16.dp), tint = Color.Gray)
+                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.DateRange, contentDescription = null, modifier = Modifier.size(16.dp), tint = Color.Gray)
                 Spacer(modifier = Modifier.width(4.dp))
                 Text("Joined: ${advertiser.createdAt.take(10)}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
             }
@@ -247,7 +247,7 @@ fun AdminAdvertiserCard(
                 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Button(onClick = onImpersonate, contentPadding = PaddingValues(horizontal = 8.dp)) {
-                        Icon(Icons.Default.VpnKey, contentDescription = null, modifier = Modifier.size(16.dp))
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.VpnKey, contentDescription = null, modifier = Modifier.size(16.dp))
                         Spacer(modifier = Modifier.width(4.dp))
                         Text("Login As")
                     }

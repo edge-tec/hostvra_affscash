@@ -50,7 +50,7 @@ fun RewardsScreen(
                 title = { Text("My Rewards") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -128,7 +128,7 @@ fun RewardsContent(data: RewardsResponse) {
                         modifier = Modifier.padding(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(Icons.Default.CheckCircle, contentDescription = "Earned", tint = Color(0xFF4CAF50))
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.CheckCircle, contentDescription = "Earned", tint = Color(0xFF4CAF50))
                         Spacer(modifier = Modifier.width(4.dp))
                         Column {
                             Text("Reward Unlocked!", fontWeight = FontWeight.Bold)
@@ -222,7 +222,7 @@ fun AvailableRewardItem(rule: RewardRule) {
                     },
                     error = {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Icon(Icons.Default.Image, contentDescription = "No Image", tint = Color.Gray, modifier = Modifier.size(24.dp))
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Image, contentDescription = "No Image", tint = Color.Gray, modifier = Modifier.size(24.dp))
                         }
                     }
                 )

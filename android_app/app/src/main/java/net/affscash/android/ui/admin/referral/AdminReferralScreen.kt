@@ -45,12 +45,12 @@ fun AdminReferralScreen(
                 title = { Text("Referral System") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
                     IconButton(onClick = { navController.navigate("platform_settings?tab=commission") }) {
-                        Icon(Icons.Default.Settings, contentDescription = "Settings")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Settings, contentDescription = "Settings")
                     }
                 }
             )
@@ -301,7 +301,7 @@ fun CommissionItem(commission: AdminReferralCommission, onApprove: (Int) -> Unit
                     modifier = Modifier.padding(end = 8.dp),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red)
                 ) {
-                    Icon(Icons.Default.Close, contentDescription = "Reject", modifier = Modifier.size(16.dp))
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Close, contentDescription = "Reject", modifier = Modifier.size(16.dp))
                     Spacer(Modifier.width(4.dp))
                     Text("Reject")
                 }
@@ -309,7 +309,7 @@ fun CommissionItem(commission: AdminReferralCommission, onApprove: (Int) -> Unit
                     onClick = { onApprove(commission.id) },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF10B981))
                 ) {
-                    Icon(Icons.Default.Check, contentDescription = "Approve", modifier = Modifier.size(16.dp))
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Check, contentDescription = "Approve", modifier = Modifier.size(16.dp))
                     Spacer(Modifier.width(4.dp))
                     Text("Approve")
                 }

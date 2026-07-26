@@ -84,7 +84,7 @@ fun ManagerReportsScreen(
                         .padding(start = 8.dp, end = 24.dp, top = 8.dp, bottom = 8.dp)
                 ) {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                     Text(
                         text = "Reports",
@@ -121,7 +121,7 @@ fun ManagerReportsScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text("Filters & Options", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleSmall)
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             if (filtersExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                             contentDescription = "Toggle Filters",
                             tint = MaterialTheme.colorScheme.primary
@@ -142,7 +142,7 @@ fun ManagerReportsScreen(
                                 ) {
                                     Row(modifier = Modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                                         Text(currentTabName, modifier = Modifier.weight(1f), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                        Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                     }
                                 }
                                 DropdownMenu(expanded = reportTypeExpanded, onDismissRequest = { reportTypeExpanded = false }) {
@@ -169,7 +169,7 @@ fun ManagerReportsScreen(
                                         Row(modifier = Modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                                             val (fromD, toD) = uiState.dateRangeState.getFormattedDates()
                                             Text("$fromD to $toD", modifier = Modifier.weight(1f), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                         }
                                     }
                                     DropdownMenu(expanded = dateExpanded, onDismissRequest = { dateExpanded = false }) {
@@ -214,7 +214,7 @@ fun ManagerReportsScreen(
                                         ) {
                                             Row(modifier = Modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                                                 Text(affiliates.find { it.id == uiState.selectedAffiliateId }?.name ?: "All Managed", maxLines = 1, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
-                                                Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                             }
                                         }
                                         DropdownMenu(expanded = affExpanded, onDismissRequest = { affExpanded = false }) {
@@ -236,7 +236,7 @@ fun ManagerReportsScreen(
                                         ) {
                                             Row(modifier = Modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                                                 Text(offers.find { it.id == uiState.selectedOfferId }?.name ?: "All Offers", maxLines = 1, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
-                                                Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                             }
                                         }
                                         DropdownMenu(expanded = offerExpanded, onDismissRequest = { offerExpanded = false }) {
@@ -261,7 +261,7 @@ fun ManagerReportsScreen(
                                         ) {
                                             Row(modifier = Modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                                                 Text(uiState.selectedCountry.ifEmpty { "All Countries" }, maxLines = 1, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
-                                                Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                             }
                                         }
                                         DropdownMenu(expanded = countryExpanded, onDismissRequest = { countryExpanded = false }) {

@@ -68,7 +68,7 @@ fun ManagerConversionsScreen(
                                 color = MaterialTheme.colorScheme.surfaceVariant,
                                 modifier = Modifier.size(48.dp)
                             ) {
-                                Icon(
+                                net.affscash.android.ui.dashboard.GradientIcon(
                                     Icons.Outlined.Assessment,
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.primary,
@@ -94,13 +94,13 @@ fun ManagerConversionsScreen(
                                 onClick = onNavigateToFraud,
                                 modifier = Modifier.background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
                             ) {
-                                Icon(Icons.Default.Warning, contentDescription = "Fraud", tint = MaterialTheme.colorScheme.primary)
+                                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Warning, contentDescription = "Fraud", tint = MaterialTheme.colorScheme.primary)
                             }
                             IconButton(
                                 onClick = onNavigateToDuplicates,
                                 modifier = Modifier.background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
                             ) {
-                                Icon(Icons.Default.Assessment, contentDescription = "Duplicates", tint = MaterialTheme.colorScheme.primary)
+                                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Assessment, contentDescription = "Duplicates", tint = MaterialTheme.colorScheme.primary)
                             }
                         }
                     }
@@ -149,7 +149,7 @@ fun ManagerConversionsScreen(
             contentAlignment = Alignment.CenterStart
         ) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-                Icon(
+                net.affscash.android.ui.dashboard.GradientIcon(
                     Icons.Default.Search,
                     contentDescription = "Search",
                     modifier = Modifier.size(20.dp),
@@ -178,7 +178,7 @@ fun ManagerConversionsScreen(
                         onClick = { viewModel.setSearchQuery("") },
                         modifier = Modifier.size(24.dp)
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Default.Clear,
                             contentDescription = "Clear",
                             modifier = Modifier.size(16.dp),
@@ -275,13 +275,13 @@ fun ManagerConversionItem(conversion: Conversion) {
             ) {
                 Column(modifier = Modifier.padding(8.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.Person, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Person, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(text = "${conversion.affName} (${conversion.affiliateCode})", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
                     }
                     Spacer(modifier = Modifier.height(4.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.VpnKey, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.VpnKey, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = if (expandClickId) conversion.clickId else if (conversion.clickId.length > 16) conversion.clickId.take(16) + "..." else conversion.clickId,
@@ -293,7 +293,7 @@ fun ManagerConversionItem(conversion: Conversion) {
                     }
                     Spacer(modifier = Modifier.height(4.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.Router, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Router, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         Spacer(modifier = Modifier.width(4.dp))
                         
                         val country = conversion.country?.takeIf { it.isNotBlank() && it.lowercase() != "unknown" } ?: "Unknown Country"

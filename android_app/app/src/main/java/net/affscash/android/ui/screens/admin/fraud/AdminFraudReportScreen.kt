@@ -87,7 +87,7 @@ fun AdminFraudReportScreen(
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(onClick = onNavigateBack) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color(0xFF0F172A))
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color(0xFF0F172A))
                         }
                         Box(
                             modifier = Modifier
@@ -96,7 +96,7 @@ fun AdminFraudReportScreen(
                                 .background(PremiumUI.HeaderGradient),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(
+                            net.affscash.android.ui.dashboard.GradientIcon(
                                 Icons.Outlined.Shield,
                                 contentDescription = null,
                                 tint = Color.White,
@@ -120,7 +120,7 @@ fun AdminFraudReportScreen(
                     }
 
                     IconButton(onClick = { viewModel.loadReport() }) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Refresh", tint = Color(0xFF4F46E5))
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Refresh, contentDescription = "Refresh", tint = Color(0xFF4F46E5))
                     }
                 }
             }
@@ -162,7 +162,7 @@ fun AdminFraudReportScreen(
                 shape = PremiumUI.ButtonShape,
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F46E5))
             ) {
-                Icon(Icons.Default.FilterList, contentDescription = null, modifier = Modifier.size(16.dp))
+                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.FilterList, contentDescription = null, modifier = Modifier.size(16.dp))
                 Spacer(Modifier.width(6.dp))
                 Text(if (showFilters) "Hide Filters" else "Show Filters", fontWeight = FontWeight.Bold)
             }
@@ -195,7 +195,7 @@ fun AdminFraudReportScreen(
             if (uiState.conversions.isEmpty() && !uiState.isLoading) {
                 Box(modifier = Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(Icons.Outlined.Shield, contentDescription = null, modifier = Modifier.size(48.dp), tint = Color(0xFF94A3B8))
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.Shield, contentDescription = null, modifier = Modifier.size(48.dp), tint = Color(0xFF94A3B8))
                         Spacer(modifier = Modifier.height(6.dp))
                         Text("No conversions found matching criteria.", fontSize = 14.sp, color = Color(0xFF64748B))
                     }

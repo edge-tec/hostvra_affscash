@@ -42,7 +42,7 @@ fun AdminAdvertiserDetailsScreen(
                 title = { Text("Advertiser Details") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -161,7 +161,7 @@ fun AdvertiserDetailsSection(advertiser: AdminAdvertiserListModel) {
 @Composable
 private fun DetailItem(icon: ImageVector, label: String, value: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(
+        net.affscash.android.ui.dashboard.GradientIcon(
             imageVector = icon,
             contentDescription = null,
             modifier = Modifier.size(20.dp),

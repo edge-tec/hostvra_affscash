@@ -40,7 +40,7 @@ fun AdminSmartlinkFormScreen(
                 title = { Text(if (smartlinkId == null || smartlinkId == 0) "Create Smartlink" else "Edit Smartlink") },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
@@ -143,7 +143,7 @@ fun AdminSmartlinkFormScreen(
                             modifier = Modifier.fillMaxWidth(),
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
                         ) {
-                            Icon(Icons.Default.Add, contentDescription = "Add")
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Add, contentDescription = "Add")
                             Spacer(modifier = Modifier.width(4.dp))
                             Text("Add Offer/URL Entry")
                         }
@@ -183,7 +183,7 @@ fun AdminSmartlinkOfferRow(
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Text("Offer Entry", fontWeight = FontWeight.Bold)
                 IconButton(onClick = onRemove) {
-                    Icon(Icons.Default.Delete, contentDescription = "Remove", tint = MaterialTheme.colorScheme.error)
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Delete, contentDescription = "Remove", tint = MaterialTheme.colorScheme.error)
                 }
             }
 

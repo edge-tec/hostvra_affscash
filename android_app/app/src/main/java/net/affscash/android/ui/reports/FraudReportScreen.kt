@@ -35,7 +35,7 @@ fun FraudReportScreen(
                 title = { Text("Fraud Report") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -98,7 +98,7 @@ fun FraudReportContent(count30Days: Int, conversions: List<FraudConversion>) {
                 modifier = Modifier.padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(Icons.Default.Warning, contentDescription = "Warning", tint = Color.Red)
+                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Warning, contentDescription = "Warning", tint = Color.Red)
                 Spacer(modifier = Modifier.width(4.dp))
                 Column {
                     Text("Only High Risk Fraud Conversions are listed here.", color = Color.Red, fontWeight = FontWeight.Bold)

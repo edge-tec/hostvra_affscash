@@ -61,7 +61,7 @@ fun ManagerReferralScreen(
                         .padding(start = 8.dp, end = 24.dp, top = 8.dp, bottom = 8.dp)
                 ) {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                     Text(
                         text = "Referrals",
@@ -162,7 +162,7 @@ fun ManagerReferralScreen(
                                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F46E5)),
                                     contentPadding = PaddingValues(horizontal = 14.dp, vertical = 10.dp)
                                 ) {
-                                    Icon(Icons.Outlined.ContentCopy, contentDescription = "Copy", tint = Color.White, modifier = Modifier.size(16.dp))
+                                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.ContentCopy, contentDescription = "Copy", tint = Color.White, modifier = Modifier.size(16.dp))
                                     Spacer(modifier = Modifier.width(4.dp))
                                     Text("Copy", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                                 }

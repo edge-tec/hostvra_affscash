@@ -58,7 +58,7 @@ fun InvoiceScreen(
                             .padding(start = 8.dp, end = 24.dp, top = 8.dp, bottom = 8.dp)
                     ) {
                         IconButton(onClick = onNavigateBack) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                         }
                         Text(
                             text = "My Invoices",
@@ -218,7 +218,7 @@ fun InvoiceCard(invoice: Invoice, onPdfClick: () -> Unit) {
                     shape = PremiumUI.ButtonShape,
                     contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp)
                 ) {
-                    Icon(Icons.Default.Visibility, contentDescription = "View", modifier = Modifier.size(15.dp))
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Visibility, contentDescription = "View", modifier = Modifier.size(15.dp))
                     Spacer(modifier = Modifier.width(4.dp))
                     Text("View", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 }
@@ -228,7 +228,7 @@ fun InvoiceCard(invoice: Invoice, onPdfClick: () -> Unit) {
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F46E5)),
                     contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp)
                 ) {
-                    Icon(Icons.Default.PictureAsPdf, contentDescription = "PDF", modifier = Modifier.size(15.dp))
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.PictureAsPdf, contentDescription = "PDF", modifier = Modifier.size(15.dp))
                     Spacer(modifier = Modifier.width(4.dp))
                     Text("PDF", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 }

@@ -67,13 +67,13 @@ fun ManagerOffersScreen(
                                     onClick = { showFilterSheet = true },
                                     modifier = Modifier.size(36.dp)
                                 ) {
-                                    Icon(Icons.Default.FilterList, contentDescription = "Filter", modifier = Modifier.size(20.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.FilterList, contentDescription = "Filter", modifier = Modifier.size(20.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
                                 IconButton(
                                     onClick = onNavigateToApprovals,
                                     modifier = Modifier.size(36.dp)
                                 ) {
-                                    Icon(Icons.Default.Approval, contentDescription = "Approvals", modifier = Modifier.size(20.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Approval, contentDescription = "Approvals", modifier = Modifier.size(20.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
                             }
                         }
@@ -98,7 +98,7 @@ fun ManagerOffersScreen(
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
                                 ) {
-                                    Icon(icon, contentDescription = null, modifier = Modifier.size(16.dp), tint = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant)
+                                    net.affscash.android.ui.dashboard.GradientIcon(icon, contentDescription = null, modifier = Modifier.size(16.dp), tint = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant)
                                     Spacer(modifier = Modifier.width(6.dp))
                                     Text(
                                         text = label,
@@ -133,7 +133,7 @@ fun ManagerOffersScreen(
                     modifier = Modifier.align(Alignment.Center),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Icon(Icons.Outlined.SearchOff, contentDescription = null, modifier = Modifier.size(48.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.SearchOff, contentDescription = null, modifier = Modifier.size(48.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = "No offers match your filters.",
@@ -284,7 +284,7 @@ fun ManagerOfferCard(
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.primary
                     )
-                    Icon(
+                    net.affscash.android.ui.dashboard.GradientIcon(
                         imageVector = if (showLinkGenerator) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
                         contentDescription = "Expand",
                         tint = MaterialTheme.colorScheme.primary,
@@ -396,7 +396,7 @@ fun FraudScoreBadge(score: Int, level: String) {
     
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Outlined.Security, contentDescription = null, modifier = Modifier.size(12.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+            net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.Security, contentDescription = null, modifier = Modifier.size(12.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = "Fraud Score",
@@ -425,7 +425,7 @@ fun FraudScoreBadge(score: Int, level: String) {
 fun StatItem(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, value: String) {
     Column {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(icon, contentDescription = null, modifier = Modifier.size(12.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+            net.affscash.android.ui.dashboard.GradientIcon(icon, contentDescription = null, modifier = Modifier.size(12.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(modifier = Modifier.width(3.dp))
             Text(
                 text = label,
@@ -474,7 +474,7 @@ fun ManagerOfferFilterContent(
             value = searchQuery,
             onValueChange = { searchQuery = it },
             label = { Text("Search Offers") },
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.primary) },
+            leadingIcon = { net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.primary) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             shape = textFieldShape,

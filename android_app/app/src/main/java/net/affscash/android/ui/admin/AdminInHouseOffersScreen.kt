@@ -63,7 +63,7 @@ fun AdminInHouseOffersScreen(
                         .background(PremiumUI.PrimaryGradient),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(Icons.Outlined.Add, contentDescription = "Create In-House Offer", tint = Color.White, modifier = Modifier.size(26.dp))
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.Add, contentDescription = "Create In-House Offer", tint = Color.White, modifier = Modifier.size(26.dp))
                 }
             }
         }
@@ -99,7 +99,7 @@ fun AdminInHouseOffersScreen(
                                 .background(PremiumUI.HeaderGradient),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(
+                            net.affscash.android.ui.dashboard.GradientIcon(
                                 Icons.Outlined.Storefront,
                                 contentDescription = null,
                                 tint = Color.White,
@@ -132,7 +132,7 @@ fun AdminInHouseOffersScreen(
                             modifier = Modifier.padding(10.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(
+                            net.affscash.android.ui.dashboard.GradientIcon(
                                 Icons.Outlined.FilterList,
                                 contentDescription = "Filters",
                                 tint = Color(0xFF4F46E5),
@@ -222,7 +222,7 @@ fun AdminInHouseOffersFilterSection(
                 value = filters.query,
                 onValueChange = { q -> onUpdateFilters { it.copy(query = q) } },
                 placeholder = { Text("Search Offers by name or ID", fontSize = 13.sp) },
-                leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null, tint = Color(0xFF64748B)) },
+                leadingIcon = { net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.Search, contentDescription = null, tint = Color(0xFF64748B)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),

@@ -77,7 +77,7 @@ fun DateRangeFilterComponent(
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             if (isSelected) {
-                                Icon(
+                                net.affscash.android.ui.dashboard.GradientIcon(
                                     Icons.Filled.Check,
                                     contentDescription = null,
                                     tint = Color.White,
@@ -85,7 +85,7 @@ fun DateRangeFilterComponent(
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                             } else if (option == DateRangeOption.CUSTOM) {
-                                Icon(
+                                net.affscash.android.ui.dashboard.GradientIcon(
                                     Icons.Filled.DateRange,
                                     contentDescription = null,
                                     tint = Color(0xFF64748B),
@@ -115,7 +115,7 @@ fun DateRangeFilterComponent(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
+                net.affscash.android.ui.dashboard.GradientIcon(
                     Icons.Filled.CalendarMonth,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,

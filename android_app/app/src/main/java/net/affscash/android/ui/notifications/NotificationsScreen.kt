@@ -43,7 +43,7 @@ fun NotificationsScreen(
                 title = { Text("Notifications") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
@@ -51,7 +51,7 @@ fun NotificationsScreen(
                         val unreadCount = (uiState as NotificationsState.Success).unreadCount
                         if (unreadCount > 0) {
                             TextButton(onClick = { viewModel.markAsRead(null) }) {
-                                Icon(Icons.Default.Check, contentDescription = "Mark all read", modifier = Modifier.size(16.dp))
+                                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Check, contentDescription = "Mark all read", modifier = Modifier.size(16.dp))
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text("Mark All Read")
                             }
@@ -72,7 +72,7 @@ fun NotificationsScreen(
                         modifier = Modifier.align(Alignment.Center),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Default.Warning,
                             contentDescription = null,
                             modifier = Modifier.size(48.dp),
@@ -94,7 +94,7 @@ fun NotificationsScreen(
                             modifier = Modifier.align(Alignment.Center),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Icon(
+                            net.affscash.android.ui.dashboard.GradientIcon(
                                 Icons.Default.Notifications,
                                 contentDescription = null,
                                 modifier = Modifier.size(64.dp),
@@ -191,7 +191,7 @@ fun SwipeToDismissNotification(
                     .padding(horizontal = 20.dp),
                 contentAlignment = Alignment.CenterEnd
             ) {
-                Icon(
+                net.affscash.android.ui.dashboard.GradientIcon(
                     Icons.Default.Delete,
                     contentDescription = "Delete",
                     tint = Color.White
@@ -238,7 +238,7 @@ fun NotificationCard(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
+                net.affscash.android.ui.dashboard.GradientIcon(
                     icon,
                     contentDescription = null,
                     tint = Color.White,

@@ -51,7 +51,7 @@ fun ManagerCreateAffiliateScreen(
                         .padding(start = 8.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
                 ) {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                     Text(
                         text = "Create Affiliate",

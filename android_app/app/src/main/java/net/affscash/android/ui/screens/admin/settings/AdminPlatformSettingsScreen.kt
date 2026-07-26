@@ -72,7 +72,7 @@ fun AdminPlatformSettingsScreen(
                         if (isSaving) {
                             CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
                         } else {
-                            Icon(Icons.Default.Save, contentDescription = "Save", tint = Color.White, modifier = Modifier.size(26.dp))
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Save, contentDescription = "Save", tint = Color.White, modifier = Modifier.size(26.dp))
                         }
                     }
                 }
@@ -104,7 +104,7 @@ fun AdminPlatformSettingsScreen(
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(onClick = { navController.navigateUp() }) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color(0xFF0F172A))
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color(0xFF0F172A))
                         }
                         Box(
                             modifier = Modifier
@@ -113,7 +113,7 @@ fun AdminPlatformSettingsScreen(
                                 .background(PremiumUI.HeaderGradient),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(
+                            net.affscash.android.ui.dashboard.GradientIcon(
                                 Icons.Outlined.Tune,
                                 contentDescription = null,
                                 tint = Color.White,

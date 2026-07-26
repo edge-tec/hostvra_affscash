@@ -133,11 +133,11 @@ fun ManagerInvoicesScreen(
                             .padding(horizontal = 16.dp, vertical = 8.dp)
                             .height(48.dp),
                         placeholder = { Text("Search invoice, affiliate...", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)) },
-                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(18.dp)) },
+                        leadingIcon = { net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(18.dp)) },
                         trailingIcon = {
                             if (searchQuery.isNotEmpty()) {
                                 IconButton(onClick = { viewModel.setSearchQuery("") }) {
-                                    Icon(Icons.Default.Clear, contentDescription = "Clear", modifier = Modifier.size(18.dp))
+                                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Clear, contentDescription = "Clear", modifier = Modifier.size(18.dp))
                                 }
                             }
                         },

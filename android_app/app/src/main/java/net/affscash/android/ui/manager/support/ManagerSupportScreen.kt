@@ -142,7 +142,7 @@ fun ConversationItem(conversation: ManagerConversation, onClick: () -> Unit) {
                     .background(PremiumUI.HeaderGradient),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
+                net.affscash.android.ui.dashboard.GradientIcon(
                     imageVector = Icons.Default.Email,
                     contentDescription = null,
                     tint = Color.White,

@@ -74,17 +74,17 @@ fun NewsScreen(
                 title = { Text("News") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
                     TextButton(onClick = { viewModel.loadNews() }) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Refresh", modifier = Modifier.size(16.dp))
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Refresh, contentDescription = "Refresh", modifier = Modifier.size(16.dp))
                         Spacer(modifier = Modifier.width(4.dp))
                         Text("Refresh")
                     }
                     TextButton(onClick = { viewModel.markAllAsRead() }) {
-                        Icon(Icons.Default.Check, contentDescription = "Mark all as read", modifier = Modifier.size(16.dp))
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Check, contentDescription = "Mark all as read", modifier = Modifier.size(16.dp))
                         Spacer(modifier = Modifier.width(4.dp))
                         Text("Mark all as read")
                     }
@@ -165,7 +165,7 @@ fun NewsScreen(
                             },
                             error = {
                                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                    Icon(Icons.Default.Image, contentDescription = "No Image", tint = Color.Gray, modifier = Modifier.size(48.dp))
+                                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Image, contentDescription = "No Image", tint = Color.Gray, modifier = Modifier.size(48.dp))
                                 }
                             }
                         )
@@ -252,7 +252,7 @@ fun NewsCard(newsItem: NewsItem, onClick: () -> Unit) {
                     },
                     error = {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Icon(Icons.Default.Image, contentDescription = "No Image", tint = Color.Gray, modifier = Modifier.size(48.dp))
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Image, contentDescription = "No Image", tint = Color.Gray, modifier = Modifier.size(48.dp))
                         }
                     }
                 )

@@ -78,11 +78,11 @@ fun AdminUsersScreen(
                     .fillMaxWidth()
                     .padding(6.dp),
                 placeholder = { Text("Search by name, email, code...", fontSize = 13.sp) },
-                leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = "Search", tint = Color(0xFF64748B)) },
+                leadingIcon = { net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.Search, contentDescription = "Search", tint = Color(0xFF64748B)) },
                 trailingIcon = {
                     if (searchQuery.isNotEmpty()) {
                         IconButton(onClick = { viewModel.setSearchQuery("") }) {
-                            Icon(Icons.Default.Clear, contentDescription = "Clear", tint = Color(0xFF64748B))
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Clear, contentDescription = "Clear", tint = Color(0xFF64748B))
                         }
                     }
                 },

@@ -80,7 +80,7 @@ fun AdminPaymentSettingsScreen(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color(0xFF0F172A))
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color(0xFF0F172A))
                     }
                     Box(
                         modifier = Modifier
@@ -89,7 +89,7 @@ fun AdminPaymentSettingsScreen(
                             .background(PremiumUI.HeaderGradient),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Outlined.AccountBalance,
                             contentDescription = null,
                             tint = Color.White,
@@ -228,7 +228,7 @@ private fun PaymentMethodsTab(
                     modifier = Modifier.fillMaxWidth().height(44.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F46E5))
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(6.dp))
                     Text("Add Payment Method", fontWeight = FontWeight.Bold)
                 }
@@ -301,10 +301,10 @@ private fun PaymentMethodsTab(
                             inst = method.instructions ?: ""
                             showForm = true
                         }) {
-                            Icon(Icons.Default.Edit, contentDescription = "Edit", tint = Color(0xFF4F46E5), modifier = Modifier.size(18.dp))
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Edit, contentDescription = "Edit", tint = Color(0xFF4F46E5), modifier = Modifier.size(18.dp))
                         }
                         IconButton(onClick = { onDelete(method.id) }) {
-                            Icon(Icons.Default.Delete, contentDescription = "Delete", tint = Color(0xFFDC2626), modifier = Modifier.size(18.dp))
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Delete, contentDescription = "Delete", tint = Color(0xFFDC2626), modifier = Modifier.size(18.dp))
                         }
                     }
                 }

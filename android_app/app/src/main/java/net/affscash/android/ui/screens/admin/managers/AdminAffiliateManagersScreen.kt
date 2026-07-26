@@ -42,7 +42,7 @@ fun AdminAffiliateManagersScreen(
                 title = { Text("Affiliate Managers") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowBack, "Back")
                     }
                 }
             )
@@ -98,7 +98,7 @@ fun AdminAffiliateManagerCard(
                 }
                 Box {
                     IconButton(onClick = { menuExpanded = true }) {
-                        Icon(Icons.Default.MoreVert, "More Options")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.MoreVert, "More Options")
                     }
                     DropdownMenu(expanded = menuExpanded, onDismissRequest = { menuExpanded = false }) {
                         DropdownMenuItem(

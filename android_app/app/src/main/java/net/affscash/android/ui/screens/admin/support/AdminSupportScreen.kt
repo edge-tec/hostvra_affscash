@@ -62,7 +62,7 @@ fun AdminSupportScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onNavigateBack) {
-                    Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back", tint = Color(0xFF0F172A))
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back", tint = Color(0xFF0F172A))
                 }
                 Spacer(modifier = Modifier.width(4.dp))
                 Box(
@@ -72,7 +72,7 @@ fun AdminSupportScreen(
                         .background(PremiumUI.HeaderGradient),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(Icons.Outlined.SupportAgent, contentDescription = null, tint = Color.White, modifier = Modifier.size(22.dp))
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.SupportAgent, contentDescription = null, tint = Color.White, modifier = Modifier.size(22.dp))
                 }
                 Spacer(modifier = Modifier.width(10.dp))
                 Column {
@@ -162,7 +162,7 @@ fun AdminSupportScreen(
                 containerColor = Color(0xFFFEE2E2)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Outlined.Warning, contentDescription = null, tint = Color(0xFFDC2626))
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.Warning, contentDescription = null, tint = Color(0xFFDC2626))
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(uiState.error ?: "", color = Color(0xFFDC2626), fontSize = 12.sp)
                 }

@@ -61,7 +61,7 @@ fun ManagerSmartlinksScreen(
                                 color = MaterialTheme.colorScheme.surfaceVariant,
                                 modifier = Modifier.size(48.dp)
                             ) {
-                                Icon(
+                                net.affscash.android.ui.dashboard.GradientIcon(
                                     Icons.Default.Link,
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.primary,
@@ -87,7 +87,7 @@ fun ManagerSmartlinksScreen(
                                 onClick = onNavigateToRequests,
                                 modifier = Modifier.background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
                             ) {
-                                Icon(Icons.Outlined.Notifications, contentDescription = "Requests", tint = MaterialTheme.colorScheme.primary)
+                                net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.Notifications, contentDescription = "Requests", tint = MaterialTheme.colorScheme.primary)
                             }
                             if (uiState.pendingRequestsCount > 0) {
                                 Badge(
@@ -122,7 +122,7 @@ fun ManagerSmartlinksScreen(
                 contentAlignment = Alignment.CenterStart
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-                    Icon(
+                    net.affscash.android.ui.dashboard.GradientIcon(
                         Icons.Default.Search,
                         contentDescription = "Search",
                         modifier = Modifier.size(20.dp),
@@ -151,7 +151,7 @@ fun ManagerSmartlinksScreen(
                             onClick = { viewModel.updateSearchQuery("") },
                             modifier = Modifier.size(24.dp)
                         ) {
-                            Icon(
+                            net.affscash.android.ui.dashboard.GradientIcon(
                                 Icons.Default.Clear,
                                 contentDescription = "Clear",
                                 modifier = Modifier.size(16.dp),
@@ -283,7 +283,7 @@ fun ManagerSmartlinkCard(
             ) {
                 Column {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.Group, contentDescription = null, modifier = Modifier.size(14.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Group, contentDescription = null, modifier = Modifier.size(14.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         Spacer(modifier = Modifier.width(4.dp))
                         Text("My Affiliates", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
@@ -306,7 +306,7 @@ fun ManagerSmartlinkCard(
                 if (smartlink.myPending > 0) {
                     Column {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.PendingActions, contentDescription = null, modifier = Modifier.size(14.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.PendingActions, contentDescription = null, modifier = Modifier.size(14.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                             Spacer(modifier = Modifier.width(4.dp))
                             Text("Requests", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
@@ -330,7 +330,7 @@ fun ManagerSmartlinkCard(
 
                 Column(horizontalAlignment = Alignment.End) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.CheckCircle, contentDescription = null, modifier = Modifier.size(14.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.CheckCircle, contentDescription = null, modifier = Modifier.size(14.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         Spacer(modifier = Modifier.width(4.dp))
                         Text("Total Appv", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
@@ -360,7 +360,7 @@ fun ManagerSmartlinkCard(
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
-                Icon(
+                net.affscash.android.ui.dashboard.GradientIcon(
                     imageVector = if (showLinkGenerator) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
                     contentDescription = "Expand",
                     tint = MaterialTheme.colorScheme.primary

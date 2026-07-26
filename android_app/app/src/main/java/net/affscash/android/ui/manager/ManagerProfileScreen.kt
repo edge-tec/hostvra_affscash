@@ -10,9 +10,12 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 
 import android.net.Uri
 import android.widget.Toast
+import org.json.JSONObject
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -93,7 +96,7 @@ fun ManagerProfileScreen(
                             .background(PremiumUI.HeaderGradient),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Default.Settings,
                             contentDescription = null,
                             tint = Color.White,
@@ -137,7 +140,7 @@ fun ManagerProfileScreen(
                         isSelected -> Color(0xFF4F46E5)
                         else -> Color.White
                     },
-                    border = androidx.compose.foundation.BorderStroke(
+                    border = BorderStroke(
                         1.dp,
                         when {
                             isSelected -> Color(0xFF4F46E5)
@@ -294,10 +297,10 @@ fun ProfileTabContent(
                     OutlinedButton(
                         onClick = { launcher.launch("image/*") },
                         shape = RoundedCornerShape(20.dp),
-                        border = androidx.compose.foundation.BorderStroke(1.2.dp, Color(0xFF4F46E5)),
+                        border = BorderStroke(1.2.dp, Color(0xFF4F46E5)),
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             imageVector = Icons.Default.CloudUpload,
                             contentDescription = "Upload",
                             tint = Color(0xFF4F46E5),
@@ -419,7 +422,7 @@ fun ProfileTabContent(
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDC2626)),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Logout")
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Logout")
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Log Out", modifier = Modifier.padding(vertical = 4.dp), fontWeight = FontWeight.Bold)
                 }
@@ -520,9 +523,9 @@ fun PaymentTabContent(
 
     val detailsJson = remember(details) {
         try {
-            org.json.JSONObject(details)
+            JSONObject(details)
         } catch (_: Exception) {
-            org.json.JSONObject()
+            JSONObject()
         }
     }
 
@@ -699,13 +702,13 @@ fun PaymentTabContent(
                     onClick = {
                         val updatedDetails = when (type) {
                             "simple" -> {
-                                org.json.JSONObject().apply {
+                                JSONObject().apply {
                                     put("account_holder_name", accountHolderName)
                                     put("email", emailId)
                                 }.toString()
                             }
                             "wire" -> {
-                                org.json.JSONObject().apply {
+                                JSONObject().apply {
                                     put("account_holder_name", accountHolderName)
                                     put("bank_name", bankName)
                                     put("account_number", accountNumber)
@@ -716,7 +719,7 @@ fun PaymentTabContent(
                                 }.toString()
                             }
                             "crypto" -> {
-                                org.json.JSONObject().apply {
+                                JSONObject().apply {
                                     put("crypto_type", cryptoType)
                                     put("network_type", networkType)
                                     put("wallet_address", walletAddress)

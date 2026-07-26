@@ -257,7 +257,7 @@ fun SmartlinkCard(
                             .padding(8.dp)
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.CheckCircle, contentDescription = null, tint = Color(0xFF10B981), modifier = Modifier.size(16.dp))
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.CheckCircle, contentDescription = null, tint = Color(0xFF10B981), modifier = Modifier.size(16.dp))
                             Spacer(modifier = Modifier.width(6.dp))
                             Text("Access Granted — you can use this smartlink", color = Color(0xFF065F46), fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
                         }
@@ -292,7 +292,7 @@ fun SmartlinkCard(
                             contentPadding = PaddingValues(horizontal = 12.dp),
                             modifier = Modifier.height(36.dp)
                         ) {
-                            Icon(Icons.Default.ContentCopy, contentDescription = "Copy", modifier = Modifier.size(14.dp))
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ContentCopy, contentDescription = "Copy", modifier = Modifier.size(14.dp))
                             Spacer(modifier = Modifier.width(4.dp))
                             Text("Copy", fontSize = 12.sp)
                         }

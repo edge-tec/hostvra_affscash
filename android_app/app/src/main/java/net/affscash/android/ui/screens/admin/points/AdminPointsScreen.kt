@@ -72,7 +72,7 @@ fun AdminPointsScreen(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color(0xFF0F172A))
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color(0xFF0F172A))
                     }
                     Box(
                         modifier = Modifier
@@ -81,7 +81,7 @@ fun AdminPointsScreen(
                             .background(PremiumUI.HeaderGradient),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Outlined.Stars,
                             contentDescription = null,
                             tint = Color.White,
@@ -398,7 +398,7 @@ fun ToolsSection3D(
                     shape = PremiumUI.ButtonShape,
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F46E5))
                 ) {
-                    Icon(Icons.Outlined.Save, contentDescription = null, modifier = Modifier.size(16.dp))
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.Save, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(6.dp))
                     Text("Save Rule", fontWeight = FontWeight.Bold)
                 }
@@ -482,7 +482,7 @@ fun ToolsSection3D(
                     shape = PremiumUI.ButtonShape,
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF475569))
                 ) {
-                    Icon(Icons.Outlined.Tune, contentDescription = null, modifier = Modifier.size(16.dp))
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.Tune, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(6.dp))
                     Text("Apply Adjustment", fontWeight = FontWeight.Bold)
                 }
@@ -531,7 +531,7 @@ fun ToolsSection3D(
                     ),
                     trailingIcon = {
                         IconButton(onClick = { showDatePicker = true }) {
-                            Icon(Icons.Default.DateRange, contentDescription = "Select Date", tint = Color(0xFF4F46E5))
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.DateRange, contentDescription = "Select Date", tint = Color(0xFF4F46E5))
                         }
                     }
                 )
@@ -559,7 +559,7 @@ fun ToolsSection3D(
                     shape = PremiumUI.ButtonShape,
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0284C7))
                 ) {
-                    Icon(Icons.Outlined.Sync, contentDescription = null, modifier = Modifier.size(16.dp))
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.Sync, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(6.dp))
                     Text("Run Auto-Sync", fontWeight = FontWeight.Bold)
                 }

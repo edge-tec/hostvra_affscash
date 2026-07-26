@@ -59,7 +59,7 @@ fun AdminInvoicesScreen(
                                 onNavigateBack()
                             }
                         }) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
                         }
                     }
                 )
@@ -94,7 +94,7 @@ fun AdminInvoicesScreen(
         floatingActionButton = {
             if (uiState.invoiceDetail == null && uiState.selectedTab == 0) {
                 FloatingActionButton(onClick = onCreateInvoice) {
-                    Icon(Icons.Default.Add, contentDescription = "Create Invoice")
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Add, contentDescription = "Create Invoice")
                 }
             }
         },
@@ -325,7 +325,7 @@ fun AdminInvoiceRequestCard(
                         onClick = onReject,
                         colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error)
                     ) {
-                        Icon(Icons.Default.Close, contentDescription = null, modifier = Modifier.size(16.dp))
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Close, contentDescription = null, modifier = Modifier.size(16.dp))
                         Spacer(modifier = Modifier.width(4.dp))
                         Text("Reject")
                     }
@@ -336,7 +336,7 @@ fun AdminInvoiceRequestCard(
                         onClick = onApprove,
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF388E3C))
                     ) {
-                        Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(16.dp))
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(16.dp))
                         Spacer(modifier = Modifier.width(4.dp))
                         Text("Approve")
                     }
@@ -368,7 +368,7 @@ fun AdminInvoiceCard(
                 Text(invoice.invoice_number, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleSmall)
                 Box {
                     IconButton(onClick = { menuExpanded = true }) {
-                        Icon(Icons.Default.MoreVert, "More Options")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.MoreVert, "More Options")
                     }
                     DropdownMenu(expanded = menuExpanded, onDismissRequest = { menuExpanded = false }) {
                         DropdownMenuItem(text = { Text("View Details") }, onClick = { menuExpanded = false; onView() })

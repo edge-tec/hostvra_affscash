@@ -44,7 +44,7 @@ fun AdminShopScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             FloatingActionButton(onClick = onNavigateToCreateProduct) {
-                Icon(Icons.Default.Add, contentDescription = "Add Product")
+                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Add, contentDescription = "Add Product")
             }
         }
     ) { padding ->

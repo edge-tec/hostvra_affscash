@@ -67,7 +67,7 @@ fun AdminOffersScreen(
                         .background(PremiumUI.PrimaryGradient),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(Icons.Outlined.Add, contentDescription = "Create Offer", tint = Color.White, modifier = Modifier.size(26.dp))
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.Add, contentDescription = "Create Offer", tint = Color.White, modifier = Modifier.size(26.dp))
                 }
             }
         }
@@ -103,7 +103,7 @@ fun AdminOffersScreen(
                                 .background(PremiumUI.HeaderGradient),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(
+                            net.affscash.android.ui.dashboard.GradientIcon(
                                 Icons.Outlined.LocalOffer,
                                 contentDescription = null,
                                 tint = Color.White,
@@ -136,7 +136,7 @@ fun AdminOffersScreen(
                             modifier = Modifier.padding(10.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(
+                            net.affscash.android.ui.dashboard.GradientIcon(
                                 Icons.Outlined.FilterList,
                                 contentDescription = "Filters",
                                 tint = Color(0xFF4F46E5),
@@ -226,7 +226,7 @@ fun AdminOffersFilterSection(
                 value = filters.query,
                 onValueChange = { q -> onUpdateFilters { it.copy(query = q) } },
                 placeholder = { Text("Search Offers by name or ID", fontSize = 13.sp) },
-                leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null, tint = Color(0xFF64748B)) },
+                leadingIcon = { net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.Search, contentDescription = null, tint = Color(0xFF64748B)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
@@ -392,14 +392,14 @@ fun AdminOfferItem(
                     border = BorderStroke(1.dp, Color(0xFFCBD5E1)),
                     contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp)
                 ) {
-                    Icon(Icons.Outlined.Edit, contentDescription = "Edit", modifier = Modifier.size(16.dp), tint = Color(0xFF334155))
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Outlined.Edit, contentDescription = "Edit", modifier = Modifier.size(16.dp), tint = Color(0xFF334155))
                     Spacer(modifier = Modifier.width(4.dp))
                     Text("Edit", color = Color(0xFF334155), fontWeight = FontWeight.SemiBold, fontSize = 12.sp)
                 }
 
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     IconButton(onClick = onPauseActivate) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             imageVector = if (offer.status == "active") Icons.Outlined.PauseCircle else Icons.Outlined.PlayCircle, 
                             contentDescription = "Toggle Status",
                             tint = if (offer.status == "active") Color(0xFFF59E0B) else Color(0xFF10B981),
@@ -407,7 +407,7 @@ fun AdminOfferItem(
                         )
                     }
                     IconButton(onClick = onDelete) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Outlined.Delete,
                             contentDescription = "Delete",
                             tint = Color(0xFFEF4444),

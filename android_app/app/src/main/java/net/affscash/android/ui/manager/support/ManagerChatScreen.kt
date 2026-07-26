@@ -75,7 +75,7 @@ fun ManagerChatScreen(
                 title = { Text(selectedConv?.name ?: "Chat") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -137,7 +137,7 @@ fun ManagerChatScreen(
                         onClick = { launcher.launch("image/*") },
                         enabled = !uiState.isSending && !uiState.isUploading
                     ) {
-                        Icon(Icons.Default.AttachFile, contentDescription = "Attach image")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.AttachFile, contentDescription = "Attach image")
                     }
                     
                     OutlinedTextField(
@@ -163,7 +163,7 @@ fun ManagerChatScreen(
                         if (uiState.isSending || uiState.isUploading) {
                             CircularProgressIndicator(modifier = Modifier.size(24.dp))
                         } else {
-                            Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Send", tint = MaterialTheme.colorScheme.primary)
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.AutoMirrored.Filled.Send, contentDescription = "Send", tint = MaterialTheme.colorScheme.primary)
                         }
                     }
                 }
@@ -310,7 +310,7 @@ fun MessageBubble(message: ManagerMessage, affiliateId: Int, onDelete: () -> Uni
                             },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Default.AttachFile,
                             contentDescription = "File",
                             tint = textColor,

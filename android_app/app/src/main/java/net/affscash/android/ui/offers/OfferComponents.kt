@@ -178,7 +178,7 @@ fun OfferListItem(offer: Offer, isLoadingLink: Boolean, onClick: () -> Unit, onA
                             verticalAlignment = if (isGeoExpanded) Alignment.Top else Alignment.CenterVertically,
                             modifier = Modifier.clickable { isGeoExpanded = !isGeoExpanded }
                         ) {
-                            Icon(Icons.Default.Public, contentDescription = "GEO", modifier = Modifier.size(13.dp).padding(top = if (isGeoExpanded) 2.dp else 0.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Public, contentDescription = "GEO", modifier = Modifier.size(13.dp).padding(top = if (isGeoExpanded) 2.dp else 0.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                             Spacer(modifier = Modifier.width(4.dp))
                             val geos = parseJsonArray(offer.countries)
                             if (geos.isEmpty()) {
@@ -190,7 +190,7 @@ fun OfferListItem(offer: Offer, isLoadingLink: Boolean, onClick: () -> Unit, onA
                         }
                         Spacer(modifier = Modifier.height(4.dp))
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.Devices, contentDescription = "Devices", modifier = Modifier.size(13.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Devices, contentDescription = "Devices", modifier = Modifier.size(13.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                             Spacer(modifier = Modifier.width(4.dp))
                             val devs = parseJsonArray(offer.devices)
                             if (devs.isEmpty()) Text("All Devices", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)

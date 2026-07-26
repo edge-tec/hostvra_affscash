@@ -63,12 +63,12 @@ fun AdminVpnSkipListScreen(
                 title = { Text("VPN/Proxy Skip List") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
                     IconButton(onClick = { viewModel.loadData() }) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Refresh, contentDescription = "Refresh")
                     }
                 }
             )
@@ -79,7 +79,7 @@ fun AdminVpnSkipListScreen(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Affiliate to Skip List")
+                net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Add, contentDescription = "Add Affiliate to Skip List")
             }
         }
     ) { paddingValues ->
@@ -134,7 +134,7 @@ fun AdminVpnSkipListScreen(
                                     color = Color(0xFF10B981),
                                     modifier = Modifier.size(40.dp)
                                 ) {
-                                    Icon(
+                                    net.affscash.android.ui.dashboard.GradientIcon(
                                         Icons.Default.VerifiedUser,
                                         contentDescription = null,
                                         tint = Color.White,
@@ -168,7 +168,7 @@ fun AdminVpnSkipListScreen(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Icon(
+                                    net.affscash.android.ui.dashboard.GradientIcon(
                                         Icons.Default.Security,
                                         contentDescription = null,
                                         modifier = Modifier.size(48.dp),
@@ -227,7 +227,7 @@ private fun VpnSkipEntryCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
-                    Icon(
+                    net.affscash.android.ui.dashboard.GradientIcon(
                         Icons.Default.Person,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary,
@@ -252,7 +252,7 @@ private fun VpnSkipEntryCard(
                 }
 
                 IconButton(onClick = onRemove) {
-                    Icon(
+                    net.affscash.android.ui.dashboard.GradientIcon(
                         Icons.Default.Delete,
                         contentDescription = "Remove",
                         tint = MaterialTheme.colorScheme.error,

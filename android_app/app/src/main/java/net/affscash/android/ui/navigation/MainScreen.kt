@@ -31,6 +31,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import net.affscash.android.ui.dashboard.DashboardScreen
 import net.affscash.android.ui.dashboard.PremiumUI
+import net.affscash.android.ui.dashboard.GradientIcon
 import net.affscash.android.ui.offers.OfferScreen
 import net.affscash.android.ui.reports.ReportScreen
 import net.affscash.android.ui.admin.AdminAdvertisersScreen
@@ -261,11 +262,10 @@ fun MainScreen(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
-                            Icon(
-                                screen.icon, 
+                            GradientIcon(
+                                imageVector = screen.icon, 
                                 contentDescription = null, 
-                                modifier = Modifier.size(24.dp), 
-                                tint = MaterialTheme.colorScheme.primary
+                                modifier = Modifier.size(24.dp)
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
@@ -399,11 +399,19 @@ fun MainScreen(
                                         contentAlignment = Alignment.Center,
                                         modifier = Modifier.size(26.dp)
                                     ) {
-                                        Icon(
-                                            screen.icon, 
-                                            contentDescription = null, 
-                                            modifier = Modifier.size(22.dp)
-                                        ) 
+                                        if (isSelected) {
+                                            GradientIcon(
+                                                imageVector = screen.icon, 
+                                                contentDescription = null, 
+                                                modifier = Modifier.size(24.dp)
+                                            )
+                                        } else {
+                                            Icon(
+                                                screen.icon, 
+                                                contentDescription = null, 
+                                                modifier = Modifier.size(24.dp)
+                                            ) 
+                                        }
                                     }
                                 },
                                 label = { 
@@ -443,11 +451,19 @@ fun MainScreen(
                                         contentAlignment = Alignment.Center,
                                         modifier = Modifier.size(26.dp)
                                     ) {
-                                        Icon(
-                                            Icons.Outlined.Widgets, 
-                                            contentDescription = "Menu", 
-                                            modifier = Modifier.size(22.dp)
-                                        ) 
+                                        if (isSelected) {
+                                            GradientIcon(
+                                                imageVector = Icons.Outlined.Widgets, 
+                                                contentDescription = "Menu", 
+                                                modifier = Modifier.size(24.dp)
+                                            )
+                                        } else {
+                                            Icon(
+                                                Icons.Outlined.Widgets, 
+                                                contentDescription = "Menu", 
+                                                modifier = Modifier.size(24.dp)
+                                            ) 
+                                        }
                                     }
                                 },
                                 label = { 

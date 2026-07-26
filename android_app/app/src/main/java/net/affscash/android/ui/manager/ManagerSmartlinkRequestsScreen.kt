@@ -59,7 +59,7 @@ fun ManagerSmartlinkRequestsScreen(
                         .padding(start = 8.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
                 ) {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                     Text(
                         text = "Smartlink Requests",
@@ -189,7 +189,7 @@ fun ManagerSmartlinkRequestCard(
             
             // Affiliate Info
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
+                net.affscash.android.ui.dashboard.GradientIcon(
                     imageVector = Icons.Default.Person,
                     contentDescription = null,
                     modifier = Modifier.size(16.dp),
@@ -203,7 +203,7 @@ fun ManagerSmartlinkRequestCard(
                 )
             }
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 6.dp)) {
-                Icon(
+                net.affscash.android.ui.dashboard.GradientIcon(
                     imageVector = Icons.Default.Email,
                     contentDescription = null,
                     modifier = Modifier.size(16.dp),

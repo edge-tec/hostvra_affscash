@@ -86,7 +86,7 @@ fun ManagerAffiliatesScreen(
                                     color = MaterialTheme.colorScheme.surfaceVariant,
                                     modifier = Modifier.size(48.dp)
                                 ) {
-                                    Icon(
+                                    net.affscash.android.ui.dashboard.GradientIcon(
                                         Icons.Outlined.People,
                                         contentDescription = null,
                                         tint = MaterialTheme.colorScheme.primary,
@@ -116,7 +116,7 @@ fun ManagerAffiliatesScreen(
                                     RoundedCornerShape(12.dp)
                                 )
                             ) {
-                                Icon(
+                                net.affscash.android.ui.dashboard.GradientIcon(
                                     Icons.Default.Add,
                                     contentDescription = "Create Affiliate",
                                     tint = MaterialTheme.colorScheme.primary
@@ -145,7 +145,7 @@ fun ManagerAffiliatesScreen(
                     shape = PremiumUI.CardShape,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Icon(Icons.Default.Download, contentDescription = null, modifier = Modifier.size(16.dp))
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Download, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(Modifier.width(8.dp))
                     Text("Export CSV")
                 }
@@ -154,7 +154,7 @@ fun ManagerAffiliatesScreen(
                     shape = PremiumUI.CardShape,
                     modifier = Modifier.weight(1.2f)
                 ) {
-                    Icon(Icons.Default.Payment, contentDescription = null, modifier = Modifier.size(16.dp))
+                    net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Payment, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(Modifier.width(8.dp))
                     Text("Payouts")
                 }
@@ -193,7 +193,7 @@ fun ManagerAffiliatesScreen(
                     contentAlignment = Alignment.CenterStart
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(16.dp), tint = Color.Gray)
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(16.dp), tint = Color.Gray)
                         Spacer(modifier = Modifier.width(4.dp))
                         androidx.compose.foundation.text.BasicTextField(
                             value = uiState.searchQuery,
@@ -236,7 +236,7 @@ fun ManagerAffiliatesScreen(
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                             Spacer(modifier = Modifier.width(4.dp))
-                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, modifier = Modifier.size(16.dp), tint = Color.Gray)
+                            net.affscash.android.ui.dashboard.GradientIcon(Icons.Default.ArrowDropDown, contentDescription = null, modifier = Modifier.size(16.dp), tint = Color.Gray)
                         }
                     }
                     DropdownMenu(
@@ -319,7 +319,7 @@ fun ManagerAffiliateCard(
                 shadowElevation = 2.dp,
                         modifier = Modifier.size(40.dp)
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Outlined.Person,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary,
@@ -429,7 +429,7 @@ fun ManagerAffiliateCard(
                     0xFFF59E0B
                 ) else Color(0xFF10B981)
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
+                net.affscash.android.ui.dashboard.GradientIcon(
                     Icons.Outlined.Security,
                     contentDescription = null,
                     modifier = Modifier.size(16.dp),
@@ -475,7 +475,7 @@ fun ManagerAffiliateCard(
                         contentPadding = PaddingValues(horizontal = 12.dp),
                         shape = PremiumUI.CardShape
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Default.VpnKey,
                             contentDescription = null,
                             modifier = Modifier.size(16.dp)

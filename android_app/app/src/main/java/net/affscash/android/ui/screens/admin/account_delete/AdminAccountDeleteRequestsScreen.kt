@@ -69,7 +69,7 @@ fun AdminAccountDeleteRequestsScreen(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color(0xFF0F172A))
+                        net.affscash.android.ui.dashboard.GradientIcon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color(0xFF0F172A))
                     }
                     Box(
                         modifier = Modifier
@@ -78,7 +78,7 @@ fun AdminAccountDeleteRequestsScreen(
                             .background(PremiumUI.HeaderGradient),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             Icons.Outlined.PersonRemove,
                             contentDescription = null,
                             tint = Color.White,
@@ -166,7 +166,7 @@ fun AdminAccountDeleteRequestsScreen(
             val errorText = uiState.error ?: "Unknown error"
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(
+                    net.affscash.android.ui.dashboard.GradientIcon(
                         imageVector = Icons.Default.ErrorOutline,
                         contentDescription = "Error",
                         modifier = Modifier.size(48.dp),
@@ -202,7 +202,7 @@ fun AdminAccountDeleteRequestsScreen(
                             .background(Color(0xFFF1F5F9)),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
+                        net.affscash.android.ui.dashboard.GradientIcon(
                             imageVector = Icons.Default.DeleteOutline,
                             contentDescription = "No Requests",
                             modifier = Modifier.size(32.dp),
