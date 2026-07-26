@@ -41,7 +41,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import net.affscash.android.ui.dashboard.PremiumUI
-
+import net.affscash.android.ui.dashboard.GlassCard
+import net.affscash.android.ui.settings.StyledTextField
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManagerProfileScreen(
@@ -234,167 +235,193 @@ fun ProfileTabContent(
             .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        GlassCard(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
         ) {
-            Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text("Profile Information", style = PremiumUI.TitleMedium)
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
-                    
-                    Text("Profile Picture", style = PremiumUI.TitleMedium, fontSize = 13.sp)
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier
-                                .size(60.dp)
-                                .clip(CircleShape)
-                                .background(Color.LightGray),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            if (selectedImageUri != null) {
-                                AsyncImage(
-                                    model = selectedImageUri,
-                                    contentDescription = "Profile Pic",
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentScale = ContentScale.Crop
-                                )
-                            } else if (!data.profile?.profilePic.isNullOrEmpty()) {
-                                AsyncImage(
-                                    model = data.profile.profilePic,
-                                    contentDescription = "Profile Pic",
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentScale = ContentScale.Crop
-                                )
-                            } else {
-                                Icon(Icons.Default.Person, contentDescription = null, tint = Color.White, modifier = Modifier.size(30.dp))
-                            }
-                        }
-                        Spacer(modifier = Modifier.width(16.dp))
-                        OutlinedButton(
-                            onClick = { launcher.launch("image/*") },
-                            shape = PremiumUI.CardShape,
-                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-                        ) {
-                            Icon(Icons.Default.Upload, contentDescription = null, modifier = Modifier.size(16.dp))
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Text("Change Photo", fontSize = 12.sp)
-                        }
-                    }
-                    
-                    Spacer(modifier = Modifier.height(4.dp))
-                    
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        OutlinedTextField(
-                            value = firstName,
-                            onValueChange = { firstName = it },
-                            label = { Text("First Name *", fontSize = 12.sp) },
-                            modifier = Modifier.weight(1f),
-                            singleLine = true,
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
-                        )
-                        OutlinedTextField(
-                            value = lastName,
-                            onValueChange = { lastName = it },
-                            label = { Text("Last Name *", fontSize = 12.sp) },
-                            modifier = Modifier.weight(1f),
-                            singleLine = true,
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
-                        )
-                    }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text(
+                    text = "Profile Information",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF0F172A)
+                )
 
-                    OutlinedTextField(
-                        value = email,
-                        onValueChange = { email = it },
-                        label = { Text("Email Address *", fontSize = 12.sp) },
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true,
-                        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
-                    )
-
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        OutlinedTextField(
-                            value = company,
-                            onValueChange = { company = it },
-                            label = { Text("Company", fontSize = 12.sp) },
-                            modifier = Modifier.weight(1f),
-                            singleLine = true,
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
-                        )
-                        OutlinedTextField(
-                            value = phone,
-                            onValueChange = { phone = it },
-                            label = { Text("Phone", fontSize = 12.sp) },
-                            modifier = Modifier.weight(1f),
-                            singleLine = true,
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
-                        )
-                    }
-                    
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text("Contact Handles", style = PremiumUI.TitleMedium, fontSize = 13.sp)
-                    
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        OutlinedTextField(
-                            value = skype,
-                            onValueChange = { skype = it },
-                            label = { Text("Skype", fontSize = 12.sp) },
-                            modifier = Modifier.weight(1f),
-                            singleLine = true,
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
-                        )
-                        OutlinedTextField(
-                            value = telegram,
-                            onValueChange = { telegram = it },
-                            label = { Text("Telegram", fontSize = 12.sp) },
-                            modifier = Modifier.weight(1f),
-                            singleLine = true,
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
-                        )
-                    }
-                    OutlinedTextField(
-                        value = discord,
-                        onValueChange = { discord = it },
-                        label = { Text("Discord", fontSize = 12.sp) },
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true,
-                        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
-                    )
-
-                    Button(
-                        onClick = { 
-                            viewModel.updateProfile(context, firstName, lastName, email, company, phone, skype, telegram, discord, selectedImageUri)
-                        },
-                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                        shape = PremiumUI.CardShape,
-                        enabled = !isSubmitting
+                HorizontalDivider(color = Color(0xFFE2E8F0), thickness = 1.dp)
+                
+                Text("Profile Picture", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFF334155))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    val initialLetter = (firstName.firstOrNull() ?: lastName.firstOrNull() ?: 'M').uppercaseChar().toString()
+                    Box(
+                        modifier = Modifier
+                            .size(64.dp)
+                            .clip(CircleShape)
+                            .background(PremiumUI.HeaderGradient)
+                            .border(2.dp, Color.White, CircleShape),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Text("Save Profile", fontWeight = FontWeight.Bold)
+                        if (selectedImageUri != null) {
+                            AsyncImage(
+                                model = selectedImageUri,
+                                contentDescription = "Profile Pic",
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else if (!data.profile?.profilePic.isNullOrEmpty()) {
+                            AsyncImage(
+                                model = data.profile.profilePic,
+                                contentDescription = "Profile Pic",
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            Text(
+                                text = initialLetter,
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                        }
                     }
+
+                    OutlinedButton(
+                        onClick = { launcher.launch("image/*") },
+                        shape = RoundedCornerShape(20.dp),
+                        border = androidx.compose.foundation.BorderStroke(1.2.dp, Color(0xFF4F46E5)),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.CloudUpload,
+                            contentDescription = "Upload",
+                            tint = Color(0xFF4F46E5),
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = "Change Photo",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF4F46E5)
+                        )
+                    }
+                }
+                
+                Spacer(modifier = Modifier.height(2.dp))
+                
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    StyledTextField(
+                        value = firstName,
+                        onValueChange = { firstName = it },
+                        label = "First Name *",
+                        modifier = Modifier.weight(1f)
+                    )
+                    StyledTextField(
+                        value = lastName,
+                        onValueChange = { lastName = it },
+                        label = "Last Name *",
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+                StyledTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = "Email Address *",
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    StyledTextField(
+                        value = company,
+                        onValueChange = { company = it },
+                        label = "Company",
+                        modifier = Modifier.weight(1f)
+                    )
+                    StyledTextField(
+                        value = phone,
+                        onValueChange = { phone = it },
+                        label = "Phone",
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("Contact Handles", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))
+                HorizontalDivider(color = Color(0xFFE2E8F0), thickness = 1.dp)
+                
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    StyledTextField(
+                        value = skype,
+                        onValueChange = { skype = it },
+                        label = "Skype",
+                        modifier = Modifier.weight(1f)
+                    )
+                    StyledTextField(
+                        value = telegram,
+                        onValueChange = { telegram = it },
+                        label = "Telegram",
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                StyledTextField(
+                    value = discord,
+                    onValueChange = { discord = it },
+                    label = "Discord",
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Button(
+                    onClick = { 
+                        viewModel.updateProfile(context, firstName, lastName, email, company, phone, skype, telegram, discord, selectedImageUri)
+                    },
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF4F46E5),
+                        contentColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(12.dp),
+                    enabled = !isSubmitting
+                ) {
+                    Text("Save Changes", modifier = Modifier.padding(vertical = 4.dp), fontWeight = FontWeight.Bold)
                 }
             }
         }
         
         // Logout Section
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFFEF2F2)),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-            border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFFECACA))
+        GlassCard(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text(
+                    text = "Account Actions",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF0F172A)
+                )
+
+                HorizontalDivider(color = Color(0xFFE2E8F0), thickness = 1.dp)
+
                 Button(
                     onClick = onLogout,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDC2626)),
-                    shape = PremiumUI.CardShape
+                    shape = RoundedCornerShape(12.dp)
                 ) {
                     Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Logout")
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Log Out", fontWeight = FontWeight.Bold)
+                    Text("Log Out", modifier = Modifier.padding(vertical = 4.dp), fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -418,55 +445,59 @@ fun SecurityTabContent(
             .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        GlassCard(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
         ) {
-            Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text("Change Password", style = PremiumUI.TitleMedium)
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text(
+                    text = "Change Password",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF0F172A)
+                )
 
-                    OutlinedTextField(
-                        value = currentPass,
-                        onValueChange = { currentPass = it },
-                        label = { Text("Current Password", fontSize = 12.sp) },
-                        modifier = Modifier.fillMaxWidth(),
-                        visualTransformation = PasswordVisualTransformation(),
-                        singleLine = true,
-                        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
-                    )
+                HorizontalDivider(color = Color(0xFFE2E8F0), thickness = 1.dp)
 
-                    OutlinedTextField(
-                        value = newPass,
-                        onValueChange = { newPass = it },
-                        label = { Text("New Password", fontSize = 12.sp) },
-                        modifier = Modifier.fillMaxWidth(),
-                        visualTransformation = PasswordVisualTransformation(),
-                        singleLine = true,
-                        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
-                    )
+                StyledTextField(
+                    value = currentPass,
+                    onValueChange = { currentPass = it },
+                    label = "Current Password",
+                    modifier = Modifier.fillMaxWidth(),
+                    visualTransformation = PasswordVisualTransformation()
+                )
 
-                    OutlinedTextField(
-                        value = confirmPass,
-                        onValueChange = { confirmPass = it },
-                        label = { Text("Confirm New Password", fontSize = 12.sp) },
-                        modifier = Modifier.fillMaxWidth(),
-                        visualTransformation = PasswordVisualTransformation(),
-                        singleLine = true,
-                        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
-                    )
+                StyledTextField(
+                    value = newPass,
+                    onValueChange = { newPass = it },
+                    label = "New Password",
+                    modifier = Modifier.fillMaxWidth(),
+                    visualTransformation = PasswordVisualTransformation()
+                )
 
-                    Button(
-                        onClick = { viewModel.updateSecurity(currentPass, newPass, confirmPass) },
-                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                        shape = PremiumUI.CardShape,
-                        enabled = !isSubmitting && currentPass.isNotEmpty() && newPass.isNotEmpty()
-                    ) {
-                        Text("Update Password", fontWeight = FontWeight.Bold)
-                    }
+                StyledTextField(
+                    value = confirmPass,
+                    onValueChange = { confirmPass = it },
+                    label = "Confirm New Password",
+                    modifier = Modifier.fillMaxWidth(),
+                    visualTransformation = PasswordVisualTransformation()
+                )
+
+                Button(
+                    onClick = { viewModel.updateSecurity(currentPass, newPass, confirmPass) },
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF4F46E5),
+                        contentColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(12.dp),
+                    enabled = !isSubmitting && currentPass.isNotEmpty() && newPass.isNotEmpty()
+                ) {
+                    Text("Update Password", modifier = Modifier.padding(vertical = 4.dp), fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -515,16 +546,23 @@ fun PaymentTabContent(
             .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        GlassCard(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
         ) {
-            Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text("Payment Information", style = PremiumUI.TitleMedium)
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text(
+                    text = "Payment Information",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF0F172A)
+                )
+
+                HorizontalDivider(color = Color(0xFFE2E8F0), thickness = 1.dp)
 
                 ExposedDropdownMenuBox(
                     expanded = expanded,
@@ -535,7 +573,14 @@ fun PaymentTabContent(
                         onValueChange = { selectedMethod = it },
                         label = { Text("Payment Method") },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                        modifier = Modifier.menuAnchor().fillMaxWidth()
+                        modifier = Modifier.menuAnchor().fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFF4F46E5),
+                            unfocusedBorderColor = Color(0xFFCBD5E1),
+                            focusedContainerColor = Color(0xFFF8FAFC),
+                            unfocusedContainerColor = Color(0xFFF8FAFC)
+                        )
                     )
                     ExposedDropdownMenu(
                         expanded = expanded,
@@ -563,114 +608,89 @@ fun PaymentTabContent(
 
                 when (type) {
                     "simple" -> {
-                        OutlinedTextField(
+                        StyledTextField(
                             value = accountHolderName,
                             onValueChange = { accountHolderName = it },
-                            label = { Text("Account Holder Name *", fontSize = 12.sp) },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true,
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                            label = "Account Holder Name *",
+                            modifier = Modifier.fillMaxWidth()
                         )
-                        OutlinedTextField(
+                        StyledTextField(
                             value = emailId,
                             onValueChange = { emailId = it },
-                            label = { Text("Email / Account ID *", fontSize = 12.sp) },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true,
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                            label = "Email / Account ID *",
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
                     "wire" -> {
-                        OutlinedTextField(
+                        StyledTextField(
                             value = accountHolderName,
                             onValueChange = { accountHolderName = it },
-                            label = { Text("Account Holder Name *", fontSize = 12.sp) },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true,
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                            label = "Account Holder Name *",
+                            modifier = Modifier.fillMaxWidth()
                         )
-                        OutlinedTextField(
+                        StyledTextField(
                             value = bankName,
                             onValueChange = { bankName = it },
-                            label = { Text("Bank Name *", fontSize = 12.sp) },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true,
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                            label = "Bank Name *",
+                            modifier = Modifier.fillMaxWidth()
                         )
-                        OutlinedTextField(
+                        StyledTextField(
                             value = accountNumber,
                             onValueChange = { accountNumber = it },
-                            label = { Text("Account Number *", fontSize = 12.sp) },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true,
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                            label = "Account Number *",
+                            modifier = Modifier.fillMaxWidth()
                         )
-                        OutlinedTextField(
+                        StyledTextField(
                             value = ibanSwift,
                             onValueChange = { ibanSwift = it },
-                            label = { Text("IBAN / SWIFT Code", fontSize = 12.sp) },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true,
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                            label = "IBAN / SWIFT Code",
+                            modifier = Modifier.fillMaxWidth()
                         )
-                        OutlinedTextField(
+                        StyledTextField(
                             value = routingNumber,
                             onValueChange = { routingNumber = it },
-                            label = { Text("Routing Number", fontSize = 12.sp) },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true,
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                            label = "Routing Number",
+                            modifier = Modifier.fillMaxWidth()
                         )
-                        OutlinedTextField(
+                        StyledTextField(
                             value = branchName,
                             onValueChange = { branchName = it },
-                            label = { Text("Branch Name", fontSize = 12.sp) },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true,
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                            label = "Branch Name",
+                            modifier = Modifier.fillMaxWidth()
                         )
-                        OutlinedTextField(
+                        StyledTextField(
                             value = bankAddress,
                             onValueChange = { bankAddress = it },
-                            label = { Text("Bank Address *", fontSize = 12.sp) },
-                            modifier = Modifier.fillMaxWidth(),
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                            label = "Bank Address *",
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
                     "crypto" -> {
-                        OutlinedTextField(
+                        StyledTextField(
                             value = cryptoType,
                             onValueChange = { cryptoType = it },
-                            label = { Text("Cryptocurrency (e.g. USDT) *", fontSize = 12.sp) },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true,
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                            label = "Cryptocurrency (e.g. USDT) *",
+                            modifier = Modifier.fillMaxWidth()
                         )
-                        OutlinedTextField(
+                        StyledTextField(
                             value = networkType,
                             onValueChange = { networkType = it },
-                            label = { Text("Network Type (e.g. TRC20) *", fontSize = 12.sp) },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true,
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                            label = "Network Type (e.g. TRC20) *",
+                            modifier = Modifier.fillMaxWidth()
                         )
-                        OutlinedTextField(
+                        StyledTextField(
                             value = walletAddress,
                             onValueChange = { walletAddress = it },
-                            label = { Text("Wallet Address *", fontSize = 12.sp) },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true,
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                            label = "Wallet Address *",
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
                     else -> {
-                        OutlinedTextField(
+                        StyledTextField(
                             value = customDetails,
                             onValueChange = { customDetails = it },
-                            label = { Text("Payment Details", fontSize = 12.sp) },
-                            modifier = Modifier.fillMaxWidth().height(120.dp),
-                            placeholder = { Text("Enter your account numbers, crypto addresses, or emails here.", fontSize = 12.sp) },
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                            label = "Payment Details",
+                            modifier = Modifier.fillMaxWidth().height(120.dp)
                         )
                     }
                 }
@@ -707,15 +727,18 @@ fun PaymentTabContent(
                         viewModel.updatePayment(selectedMethod, updatedDetails)
                     },
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                    shape = PremiumUI.CardShape,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF4F46E5),
+                        contentColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(12.dp),
                     enabled = !isSubmitting
                 ) {
-                    Text("Save Payment Details", fontWeight = FontWeight.Bold)
+                    Text("Save Payment Details", modifier = Modifier.padding(vertical = 4.dp), fontWeight = FontWeight.Bold)
                 }
             }
         }
     }
-}
 }
 
 @Composable
@@ -736,95 +759,107 @@ fun GoogleAuthenticatorTabContent(
             .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        GlassCard(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
         ) {
-            Box(modifier = Modifier.background(PremiumUI.CardGradient).fillMaxSize()) {
-                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text("Google Authenticator (2FA)", style = PremiumUI.TitleMedium)
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text(
+                    text = "Google Authenticator (2FA)",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF0F172A)
+                )
 
-                    if (data.twoFactorEnabled) {
-                        Surface(color = Color(0xFFD1FAE5), shape = PremiumUI.CardShape, modifier = Modifier.fillMaxWidth()) {
-                            Text("Two-Factor Authentication is currently ENABLED.", color = Color(0xFF065F46), fontWeight = FontWeight.Bold, modifier = Modifier.padding(12.dp), fontSize = 13.sp)
+                HorizontalDivider(color = Color(0xFFE2E8F0), thickness = 1.dp)
+
+                if (data.twoFactorEnabled) {
+                    Surface(color = Color(0xFFD1FAE5), shape = RoundedCornerShape(12.dp), modifier = Modifier.fillMaxWidth()) {
+                        Text("Two-Factor Authentication is currently ENABLED.", color = Color(0xFF065F46), fontWeight = FontWeight.Bold, modifier = Modifier.padding(12.dp), fontSize = 13.sp)
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text("To disable, enter your current password and a valid 2FA code:", fontSize = 13.sp, color = Color(0xFF64748B))
+                    
+                    StyledTextField(
+                        value = password,
+                        onValueChange = { password = it },
+                        label = "Current Password",
+                        modifier = Modifier.fillMaxWidth(),
+                        visualTransformation = PasswordVisualTransformation()
+                    )
+                    
+                    StyledTextField(
+                        value = code,
+                        onValueChange = { code = it },
+                        label = "Authenticator Code",
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Button(
+                        onClick = { viewModel.disable2fa(password, code) },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFDC2626),
+                            contentColor = Color.White
+                        ),
+                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        enabled = !isSubmitting
+                    ) {
+                        Text("Disable 2FA", modifier = Modifier.padding(vertical = 4.dp), fontWeight = FontWeight.Bold)
+                    }
+                } else {
+                    if (qrUrl == null) {
+                        Surface(color = Color(0xFFFEF2F2), shape = RoundedCornerShape(12.dp), modifier = Modifier.fillMaxWidth()) {
+                            Text("Two-Factor Authentication is currently DISABLED.", color = Color(0xFF991B1B), fontWeight = FontWeight.Bold, modifier = Modifier.padding(12.dp), fontSize = 13.sp)
                         }
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text("To disable, enter your current password and a valid 2FA code:", style = PremiumUI.SecondaryText)
-                        OutlinedTextField(
-                            value = password,
-                            onValueChange = { password = it },
-                            label = { Text("Current Password", fontSize = 12.sp) },
-                            visualTransformation = PasswordVisualTransformation(),
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true,
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
-                        )
-                        OutlinedTextField(
-                            value = code,
-                            onValueChange = { code = it },
-                            label = { Text("Authenticator Code", fontSize = 12.sp) },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true,
-                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
-                        )
                         Button(
-                            onClick = { viewModel.disable2fa(password, code) },
-                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                            onClick = { viewModel.start2fa() },
                             modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                            shape = PremiumUI.CardShape,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF4F46E5),
+                                contentColor = Color.White
+                            ),
+                            shape = RoundedCornerShape(12.dp),
                             enabled = !isSubmitting
                         ) {
-                            Text("Disable 2FA", fontWeight = FontWeight.Bold)
+                            Text("Enable 2FA", modifier = Modifier.padding(vertical = 4.dp), fontWeight = FontWeight.Bold)
                         }
                     } else {
-                        if (qrUrl == null) {
-                            Surface(color = Color(0xFFFEF2F2), shape = PremiumUI.CardShape, modifier = Modifier.fillMaxWidth()) {
-                                Text("Two-Factor Authentication is currently DISABLED.", color = Color(0xFF991B1B), fontWeight = FontWeight.Bold, modifier = Modifier.padding(12.dp), fontSize = 13.sp)
-                            }
-                            Button(
-                                onClick = { viewModel.start2fa() },
-                                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                                shape = PremiumUI.CardShape,
-                                enabled = !isSubmitting
-                            ) {
-                                Text("Enable 2FA", fontWeight = FontWeight.Bold)
-                            }
-                        } else {
-                            Text("1. Scan this QR Code with Google Authenticator app:", style = PremiumUI.SecondaryText)
-                            Card(
-                                shape = PremiumUI.CardShape,
-                                colors = CardDefaults.cardColors(containerColor = Color.White),
-                                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                                modifier = Modifier.align(Alignment.CenterHorizontally).padding(8.dp)
-                            ) {
-                                QrCodeImage(
-                                    data = "otpauth://totp/Affscash?secret=$twoFaSecret&issuer=Affscash",
-                                    modifier = Modifier.size(180.dp).padding(16.dp)
-                                )
-                            }
-                            Text("Or enter this secret manually: $twoFaSecret", style = PremiumUI.DataBold, modifier = Modifier.align(Alignment.CenterHorizontally))
-                            
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text("2. Enter the 6-digit code generated by the app:", style = PremiumUI.SecondaryText)
-                            OutlinedTextField(
-                                value = code,
-                                onValueChange = { code = it },
-                                label = { Text("6-digit Code", fontSize = 12.sp) },
-                                modifier = Modifier.fillMaxWidth(),
-                                singleLine = true,
-                                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                        Text("1. Scan this QR Code with Google Authenticator app:", fontSize = 13.sp, color = Color(0xFF64748B))
+                        
+                        Box(modifier = Modifier.align(Alignment.CenterHorizontally).padding(8.dp).background(Color.White, RoundedCornerShape(12.dp)).padding(8.dp)) {
+                            QrCodeImage(
+                                data = "otpauth://totp/Affscash?secret=$twoFaSecret&issuer=Affscash",
+                                modifier = Modifier.size(180.dp).padding(16.dp)
                             )
-                            Button(
-                                onClick = { viewModel.verify2fa(code) },
-                                enabled = !isSubmitting && code.length >= 6,
-                                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                                shape = PremiumUI.CardShape
-                            ) {
-                                Text("Verify & Enable", fontWeight = FontWeight.Bold)
-                            }
+                        }
+                        Text("Or enter this secret manually: $twoFaSecret", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A), modifier = Modifier.align(Alignment.CenterHorizontally))
+                        
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("2. Enter the 6-digit code generated by the app:", fontSize = 13.sp, color = Color(0xFF64748B))
+                        
+                        StyledTextField(
+                            value = code,
+                            onValueChange = { code = it },
+                            label = "6-digit Code",
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        
+                        Button(
+                            onClick = { viewModel.verify2fa(code) },
+                            enabled = !isSubmitting && code.length >= 6,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF4F46E5),
+                                contentColor = Color.White
+                            ),
+                            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Text("Verify & Enable", modifier = Modifier.padding(vertical = 4.dp), fontWeight = FontWeight.Bold)
                         }
                     }
                 }
