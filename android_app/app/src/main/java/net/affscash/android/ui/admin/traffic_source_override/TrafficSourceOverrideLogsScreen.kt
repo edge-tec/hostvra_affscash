@@ -1,16 +1,15 @@
 package net.affscash.android.ui.admin.traffic_source_override
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.AltRoute
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AdsClick
-import androidx.compose.material.icons.filled.AltRoute
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Router
@@ -30,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import net.affscash.android.data.model.TrafficSourceOverrideLog
 import net.affscash.android.ui.components.CompactTopBar
 import net.affscash.android.ui.components.DateRangeFilterComponent
+import net.affscash.android.ui.dashboard.GlassCard
 import net.affscash.android.ui.dashboard.PremiumUI
 
 @Composable
@@ -126,7 +126,7 @@ fun TrafficSourceOverrideLogsScreen(
                                     modifier = Modifier.size(40.dp)
                                 ) {
                                     Icon(
-                                        Icons.Default.AltRoute,
+                                        Icons.AutoMirrored.Filled.AltRoute,
                                         contentDescription = null,
                                         tint = MaterialTheme.colorScheme.onPrimaryContainer,
                                         modifier = Modifier.padding(10.dp)
@@ -165,7 +165,7 @@ fun TrafficSourceOverrideLogsScreen(
                                     ) {
                                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                             Icon(
-                                                Icons.Default.AltRoute,
+                                                Icons.AutoMirrored.Filled.AltRoute,
                                                 contentDescription = null,
                                                 modifier = Modifier.size(48.dp),
                                                 tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
@@ -195,8 +195,6 @@ fun TrafficSourceOverrideLogsScreen(
 
 @Composable
 private fun TrafficSourceOverrideLogRowItem(log: TrafficSourceOverrideLog) {
-    var expandId by remember { mutableStateOf(false) }
-
     GlassCard(
         modifier = Modifier
             .fillMaxWidth()

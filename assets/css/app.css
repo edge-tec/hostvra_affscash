@@ -3363,3 +3363,96 @@ html[data-theme="dark"] .modal-3d-box {
     border-color: rgba(255, 255, 255, 0.15) !important;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 12px 24px -8px rgba(124, 58, 237, 0.4) !important;
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   GLOBAL 3D EFFECT DESIGN SYSTEM & RESPONSIVE UI ENGINE
+   ══════════════════════════════════════════════════════════════════ */
+.card, .stat-card, .kpi-card, .chart-card, .metric-card, .info-card, .data-card, .widget-card, .dashboard-card, .summary-card, .report-card, .panel, .box {
+    border-radius: 20px !important;
+    border: 1px solid rgba(226, 232, 240, 0.85) !important;
+    border-top: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+    box-shadow: 0 14px 30px -8px rgba(99, 102, 241, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, border-color 0.25s ease !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+}
+
+.card:hover, .stat-card:hover, .kpi-card:hover, .chart-card:hover, .metric-card:hover {
+    transform: translateY(-5px) scale(1.01) !important;
+    box-shadow: 0 22px 40px -10px rgba(99, 102, 241, 0.22), inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+    border-color: rgba(99, 102, 241, 0.4) !important;
+}
+
+.stat-icon, .kpi-icon {
+    border-radius: 14px !important;
+    box-shadow: 0 6px 16px -2px rgba(99, 102, 241, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+    transition: transform 0.25s ease !important;
+}
+.stat-card:hover .stat-icon, .kpi-card:hover .kpi-icon {
+    transform: scale(1.12) rotate(4deg) !important;
+}
+
+.btn, .btn-primary, .btn-secondary, .btn-outline {
+    border-radius: 14px !important;
+    font-weight: 700 !important;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    box-shadow: 0 4px 14px -2px rgba(99, 102, 241, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: #ffffff !important;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px) scale(1.02) !important;
+    box-shadow: 0 8px 22px -4px rgba(99, 102, 241, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
+}
+
+.btn-primary:active {
+    transform: translateY(1px) scale(0.98) !important;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3) !important;
+}
+
+.drp-btn, .pill-btn, .filter-pill, .seg-btn {
+    border-radius: 14px !important;
+    font-weight: 700 !important;
+    border: 1px solid rgba(226, 232, 240, 0.9) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+    transition: all 0.2s ease !important;
+}
+
+.drp-btn-active, .pill-btn.active, .filter-pill.active, .seg-btn.active {
+    background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%) !important;
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 6px 18px -2px rgba(99, 102, 241, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+}
+
+.table-wrap, table {
+    border-radius: 16px !important;
+    overflow: hidden !important;
+}
+thead tr {
+    background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%) !important;
+}
+thead th {
+    border-bottom: 2px solid #C7D2FE !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.08em !important;
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
+        gap: 10px !important;
+    }
+    .stat-card {
+        padding: 14px !important;
+        border-radius: 16px !important;
+    }
+    .stat-value {
+        font-size: 22px !important;
+    }
+}

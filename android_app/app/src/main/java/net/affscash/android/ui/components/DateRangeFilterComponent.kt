@@ -1,9 +1,12 @@
 package net.affscash.android.ui.components
 
 import android.app.DatePickerDialog
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Check
@@ -12,6 +15,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -56,16 +61,16 @@ fun DateRangeFilterComponent(
                     color = Color.Transparent,
                     shadowElevation = if (isSelected) 3.dp else 1.dp,
                     border = if (isSelected) {
-                        androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.5f))
+                        BorderStroke(1.dp, Color.White.copy(alpha = 0.5f))
                     } else {
                         net.affscash.android.ui.dashboard.PremiumUI.Card3DBorder
                     }
                 ) {
                     Box(
                         modifier = Modifier
-                            .androidx.compose.foundation.background(
+                            .background(
                                 if (isSelected) net.affscash.android.ui.dashboard.PremiumUI.PrimaryGradient
-                                else androidx.compose.ui.graphics.Brush.verticalGradient(listOf(Color.White, Color(0xFFF8FAFC)))
+                                else Brush.verticalGradient(listOf(Color.White, Color(0xFFF8FAFC)))
                             )
                             .padding(horizontal = 14.dp, vertical = 8.dp),
                         contentAlignment = Alignment.Center
