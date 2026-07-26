@@ -279,6 +279,10 @@ fun TrafficSourceOverrideScreen(
                 }
             }
         }
+    LaunchedEffect(showAddDialog) {
+        if (showAddDialog && (uiState.data?.affiliates.isNullOrEmpty() || uiState.data?.offers.isNullOrEmpty())) {
+            viewModel.loadData(isManager)
+        }
     }
 
     if (showAddDialog) {
@@ -528,7 +532,7 @@ private fun AddEditRuleDialog(
     val filteredAffiliates = remember(affiliates, affSearchText) {
         if (affSearchText.isBlank()) affiliates
         else affiliates.filter {
-            it.name.contains(affSearchText, ignoreCase = true) ||
+            (it.name ?: "").contains(affSearchText, ignoreCase = true) ||
             (it.affiliateCode ?: "").contains(affSearchText, ignoreCase = true) ||
             it.id.toString() == affSearchText.trim()
         }
@@ -541,7 +545,7 @@ private fun AddEditRuleDialog(
     val filteredOffers = remember(offers, offerSearchText) {
         if (offerSearchText.isBlank()) offers
         else offers.filter {
-            it.name.contains(offerSearchText, ignoreCase = true) ||
+            (it.name ?: "").contains(offerSearchText, ignoreCase = true) ||
             it.id.toString() == offerSearchText.trim()
         }
     }

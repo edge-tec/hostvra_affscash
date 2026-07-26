@@ -33,7 +33,7 @@ data class TrafficSourceOverrideDestination(
 @Serializable
 data class SimpleOptionItem(
     val id: Int,
-    val name: String,
+    val name: String? = "",
     @SerialName("affiliate_code") val affiliateCode: String? = null
 )
 

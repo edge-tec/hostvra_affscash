@@ -114,9 +114,9 @@ try {
         ];
     }
 
-    $affiliates = Database::fetchAll("SELECT af.id, CONCAT(u.first_name, ' ', u.last_name) as name, af.affiliate_code FROM affiliates af JOIN users u ON u.id = af.user_id ORDER BY name") ?: [];
-    $offers = Database::fetchAll("SELECT id, name FROM offers ORDER BY name") ?: [];
-    $advertisers = Database::fetchAll("SELECT ad.id, COALESCE(ad.company_name, CONCAT(u.first_name, ' ', u.last_name)) as name FROM advertisers ad JOIN users u ON u.id = ad.user_id ORDER BY name") ?: [];
+    $affiliates = Database::fetchAll("SELECT af.id, COALESCE(NULLIF(TRIM(CONCAT(COALESCE(u.first_name, ''), ' ', COALESCE(u.last_name, ''))), ''), u.username, u.email, CONCAT('Affiliate #', af.id)) as name, COALESCE(af.affiliate_code, CONCAT('AFF', af.id)) as affiliate_code FROM affiliates af JOIN users u ON u.id = af.user_id ORDER BY name") ?: [];
+    $offers = Database::fetchAll("SELECT id, COALESCE(NULLIF(TRIM(name), ''), CONCAT('Offer #', id)) as name FROM offers ORDER BY name") ?: [];
+    $advertisers = Database::fetchAll("SELECT ad.id, COALESCE(NULLIF(TRIM(ad.company_name), ''), NULLIF(TRIM(CONCAT(COALESCE(u.first_name, ''), ' ', COALESCE(u.last_name, ''))), ''), u.username, u.email, CONCAT('Advertiser #', ad.id)) as name FROM advertisers ad JOIN users u ON u.id = ad.user_id ORDER BY name") ?: [];
 
     $chatSources = [
         'Unknown',

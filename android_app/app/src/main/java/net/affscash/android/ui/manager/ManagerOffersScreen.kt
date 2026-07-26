@@ -384,7 +384,6 @@ fun ManagerOfferCard(
             }
         }
     }
-}
 
 @Composable
 fun FraudScoreBadge(score: Int, level: String) {
