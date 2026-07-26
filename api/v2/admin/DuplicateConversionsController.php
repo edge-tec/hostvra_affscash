@@ -4,6 +4,11 @@
  */
 Auth::check('admin');
 
+header('Content-Type: application/json');
+header('Cache-Control: no-cache, no-store, must-revalidate');
+header('Pragma: no-cache');
+header('Expires: 0');
+
 $range = Helpers::get('range') ?: ($_GET['range'] ?? '');
 if (!empty($range)) {
     $today = date('Y-m-d');

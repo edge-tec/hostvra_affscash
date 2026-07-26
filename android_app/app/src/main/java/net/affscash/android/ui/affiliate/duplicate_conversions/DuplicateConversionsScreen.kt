@@ -138,7 +138,6 @@ fun DuplicateConversionsScreen(
             }
         }
     }
-}
 
 @Composable
 fun DuplicateClusterCard(cluster: AffiliateDuplicateConversionCluster) {
@@ -222,7 +221,7 @@ fun DuplicateClusterCard(cluster: AffiliateDuplicateConversionCluster) {
                         }
                         
                         Text(
-                            "$${(( conversion.payout )?.toString()?.toDoubleOrNull() ?: 0.0).let { "%.2f".format(it) } }", 
+                            "$${ "%.2f".format(conversion.payout) }",
                             fontSize = 12.sp, 
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF10B981)
