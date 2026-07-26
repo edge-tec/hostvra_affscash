@@ -282,20 +282,90 @@ fun ProfileTab(profile: ProfileInfo?, viewModel: SettingsViewModel) {
     var lastName by remember { mutableStateOf(profile?.lastName ?: "") }
     var company by remember { mutableStateOf(profile?.company ?: "") }
     var phone by remember { mutableStateOf(profile?.phone ?: "") }
+    var skype by remember { mutableStateOf(profile?.skype ?: "") }
+    var telegram by remember { mutableStateOf(profile?.telegram ?: "") }
     var isUpdating by remember { mutableStateOf(false) }
 
-    Card(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
-        shape = PremiumUI.CardShape,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha=0.4f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+    net.affscash.android.ui.dashboard.GlassCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            Text("Profile Information", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, fontSize = 15.sp)
-            Spacer(modifier = Modifier.height(4.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Text(
+                text = "Profile Information",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF0F172A)
+            )
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            HorizontalDivider(color = Color(0xFFE2E8F0), thickness = 1.dp)
+
+            // Profile Picture Section
+            Text(
+                text = "Profile Picture",
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color(0xFF334155)
+            )
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                val initialLetter = (firstName.firstOrNull() ?: lastName.firstOrNull() ?: 'U').uppercaseChar().toString()
+                Box(
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clip(CircleShape)
+                        .background(PremiumUI.HeaderGradient)
+                        .border(2.dp, Color.White, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = initialLetter,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+
+                OutlinedButton(
+                    onClick = {
+                        Toast.makeText(context, "Change Photo feature coming soon!", Toast.LENGTH_SHORT).show()
+                    },
+                    shape = RoundedCornerShape(20.dp),
+                    border = BorderStroke(1.2.dp, Color(0xFF4F46E5)),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CloudUpload,
+                        contentDescription = "Upload",
+                        tint = Color(0xFF4F46E5),
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "Change Photo",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF4F46E5)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(2.dp))
+
+            // First & Last Name
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
                 StyledTextField(
                     value = firstName,
                     onValueChange = { firstName = it },
@@ -309,19 +379,38 @@ fun ProfileTab(profile: ProfileInfo?, viewModel: SettingsViewModel) {
                     modifier = Modifier.weight(1f)
                 )
             }
-            Spacer(modifier = Modifier.height(4.dp))
 
-            StyledTextField(
-                value = profile?.email ?: "",
-                onValueChange = { },
-                label = "Email Address",
-                readOnly = true,
-                enabled = false
-            )
-            Text("Contact your manager to change your email address", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
-            Spacer(modifier = Modifier.height(4.dp))
+            // Email Address
+            Column {
+                StyledTextField(
+                    value = profile?.email ?: "",
+                    onValueChange = { },
+                    label = "Email Address *",
+                    readOnly = true,
+                    enabled = false,
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Lock,
+                            contentDescription = "Locked",
+                            tint = Color.Gray,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = "Contact your manager to change your email address",
+                    fontSize = 10.sp,
+                    color = Color(0xFF64748B),
+                    modifier = Modifier.padding(start = 4.dp)
+                )
+            }
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            // Company & Phone
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
                 StyledTextField(
                     value = company,
                     onValueChange = { company = it },
@@ -335,7 +424,36 @@ fun ProfileTab(profile: ProfileInfo?, viewModel: SettingsViewModel) {
                     modifier = Modifier.weight(1f)
                 )
             }
+
             Spacer(modifier = Modifier.height(4.dp))
+
+            // Contact Handles Subheading
+            Text(
+                text = "Contact Handles",
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color(0xFF334155)
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                StyledTextField(
+                    value = skype,
+                    onValueChange = { skype = it },
+                    label = "Skype",
+                    modifier = Modifier.weight(1f)
+                )
+                StyledTextField(
+                    value = telegram,
+                    onValueChange = { telegram = it },
+                    label = "Telegram",
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(6.dp))
 
             StyledButton(
                 text = if (isUpdating) "Saving..." else "Save Profile",
@@ -347,7 +465,7 @@ fun ProfileTab(profile: ProfileInfo?, viewModel: SettingsViewModel) {
                     }
                     isUpdating = true
                     viewModel.updateProfile(
-                        UpdateProfileRequest(firstName, lastName, company, phone),
+                        UpdateProfileRequest(firstName, lastName, company, phone, skype, telegram),
                         onSuccess = { 
                             isUpdating = false
                             Toast.makeText(context, it, Toast.LENGTH_SHORT).show() 
@@ -1437,7 +1555,7 @@ fun StyledTextField(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        label = { Text(label, fontSize = 12.sp) },
+        label = { Text(label, fontSize = 12.sp, fontWeight = FontWeight.Medium) },
         modifier = modifier.fillMaxWidth(),
         readOnly = readOnly,
         enabled = enabled,
@@ -1445,13 +1563,17 @@ fun StyledTextField(
         visualTransformation = visualTransformation,
         placeholder = placeholder,
         trailingIcon = trailingIcon,
-        shape = MaterialTheme.shapes.medium,
-        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 12.sp),
+        shape = RoundedCornerShape(14.dp),
+        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium, color = Color(0xFF0F172A)),
         colors = OutlinedTextFieldDefaults.colors(
-            unfocusedBorderColor = Color.Transparent,
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+            unfocusedBorderColor = Color(0xFFCBD5E1),
+            focusedBorderColor = Color(0xFF4F46E5),
+            disabledBorderColor = Color(0xFFE2E8F0),
+            unfocusedContainerColor = Color.White,
+            focusedContainerColor = Color.White,
+            disabledContainerColor = Color(0xFFF8FAFC),
+            disabledTextColor = Color(0xFF64748B),
+            disabledLabelColor = Color(0xFF64748B)
         )
     )
 }
@@ -1465,13 +1587,17 @@ fun StyledButton(
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(48.dp),
         enabled = enabled,
-        shape = MaterialTheme.shapes.medium,
+        shape = RoundedCornerShape(16.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary
-        )
+            containerColor = Color(0xFF4F46E5),
+            contentColor = Color.White
+        ),
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp, pressedElevation = 1.dp)
     ) {
-        Text(text, fontWeight = FontWeight.Bold)
+        Text(text, fontWeight = FontWeight.Bold, fontSize = 14.sp)
     }
 }
