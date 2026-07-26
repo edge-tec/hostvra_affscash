@@ -78,18 +78,19 @@ fun ManagerDuplicateConversionsScreen(
             
             // Date Range Picker Component
             net.affscash.android.ui.components.DateRangeFilterComponent(
-                dateRangeState = uiState.dateRangeState,
+                state = uiState.dateRangeState,
                 onOptionSelected = { viewModel.setDateRangeOption(it) },
                 onCustomRangeSelected = { start, end -> viewModel.setCustomDateRange(start, end) }
             )
 
             // Summary Info
+            val (fromDate, toDate) = uiState.dateRangeState.getFormattedDates()
             Row(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = "From: ${uiState.fromDate}", fontSize = 12.sp, color = Color.Gray)
-                Text(text = "To: ${uiState.toDate}", fontSize = 12.sp, color = Color.Gray)
+                Text(text = "From: $fromDate", fontSize = 12.sp, color = Color.Gray)
+                Text(text = "To: $toDate", fontSize = 12.sp, color = Color.Gray)
             }
             
             Spacer(modifier = Modifier.height(4.dp))

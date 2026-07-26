@@ -7,30 +7,55 @@
     </div>
 </div>
 
+<?php
+$todayDate = date('Y-m-d');
+$currentRange = Helpers::get('range') ?: '';
+if (empty($currentRange)) {
+    if ($from === $todayDate && $to === $todayDate) {
+        $currentRange = 'today';
+    } elseif ($from === date('Y-m-d', strtotime('-1 day')) && $to === date('Y-m-d', strtotime('-1 day'))) {
+        $currentRange = 'yesterday';
+    } elseif ($from === date('Y-m-d', strtotime('-6 days')) && $to === $todayDate) {
+        $currentRange = 'last_7_days';
+    } elseif ($from === date('Y-m-d', strtotime('-14 days')) && $to === $todayDate) {
+        $currentRange = 'last_15_days';
+    } elseif ($from === date('Y-m-01') && $to === $todayDate) {
+        $currentRange = 'this_month';
+    } elseif ($from === date('Y-m-01', strtotime('first day of last month')) && $to === date('Y-m-t', strtotime('last month'))) {
+        $currentRange = 'last_month';
+    } elseif ($from === date('Y-m-d', strtotime('-89 days')) && $to === $todayDate) {
+        $currentRange = 'last_90_days';
+    } else {
+        $currentRange = 'custom';
+    }
+}
+?>
+
 <!-- ── Filter bar ─────────────────────────────────────────────────────── -->
 <div class="card mb-3">
     <div class="card-body">
         <form method="GET" id="dupFilterForm" class="d-flex gap-3 align-center" style="flex-wrap:wrap">
+            <input type="hidden" name="range" id="inputRange" value="<?= Helpers::e($currentRange) ?>">
             <div class="form-group mb-0">
                 <label>Date Preset</label>
                 <select id="quickPresetSelect" class="form-control" onchange="applyDatePreset(this.value)">
-                    <option value="custom">Custom Range</option>
-                    <option value="today">Today</option>
-                    <option value="yesterday">Yesterday</option>
-                    <option value="last_7_days">Last 7 Days</option>
-                    <option value="last_15_days">Last 15 Days</option>
-                    <option value="this_month">This Month</option>
-                    <option value="last_month">Last Month</option>
-                    <option value="last_90_days">Last 90 Days</option>
+                    <option value="custom" <?= $currentRange==='custom'?'selected':'' ?>>Custom Range</option>
+                    <option value="today" <?= $currentRange==='today'?'selected':'' ?>>Today</option>
+                    <option value="yesterday" <?= $currentRange==='yesterday'?'selected':'' ?>>Yesterday</option>
+                    <option value="last_7_days" <?= $currentRange==='last_7_days'?'selected':'' ?>>Last 7 Days</option>
+                    <option value="last_15_days" <?= $currentRange==='last_15_days'?'selected':'' ?>>Last 15 Days</option>
+                    <option value="this_month" <?= $currentRange==='this_month'?'selected':'' ?>>This Month</option>
+                    <option value="last_month" <?= $currentRange==='last_month'?'selected':'' ?>>Last Month</option>
+                    <option value="last_90_days" <?= $currentRange==='last_90_days'?'selected':'' ?>>Last 90 Days</option>
                 </select>
             </div>
             <div class="form-group mb-0">
                 <label>From</label>
-                <input type="date" id="inputFromDate" name="from" class="form-control" value="<?= Helpers::e($from) ?>">
+                <input type="date" id="inputFromDate" name="from" class="form-control" value="<?= Helpers::e($from) ?>" onchange="onManualDateChange()">
             </div>
             <div class="form-group mb-0">
                 <label>To</label>
-                <input type="date" id="inputToDate" name="to" class="form-control" value="<?= Helpers::e($to) ?>">
+                <input type="date" id="inputToDate" name="to" class="form-control" value="<?= Helpers::e($to) ?>" onchange="onManualDateChange()">
             </div>
             <div class="form-group mb-0">
                 <label>Status</label>
@@ -47,13 +72,13 @@
         </form>
         <div class="d-flex gap-2 mt-2" style="flex-wrap:wrap;align-items:center">
             <span class="text-muted text-sm fw-bold">Quick Ranges:</span>
-            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="applyDatePreset('today')">Today</button>
-            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="applyDatePreset('yesterday')">Yesterday</button>
-            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="applyDatePreset('last_7_days')">Last 7 Days</button>
-            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="applyDatePreset('last_15_days')">Last 15 Days</button>
-            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="applyDatePreset('this_month')">This Month</button>
-            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="applyDatePreset('last_month')">Last Month</button>
-            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="applyDatePreset('last_90_days')">Last 90 Days</button>
+            <button type="button" class="btn btn-sm <?= $currentRange==='today'?'btn-primary':'btn-outline-secondary' ?>" onclick="applyDatePreset('today')">Today</button>
+            <button type="button" class="btn btn-sm <?= $currentRange==='yesterday'?'btn-primary':'btn-outline-secondary' ?>" onclick="applyDatePreset('yesterday')">Yesterday</button>
+            <button type="button" class="btn btn-sm <?= $currentRange==='last_7_days'?'btn-primary':'btn-outline-secondary' ?>" onclick="applyDatePreset('last_7_days')">Last 7 Days</button>
+            <button type="button" class="btn btn-sm <?= $currentRange==='last_15_days'?'btn-primary':'btn-outline-secondary' ?>" onclick="applyDatePreset('last_15_days')">Last 15 Days</button>
+            <button type="button" class="btn btn-sm <?= $currentRange==='this_month'?'btn-primary':'btn-outline-secondary' ?>" onclick="applyDatePreset('this_month')">This Month</button>
+            <button type="button" class="btn btn-sm <?= $currentRange==='last_month'?'btn-primary':'btn-outline-secondary' ?>" onclick="applyDatePreset('last_month')">Last Month</button>
+            <button type="button" class="btn btn-sm <?= $currentRange==='last_90_days'?'btn-primary':'btn-outline-secondary' ?>" onclick="applyDatePreset('last_90_days')">Last 90 Days</button>
         </div>
     </div>
 </div>
@@ -68,8 +93,18 @@ function formatDate(d) {
     return [year, month, day].join('-');
 }
 
+function onManualDateChange() {
+    document.getElementById('inputRange').value = 'custom';
+    document.getElementById('quickPresetSelect').value = 'custom';
+}
+
 function applyDatePreset(preset) {
-    if (!preset || preset === 'custom') return;
+    if (!preset) return;
+    document.getElementById('inputRange').value = preset;
+    document.getElementById('quickPresetSelect').value = preset;
+
+    if (preset === 'custom') return;
+
     const now = new Date();
     let fromDate = new Date();
     let toDate = new Date();
