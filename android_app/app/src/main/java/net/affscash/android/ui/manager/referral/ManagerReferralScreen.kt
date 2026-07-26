@@ -87,89 +87,112 @@ fun ManagerReferralScreen(
             is ManagerReferralUiState.Success -> {
                 val data = state.data
                 
-                Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
-                    // Top Banner Card
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(PremiumUI.PageBackground)
+                        .padding(paddingValues)
+                ) {
+                    // Top Banner Card (Compact 3D Glass Design)
                     GlassCard(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp)
+                            .padding(horizontal = 10.dp, vertical = 6.dp)
                     ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
+                        Column(modifier = Modifier.padding(12.dp)) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    "Your Manager Referral Link",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF0F172A)
+                                )
+                                Surface(
+                                    color = Color(0xFFEEF2FF),
+                                    border = BorderStroke(1.dp, Color(0xFFC7D2FE)),
+                                    shape = RoundedCornerShape(12.dp)
+                                ) {
+                                    Text(
+                                        "Code: ${data.referralCode}", 
+                                        fontSize = 11.sp, 
+                                        fontWeight = FontWeight.Bold, 
+                                        color = Color(0xFF4338CA),
+                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                                    )
+                                }
+                            }
                             Text(
-                                "Your Manager Referral Link",
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight.Black,
-                                color = Color(0xFF0F172A)
-                            )
-                            Text(
-                                "When a new affiliate registers using your link, they are automatically assigned to your team — no manual assignment needed.",
+                                "Share link below to auto-assign new affiliates to your team.",
                                 fontSize = 11.sp,
                                 color = Color(0xFF64748B),
-                                modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
+                                modifier = Modifier.padding(top = 2.dp, bottom = 8.dp)
                             )
-                            OutlinedTextField(
-                                value = data.referralLink,
-                                onValueChange = {},
-                                readOnly = true,
+                            Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                singleLine = true,
-                                textStyle = LocalTextStyle.current.copy(fontSize = 12.sp, fontWeight = FontWeight.Bold),
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = Color(0xFF6366F1),
-                                    unfocusedBorderColor = Color(0xFFCBD5E1)
-                                ),
-                                shape = PremiumUI.ButtonShape,
-                                trailingIcon = {
-                                    IconButton(onClick = {
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                OutlinedTextField(
+                                    value = data.referralLink,
+                                    onValueChange = {},
+                                    readOnly = true,
+                                    modifier = Modifier.weight(1f),
+                                    singleLine = true,
+                                    textStyle = LocalTextStyle.current.copy(fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFF1E293B)),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        focusedBorderColor = Color(0xFF6366F1),
+                                        unfocusedBorderColor = Color(0xFFCBD5E1),
+                                        unfocusedContainerColor = Color.White,
+                                        focusedContainerColor = Color.White
+                                    ),
+                                    shape = RoundedCornerShape(12.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Button(
+                                    onClick = {
                                         val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                                         val clipData = ClipData.newPlainText("Referral Link", data.referralLink)
                                         clipboardManager.setPrimaryClip(clipData)
-                                        Toast.makeText(context, "Link copied to clipboard", Toast.LENGTH_SHORT).show()
-                                    }) {
-                                        Icon(Icons.Outlined.ContentCopy, contentDescription = "Copy", tint = Color(0xFF4338CA))
-                                    }
+                                        Toast.makeText(context, "Link copied!", Toast.LENGTH_SHORT).show()
+                                    },
+                                    shape = RoundedCornerShape(12.dp),
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4F46E5)),
+                                    contentPadding = PaddingValues(horizontal = 14.dp, vertical = 10.dp)
+                                ) {
+                                    Icon(Icons.Outlined.ContentCopy, contentDescription = "Copy", tint = Color.White, modifier = Modifier.size(16.dp))
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text("Copy", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                                 }
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Surface(
-                                color = Color(0xFFEEF2FF),
-                                border = BorderStroke(1.dp, Color(0xFFC7D2FE)),
-                                shape = PremiumUI.PillShape
-                            ) {
-                                Text(
-                                    "Code: ${data.referralCode}", 
-                                    fontSize = 11.sp, 
-                                    fontWeight = FontWeight.Black, 
-                                    color = Color(0xFF4338CA),
-                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 5.dp)
-                                )
                             }
                         }
                     }
 
-                    // 3D Summary KPI Cards
+                    // 3D Summary KPI Cards (Compact Row)
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            .padding(horizontal = 10.dp, vertical = 4.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         net.affscash.android.ui.dashboard.KPICard3D(
-                            title = "Total Team",
+                            title = "TOTAL TEAM",
                             value = "${data.stats.totalReferrals}",
                             icon = Icons.Outlined.Group,
                             iconGradient = PremiumUI.PrimaryGradient,
                             modifier = Modifier.weight(1f)
                         )
                         net.affscash.android.ui.dashboard.KPICard3D(
-                            title = "Active",
+                            title = "ACTIVE",
                             value = "${data.stats.activeReferrals}",
                             icon = Icons.Outlined.CheckCircle,
                             iconGradient = PremiumUI.EmeraldGradient,
                             modifier = Modifier.weight(1f)
                         )
                         net.affscash.android.ui.dashboard.KPICard3D(
-                            title = "Earned",
+                            title = "EARNED",
                             value = "$${data.stats.totalEarned}",
                             icon = Icons.Outlined.MonetizationOn,
                             iconGradient = PremiumUI.PurpleGradient,
@@ -177,22 +200,22 @@ fun ManagerReferralScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(12.dp))
-
                     // Section Title
                     Text(
                         text = "Team Members (${data.referredAffiliates.size})",
-                        style = MaterialTheme.typography.titleSmall,
+                        fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+                        color = Color(0xFF0F172A),
+                        modifier = Modifier.padding(horizontal = 12.dp, top = 8.dp, bottom = 4.dp)
                     )
 
                     // Content List
                     if (data.referredAffiliates.isEmpty()) {
-                        Box(modifier = Modifier.fillMaxSize().padding(8.dp), contentAlignment = Alignment.Center) {
+                        Box(modifier = Modifier.fillMaxSize().padding(16.dp), contentAlignment = Alignment.Center) {
                             Text(
                                 text = "No referrals yet. Share your referral link to grow your team automatically!",
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                color = Color(0xFF64748B),
+                                fontSize = 12.sp,
                                 textAlign = TextAlign.Center
                             )
                         }

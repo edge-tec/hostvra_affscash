@@ -92,7 +92,7 @@ fun TrafficSourceOverrideLogsScreen(
                 state = uiState.dateRangeState,
                 onOptionSelected = { viewModel.setDateRangeOption(it, isManager) },
                 onCustomRangeSelected = { start, end -> viewModel.setCustomDateRange(start, end, isManager) },
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
             )
 
             Box(modifier = Modifier.fillMaxSize().weight(1f)) {
@@ -104,7 +104,7 @@ fun TrafficSourceOverrideLogsScreen(
                     Column(
                         modifier = Modifier
                             .align(Alignment.Center)
-                            .padding(24.dp),
+                            .padding(20.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
@@ -113,7 +113,7 @@ fun TrafficSourceOverrideLogsScreen(
                             textAlign = TextAlign.Center,
                             style = MaterialTheme.typography.bodyMedium
                         )
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
                         Button(onClick = { viewModel.loadLogs(isManager) }) {
                             Text("Retry")
                         }
@@ -121,38 +121,38 @@ fun TrafficSourceOverrideLogsScreen(
                 } else if (uiState.logsData != null) {
                     val logsData = uiState.logsData!!
                     Column(modifier = Modifier.fillMaxSize()) {
-                        // 3D Summary Stats Card
+                        // 3D Summary Stats Card (Compact)
                         net.affscash.android.ui.dashboard.KPICard3D(
-                            title = "Total Overridden Click Logs",
+                            title = "TOTAL OVERRIDDEN CLICK LOGS",
                             value = "${logsData.totalLogs}",
                             icon = Icons.AutoMirrored.Filled.AltRoute,
                             iconGradient = PremiumUI.PrimaryGradient,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 6.dp)
+                                .padding(horizontal = 10.dp, vertical = 4.dp)
                         )
                         // Logs List
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
-                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
                         ) {
                             if (logsData.logs.isEmpty()) {
                                 item {
                                     Box(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(32.dp),
+                                            .padding(24.dp),
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                             Icon(
                                                 Icons.AutoMirrored.Filled.AltRoute,
                                                 contentDescription = null,
-                                                modifier = Modifier.size(48.dp),
+                                                modifier = Modifier.size(40.dp),
                                                 tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                                             )
-                                            Spacer(modifier = Modifier.height(8.dp))
+                                            Spacer(modifier = Modifier.height(6.dp))
                                             Text(
                                                 text = "No traffic source override logs found for selected date range.",
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -180,31 +180,24 @@ private fun TrafficSourceOverrideLogRowItem(log: TrafficSourceOverrideLog) {
     GlassCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 6.dp),
-        elevation = 3.dp
+            .padding(vertical = 2.dp),
+        elevation = 2.dp
     ) {
-        Column(modifier = Modifier.padding(2.dp)) {
-            // Header: Offer Name & IP
+        Column(modifier = Modifier.padding(10.dp)) {
+            // Header: IP Address & Timestamp
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = log.offerName,
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF0F172A),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.weight(1f)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                ) {
                     Icon(
                         Icons.Default.Router,
                         contentDescription = null,
-                        modifier = Modifier.size(12.dp),
+                        modifier = Modifier.size(13.dp),
                         tint = Color(0xFF64748B)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
@@ -212,30 +205,39 @@ private fun TrafficSourceOverrideLogRowItem(log: TrafficSourceOverrideLog) {
                         text = log.ipAddress,
                         fontSize = 11.sp,
                         fontFamily = FontFamily.Monospace,
-                        color = Color(0xFF64748B)
+                        color = Color(0xFF334155),
+                        fontWeight = FontWeight.Medium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = log.clickedAt,
+                    fontSize = 10.sp,
+                    color = Color(0xFF94A3B8),
+                    maxLines = 1
+                )
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
             // Override Badges: Original Source -> Override Source
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Surface(
                     color = Color(0xFFFEE2E2),
-                    shape = RoundedCornerShape(8.dp),
-                    shadowElevation = 1.dp,
+                    shape = RoundedCornerShape(6.dp),
                     border = BorderStroke(0.5.dp, Color(0xFFEF4444).copy(alpha = 0.3f))
                 ) {
                     Text(
                         text = log.originalSource.uppercase(),
-                        fontSize = 11.sp,
+                        fontSize = 10.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFFB91C1C),
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
                     )
                 }
 
@@ -243,28 +245,27 @@ private fun TrafficSourceOverrideLogRowItem(log: TrafficSourceOverrideLog) {
                     Icons.Default.SwapHoriz,
                     contentDescription = null,
                     tint = Color(0xFF4F46E5),
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(18.dp)
                 )
 
                 Surface(
                     color = Color(0xFFD1FAE5),
-                    shape = RoundedCornerShape(8.dp),
-                    shadowElevation = 1.dp,
+                    shape = RoundedCornerShape(6.dp),
                     border = BorderStroke(0.5.dp, Color(0xFF10B981).copy(alpha = 0.3f))
                 ) {
                     Text(
                         text = log.overrideSource.uppercase(),
-                        fontSize = 11.sp,
+                        fontSize = 10.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF047857),
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
-            // Footer: Affiliate Info & Timestamp
+            // Footer: Affiliate Info & Offer
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -274,26 +275,30 @@ private fun TrafficSourceOverrideLogRowItem(log: TrafficSourceOverrideLog) {
                     Icon(
                         Icons.Default.Person,
                         contentDescription = null,
-                        modifier = Modifier.size(13.dp),
+                        modifier = Modifier.size(12.dp),
                         tint = Color(0xFF64748B)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "${log.affiliateName} (${log.affiliateCode})",
                         fontSize = 11.sp,
-                        color = Color(0xFF475569),
+                        color = Color(0xFF334155),
                         fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = log.clickedAt,
-                    fontSize = 10.sp,
-                    color = Color(0xFF94A3B8),
-                    maxLines = 1
-                )
+                if (log.offerName.isNotBlank()) {
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = log.offerName,
+                        fontSize = 10.sp,
+                        color = Color(0xFF6366F1),
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         }
     }

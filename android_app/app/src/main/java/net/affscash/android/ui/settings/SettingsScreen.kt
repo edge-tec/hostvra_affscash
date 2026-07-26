@@ -197,7 +197,7 @@ fun SettingsScreen(
                                 "Delete Account" -> DeleteAccountTab(state.deleteRequest, viewModel)
                             }
 
-                            Spacer(modifier = Modifier.height(32.dp))
+                            Spacer(modifier = Modifier.height(10.dp))
 
                             // General Actions (Invoices, Impersonate, Logout)
                             if (selectedTabIndex == 0) { // Show general actions at bottom of Profile tab
