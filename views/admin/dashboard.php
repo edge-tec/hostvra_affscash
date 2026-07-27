@@ -1693,9 +1693,121 @@ function loadTrend(){
         }).catch(()=>{}).finally(()=>hideLoad('trend-loading'));
 }
 
+
+function updateSaaSAnalyticsAndAI(d) {
+    if (!d || !d.labels || d.labels.length === 0) return;
+
+    function formatVal(val, decimals) {
+        if (val === undefined || val === null || isNaN(val)) return '0';
+        var dec = (decimals !== undefined) ? decimals : 0;
+        return Number(val).toLocaleString(undefined, {
+            minimumFractionDigits: dec,
+            maximumFractionDigits: dec
+        });
+    }
+
+    // 1. Best Revenue Day
+    if (d.revenue_data && d.revenue_data.length > 0) {
+        var maxRev = Math.max(...d.revenue_data);
+        var maxRevIdx = d.revenue_data.indexOf(maxRev);
+        var elRevVal = document.getElementById('sb-best-rev-val');
+        var elRevDate = document.getElementById('sb-best-rev-date');
+        if (elRevVal) elRevVal.textContent = '$' + formatVal(maxRev, 2);
+        if (elRevDate) elRevDate.textContent = d.labels[maxRevIdx] || '—';
+    }
+
+    // 2. Best Conversion Day
+    if (d.conv_data && d.conv_data.length > 0) {
+        var maxConv = Math.max(...d.conv_data);
+        var maxConvIdx = d.conv_data.indexOf(maxConv);
+        var elConvVal = document.getElementById('sb-best-conv-val');
+        var elConvDate = document.getElementById('sb-best-conv-date');
+        if (elConvVal) elConvVal.textContent = formatVal(maxConv);
+        if (elConvDate) elConvDate.textContent = d.labels[maxConvIdx] || '—';
+    }
+
+    // 3. Highest Clicks Day
+    if (d.clicks_data && d.clicks_data.length > 0) {
+        var maxClicks = Math.max(...d.clicks_data);
+        var maxClicksIdx = d.clicks_data.indexOf(maxClicks);
+        var elClicksVal = document.getElementById('sb-best-clicks-val');
+        var elClicksDate = document.getElementById('sb-best-clicks-date');
+        if (elClicksVal) elClicksVal.textContent = formatVal(maxClicks);
+        if (elClicksDate) elClicksDate.textContent = d.labels[maxClicksIdx] || '—';
+    }
+
+    // 4. Lowest Fraud Day
+    if (d.fraud_data && d.fraud_data.length > 0) {
+        var minFraud = Math.min(...d.fraud_data);
+        var minFraudIdx = d.fraud_data.indexOf(minFraud);
+        var elFraudVal = document.getElementById('sb-best-fraud-val');
+        var elFraudDate = document.getElementById('sb-best-fraud-date');
+        if (elFraudVal) elFraudVal.textContent = formatVal(minFraud, 1) + '%';
+        if (elFraudDate) elFraudDate.textContent = d.labels[minFraudIdx] || '—';
+    }
+
+    // 5. Real-Time AI Performance Insights Panel
+    var aiList = document.getElementById('saas-ai-list-items') || document.getElementById('saas-ai-list');
+    if (aiList) {
+        var itemsHtml = '';
+        var totRev = d.revenue_data ? d.revenue_data.reduce((a,b)=>a+b,0) : 0;
+        var totConv = d.conv_data ? d.conv_data.reduce((a,b)=>a+b,0) : 0;
+        var totClicks = d.clicks_data ? d.clicks_data.reduce((a,b)=>a+b,0) : 0;
+        var avgFraud = d.fraud_data && d.fraud_data.length > 0 ? (d.fraud_data.reduce((a,b)=>a+b,0) / d.fraud_data.length).toFixed(1) : 0;
+
+        var peakRev = d.revenue_data && d.revenue_data.length > 0 ? Math.max(...d.revenue_data) : 0;
+        var peakRevIdx = d.revenue_data ? d.revenue_data.indexOf(peakRev) : 0;
+        var peakRevDate = d.labels[peakRevIdx] || 'N/A';
+
+        var peakConv = d.conv_data && d.conv_data.length > 0 ? Math.max(...d.conv_data) : 0;
+
+        var peakClicks = d.clicks_data && d.clicks_data.length > 0 ? Math.max(...d.clicks_data) : 0;
+        var peakClicksIdx = d.clicks_data ? d.clicks_data.indexOf(peakClicks) : 0;
+        var peakClicksDate = d.labels[peakClicksIdx] || 'N/A';
+
+        var minFraud = d.fraud_data && d.fraud_data.length > 0 ? Math.min(...d.fraud_data) : 0;
+        var minFraudIdx = d.fraud_data ? d.fraud_data.indexOf(minFraud) : 0;
+        var minFraudDate = d.labels[minFraudIdx] || 'N/A';
+
+        itemsHtml += `
+            <div class="saas-ai-item">
+                <div class="saas-ai-item-icon" style="background:rgba(16,185,129,0.15);color:#10B981">📈</div>
+                <div>
+                    <div class="saas-ai-item-title" style="color:#10B981">Revenue Growth</div>
+                    <div class="saas-ai-item-desc">Total revenue generated <strong>$${formatVal(totRev, 2)}</strong>. Peak revenue of <strong>$${formatVal(peakRev, 2)}</strong> on <strong>${peakRevDate}</strong>.</div>
+                </div>
+            </div>
+            <div class="saas-ai-item">
+                <div class="saas-ai-item-icon" style="background:rgba(139,92,246,0.15);color:#8B5CF6">⭐</div>
+                <div>
+                    <div class="saas-ai-item-title" style="color:#8B5CF6">Conversion Efficiency</div>
+                    <div class="saas-ai-item-desc">Total <strong>${formatVal(totConv)}</strong> conversions recorded. Best single day achieved <strong>${formatVal(peakConv)}</strong> conversions.</div>
+                </div>
+            </div>
+            <div class="saas-ai-item">
+                <div class="saas-ai-item-icon" style="background:rgba(59,130,246,0.15);color:#3B82F6">🎯</div>
+                <div>
+                    <div class="saas-ai-item-title" style="color:#3B82F6">Traffic Volume</div>
+                    <div class="saas-ai-item-desc">Total click volume is <strong>${formatVal(totClicks)}</strong>. Highest click volume reached on <strong>${peakClicksDate}</strong>.</div>
+                </div>
+            </div>
+            <div class="saas-ai-item">
+                <div class="saas-ai-item-icon" style="background:rgba(239,68,68,0.15);color:#EF4444">🛡️</div>
+                <div>
+                    <div class="saas-ai-item-title" style="color:#EF4444">Fraud Defense</div>
+                    <div class="saas-ai-item-desc">Average fraud rate maintained at <strong>${avgFraud}%</strong>. Lowest fraud day recorded on <strong>${minFraudDate}</strong> (${minFraud}%).</div>
+                </div>
+            </div>`;
+
+        aiList.innerHTML = itemsHtml;
+    }
+}
+
+
 function renderTrendChart(){
     const d = typeof trendData !== 'undefined' ? trendData : null;
     if(!d||!d.labels) return;
+    updateSaaSAnalyticsAndAI(typeof d !== 'undefined' ? d : (typeof _trendData !== 'undefined' ? _trendData : trendData));
 
     let hasAnyData = false;
     if (d.clicks_data && d.clicks_data.some(v => v !== 0)) hasAnyData = true;
