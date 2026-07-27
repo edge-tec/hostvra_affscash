@@ -448,12 +448,17 @@ html[data-theme="dark"] .kpi-value, html[data-theme="dark"] .an-kpi-value { colo
 </div>
     <!-- Fraud Conversion % — server-computed (fraud_score >= 60). The actual
          per-row score is never sent to the affiliate, only the aggregate %. -->
-    <div class="an-kpi-card" style="--an-kpi-accent:#DC2626" title="Fraud conversions are conversions with fraud score between 60–100.">
-        <div class="an-kpi-icon" style="background:#FEF2F2;color:#DC2626">⚠</div>
-        <div class="an-kpi-label">Fraud Conversion %</div>
-        <div class="an-kpi-value" id="kv-fraud-conv-pct"><span class="an-skeleton" style="display:block;height:28px;width:65px"></span></div>
-        <div class="an-kpi-sub" id="ks-fraud-conv"><span style="color:#DC2626;font-weight:600">—</span> Fraud Conversions</div>
-        <div class="an-kpi-trend flat" id="kt-fraud-conv-pct">—</div>
+    <div class="an-kpi-card red" title="Fraud conversions are conversions with fraud score between 60–100.">
+        <div class="an-kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        </div>
+        <div class="an-kpi-content">
+            <div class="an-kpi-label">Fraud Conversion %</div>
+            <div class="an-kpi-value" id="kv-fraud-conv-pct"><span class="an-skeleton" style="display:block;height:28px;width:65px"></span></div>
+            <div class="an-kpi-sub" id="ks-fraud-conv"><span style="color:#DC2626;font-weight:600">—</span> Fraud Conversions</div>
+            <div class="an-kpi-trend flat" id="kt-fraud-conv-pct">—</div>
+        </div>
+        <div class="an-kpi-sparkline"></div>
     </div>
 </div>
 

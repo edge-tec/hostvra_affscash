@@ -362,37 +362,39 @@ html[data-theme="dark"] .kpi-value, html[data-theme="dark"] .an-kpi-value { colo
     $_fsBg    = ['high'=>'rgba(239,68,68,.08)','medium'=>'rgba(245,158,11,.08)','low'=>'rgba(16,185,129,.08)'][$_fsLevel];
     $_fsTotal = (int)$fraudScoreCounts['high'] + (int)$fraudScoreCounts['medium'] + (int)$fraudScoreCounts['low'];
     ?>
-    <div class="kpi-card" style="--top-rail:<?= $_fsColor ?>;background:<?= $_fsBg ?>"
-         title="Real-time IPQS Fraud Score — average IPQualityScore fraud_score across all managed affiliate conversions in the last 30 days.">
-        <style>.kpi-card[style*="--top-rail"]::before{background:var(--top-rail) !important}</style>
-        <div class="kpi-label" style="display:flex;align-items:center;gap:6px">
-            IPQS Fraud Score
+    <div class="kpi-card green" title="Real-time IPQS Fraud Score — average IPQualityScore fraud_score across all managed affiliate conversions in the last 30 days.">
+        <div class="kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
         </div>
-        <div class="kpi-value" style="color:<?= $_fsColor ?>;display:flex;align-items:baseline;gap:6px">
-            <?= $_fsScore ?>
-            <span style="font-size:14px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em">/100 · <?= ucfirst($_fsLevel) ?></span>
+        <div class="kpi-content">
+            <div class="kpi-label">IPQS Fraud Score</div>
+            <div class="kpi-value" style="color:<?= $_fsColor ?>;display:flex;align-items:baseline;gap:6px">
+                <?= $_fsScore ?>
+                <span style="font-size:14px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em">/100 · <?= ucfirst($_fsLevel) ?></span>
+            </div>
+            <div class="kpi-sub" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:5px">
+                <span style="display:inline-flex;align-items:center;gap:3px">
+                    <span style="width:6px;height:6px;border-radius:50%;background:#EF4444;display:inline-block"></span>
+                    <?= (int)$fraudScoreCounts['high'] ?> high
+                </span>
+                <span style="display:inline-flex;align-items:center;gap:3px">
+                    <span style="width:6px;height:6px;border-radius:50%;background:#F59E0B;display:inline-block"></span>
+                    <?= (int)$fraudScoreCounts['medium'] ?> med
+                </span>
+                <span style="display:inline-flex;align-items:center;gap:3px">
+                    <span style="width:6px;height:6px;border-radius:50%;background:#10B981;display:inline-block"></span>
+                    <?= (int)$fraudScoreCounts['low'] ?> low
+                </span>
+            </div>
+            <?php if ($ipqsChecked > 0): ?>
+            <div style="margin-top:6px;font-size:10px;color:var(--text-muted)">
+                Based on <?= number_format($ipqsChecked) ?> checked conversion<?= $ipqsChecked === 1 ? '' : 's' ?> · last 30 days
+            </div>
+            <?php elseif ($_fsTotal === 0): ?>
+            <div style="margin-top:6px;font-size:10px;color:var(--text-muted)">No conversions checked yet</div>
+            <?php endif; ?>
         </div>
-        <div class="kpi-sub" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:5px">
-            <span style="display:inline-flex;align-items:center;gap:3px">
-                <span style="width:6px;height:6px;border-radius:50%;background:#EF4444;display:inline-block"></span>
-                <?= (int)$fraudScoreCounts['high'] ?> high
-            </span>
-            <span style="display:inline-flex;align-items:center;gap:3px">
-                <span style="width:6px;height:6px;border-radius:50%;background:#F59E0B;display:inline-block"></span>
-                <?= (int)$fraudScoreCounts['medium'] ?> med
-            </span>
-            <span style="display:inline-flex;align-items:center;gap:3px">
-                <span style="width:6px;height:6px;border-radius:50%;background:#10B981;display:inline-block"></span>
-                <?= (int)$fraudScoreCounts['low'] ?> low
-            </span>
-        </div>
-        <?php if ($ipqsChecked > 0): ?>
-        <div style="margin-top:6px;font-size:10px;color:var(--text-muted)">
-            Based on <?= number_format($ipqsChecked) ?> checked conversion<?= $ipqsChecked === 1 ? '' : 's' ?> · last 30 days
-        </div>
-        <?php elseif ($_fsTotal === 0): ?>
-        <div style="margin-top:6px;font-size:10px;color:var(--text-muted)">No conversions checked yet</div>
-        <?php endif; ?>
+        <div class="kpi-sparkline"></div>
     </div>
 </div>
 
