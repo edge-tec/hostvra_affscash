@@ -455,7 +455,6 @@ mk('uniqueVsTotal', { type:'bar', data:{ labels:trendLabels, datasets:[
         canvasEl.parentElement.style.height = '220px';
         canvasEl.parentElement.style.position = 'relative';
     }
-    const shortSrc = srcLabels.map(function(n){ return n.length>30?n.slice(0,28)+'…':n; });
     document.getElementById('srcChart').parentElement.style.height = Math.max(250, srcLabels.length * 40 + 80) + 'px';
     document.getElementById('srcChart').parentElement.style.position = 'relative';
     mk('srcChart', { type:'bar', data:{ labels:shortSrc, datasets:[{
