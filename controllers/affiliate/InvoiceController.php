@@ -45,7 +45,7 @@ if ($invoiceId) {
         "SELECT * FROM invoices WHERE id=? AND affiliate_id=?",
         [$invoiceId, $affId]
     );
-    if (!$invoice) Helpers::redirect('/affiliate/invoices');
+    if (!$invoice) Helpers::redirect('/affiliate/billing-history');
     $items    = json_decode($invoice['items'] ?? '[]', true) ?: [];
     $pageTitle = 'Invoice ' . $invoice['invoice_number'];
     $aff      = Database::fetchOne(

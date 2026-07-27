@@ -37,8 +37,8 @@
                 <td class="text-sm text-muted"><?= $inv['due_date'] ? date('M j, Y', strtotime($inv['due_date'])) : '—' ?></td>
                 <td class="text-sm text-muted"><?= date('M j, Y', strtotime($inv['created_at'])) ?></td>
                 <td style="white-space:nowrap">
-                    <a href="/affiliate/invoices/<?= $inv['id'] ?>" class="btn btn-secondary btn-sm">View</a>
-                    <a href="/affiliate/invoices?action=download_pdf&id=<?= $inv['id'] ?>" class="btn btn-primary btn-sm" download title="Download PDF">
+                    <a href="/affiliate/billing-history/<?= $inv['id'] ?>" class="btn btn-secondary btn-sm">View</a>
+                    <a href="/affiliate/billing-history?action=download_pdf&id=<?= $inv['id'] ?>" class="btn btn-primary btn-sm" download title="Download PDF">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                         PDF
                     </a>

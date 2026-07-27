@@ -470,6 +470,8 @@ Router::any('/affiliate/duplicate-conversions', function() { require BASE_PATH .
 Router::any('/affiliate/fraud-report',  function() { require BASE_PATH . '/controllers/affiliate/FraudReportController.php'; });
 Router::any('/affiliate/fraud-reports', function() { require BASE_PATH . '/controllers/affiliate/FraudReportsController.php'; });
 Router::any('/affiliate/balance', function() { require BASE_PATH . '/controllers/affiliate/BalanceController.php'; });
+Router::any('/affiliate/billing-history', function() { require BASE_PATH . '/controllers/affiliate/InvoiceController.php'; });
+Router::any('/affiliate/billing-history/{id}', function($id) { $_GET['id']=$id; require BASE_PATH . '/controllers/affiliate/InvoiceController.php'; });
 Router::any('/affiliate/invoices', function() { require BASE_PATH . '/controllers/affiliate/InvoiceController.php'; });
 Router::any('/affiliate/invoices/{id}', function($id) { $_GET['id']=$id; require BASE_PATH . '/controllers/affiliate/InvoiceController.php'; });
 Router::any('/affiliate/profile', function() { require BASE_PATH . '/controllers/affiliate/ProfileController.php'; });

@@ -43,12 +43,12 @@ if (isset($_GET['print'])):
         <p>Issued <?= date('F j, Y', strtotime($invoice['created_at'])) ?></p>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <a href="/affiliate/invoices" class="btn btn-secondary">← Back</a>
-        <a href="/affiliate/invoices?action=download_pdf&id=<?= $invoice['id'] ?>" class="btn btn-primary" download>
+        <a href="/affiliate/billing-history" class="btn btn-secondary">← Back</a>
+        <a href="/affiliate/billing-history?action=download_pdf&id=<?= $invoice['id'] ?>" class="btn btn-primary" download>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Download PDF
         </a>
-        <a href="/affiliate/invoices/<?= $invoice['id'] ?>?print=1" class="btn btn-secondary" target="_blank">&#128424; Print</a>
+        <a href="/affiliate/billing-history/<?= $invoice['id'] ?>?print=1" class="btn btn-secondary" target="_blank">&#128424; Print</a>
     </div>
 </div>
 

@@ -13,5 +13,5 @@ if (($_GET['action'] ?? '') === 'get_balance') {
     exit;
 }
 
-// Fallback — redirect to invoices
-Helpers::redirect('/affiliate/invoices');
+// Fallback — redirect to billing-history
+Helpers::redirect('/affiliate/billing-history');
