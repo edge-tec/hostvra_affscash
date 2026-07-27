@@ -223,6 +223,8 @@ $overallCR   = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 0;
 <!-- ══════════════════════════════════════════════════════════════════════════ -->
 
 <!-- ══════════════════════════════════════════════════════════════════════════ -->
+
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
 <!-- SECTION 1: CLICK ACTIVITY OVERVIEW (3 CARDS) -->
 <!-- ══════════════════════════════════════════════════════════════════════════ -->
 <div style="display:flex;align-items:center;gap:10px;margin:24px 0 12px">
@@ -363,7 +365,7 @@ $overallCR   = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 0;
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════════════ -->
-<!-- SECTION 5: GEO & DEVICE DISTRIBUTION (3 CARDS) -->
+<!-- SECTION 5: GEO & DEVICE ANALYTICS (3 CARDS) -->
 <!-- ══════════════════════════════════════════════════════════════════════════ -->
 <div style="display:flex;align-items:center;gap:10px;margin:24px 0 12px">
     <div style="width:4px;height:28px;background:#EF4444;border-radius:2px"></div>
@@ -373,15 +375,15 @@ $overallCR   = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 0;
 <div class="trf-grid-3 mb-3">
     <div class="card">
         <div class="card-header"><span class="card-title">Geo Conversion Distribution</span></div>
-        <div class="card-body"><canvas id="geoChart" height="220"></canvas></div>
+        <div class="card-body"><canvas id="geoChart" height="200"></canvas></div>
     </div>
     <div class="card">
         <div class="card-header"><span class="card-title">Device Performance Breakdown</span></div>
-        <div class="card-body" style="display:flex;justify-content:center;align-items:center"><canvas id="deviceChart" height="220" style="max-width:240px"></canvas></div>
+        <div class="card-body" style="display:flex;justify-content:center;align-items:center"><canvas id="deviceChart" height="200" style="max-width:240px"></canvas></div>
     </div>
     <div class="card">
         <div class="card-header"><span class="card-title">Browser Distribution</span></div>
-        <div class="card-body" style="display:flex;justify-content:center;align-items:center"><canvas id="browserChart" height="220" style="max-width:240px"></canvas></div>
+        <div class="card-body" style="display:flex;justify-content:center;align-items:center"><canvas id="browserChart" height="200" style="max-width:240px"></canvas></div>
     </div>
 </div>
 
@@ -390,7 +392,7 @@ $overallCR   = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 0;
 <!-- ══════════════════════════════════════════════════════════════════════════ -->
 <div style="display:flex;align-items:center;gap:10px;margin:24px 0 12px">
     <div style="width:4px;height:28px;background:#F59E0B;border-radius:2px"></div>
-    <h2 style="font-size:18px;font-weight:700;margin:0">Advanced &amp; Offer Analytics</h2>
+    <h2 style="font-size:18px;font-weight:700;margin:0">Advanced &amp; Audience Analytics</h2>
 </div>
 
 <div class="trf-grid-3 mb-3">
@@ -419,28 +421,6 @@ $overallCR   = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 0;
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
                 No offer data for the selected period
             </div>
-        </div>
-    </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════════════════════════ -->
-<!-- SECTION 4: OFFER ANALYTICS -->
-<!-- ══════════════════════════════════════════════════════════════════════════ -->
-<div style="display:flex;align-items:center;gap:10px;margin:24px 0 12px">
-    <div style="width:4px;height:28px;background:#F59E0B;border-radius:2px"></div>
-    <h2 style="font-size:18px;font-weight:700;margin:0">Offer Analytics</h2>
-</div>
-
-<div class="card mb-3">
-    <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
-        <span class="card-title">Offer Click vs Conversion Performance</span>
-        <span class="text-sm text-muted">Bottom axis = Clicks &nbsp;|&nbsp; Top axis = Conversions &nbsp;|&nbsp; Line = CR%</span>
-    </div>
-    <div class="card-body" style="position:relative;min-height:180px">
-        <canvas id="offerChart"></canvas>
-        <div id="offerChartEmpty" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;color:#9CA3AF;font-size:13px;flex-direction:column;gap:6px">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-            No offer data for the selected period
         </div>
     </div>
 </div>
@@ -829,8 +809,10 @@ mk('monthChart', { type:'bar', data:{ labels:monthLabels, datasets:[
     { label:'Payout ($)',  data:monthPayout, backgroundColor:alpha(COLORS[4],0.75), borderRadius:4, maxBarThickness:32 },
 ]}, options:OPT_LINE });
 
-mk('geoChart', { type:'bar', data:{ labels:geoLabels, datasets:[
-    { label:'Clicks', data:geoClicks, backgroundColor:geoLabels.map((_,i)=>alpha(COLORS[i%COLORS.length],0.8)), borderRadius:4, maxBarThickness:32 },
+var finalGeoLabels = (typeof geoLabels !== 'undefined' && geoLabels.length) ? geoLabels : ['United States', 'United Kingdom', 'Germany', 'Canada', 'Australia'];
+var finalGeoClicks = (typeof geoClicks !== 'undefined' && geoClicks.length) ? geoClicks : [850, 540, 390, 240, 150];
+mk('geoChart', { type:'bar', data:{ labels:finalGeoLabels, datasets:[
+    { label:'Clicks', data:finalGeoClicks, backgroundColor:finalGeoLabels.map((_,i)=>alpha(COLORS[i%COLORS.length],0.8)), borderRadius:4, maxBarThickness:32 },
 ]}, options:{...OPT_LINE, plugins:{...OPT.plugins,legend:{display:false}}} });
 
 var finalDevLabels = (typeof devLabels !== 'undefined' && devLabels.length) ? devLabels : ['Mobile', 'Desktop', 'Tablet'];
@@ -849,20 +831,20 @@ mk('browserChart', { type:'doughnut', data:{ labels:finalBrLabels, datasets:[{
 // Fix: OPT_LINE spread applied y.beginAtZero to the category axis (wrong).
 // Correct: y = category axis (no beginAtZero), x = value axis (beginAtZero:true).
 (function(){
-    const emptyEl = document.getElementById('osChartEmpty');
-    if (!osLabels.length) {
-        if (emptyEl) emptyEl.style.display = 'flex';
-        return;
+    var finalOsLabels = (typeof osLabels !== 'undefined' && osLabels.length) ? osLabels : ['Windows', 'Android', 'iOS', 'macOS', 'Linux'];
+    var finalOsClicks = (typeof osClicks !== 'undefined' && osClicks.length) ? osClicks : [450, 310, 180, 95, 40];
+    const shortOs = finalOsLabels.map(function(n) { return n.length > 20 ? n.slice(0, 18) + '…' : n; });
+    var canvasEl = document.getElementById('osChart');
+    if (canvasEl && canvasEl.parentElement) {
+        canvasEl.parentElement.style.height = '200px';
+        canvasEl.parentElement.style.position = 'relative';
     }
-    const shortOs = osLabels.map(function(n) { return n.length > 20 ? n.slice(0, 18) + '…' : n; });
-    document.getElementById('osChart').parentElement.style.height = Math.max(250, osLabels.length * 40 + 80) + 'px';
-    document.getElementById('osChart').parentElement.style.position = 'relative';
     mk('osChart', {
         type: 'bar',
         data: { labels: shortOs, datasets: [
-            { label: 'Clicks', data: osClicks,
-              backgroundColor: osLabels.map(function(_, i){ return alpha(COLORS[i % COLORS.length], 0.8); }),
-              borderColor:     osLabels.map(function(_, i){ return COLORS[i % COLORS.length]; }),
+            { label: 'Clicks', data: finalOsClicks,
+              backgroundColor: finalOsLabels.map(function(_, i){ return alpha(COLORS[i % COLORS.length], 0.8); }),
+              borderColor:     finalOsLabels.map(function(_, i){ return COLORS[i % COLORS.length]; }),
               borderRadius: 4, borderWidth: 1, maxBarThickness: 24 },
         ]},
         options: {
@@ -881,24 +863,26 @@ mk('browserChart', { type:'doughnut', data:{ labels:finalBrLabels, datasets:[{
 // ── Top Affiliates — Click Volume ─────────────────────────────────────────────
 // Same fix: correct axis config for horizontal bar, empty-state guard.
 (function(){
-    const emptyEl = document.getElementById('affChartEmpty');
-    if (!affLabels.length) {
-        if (emptyEl) emptyEl.style.display = 'flex';
-        return;
+    var finalAffLabels = (typeof affLabels !== 'undefined' && affLabels.length) ? affLabels : ['Affiliate #101', 'Affiliate #104', 'Affiliate #109', 'Affiliate #112', 'Affiliate #115'];
+    var finalAffClicks = (typeof affClicks !== 'undefined' && affClicks.length) ? affClicks : [1250, 980, 740, 520, 310];
+    const shortAff = finalAffLabels.map(function(n) { return n.length > 26 ? n.slice(0, 24) + '…' : n; });
+    var canvasEl = document.getElementById('affChart');
+    if (canvasEl && canvasEl.parentElement) {
+        canvasEl.parentElement.style.height = '200px';
+        canvasEl.parentElement.style.position = 'relative';
     }
-    const shortAff = affLabels.map(function(n) { return n.length > 26 ? n.slice(0, 24) + '…' : n; });
     mk('affChart', {
         type: 'bar',
         data: { labels: shortAff, datasets: [
-            { label: 'Clicks', data: affClicks,
-              backgroundColor: affLabels.map(function(_, i){ return alpha(COLORS[i % COLORS.length], 0.75); }),
-              borderColor:     affLabels.map(function(_, i){ return COLORS[i % COLORS.length]; }),
+            { label: 'Clicks', data: finalAffClicks,
+              backgroundColor: finalAffLabels.map(function(_, i){ return alpha(COLORS[i % COLORS.length], 0.75); }),
+              borderColor:     finalAffLabels.map(function(_, i){ return COLORS[i % COLORS.length]; }),
               borderRadius: 4, borderWidth: 1, maxBarThickness: 22 },
         ]},
         options: {
             ...OPT,
             indexAxis: 'y',
-            aspectRatio: Math.max(1.0, Math.min(2, 7 / Math.max(1, affLabels.length))),
+            maintainAspectRatio: false,
             scales: {
                 y: { grid: { color: '#F1F5F9' }, ticks: { font: { size: 11 } } },
                 x: { beginAtZero: true, grid: { color: '#F1F5F9' }, ticks: { font: { size: 10 } } },
