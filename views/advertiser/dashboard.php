@@ -221,6 +221,7 @@ html[data-theme="dark"] .saas-legend-item.active {
 
 /* AI Insights Panel */
 .saas-ai-insights {
+    display: none !important;
     position: absolute;
     top: 24px;
     right: 24px;
