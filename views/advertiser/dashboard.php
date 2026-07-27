@@ -27,138 +27,402 @@
 </div>
 
 <!-- ─── Performance Analytics ────────────────────────────────────────── -->
+<!-- ─── Performance Analytics (PREMIUM SAAS UI) ────────────────────────────────────────── -->
 <style>
-.ap-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:18px;box-shadow:0 8px 28px -18px rgba(15,23,42,.18);}
-.ap-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,#F8FAFC,#EEF2FF);}
-.ap-title{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:800;color:var(--text);}
-.ap-title .ap-dot{width:8px;height:8px;border-radius:50%;background:#10B981;box-shadow:0 0 0 0 rgba(16,185,129,.55);animation:ap-pulse 1.6s infinite;}
-@keyframes ap-pulse{0%{box-shadow:0 0 0 0 rgba(16,185,129,.55)}70%{box-shadow:0 0 0 8px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
-.ap-range{font-size:11.5px;color:var(--text-muted);background:#fff;border:1px solid var(--border);border-radius:999px;padding:4px 12px;}
-.ap-pills{display:flex;flex-wrap:wrap;gap:5px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:3px;}
-.ap-pill{border:none;background:transparent;color:var(--text-muted);font-size:12px;font-weight:600;padding:6px 12px;border-radius:7px;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s;}
-.ap-pill:hover{background:#F1F5F9;color:var(--text);}
-.ap-pill.active{background:linear-gradient(135deg,#0F766E,#0891B2);color:#fff;}
-.ap-body{padding:18px 20px;}
-.ap-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
-.ap-kpi{position:relative;overflow:hidden;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;transition:transform .2s,box-shadow .2s;}
-.ap-kpi:hover{box-shadow:0 8px 20px -12px rgba(0,0,0,.15);}
-.ap-kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--ap-tint,#0891B2);}
-.ap-kpi-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
-.ap-kpi-lbl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);}
-.ap-kpi-ico{width:24px;height:24px;border-radius:6px;background:var(--ap-tint,#0891B2);color:#fff;display:flex;align-items:center;justify-content:center;}
-.ap-kpi-ico svg{width:13px;height:13px;}
-.ap-kpi-val{font-size:20px;font-weight:800;color:var(--text);line-height:1;font-variant-numeric:tabular-nums;}
-.ap-kpi-delta{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;margin-top:6px;}
-.ap-kpi-delta.up{background:rgba(16,185,129,.13);color:#059669;}
-.ap-kpi-delta.down{background:rgba(239,68,68,.13);color:#DC2626;}
-.ap-kpi-delta.flat{background:var(--bg);color:var(--text-muted);}
-.ap-kpi.clicks {--ap-tint:#3B82F6;}
-.ap-kpi.conv   {--ap-tint:#10B981;}
-.ap-kpi.revenue{--ap-tint:#8B5CF6;}
-.ap-kpi.payout {--ap-tint:#F59E0B;}
-.ap-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px;}
-.ap-toggles{display:flex;flex-wrap:wrap;gap:5px;}
-.ap-toggles button{border:1px solid var(--border);background:var(--bg);color:var(--text-muted);padding:5px 11px;border-radius:7px;font-size:11.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;}
-.ap-toggles button .dot{width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block;}
-.ap-toggles button.active{color:#fff;border-color:transparent;}
-.ap-toggles button.active[data-m="clicks"] {background:#3B82F6;}
-.ap-toggles button.active[data-m="conv"]   {background:#10B981;}
-.ap-toggles button.active[data-m="revenue"]{background:#8B5CF6;}
-.ap-toggles button.active[data-m="payout"] {background:#F59E0B;}
-.ap-type{display:inline-flex;border:1px solid var(--border);border-radius:7px;overflow:hidden;background:var(--bg);}
-.ap-type button{border:none;background:transparent;color:var(--text-muted);padding:6px 12px;font-size:11.5px;font-weight:600;cursor:pointer;}
-.ap-type button.active{background:linear-gradient(135deg,#0F766E,#0891B2);color:#fff;}
-.ap-chart-wrap{position:relative;height:300px;}
-.ap-loading{position:absolute;inset:0;background:rgba(255,255,255,.55);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:5;border-radius:8px;}
-html[data-theme="dark"] .ap-loading{background:rgba(15,23,42,.55);}
-.ap-loading.show{display:flex;}
-.ap-spinner{width:24px;height:24px;border:3px solid var(--border);border-top-color:#0891B2;border-radius:50%;animation:ap-spin .65s linear infinite;}
-@keyframes ap-spin{to{transform:rotate(360deg)}}
-@media(max-width:900px){ .ap-kpis{grid-template-columns:repeat(2,1fr);} }
-@media(max-width:560px){
-    .ap-head{padding:14px 14px;}
-    .ap-body{padding:14px;}
-    .ap-pills{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;}
-    .ap-pill{flex-shrink:0;}
-    .ap-chart-wrap{height:260px;}
-    .ap-kpi-val{font-size:18px;}
+/* SaaS Glassmorphism Chart Container */
+.saas-trend-container {
+    background: var(--card-bg, #ffffff);
+    border-radius: 24px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0,0,0,0.02);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Inter', system-ui, sans-serif;
+    transition: all 0.3s ease;
+}
+html[data-theme="dark"] .saas-trend-container {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(24px) saturate(150%);
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.saas-trend-header {
+    padding: 24px 28px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.saas-trend-title-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.saas-section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text, #111827);
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Intelligent Filter Chips */
+.saas-time-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    background: rgba(148, 163, 184, 0.08);
+    padding: 4px;
+    border-radius: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.1);
+}
+.saas-chip {
+    background: transparent;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted, #64748b);
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.saas-chip:hover {
+    color: var(--text, #111827);
+}
+.saas-chip.active {
+    background: var(--card-bg, #ffffff);
+    color: #111827;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+html[data-theme="dark"] .saas-chip.active {
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Floating KPI Cards Above Chart */
+.saas-kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+}
+.saas-kpi-card {
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    border-radius: 16px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
+}
+html[data-theme="dark"] .saas-kpi-card {
+    background: rgba(30, 41, 59, 0.4);
+    border-color: rgba(255,255,255,0.06);
+}
+.saas-kpi-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+}
+html[data-theme="dark"] .saas-kpi-card:hover {
+    box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+}
+.saas-kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: var(--kpi-color, #3B82F6);
+    opacity: 0.8;
+}
+.saas-kpi-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted, #64748B);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.saas-kpi-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text, #111827);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+}
+
+/* Intelligent Legend */
+.saas-legend-container {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 4px;
+}
+.saas-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: rgba(148, 163, 184, 0.08);
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted, #64748b);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent;
+}
+html[data-theme="dark"] .saas-legend-item {
+    background: rgba(255,255,255,0.03);
+    border-color: rgba(255,255,255,0.05);
+}
+.saas-leg-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--leg-color);
+    box-shadow: 0 0 8px var(--leg-color);
+    transition: all 0.3s;
+    opacity: 0.4;
+}
+.saas-legend-item.active {
+    background: var(--card-bg, #ffffff);
+    color: var(--text, #111827);
+    border-color: rgba(148, 163, 184, 0.2);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+html[data-theme="dark"] .saas-legend-item.active {
+    background: rgba(30, 41, 59, 0.8);
+    border-color: rgba(255,255,255,0.1);
+    color: #ffffff;
+}
+.saas-legend-item.active .saas-leg-dot {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+/* Main Chart Body */
+.saas-trend-body {
+    position: relative;
+    padding: 0 20px 24px;
+    height: 380px;
+}
+
+/* AI Insights Panel */
+.saas-ai-insights {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 280px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 16px 32px rgba(31, 38, 135, 0.08);
+    z-index: 10;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+html[data-theme="dark"] .saas-ai-insights {
+    background: rgba(15, 23, 42, 0.75);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4);
+}
+.saas-ai-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text, #111827);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: linear-gradient(135deg, #4F46E5, #EC4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.saas-ai-list {
+    list-style: none;
+    padding: 0; margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.saas-ai-list li {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-muted, #475569);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.4;
+}
+.saas-ai-list li::before {
+    content: '✧';
+    color: #8B5CF6;
+    font-size: 14px;
+}
+
+/* Custom Interactive Tooltip */
+.saas-custom-tooltip {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px) saturate(200%);
+    -webkit-backdrop-filter: blur(20px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0,0,0,0.05);
+    pointer-events: none;
+    transform: translate(-50%, 15px);
+    transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    z-index: 100;
+    min-width: 220px;
+}
+html[data-theme="dark"] .saas-custom-tooltip {
+    background: rgba(15, 23, 42, 0.85);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    color: #fff;
+}
+.saas-tooltip-date {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted, #64748b);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(148,163,184,0.2);
+    padding-bottom: 8px;
+}
+.saas-tooltip-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 600;
+}
+.saas-tooltip-row:last-child { margin-bottom: 0; }
+.saas-tooltip-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-muted, #475569);
+}
+.saas-tooltip-val {
+    color: var(--text, #111827);
+    font-weight: 800;
+}
+.saas-tooltip-extra {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dotted rgba(148,163,184,0.3);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+.saas-tooltip-ex-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.saas-tooltip-ex-label { font-size: 11px; color: var(--text-light, #94a3b8); font-weight: 600; text-transform: uppercase; }
+.saas-tooltip-ex-val { font-size: 13px; font-weight: 700; color: var(--text, #111827); }
+
+@media (max-width: 1024px) {
+    .saas-ai-insights { display: none; }
+}
+@media (max-width: 768px) {
+    .saas-trend-body { height: 280px; }
 }
 </style>
 
-<div class="ap-card">
-    <div class="ap-head">
-        <div>
-            <div class="ap-title"><span class="ap-dot"></span>Performance Analytics</div>
-            <div style="margin-top:6px"><span class="ap-range" id="ap-range">—</span></div>
+<div class="saas-trend-container mb-3">
+    <div class="saas-ai-insights" id="saas-ai-panel" style="opacity:0">
+        <div class="saas-ai-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="url(#ai-grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <defs>
+                    <linearGradient id="ai-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#4F46E5" />
+                        <stop offset="100%" stop-color="#EC4899" />
+                    </linearGradient>
+                </defs>
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+            AI Insights
         </div>
-        <div class="ap-pills" role="tablist" aria-label="Date range">
-            <button class="ap-pill" data-preset="today">Today</button>
-            <button class="ap-pill" data-preset="yesterday">Yesterday</button>
-            <button class="ap-pill" data-preset="7d">7D</button>
-            <button class="ap-pill" data-preset="15d">Last 15D</button>
-            <button class="ap-pill active" data-preset="30d">30D</button>
-            <button class="ap-pill" data-preset="90d">90D</button>
-            <button class="ap-pill" data-preset="mtd">This Month</button>
-            <button class="ap-pill" data-preset="lastmonth">Last Month</button>
+        <ul class="saas-ai-list" id="saas-ai-list">
+            <li>Analyzing trend data...</li>
+        </ul>
+    </div>
+
+    <div class="saas-trend-header">
+        <div class="saas-trend-title-area">
+            <span class="saas-section-title">Performance Analytics <span style="font-size:12px;color:var(--text-muted);font-weight:600;margin-left:8px" id="ap-range">—</span></span>
+            <div class="saas-time-filters ap-pills">
+                <button class="saas-chip ap-pill" data-preset="today">Today</button>
+                <button class="saas-chip ap-pill" data-preset="yesterday">Yesterday</button>
+                <button class="saas-chip ap-pill" data-preset="7d">7 Days</button>
+                <button class="saas-chip ap-pill active" data-preset="30d">30 Days</button>
+                <button class="saas-chip ap-pill" data-preset="mtd">This Month</button>
+            </div>
+        </div>
+
+        <div class="saas-kpi-row">
+            <div class="saas-kpi-card" style="--kpi-color: #3B82F6;">
+                <div class="saas-kpi-label"><span style="color:#3B82F6">●</span> Clicks</div>
+                <div class="saas-kpi-value" id="ap-clicks">0</div>
+            </div>
+            <div class="saas-kpi-card" style="--kpi-color: #10B981;">
+                <div class="saas-kpi-label"><span style="color:#10B981">●</span> Conversions</div>
+                <div class="saas-kpi-value" id="ap-conv">0</div>
+            </div>
+            <div class="saas-kpi-card" style="--kpi-color: #8B5CF6;">
+                <div class="saas-kpi-label"><span style="color:#8B5CF6">●</span> Spend</div>
+                <div class="saas-kpi-value" id="ap-revenue">$0.00</div>
+            </div>
+            <div class="saas-kpi-card" style="--kpi-color: #F59E0B;">
+                <div class="saas-kpi-label"><span style="color:#F59E0B">●</span> Payout</div>
+                <div class="saas-kpi-value" id="ap-payout">$0.00</div>
+            </div>
+        </div>
+
+        <div class="saas-legend-container" id="ap-metrics">
+            <button class="saas-legend-item active" style="--leg-color: #3B82F6;" data-m="clicks">
+                <span class="saas-leg-dot"></span> Clicks
+            </button>
+            <button class="saas-legend-item active" style="--leg-color: #10B981;" data-m="conv">
+                <span class="saas-leg-dot"></span> Conversions
+            </button>
+            <button class="saas-legend-item active" style="--leg-color: #8B5CF6;" data-m="revenue">
+                <span class="saas-leg-dot"></span> Spend
+            </button>
+            <button class="saas-legend-item active" style="--leg-color: #F59E0B;" data-m="payout">
+                <span class="saas-leg-dot"></span> Payout
+            </button>
         </div>
     </div>
 
-    <div class="ap-body">
-        <!-- KPIs -->
-        <div class="ap-kpis">
-            <div class="ap-kpi clicks">
-                <div class="ap-kpi-row">
-                    <span class="ap-kpi-lbl">Clicks</span>
-                    <span class="ap-kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
-                </div>
-                <div class="ap-kpi-val" id="ap-clicks">—</div>
-                <div class="ap-kpi-delta flat" id="ap-clicks-delta">—</div>
-            </div>
-            <div class="ap-kpi conv">
-                <div class="ap-kpi-row">
-                    <span class="ap-kpi-lbl">Conversions</span>
-                    <span class="ap-kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-                </div>
-                <div class="ap-kpi-val" id="ap-conv">—</div>
-                <div class="ap-kpi-delta flat" id="ap-conv-delta">—</div>
-            </div>
-            <div class="ap-kpi revenue">
-                <div class="ap-kpi-row">
-                    <span class="ap-kpi-lbl">Revenue</span>
-                    <span class="ap-kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
-                </div>
-                <div class="ap-kpi-val" id="ap-revenue">—</div>
-                <div class="ap-kpi-delta flat" id="ap-revenue-delta">—</div>
-            </div>
-            <div class="ap-kpi payout">
-                <div class="ap-kpi-row">
-                    <span class="ap-kpi-lbl">Payout</span>
-                    <span class="ap-kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/></svg></span>
-                </div>
-                <div class="ap-kpi-val" id="ap-payout">—</div>
-                <div class="ap-kpi-delta flat" id="ap-payout-delta">—</div>
-            </div>
-        </div>
-
-        <!-- Controls -->
-        <div class="ap-controls">
-            <div class="ap-toggles" id="ap-metrics" title="Click to toggle each series">
-                <button class="active" data-m="clicks"  style="color:#3B82F6"><span class="dot"></span>Clicks</button>
-                <button class="active" data-m="conv"    style="color:#10B981"><span class="dot"></span>Conversions</button>
-                <button class="active" data-m="revenue" style="color:#8B5CF6"><span class="dot"></span>Revenue</button>
-                <button class="active" data-m="payout"  style="color:#F59E0B"><span class="dot"></span>Payout</button>
-            </div>
-            <div class="ap-type" id="ap-types">
-                <button class="active" data-t="line">Line</button>
-                <button data-t="bar">Bar</button>
-            </div>
-        </div>
-
-        <!-- Chart -->
-        <div class="ap-chart-wrap">
-            <canvas id="ap-chart"></canvas>
-            <div class="ap-loading" id="ap-loading"><div class="ap-spinner"></div></div>
-        </div>
+    <div class="saas-trend-body">
+        <canvas id="ap-chart"></canvas>
+        <div id="saas-custom-tooltip" class="saas-custom-tooltip"></div>
+        <div class="ap-loading" id="ap-loading" style="display:none;position:absolute;inset:0;background:rgba(255,255,255,.5);z-index:5;align-items:center;justify-content:center"><div style="width:24px;height:24px;border:3px solid var(--text-muted);border-top-color:#3B82F6;border-radius:50%;animation:ap-spin 1s linear infinite"></div></div>
     </div>
 </div>
 
@@ -317,9 +581,29 @@ html[data-theme="dark"] .ap-loading{background:rgba(15,23,42,.55);}
         if (!lastTrend || !lastTrend.labels) return;
         var order = ['clicks','conv','revenue','payout'];
         var keys  = order.filter(function(k){ return active.has(k); });
-        var isLine = chartType === 'line';
+        var isLine = typeof chartType !== 'undefined' ? chartType === 'line' : true;
         var dense = lastTrend.labels.length > 30;
-        var single = keys.length === 1;
+        
+        // Update SaaS AI Insights
+        var aiPanel = document.getElementById('saas-ai-panel');
+        var aiList = document.getElementById('saas-ai-list');
+        if (aiPanel && aiList && lastTrend.labels.length > 0) {
+            aiPanel.style.opacity = '1';
+            var insights = [];
+            if (lastTrend.revenue_data && lastTrend.revenue_data.length > 0) {
+                var maxRev = Math.max.apply(null, lastTrend.revenue_data);
+                var maxIdx = lastTrend.revenue_data.indexOf(maxRev);
+                if (maxRev > 0) insights.push("Peak spend of $" + fmtInt(maxRev) + " on " + lastTrend.labels[maxIdx] + ".");
+            }
+            if (lastTrend.conv_data && lastTrend.conv_data.length > 0 && lastTrend.clicks_data && lastTrend.clicks_data.length > 0) {
+                var sumConv = lastTrend.conv_data.reduce((a,b)=>a+b,0);
+                var sumClicks = lastTrend.clicks_data.reduce((a,b)=>a+b,0);
+                var cr = sumClicks > 0 ? (sumConv/sumClicks*100).toFixed(1) : 0;
+                if (cr > 0) insights.push("Average Conversion Rate: " + cr + "%.");
+            }
+            if (insights.length === 0) insights.push("No significant insights found.");
+            aiList.innerHTML = insights.map(i => '<li>' + i + '</li>').join('');
+        }
 
         var datasets = keys.map(function(k){
             var m = META[k];
@@ -329,14 +613,22 @@ html[data-theme="dark"] .ap-loading{background:rgba(15,23,42,.55);}
                 data: data,
                 yAxisID: m.axis,
                 borderColor: m.color,
-                backgroundColor: isLine
-                    ? (single ? hexA(m.color, .18) : hexA(m.color, .9))
-                    : hexA(m.color, .80),
-                borderWidth: isLine ? 2.5 : 1,
-                pointRadius: dense ? 0 : 3,
-                pointHoverRadius: 5,
-                fill: isLine && single,
-                tension: isLine ? .38 : 0,
+                shadowColor: m.color,
+                backgroundColor: function(context) {
+                    const chart = context.chart;
+                    const {ctx, chartArea} = chart;
+                    if (!chartArea || !isLine) return hexA(m.color, .9);
+                    let gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                    gradient.addColorStop(0, hexA(m.color, 0.5));
+                    gradient.addColorStop(0.5, hexA(m.color, 0.15));
+                    gradient.addColorStop(1, hexA(m.color, 0));
+                    return gradient;
+                },
+                borderWidth: isLine ? 3 : 0,
+                pointRadius: 0,
+                pointHoverRadius: 8,
+                fill: isLine,
+                tension: isLine ? 0.45 : 0,
                 borderRadius: isLine ? 0 : 4,
                 isCur: m.isCur
             };
@@ -344,6 +636,77 @@ html[data-theme="dark"] .ap-loading{background:rgba(15,23,42,.55);}
 
         var hasCount = keys.some(function(k){ return !META[k].isCur; });
         var hasCur   = keys.some(function(k){ return  META[k].isCur; });
+        
+        // Glow Plugin
+        var glowPlugin = {
+            id: 'glowPlugin',
+            beforeDatasetDraw: function(chart, args, options) {
+                const ctx = chart.ctx;
+                ctx.save();
+                ctx.shadowColor = args.meta.dataset.shadowColor || 'transparent';
+                ctx.shadowBlur = 15;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 4;
+            },
+            afterDatasetDraw: function(chart, args, options) {
+                chart.ctx.restore();
+            }
+        };
+
+        const getOrCreateTooltip = (chart) => {
+            let tooltipEl = document.getElementById('saas-custom-tooltip');
+            if (!tooltipEl) {
+                tooltipEl = document.createElement('div');
+                tooltipEl.id = 'saas-custom-tooltip';
+                tooltipEl.classList.add('saas-custom-tooltip');
+                chart.canvas.parentNode.appendChild(tooltipEl);
+            }
+            return tooltipEl;
+        };
+
+        const externalTooltipHandler = (context) => {
+            const {chart, tooltip} = context;
+            const tooltipEl = getOrCreateTooltip(chart);
+
+            if (tooltip.opacity === 0) {
+                tooltipEl.style.opacity = 0;
+                return;
+            }
+
+            if (tooltip.body) {
+                const titleLines = tooltip.title || [];
+                let innerHtml = '<div class="saas-tooltip-date">' + titleLines[0] + '</div>';
+                
+                tooltip.dataPoints.forEach((dp, i) => {
+                    const ds = chart.data.datasets[dp.datasetIndex];
+                    const color = ds.borderColor;
+                    const label = ds.label;
+                    const val = dp.parsed.y;
+                    let displayVal = ds.isCur ? fmtCur(val) : fmtInt(val);
+                    
+                    innerHtml += `
+                        <div class="saas-tooltip-row">
+                            <div class="saas-tooltip-label">
+                                <span style="width:10px;height:10px;border-radius:50%;background:${color};box-shadow:0 0 6px ${color}"></span>
+                                ${label}
+                            </div>
+                            <div class="saas-tooltip-val">${displayVal}</div>
+                        </div>
+                    `;
+                });
+                tooltipEl.innerHTML = innerHtml;
+            }
+
+            const position = context.chart.canvas.getBoundingClientRect();
+            let left = tooltip.caretX;
+            let top = tooltip.caretY - 15;
+            if (left < 100) left = 100;
+            if (left > position.width - 100) left = position.width - 100;
+
+            tooltipEl.style.opacity = 1;
+            tooltipEl.style.left = left + 'px';
+            tooltipEl.style.top = top + 'px';
+        };
 
         var cfg = {
             type: chartType,
@@ -353,14 +716,8 @@ html[data-theme="dark"] .ap-loading{background:rgba(15,23,42,.55);}
                 animation: { duration: 500, easing: 'easeOutQuart' },
                 interaction: { mode:'index', intersect:false },
                 plugins: {
-                    legend: { display:true, position:'bottom', labels:{ boxWidth:10, padding:12, color:tickCol(), font:{size:11.5,weight:'600'} } },
-                    tooltip: {
-                        backgroundColor:'rgba(15,23,42,.92)', titleColor:'#fff', bodyColor:'#fff',
-                        borderColor:'rgba(255,255,255,.08)', borderWidth:1, padding:10, cornerRadius:8,
-                        callbacks: { label: function(ctx){
-                            return ctx.dataset.label + ': ' + (ctx.dataset.isCur ? fmtCur(ctx.parsed.y) : fmtInt(ctx.parsed.y));
-                        }}
-                    }
+                    legend: { display:false },
+                    tooltip: { enabled: false, external: externalTooltipHandler }
                 },
                 scales: {
                     y:  { display: hasCount, beginAtZero:true, position:'left',
@@ -371,7 +728,8 @@ html[data-theme="dark"] .ap-loading{background:rgba(15,23,42,.55);}
                     x:  { grid:{ color: gridCol(), drawBorder:false },
                           ticks:{ color: tickCol(), font:{size:11}, maxRotation:0, autoSkipPadding:12 } }
                 }
-            }
+            },
+            plugins: isLine ? [glowPlugin] : []
         };
         if (chart) chart.destroy();
         var ctx = document.getElementById('ap-chart');

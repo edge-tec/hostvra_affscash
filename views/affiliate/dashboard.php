@@ -560,35 +560,427 @@ html[data-theme="dark"] .an-kpi-card { background:rgba(15,23,42,.65); border-col
     </div>
 </div>
 
-<!-- ══ MAIN TREND CHART ════════════════════════════════════════════════════ -->
-<div class="an-card" style="margin-bottom:18px">
-    <div class="an-card-head">
-        <span class="an-section-title">Performance Trend</span>
-        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-            <!-- Legend toggles -->
-            <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#6B7280;cursor:pointer">
-                <span style="width:12px;height:3px;background:#3B82F6;border-radius:2px;display:inline-block"></span> Clicks
+<!-- ══ MAIN TREND CHART (PREMIUM SAAS UI) ════════════════════════════════════ -->
+<style>
+/* SaaS Glassmorphism Chart Container */
+.saas-trend-container {
+    background: var(--card-bg, #ffffff);
+    border-radius: 24px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0,0,0,0.02);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Inter', system-ui, sans-serif;
+    transition: all 0.3s ease;
+}
+html[data-theme="dark"] .saas-trend-container {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(24px) saturate(150%);
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.saas-trend-header {
+    padding: 24px 28px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.saas-trend-title-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.saas-section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text, #111827);
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Intelligent Filter Chips */
+.saas-time-filters {
+    display: flex;
+    gap: 8px;
+    background: rgba(148, 163, 184, 0.08);
+    padding: 4px;
+    border-radius: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.1);
+}
+.saas-chip {
+    background: transparent;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted, #64748b);
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.saas-chip:hover {
+    color: var(--text, #111827);
+}
+.saas-chip.active {
+    background: var(--card-bg, #ffffff);
+    color: #111827;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+html[data-theme="dark"] .saas-chip.active {
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Floating KPI Cards Above Chart */
+.saas-kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+.saas-kpi-card {
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    border-radius: 16px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
+}
+html[data-theme="dark"] .saas-kpi-card {
+    background: rgba(30, 41, 59, 0.4);
+    border-color: rgba(255,255,255,0.06);
+}
+.saas-kpi-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+}
+html[data-theme="dark"] .saas-kpi-card:hover {
+    box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+}
+.saas-kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: var(--kpi-color, #3B82F6);
+    opacity: 0.8;
+}
+.saas-kpi-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted, #64748B);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.saas-kpi-value {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text, #111827);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+}
+
+/* Intelligent Legend */
+.saas-legend-container {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 4px;
+}
+.saas-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: rgba(148, 163, 184, 0.08);
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted, #64748b);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent;
+}
+html[data-theme="dark"] .saas-legend-item {
+    background: rgba(255,255,255,0.03);
+    border-color: rgba(255,255,255,0.05);
+}
+.saas-leg-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--leg-color);
+    box-shadow: 0 0 8px var(--leg-color);
+    transition: all 0.3s;
+    opacity: 0.4;
+}
+.saas-legend-item.active {
+    background: var(--card-bg, #ffffff);
+    color: var(--text, #111827);
+    border-color: rgba(148, 163, 184, 0.2);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+html[data-theme="dark"] .saas-legend-item.active {
+    background: rgba(30, 41, 59, 0.8);
+    border-color: rgba(255,255,255,0.1);
+    color: #ffffff;
+}
+.saas-legend-item.active .saas-leg-dot {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+/* Main Chart Body */
+.saas-trend-body {
+    position: relative;
+    padding: 0 20px 24px;
+    height: 360px; /* Taller for premium feel */
+}
+
+/* AI Insights Panel */
+.saas-ai-insights {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 260px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 16px 32px rgba(31, 38, 135, 0.08);
+    z-index: 10;
+    pointer-events: none; /* Let clicks pass through to chart if needed */
+    transition: opacity 0.3s;
+}
+html[data-theme="dark"] .saas-ai-insights {
+    background: rgba(15, 23, 42, 0.75);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4);
+}
+.saas-ai-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text, #111827);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: linear-gradient(135deg, #4F46E5, #EC4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.saas-ai-list {
+    list-style: none;
+    padding: 0; margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.saas-ai-list li {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-muted, #475569);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.4;
+}
+.saas-ai-list li::before {
+    content: '✧';
+    color: #8B5CF6;
+    font-size: 14px;
+}
+
+/* Custom Interactive Tooltip */
+.saas-custom-tooltip {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px) saturate(200%);
+    -webkit-backdrop-filter: blur(20px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0,0,0,0.05);
+    pointer-events: none;
+    transform: translate(-50%, 15px);
+    transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    z-index: 100;
+    min-width: 200px;
+}
+html[data-theme="dark"] .saas-custom-tooltip {
+    background: rgba(15, 23, 42, 0.85);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    color: #fff;
+}
+.saas-tooltip-date {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted, #64748b);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(148,163,184,0.2);
+    padding-bottom: 8px;
+}
+.saas-tooltip-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 600;
+}
+.saas-tooltip-row:last-child { margin-bottom: 0; }
+.saas-tooltip-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-muted, #475569);
+}
+.saas-tooltip-val {
+    color: var(--text, #111827);
+    font-weight: 800;
+}
+.saas-tooltip-extra {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dotted rgba(148,163,184,0.3);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+.saas-tooltip-ex-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.saas-tooltip-ex-label { font-size: 11px; color: var(--text-light, #94a3b8); font-weight: 600; text-transform: uppercase; }
+.saas-tooltip-ex-val { font-size: 13px; font-weight: 700; color: var(--text, #111827); }
+
+@media (max-width: 1024px) {
+    .saas-ai-insights { display: none; }
+}
+@media (max-width: 768px) {
+    .saas-trend-body { height: 280px; }
+}
+</style>
+
+<div class="saas-trend-container">
+    <div class="saas-ai-insights" id="saas-ai-panel" style="opacity:0">
+        <div class="saas-ai-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="url(#ai-grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <defs>
+                    <linearGradient id="ai-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#4F46E5" />
+                        <stop offset="100%" stop-color="#EC4899" />
+                    </linearGradient>
+                </defs>
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+            AI Insights
+        </div>
+        <ul class="saas-ai-list" id="saas-ai-list">
+            <li>Analyzing trend data...</li>
+        </ul>
+    </div>
+
+    <div class="saas-trend-header">
+        <div class="saas-trend-title-area">
+            <span class="saas-section-title">Performance Trend</span>
+            <div class="saas-time-filters">
+                <!-- Using data attributes so JS can hook in if we want, or just trigger existing filters -->
+                <button class="saas-chip active" onclick="document.querySelectorAll('.an-period-tab')[0].click(); updateSaaSChips(this)">Today</button>
+                <button class="saas-chip" onclick="document.querySelectorAll('.an-period-tab')[1].click(); updateSaaSChips(this)">Yesterday</button>
+                <button class="saas-chip" onclick="document.querySelectorAll('.an-period-tab')[2].click(); updateSaaSChips(this)">7 Days</button>
+                <button class="saas-chip" onclick="document.querySelectorAll('.an-period-tab')[3].click(); updateSaaSChips(this)">30 Days</button>
+                <button class="saas-chip" onclick="document.querySelectorAll('.an-period-tab')[4].click(); updateSaaSChips(this)">This Month</button>
+            </div>
+        </div>
+
+        <div class="saas-kpi-row">
+            <div class="saas-kpi-card" style="--kpi-color: #3B82F6;">
+                <div class="saas-kpi-label"><span style="color:#3B82F6">●</span> Total Clicks</div>
+                <div class="saas-kpi-value" id="saas-kpi-clicks">0</div>
+            </div>
+            <div class="saas-kpi-card" style="--kpi-color: #8B5CF6;">
+                <div class="saas-kpi-label"><span style="color:#8B5CF6">●</span> Total Conversions</div>
+                <div class="saas-kpi-value" id="saas-kpi-conv">0</div>
+            </div>
+            <div class="saas-kpi-card" style="--kpi-color: #10B981;">
+                <div class="saas-kpi-label"><span style="color:#10B981">●</span> Total Revenue</div>
+                <div class="saas-kpi-value" id="saas-kpi-rev">$0.00</div>
+            </div>
+            <div class="saas-kpi-card" style="--kpi-color: #DC2626;">
+                <div class="saas-kpi-label"><span style="color:#DC2626">●</span> Avg Fraud Score</div>
+                <div class="saas-kpi-value" id="saas-kpi-fraud">0%</div>
+            </div>
+        </div>
+
+        <div class="saas-legend-container">
+            <label class="saas-legend-item active" style="--leg-color: #3B82F6;" onclick="toggleSaaSLegend(this, 'tog-clicks')">
                 <input type="checkbox" checked id="tog-clicks" onchange="updateTrendChart()" style="display:none">
+                <span class="saas-leg-dot"></span> Clicks
             </label>
-            <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#6B7280;cursor:pointer">
-                <span style="width:12px;height:3px;background:#8B5CF6;border-radius:2px;display:inline-block"></span> Conversions
+            <label class="saas-legend-item active" style="--leg-color: #8B5CF6;" onclick="toggleSaaSLegend(this, 'tog-conv')">
                 <input type="checkbox" checked id="tog-conv" onchange="updateTrendChart()" style="display:none">
+                <span class="saas-leg-dot"></span> Conversions
             </label>
-            <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#6B7280;cursor:pointer">
-                <span style="width:12px;height:3px;background:#10B981;border-radius:2px;display:inline-block"></span> Revenue
+            <label class="saas-legend-item active" style="--leg-color: #10B981;" onclick="toggleSaaSLegend(this, 'tog-rev')">
                 <input type="checkbox" checked id="tog-rev" onchange="updateTrendChart()" style="display:none">
+                <span class="saas-leg-dot"></span> Revenue
             </label>
-            <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#DC2626;cursor:pointer"
-                   title="Fraud conversions are conversions with fraud score between 60–100.">
-                <span style="width:12px;height:3px;background:#DC2626;border-radius:2px;display:inline-block"></span> Fraud
+            <label class="saas-legend-item active" style="--leg-color: #DC2626;" onclick="toggleSaaSLegend(this, 'tog-fraud')">
                 <input type="checkbox" checked id="tog-fraud" onchange="updateTrendChart()" style="display:none">
+                <span class="saas-leg-dot"></span> Fraud
             </label>
         </div>
     </div>
-    <div class="an-card-body" style="padding-bottom:16px">
-        <canvas id="chart-trend" height="90"></canvas>
+
+    <div class="saas-trend-body">
+        <canvas id="chart-trend"></canvas>
+        <div id="saas-custom-tooltip" class="saas-custom-tooltip"></div>
     </div>
 </div>
+
+<script>
+function updateSaaSChips(activeBtn) {
+    document.querySelectorAll('.saas-chip').forEach(b => b.classList.remove('active'));
+    activeBtn.classList.add('active');
+}
+function toggleSaaSLegend(labelEl, inputId) {
+    // The checkbox state toggles automatically because it's inside the label,
+    // but we want to update the UI class after a tiny delay so the checked state is ready.
+    setTimeout(() => {
+        const chk = document.getElementById(inputId);
+        if (chk.checked) {
+            labelEl.classList.add('active');
+        } else {
+            labelEl.classList.remove('active');
+        }
+    }, 10);
+}
+</script>
+
 
 <!-- ══ ROW 2: Device + Country + Offers ════════════════════════════════════ -->
 <div style="display:grid;grid-template-columns:1fr 1.6fr 1.6fr;gap:16px;margin-bottom:18px" id="row2-grid">
@@ -1023,59 +1415,210 @@ function loadTrend(){
     }).catch(function(){});
 }
 
-function renderTrendChart(d){
+function renderTrendChart(d) {
     destroyChart('trend');
     var ctx = document.getElementById('chart-trend');
     if (!ctx) return;
     
-    var createGrad = function(color) {
-        var grad = ctx.getContext('2d').createLinearGradient(0, 0, 0, 350);
-        var opacity1 = '66', opacity2 = '15', opacity3 = '00';
-        if (typeof trendChartStyle !== 'undefined') {
-            if (trendChartStyle === 'straight') { opacity1 = '33'; opacity2 = '05'; }
-            else if (trendChartStyle === 'stepped') { opacity1 = '00'; opacity2 = '00'; opacity3 = '00'; }
-            else if (trendChartStyle === 'high_tech') { opacity1 = 'AA'; opacity2 = '44'; opacity3 = '05'; }
-            else if (trendChartStyle === 'gradient_fill') { opacity1 = 'CC'; opacity2 = '55'; opacity3 = '08'; }
-            else if (trendChartStyle === 'neon_glow') { opacity1 = '88'; opacity2 = '22'; opacity3 = '00'; }
-            else if (trendChartStyle === 'minimal_dots') { opacity1 = '00'; opacity2 = '00'; opacity3 = '00'; }
-            else if (trendChartStyle === 'area_stacked') { opacity1 = '99'; opacity2 = '44'; opacity3 = '11'; }
-            else if (trendChartStyle === 'thin_sharp') { opacity1 = '15'; opacity2 = '05'; opacity3 = '00'; }
-            else if (trendChartStyle === 'bold_rounded') { opacity1 = '55'; opacity2 = '22'; opacity3 = '00'; }
+    // Update SaaS KPIs
+    if (d.clicks_data && d.conv_data && d.revenue_data) {
+        var totClicks = d.clicks_data.reduce((a,b)=>a+b,0);
+        var totConv = d.conv_data.reduce((a,b)=>a+b,0);
+        var totRev = d.revenue_data.reduce((a,b)=>a+b,0);
+        var totFraud = d.fraud_data ? d.fraud_data.reduce((a,b)=>a+b,0) : 0;
+        
+        var elClicks = document.getElementById('saas-kpi-clicks');
+        if(elClicks) elClicks.textContent = fmt(totClicks);
+        var elConv = document.getElementById('saas-kpi-conv');
+        if(elConv) elConv.textContent = fmt(totConv);
+        var elRev = document.getElementById('saas-kpi-rev');
+        if(elRev) elRev.textContent = '$' + fmt(totRev, 2);
+        var elFraud = document.getElementById('saas-kpi-fraud');
+        if(elFraud) {
+            var fRate = totConv > 0 ? (totFraud/totConv*100).toFixed(1) : 0;
+            elFraud.textContent = fRate + '%';
         }
-        grad.addColorStop(0, color + opacity1);
-        grad.addColorStop(0.6, color + opacity2);
-        grad.addColorStop(1, color + opacity3);
+        
+        // Generate AI Insights
+        var aiPanel = document.getElementById('saas-ai-panel');
+        var aiList = document.getElementById('saas-ai-list');
+        if (aiPanel && aiList && d.labels.length > 0) {
+            aiPanel.style.opacity = '1';
+            var insights = [];
+            
+            // Peak day analysis
+            var maxRev = Math.max(...d.revenue_data);
+            var maxRevIdx = d.revenue_data.indexOf(maxRev);
+            if (maxRev > 0) {
+                insights.push("Peak revenue of $" + fmt(maxRev) + " on " + d.labels[maxRevIdx] + ".");
+            }
+            
+            // Trend analysis (compare first half vs second half)
+            if (d.revenue_data.length >= 4) {
+                var mid = Math.floor(d.revenue_data.length / 2);
+                var sum1 = d.revenue_data.slice(0, mid).reduce((a,b)=>a+b,0);
+                var sum2 = d.revenue_data.slice(mid).reduce((a,b)=>a+b,0);
+                if (sum2 > sum1 && sum1 > 0) {
+                    var pct = Math.round(((sum2 - sum1) / sum1) * 100);
+                    insights.push("Revenue trending UP by " + pct + "% in recent days.");
+                } else if (sum1 > sum2 && sum2 > 0) {
+                    insights.push("Revenue momentum has slowed down recently.");
+                }
+            }
+            
+            // CR insight
+            var overallCR = totClicks > 0 ? (totConv/totClicks*100).toFixed(1) : 0;
+            if (overallCR > 0) {
+                insights.push("Average Conversion Rate is " + overallCR + "%.");
+            }
+            
+            // Fraud insight
+            if (fRate > 10) {
+                insights.push("Warning: Fraud rate is elevated at " + fRate + "%.");
+            } else {
+                insights.push("Fraud activity remains within safe limits.");
+            }
+            
+            aiList.innerHTML = insights.map(i => '<li>' + i + '</li>').join('');
+        }
+    }
+    
+    // Gradient Generator
+    var createGrad = function(color) {
+        var grad = ctx.getContext('2d').createLinearGradient(0, 0, 0, 360);
+        grad.addColorStop(0, color + '80'); // 50% opacity
+        grad.addColorStop(0.5, color + '20'); // 12% opacity
+        grad.addColorStop(1, color + '00'); // Transparent
         return grad;
     };
 
-    var _tension = 0.45;
-    var _stepped = false;
-    var _bWidth = 3.5;
-    if (typeof trendChartStyle !== 'undefined') {
-        if (trendChartStyle === 'straight') { _tension = 0; }
-        else if (trendChartStyle === 'stepped') { _tension = 0; _stepped = true; _bWidth = 2.5; }
-        else if (trendChartStyle === 'high_tech') { _bWidth = 4.5; }
-        else if (trendChartStyle === 'gradient_fill') { _tension = 0.5; _bWidth = 3; }
-        else if (trendChartStyle === 'neon_glow') { _tension = 0.4; _bWidth = 3; }
-        else if (trendChartStyle === 'minimal_dots') { _tension = 0.3; _bWidth = 2; }
-        else if (trendChartStyle === 'area_stacked') { _tension = 0.4; _bWidth = 2.5; }
-        else if (trendChartStyle === 'thin_sharp') { _tension = 0; _bWidth = 1.5; }
-        else if (trendChartStyle === 'bold_rounded') { _tension = 0.5; _bWidth = 5; }
-    }
-
-    var _pointRad = (trendChartStyle === 'minimal_dots') ? 4 : 0;
-    var baseDs = {tension:_tension, stepped:_stepped, fill:!_stepped, pointRadius:_pointRad, pointHoverRadius:7, pointBorderColor:'#fff', pointHoverBorderWidth:3, borderWidth:_bWidth};
+    var baseDs = {
+        tension: 0.45, 
+        fill: true, 
+        pointRadius: 0, 
+        pointHoverRadius: 8, 
+        pointBorderColor: '#fff', 
+        pointHoverBorderWidth: 3, 
+        borderWidth: 3
+    };
+    
     var datasets = [];
-    if (document.getElementById('tog-clicks').checked)
-        datasets.push(Object.assign({label:'Clicks',data:d.clicks_data,borderColor:'#3B82F6',backgroundColor:createGrad('#3B82F6'),pointBackgroundColor:'#3B82F6'}, baseDs));
-    if (document.getElementById('tog-conv').checked)
-        datasets.push(Object.assign({label:'Conversions',data:d.conv_data,borderColor:'#8B5CF6',backgroundColor:createGrad('#8B5CF6'),pointBackgroundColor:'#8B5CF6'}, baseDs));
-    if (document.getElementById('tog-rev').checked)
-        datasets.push(Object.assign({label:'Revenue ($)',data:d.revenue_data,borderColor:'#10B981',backgroundColor:createGrad('#10B981'),pointBackgroundColor:'#10B981',yAxisID:'y2',isCur:true}, baseDs));
+    if (document.getElementById('tog-clicks') && document.getElementById('tog-clicks').checked)
+        datasets.push(Object.assign({label:'Clicks',data:d.clicks_data,borderColor:'#3B82F6',backgroundColor:createGrad('#3B82F6'),pointBackgroundColor:'#3B82F6', shadowColor:'#3B82F6'}, baseDs));
+    if (document.getElementById('tog-conv') && document.getElementById('tog-conv').checked)
+        datasets.push(Object.assign({label:'Conversions',data:d.conv_data,borderColor:'#8B5CF6',backgroundColor:createGrad('#8B5CF6'),pointBackgroundColor:'#8B5CF6', shadowColor:'#8B5CF6'}, baseDs));
+    if (document.getElementById('tog-rev') && document.getElementById('tog-rev').checked)
+        datasets.push(Object.assign({label:'Revenue ($)',data:d.revenue_data,borderColor:'#10B981',backgroundColor:createGrad('#10B981'),pointBackgroundColor:'#10B981',yAxisID:'y2',isCur:true, shadowColor:'#10B981'}, baseDs));
     var togFraud = document.getElementById('tog-fraud');
     if (togFraud && togFraud.checked && d.fraud_data)
-        datasets.push(Object.assign({label:'Fraud Conversions',data:d.fraud_data,borderColor:'#DC2626',backgroundColor:createGrad('#DC2626'),pointBackgroundColor:'#DC2626'}, baseDs));
+        datasets.push(Object.assign({label:'Fraud',data:d.fraud_data,borderColor:'#DC2626',backgroundColor:createGrad('#DC2626'),pointBackgroundColor:'#DC2626', shadowColor:'#DC2626'}, baseDs));
     
+    // Custom Plugin for Line Glow
+    var glowPlugin = {
+        id: 'glowPlugin',
+        beforeDatasetDraw: function(chart, args, options) {
+            const ctx = chart.ctx;
+            ctx.save();
+            ctx.shadowColor = args.meta.dataset.shadowColor || 'transparent';
+            ctx.shadowBlur = 15;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 4;
+        },
+        afterDatasetDraw: function(chart, args, options) {
+            chart.ctx.restore();
+        }
+    };
+
+    // Custom HTML Tooltip Implementation
+    const getOrCreateTooltip = (chart) => {
+        let tooltipEl = document.getElementById('saas-custom-tooltip');
+        if (!tooltipEl) {
+            tooltipEl = document.createElement('div');
+            tooltipEl.id = 'saas-custom-tooltip';
+            tooltipEl.classList.add('saas-custom-tooltip');
+            chart.canvas.parentNode.appendChild(tooltipEl);
+        }
+        return tooltipEl;
+    };
+
+    const externalTooltipHandler = (context) => {
+        const {chart, tooltip} = context;
+        const tooltipEl = getOrCreateTooltip(chart);
+
+        if (tooltip.opacity === 0) {
+            tooltipEl.style.opacity = 0;
+            return;
+        }
+
+        if (tooltip.body) {
+            const titleLines = tooltip.title || [];
+            const bodyLines = tooltip.body.map(b => b.lines);
+
+            let innerHtml = '<div class="saas-tooltip-date">' + titleLines[0] + '</div>';
+            
+            let tClicks = 0;
+            let tConv = 0;
+            let tRev = 0;
+            let tFraud = 0;
+
+            tooltip.dataPoints.forEach((dp, i) => {
+                const ds = chart.data.datasets[dp.datasetIndex];
+                const color = ds.borderColor;
+                const label = ds.label;
+                const val = dp.parsed.y;
+                let displayVal = ds.isCur ? '$'+fmt(val,2) : fmt(val);
+                
+                if (label.includes('Clicks')) tClicks = val;
+                if (label.includes('Conv')) tConv = val;
+                if (label.includes('Rev')) tRev = val;
+                if (label.includes('Fraud')) tFraud = val;
+
+                innerHtml += `
+                    <div class="saas-tooltip-row">
+                        <div class="saas-tooltip-label">
+                            <span style="width:10px;height:10px;border-radius:50%;background:${color};box-shadow:0 0 6px ${color}"></span>
+                            ${label}
+                        </div>
+                        <div class="saas-tooltip-val">${displayVal}</div>
+                    </div>
+                `;
+            });
+
+            // Extra calculated metrics
+            let cr = tClicks > 0 ? (tConv / tClicks * 100).toFixed(1) : 0;
+            let epc = tClicks > 0 ? (tRev / tClicks).toFixed(3) : 0;
+
+            innerHtml += `
+                <div class="saas-tooltip-extra">
+                    <div class="saas-tooltip-ex-item">
+                        <div class="saas-tooltip-ex-label">Conv. Rate</div>
+                        <div class="saas-tooltip-ex-val">${cr}%</div>
+                    </div>
+                    <div class="saas-tooltip-ex-item">
+                        <div class="saas-tooltip-ex-label">EPC</div>
+                        <div class="saas-tooltip-ex-val">$${epc}</div>
+                    </div>
+                </div>
+            `;
+            
+            tooltipEl.innerHTML = innerHtml;
+        }
+
+        const position = context.chart.canvas.getBoundingClientRect();
+        
+        // Position intelligently
+        let left = tooltip.caretX;
+        let top = tooltip.caretY - 15;
+        
+        // Prevent tooltip from overflowing the chart
+        if (left < 100) left = 100;
+        if (left > position.width - 100) left = position.width - 100;
+
+        tooltipEl.style.opacity = 1;
+        tooltipEl.style.left = left + 'px';
+        tooltipEl.style.top = top + 'px';
+    };
+
     charts['trend'] = new Chart(ctx, {
         type:'line',
         data:{ labels: d.labels, datasets: datasets },
@@ -1085,21 +1628,17 @@ function renderTrendChart(d){
             plugins:{ 
                 legend:{ display:false }, 
                 tooltip:{ 
-                    backgroundColor:'rgba(15, 23, 42, 0.95)',
-                    borderColor: 'rgba(255,255,255,0.1)',
-                    borderWidth: 1,
-                    titleFont:{size:14, family:'"Inter", sans-serif', weight:'700'}, 
-                    bodyFont:{size:13, family:'"Inter", sans-serif', weight:'500'}, 
-                    padding:14, cornerRadius:10, boxPadding: 8, displayColors: true,
-                    callbacks:{ label: function(ctx) { return ' ' + ctx.dataset.label + ': ' + (ctx.dataset.isCur ? '$'+fmt(ctx.parsed.y,2) : fmt(ctx.parsed.y)); } }
+                    enabled: false, // Disable default tooltip
+                    external: externalTooltipHandler
                 } 
             },
             scales:{
-                x:{ grid:{display:false}, ticks:{font:{size:11, family:'"Inter", sans-serif'},maxRotation:0,maxTicksLimit:12, color:'#64748B'} },
-                y:{ beginAtZero:true, grid:{display:false}, ticks:{font:{size:11, family:'"Inter", sans-serif'}, color:'#64748B'}, position:'left' },
-                y2:{ beginAtZero:true, grid:{display:false}, ticks:{font:{size:11, family:'"Inter", sans-serif'}, color:'#64748B', callback:function(v){return'$'+fmt(v);}}, position:'right', display: document.getElementById('tog-rev').checked }
+                x:{ grid:{display:true, color:'rgba(148,163,184,0.05)', tickLength:0}, ticks:{font:{size:11, family:'"Inter", sans-serif'},maxRotation:0,maxTicksLimit:12, color:'#64748B'} },
+                y:{ beginAtZero:true, grid:{display:true, color:'rgba(148,163,184,0.05)', tickLength:0}, ticks:{font:{size:11, family:'"Inter", sans-serif'}, color:'#64748B'}, position:'left', border:{display:false} },
+                y2:{ beginAtZero:true, grid:{display:false}, ticks:{font:{size:11, family:'"Inter", sans-serif'}, color:'#64748B', callback:function(v){return'$'+fmt(v);}}, position:'right', border:{display:false}, display: (document.getElementById('tog-rev') && document.getElementById('tog-rev').checked) }
             }
-        }
+        },
+        plugins: [glowPlugin]
     });
 }
 
