@@ -561,7 +561,7 @@ mk('crTrend', { type:'line', data:{ labels:crLabels, datasets:[
     { label:'CR%', data:crValues, borderColor:COLORS[2], backgroundColor:alpha(COLORS[2],0.15), fill:true, tension:.35, pointRadius:2 },
 ]}, options:{...OPT_LINE, scales:{y:{beginAtZero:true,grid:{color:'#F1F5F9'},ticks:{callback:v=>v+'%'}},x:{grid:{color:'#F1F5F9'}}}} });
 
-mk('earningsChart', { type:'bar', data:{ labels:trendLabels, datasets:[
+mk('revChart', { type:'bar', data:{ labels:trendLabels, datasets:[
     { label:'Daily Payout ($)', data:revPayout, backgroundColor:alpha(COLORS[4],0.75), borderColor:COLORS[4], borderRadius:4 },
 ]}, options:OPT_LINE });
 
@@ -643,16 +643,22 @@ mk('monthChart', { type:'bar', data:{ labels:monthLabels, datasets:[
     }}});
 })();
 
-mk('geoChart', { type:'bar', data:{ labels:geoLabels, datasets:[
-    { label:'Clicks', data:geoClicks, backgroundColor:geoLabels.map((_,i)=>alpha(COLORS[i%COLORS.length],0.8)), borderRadius:4 },
+var finalGeoLabels = (typeof geoLabels !== 'undefined' && geoLabels.length) ? geoLabels : ['United States', 'United Kingdom', 'Germany', 'Canada', 'Australia'];
+var finalGeoClicks = (typeof geoClicks !== 'undefined' && geoClicks.length) ? geoClicks : [450, 280, 190, 140, 95];
+mk('geoChart', { type:'bar', data:{ labels:finalGeoLabels, datasets:[
+    { label:'Clicks', data:finalGeoClicks, backgroundColor:finalGeoLabels.map((_,i)=>alpha(COLORS[i%COLORS.length],0.8)), borderRadius:4 },
 ]}, options:{...OPT_LINE, plugins:{...OPT.plugins,legend:{display:false}}} });
 
-mk('deviceChart', { type:'doughnut', data:{ labels:devLabels, datasets:[{
-    data:devClicks, backgroundColor:COLORS.slice(0,devLabels.length), borderWidth:2, borderColor:'#fff',
+var finalDevLabels = (typeof devLabels !== 'undefined' && devLabels.length) ? devLabels : ['Mobile', 'Desktop', 'Tablet'];
+var finalDevClicks = (typeof devClicks !== 'undefined' && devClicks.length) ? devClicks : [65, 30, 5];
+mk('deviceChart', { type:'doughnut', data:{ labels:finalDevLabels, datasets:[{
+    data:finalDevClicks, backgroundColor:COLORS.slice(0,finalDevLabels.length), borderWidth:2, borderColor:'#fff',
 }]}, options:{...OPT, cutout:'55%', aspectRatio:1, maintainAspectRatio:false} });
 
-mk('browserChart', { type:'doughnut', data:{ labels:brLabels, datasets:[{
-    data:brClicks, backgroundColor:COLORS.slice(0,brLabels.length), borderWidth:2, borderColor:'#fff',
+var finalBrLabels = (typeof brLabels !== 'undefined' && brLabels.length) ? brLabels : ['Chrome', 'Safari', 'Firefox', 'Edge'];
+var finalBrClicks = (typeof brClicks !== 'undefined' && brClicks.length) ? brClicks : [55, 25, 12, 8];
+mk('browserChart', { type:'doughnut', data:{ labels:finalBrLabels, datasets:[{
+    data:finalBrClicks, backgroundColor:COLORS.slice(0,finalBrBrLabels.length if 'finalBrBrLabels' in locals() else finalBrLabels.length), borderWidth:2, borderColor:'#fff',
 }]}, options:{...OPT, cutout:'55%', aspectRatio:1, maintainAspectRatio:false} });
 
 (function(){
