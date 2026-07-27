@@ -199,6 +199,8 @@ $overallCR     = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 
 
 
 <!-- ══════════════════════════════════════════════════════════════════════════ -->
+
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
 <!-- SECTION 1: CLICK ACTIVITY OVERVIEW (3 CARDS) -->
 <!-- ══════════════════════════════════════════════════════════════════════════ -->
 <div style="display:flex;align-items:center;gap:10px;margin:24px 0 12px">
@@ -309,20 +311,14 @@ $overallCR     = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════════════ -->
-<!-- SECTION 4: PROFIT & TIME-BASED ANALYTICS (3 CARDS) -->
+<!-- SECTION 4: TIME-BASED & GEO PERFORMANCE (3 CARDS) -->
 <!-- ══════════════════════════════════════════════════════════════════════════ -->
 <div style="display:flex;align-items:center;gap:10px;margin:24px 0 12px">
     <div style="width:4px;height:28px;background:#06B6D4;border-radius:2px"></div>
-    <h2 style="font-size:18px;font-weight:700;margin:0">Profit &amp; Time-Based Analytics</h2>
+    <h2 style="font-size:18px;font-weight:700;margin:0">Time-Based &amp; Geo Performance</h2>
 </div>
 
 <div class="trf-grid-3 mb-3">
-    <div class="card">
-        <div class="card-header">
-            <span class="card-title">Profit Performance Trend</span>
-        </div>
-        <div class="card-body"><canvas id="profitChart" height="180"></canvas></div>
-    </div>
     <div class="card">
         <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
             <span class="card-title">Weekly Performance Trend</span>
@@ -332,69 +328,38 @@ $overallCR     = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 
     </div>
     <div class="card">
         <div class="card-header">
-            <span class="card-title">Monthly Performance Overview</span>
+            <span class="card-title">Monthly Revenue Overview</span>
         </div>
         <div class="card-body"><canvas id="monthChart" height="180"></canvas></div>
     </div>
+    <div class="card">
+        <div class="card-header"><span class="card-title">Geo Conversion Distribution</span></div>
+        <div class="card-body"><canvas id="geoChart" height="180"></canvas></div>
+    </div>
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════════════ -->
-<!-- SECTION 5: GEO & DEVICE DISTRIBUTION (3 CARDS) -->
+<!-- SECTION 5: DEVICE & SYSTEM ANALYTICS (3 CARDS) -->
 <!-- ══════════════════════════════════════════════════════════════════════════ -->
 <div style="display:flex;align-items:center;gap:10px;margin:24px 0 12px">
     <div style="width:4px;height:28px;background:#EF4444;border-radius:2px"></div>
-    <h2 style="font-size:18px;font-weight:700;margin:0">Geo &amp; Device Analytics</h2>
+    <h2 style="font-size:18px;font-weight:700;margin:0">Device &amp; System Analytics</h2>
 </div>
 
 <div class="trf-grid-3 mb-3">
     <div class="card">
-        <div class="card-header"><span class="card-title">Geo Conversion Distribution</span></div>
-        <div class="card-body"><canvas id="geoChart" height="220"></canvas></div>
-    </div>
-    <div class="card">
         <div class="card-header"><span class="card-title">Device Performance Breakdown</span></div>
-        <div class="card-body" style="display:flex;justify-content:center;align-items:center"><canvas id="deviceChart" height="220" style="max-width:240px"></canvas></div>
+        <div class="card-body" style="display:flex;justify-content:center;align-items:center"><canvas id="deviceChart" height="200" style="max-width:240px"></canvas></div>
     </div>
     <div class="card">
         <div class="card-header"><span class="card-title">Browser Distribution</span></div>
-        <div class="card-body" style="display:flex;justify-content:center;align-items:center"><canvas id="browserChart" height="220" style="max-width:240px"></canvas></div>
+        <div class="card-body" style="display:flex;justify-content:center;align-items:center"><canvas id="browserChart" height="200" style="max-width:240px"></canvas></div>
     </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════════════════════════ -->
-<!-- SECTION 6: ADVANCED & AUDIENCE ANALYTICS (3 CARDS) -->
-<!-- ══════════════════════════════════════════════════════════════════════════ -->
-<div style="display:flex;align-items:center;gap:10px;margin:24px 0 12px">
-    <div style="width:4px;height:28px;background:#F59E0B;border-radius:2px"></div>
-    <h2 style="font-size:18px;font-weight:700;margin:0">Advanced &amp; Offer Analytics</h2>
-</div>
-
-<div class="trf-grid-3 mb-3">
     <div class="card">
         <div class="card-header"><span class="card-title">OS Distribution</span></div>
         <div class="card-body" style="position:relative;min-height:180px">
             <canvas id="osChart"></canvas>
             <div id="osChartEmpty" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;color:#9CA3AF;font-size:13px">No OS data for this period</div>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-header"><span class="card-title">Top Affiliates — Click Volume</span></div>
-        <div class="card-body" style="position:relative;min-height:180px">
-            <canvas id="affChart"></canvas>
-            <div id="affChartEmpty" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;color:#9CA3AF;font-size:13px">No affiliate click data for this period</div>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
-            <span class="card-title">Offer Click vs Conv Performance</span>
-            <span class="text-sm text-muted">Line = CR%</span>
-        </div>
-        <div class="card-body" style="position:relative;min-height:180px">
-            <canvas id="offerChart"></canvas>
-            <div id="offerChartEmpty" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;color:#9CA3AF;font-size:13px;flex-direction:column;gap:6px">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-                No offer data for the selected period
-            </div>
         </div>
     </div>
 </div>
