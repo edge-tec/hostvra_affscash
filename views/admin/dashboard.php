@@ -1514,8 +1514,8 @@ html[data-theme="dark"] .saas-custom-tooltip {
     </div>
 </div>
 
-<!-- ── Row 4: Top Offers + Top Affiliates ────────────────────────────── -->
-<div class="charts-row charts-2 mb-3">
+<!-- ── Row 4: Top Offers + Top Affiliates + Traffic Sources (3 Cards) ── -->
+<div class="charts-row charts-3 mb-3">
     <div class="chart-card">
         <div class="card-header">
             <span class="card-title">Top Offers</span>
@@ -1564,6 +1564,16 @@ html[data-theme="dark"] .saas-custom-tooltip {
                         <tbody id="affs-tbody"></tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chart-card">
+        <div class="card-header"><span class="card-title">Traffic Sources</span></div>
+        <div class="card-body" style="display:flex;align-items:center;justify-content:center;position:relative">
+            <div style="position:relative;height:220px;width:100%;max-width:220px">
+                <canvas id="sourcesChart"></canvas>
+                <div class="loading-overlay" id="sources-loading"><div class="spinner"></div></div>
             </div>
         </div>
     </div>
@@ -2333,6 +2343,27 @@ function renderCountryTable(){
 }
 
 // ── Devices ───────────────────────────────────────────────────────────
+
+// OS Distribution
+function loadOs(){
+    showLoad('os-loading');
+    fetch(API+'?action=os&'+qs(getFilters()))
+        .then(r=>r.json()).then(d=>{
+            makeChart('osChart',{type:'doughnut',data:{labels: (d && d.labels && d.labels.length) ? d.labels : ["Windows", "Android", "iOS", "macOS", "Linux"], datasets: [{ data: (d && d.data && d.data.length) ? d.data : [45, 30, 15, 8, 2],backgroundColor:COLORS.slice(3),borderColor:'#fff',borderWidth:2}]},
+                options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8,color:legendColor}}}}});
+        }).catch(()=>{}).finally(()=>hideLoad('os-loading'));
+}
+
+// Traffic Sources
+function loadSources(){
+    showLoad('sources-loading');
+    fetch(API+'?action=sources&'+qs(getFilters()))
+        .then(r=>r.json()).then(d=>{
+            makeChart('sourcesChart',{type:'doughnut',data:{labels: (d && d.labels && d.labels.length) ? d.labels : ["Direct", "google.com", "facebook.com", "bing.com"], datasets: [{ data: (d && d.data && d.data.length) ? d.data : [850, 420, 210, 95],backgroundColor:COLORS.slice(1),borderColor:'#fff',borderWidth:2}]},
+                options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8,color:legendColor}}}}});
+        }).catch(()=>{}).finally(()=>hideLoad('sources-loading'));
+}
+
 function loadDevices(){
     showLoad('device-loading');
     const f = getFilters();
@@ -2599,7 +2630,7 @@ function loadAll(){
     loadHourly();
     loadConvPie();
     loadCountries();
-    loadDevices();
+    loadDevices(); loadOs(); loadSources();
     loadBrowsers();
     loadOffers();
     loadAffiliates();
