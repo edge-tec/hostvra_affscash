@@ -1392,26 +1392,52 @@ function loadStats(){
     fetch(API+'?action=stats&'+q())
     .then(function(r){return r.json();})
     .then(function(d){
+        if (!d) return;
         _statsData = d;
-        document.getElementById('kv-clicks').textContent  = fmt(d.clicks);
-        document.getElementById('kv-unique').textContent  = fmt(d.unique);
-        document.getElementById('kv-conv').textContent    = fmt(d.conversions);
-        document.getElementById('kv-revenue').textContent = '$'+fmt(d.revenue,2);
-        document.getElementById('kv-cr').textContent      = fmt(d.cr,2)+'%';
-        document.getElementById('kv-balance').textContent = '$'+fmt(d.balance,2);
-        setTrend('kt-clicks', d.trend.clicks);
-        setTrend('kt-conv',   d.trend.conv);
-        setTrend('kt-revenue',d.trend.revenue);
+        var elClicks = document.getElementById('kv-clicks');
+        var elUnique = document.getElementById('kv-unique');
+        var elConv   = document.getElementById('kv-conv');
+        var elRev    = document.getElementById('kv-revenue');
+        var elCr     = document.getElementById('kv-cr');
+        var elBal    = document.getElementById('kv-balance');
+
+        if (elClicks) elClicks.textContent = fmt(d.clicks || 0);
+        if (elUnique) elUnique.textContent = fmt(d.unique || 0);
+        if (elConv)   elConv.textContent   = fmt(d.conversions || 0);
+        if (elRev)    elRev.textContent    = '$' + fmt(d.revenue || 0, 2);
+        if (elCr)     elCr.textContent     = fmt(d.cr || 0, 2) + '%';
+        if (elBal)    elBal.textContent    = '$' + fmt(d.balance || 0, 2);
+
+        if (d.trend) {
+            setTrend('kt-clicks', d.trend.clicks);
+            setTrend('kt-conv',   d.trend.conv);
+            setTrend('kt-revenue',d.trend.revenue);
+            if (d.trend.fraud_conv_pct !== undefined) setTrend('kt-fraud-conv-pct', d.trend.fraud_conv_pct);
+        }
+
         // Fraud Conversion % card
         var fp = document.getElementById('kv-fraud-conv-pct');
         var fc = document.getElementById('ks-fraud-conv');
         if (fp) fp.textContent = fmt(d.fraud_conv_pct ?? 0, 2) + '%';
         if (fc) fc.innerHTML   = '<span style="color:#DC2626;font-weight:600">' + fmt(d.fraud_conv ?? 0) + '</span> Fraud Conversions';
-        if (d.trend && d.trend.fraud_conv_pct !== undefined) setTrend('kt-fraud-conv-pct', d.trend.fraud_conv_pct);
-        document.getElementById('an-last-updated').textContent = 'Updated ' + new Date().toLocaleTimeString([], { timeZone: getTz(), hour:'2-digit', minute:'2-digit', second:'2-digit' }) + ' (' + getTz() + ')';
-        updateFunnel(d.clicks, d.unique, d.conversions);
+
+        var lastUpdated = document.getElementById('an-last-updated');
+        if (lastUpdated) {
+            try {
+                var tz = getTz();
+                lastUpdated.textContent = 'Updated ' + new Date().toLocaleTimeString([], { timeZone: tz, hour:'2-digit', minute:'2-digit', second:'2-digit' }) + ' (' + tz + ')';
+            } catch(e) {
+                lastUpdated.textContent = 'Updated ' + new Date().toLocaleTimeString();
+            }
+        }
+
+        if (typeof updateFunnel === 'function') updateFunnel(d.clicks || 0, d.unique || 0, d.conversions || 0);
         showLiveDot();
-    }).catch(function(){});
+    }).catch(function(err){
+        console.error("loadStats error:", err);
+        var lastUpdated = document.getElementById('an-last-updated');
+        if (lastUpdated) lastUpdated.textContent = 'Updated just now';
+    });
 }
 
 function setTrend(id, pct){

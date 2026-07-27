@@ -2068,10 +2068,15 @@ function loadAll(){
     loadOffers();
     loadAffiliates();
     loadConversions();
-    var tz = getTz();
-    var tzShort = tz.split('/').pop().replace(/_/g,' ');
-    var u = document.getElementById('dash-updated');
-    if(u) u.textContent = 'Updated ' + new Date().toLocaleTimeString(undefined, { timeZone: tz }) + ' (' + tzShort + ')';
+    try {
+        var tz = getTz();
+        var tzShort = tz ? tz.split('/').pop().replace(/_/g,' ') : 'UTC';
+        var u = document.getElementById('dash-updated');
+        if(u) u.textContent = 'Updated ' + new Date().toLocaleTimeString(undefined, { timeZone: tz }) + ' (' + tzShort + ')';
+    } catch(e) {
+        var u = document.getElementById('dash-updated');
+        if(u) u.textContent = 'Updated ' + new Date().toLocaleTimeString();
+    }
 }
 
 // ── Live poll (every 30s) ─────────────────────────────────────────────
