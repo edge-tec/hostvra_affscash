@@ -1428,44 +1428,29 @@ try {
 </div>
 <?php endif; ?>
 
-<!-- ══ ROW 5: Recent Conversions + Funnel ══════════════════════════════════ -->
-<div style="display:grid;grid-template-columns:1.6fr 1fr;gap:16px;margin-bottom:18px" id="row5-grid">
-
-    <!-- Recent Conversions -->
-    <div class="an-card">
-        <div class="an-card-head">
-            <span class="an-section-title">Recent Conversions</span>
-            <a href="/affiliate/reports" style="font-size:12px;color:#4F46E5;font-weight:600;text-decoration:none">View All →</a>
-        </div>
-        <div style="overflow-x:auto">
-            <table style="width:100%;border-collapse:collapse;min-width:400px">
-                <thead>
-                    <tr style="background:#F9FAFB">
-                        <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.05em">Offer</th>
-                        <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.05em">Status</th>
-                        <th style="padding:10px 16px;text-align:right;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.05em">Payout</th>
-                        <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.05em">Country</th>
-                        <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.05em">Device</th>
-                        <th style="padding:10px 16px;text-align:center;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.05em" title="Live IPQualityScore (IPQS) risk score per conversion. ≥60 is flagged.">IPQS Risk</th>
-                        <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.05em">Time</th>
-                    </tr>
-                </thead>
-                <tbody id="tbl-conv-body">
-                    <tr><td colspan="7" style="padding:32px;text-align:center;color:#9CA3AF;font-size:13px">Loading…</td></tr>
-                </tbody>
-            </table>
-        </div>
+<!-- ══ ROW 5: Recent Conversions (Full Width) ══════════════════════════════ -->
+<div class="an-card" style="margin-bottom:18px">
+    <div class="an-card-head">
+        <span class="an-section-title">Recent Conversions</span>
+        <a href="/affiliate/reports" style="font-size:12px;color:#4F46E5;font-weight:600;text-decoration:none">View All →</a>
     </div>
-
-    <!-- Conversion Funnel -->
-    <div class="an-card">
-        <div class="an-card-head"><span class="an-section-title">Conversion Funnel</span></div>
-        <div class="an-card-body" id="funnel-body">
-            <div class="an-skeleton" style="height:22px;margin-bottom:14px"></div>
-            <div class="an-skeleton" style="height:22px;margin-bottom:14px"></div>
-            <div class="an-skeleton" style="height:22px;margin-bottom:14px"></div>
-            <div class="an-skeleton" style="height:22px"></div>
-        </div>
+    <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;min-width:400px">
+            <thead>
+                <tr style="background:#F9FAFB">
+                    <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.05em">Offer</th>
+                    <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.05em">Status</th>
+                    <th style="padding:10px 16px;text-align:right;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.05em">Payout</th>
+                    <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.05em">Country</th>
+                    <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.05em">Device</th>
+                    <th style="padding:10px 16px;text-align:center;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.05em" title="Live IPQualityScore (IPQS) risk score per conversion. ≥60 is flagged.">IPQS Risk</th>
+                    <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.05em">Time</th>
+                </tr>
+            </thead>
+            <tbody id="tbl-conv-body">
+                <tr><td colspan="7" style="padding:32px;text-align:center;color:#9CA3AF;font-size:13px">Loading…</td></tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
@@ -2319,7 +2304,7 @@ function updateFunnel(clicks, unique, conv){
         {label:'Unique Clicks', val:unique, pct:Math.min(100,Math.round(unique/max*100)), color:'#06B6D4'},
         {label:'Conversions',   val:conv,   pct:Math.min(100,Math.round(conv/max*100)),   color:'#8B5CF6'},
     ];
-    var fb = document.getElementById('funnel-body');
+    var fb = document.getElementById('funnel-body'); if (!fb) return;
     fb.innerHTML = steps.map(function(s){
         return '<div style="margin-bottom:16px">'+
             '<div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:5px;color:#374151">'+
