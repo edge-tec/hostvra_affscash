@@ -49,7 +49,7 @@
         </a>
         <div class="sh-body">
             <a href="/affiliate/shop?action=product&product_id=<?= (int)$p['id'] ?>" class="sh-title" style="text-decoration:none;color:inherit"><?= Helpers::e($p['name']) ?></a>
-            <div class="sh-desc"><?= Helpers::e(mb_strimwidth(trim(strip_tags((string)($p['description'] ?? ''))), 0, 120, '…')) ?></div>
+            <div class="sh-desc"><?= Helpers::e(trim(strip_tags((string)($p['description'] ?? '')))) ?></div>
             <div class="sh-meta">
                 <span class="sh-price"><?= number_format((int)$p['price_points']) ?> pts</span>
                 <span class="sh-stock"><?= (int)$p['stock'] === -1 ? 'In stock' : ((int)$p['stock'] . ' left') ?></span>
