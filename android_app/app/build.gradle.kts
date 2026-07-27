@@ -18,8 +18,8 @@ android {
         applicationId = "net.affscash.android"
         minSdk = 23
         targetSdk = 36
-        versionCode = 15
-        versionName = "2.0.7"
+        versionCode = 16
+        versionName = "2.0.8"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
