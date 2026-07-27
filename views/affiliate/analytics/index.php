@@ -531,7 +531,7 @@ mk('deviceChart', { type:'doughnut', data:{ labels:finalDevLabels, datasets:[{
 var finalBrLabels = (typeof brLabels !== 'undefined' && brLabels.length) ? brLabels : ['Chrome', 'Safari', 'Firefox', 'Edge'];
 var finalBrClicks = (typeof brClicks !== 'undefined' && brClicks.length) ? brClicks : [55, 25, 12, 8];
 mk('browserChart', { type:'doughnut', data:{ labels:finalBrLabels, datasets:[{
-    data:finalBrClicks, backgroundColor:COLORS.slice(0,finalBrBrLabels.length if 'finalBrBrLabels' in locals() else finalBrLabels.length), borderWidth:2, borderColor:'#fff',
+    data:finalBrClicks, backgroundColor:COLORS.slice(0, finalBrLabels.length), borderWidth:2, borderColor:'#fff',
 }]}, options:{...OPT, cutout:'55%', aspectRatio:1, maintainAspectRatio:false} });
 
 (function(){
