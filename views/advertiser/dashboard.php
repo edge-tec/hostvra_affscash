@@ -115,51 +115,71 @@ html[data-theme="dark"] .saas-chip.active {
 /* Floating KPI Cards Above Chart */
 .saas-kpi-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 16px;
 }
 .saas-kpi-card {
-    background: rgba(255, 255, 255, 0.5);
-    border: 1px solid rgba(148, 163, 184, 0.15);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(148, 163, 184, 0.1);
     border-radius: 16px;
-    padding: 16px;
+    padding: 16px 20px;
     position: relative;
     overflow: hidden;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 html[data-theme="dark"] .saas-kpi-card {
-    background: rgba(30, 41, 59, 0.4);
-    border-color: rgba(255,255,255,0.06);
+    background: rgba(20, 24, 48, 0.5);
+    border-color: rgba(255,255,255,0.08);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.2);
 }
 .saas-kpi-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
 }
 html[data-theme="dark"] .saas-kpi-card:hover {
-    box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+    box-shadow: 0 16px 32px rgba(0,0,0,0.4);
 }
-.saas-kpi-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; height: 3px;
+.saas-kpi-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
     background: var(--kpi-color, #3B82F6);
-    opacity: 0.8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    box-shadow: 0 0 20px var(--kpi-color);
+    flex-shrink: 0;
+}
+.saas-kpi-content {
+    flex-grow: 1;
 }
 .saas-kpi-label {
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--text-muted, #64748B);
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    margin-bottom: 4px;
 }
 .saas-kpi-value {
     font-size: 24px;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--text, #111827);
     line-height: 1.1;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.02em;
+}
+.saas-kpi-sparkline {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 50%;
+    height: 60%;
+    opacity: 0.25;
+    background: linear-gradient(180deg, transparent 0%, var(--kpi-color) 100%);
+    clip-path: polygon(0 100%, 10% 80%, 30% 90%, 50% 60%, 70% 80%, 100% 40%, 100% 100%);
 }
 
 /* Intelligent Legend */
@@ -175,41 +195,35 @@ html[data-theme="dark"] .saas-kpi-card:hover {
     align-items: center;
     gap: 8px;
     padding: 6px 14px;
-    background: rgba(148, 163, 184, 0.08);
-    border-radius: 20px;
+    background: rgba(148, 163, 184, 0.05);
+    border-radius: 8px;
     font-size: 13px;
     font-weight: 600;
     color: var(--text-muted, #64748b);
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
     border: 1px solid transparent;
 }
 html[data-theme="dark"] .saas-legend-item {
-    background: rgba(255,255,255,0.03);
-    border-color: rgba(255,255,255,0.05);
+    background: transparent;
+    border-color: transparent;
 }
 .saas-leg-dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
+    width: 12px; height: 12px;
+    border-radius: 3px;
     background: var(--leg-color);
-    box-shadow: 0 0 8px var(--leg-color);
+    box-shadow: 0 0 10px var(--leg-color);
     transition: all 0.3s;
-    opacity: 0.4;
+    opacity: 0.5;
 }
 .saas-legend-item.active {
-    background: var(--card-bg, #ffffff);
     color: var(--text, #111827);
-    border-color: rgba(148, 163, 184, 0.2);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 html[data-theme="dark"] .saas-legend-item.active {
-    background: rgba(30, 41, 59, 0.8);
-    border-color: rgba(255,255,255,0.1);
     color: #ffffff;
 }
 .saas-legend-item.active .saas-leg-dot {
     opacity: 1;
-    transform: scale(1.2);
 }
 
 /* Main Chart Body */
@@ -386,21 +400,45 @@ html[data-theme="dark"] .saas-custom-tooltip {
         </div>
 
         <div class="saas-kpi-row">
-            <div class="saas-kpi-card" style="--kpi-color: #3B82F6;">
-                <div class="saas-kpi-label"><span style="color:#3B82F6">●</span> Clicks</div>
-                <div class="saas-kpi-value" id="ap-clicks">0</div>
+            <div class="saas-kpi-card" style="--kpi-color: #2563EB;">
+                <div class="saas-kpi-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.05 5A5 5 0 0 1 19 8.95M15.05 1A9 9 0 0 1 23 8.94m-1 7.98v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                </div>
+                <div class="saas-kpi-content">
+                    <div class="saas-kpi-label">Clicks</div>
+                    <div class="saas-kpi-value" id="ap-clicks">0</div>
+                </div>
+                <div class="saas-kpi-sparkline"></div>
             </div>
             <div class="saas-kpi-card" style="--kpi-color: #10B981;">
-                <div class="saas-kpi-label"><span style="color:#10B981">●</span> Conversions</div>
-                <div class="saas-kpi-value" id="ap-conv">0</div>
+                <div class="saas-kpi-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                </div>
+                <div class="saas-kpi-content">
+                    <div class="saas-kpi-label">Conversions</div>
+                    <div class="saas-kpi-value" id="ap-conv">0</div>
+                </div>
+                <div class="saas-kpi-sparkline"></div>
             </div>
             <div class="saas-kpi-card" style="--kpi-color: #8B5CF6;">
-                <div class="saas-kpi-label"><span style="color:#8B5CF6">●</span> Spend</div>
-                <div class="saas-kpi-value" id="ap-revenue">$0.00</div>
+                <div class="saas-kpi-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                </div>
+                <div class="saas-kpi-content">
+                    <div class="saas-kpi-label">Spend</div>
+                    <div class="saas-kpi-value" id="ap-revenue">$0.00</div>
+                </div>
+                <div class="saas-kpi-sparkline"></div>
             </div>
             <div class="saas-kpi-card" style="--kpi-color: #F59E0B;">
-                <div class="saas-kpi-label"><span style="color:#F59E0B">●</span> Payout</div>
-                <div class="saas-kpi-value" id="ap-payout">$0.00</div>
+                <div class="saas-kpi-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                </div>
+                <div class="saas-kpi-content">
+                    <div class="saas-kpi-label">Payout</div>
+                    <div class="saas-kpi-value" id="ap-payout">$0.00</div>
+                </div>
+                <div class="saas-kpi-sparkline"></div>
             </div>
         </div>
 
@@ -606,39 +644,38 @@ html[data-theme="dark"] .saas-custom-tooltip {
             aiList.innerHTML = insights.map(i => '<li>' + i + '</li>').join('');
         }
 
-        var datasets = keys.map(function(k){
-            var m = META[k];
-            var data = lastTrend[(k === 'conv' ? 'conv' : k) + '_data'] || [];
+        const datasets = keys.map(k => {
+            const m = META[k];
+            const data = lastTrend[(k === 'conv' ? 'conv' : k) + '_data'] || [];
             return {
                 label: m.label + (m.isCur ? ' ($)' : ''),
                 data: data,
-                yAxisID: m.axis,
                 borderColor: m.color,
                 shadowColor: m.color,
                 backgroundColor: function(context) {
                     const chart = context.chart;
                     const {ctx, chartArea} = chart;
-                    if (!chartArea || !isLine) return hexA(m.color, .9);
+                    if (!chartArea || !isLine) return m.color + '1A';
                     let gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-                    gradient.addColorStop(0, hexA(m.color, 0.5));
-                    gradient.addColorStop(0.5, hexA(m.color, 0.15));
-                    gradient.addColorStop(1, hexA(m.color, 0));
+                    gradient.addColorStop(0, m.color + '80');
+                    gradient.addColorStop(0.5, m.color + '20');
+                    gradient.addColorStop(1, m.color + '00');
                     return gradient;
                 },
-                borderWidth: isLine ? 3 : 0,
-                pointRadius: 0,
-                pointHoverRadius: 8,
                 fill: isLine,
                 tension: isLine ? 0.45 : 0,
-                borderRadius: isLine ? 0 : 4,
+                borderWidth: 3,
+                pointRadius: 0, 
+                pointHoverRadius: 8,
+                pointBackgroundColor: m.color,
+                pointBorderColor: '#ffffff',
+                pointHoverBorderWidth: 3,
+                yAxisID: m.axis,
                 isCur: m.isCur
             };
         });
-
-        var hasCount = keys.some(function(k){ return !META[k].isCur; });
-        var hasCur   = keys.some(function(k){ return  META[k].isCur; });
-        
-        // Glow Plugin
+    
+        // Custom Glow Plugin
         var glowPlugin = {
             id: 'glowPlugin',
             beforeDatasetDraw: function(chart, args, options) {
