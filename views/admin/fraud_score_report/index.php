@@ -184,7 +184,7 @@
         </div>
     </div>
     <div class="table-wrap" style="overflow-x: auto;">
-        <table>
+        <table style="width: 100%; min-width: 1200px;">
             <thead>
                 <tr>
                     <th style="width:40px"><input type="checkbox" id="fsr-select-all" onclick="fsrToggleAll(this)"></th>

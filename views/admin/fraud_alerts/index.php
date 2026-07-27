@@ -71,8 +71,8 @@
     <div class="card-header" style="display:flex;align-items:center;justify-content:space-between">
         <span class="card-title">Alerts (<?= number_format(count($rows)) ?>)</span>
     </div>
-    <div class="table-wrap">
-        <table style="margin:0">
+    <div class="table-wrap" style="overflow-x: auto;">
+        <table style="margin:0; width: 100%; min-width: 900px;">
             <thead>
                 <tr>
                     <th style="width:110px">Risk</th>
