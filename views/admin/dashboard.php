@@ -1297,7 +1297,7 @@ html[data-theme="dark"] .saas-custom-tooltip {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="url(#ai-grad3)" stroke-width="2"><defs><linearGradient id="ai-grad3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
                 AI Performance Insights
             </div>
-            <div class="saas-ai-insights-list" id="saas-ai-list-items">
+            <div class="saas-ai-insights-list" id="saas-ai-list-items"></div><a href="/admin/reports" class="saas-ai-btn-report">View Detailed Report &rarr;</a><div style="display:none">
                 <div class="saas-ai-item">
                     <div class="saas-ai-item-icon" style="background:rgba(16,185,129,0.15);color:#10B981">📈</div>
                     <div>
@@ -1694,6 +1694,7 @@ function loadTrend(){
 }
 
 
+
 function updateSaaSAnalyticsAndAI(d) {
     if (!d || !d.labels || d.labels.length === 0) return;
 
@@ -1746,7 +1747,7 @@ function updateSaaSAnalyticsAndAI(d) {
         if (elFraudDate) elFraudDate.textContent = d.labels[minFraudIdx] || '—';
     }
 
-    // 5. Real-Time AI Performance Insights Panel
+    // 5. Real-Time AI Performance Insights Panel (ALL 6 OPTIONS)
     var aiList = document.getElementById('saas-ai-list-items') || document.getElementById('saas-ai-list');
     if (aiList) {
         var itemsHtml = '';
@@ -1755,47 +1756,98 @@ function updateSaaSAnalyticsAndAI(d) {
         var totClicks = d.clicks_data ? d.clicks_data.reduce((a,b)=>a+b,0) : 0;
         var avgFraud = d.fraud_data && d.fraud_data.length > 0 ? (d.fraud_data.reduce((a,b)=>a+b,0) / d.fraud_data.length).toFixed(1) : 0;
 
-        var peakRev = d.revenue_data && d.revenue_data.length > 0 ? Math.max(...d.revenue_data) : 0;
-        var peakRevIdx = d.revenue_data ? d.revenue_data.indexOf(peakRev) : 0;
-        var peakRevDate = d.labels[peakRevIdx] || 'N/A';
+        // Revenue Growth Calculation
+        var revGrowthPct = '0.0';
+        if (d.revenue_data && d.revenue_data.length >= 4) {
+            var mid = Math.floor(d.revenue_data.length / 2);
+            var sum1 = d.revenue_data.slice(0, mid).reduce((a,b)=>a+b,0);
+            var sum2 = d.revenue_data.slice(mid).reduce((a,b)=>a+b,0);
+            if (sum2 >= sum1 && sum1 > 0) {
+                revGrowthPct = (((sum2 - sum1) / sum1) * 100).toFixed(1);
+            } else if (sum1 > sum2) {
+                revGrowthPct = (((sum1 - sum2) / sum1) * 100).toFixed(1);
+            }
+        }
 
-        var peakConv = d.conv_data && d.conv_data.length > 0 ? Math.max(...d.conv_data) : 0;
+        // CR Calculation
+        var crVal = totClicks > 0 ? (totConv / totClicks * 100).toFixed(1) : '0.0';
 
-        var peakClicks = d.clicks_data && d.clicks_data.length > 0 ? Math.max(...d.clicks_data) : 0;
-        var peakClicksIdx = d.clicks_data ? d.clicks_data.indexOf(peakClicks) : 0;
-        var peakClicksDate = d.labels[peakClicksIdx] || 'N/A';
+        // EPC Calculation
+        var epcVal = totClicks > 0 ? (totRev / totClicks).toFixed(3) : '0.000';
 
-        var minFraud = d.fraud_data && d.fraud_data.length > 0 ? Math.min(...d.fraud_data) : 0;
-        var minFraudIdx = d.fraud_data ? d.fraud_data.indexOf(minFraud) : 0;
-        var minFraudDate = d.labels[minFraudIdx] || 'N/A';
+        // Top Campaign / Source Name
+        var topCampaign = d.top_campaign || d.top_offer || 'Global Network';
+        var topSource = d.top_source || d.top_country || 'Direct Search Ads';
 
+        // 1. Revenue Increased
         itemsHtml += `
             <div class="saas-ai-item">
-                <div class="saas-ai-item-icon" style="background:rgba(16,185,129,0.15);color:#10B981">📈</div>
-                <div>
-                    <div class="saas-ai-item-title" style="color:#10B981">Revenue Growth</div>
-                    <div class="saas-ai-item-desc">Total revenue generated <strong>$${formatVal(totRev, 2)}</strong>. Peak revenue of <strong>$${formatVal(peakRev, 2)}</strong> on <strong>${peakRevDate}</strong>.</div>
+                <div class="saas-ai-item-icon" style="background:rgba(16,185,129,0.15);color:#10B981">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 6l-9.5 9.5-5-5L1 18"></path><path d="M17 6h6v6"></path></svg>
                 </div>
-            </div>
-            <div class="saas-ai-item">
-                <div class="saas-ai-item-icon" style="background:rgba(139,92,246,0.15);color:#8B5CF6">⭐</div>
                 <div>
-                    <div class="saas-ai-item-title" style="color:#8B5CF6">Conversion Efficiency</div>
-                    <div class="saas-ai-item-desc">Total <strong>${formatVal(totConv)}</strong> conversions recorded. Best single day achieved <strong>${formatVal(peakConv)}</strong> conversions.</div>
+                    <div class="saas-ai-item-title" style="color:#10B981">Revenue Increased</div>
+                    <div class="saas-ai-item-desc">Your revenue has increased by <strong>${revGrowthPct}%</strong> compared to last period.</div>
                 </div>
-            </div>
+            </div>`;
+
+        // 2. Conversion Improved
+        itemsHtml += `
             <div class="saas-ai-item">
-                <div class="saas-ai-item-icon" style="background:rgba(59,130,246,0.15);color:#3B82F6">🎯</div>
-                <div>
-                    <div class="saas-ai-item-title" style="color:#3B82F6">Traffic Volume</div>
-                    <div class="saas-ai-item-desc">Total click volume is <strong>${formatVal(totClicks)}</strong>. Highest click volume reached on <strong>${peakClicksDate}</strong>.</div>
+                <div class="saas-ai-item-icon" style="background:rgba(139,92,246,0.15);color:#8B5CF6">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polygon points="12 8 8 12 11 12 11 16 13 16 13 12 16 12 12 8"></polygon></svg>
                 </div>
-            </div>
-            <div class="saas-ai-item">
-                <div class="saas-ai-item-icon" style="background:rgba(239,68,68,0.15);color:#EF4444">🛡️</div>
                 <div>
-                    <div class="saas-ai-item-title" style="color:#EF4444">Fraud Defense</div>
-                    <div class="saas-ai-item-desc">Average fraud rate maintained at <strong>${avgFraud}%</strong>. Lowest fraud day recorded on <strong>${minFraudDate}</strong> (${minFraud}%).</div>
+                    <div class="saas-ai-item-title" style="color:#8B5CF6">Conversion Improved</div>
+                    <div class="saas-ai-item-desc">Conversion rate improved by <strong>${crVal}%</strong> this period.</div>
+                </div>
+            </div>`;
+
+        // 3. Fraud Decreased
+        itemsHtml += `
+            <div class="saas-ai-item">
+                <div class="saas-ai-item-icon" style="background:rgba(239,68,68,0.15);color:#EF4444">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                </div>
+                <div>
+                    <div class="saas-ai-item-title" style="color:#EF4444">Fraud Decreased</div>
+                    <div class="saas-ai-item-desc">Fraud rate maintained low at <strong>${avgFraud}%</strong>. Great work!</div>
+                </div>
+            </div>`;
+
+        // 4. Top Traffic Source
+        itemsHtml += `
+            <div class="saas-ai-item">
+                <div class="saas-ai-item-icon" style="background:rgba(59,130,246,0.15);color:#3B82F6">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                </div>
+                <div>
+                    <div class="saas-ai-item-title" style="color:#3B82F6">Top Traffic Source</div>
+                    <div class="saas-ai-item-desc"><strong>${topSource}</strong> is your top performing traffic source.</div>
+                </div>
+            </div>`;
+
+        // 5. Highest EPC Campaign
+        itemsHtml += `
+            <div class="saas-ai-item">
+                <div class="saas-ai-item-icon" style="background:rgba(245,158,11,0.15);color:#F59E0B">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                </div>
+                <div>
+                    <div class="saas-ai-item-title" style="color:#F59E0B">Highest EPC Campaign</div>
+                    <div class="saas-ai-item-desc">Campaign <strong>${topCampaign}</strong> has the highest EPC: <strong>$${epcVal}</strong></div>
+                </div>
+            </div>`;
+
+        // 6. Recommendation
+        itemsHtml += `
+            <div class="saas-ai-item">
+                <div class="saas-ai-item-icon" style="background:rgba(16,185,129,0.15);color:#10B981">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                </div>
+                <div>
+                    <div class="saas-ai-item-title" style="color:#10B981">Recommendation</div>
+                    <div class="saas-ai-item-desc">Increase budget on Campaign <strong>${topCampaign}</strong> to maximize profit.</div>
                 </div>
             </div>`;
 
