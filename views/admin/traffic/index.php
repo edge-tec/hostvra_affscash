@@ -451,67 +451,6 @@ $overallCR   = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 0;
     </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════════════════════ -->
-<!-- SECTION 5: TIME-BASED ANALYTICS -->
-<!-- ══════════════════════════════════════════════════════════════════════════ -->
-<div style="display:flex;align-items:center;gap:10px;margin:24px 0 12px">
-    <div style="width:4px;height:28px;background:#06B6D4;border-radius:2px"></div>
-    <h2 style="font-size:18px;font-weight:700;margin:0">Time-Based Analytics</h2>
-</div>
-
-<div class="trf-grid-3 mb-3">
-    <div class="card">
-        <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
-            <span class="card-title">Weekly Performance &amp; Conversion Rate Trend</span>
-            <span class="text-sm text-muted">Bars = Clicks/Conv · Line = CR%</span>
-        </div>
-        <div class="card-body"><canvas id="weekChart" height="180"></canvas></div>
-    </div>
-    <div class="card">
-        <div class="card-header">
-            <span class="card-title">Monthly Performance Overview</span>
-        </div>
-        <div class="card-body"><canvas id="monthChart" height="180"></canvas></div>
-    </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════════════════════════ -->
-<!-- SECTION 6: ADVANCED ANALYTICS -->
-<!-- ══════════════════════════════════════════════════════════════════════════ -->
-<div style="display:flex;align-items:center;gap:10px;margin:24px 0 12px">
-    <div style="width:4px;height:28px;background:#EF4444;border-radius:2px"></div>
-    <h2 style="font-size:18px;font-weight:700;margin:0">Advanced Analytics</h2>
-</div>
-
-<div class="trf-grid-3">
-    <div class="card">
-        <div class="card-header"><span class="card-title">Geo Conversion Distribution</span></div>
-        <div class="card-body"><canvas id="geoChart" height="220"></canvas></div>
-    </div>
-    <div class="card">
-        <div class="card-header"><span class="card-title">Device Performance Breakdown</span></div>
-        <div class="card-body" style="display:flex;justify-content:center;align-items:center"><canvas id="deviceChart" height="220" style="max-width:240px"></canvas></div>
-    </div>
-    <div class="card">
-        <div class="card-header"><span class="card-title">Browser Distribution</span></div>
-        <div class="card-body" style="display:flex;justify-content:center;align-items:center"><canvas id="browserChart" height="220" style="max-width:240px"></canvas></div>
-    </div>
-    <div class="card">
-        <div class="card-header"><span class="card-title">OS Distribution</span></div>
-        <div class="card-body" style="position:relative;min-height:180px">
-            <canvas id="osChart"></canvas>
-            <div id="osChartEmpty" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;color:#9CA3AF;font-size:13px">No OS data for this period</div>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-header"><span class="card-title">Top Affiliates — Click Volume</span></div>
-        <div class="card-body" style="position:relative;min-height:180px">
-            <canvas id="affChart"></canvas>
-            <div id="affChartEmpty" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;color:#9CA3AF;font-size:13px">No affiliate click data for this period</div>
-        </div>
-    </div>
-</div>
-
 <script>
 // ── Chart.js helpers ────────────────────────────────────────────────────────
 const COLORS = ['#4F46E5','#10B981','#F59E0B','#EF4444','#8B5CF6','#06B6D4','#F97316','#EC4899','#14B8A6','#6366F1','#84CC16','#A78BFA'];
