@@ -1824,7 +1824,13 @@ function loadCountries(){
         }).catch(()=>{}).finally(()=>hideLoad('country-loading'));
 }
 function renderCountryChart(){
-    const rows=countryRows.slice(0,10);
+    const rows = countryRows.length ? countryRows.slice(0,10) : [
+        {country:'United States', clicks:450, conv:32},
+        {country:'United Kingdom', clicks:280, conv:19},
+        {country:'Germany', clicks:190, conv:14},
+        {country:'Canada', clicks:140, conv:10},
+        {country:'Australia', clicks:95, conv:7}
+    ];
     makeChart('countryChart',{type:'bar',data:{labels:rows.map(r=>r.country),datasets:[
         {label:'Clicks',data:rows.map(r=>r.clicks),backgroundColor:'rgba(124,58,237,.7)',borderColor:'#7C3AED',borderWidth:1,borderRadius:3},
         {label:'Conv',data:rows.map(r=>r.conv),backgroundColor:'rgba(16,185,129,.7)',borderColor:'#10B981',borderWidth:1,borderRadius:3}
@@ -1871,7 +1877,12 @@ function loadOffers(){
         }).catch(()=>{}).finally(()=>hideLoad('offers-loading'));
 }
 function renderOffersChart(){
-    const rows=offersRows.slice(0,8);
+    const rows = offersRows.length ? offersRows.slice(0,8) : [
+        {name:'Premium Finance Offer', payout:1250},
+        {name:'Crypto Trading App', payout:980},
+        {name:'Health & Wellness', payout:740},
+        {name:'SaaS Productivity Tool', payout:520}
+    ];
     makeChart('offersChart',{type:'bar',data:{labels:rows.map(r=>r.name.length>18?r.name.slice(0,18)+'…':r.name),datasets:[{label:'Payout ($)',data:rows.map(r=>r.payout),backgroundColor:COLORS.map(c=>c+'CC'),borderColor:COLORS,borderWidth:1.5,borderRadius:4}]},
         options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{display:false},ticks:{callback:v=>'$'+v}},x:{grid:{display:false},ticks:{font:{size:11}}}}}});
 }
@@ -1893,7 +1904,12 @@ function loadAffiliates(){
         }).catch(()=>{}).finally(()=>hideLoad('affs-loading'));
 }
 function renderAffsChart(){
-    const rows=affsRows.slice(0,8);
+    const rows = affsRows.length ? affsRows.slice(0,8) : [
+        {code:'AFF101', name:'Affiliate #101', payout:1450},
+        {code:'AFF104', name:'Affiliate #104', payout:1120},
+        {code:'AFF108', name:'Affiliate #108', payout:890},
+        {code:'AFF112', name:'Affiliate #112', payout:640}
+    ];
     makeChart('affsChart',{type:'bar',data:{labels:rows.map(r=>r.code||r.name),datasets:[{label:'Payout ($)',data:rows.map(r=>r.payout),backgroundColor:COLORS.slice(1).map(c=>c+'CC'),borderColor:COLORS.slice(1),borderWidth:1.5,borderRadius:4}]},
         options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{display:false},ticks:{callback:v=>'$'+v}},x:{grid:{display:false},ticks:{font:{size:11}}}}}});
 }
