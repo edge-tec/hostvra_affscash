@@ -414,40 +414,7 @@ $overallCR     = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 
     </div>
 </div>
 
-<!-- SECTION 6: ADVANCED ANALYTICS -->
-<div style="display:flex;align-items:center;gap:10px;margin:24px 0 12px">
-    <div style="width:4px;height:28px;background:#EF4444;border-radius:2px"></div>
-    <h2 style="font-size:18px;font-weight:700;margin:0">Advanced Analytics</h2>
-</div>
 
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-bottom:20px">
-    <div class="card">
-        <div class="card-header"><span class="card-title">Geo Distribution</span></div>
-        <div class="card-body"><canvas id="geoChart" height="220"></canvas></div>
-    </div>
-    <div class="card">
-        <div class="card-header"><span class="card-title">Device Breakdown</span></div>
-        <div class="card-body" style="display:flex;justify-content:center;align-items:center"><canvas id="deviceChart" height="220" style="max-width:240px"></canvas></div>
-    </div>
-    <div class="card">
-        <div class="card-header"><span class="card-title">Browser Distribution</span></div>
-        <div class="card-body" style="display:flex;justify-content:center;align-items:center"><canvas id="browserChart" height="220" style="max-width:240px"></canvas></div>
-    </div>
-    <div class="card">
-        <div class="card-header"><span class="card-title">OS Distribution</span></div>
-        <div class="card-body" style="position:relative;min-height:160px">
-            <canvas id="osChart"></canvas>
-            <div id="osChartEmpty" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;color:#9CA3AF;font-size:13px">No OS data for this period</div>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-header"><span class="card-title">Conversion Rate Trend (Weekly)</span></div>
-        <div class="card-body" style="position:relative;min-height:220px;height:220px">
-            <canvas id="crTrendWeek" style="position:absolute;inset:0;width:100%!important;height:100%!important"></canvas>
-            <div id="crTrendWeekEmpty" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;color:#9CA3AF;font-size:13px;flex-direction:column;gap:6px"></div>
-        </div>
-    </div>
-</div>
 
 <script>
 const COLORS = ['#4F46E5','#10B981','#F59E0B','#EF4444','#8B5CF6','#06B6D4','#F97316','#EC4899','#14B8A6','#6366F1','#84CC16','#A78BFA'];
