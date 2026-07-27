@@ -217,9 +217,6 @@ $overallCR     = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 
         </div>
         <div class="card-body"><canvas id="hourlyChart" height="180"></canvas></div>
     </div>
-</div>
-
-<div class="trf-grid-3 mb-3">
     <div class="card">
         <div class="card-header">
             <span class="card-title">Unique vs Total Clicks</span>
@@ -252,9 +249,6 @@ $overallCR     = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 
         <div class="card-header"><span class="card-title">Conversion Status Breakdown</span></div>
         <div class="card-body" style="display:flex;justify-content:center;align-items:center"><canvas id="convPie" height="200" style="max-width:280px"></canvas></div>
     </div>
-</div>
-
-<div class="trf-grid-3 mb-3">
     <div class="card">
         <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
             <span class="card-title">Conversion Rate Trend</span>
@@ -399,9 +393,6 @@ $overallCR     = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 
         <div class="card-header"><span class="card-title">Browser Distribution</span></div>
         <div class="card-body" style="display:flex;justify-content:center;align-items:center"><canvas id="browserChart" height="220" style="max-width:240px"></canvas></div>
     </div>
-</div>
-
-<div class="trf-grid-3 mb-3">
     <div class="card">
         <div class="card-header"><span class="card-title">OS Distribution</span></div>
         <div class="card-body" style="position:relative;min-height:160px">
