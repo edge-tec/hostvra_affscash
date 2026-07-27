@@ -996,7 +996,7 @@ html[data-theme="dark"] .saas-custom-tooltip {
                 </div>
             </div>
             <div class="saas-trend-body">
-                <canvas id="chart-trend"></canvas>
+                <canvas id="trendChart"></canvas>
             </div>
         </div>
 

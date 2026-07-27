@@ -1238,7 +1238,7 @@ html[data-theme="dark"] .saas-custom-tooltip {
                 </div>
             </div>
             <div class="saas-trend-body">
-                <canvas id="chart-trend"></canvas>
+                <canvas id="trendChart"></canvas>
             </div>
         </div>
 
@@ -1888,7 +1888,9 @@ function renderTrendChart(){
         }
     }
 
-    const wrap = document.getElementById('trendChart').parentElement;
+    const canvasEl = document.getElementById('trendChart') || document.getElementById('chart-trend');
+    if (!canvasEl) return;
+    const wrap = canvasEl.parentElement;
     let emptyMsg = document.getElementById('trend-empty-msg');
     if (!hasAnyData) {
         if (!emptyMsg) {
