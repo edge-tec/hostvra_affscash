@@ -169,36 +169,23 @@ html[data-theme="dark"] .kpi-value, html[data-theme="dark"] .an-kpi-value { colo
 .kpi-trend, .an-kpi-trend { display: inline-flex !important; align-items: center !important; gap: 3px !important; font-size: 11px !important; font-weight: 700 !important; padding: 2px 8px !important; border-radius: 20px !important; margin-top: 6px !important; }
 .kpi-trend.up, .an-kpi-trend.up { background: rgba(16, 185, 129, 0.12) !important; color: #10B981 !important; }
 .kpi-trend.down, .an-kpi-trend.down { background: rgba(239, 68, 68, 0.12) !important; color: #EF4444 !important; }
-.kpi-trend.flat, .an-kpi-trend.flat { background: rgba(148, 163, 184, 0.12) !important; color: #64748B !important; }
-
-    margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;position:relative;overflow:hidden;
+.dash-header {
+    background: linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #4338CA 100%) !important;
+    border-radius: 20px !important;
+    padding: 24px 28px !important;
+    margin-bottom: 22px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: wrap !important;
+    gap: 16px !important;
+    position: relative !important;
+    overflow: hidden !important;
+    box-shadow: 0 12px 32px rgba(49, 46, 129, 0.35) !important;
+    color: #ffffff !important;
 }
-html[data-theme="dark"] .dash-header {
-    <?php if ($bannerStyle === 'glass'): ?>
-    background:rgba(20,24,48,.55);
-    border-color:rgba(148,163,184,.22);
-    box-shadow:0 8px 32px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);
-    <?php endif; ?>
-}
-<?php if ($bannerStyle === 'transparent' || $bannerStyle === 'glass'): ?>
-.dash-header::before, .dash-header::after { display: none !important; }
-.dash-hdr-title { color: var(--text) !important; }
-.dash-hdr-label { color: var(--text-muted) !important; }
-.dash-hdr-updated { color: var(--text-light) !important; }
-.dash-f-input { background: var(--card-bg) !important; color: var(--text) !important; border: 1px solid var(--border) !important; }
-.dash-f-input option { background: var(--card-bg) !important; color: var(--text) !important; }
-.dash-period-tabs { background: var(--card-bg) !important; border: 1px solid var(--border) !important; }
-.dash-period-tab { color: var(--text-muted) !important; }
-.dash-period-tab.active { background: var(--bg) !important; color: var(--text) !important; }
-.dash-btn-apply { box-shadow: none !important; }
-.dash-btn-reset { border-color: var(--border) !important; color: var(--text) !important; }
-<?php elseif ($bannerStyle === 'glass_purple'): ?>
-.dash-header::before{content:'';position:absolute;top:-60px;right:-40px;width:300px;height:300px;background:radial-gradient(circle, rgba(168,85,247,0.4) 0%, rgba(168,85,247,0) 70%);border-radius:50%;filter:blur(15px);z-index:0;}
-.dash-header::after{content:'';position:absolute;bottom:-80px;left:20%;width:400px;height:400px;background:radial-gradient(circle, rgba(56,189,248,0.3) 0%, rgba(56,189,248,0) 70%);border-radius:50%;filter:blur(20px);z-index:0;}
-<?php else: ?>
-.dash-header::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:rgba(255,255,255,.04);border-radius:50%;}
-.dash-header::after{content:'';position:absolute;bottom:-60px;left:30%;width:280px;height:280px;background:rgba(255,255,255,.03);border-radius:50%;}
-<?php endif; ?>
+.dash-header::before { content:''; position:absolute; top:-60px; right:-40px; width:300px; height:300px; background:radial-gradient(circle, rgba(168,85,247,0.35) 0%, rgba(168,85,247,0) 70%); border-radius:50%; filter:blur(15px); z-index:0; pointer-events:none; }
+.dash-header::after { content:''; position:absolute; bottom:-80px; left:20%; width:400px; height:400px; background:radial-gradient(circle, rgba(56,189,248,0.25) 0%, rgba(56,189,248,0) 70%); border-radius:50%; filter:blur(20px); z-index:0; pointer-events:none; }
 .dash-hdr-left{position:relative;z-index:1;}
 .dash-hdr-label{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:4px;}
 .dash-hdr-title{font-size:24px;font-weight:800;color:#fff;line-height:1.1;}
