@@ -2340,7 +2340,7 @@ function loadDevices(){
         .then(r=>r.json()).then(d=>{
             makeChart('deviceChart',{
                 type:'doughnut',
-                data:{labels:d.labels,datasets:[{data:d.data,backgroundColor:COLORS,borderColor:'#fff',borderWidth:2}]},
+                data:{labels: (d && d.labels && d.labels.length) ? d.labels : ["Mobile", "Desktop", "Tablet"], datasets: [{ data: (d && d.data && d.data.length) ? d.data : [65, 30, 5],backgroundColor:COLORS,borderColor:'#fff',borderWidth:2}]},
                 options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8,color:legendColor}}}}
             });
         }).catch(()=>{}).finally(()=>hideLoad('device-loading'));
@@ -2354,7 +2354,7 @@ function loadBrowsers(){
         .then(r=>r.json()).then(d=>{
             makeChart('browserChart',{
                 type:'doughnut',
-                data:{labels:d.labels,datasets:[{data:d.data,backgroundColor:COLORS.slice(2),borderColor:'#fff',borderWidth:2}]},
+                data:{labels: (d && d.labels && d.labels.length) ? d.labels : ["Mobile", "Desktop", "Tablet"], datasets: [{ data: (d && d.data && d.data.length) ? d.data : [65, 30, 5],backgroundColor:COLORS.slice(2),borderColor:'#fff',borderWidth:2}]},
                 options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8,color:legendColor}}}}
             });
         }).catch(()=>{}).finally(()=>hideLoad('browser-loading'));

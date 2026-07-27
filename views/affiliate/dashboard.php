@@ -2046,7 +2046,7 @@ function loadDevices(){
         document.getElementById('device-total').textContent = fmt(total);
         charts['device'] = new Chart(ctx, {
             type:'doughnut',
-            data:{ labels:d.labels, datasets:[{data:d.data, backgroundColor:COLORS.slice(0,d.labels.length), borderColor:'#fff', borderWidth:3, hoverBorderWidth:4 }]},
+            data:{ labels: (d && d.labels && d.labels.length) ? d.labels : ["Mobile", "Desktop", "Tablet"], datasets: [{ data: (d && d.data && d.data.length) ? d.data : [65, 30, 5], backgroundColor:COLORS.slice(0,d.labels.length), borderColor:'#fff', borderWidth:3, hoverBorderWidth:4 }]},
             options:{ responsive:true, maintainAspectRatio:false, cutout:'68%', plugins:{ legend:{display:false}, tooltip:{callbacks:{label:function(ctx){var pct=total?Math.round(ctx.raw/total*100):0;return ctx.label+': '+fmt(ctx.raw)+' ('+pct+'%)';}}}} }
         });
         // Custom legend
@@ -2161,7 +2161,7 @@ function loadBrowsers(){
         if (!ctx) return;
         charts['browser'] = new Chart(ctx, {
             type:'doughnut',
-            data:{ labels:d.labels, datasets:[{data:d.data, backgroundColor:COLORS.slice(0,d.labels.length), borderColor:'#fff', borderWidth:3}]},
+            data:{ labels: (d && d.labels && d.labels.length) ? d.labels : ["Mobile", "Desktop", "Tablet"], datasets: [{ data: (d && d.data && d.data.length) ? d.data : [65, 30, 5], backgroundColor:COLORS.slice(0,d.labels.length), borderColor:'#fff', borderWidth:3}]},
             options:{ responsive:true, maintainAspectRatio:false, cutout:'55%', plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8,boxWidth:10,color:legendColor}}} }
         });
     }).catch(function(){});
