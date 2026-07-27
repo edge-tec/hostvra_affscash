@@ -439,6 +439,7 @@ Router::any('/affiliate_manager/dashboard', function() { require BASE_PATH . '/c
 Router::any('/affiliate_manager/affiliates', function() { require BASE_PATH . '/controllers/affiliate_manager/AffiliatesController.php'; });
 Router::any('/affiliate_manager/conversions', function() { require BASE_PATH . '/controllers/affiliate_manager/ConversionsController.php'; });
 Router::any('/affiliate_manager/reports', function() { require BASE_PATH . '/controllers/affiliate_manager/ReportsController.php'; });
+Router::any('/affiliate-manager/reports', function() { require BASE_PATH . '/controllers/affiliate_manager/ReportsController.php'; });
 Router::any('/affiliate_manager/duplicate-conversions', function() { require BASE_PATH . '/controllers/affiliate_manager/DuplicateConversionsController.php'; });
 Router::any('/affiliate_manager/fraud-report', function() { require BASE_PATH . '/controllers/admin/fraud/FraudReportsController.php'; });
 Router::any('/affiliate_manager/vpn-log', function() { require BASE_PATH . '/controllers/affiliate_manager/VpnLogController.php'; });

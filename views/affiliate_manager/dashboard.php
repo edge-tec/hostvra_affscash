@@ -1061,7 +1061,7 @@ html[data-theme="dark"] .saas-custom-tooltip {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="url(#ai-grad3)" stroke-width="2"><defs><linearGradient id="ai-grad3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
                 AI Performance Insights
             </div>
-            <div class="saas-ai-insights-list" id="saas-ai-list-items"></div><a href="/affiliate-manager/reports" class="saas-ai-btn-report">View Detailed Report &rarr;</a><div style="display:none">
+            <div class="saas-ai-insights-list" id="saas-ai-list-items"></div><a href="/affiliate_manager/reports" class="saas-ai-btn-report">View Detailed Report &rarr;</a><div style="display:none">
                 <div class="saas-ai-item">
                     <div class="saas-ai-item-icon" style="background:rgba(16,185,129,0.15);color:#10B981">📈</div>
                     <div>
