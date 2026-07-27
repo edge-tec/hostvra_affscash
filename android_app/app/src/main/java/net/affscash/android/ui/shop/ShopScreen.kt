@@ -256,9 +256,7 @@ fun ProductCard(
             Text(
                 text = product.name,
                 style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                fontWeight = FontWeight.Bold
             )
 
             if (!product.description.isNullOrEmpty()) {
@@ -276,8 +274,6 @@ fun ProductCard(
                             )
                             textSize = 12f
                             setTextColor(android.graphics.Color.GRAY)
-                            maxLines = 3
-                            ellipsize = android.text.TextUtils.TruncateAt.END
                         }
                     },
                     update = { textView ->

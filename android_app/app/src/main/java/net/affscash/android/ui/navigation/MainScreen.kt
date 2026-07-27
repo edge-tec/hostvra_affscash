@@ -499,7 +499,7 @@ fun MainScreen(
             // Affiliate Screens
             composable(Screen.Dashboard.route) { 
                 DashboardScreen(
-                    onNavigateToInvoices = { navController.navigate(Screen.Invoices.route) },
+                    onNavigateToInvoices = { navController.navigate(Screen.AffiliateInvoices.route) },
                     onNavigateToFraudAlerts = { navController.navigate(Screen.FraudReport.route) },
                     onNavigateToChat = { navController.navigate(Screen.Chat.route) },
                     onNavigateToNews = { navController.navigate(Screen.News.route) },
@@ -549,13 +549,13 @@ fun MainScreen(
                 net.affscash.android.ui.settings.SettingsScreen(
                     role = role, 
                     onLogout = onLogout,
-                    onNavigateToInvoices = { navController.navigate(Screen.Invoices.route) },
+                    onNavigateToInvoices = { navController.navigate(Screen.AffiliateInvoices.route) },
                     onNavigateToRewards = { navController.navigate(Screen.Rewards.route) },
                     onNavigateToShop = { navController.navigate(Screen.Shop.route) },
                     onRoleChange = onRoleChange
                 ) 
             }
-            composable(Screen.Invoices.route) {
+            composable(Screen.AffiliateInvoices.route) {
                 net.affscash.android.ui.invoices.InvoiceScreen(
                     onNavigateBack = { navController.popBackStack() }
                 )
