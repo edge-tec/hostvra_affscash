@@ -2200,7 +2200,7 @@ function renderTrendChart(){
     
     // We recreate Chart instead of makeChart to bypass default plugins if necessary, but makeChart works if we pass custom options
     if (window.trendChartInstance) window.trendChartInstance.destroy();
-    const ctx = document.getElementById('trendChart');
+    const ctx = document.getElementById('trendChart') || document.getElementById('chart-trend');
     if(ctx) window.trendChartInstance = new Chart(ctx, cfg);
 }
 

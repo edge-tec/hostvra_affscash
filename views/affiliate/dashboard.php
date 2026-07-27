@@ -1776,7 +1776,7 @@ function updateSaaSAnalyticsAndAI(d) {
 function renderTrendChart(d) {
     updateSaaSAnalyticsAndAI(typeof d !== 'undefined' ? d : (typeof _trendData !== 'undefined' ? _trendData : trendData));
     destroyChart('trend');
-    var ctx = document.getElementById('chart-trend');
+    var ctx = document.getElementById('trendChart') || document.getElementById('chart-trend');
     if (!ctx) return;
     
     // Update SaaS KPIs
