@@ -516,8 +516,8 @@ html[data-theme="dark"] .saas-ai-insights-header { color: #F8FAFC; }
     transition: transform 0.25s ease, box-shadow 0.25s ease !important;
     display: flex !important;
     flex-direction: column !important;
-    justify-content: space-between !important;
-    min-height: 320px !important;
+    justify-content: flex-start !important;
+    min-height: auto !important;
 }
 
 html[data-theme="dark"] .chart-card, html[data-theme="dark"] .an-card {
@@ -537,7 +537,7 @@ html[data-theme="dark"] .chart-card, html[data-theme="dark"] .an-card {
     background: transparent !important;
     display: flex !important;
     align-items: center !important;
-    justify-content: space-between !important;
+    justify-content: flex-start !important;
 }
 
 .chart-card .card-title, .an-section-title {
