@@ -242,6 +242,171 @@ html[data-theme="dark"] .kpi-value, html[data-theme="dark"] .an-kpi-value { colo
     .dash-filters{flex-direction:column;align-items:stretch}
     .dash-f-input{width:100%;min-width:0}
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   SAAS ANALYTICS & AI INSIGHTS LAYOUT — Side-by-Side Modern Dashboard
+   ═══════════════════════════════════════════════════════════════════════ */
+.saas-analytics-grid-section {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+@media (max-width: 1200px) {
+    .saas-analytics-grid-section {
+        grid-template-columns: 1fr;
+    }
+}
+
+.saas-best-days-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-top: 16px;
+}
+@media (max-width: 900px) {
+    .saas-best-days-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 500px) {
+    .saas-best-days-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.saas-best-card {
+    background: rgba(255, 255, 255, 0.75);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 18px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+}
+html[data-theme="dark"] .saas-best-card {
+    background: rgba(15, 23, 42, 0.65);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+.saas-best-card.gold { --card-accent: #F59E0B; }
+.saas-best-card.purple { --card-accent: #8B5CF6; }
+.saas-best-card.blue { --card-accent: #3B82F6; }
+.saas-best-card.green { --card-accent: #10B981; }
+
+.saas-best-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: var(--card-accent);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 16px var(--card-accent);
+    flex-shrink: 0;
+}
+.saas-best-content {
+    flex-grow: 1;
+    min-width: 0;
+}
+.saas-best-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted, #64748B);
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.saas-best-val {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text, #0F172A);
+    line-height: 1.1;
+}
+html[data-theme="dark"] .saas-best-val { color: #F8FAFC; }
+.saas-best-date {
+    font-size: 11px;
+    color: var(--text-light, #94A3B8);
+    margin-top: 2px;
+}
+
+.saas-ai-insights-card {
+    background: rgba(255, 255, 255, 0.75);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 20px;
+    padding: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+html[data-theme="dark"] .saas-ai-insights-card {
+    background: rgba(15, 23, 42, 0.65);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+.saas-ai-insights-header {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text, #0F172A);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+}
+html[data-theme="dark"] .saas-ai-insights-header { color: #F8FAFC; }
+.saas-ai-insights-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.saas-ai-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 14px;
+    background: rgba(148, 163, 184, 0.06);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    transition: transform 0.2s, background 0.2s;
+}
+.saas-ai-item:hover {
+    transform: translateX(2px);
+    background: rgba(148, 163, 184, 0.1);
+}
+.saas-ai-item-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+}
+.saas-ai-item-title {
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+.saas-ai-item-desc {
+    font-size: 11px;
+    color: var(--text-muted, #64748B);
+    line-height: 1.45;
+}
 </style>
 
 <div id="live-badge-mgr" class="live-badge-mgr"><span class="lp"></span><span id="live-badge-mgr-txt">Live</span></div>
@@ -724,55 +889,106 @@ html[data-theme="dark"] .saas-custom-tooltip {
 }
 </style>
 
-<div class="saas-trend-container mb-3">
-    <div class="saas-ai-insights" id="saas-ai-panel" style="opacity:0">
-        <div class="saas-ai-title">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="url(#ai-grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <defs>
-                    <linearGradient id="ai-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#4F46E5" />
-                        <stop offset="100%" stop-color="#EC4899" />
-                    </linearGradient>
-                </defs>
-                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-            </svg>
-            AI Insights
-        </div>
-        <ul class="saas-ai-list" id="saas-ai-list">
-            <li>Analyzing trend data...</li>
-        </ul>
-    </div>
 
-    <div class="saas-trend-header">
-        <div class="saas-trend-title-area">
-            <span class="saas-section-title">Performance Trend</span>
-            <div class="saas-time-filters" id="trend-type-btns">
-                <button class="saas-chip active" data-type="line">Line</button>
-                <button class="saas-chip" data-type="bar">Bar</button>
+<div class="saas-analytics-grid-section">
+    <!-- Left Main Column (Chart + 4 Best Days Cards) -->
+    <div class="saas-main-col">
+        <div class="saas-trend-container">
+            <div class="saas-trend-header">
+                <div class="saas-trend-title-area">
+                    <span class="saas-section-title">Performance Trend Overview</span>
+                </div>
+                <div class="saas-legend-container" id="saas-trend-legend">
+                    <label class="saas-legend-item active" style="--leg-color: #3B82F6;" onclick="toggleSaaSLegend(this, 'tog-clicks')">
+                        <input type="checkbox" checked id="tog-clicks" onchange="renderTrendChart()" style="display:none">
+                        <span class="saas-leg-dot"></span> Clicks
+                    </label>
+                    <label class="saas-legend-item active" style="--leg-color: #8B5CF6;" onclick="toggleSaaSLegend(this, 'tog-conv')">
+                        <input type="checkbox" checked id="tog-conv" onchange="renderTrendChart()" style="display:none">
+                        <span class="saas-leg-dot"></span> Conversions
+                    </label>
+                    <label class="saas-legend-item active" style="--leg-color: #10B981;" onclick="toggleSaaSLegend(this, 'tog-rev')">
+                        <input type="checkbox" checked id="tog-rev" onchange="renderTrendChart()" style="display:none">
+                        <span class="saas-leg-dot"></span> Revenue
+                    </label>
+                    <label class="saas-legend-item active" style="--leg-color: #EF4444;" onclick="toggleSaaSLegend(this, 'tog-fraud')">
+                        <input type="checkbox" checked id="tog-fraud" onchange="renderTrendChart()" style="display:none">
+                        <span class="saas-leg-dot"></span> Fraud
+                    </label>
+                </div>
+            </div>
+            <div class="saas-trend-body">
+                <canvas id="chart-trend"></canvas>
             </div>
         </div>
 
-        <div class="saas-legend-container" id="trend-metric-btns">
-            <!-- For compatibility with existing JS, we keep the checkboxes visually hidden or just style the buttons -->
-            <button class="saas-legend-item active" style="--leg-color: #4F46E5;" data-metric="clicks">
-                <span class="saas-leg-dot"></span> Clicks
-            </button>
-            <button class="saas-legend-item active" style="--leg-color: #10B981;" data-metric="conv">
-                <span class="saas-leg-dot"></span> Conversions
-            </button>
-            <button class="saas-legend-item active" style="--leg-color: #DC2626;" data-metric="fraud">
-                <span class="saas-leg-dot"></span> Fraud
-            </button>
+        <!-- 4 Mini Best Days Cards -->
+        <div class="saas-best-days-grid">
+            <div class="saas-best-card gold">
+                <div class="saas-best-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"></path></svg>
+                </div>
+                <div class="saas-best-content">
+                    <div class="saas-best-label">Best Revenue Day</div>
+                    <div class="saas-best-val" id="sb-best-rev-val">$0.00</div>
+                    <div class="saas-best-date" id="sb-best-rev-date">—</div>
+                </div>
+            </div>
+
+            <div class="saas-best-card purple">
+                <div class="saas-best-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                </div>
+                <div class="saas-best-content">
+                    <div class="saas-best-label">Best Conversion Day</div>
+                    <div class="saas-best-val" id="sb-best-conv-val">0</div>
+                    <div class="saas-best-date" id="sb-best-conv-date">—</div>
+                </div>
+            </div>
+
+            <div class="saas-best-card blue">
+                <div class="saas-best-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                </div>
+                <div class="saas-best-content">
+                    <div class="saas-best-label">Highest Clicks Day</div>
+                    <div class="saas-best-val" id="sb-best-clicks-val">0</div>
+                    <div class="saas-best-date" id="sb-best-clicks-date">—</div>
+                </div>
+            </div>
+
+            <div class="saas-best-card green">
+                <div class="saas-best-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                </div>
+                <div class="saas-best-content">
+                    <div class="saas-best-label">Lowest Fraud Day</div>
+                    <div class="saas-best-val" id="sb-best-fraud-val">0%</div>
+                    <div class="saas-best-date" id="sb-best-fraud-date">—</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="saas-trend-body">
-        <canvas id="trendChart"></canvas>
-        <div id="saas-custom-tooltip" class="saas-custom-tooltip"></div>
-        <div class="loading-overlay" id="trend-loading" style="display:none"><div class="spinner"></div></div>
+    <!-- Right Side Column (AI Performance Insights) -->
+    <div class="saas-side-col">
+        <div class="saas-ai-insights-card">
+            <div class="saas-ai-insights-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="url(#ai-grad3)" stroke-width="2"><defs><linearGradient id="ai-grad3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                AI Performance Insights
+            </div>
+            <div class="saas-ai-insights-list" id="saas-ai-list-items">
+                <div class="saas-ai-item">
+                    <div class="saas-ai-item-icon" style="background:rgba(16,185,129,0.15);color:#10B981">📈</div>
+                    <div>
+                        <div class="saas-ai-item-title" style="color:#10B981">Analyzing...</div>
+                        <div class="saas-ai-item-desc">Loading performance insights...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-
 <!-- ── Row 2: Hourly + Conversion Pie ────────────────────────────────── -->
 <div class="charts-row charts-2 mb-3">
     <div class="chart-card">
