@@ -89,22 +89,30 @@ $_tzOptions = [
 <style>
 <?php $bannerStyle = Config::get('config', 'app.dashboard_banner_style') ?? (Config::get('config', 'app.transparent_dashboard') === '1' ? 'transparent' : 'glass_purple'); ?>
 /* ═══════════════════════════════════════════════════════════════════════
-   KPI CARD STYLES — 3D Glassmorphism Premium
+   KPI CARD STYLES — 3D Glassmorphism Premium (Responsive Grid)
    ═══════════════════════════════════════════════════════════════════════ */
+.kpi-grid, .an-kpi-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+    gap: 16px !important;
+    margin-bottom: 24px !important;
+}
+
 .kpi-card, .an-kpi-card {
-    background: rgba(255, 255, 255, 0.7) !important;
+    background: rgba(255, 255, 255, 0.75) !important;
     -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
     backdrop-filter: blur(20px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.6) !important;
     border-radius: 20px !important;
-    padding: 20px 22px !important;
+    padding: 18px 20px !important;
     position: relative !important;
     overflow: hidden !important;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s !important;
     display: flex !important;
     align-items: center !important;
-    gap: 16px !important;
+    gap: 14px !important;
     box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
+    min-width: 0 !important;
 }
 
 html[data-theme="dark"] .kpi-card, html[data-theme="dark"] .an-kpi-card {
@@ -123,9 +131,9 @@ html[data-theme="dark"] .kpi-card:hover, html[data-theme="dark"] .an-kpi-card:ho
 }
 
 .kpi-icon, .an-kpi-icon {
-    width: 52px !important;
-    height: 52px !important;
-    border-radius: 16px !important;
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 14px !important;
     background: var(--kpi-color, #3B82F6) !important;
     display: flex !important;
     align-items: center !important;
@@ -133,12 +141,13 @@ html[data-theme="dark"] .kpi-card:hover, html[data-theme="dark"] .an-kpi-card:ho
     color: #ffffff !important;
     box-shadow: 0 8px 20px var(--kpi-shadow, rgba(59, 130, 246, 0.35)) !important;
     flex-shrink: 0 !important;
-    font-size: 22px !important;
+    font-size: 20px !important;
 }
 
 .kpi-content, .an-kpi-content {
     flex-grow: 1 !important;
     min-width: 0 !important;
+    overflow: hidden !important;
 }
 
 .kpi-sparkline, .an-kpi-sparkline {
@@ -162,13 +171,14 @@ html[data-theme="dark"] .kpi-card:hover, html[data-theme="dark"] .an-kpi-card:ho
 .kpi-card.indigo, .an-kpi-card.indigo { --kpi-color: #4F46E5; --kpi-shadow: rgba(79, 70, 229, 0.35); }
 .kpi-card.red, .an-kpi-card.red { --kpi-color: #EF4444; --kpi-shadow: rgba(239, 68, 68, 0.35); }
 
-.kpi-label, .an-kpi-label { font-size: 11px !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: .05em !important; color: var(--text-muted, #64748B) !important; margin-bottom: 4px !important; }
-.kpi-value, .an-kpi-value { font-size: 26px !important; font-weight: 800 !important; color: var(--text, #0F172A) !important; line-height: 1.1 !important; }
+.kpi-label, .an-kpi-label { font-size: 11px !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: .05em !important; color: var(--text-muted, #64748B) !important; margin-bottom: 4px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+.kpi-value, .an-kpi-value { font-size: 24px !important; font-weight: 800 !important; color: var(--text, #0F172A) !important; line-height: 1.1 !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
 html[data-theme="dark"] .kpi-value, html[data-theme="dark"] .an-kpi-value { color: #F8FAFC !important; }
-.kpi-sub, .an-kpi-sub { font-size: 12px !important; color: var(--text-light, #94A3B8) !important; margin-top: 4px !important; }
-.kpi-trend, .an-kpi-trend { display: inline-flex !important; align-items: center !important; gap: 3px !important; font-size: 11px !important; font-weight: 700 !important; padding: 2px 8px !important; border-radius: 20px !important; margin-top: 6px !important; }
+.kpi-sub, .an-kpi-sub { font-size: 12px !important; color: var(--text-light, #94A3B8) !important; margin-top: 4px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+.kpi-trend, .an-kpi-trend { display: inline-flex !important; align-items: center !important; gap: 3px !important; font-size: 11px !important; font-weight: 700 !important; padding: 2px 8px !important; border-radius: 20px !important; margin-top: 6px !important; white-space: nowrap !important; }
 .kpi-trend.up, .an-kpi-trend.up { background: rgba(16, 185, 129, 0.12) !important; color: #10B981 !important; }
 .kpi-trend.down, .an-kpi-trend.down { background: rgba(239, 68, 68, 0.12) !important; color: #EF4444 !important; }
+.kpi-trend.flat, .an-kpi-trend.flat { background: rgba(148, 163, 184, 0.12) !important; color: #64748B !important; }
 .dash-header {
     background: linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #4338CA 100%) !important;
     border-radius: 20px !important;
