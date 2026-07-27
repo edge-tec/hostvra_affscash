@@ -1477,6 +1477,9 @@ function renderTrendChart(d) {
                     insights.push("Revenue momentum has slowed down recently.");
                 }
             }
+        }
+    }
+
     // Gradient Generator
     var createGrad = function(color) {
         var grad = ctx.getContext('2d').createLinearGradient(0, 0, 0, 360);
