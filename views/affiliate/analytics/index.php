@@ -7,6 +7,28 @@
 @media(max-width:480px){
     .stats-grid{grid-template-columns:1fr!important}
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   TRAFFIC ANALYTICS 3 CARDS IN A LINE RESPONSIVE GRID OVERHAUL
+   ═══════════════════════════════════════════════════════════════════════ */
+.trf-grid-3, .grid-3, .traffic-grid-3, .grid-2 {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 16px !important;
+    margin-bottom: 20px !important;
+}
+
+@media (max-width: 1200px) {
+    .trf-grid-3, .grid-3, .traffic-grid-3, .grid-2 {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .trf-grid-3, .grid-3, .traffic-grid-3, .grid-2 {
+        grid-template-columns: 1fr !important;
+    }
+}
 </style>
 
 <div class="page-header">
@@ -124,7 +146,7 @@ $overallCR    = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 0
     <h2 style="font-size:18px;font-weight:700;margin:0">Click Activity Overview</h2>
 </div>
 
-<div class="grid-2 mb-3">
+<div class="trf-grid-3 mb-3">
     <div class="card">
         <div class="card-header">
             <span class="card-title">Daily Click Analytics</span>
@@ -140,7 +162,7 @@ $overallCR    = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 0
     </div>
 </div>
 
-<div class="grid-2 mb-3">
+<div class="trf-grid-3 mb-3">
     <div class="card">
         <div class="card-header">
             <span class="card-title">Unique vs Total Clicks</span>
@@ -162,7 +184,7 @@ $overallCR    = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 0
     <h2 style="font-size:18px;font-weight:700;margin:0">Conversion Analytics</h2>
 </div>
 
-<div class="grid-2 mb-3">
+<div class="trf-grid-3 mb-3">
     <div class="card">
         <div class="card-header">
             <span class="card-title">Daily Conversion Activity</span>
@@ -175,7 +197,7 @@ $overallCR    = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 0
     </div>
 </div>
 
-<div class="grid-2 mb-3">
+<div class="trf-grid-3 mb-3">
     <div class="card">
         <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
             <span class="card-title">Conversion Rate Trend</span>
@@ -219,7 +241,7 @@ $overallCR    = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 0
     <h2 style="font-size:18px;font-weight:700;margin:0">Earnings Overview</h2>
 </div>
 
-<div class="grid-2 mb-3">
+<div class="trf-grid-3 mb-3">
     <div class="card">
         <div class="card-header">
             <span class="card-title">Daily Earnings</span>
@@ -276,7 +298,7 @@ $overallCR    = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 0
     <h2 style="font-size:18px;font-weight:700;margin:0">Time-Based Analytics</h2>
 </div>
 
-<div class="grid-2 mb-3">
+<div class="trf-grid-3 mb-3">
     <div class="card">
         <div class="card-header">
             <span class="card-title">Weekly Performance</span>
@@ -313,7 +335,7 @@ $overallCR    = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 0
     </div>
 </div>
 
-<div class="grid-2 mb-3">
+<div class="trf-grid-3 mb-3">
     <div class="card">
         <div class="card-header"><span class="card-title">OS Distribution</span></div>
         <div class="card-body"><canvas id="osChart" height="180"></canvas></div>
