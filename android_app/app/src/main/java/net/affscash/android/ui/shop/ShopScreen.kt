@@ -295,7 +295,7 @@ fun ProductCard(
 
                 if (product.description.length > 100) {
                     Text(
-                        text = if (isExpanded) "See Less" else "See More",
+                        text = if (isExpanded) "Read Less" else "Read More",
                         color = Color(0xFF4F46E5),
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,

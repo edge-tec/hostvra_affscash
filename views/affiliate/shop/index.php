@@ -56,7 +56,7 @@
                 <?php $descText = trim(strip_tags((string)($p['description'] ?? ''))); ?>
                 <div class="desc-text <?= strlen($descText) > 100 ? 'line-clamp-3' : '' ?>"><?= Helpers::e($descText) ?></div>
                 <?php if (strlen($descText) > 100): ?>
-                <button type="button" class="read-more-btn" onclick="toggleDesc(this)">See More</button>
+                <button type="button" class="read-more-btn" onclick="toggleDesc(this)">Read More</button>
                 <?php endif; ?>
             </div>
             <div class="sh-meta">
@@ -86,10 +86,10 @@ function toggleDesc(btn) {
     const textDiv = btn.previousElementSibling;
     if (textDiv.classList.contains('line-clamp-3')) {
         textDiv.classList.remove('line-clamp-3');
-        btn.textContent = 'See Less';
+        btn.textContent = 'Read Less';
     } else {
         textDiv.classList.add('line-clamp-3');
-        btn.textContent = 'See More';
+        btn.textContent = 'Read More';
     }
 }
 </script>
