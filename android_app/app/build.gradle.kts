@@ -27,6 +27,14 @@ android {
         }
     }
 
+    applicationVariants.all {
+        val variant = this
+        outputs.all {
+            val outputImpl = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
+            outputImpl.outputFileName = "Affscash_v${variant.versionName}_${variant.name}.apk"
+        }
+    }
+
     signingConfigs {
         val keystoreFile = rootProject.file("keystore.properties")
         val properties = Properties()
