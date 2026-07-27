@@ -690,6 +690,90 @@ html[data-theme="dark"] .saas-ai-insights-header { color: #F8FAFC; }
     color: var(--text-muted, #64748B);
     line-height: 1.45;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   UNIFIED 3 CARDS IN A LINE RESPONSIVE GRID OVERHAUL
+   ═══════════════════════════════════════════════════════════════════════ */
+.charts-row, #row2-grid, #row3-grid, #row4-grid, .saas-widgets-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 20px !important;
+    margin-bottom: 24px !important;
+}
+
+@media (max-width: 1200px) {
+    .charts-row, #row2-grid, #row3-grid, #row4-grid, .saas-widgets-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 16px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .charts-row, #row2-grid, #row3-grid, #row4-grid, .saas-widgets-grid {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+    }
+}
+
+.chart-card, .an-card {
+    background: rgba(255, 255, 255, 0.75) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
+    transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    min-height: 320px !important;
+}
+
+html[data-theme="dark"] .chart-card, html[data-theme="dark"] .an-card {
+    background: rgba(15, 23, 42, 0.65) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4) !important;
+}
+
+.chart-card:hover, .an-card:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08) !important;
+}
+
+.chart-card .card-header, .an-card-head {
+    padding: 16px 20px !important;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.15) !important;
+    background: transparent !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+.chart-card .card-title, .an-section-title {
+    font-size: 14px !important;
+    font-weight: 800 !important;
+    color: var(--text, #0F172A) !important;
+}
+
+html[data-theme="dark"] .chart-card .card-title, html[data-theme="dark"] .an-section-title {
+    color: #F8FAFC !important;
+}
+
+.chart-card .card-body, .an-card-body {
+    padding: 16px !important;
+    background: transparent !important;
+    flex-grow: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+}
+
+.chart-wrap {
+    position: relative !important;
+    height: 220px !important;
+    width: 100% !important;
+}
 </style>
 
 <div id="live-badge" class="live-badge"><span class="lp"></span><span id="live-badge-txt">Live</span></div>
