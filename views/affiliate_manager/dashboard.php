@@ -334,35 +334,65 @@ html[data-theme="dark"] .loading-overlay{background:rgba(15,23,42,.55);}
 <!-- ── KPI Cards ──────────────────────────────────────────────────────── -->
 <div class="kpi-grid">
     <div class="kpi-card blue">
-        <div class="kpi-label">Managed Affiliates</div>
+        <div class="kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.05 5A5 5 0 0 1 19 8.95M15.05 1A9 9 0 0 1 23 8.94m-1 7.98v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        </div>
+        <div class="kpi-content">
+            <div class="kpi-label">Managed Affiliates</div>
         <div class="kpi-value"><?= $totalAffiliates ?></div>
         <div class="kpi-sub">Under your management</div>
-    </div>
+        </div>
+        <div class="kpi-sparkline"></div>
+</div>
     <div class="kpi-card blue">
-        <div class="kpi-label">Total Clicks</div>
+        <div class="kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.05 5A5 5 0 0 1 19 8.95M15.05 1A9 9 0 0 1 23 8.94m-1 7.98v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        </div>
+        <div class="kpi-content">
+            <div class="kpi-label">Total Clicks</div>
         <div class="kpi-value" id="k-clicks">—</div>
         <div class="kpi-sub">Unique: <span id="k-unique">—</span></div>
         <div id="k-clicks-trend" class="kpi-trend flat">—</div>
-    </div>
+        </div>
+        <div class="kpi-sparkline"></div>
+</div>
     <div class="kpi-card green">
-        <div class="kpi-label">Conversions</div>
+        <div class="kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </div>
+        <div class="kpi-content">
+            <div class="kpi-label">Conversions</div>
         <div class="kpi-value" id="k-conv">—</div>
         <div class="kpi-sub">CR: <span id="k-cr">—</span>%</div>
         <div id="k-conv-trend" class="kpi-trend flat">—</div>
-    </div>
+        </div>
+        <div class="kpi-sparkline"></div>
+</div>
     <div class="kpi-card teal">
-        <div class="kpi-label">Conversion Rate</div>
+        <div class="kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </div>
+        <div class="kpi-content">
+            <div class="kpi-label">Conversion Rate</div>
         <div class="kpi-value" id="k-cr-card">—</div>
         <div class="kpi-sub">Overall CR%</div>
-    </div>
+        </div>
+        <div class="kpi-sparkline"></div>
+</div>
     <!-- Fraud Conversion % across all managed affiliates. Filters from the
          dashboard (date / offer / country / device) flow through automatically. -->
     <div class="kpi-card red" title="Fraud conversions are conversions with fraud score between 60–100.">
-        <div class="kpi-label">Fraud Conversion %</div>
+        <div class="kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        </div>
+        <div class="kpi-content">
+            <div class="kpi-label">Fraud Conversion %</div>
         <div class="kpi-value"><span id="k-fraud-conv-pct">—</span>%</div>
         <div class="kpi-sub"><span id="k-fraud-conv">—</span> Fraud Conversions</div>
         <div id="k-fraud-conv-pct-trend" class="kpi-trend flat">—</div>
-    </div>
+        </div>
+        <div class="kpi-sparkline"></div>
+</div>
     <!-- Real-time IPQS Fraud Score — avg of IPQualityScore fraud_score values
          from fraud_logs, joined through conversions — last 30 days. -->
     <?php

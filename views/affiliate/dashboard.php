@@ -514,41 +514,71 @@ html[data-theme="dark"] .an-kpi-card { background:rgba(15,23,42,.65); border-col
 <!-- ══ KPI CARDS ═══════════════════════════════════════════════════════════ -->
 <div class="an-kpi-grid">
     <div class="an-kpi-card blue">
-        <div class="an-kpi-icon" style="background:#EFF6FF;color:#2563EB">📊</div>
-        <div class="an-kpi-label">Total Clicks</div>
+        <div class="an-kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.05 5A5 5 0 0 1 19 8.95M15.05 1A9 9 0 0 1 23 8.94m-1 7.98v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        </div>
+        <div class="an-kpi-content">
+            <div class="an-kpi-label">Total Clicks</div>
         <div class="an-kpi-value" id="kv-clicks"><span class="an-skeleton" style="display:block;height:28px;width:70px"></span></div>
         <div class="an-kpi-trend flat" id="kt-clicks">—</div>
-    </div>
+        </div>
+        <div class="an-kpi-sparkline"></div>
+</div>
     <div class="an-kpi-card cyan">
-        <div class="an-kpi-icon" style="background:#ECFEFF;color:#06B6D4">🔗</div>
-        <div class="an-kpi-label">Unique Clicks</div>
+        <div class="an-kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
+        </div>
+        <div class="an-kpi-content">
+            <div class="an-kpi-label">Unique Clicks</div>
         <div class="an-kpi-value" id="kv-unique"><span class="an-skeleton" style="display:block;height:28px;width:60px"></span></div>
         <div class="an-kpi-trend flat" id="kt-unique">—</div>
-    </div>
+        </div>
+        <div class="an-kpi-sparkline"></div>
+</div>
     <div class="an-kpi-card purple">
-        <div class="an-kpi-icon" style="background:#F5F3FF;color:#7C3AED">✅</div>
-        <div class="an-kpi-label">Conversions</div>
+        <div class="an-kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+        </div>
+        <div class="an-kpi-content">
+            <div class="an-kpi-label">Conversions</div>
         <div class="an-kpi-value" id="kv-conv"><span class="an-skeleton" style="display:block;height:28px;width:50px"></span></div>
         <div class="an-kpi-trend flat" id="kt-conv">—</div>
-    </div>
+        </div>
+        <div class="an-kpi-sparkline"></div>
+</div>
     <div class="an-kpi-card green">
-        <div class="an-kpi-icon" style="background:#F0FDF4;color:#10B981">💰</div>
-        <div class="an-kpi-label">Revenue</div>
+        <div class="an-kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </div>
+        <div class="an-kpi-content">
+            <div class="an-kpi-label">Revenue</div>
         <div class="an-kpi-value" id="kv-revenue"><span class="an-skeleton" style="display:block;height:28px;width:80px"></span></div>
         <div class="an-kpi-trend flat" id="kt-revenue">—</div>
-    </div>
+        </div>
+        <div class="an-kpi-sparkline"></div>
+</div>
     <div class="an-kpi-card orange">
-        <div class="an-kpi-icon" style="background:#FFFBEB;color:#F59E0B">🎯</div>
-        <div class="an-kpi-label">Conv. Rate</div>
+        <div class="an-kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        </div>
+        <div class="an-kpi-content">
+            <div class="an-kpi-label">Conv. Rate</div>
         <div class="an-kpi-value" id="kv-cr"><span class="an-skeleton" style="display:block;height:28px;width:55px"></span></div>
         <div class="an-kpi-sub" id="ks-cr">CR%</div>
-    </div>
+        </div>
+        <div class="an-kpi-sparkline"></div>
+</div>
     <div class="an-kpi-card indigo">
-        <div class="an-kpi-icon" style="background:#EEF2FF;color:#4F46E5">💳</div>
-        <div class="an-kpi-label">Balance</div>
+        <div class="an-kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        </div>
+        <div class="an-kpi-content">
+            <div class="an-kpi-label">Balance</div>
         <div class="an-kpi-value" id="kv-balance"><span class="an-skeleton" style="display:block;height:28px;width:80px"></span></div>
         <div class="an-kpi-sub">Available</div>
-    </div>
+        </div>
+        <div class="an-kpi-sparkline"></div>
+</div>
     <!-- Fraud Conversion % — server-computed (fraud_score >= 60). The actual
          per-row score is never sent to the affiliate, only the aggregate %. -->
     <div class="an-kpi-card" style="--an-kpi-accent:#DC2626" title="Fraud conversions are conversions with fraud score between 60–100.">

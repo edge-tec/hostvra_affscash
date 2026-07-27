@@ -257,146 +257,74 @@ select.dash-f-input{
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;}
 
 /* ═══════════════════════════════════════════════════════════════════════
-   KPI CARD STYLES — 4 selectable designs via dashboard_card_style
+   KPI CARD STYLES — 3D Glassmorphism Premium
    ═══════════════════════════════════════════════════════════════════════ */
+.kpi-card, .an-kpi-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 16px;
+    padding: 16px 20px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+html[data-theme="dark"] .kpi-card, html[data-theme="dark"] .an-kpi-card {
+    background: rgba(20, 24, 48, 0.5);
+    border-color: rgba(255,255,255,0.08);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+}
+.kpi-card:hover, .an-kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+html[data-theme="dark"] .kpi-card:hover, html[data-theme="dark"] .an-kpi-card:hover {
+    box-shadow: 0 16px 32px rgba(0,0,0,0.4);
+}
+.kpi-icon, .an-kpi-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: var(--kpi-color, #3B82F6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    box-shadow: 0 0 20px var(--kpi-color);
+    flex-shrink: 0;
+    font-size: 20px;
+}
+.kpi-content, .an-kpi-content {
+    flex-grow: 1;
+}
+.kpi-sparkline, .an-kpi-sparkline {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 50%;
+    height: 60%;
+    opacity: 0.25;
+    background: linear-gradient(180deg, transparent 0%, var(--kpi-color) 100%);
+    clip-path: polygon(0 100%, 10% 80%, 30% 90%, 50% 60%, 70% 80%, 100% 40%, 100% 100%);
+}
 
-<?php if ($cardStyle === 'gradient_glow'): ?>
-/* ── STYLE: Gradient Glow ─────────────────────────────────────────────
-   Left gradient border, soft colored glow background, floating effect */
-@keyframes kpi-shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-.kpi-card{
-    background:var(--card-bg);border:none;border-radius:16px;padding:22px 22px 22px 26px;
-    position:relative;overflow:hidden;
-    transition:box-shadow .3s,transform .3s;
-    border-left:4px solid transparent;
-}
-.kpi-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px;border-radius:16px 0 0 16px;}
-.kpi-card::after{
-    content:'';position:absolute;top:-50%;right:-30%;width:120px;height:200%;
-    border-radius:50%;opacity:.06;filter:blur(40px);transition:opacity .3s;pointer-events:none;
-}
-.kpi-card:hover{box-shadow:0 20px 40px rgba(0,0,0,.08);}
-.kpi-card:hover::after{opacity:.12;}
-.kpi-card.blue::before{background:linear-gradient(180deg,#3B82F6,#1D4ED8);}
-.kpi-card.blue::after{background:#3B82F6;}
-.kpi-card.green::before{background:linear-gradient(180deg,#10B981,#059669);}
-.kpi-card.green::after{background:#10B981;}
-.kpi-card.purple::before{background:linear-gradient(180deg,#8B5CF6,#6D28D9);}
-.kpi-card.purple::after{background:#8B5CF6;}
-.kpi-card.orange::before{background:linear-gradient(180deg,#F59E0B,#D97706);}
-.kpi-card.orange::after{background:#F59E0B;}
-.kpi-card.teal::before{background:linear-gradient(180deg,#06B6D4,#0891B2);}
-.kpi-card.teal::after{background:#06B6D4;}
-.kpi-card.red::before{background:linear-gradient(180deg,#EF4444,#DC2626);}
-.kpi-card.red::after{background:#EF4444;}
-.kpi-card.indigo::before{background:linear-gradient(180deg,#4F46E5,#3730A3);}
-.kpi-card.indigo::after{background:#4F46E5;}
-.kpi-card.emerald::before{background:linear-gradient(180deg,#059669,#047857);}
-.kpi-card.emerald::after{background:#059669;}
-html[data-theme="dark"] .kpi-card{background:rgba(30,41,59,.85);border:1px solid rgba(148,163,184,.12);border-left:4px solid transparent;}
-html[data-theme="dark"] .kpi-card:hover{box-shadow:0 20px 40px rgba(0,0,0,.25);}
+.kpi-card.blue, .an-kpi-card.blue { --kpi-color: #3B82F6; }
+.kpi-card.green, .an-kpi-card.green { --kpi-color: #10B981; }
+.kpi-card.purple, .an-kpi-card.purple { --kpi-color: #8B5CF6; }
+.kpi-card.emerald, .an-kpi-card.emerald { --kpi-color: #059669; }
+.kpi-card.teal, .an-kpi-card.teal, .an-kpi-card.cyan { --kpi-color: #06B6D4; }
+.kpi-card.orange, .an-kpi-card.orange { --kpi-color: #F59E0B; }
+.kpi-card.indigo, .an-kpi-card.indigo { --kpi-color: #4F46E5; }
+.kpi-card.red, .an-kpi-card.red { --kpi-color: #EF4444; }
 
-<?php elseif ($cardStyle === 'neon_glass'): ?>
-/* ── STYLE: Neon Glass ────────────────────────────────────────────────
-   Glassmorphic with neon-colored bottom glow line and frosted effect */
-@keyframes neon-pulse { 0%,100%{opacity:.7} 50%{opacity:1} }
-.kpi-card{
-    background:rgba(255,255,255,.65);
-    -webkit-backdrop-filter:blur(20px) saturate(180%);
-            backdrop-filter:blur(20px) saturate(180%);
-    border:1px solid rgba(255,255,255,.5);
-    border-radius:18px;padding:22px;
-    position:relative;overflow:hidden;
-    transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s;
-    box-shadow:0 4px 24px rgba(0,0,0,.04);
-}
-.kpi-card::before{content:'';position:absolute;bottom:0;left:10%;right:10%;height:3px;border-radius:0 0 18px 18px;filter:blur(1px);animation:neon-pulse 3s ease-in-out infinite;}
-.kpi-card::after{
-    content:'';position:absolute;top:12px;right:14px;width:38px;height:38px;
-    border-radius:12px;opacity:.10;
-}
-.kpi-card:hover{box-shadow:0 24px 48px rgba(0,0,0,.10);}
-.kpi-card.blue::before{background:linear-gradient(90deg,transparent,#3B82F6,transparent);}
-.kpi-card.blue::after{background:#3B82F6;}
-.kpi-card.green::before{background:linear-gradient(90deg,transparent,#10B981,transparent);}
-.kpi-card.green::after{background:#10B981;}
-.kpi-card.purple::before{background:linear-gradient(90deg,transparent,#8B5CF6,transparent);}
-.kpi-card.purple::after{background:#8B5CF6;}
-.kpi-card.orange::before{background:linear-gradient(90deg,transparent,#F59E0B,transparent);}
-.kpi-card.orange::after{background:#F59E0B;}
-.kpi-card.teal::before{background:linear-gradient(90deg,transparent,#06B6D4,transparent);}
-.kpi-card.teal::after{background:#06B6D4;}
-.kpi-card.red::before{background:linear-gradient(90deg,transparent,#EF4444,transparent);}
-.kpi-card.red::after{background:#EF4444;}
-.kpi-card.indigo::before{background:linear-gradient(90deg,transparent,#4F46E5,transparent);}
-.kpi-card.indigo::after{background:#4F46E5;}
-.kpi-card.emerald::before{background:linear-gradient(90deg,transparent,#059669,transparent);}
-.kpi-card.emerald::after{background:#059669;}
-html[data-theme="dark"] .kpi-card{
-    background:rgba(15,23,42,.65);
-    border-color:rgba(148,163,184,.15);
-    box-shadow:0 4px 24px rgba(0,0,0,.2);
-}
-html[data-theme="dark"] .kpi-card:hover{box-shadow:0 24px 48px rgba(0,0,0,.35);}
+/* Aurora text overrides removal - just ensuring default colors */
+.kpi-label, .an-kpi-label { color: var(--text-muted); }
+.kpi-value, .an-kpi-value { color: var(--text); }
+.kpi-sub, .an-kpi-sub { color: var(--text-light); }
 
-<?php elseif ($cardStyle === 'aurora'): ?>
-/* ── STYLE: Aurora Premium ────────────────────────────────────────────
-   Dark premium gradient cards with aurora shimmer and icon circle */
-@keyframes aurora-shift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-.kpi-card{
-    border:none;border-radius:18px;padding:24px;
-    position:relative;overflow:hidden;
-    transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s;
-    color:#fff;
-}
-.kpi-card::before{
-    content:'';position:absolute;inset:0;border-radius:18px;opacity:.08;
-    background:linear-gradient(135deg,#fff 0%,transparent 50%);pointer-events:none;
-}
-.kpi-card::after{
-    content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:.15;filter:blur(20px);
-}
-.kpi-card:hover{box-shadow:0 30px 60px rgba(0,0,0,.2);}
-.kpi-card.blue{background:linear-gradient(135deg,#1E3A5F,#2563EB);box-shadow:0 8px 24px rgba(37,99,235,.2);}
-.kpi-card.blue::after{background:#60A5FA;}
-.kpi-card.green{background:linear-gradient(135deg,#064E3B,#059669);box-shadow:0 8px 24px rgba(5,150,105,.2);}
-.kpi-card.green::after{background:#34D399;}
-.kpi-card.purple{background:linear-gradient(135deg,#2E1065,#7C3AED);box-shadow:0 8px 24px rgba(124,58,237,.2);}
-.kpi-card.purple::after{background:#A78BFA;}
-.kpi-card.orange{background:linear-gradient(135deg,#78350F,#D97706);box-shadow:0 8px 24px rgba(217,119,6,.2);}
-.kpi-card.orange::after{background:#FCD34D;}
-.kpi-card.teal{background:linear-gradient(135deg,#134E4A,#0891B2);box-shadow:0 8px 24px rgba(8,145,178,.2);}
-.kpi-card.teal::after{background:#22D3EE;}
-.kpi-card.red{background:linear-gradient(135deg,#7F1D1D,#DC2626);box-shadow:0 8px 24px rgba(220,38,38,.2);}
-.kpi-card.red::after{background:#FCA5A5;}
-.kpi-card.indigo{background:linear-gradient(135deg,#1E1B4B,#4F46E5);box-shadow:0 8px 24px rgba(79,70,229,.2);}
-.kpi-card.indigo::after{background:#818CF8;}
-.kpi-card.emerald{background:linear-gradient(135deg,#064E3B,#047857);box-shadow:0 8px 24px rgba(4,120,87,.2);}
-.kpi-card.emerald::after{background:#6EE7B7;}
-/* Aurora cards override text colors to white */
-.kpi-card .kpi-label{color:rgba(255,255,255,.7) !important;}
-.kpi-card .kpi-value{color:#fff !important;}
-.kpi-card .kpi-sub{color:rgba(255,255,255,.55) !important;}
-.kpi-card .kpi-sub a{color:rgba(255,255,255,.6) !important;}
-.kpi-card .kpi-trend.up{background:rgba(255,255,255,.18) !important;color:#6EE7B7 !important;}
-.kpi-card .kpi-trend.down{background:rgba(255,255,255,.18) !important;color:#FCA5A5 !important;}
-.kpi-card .kpi-trend.flat{background:rgba(255,255,255,.12) !important;color:rgba(255,255,255,.7) !important;}
-
-<?php else: ?>
-/* ── STYLE: Default ───────────────────────────────────────────────────
-   Classic clean cards with colored top border */
-.kpi-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:20px;position:relative;overflow:hidden;transition:box-shadow .2s,transform .2s,background-color .2s,border-color .2s;}
-.kpi-card:hover{box-shadow:var(--shadow-md);}
-.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0;}
-.kpi-card.blue::before{background:#3B82F6;}
-.kpi-card.green::before{background:#10B981;}
-.kpi-card.purple::before{background:#8B5CF6;}
-.kpi-card.orange::before{background:#F59E0B;}
-.kpi-card.teal::before{background:#06B6D4;}
-.kpi-card.red::before{background:#EF4444;}
-.kpi-card.indigo::before{background:#4F46E5;}
-.kpi-card.emerald::before{background:#059669;}
-<?php endif; ?>
 
 .kpi-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;}
 .kpi-value{font-size:26px;font-weight:800;color:var(--text);line-height:1;}
@@ -601,62 +529,116 @@ html[data-theme="dark"] .loading-overlay{background:rgba(15,23,42,.55);}
 <!-- ── KPI Cards ──────────────────────────────────────────────────────── -->
 <div class="kpi-grid" id="kpi-grid">
     <div class="kpi-card blue">
-        <div class="kpi-label">Total Clicks</div>
+        <div class="kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.05 5A5 5 0 0 1 19 8.95M15.05 1A9 9 0 0 1 23 8.94m-1 7.98v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        </div>
+        <div class="kpi-content">
+            <div class="kpi-label">Total Clicks</div>
         <div class="kpi-value" id="k-clicks">—</div>
         <div class="kpi-sub">Unique: <span id="k-unique">—</span></div>
         <div id="k-clicks-trend" class="kpi-trend flat">—</div>
-    </div>
+        </div>
+        <div class="kpi-sparkline"></div>
+</div>
     <div class="kpi-card green">
-        <div class="kpi-label">Conversions</div>
+        <div class="kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </div>
+        <div class="kpi-content">
+            <div class="kpi-label">Conversions</div>
         <div class="kpi-value" id="k-conv">—</div>
         <div class="kpi-sub">CR: <span id="k-cr">—</span>%</div>
         <div id="k-conv-trend" class="kpi-trend flat">—</div>
-    </div>
+        </div>
+        <div class="kpi-sparkline"></div>
+</div>
     <?php if (Auth::role() === "admin"): ?>
     <div class="kpi-card purple">
-        <div class="kpi-label">Revenue</div>
+        <div class="kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+        </div>
+        <div class="kpi-content">
+            <div class="kpi-label">Revenue</div>
         <div class="kpi-value">$<span id="k-revenue">—</span></div>
         <div class="kpi-sub">Payout: $<span id="k-payout">—</span></div>
         <div id="k-revenue-trend" class="kpi-trend flat">—</div>
-    </div>
+        </div>
+        <div class="kpi-sparkline"></div>
+</div>
     <?php endif; ?>
     <?php if (Auth::role() === "admin"): ?>
     <div class="kpi-card emerald">
-        <div class="kpi-label">Net Profit</div>
+        <div class="kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        </div>
+        <div class="kpi-content">
+            <div class="kpi-label">Net Profit</div>
         <div class="kpi-value" id="k-profit">—</div>
         <div class="kpi-sub">Revenue minus payout</div>
         <div id="k-payout-trend" class="kpi-trend flat">—</div>
-    </div>
+        </div>
+        <div class="kpi-sparkline"></div>
+</div>
     <?php endif; ?>
     <div class="kpi-card teal">
-        <div class="kpi-label">Active Affiliates</div>
+        <div class="kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </div>
+        <div class="kpi-content">
+            <div class="kpi-label">Active Affiliates</div>
         <div class="kpi-value" id="k-affiliates"><?= number_format($totalAffiliates) ?></div>
         <div class="kpi-sub"><span id="k-pending"><?= $pendingAffiliates ?></span> pending approval</div>
-    </div>
+        </div>
+        <div class="kpi-sparkline"></div>
+</div>
     <div class="kpi-card orange">
-        <div class="kpi-label">Active Offers</div>
+        <div class="kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        </div>
+        <div class="kpi-content">
+            <div class="kpi-label">Active Offers</div>
         <div class="kpi-value" id="k-offers"><?= number_format($totalOffers) ?></div>
         <div class="kpi-sub"><?= $totalAdvertisers ?> advertisers</div>
-    </div>
+        </div>
+        <div class="kpi-sparkline"></div>
+</div>
     <div class="kpi-card indigo">
-        <div class="kpi-label">Conversion Rate</div>
+        <div class="kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        </div>
+        <div class="kpi-content">
+            <div class="kpi-label">Conversion Rate</div>
         <div class="kpi-value"><span id="k-cr2">—</span>%</div>
         <div class="kpi-sub">Clicks to conversions</div>
-    </div>
+        </div>
+        <div class="kpi-sparkline"></div>
+</div>
     <div class="kpi-card red">
-        <div class="kpi-label">Fraud Clicks</div>
+        <div class="kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        </div>
+        <div class="kpi-content">
+            <div class="kpi-label">Fraud Clicks</div>
         <div class="kpi-value" id="k-fraud">—</div>
         <div class="kpi-sub"><a href="/admin/fraud" style="color:#94A3B8">View fraud log</a></div>
-    </div>
+        </div>
+        <div class="kpi-sparkline"></div>
+</div>
     <!-- Fraud Conversion % — fraud_score >= 60 ÷ total conversions × 100. Filters
          (date / offer / affiliate / country / device) flow through automatically
          because the API uses the same WHERE builders as the rest of the cards. -->
     <div class="kpi-card red" title="Fraud conversions are conversions with fraud score between 60–100.">
-        <div class="kpi-label">Fraud Conversion %</div>
+        <div class="kpi-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        </div>
+        <div class="kpi-content">
+            <div class="kpi-label">Fraud Conversion %</div>
         <div class="kpi-value"><span id="k-fraud-conv-pct">—</span>%</div>
         <div class="kpi-sub"><span id="k-fraud-conv">—</span> Fraud Conversions &middot; <a href="/admin/fraud-score-report" style="color:#94A3B8">View fraud report</a></div>
         <div id="k-fraud-conv-pct-trend" class="kpi-trend flat">—</div>
-    </div>
+        </div>
+        <div class="kpi-sparkline"></div>
+</div>
 </div>
 
 <?php if ($pendingAffiliates > 0): ?>
