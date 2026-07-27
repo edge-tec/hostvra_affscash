@@ -15,6 +15,9 @@
 .sh-actions{padding:0 16px 14px}
 .sh-balance-card{background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;border-radius:12px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px}
 .sh-balance-amt{font-size:26px;font-weight:800}
+.desc-text.line-clamp-3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.read-more-btn{font-size:11px;color:#4F46E5;background:none;border:none;padding:0;cursor:pointer;font-weight:600;margin-top:4px;}
+.read-more-btn:hover{text-decoration:underline;}
 </style>
 
 <div class="page-header">
@@ -49,7 +52,13 @@
         </a>
         <div class="sh-body">
             <a href="/affiliate/shop?action=product&product_id=<?= (int)$p['id'] ?>" class="sh-title" style="text-decoration:none;color:inherit"><?= Helpers::e($p['name']) ?></a>
-            <div class="sh-desc"><?= Helpers::e(trim(strip_tags((string)($p['description'] ?? '')))) ?></div>
+            <div class="sh-desc">
+                <?php $descText = trim(strip_tags((string)($p['description'] ?? ''))); ?>
+                <div class="desc-text <?= strlen($descText) > 100 ? 'line-clamp-3' : '' ?>"><?= Helpers::e($descText) ?></div>
+                <?php if (strlen($descText) > 100): ?>
+                <button type="button" class="read-more-btn" onclick="toggleDesc(this)">See More</button>
+                <?php endif; ?>
+            </div>
             <div class="sh-meta">
                 <span class="sh-price"><?= number_format((int)$p['price_points']) ?> pts</span>
                 <span class="sh-stock"><?= (int)$p['stock'] === -1 ? 'In stock' : ((int)$p['stock'] . ' left') ?></span>
@@ -71,3 +80,16 @@
 <?php endif; ?>
 
 <?php require BASE_PATH . '/views/layouts/affiliate_footer.php'; ?>
+
+<script>
+function toggleDesc(btn) {
+    const textDiv = btn.previousElementSibling;
+    if (textDiv.classList.contains('line-clamp-3')) {
+        textDiv.classList.remove('line-clamp-3');
+        btn.textContent = 'See Less';
+    } else {
+        textDiv.classList.add('line-clamp-3');
+        btn.textContent = 'See More';
+    }
+}
+</script>

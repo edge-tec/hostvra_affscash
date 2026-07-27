@@ -12,6 +12,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -206,6 +208,7 @@ fun ProductCard(
     onBuyClick: () -> Unit
 ) {
     val neededPoints = product.pricePoints - currentBalance
+    var isExpanded by remember { mutableStateOf(false) }
 
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
@@ -274,6 +277,8 @@ fun ProductCard(
                             )
                             textSize = 12f
                             setTextColor(android.graphics.Color.GRAY)
+                            maxLines = if (isExpanded) Integer.MAX_VALUE else 3
+                            ellipsize = if (isExpanded) null else android.text.TextUtils.TruncateAt.END
                         }
                     },
                     update = { textView ->
@@ -283,8 +288,22 @@ fun ProductCard(
                             CoilImageGetter(textView, imageLoader),
                             null
                         )
+                        textView.maxLines = if (isExpanded) Integer.MAX_VALUE else 3
+                        textView.ellipsize = if (isExpanded) null else android.text.TextUtils.TruncateAt.END
                     }
                 )
+
+                if (product.description.length > 100) {
+                    Text(
+                        text = if (isExpanded) "See Less" else "See More",
+                        color = Color(0xFF4F46E5),
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .clickable { isExpanded = !isExpanded }
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(4.dp))
