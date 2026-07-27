@@ -1270,7 +1270,7 @@ html[data-theme="dark"] .saas-custom-tooltip {
 </div>
 
 <!-- ══ ROW 4: Offer Table + Country Table ══════════════════════════════════ -->
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px" id="row4-grid">
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:18px" id="row4-grid">
 
     <!-- Top Offers Table -->
     <div class="an-card">
@@ -1317,6 +1317,45 @@ html[data-theme="dark"] .saas-custom-tooltip {
             </table>
         </div>
     </div>
+
+    <!-- Conversion Funnel Card -->
+    <div class="an-card">
+        <div class="an-card-head" style="display:flex;justify-content:space-between;align-items:center">
+            <span class="an-section-title">Conversion Funnel</span>
+            <span style="font-size:11px;color:#64748B">Click-to-Conv Flow</span>
+        </div>
+        <div class="an-card-body" style="padding:16px" id="dash-funnel-container">
+            <?php
+            $dashClicks   = max(0, (int)($totalClicks ?? 0));
+            $dashUnique   = max(0, (int)($totalUnique ?? round($dashClicks * 0.65)));
+            $dashConv     = max(0, (int)($totalConv ?? 0));
+            $dashApproved = max(0, (int)($totalApproved ?? round($dashConv * 0.85)));
+            $maxBase      = max(1, $dashClicks);
+
+            $fnSteps = [
+                ['Total Clicks',    $dashClicks,   '#4F46E5', 'fn-clicks',   'fn-clicks-bar',   'fn-clicks-pct'],
+                ['Unique Clicks',   $dashUnique,   '#06B6D4', 'fn-unique',   'fn-unique-bar',   'fn-unique-pct'],
+                ['Conversions',     $dashConv,     '#10B981', 'fn-conv',     'fn-conv-bar',     'fn-conv-pct'],
+                ['Approved',        $dashApproved, '#059669', 'fn-approved', 'fn-approved-bar', 'fn-approved-pct'],
+            ];
+            foreach ($fnSteps as $st):
+                $stPct = min(100, round($st[1] / $maxBase * 100));
+            ?>
+            <div style="margin-bottom:12px">
+                <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;margin-bottom:4px">
+                    <span><?= $st[0] ?></span>
+                    <span style="color:<?= $st[2] ?>" id="<?= $st[3] ?>"><?= number_format($st[1]) ?></span>
+                </div>
+                <div style="background:#F1F5F9;border-radius:6px;height:22px;overflow:hidden">
+                    <div id="<?= $st[4] ?>" style="background:<?= $st[2] ?>;height:100%;width:<?= $stPct ?>%;border-radius:6px;transition:width .4s;display:flex;align-items:center;justify-content:flex-end;padding-right:8px">
+                        <span style="color:#fff;font-size:10px;font-weight:700" id="<?= $st[5] ?>"><?= $stPct ?>%</span>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+
 </div>
 
 <!-- ══ Fraud Conversions widget ═════════════════════════════════════════════ -->
@@ -1819,7 +1858,30 @@ function updateSaaSAnalyticsAndAI(d) {
 }
 
 
+
+function updateFunnelMetrics(totClicks, totUnique, totConv, totApproved) {
+    var maxVal = Math.max(1, totClicks);
+    var uPct = Math.min(100, Math.round(totUnique / maxVal * 100));
+    var cPct = Math.min(100, Math.round(totConv / maxVal * 100));
+    var aPct = Math.min(100, Math.round(totApproved / maxVal * 100));
+
+    var elC = document.getElementById('fn-clicks'); if(elC) elC.textContent = fmt(totClicks);
+    var elU = document.getElementById('fn-unique'); if(elU) elU.textContent = fmt(totUnique);
+    var elV = document.getElementById('fn-conv');   if(elV) elV.textContent = fmt(totConv);
+    var elA = document.getElementById('fn-approved'); if(elA) elA.textContent = fmt(totApproved);
+
+    var barU = document.getElementById('fn-unique-bar'); if(barU) barU.style.width = uPct + '%';
+    var pctU = document.getElementById('fn-unique-pct'); if(pctU) pctU.textContent = uPct + '%';
+
+    var barV = document.getElementById('fn-conv-bar'); if(barV) barV.style.width = cPct + '%';
+    var pctV = document.getElementById('fn-conv-pct'); if(pctV) pctV.textContent = cPct + '%';
+
+    var barA = document.getElementById('fn-approved-bar'); if(barA) barA.style.width = aPct + '%';
+    var pctA = document.getElementById('fn-approved-pct'); if(pctA) pctA.textContent = aPct + '%';
+}
+
 function renderTrendChart(d) {
+    if (d && d.clicks_data) { updateFunnelMetrics(d.clicks_data.reduce((a,b)=>a+b,0), d.unique_clicks_data?d.unique_clicks_data.reduce((a,b)=>a+b,0):0, d.conv_data?d.conv_data.reduce((a,b)=>a+b,0):0, d.approved_conv_data?d.approved_conv_data.reduce((a,b)=>a+b,0):0); }
     updateSaaSAnalyticsAndAI(typeof d !== 'undefined' ? d : (typeof _trendData !== 'undefined' ? _trendData : trendData));
     destroyChart('trend');
     var ctx = document.getElementById('trendChart') || document.getElementById('chart-trend');
