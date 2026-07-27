@@ -21,7 +21,7 @@
 
 /* ── Button ── */
 .gpt-btn { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:13px; background:linear-gradient(135deg,#4F46E5,#7C3AED); color:#fff; border:none; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; transition:.15s; margin-top:18px; }
-.gpt-btn:hover:not(:disabled) { background:linear-gradient(135deg,#4338CA,#6D28D9); transform:translateY(-1px); box-shadow:0 4px 12px rgba(79,70,229,.35); }
+.gpt-btn:hover:not(:disabled) { background:linear-gradient(135deg,#4338CA,#6D28D9);  box-shadow:0 4px 12px rgba(79,70,229,.35); }
 .gpt-btn:disabled { opacity:.6; cursor:not-allowed; transform:none; box-shadow:none; }
 
 /* ── Spinner ── */

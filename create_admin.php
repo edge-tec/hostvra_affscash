@@ -145,7 +145,7 @@ label{display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5
 input{width:100%;padding:10px 12px;border:1.5px solid #E2E8F0;border-radius:8px;font-size:14px;color:#1F2937;transition:.2s;outline:none}
 input:focus{border-color:#4F46E5;box-shadow:0 0 0 3px rgba(79,70,229,.08)}
 .btn{width:100%;padding:13px;background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;transition:all .2s}
-.btn:hover{opacity:.9;transform:translateY(-1px)}
+.btn:hover{opacity:.9;}
 .login-link{display:block;text-align:center;margin-top:16px;padding:12px;background:#F0FDF4;border:1px solid #A7F3D0;border-radius:10px;font-size:14px;color:#065F46;text-decoration:none;font-weight:600}
 .delete-note{margin-top:14px;text-align:center;font-size:12px;color:#EF4444;font-weight:600}
 </style>

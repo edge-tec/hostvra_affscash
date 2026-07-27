@@ -24,7 +24,7 @@ em{font-style:normal;background:var(--grad-brand);-webkit-background-clip:text;-
 .nav-links a{color:var(--text);font-size:13px;font-weight:500;padding:7px 11px;border-radius:8px;transition:all .22s}
 .nav-links a:hover,.nav-links a.active{background:rgba(232,25,122,.07);color:var(--pink)}
 .nav-links .btn-login{background:var(--grad-brand);color:#fff !important;padding:8px 20px;border-radius:8px;font-weight:600;box-shadow:0 4px 16px rgba(232,25,122,.3);-webkit-text-fill-color:#fff !important}
-.nav-links .btn-login:hover{opacity:.88;transform:translateY(-1px)}
+.nav-links .btn-login:hover{opacity:.88;}
 .nav-links .btn-signup{border:2px solid transparent;background:linear-gradient(white,white) padding-box,var(--grad-brand) border-box;color:var(--pink) !important;padding:7px 18px;border-radius:8px;font-weight:600}
 .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;background:none;border:none}
 .hamburger span{display:block;width:24px;height:2px;background:var(--text);border-radius:2px;transition:all .3s}
@@ -47,7 +47,7 @@ em{font-style:normal;background:var(--grad-brand);-webkit-background-clip:text;-
 .form-control-custom{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;color:var(--text);background:#fff;outline:none;transition:border .2s,box-shadow .2s;font-family:'DM Sans',sans-serif}
 .form-control-custom:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(124,58,237,.12)}
 .btn-primary-custom{display:inline-flex;align-items:center;gap:8px;background:var(--grad-brand);color:#fff;font-weight:700;padding:13px 28px;border-radius:10px;border:none;cursor:pointer;font-size:14px;font-family:'DM Sans',sans-serif;transition:all .22s;text-decoration:none;-webkit-text-fill-color:#fff}
-.btn-primary-custom:hover{opacity:.88;transform:translateY(-1px);box-shadow:0 6px 24px rgba(232,25,122,.3);color:#fff}
+.btn-primary-custom:hover{opacity:.88;box-shadow:0 6px 24px rgba(232,25,122,.3);color:#fff}
 .btn-outline-custom{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--violet);color:var(--violet);font-weight:600;padding:11px 24px;border-radius:10px;background:transparent;cursor:pointer;font-size:14px;font-family:'DM Sans',sans-serif;transition:all .22s;text-decoration:none}
 .btn-outline-custom:hover{background:var(--violet);color:#fff;-webkit-text-fill-color:#fff}
 .eyebrow{font-size:13px;font-weight:700;color:var(--pink);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px}

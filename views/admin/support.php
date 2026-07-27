@@ -64,8 +64,8 @@
 .ac-input-row textarea{flex:1;resize:none;font-size:13px;line-height:1.5;border-radius:12px;border:1px solid #E2E8F0;padding:12px 14px;outline:none;transition:border-color .2s;min-height:44px;max-height:120px}
 .ac-input-row textarea:focus{border-color:#4F46E5;box-shadow:0 0 0 3px rgba(79,70,229,.08)}
 .ac-send-btn{height:44px;padding:0 20px;border-radius:12px;background:linear-gradient(135deg,#4F46E5,#6366F1);color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:transform .1s,box-shadow .15s;white-space:nowrap}
-.ac-send-btn:hover{box-shadow:0 4px 12px rgba(79,70,229,.3);transform:translateY(-1px)}
-.ac-send-btn:active{transform:translateY(0)}
+.ac-send-btn:hover{box-shadow:0 4px 12px rgba(79,70,229,.3);}
+.ac-send-btn:active{}
 .ac-file-btn{height:44px;width:44px;border-radius:12px;background:#F1F5F9;border:1px solid #E2E8F0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s;flex-shrink:0}
 .ac-file-btn:hover{background:#EEF2FF;border-color:#C7D2FE}
 .ac-translate-group{display:flex;align-items:center;background:#F1F5F9;border:1px solid #E2E8F0;border-radius:10px;overflow:hidden;height:44px;flex-shrink:0}

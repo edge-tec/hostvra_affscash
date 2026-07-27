@@ -308,7 +308,7 @@ a:hover { text-decoration: underline; }
 }
 .stat-card:hover {
     box-shadow: 0 20px 35px -8px rgba(124, 58, 237, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.95);
-    transform: translateY(-5px) scale(1.015);
+    
     border-color: rgba(124, 58, 237, 0.35);
 }
 .stat-label { font-size: 11.5px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: .07em; }
@@ -325,7 +325,7 @@ a:hover { text-decoration: underline; }
     transition: transform 0.2s ease;
 }
 .stat-card:hover .stat-icon {
-    transform: scale(1.08) rotate(3deg);
+    
 }
 .stat-icon.blue   { background: linear-gradient(135deg, #EFF6FF, #DBEAFE); color: #2563EB; border: 1px solid #BFDBFE; }
 .stat-icon.green  { background: linear-gradient(135deg, #F0FDF4, #DCFCE7); color: #16A34A; border: 1px solid #BBF7D0; }
@@ -765,11 +765,11 @@ tbody tr.no-data td,
 .btn-primary:hover {
     background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
     color: #fff;
-    transform: translateY(-2px);
+    
     box-shadow: 0 10px 24px rgba(124, 58, 237, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 .btn-primary:active {
-    transform: translateY(1px);
+    
     box-shadow: 0 3px 10px rgba(124, 58, 237, 0.3);
 }
 
@@ -783,7 +783,7 @@ tbody tr.no-data td,
     background: #ffffff;
     border-color: #94a3b8;
     color: var(--primary);
-    transform: translateY(-1px);
+    
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
@@ -795,7 +795,7 @@ tbody tr.no-data td,
 .btn-success:hover {
     background: linear-gradient(135deg, #059669 0%, #047857 100%);
     color: #fff;
-    transform: translateY(-2px);
+    
     box-shadow: 0 10px 24px rgba(16, 185, 129, 0.48);
 }
 
@@ -807,7 +807,7 @@ tbody tr.no-data td,
 .btn-danger:hover {
     background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
     color: #fff;
-    transform: translateY(-2px);
+    
     box-shadow: 0 10px 24px rgba(239, 68, 68, 0.48);
 }
 
@@ -819,7 +819,7 @@ tbody tr.no-data td,
 .btn-warning:hover {
     background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
     color: #fff;
-    transform: translateY(-2px);
+    
     box-shadow: 0 10px 24px rgba(245, 158, 11, 0.48);
 }
 
@@ -980,7 +980,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
     background: #ffffff !important;
     border-color: #94a3b8 !important;
     color: #0f172a !important;
-    transform: translateY(-1.5px) !important;
+    
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 1) !important;
 }
 
@@ -999,7 +999,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
 .copy-group button[onclick*="openGenModal"]:hover {
     background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
     color: #ffffff !important;
-    transform: translateY(-2px) !important;
+    
     box-shadow: 0 7px 20px rgba(14, 165, 233, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
 }
 
@@ -1018,13 +1018,13 @@ textarea.form-control { min-height: 100px; resize: vertical; }
 .copy-group button[onclick*="GenerateShort"]:hover {
     background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%) !important;
     color: #ffffff !important;
-    transform: translateY(-2px) !important;
+    
     box-shadow: 0 7px 20px rgba(124, 58, 237, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
 }
 
 .copy-group .btn:active,
 .copy-group button:active {
-    transform: translateY(1px) !important;
+    
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
 }
 
@@ -2755,7 +2755,7 @@ html, body { max-width: 100vw; overflow-x: hidden; }
     background: var(--primary);
     color: #FFFFFF;
     border-color: var(--primary);
-    transform: rotate(30deg);
+    
 }
 .galaxy-settings-panel {
     position: fixed;
@@ -3239,7 +3239,7 @@ html[data-theme="dark"] .galaxy-glow-btn:hover {
     transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease !important;
 }
 .smartlink-card:hover {
-    transform: translateY(-4px) !important;
+    
     box-shadow: 0 12px 30px -4px rgba(124, 58, 237, 0.16), 0 4px 12px -2px rgba(0, 0, 0, 0.05) !important;
     border-color: rgba(124, 58, 237, 0.35) !important;
 }
@@ -3298,7 +3298,7 @@ button[onclick*="showOfferDetailsModal"]:hover {
 }
 
 .offer-3d-card:hover {
-    transform: translateY(-7px) scale(1.015) !important;
+    
     box-shadow: 0 22px 40px -10px rgba(124, 58, 237, 0.2), 0 14px 20px -8px rgba(0, 0, 0, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
     border-color: rgba(124, 58, 237, 0.4) !important;
     z-index: 2 !important;
@@ -3311,13 +3311,13 @@ button[onclick*="showOfferDetailsModal"]:hover {
 
 .offer-3d-card button.btn-primary:hover,
 .offer-3d-card .btn-primary:hover {
-    transform: translateY(-2px) !important;
+    
     box-shadow: 0 8px 22px rgba(124, 58, 237, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
 }
 
 .offer-3d-card button.btn-primary:active,
 .offer-3d-card .btn-primary:active {
-    transform: translateY(1px) !important;
+    
     box-shadow: 0 3px 10px rgba(124, 58, 237, 0.3) !important;
 }
 
@@ -3378,7 +3378,7 @@ html[data-theme="dark"] .modal-3d-box {
 }
 
 .card:hover, .stat-card:hover, .kpi-card:hover, .chart-card:hover, .metric-card:hover {
-    transform: translateY(-5px) scale(1.01) !important;
+    
     box-shadow: 0 22px 40px -10px rgba(99, 102, 241, 0.22), inset 0 1px 0 rgba(255, 255, 255, 1) !important;
     border-color: rgba(99, 102, 241, 0.4) !important;
 }
@@ -3389,7 +3389,7 @@ html[data-theme="dark"] .modal-3d-box {
     transition: transform 0.25s ease !important;
 }
 .stat-card:hover .stat-icon, .kpi-card:hover .kpi-icon {
-    transform: scale(1.12) rotate(4deg) !important;
+    
 }
 
 .btn, .btn-primary, .btn-secondary, .btn-outline {
@@ -3406,12 +3406,12 @@ html[data-theme="dark"] .modal-3d-box {
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px) scale(1.02) !important;
+    
     box-shadow: 0 8px 22px -4px rgba(99, 102, 241, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
 }
 
 .btn-primary:active {
-    transform: translateY(1px) scale(0.98) !important;
+    
     box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3) !important;
 }
 

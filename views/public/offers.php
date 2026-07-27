@@ -69,7 +69,7 @@ require BASE_PATH . '/views/layouts/public_top.php';
     transition: transform 0.2s, box-shadow 0.2s;
 }
 .filter-bar button:hover {
-    transform: translateY(-2px);
+    
     box-shadow: 0 5px 15px rgba(232, 25, 122, 0.4);
 }
 .offers-grid {
@@ -92,7 +92,7 @@ require BASE_PATH . '/views/layouts/public_top.php';
     transform: perspective(1000px) rotateX(1deg);
 }
 .offer-card:hover {
-    transform: translateY(-8px) scale(1.02) perspective(1000px) rotateX(0deg);
+    
     border-color: rgba(124, 58, 237, 0.3);
     box-shadow: 0 20px 45px rgba(124, 58, 237, 0.25);
 }

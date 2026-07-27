@@ -226,7 +226,7 @@ html[data-theme="dark"] .an-header {
     content:''; position:absolute; top:-50%; right:-30%; width:120px; height:200%;
     border-radius:50%; opacity:.06; filter:blur(40px); transition:opacity .3s; pointer-events:none;
 }
-.an-kpi-card:hover { transform:translateY(-4px); box-shadow:0 20px 40px rgba(0,0,0,.08); }
+.an-kpi-card:hover {  box-shadow:0 20px 40px rgba(0,0,0,.08); }
 .an-kpi-card:hover::after { opacity:.12; }
 .an-kpi-card.blue::before   { background:linear-gradient(180deg,#3B82F6,#1D4ED8); }
 .an-kpi-card.blue::after    { background:#3B82F6; }
@@ -256,7 +256,7 @@ html[data-theme="dark"] .an-kpi-card { background:rgba(30,41,59,.85); border:1px
 }
 .an-kpi-card::before { content:''; position:absolute; bottom:0; left:10%; right:10%; height:3px; border-radius:0 0 18px 18px; filter:blur(1px); animation:neon-pulse 3s ease-in-out infinite; }
 .an-kpi-card::after { content:''; position:absolute; top:12px; right:14px; width:38px; height:38px; border-radius:12px; opacity:.10; }
-.an-kpi-card:hover { transform:translateY(-6px) scale(1.01); box-shadow:0 24px 48px rgba(0,0,0,.10); }
+.an-kpi-card:hover {  box-shadow:0 24px 48px rgba(0,0,0,.10); }
 .an-kpi-card.blue::before   { background:linear-gradient(90deg,transparent,#3B82F6,transparent); }
 .an-kpi-card.blue::after    { background:#3B82F6; }
 .an-kpi-card.cyan::before   { background:linear-gradient(90deg,transparent,#06B6D4,transparent); }
@@ -280,7 +280,7 @@ html[data-theme="dark"] .an-kpi-card { background:rgba(15,23,42,.65); border-col
 }
 .an-kpi-card::before { content:''; position:absolute; inset:0; border-radius:18px; opacity:.08; background:linear-gradient(135deg,#fff 0%,transparent 50%); pointer-events:none; }
 .an-kpi-card::after { content:''; position:absolute; top:-20px; right:-20px; width:80px; height:80px; border-radius:50%; opacity:.15; filter:blur(20px); }
-.an-kpi-card:hover { transform:translateY(-5px) scale(1.015); box-shadow:0 30px 60px rgba(0,0,0,.2); }
+.an-kpi-card:hover {  box-shadow:0 30px 60px rgba(0,0,0,.2); }
 .an-kpi-card.blue   { background:linear-gradient(135deg,#1E3A5F,#2563EB); box-shadow:0 8px 24px rgba(37,99,235,.2); }
 .an-kpi-card.blue::after   { background:#60A5FA; }
 .an-kpi-card.cyan   { background:linear-gradient(135deg,#134E4A,#0891B2); box-shadow:0 8px 24px rgba(8,145,178,.2); }
@@ -313,7 +313,7 @@ html[data-theme="dark"] .an-kpi-card { background:rgba(15,23,42,.65); border-col
     overflow: hidden;
     transition: box-shadow .2s, transform .2s, background-color .2s, border-color .2s;
 }
-.an-kpi-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.an-kpi-card:hover { box-shadow: var(--shadow-md);  }
 .an-kpi-card::before {
     content: '';
     position: absolute;

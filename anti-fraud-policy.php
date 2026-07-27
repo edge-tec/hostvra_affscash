@@ -75,7 +75,7 @@ nav.scrolled{box-shadow:0 4px 20px rgba(0,0,0,.05)}
 .btn-ghost:hover{border-color:var(--p);color:var(--p);background:#fff}
 .btn-primary{background:var(--grad-primary);color:#fff;
   box-shadow:0 4px 20px rgba(124,58,237,.25)}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(124,58,237,.35)}
+.btn-primary:hover{box-shadow:0 8px 32px rgba(124,58,237,.35)}
 .landing-logo-img{display:block}
 
 /* ── HERO / PAGE HEADER ── */

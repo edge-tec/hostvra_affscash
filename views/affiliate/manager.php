@@ -113,10 +113,10 @@
 .mgr-contact-btn:hover {
     border-color: #A5B4FC;
     background: #F5F6FF;
-    transform: translateY(-2px);
+    
     box-shadow: 0 6px 20px rgba(79,70,229,.12);
 }
-.mgr-contact-btn:active { transform: translateY(0); }
+.mgr-contact-btn:active {  }
 
 .mgr-contact-icon {
     width: 42px; height: 42px;
@@ -150,7 +150,7 @@
 }
 .mgr-contact-btn:hover .mgr-contact-arrow {
     color: #6366F1;
-    transform: translateX(3px);
+    
 }
 
 /* Info card */

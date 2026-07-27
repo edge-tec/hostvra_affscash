@@ -146,7 +146,7 @@ html[data-theme="dark"] .widget {
 html[data-theme="dark"] .stat-card:hover {
     background: var(--surface-2) !important;
     border-color: var(--border-strong) !important;
-    transform: translateY(-1px);
+    
     box-shadow: var(--shadow-md);
 }
 html[data-theme="dark"] .card-header,
@@ -282,9 +282,9 @@ html[data-theme="dark"] .btn-primary {
 html[data-theme="dark"] .btn-primary:hover {
     background: linear-gradient(135deg, #818CF8 0%, #6366F1 100%);
     box-shadow: 0 6px 18px rgba(99,102,241,.40), inset 0 1px 0 rgba(255,255,255,.15);
-    transform: translateY(-1px);
+    
 }
-html[data-theme="dark"] .btn-primary:active { transform: translateY(0); box-shadow: 0 2px 6px rgba(99,102,241,.30); }
+html[data-theme="dark"] .btn-primary:active {  box-shadow: 0 2px 6px rgba(99,102,241,.30); }
 html[data-theme="dark"] .btn-primary:disabled,
 html[data-theme="dark"] .btn-primary.disabled,
 html[data-theme="dark"] .btn:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; transform: none; }
@@ -353,7 +353,7 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: #2E3B66; }
     transition: background-color .15s, color .15s, border-color .15s, box-shadow .15s, transform .12s;
 }
 .theme-toggle:hover { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
-.theme-toggle:active { transform: scale(.96); }
+.theme-toggle:active {  }
 .theme-toggle svg { width: 18px; height: 18px; }
 
 /* Show only the icon matching the active theme. */

@@ -10,7 +10,7 @@
 
 .ar-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:24px}
 .ar-card{background:#fff;border:1px solid #E5E7EB;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s;position:relative}
-.ar-card:hover{transform:translateY(-2px);box-shadow:0 14px 32px -18px rgba(15,23,42,.2)}
+.ar-card:hover{box-shadow:0 14px 32px -18px rgba(15,23,42,.2)}
 .ar-img{aspect-ratio:16/9;background:#F1F5F9;background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;color:#94A3B8;font-size:34px;position:relative}
 .ar-badge{position:absolute;top:10px;left:10px;display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:99px;font-size:10.5px;font-weight:700;color:#fff;letter-spacing:.04em;text-transform:uppercase;box-shadow:0 4px 12px rgba(0,0,0,.18)}
 .ar-vis{position:absolute;top:10px;right:10px;background:rgba(15,23,42,.7);color:#fff;padding:3px 8px;border-radius:99px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}

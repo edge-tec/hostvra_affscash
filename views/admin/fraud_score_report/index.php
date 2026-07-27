@@ -183,7 +183,7 @@
             </button>
         </div>
     </div>
-    <div class="table-wrap">
+    <div class="table-wrap" style="overflow-x: auto;">
         <table>
             <thead>
                 <tr>

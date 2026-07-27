@@ -308,7 +308,7 @@ body {
     transition: transform .2s, box-shadow .2s;
     display: block;
 }
-.contact-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(15,118,110,.12); }
+.contact-card:hover {  box-shadow: 0 8px 24px rgba(15,118,110,.12); }
 .contact-card-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--teal); margin-bottom: 6px; }
 .contact-card-value { font-size: 14px; font-weight: 600; color: var(--ink); word-break: break-all; }
 

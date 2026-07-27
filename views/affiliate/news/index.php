@@ -8,7 +8,7 @@
     display:flex; flex-direction:column; cursor:pointer;
     text-decoration:none; color:inherit;
 }
-.news-card:hover { border-color:#C7D2FE; box-shadow:0 8px 24px rgba(79,70,229,.1); transform:translateY(-2px); text-decoration:none; }
+.news-card:hover { border-color:#C7D2FE; box-shadow:0 8px 24px rgba(79,70,229,.1);  text-decoration:none; }
 .news-card.unread { border-color:#C7D2FE; }
 .news-card-img { height:180px; overflow:hidden; position:relative; background:linear-gradient(135deg,#4F46E5,#7C3AED); }
 .news-card-img img { width:100%; height:100%; object-fit:cover; }

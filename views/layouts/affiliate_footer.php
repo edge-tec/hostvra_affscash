@@ -117,7 +117,7 @@ if (!$_isOnSupportPage):
 ?>
 <style>
 .lcw-launcher{position:fixed;bottom:20px;right:20px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;border:none;cursor:pointer;box-shadow:0 8px 24px rgba(79,70,229,.4);display:flex;align-items:center;justify-content:center;z-index:9998;transition:transform .15s}
-.lcw-launcher:hover{transform:scale(1.05)}
+.lcw-launcher:hover{}
 .lcw-launcher svg{width:26px;height:26px}
 .lcw-badge{position:absolute;top:-2px;right:-2px;background:#EF4444;color:#fff;border-radius:10px;min-width:20px;height:20px;font-size:11px;font-weight:700;display:none;align-items:center;justify-content:center;padding:0 5px;border:2px solid #fff}
 .lcw-panel{position:fixed;bottom:88px;right:20px;width:340px;max-width:calc(100vw - 40px);height:480px;max-height:calc(100vh - 120px);background:#fff;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.25);display:none;flex-direction:column;overflow:hidden;z-index:9998;border:1px solid #E2E8F0}

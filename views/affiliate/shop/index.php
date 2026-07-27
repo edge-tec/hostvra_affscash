@@ -3,7 +3,7 @@
 <style>
 .sh-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;}
 .sh-card{background:#fff;border:1px solid #E5E7EB;border-radius:14px;overflow:hidden;transition:transform .15s,box-shadow .15s;display:flex;flex-direction:column}
-.sh-card:hover{transform:translateY(-2px);box-shadow:0 12px 28px -16px rgba(15,23,42,.18);}
+.sh-card:hover{box-shadow:0 12px 28px -16px rgba(15,23,42,.18);}
 .sh-img{aspect-ratio:4/3;background:#F1F5F9;display:flex;align-items:center;justify-content:center;font-size:32px;color:#94A3B8}
 .sh-img img{width:100%;height:100%;object-fit:cover}
 .sh-body{padding:14px 16px;display:flex;flex-direction:column;flex:1}

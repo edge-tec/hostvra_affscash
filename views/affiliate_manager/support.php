@@ -59,8 +59,8 @@
 .mc-input-row textarea{flex:1;resize:none;font-size:13px;line-height:1.5;border-radius:12px;border:1px solid #E2E8F0;padding:12px 14px;outline:none;transition:border-color .2s;min-height:44px;max-height:120px}
 .mc-input-row textarea:focus{border-color:#0EA5E9;box-shadow:0 0 0 3px rgba(14,165,233,.08)}
 .mc-send-btn{height:44px;padding:0 20px;border-radius:12px;background:linear-gradient(135deg,#0EA5E9,#3B82F6);color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:transform .1s,box-shadow .15s;white-space:nowrap}
-.mc-send-btn:hover{box-shadow:0 4px 12px rgba(14,165,233,.3);transform:translateY(-1px)}
-.mc-send-btn:active{transform:translateY(0)}
+.mc-send-btn:hover{box-shadow:0 4px 12px rgba(14,165,233,.3);}
+.mc-send-btn:active{}
 .mc-file-btn{height:44px;width:44px;border-radius:12px;background:#F1F5F9;border:1px solid #E2E8F0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s;flex-shrink:0}
 .mc-file-btn:hover{background:#E0F2FE;border-color:#BAE6FD}
 .mc-translate-group{display:flex;align-items:center;background:#F1F5F9;border:1px solid #E2E8F0;border-radius:10px;overflow:hidden;height:44px;flex-shrink:0}

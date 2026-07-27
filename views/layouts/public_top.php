@@ -102,7 +102,7 @@
     }
     .nav-links .btn-login:hover {
       opacity: .88 !important;
-      transform: translateY(-1px) !important;
+      
     }
     .nav-links .btn-signup {
       border: 2px solid transparent !important;

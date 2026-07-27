@@ -41,7 +41,7 @@
 .ap-body{padding:18px 20px;}
 .ap-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
 .ap-kpi{position:relative;overflow:hidden;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;transition:transform .2s,box-shadow .2s;}
-.ap-kpi:hover{transform:translateY(-2px);box-shadow:0 8px 20px -12px rgba(0,0,0,.15);}
+.ap-kpi:hover{box-shadow:0 8px 20px -12px rgba(0,0,0,.15);}
 .ap-kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--ap-tint,#0891B2);}
 .ap-kpi-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
 .ap-kpi-lbl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);}

@@ -147,7 +147,7 @@ if ($geoStr === '' || $geoStr === 'Global') {
     transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 .sidebar-box:hover {
-    transform: translateY(-5px) scale(1.02) perspective(1000px) rotateX(0deg);
+    
     border-color: rgba(124, 58, 237, 0.3);
 }
 .sidebar-box h3 {
@@ -194,7 +194,7 @@ if ($geoStr === '' || $geoStr === 'Global') {
     transition: transform 0.2s, box-shadow 0.2s;
 }
 .cta-button:hover {
-    transform: translateY(-2px);
+    
     box-shadow: 0 5px 15px rgba(232, 25, 122, 0.4);
 }
 @media (max-width: 768px) {

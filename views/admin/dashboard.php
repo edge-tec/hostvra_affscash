@@ -199,7 +199,7 @@ select.dash-f-input{
 }
 .dash-f-input option{background:#1E1B4B;color:#fff;}
 .dash-btn-apply{background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;border:none;border-radius:10px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .15s,transform .15s,box-shadow .15s;white-space:nowrap;box-shadow:0 6px 18px rgba(124,58,237,.35);}
-.dash-btn-apply:hover{opacity:.92;transform:translateY(-1px);box-shadow:0 10px 26px rgba(124,58,237,.45);}
+.dash-btn-apply:hover{opacity:.92;box-shadow:0 10px 26px rgba(124,58,237,.45);}
 .dash-btn-reset{
     background:rgba(255,255,255,.05);
     -webkit-backdrop-filter:blur(14px);
@@ -275,7 +275,7 @@ select.dash-f-input{
     content:'';position:absolute;top:-50%;right:-30%;width:120px;height:200%;
     border-radius:50%;opacity:.06;filter:blur(40px);transition:opacity .3s;pointer-events:none;
 }
-.kpi-card:hover{transform:translateY(-4px);box-shadow:0 20px 40px rgba(0,0,0,.08);}
+.kpi-card:hover{box-shadow:0 20px 40px rgba(0,0,0,.08);}
 .kpi-card:hover::after{opacity:.12;}
 .kpi-card.blue::before{background:linear-gradient(180deg,#3B82F6,#1D4ED8);}
 .kpi-card.blue::after{background:#3B82F6;}
@@ -315,7 +315,7 @@ html[data-theme="dark"] .kpi-card:hover{box-shadow:0 20px 40px rgba(0,0,0,.25);}
     content:'';position:absolute;top:12px;right:14px;width:38px;height:38px;
     border-radius:12px;opacity:.10;
 }
-.kpi-card:hover{transform:translateY(-6px) scale(1.01);box-shadow:0 24px 48px rgba(0,0,0,.10);}
+.kpi-card:hover{box-shadow:0 24px 48px rgba(0,0,0,.10);}
 .kpi-card.blue::before{background:linear-gradient(90deg,transparent,#3B82F6,transparent);}
 .kpi-card.blue::after{background:#3B82F6;}
 .kpi-card.green::before{background:linear-gradient(90deg,transparent,#10B981,transparent);}
@@ -356,7 +356,7 @@ html[data-theme="dark"] .kpi-card:hover{box-shadow:0 24px 48px rgba(0,0,0,.35);}
 .kpi-card::after{
     content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:.15;filter:blur(20px);
 }
-.kpi-card:hover{transform:translateY(-5px) scale(1.015);box-shadow:0 30px 60px rgba(0,0,0,.2);}
+.kpi-card:hover{box-shadow:0 30px 60px rgba(0,0,0,.2);}
 .kpi-card.blue{background:linear-gradient(135deg,#1E3A5F,#2563EB);box-shadow:0 8px 24px rgba(37,99,235,.2);}
 .kpi-card.blue::after{background:#60A5FA;}
 .kpi-card.green{background:linear-gradient(135deg,#064E3B,#059669);box-shadow:0 8px 24px rgba(5,150,105,.2);}
