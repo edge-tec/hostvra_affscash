@@ -577,8 +577,25 @@ const convStatus   = <?= jsArr(array_column($convByStatus,'status')) ?>;
 const convStatusCnt= <?= jsArr(array_map('intval',array_column($convByStatus,'cnt'))) ?>;
 
 // ── Charts (wrapped in DOMContentLoaded so Chart.js deferred script is ready) ─
+
+function ensureChartJs(cb) {
+    if (typeof Chart !== 'undefined') { cb(); return; }
+    console.warn('[Analytics] Chart.js not present, dynamically injecting fallback...');
+    var s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
+    s.onload = cb;
+    s.onerror = function() {
+        var s2 = document.createElement('script');
+        s2.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js';
+        s2.onload = cb;
+        document.head.appendChild(s2);
+    };
+    document.head.appendChild(s);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-if (typeof Chart === 'undefined') { console.error('Chart.js failed to load'); return; }
+  ensureChartJs(function() {
+// Chart.js guaranteed by ensureChartJs
 mk('clickTrend', { type:'bar', data:{ labels:trendLabels, datasets:[
     { label:'Total Clicks', data:trendClicks, backgroundColor:alpha(COLORS[0],0.75), borderColor:COLORS[0], borderRadius:4, maxBarThickness:32 },
     { label:'Fraud Clicks', data:trendFraud,  backgroundColor:alpha(COLORS[3],0.75), borderColor:COLORS[3], borderRadius:4, maxBarThickness:32 },
@@ -903,6 +920,7 @@ mk('browserChart', { type:'doughnut', data:{ labels:finalBrLabels, datasets:[{
 // DataTable
 $.fn.dataTable.ext.errMode='none';
 $(function(){ $('#tbl-offers-an').length && $('#tbl-offers-an').DataTable({destroy:true,pageLength:10,order:[[7,'desc']],scrollX:true,autoWidth:false,language:{search:'Search:',lengthMenu:'Show _MENU_',emptyTable:'No data'}}); });
+  }); // end ensureChartJs
 }); // end DOMContentLoaded
 </script>
 
