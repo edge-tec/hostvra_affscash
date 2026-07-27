@@ -88,30 +88,89 @@ $_tzOptions = [
 
 <style>
 <?php $bannerStyle = Config::get('config', 'app.dashboard_banner_style') ?? (Config::get('config', 'app.transparent_dashboard') === '1' ? 'transparent' : 'glass_purple'); ?>
-<?php $cardStyle = Config::get('config', 'app.dashboard_card_style') ?? 'aurora'; ?>
-/* ── Dashboard Header + Filter ───────────────────────────────────────── */
-.dash-header{
-    <?php if ($bannerStyle === 'transparent'): ?>
-    background:transparent;
-    padding:10px 0;
-    <?php elseif ($bannerStyle === 'glass'): ?>
-    background:rgba(255,255,255,.55);
-    -webkit-backdrop-filter:blur(16px) saturate(180%);
-            backdrop-filter:blur(16px) saturate(180%);
-    border:1px solid rgba(255,255,255,.65);
-    border-radius:14px;padding:22px 26px;
-    box-shadow:0 8px 32px rgba(31,38,135,.15);
-    <?php elseif ($bannerStyle === 'glass_purple'): ?>
-    background:linear-gradient(135deg, rgba(30,27,75,0.85) 0%, rgba(49,46,129,0.85) 50%, rgba(76,29,149,0.85) 100%);
-    -webkit-backdrop-filter:blur(20px) saturate(180%);
-            backdrop-filter:blur(20px) saturate(180%);
-    border:1px solid rgba(255,255,255,0.15);
-    border-radius:14px;padding:22px 26px;
-    box-shadow:0 8px 32px rgba(31,38,135,0.25);
-    <?php else: ?>
-    background:linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#4C1D95 100%);
-    border-radius:14px;padding:22px 26px;
-    <?php endif; ?>
+/* ═══════════════════════════════════════════════════════════════════════
+   KPI CARD STYLES — 3D Glassmorphism Premium
+   ═══════════════════════════════════════════════════════════════════════ */
+.kpi-card, .an-kpi-card {
+    background: rgba(255, 255, 255, 0.7) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+    border-radius: 20px !important;
+    padding: 20px 22px !important;
+    position: relative !important;
+    overflow: hidden !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
+}
+
+html[data-theme="dark"] .kpi-card, html[data-theme="dark"] .an-kpi-card {
+    background: rgba(15, 23, 42, 0.65) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35) !important;
+}
+
+.kpi-card:hover, .an-kpi-card:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12) !important;
+}
+
+html[data-theme="dark"] .kpi-card:hover, html[data-theme="dark"] .an-kpi-card:hover {
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5) !important;
+}
+
+.kpi-icon, .an-kpi-icon {
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 16px !important;
+    background: var(--kpi-color, #3B82F6) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #ffffff !important;
+    box-shadow: 0 8px 20px var(--kpi-shadow, rgba(59, 130, 246, 0.35)) !important;
+    flex-shrink: 0 !important;
+    font-size: 22px !important;
+}
+
+.kpi-content, .an-kpi-content {
+    flex-grow: 1 !important;
+    min-width: 0 !important;
+}
+
+.kpi-sparkline, .an-kpi-sparkline {
+    position: absolute !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    width: 55% !important;
+    height: 65% !important;
+    opacity: 0.22 !important;
+    background: linear-gradient(180deg, transparent 0%, var(--kpi-color) 100%) !important;
+    clip-path: polygon(0 100%, 15% 75%, 35% 85%, 55% 55%, 75% 70%, 100% 30%, 100% 100%) !important;
+    pointer-events: none !important;
+}
+
+.kpi-card.blue, .an-kpi-card.blue { --kpi-color: #3B82F6; --kpi-shadow: rgba(59, 130, 246, 0.35); }
+.kpi-card.green, .an-kpi-card.green { --kpi-color: #10B981; --kpi-shadow: rgba(16, 185, 129, 0.35); }
+.kpi-card.purple, .an-kpi-card.purple, .kpi-card.violet, .an-kpi-card.violet { --kpi-color: #8B5CF6; --kpi-shadow: rgba(139, 92, 246, 0.35); }
+.kpi-card.emerald, .an-kpi-card.emerald { --kpi-color: #059669; --kpi-shadow: rgba(5, 150, 105, 0.35); }
+.kpi-card.teal, .an-kpi-card.teal, .kpi-card.cyan, .an-kpi-card.cyan { --kpi-color: #06B6D4; --kpi-shadow: rgba(6, 182, 212, 0.35); }
+.kpi-card.orange, .an-kpi-card.orange { --kpi-color: #F59E0B; --kpi-shadow: rgba(245, 158, 11, 0.35); }
+.kpi-card.indigo, .an-kpi-card.indigo { --kpi-color: #4F46E5; --kpi-shadow: rgba(79, 70, 229, 0.35); }
+.kpi-card.red, .an-kpi-card.red { --kpi-color: #EF4444; --kpi-shadow: rgba(239, 68, 68, 0.35); }
+
+.kpi-label, .an-kpi-label { font-size: 11px !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: .05em !important; color: var(--text-muted, #64748B) !important; margin-bottom: 4px !important; }
+.kpi-value, .an-kpi-value { font-size: 26px !important; font-weight: 800 !important; color: var(--text, #0F172A) !important; line-height: 1.1 !important; }
+html[data-theme="dark"] .kpi-value, html[data-theme="dark"] .an-kpi-value { color: #F8FAFC !important; }
+.kpi-sub, .an-kpi-sub { font-size: 12px !important; color: var(--text-light, #94A3B8) !important; margin-top: 4px !important; }
+.kpi-trend, .an-kpi-trend { display: inline-flex !important; align-items: center !important; gap: 3px !important; font-size: 11px !important; font-weight: 700 !important; padding: 2px 8px !important; border-radius: 20px !important; margin-top: 6px !important; }
+.kpi-trend.up, .an-kpi-trend.up { background: rgba(16, 185, 129, 0.12) !important; color: #10B981 !important; }
+.kpi-trend.down, .an-kpi-trend.down { background: rgba(239, 68, 68, 0.12) !important; color: #EF4444 !important; }
+.kpi-trend.flat, .an-kpi-trend.flat { background: rgba(148, 163, 184, 0.12) !important; color: #64748B !important; }
+
     margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;position:relative;overflow:hidden;
 }
 html[data-theme="dark"] .dash-header {
