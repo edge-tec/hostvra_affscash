@@ -252,7 +252,7 @@ html[data-theme="dark"] .kpi-value, html[data-theme="dark"] .an-kpi-value { colo
     gap: 20px;
     margin-bottom: 24px;
 }
-@media (max-width: 1200px) {
+@media (max-width: 900px) {
     .saas-analytics-grid-section {
         grid-template-columns: 1fr;
     }
@@ -418,7 +418,7 @@ html[data-theme="dark"] .saas-ai-insights-header { color: #F8FAFC; }
     margin-bottom: 24px !important;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 900px) {
     .charts-row, #row2-grid, #row3-grid, #row4-grid, .saas-widgets-grid {
         grid-template-columns: repeat(2, 1fr) !important;
         gap: 16px !important;
@@ -490,6 +490,52 @@ html[data-theme="dark"] .chart-card .card-title, html[data-theme="dark"] .an-sec
     position: relative !important;
     height: 220px !important;
     width: 100% !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   UNIFIED 3 CARDS IN A LINE RESPONSIVE OVERHAUL (OPTIMIZED BREAKPOINTS)
+   ═══════════════════════════════════════════════════════════════════════ */
+.trf-grid-3, .grid-3, .traffic-grid-3, .grid-2, .charts-row, .saas-widgets-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 16px !important;
+    margin-bottom: 20px !important;
+}
+
+@media (max-width: 900px) {
+    .trf-grid-3, .grid-3, .traffic-grid-3, .grid-2, .charts-row, .saas-widgets-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 14px !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .trf-grid-3, .grid-3, .traffic-grid-3, .grid-2, .charts-row, .saas-widgets-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+}
+
+.chart-card, .an-card, .card {
+    background: rgba(255, 255, 255, 0.75) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+    border-radius: 18px !important;
+    overflow: hidden !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04) !important;
+    transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+html[data-theme="dark"] .chart-card, html[data-theme="dark"] .an-card, html[data-theme="dark"] .card {
+    background: rgba(15, 23, 42, 0.65) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35) !important;
+}
+
+.chart-card:hover, .an-card:hover, .card:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08) !important;
 }
 </style>
 
