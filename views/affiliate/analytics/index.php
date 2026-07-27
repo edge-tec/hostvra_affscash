@@ -186,7 +186,10 @@ $overallCR    = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 0
     <div class="stat-card"><div class="stat-icon blue">&#128101;</div><div class="stat-label">Unique IPs</div><div class="stat-value"><?= number_format($summary['unique_ips'] ?? 0) ?></div></div>
 </div>
 
-<!-- SECTION 1: CLICK ACTIVITY -->
+
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 1: CLICK ACTIVITY OVERVIEW (3 CARDS) -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
 <div style="display:flex;align-items:center;gap:10px;margin:24px 0 12px">
     <div style="width:4px;height:28px;background:#4F46E5;border-radius:2px"></div>
     <h2 style="font-size:18px;font-weight:700;margin:0">Click Activity Overview</h2>
@@ -212,22 +215,24 @@ $overallCR    = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 0
         </div>
         <div class="card-body"><canvas id="uniqueVsTotal" height="180"></canvas></div>
     </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 2: CONVERSION & TRAFFIC SOURCE ANALYTICS (3 CARDS) -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<div style="display:flex;align-items:center;gap:10px;margin:24px 0 12px">
+    <div style="width:4px;height:28px;background:#10B981;border-radius:2px"></div>
+    <h2 style="font-size:18px;font-weight:700;margin:0">Conversion &amp; Traffic Source Analytics</h2>
+</div>
+
+<div class="trf-grid-3 mb-3">
     <div class="card">
         <div class="card-header"><span class="card-title">Traffic Source Performance</span></div>
-        <div class="card-body" style="position:relative;min-height:160px">
+        <div class="card-body" style="position:relative;min-height:180px">
             <canvas id="srcChart"></canvas>
             <div id="srcChartEmpty" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;color:#9CA3AF;font-size:13px">No traffic source data for this period</div>
         </div>
     </div>
-</div>
-
-<!-- SECTION 2: CONVERSION ANALYTICS -->
-<div style="display:flex;align-items:center;gap:10px;margin:24px 0 12px">
-    <div style="width:4px;height:28px;background:#10B981;border-radius:2px"></div>
-    <h2 style="font-size:18px;font-weight:700;margin:0">Conversion Analytics</h2>
-</div>
-
-<div class="trf-grid-3 mb-3">
     <div class="card">
         <div class="card-header">
             <span class="card-title">Daily Conversion Activity</span>
@@ -238,6 +243,17 @@ $overallCR    = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 0
         <div class="card-header"><span class="card-title">Conversion Status Breakdown</span></div>
         <div class="card-body" style="display:flex;justify-content:center;align-items:center"><canvas id="convPie" height="200" style="max-width:280px"></canvas></div>
     </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 3: CONVERSION TRENDS & REVENUE (3 CARDS) -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<div style="display:flex;align-items:center;gap:10px;margin:24px 0 12px">
+    <div style="width:4px;height:28px;background:#8B5CF6;border-radius:2px"></div>
+    <h2 style="font-size:18px;font-weight:700;margin:0">Conversion Trends &amp; Revenue</h2>
+</div>
+
+<div class="trf-grid-3 mb-3">
     <div class="card">
         <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
             <span class="card-title">Conversion Rate Trend</span>
@@ -250,10 +266,10 @@ $overallCR    = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 0
         <div class="card-body">
             <?php
             $funnelSteps = [
-                ['Total Clicks',  $totalClicks,   '#4F46E5'],
-                ['Unique Clicks', $totalUnique,   '#06B6D4'],
-                ['Conversions',   $totalConv,     '#10B981'],
-                ['Approved',      $totalApproved, '#059669'],
+                ['Total Clicks',    $totalClicks,  '#4F46E5'],
+                ['Unique Clicks',   $totalUnique,  '#06B6D4'],
+                ['Conversions',     $totalConv,    '#10B981'],
+                ['Approved',        $totalApproved,'#059669'],
             ];
             $maxVal = max(1, $totalClicks);
             foreach ($funnelSteps as $step):
@@ -273,113 +289,102 @@ $overallCR    = $totalClicks > 0 ? round($totalConv / $totalClicks * 100, 2) : 0
             <?php endforeach; ?>
         </div>
     </div>
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">Daily Revenue Analytics</span>
+        </div>
+        <div class="card-body"><canvas id="revChart" height="180"></canvas></div>
+    </div>
 </div>
 
-<!-- SECTION 3: EARNINGS -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 4: PROFIT & TIME-BASED ANALYTICS (3 CARDS) -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
 <div style="display:flex;align-items:center;gap:10px;margin:24px 0 12px">
-    <div style="width:4px;height:28px;background:#8B5CF6;border-radius:2px"></div>
-    <h2 style="font-size:18px;font-weight:700;margin:0">Earnings Overview</h2>
+    <div style="width:4px;height:28px;background:#06B6D4;border-radius:2px"></div>
+    <h2 style="font-size:18px;font-weight:700;margin:0">Profit &amp; Time-Based Analytics</h2>
 </div>
 
 <div class="trf-grid-3 mb-3">
     <div class="card">
         <div class="card-header">
-            <span class="card-title">Daily Earnings</span>
+            <span class="card-title">Profit Performance Trend</span>
         </div>
-        <div class="card-body"><canvas id="earningsChart" height="180"></canvas></div>
+        <div class="card-body"><canvas id="profitChart" height="180"></canvas></div>
+    </div>
+    <div class="card">
+        <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
+            <span class="card-title">Weekly Performance Trend</span>
+            <span class="text-sm text-muted">Bars = Clicks/Conv · Line = CR%</span>
+        </div>
+        <div class="card-body"><canvas id="weekChart" height="180"></canvas></div>
     </div>
     <div class="card">
         <div class="card-header">
-            <span class="card-title">Monthly Earnings Trend</span>
+            <span class="card-title">Monthly Performance Overview</span>
         </div>
         <div class="card-body"><canvas id="monthChart" height="180"></canvas></div>
     </div>
 </div>
 
-<!-- SECTION 4: OFFER ANALYTICS -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 5: GEO & DEVICE DISTRIBUTION (3 CARDS) -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
 <div style="display:flex;align-items:center;gap:10px;margin:24px 0 12px">
-    <div style="width:4px;height:28px;background:#F59E0B;border-radius:2px"></div>
-    <h2 style="font-size:18px;font-weight:700;margin:0">Offer Analytics</h2>
-</div>
-
-<div class="card mb-3">
-    <div class="card-header"><span class="card-title">Offer Click vs Conversion Performance</span></div>
-    <div class="card-body"><canvas id="offerChart" height="100"></canvas></div>
-</div>
-
-<div class="card mb-3">
-    <div class="card-header"><span class="card-title">Offer Leaderboard</span></div>
-    <div class="table-wrap">
-        <table id="tbl-offers-an" style="font-size:13px">
-            <thead><tr>
-                <th>#</th><th>OFFER</th><th>CLICKS</th><th>UNIQUE</th><th>CONV</th><th>APPROVED</th><th>CR%</th><th>EARNINGS</th>
-            </tr></thead>
-            <tbody>
-            <?php foreach ($topOffers as $i => $o): ?>
-            <tr>
-                <td class="text-muted"><?= $i+1 ?></td>
-                <td class="fw-bold"><?= Helpers::e($o['name']) ?></td>
-                <td><?= number_format($o['clicks']) ?></td>
-                <td><?= number_format($o['uclicks'] ?? 0) ?></td>
-                <td><?= number_format($o['conversions']) ?></td>
-                <td><?= number_format($o['approved']) ?></td>
-                <td><span style="color:<?= $o['cr']>=5?'var(--secondary)':($o['cr']>=1?'#F59E0B':'var(--danger)') ?>;font-weight:700"><?= $o['cr'] ?>%</span></td>
-                <td class="fw-bold">$<?= number_format($o['payout'],2) ?></td>
-            </tr>
-            <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<!-- SECTION 5: TIME-BASED ANALYTICS -->
-<div style="display:flex;align-items:center;gap:10px;margin:24px 0 12px">
-    <div style="width:4px;height:28px;background:#06B6D4;border-radius:2px"></div>
-    <h2 style="font-size:18px;font-weight:700;margin:0">Time-Based Analytics</h2>
+    <div style="width:4px;height:28px;background:#EF4444;border-radius:2px"></div>
+    <h2 style="font-size:18px;font-weight:700;margin:0">Geo &amp; Device Analytics</h2>
 </div>
 
 <div class="trf-grid-3 mb-3">
     <div class="card">
-        <div class="card-header">
-            <span class="card-title">Weekly Performance</span>
-        </div>
-        <div class="card-body"><canvas id="weekChart" height="180"></canvas></div>
-    </div>
-    <div class="card">
-        <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
-            <span class="card-title">Conversion Rate Trend (Weekly)</span>
-            <span class="text-sm text-muted">Last 12 weeks</span>
-        </div>
-        <div class="card-body"><canvas id="crTrendWeek" height="180"></canvas></div>
-    </div>
-</div>
-
-<!-- SECTION 6: ADVANCED ANALYTICS -->
-<div style="display:flex;align-items:center;gap:10px;margin:24px 0 12px">
-    <div style="width:4px;height:28px;background:#EF4444;border-radius:2px"></div>
-    <h2 style="font-size:18px;font-weight:700;margin:0">Advanced Analytics</h2>
-</div>
-
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-bottom:20px">
-    <div class="card">
-        <div class="card-header"><span class="card-title">Geo Distribution</span></div>
+        <div class="card-header"><span class="card-title">Geo Conversion Distribution</span></div>
         <div class="card-body"><canvas id="geoChart" height="220"></canvas></div>
     </div>
     <div class="card">
-        <div class="card-header"><span class="card-title">Device Breakdown</span></div>
+        <div class="card-header"><span class="card-title">Device Performance Breakdown</span></div>
         <div class="card-body" style="display:flex;justify-content:center;align-items:center"><canvas id="deviceChart" height="220" style="max-width:240px"></canvas></div>
     </div>
     <div class="card">
         <div class="card-header"><span class="card-title">Browser Distribution</span></div>
         <div class="card-body" style="display:flex;justify-content:center;align-items:center"><canvas id="browserChart" height="220" style="max-width:240px"></canvas></div>
     </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 6: ADVANCED & AUDIENCE ANALYTICS (3 CARDS) -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<div style="display:flex;align-items:center;gap:10px;margin:24px 0 12px">
+    <div style="width:4px;height:28px;background:#F59E0B;border-radius:2px"></div>
+    <h2 style="font-size:18px;font-weight:700;margin:0">Advanced &amp; Offer Analytics</h2>
+</div>
+
+<div class="trf-grid-3 mb-3">
     <div class="card">
         <div class="card-header"><span class="card-title">OS Distribution</span></div>
-        <div class="card-body"><canvas id="osChart" height="180"></canvas></div>
+        <div class="card-body" style="position:relative;min-height:180px">
+            <canvas id="osChart"></canvas>
+            <div id="osChartEmpty" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;color:#9CA3AF;font-size:13px">No OS data for this period</div>
+        </div>
     </div>
     <div class="card">
-        <div class="card-header"><span class="card-title">Top Traffic Sources</span></div>
-        <div class="card-body"><canvas id="srcChart2" height="180"></canvas></div>
+        <div class="card-header"><span class="card-title">Top Affiliates — Click Volume</span></div>
+        <div class="card-body" style="position:relative;min-height:180px">
+            <canvas id="affChart"></canvas>
+            <div id="affChartEmpty" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;color:#9CA3AF;font-size:13px">No affiliate click data for this period</div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
+            <span class="card-title">Offer Click vs Conv Performance</span>
+            <span class="text-sm text-muted">Line = CR%</span>
+        </div>
+        <div class="card-body" style="position:relative;min-height:180px">
+            <canvas id="offerChart"></canvas>
+            <div id="offerChartEmpty" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;color:#9CA3AF;font-size:13px;flex-direction:column;gap:6px">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                No offer data for the selected period
+            </div>
+        </div>
     </div>
 </div>
 
