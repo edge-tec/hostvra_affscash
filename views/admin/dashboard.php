@@ -1668,7 +1668,7 @@ html[data-theme="dark"] .saas-custom-tooltip {
     <div class="card-header">
         <span class="card-title">Conversions by Traffic Source (Last 30 Days)</span>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:20px">
+    <div class="ts-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:20px">
         <div class="table-wrap">
             <table class="analytics-table">
                 <thead>

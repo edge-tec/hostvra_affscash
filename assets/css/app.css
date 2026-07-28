@@ -3089,6 +3089,11 @@ html[data-theme="dark"] .galaxy-glow-btn:hover {
 }
 
 @media (max-width: 900px) {
+    .ts-grid {
+        grid-template-columns: 1fr !important;
+        padding: 12px !important;
+        gap: 16px !important;
+    }
     .dash-header, .an-header {
         position: relative !important;
         flex-direction: column !important;
