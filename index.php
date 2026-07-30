@@ -490,9 +490,13 @@ Router::get('/api/seo/reports', function() {
     exit;
 });
 
+Router::any('/admin/reports', function() { require BASE_PATH . '/controllers/admin/ReportController.php'; });
+Router::any('/admin/reports/clicks', function() { require BASE_PATH . '/controllers/admin/ClickReportController.php'; });
+Router::any('/admin/reports/traffic-back', function() { require BASE_PATH . '/controllers/admin/TrafficBackReportController.php'; });
 Router::any('/admin/reports/affiliates', function() { require BASE_PATH . '/controllers/admin/AffiliateReportController.php'; });
 Router::any('/admin/reports/duplicate-conversions', function() { require BASE_PATH . '/controllers/admin/DuplicateConversionsController.php'; });
 Router::any('/admin/reports/traffic-source-override', function() { require BASE_PATH . '/controllers/admin/TrafficSourceOverrideReportController.php'; });
+Router::any('/admin/reports/conversions', function() { require BASE_PATH . '/controllers/admin/ConversionController.php'; });
 Router::any('/admin/conversions', function() { require BASE_PATH . '/controllers/admin/ConversionController.php'; });
 Router::any('/admin/rejection-reasons', function() { require BASE_PATH . '/controllers/admin/RejectionReasonsController.php'; });
 Router::any('/admin/vpn-proxy-skip', function() { require BASE_PATH . '/controllers/admin/VpnProxySkipController.php'; });
