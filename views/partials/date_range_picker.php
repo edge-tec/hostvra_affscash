@@ -14,29 +14,38 @@ $_drpFormId = $drpFormId   ?? null;
 .drp-presets {
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
+    gap: 6px;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
 }
 .drp-btn {
-    padding: 4px 10px;
-    font-size: 12px;
-    font-weight: 600;
-    border: 1px solid #E2E8F0;
+    padding: 5px 13px;
+    font-size: 11.5px;
+    font-weight: 700;
+    border: 1px solid rgba(226, 232, 240, 0.8);
     border-radius: 20px;
-    background: #fff;
+    background: #ffffff;
     color: #475569;
     cursor: pointer;
-    transition: all .15s;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     white-space: nowrap;
-    line-height: 1.4;
+    line-height: 1.3;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
 }
-.drp-btn:hover, .drp-btn.drp-active {
-    background: #4F46E5;
-    color: #fff;
-    border-color: #4F46E5;
+.drp-btn:hover {
+    background: rgba(99, 102, 241, 0.1);
+    color: #4f46e5;
+    border-color: rgba(99, 102, 241, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(99, 102, 241, 0.15);
 }
-.drp-sep { color: #CBD5E1; font-size: 11px; padding: 0 2px; }
+.drp-btn.drp-active {
+    background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: 0 3px 10px rgba(99, 102, 241, 0.35);
+}
+.drp-sep { color: #6366f1; font-size: 13px; padding: 0 4px; }
 </style>
 
 <div class="drp-presets" id="drp-presets-<?= $_drpFrom ?>">

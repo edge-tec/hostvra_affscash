@@ -10,28 +10,28 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
    3D GLASSMORPHISM FRAUD REPORTS CONTROL CENTER STYLES
    ═══════════════════════════════════════════════════════════════════════ */
 .fr-header-card {
-    background: rgba(255, 255, 255, 0.9) !important;
-    backdrop-filter: blur(16px) !important;
-    -webkit-backdrop-filter: blur(16px) !important;
-    border: 1px solid #E2E8F0 !important;
-    border-radius: 16px !important;
-    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05), 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.9) 100%) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(99, 102, 241, 0.2) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 16px 40px -10px rgba(99, 102, 241, 0.12), 0 4px 16px rgba(0, 0, 0, 0.04) !important;
     margin-bottom: 24px !important;
     overflow: hidden !important;
 }
 
 html[data-theme="dark"] .fr-header-card {
-    background: rgba(20, 14, 45, 0.85) !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+    background: linear-gradient(180deg, rgba(24, 18, 55, 0.95) 0%, rgba(18, 12, 42, 0.9) 100%) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4) !important;
 }
 
 .fr-header-tabs {
     display: flex !important;
-    background: rgba(248, 250, 252, 0.8) !important;
-    border-bottom: 1px solid #E2E8F0 !important;
-    padding: 8px 16px !important;
-    gap: 8px !important;
+    background: rgba(241, 245, 249, 0.8) !important;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
+    padding: 10px 20px !important;
+    gap: 10px !important;
 }
 
 html[data-theme="dark"] .fr-header-tabs {
@@ -40,12 +40,12 @@ html[data-theme="dark"] .fr-header-tabs {
 }
 
 .fr-header-tab {
-    padding: 10px 20px !important;
+    padding: 10px 22px !important;
     font-size: 13.5px !important;
     font-weight: 700 !important;
     color: #64748B !important;
     text-decoration: none !important;
-    border-radius: 10px !important;
+    border-radius: 12px !important;
     border: 1px solid transparent !important;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
     display: flex !important;
@@ -59,84 +59,86 @@ html[data-theme="dark"] .fr-header-tab {
 
 .fr-header-tab:hover {
     color: #1E293B !important;
-    background: rgba(255, 255, 255, 0.8) !important;
+    background: rgba(255, 255, 255, 0.9) !important;
     transform: translateY(-1px) !important;
 }
 
 .fr-header-tab.active {
     color: #ffffff !important;
     background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%) !important;
-    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35) !important;
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4) !important;
 }
 
 .fr-filter-section {
-    padding: 22px 24px !important;
+    padding: 24px 26px !important;
 }
 
 .fr-filter-top {
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    margin-bottom: 20px !important;
+    margin-bottom: 22px !important;
     flex-wrap: wrap !important;
     gap: 14px !important;
 }
 
 .fr-filter-grid {
     display: grid !important;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
-    gap: 16px 20px !important;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+    gap: 18px 22px !important;
     align-items: start !important;
 }
 
 .fr-filter-grid label {
     display: block !important;
-    margin-bottom: 6px !important;
+    margin-bottom: 7px !important;
     font-size: 11px !important;
-    font-weight: 700 !important;
-    color: #64748B !important;
+    font-weight: 800 !important;
+    color: #475569 !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.05em !important;
+    letter-spacing: 0.06em !important;
 }
 
 html[data-theme="dark"] .fr-filter-grid label {
-    color: rgba(255, 255, 255, 0.65) !important;
+    color: rgba(255, 255, 255, 0.7) !important;
 }
 
 .fr-filter-grid select,
 .fr-filter-grid input[type=text],
 .fr-filter-grid input[type=date] {
     font-size: 13px !important;
-    font-weight: 500 !important;
-    padding: 9px 13px !important;
-    border: 1px solid #CBD5E1 !important;
-    border-radius: 10px !important;
+    font-weight: 600 !important;
+    padding: 10px 14px !important;
+    border: 1.5px solid #E2E8F0 !important;
+    border-radius: 12px !important;
     background: #ffffff !important;
     color: #1E293B !important;
     outline: none !important;
-    transition: all 0.2s ease !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
     width: 100% !important;
     box-sizing: border-box !important;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02) !important;
 }
 
 html[data-theme="dark"] .fr-filter-grid select,
 html[data-theme="dark"] .fr-filter-grid input {
-    background: rgba(30, 24, 60, 0.8) !important;
+    background: rgba(30, 24, 60, 0.85) !important;
     border-color: rgba(255, 255, 255, 0.15) !important;
     color: #ffffff !important;
 }
 
 .fr-filter-grid select:hover,
 .fr-filter-grid input:hover {
-    border-color: #94A3B8 !important;
+    border-color: #A5B4FC !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.08) !important;
 }
 
 .fr-filter-grid select:focus,
 .fr-filter-grid input:focus {
     background: #ffffff !important;
     border-color: #6366F1 !important;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2) !important;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.18) !important;
 }
 
 .fr-filter-actions {
@@ -381,7 +383,7 @@ html[data-theme="dark"] .fr-sum-box .val { color: #ffffff !important; }
                     <label>Aff Sub</label>
                     <input type="text" name="sub" value="<?= Helpers::e($subFlt ?? '') ?>" placeholder="Sub 1-5...">
                 </div>
-                <div style="grid-column: 1 / -1; max-width: 420px;">
+                <div style="grid-column: 1 / -1;">
                     <label>Search</label>
                     <input type="text" name="q" value="<?= Helpers::e($search) ?>" placeholder="Search by Conv ID, IP, or affiliate code...">
                 </div>
