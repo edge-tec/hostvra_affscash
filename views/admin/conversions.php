@@ -303,6 +303,40 @@ html[data-theme="dark"] #tbl-conversions tbody td {
 .ac-fs-yellow { background: rgba(245, 158, 11, 0.15) !important; color: #d97706 !important; }
 .ac-fs-red { background: rgba(239, 68, 68, 0.15) !important; color: #dc2626 !important; }
 
+/* Advanced 3D Icon Copy Button */
+.ac-copy-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 20px !important;
+    height: 20px !important;
+    border-radius: 5px !important;
+    background: rgba(99, 102, 241, 0.08) !important;
+    color: #6366f1 !important;
+    border: 1px solid rgba(99, 102, 241, 0.2) !important;
+    cursor: pointer !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    padding: 0 !important;
+    margin-left: 6px !important;
+    vertical-align: middle !important;
+    line-height: 1 !important;
+}
+
+.ac-copy-btn:hover {
+    background: #6366f1 !important;
+    color: #ffffff !important;
+    border-color: #6366f1 !important;
+    transform: scale(1.1) !important;
+    box-shadow: 0 3px 8px rgba(99, 102, 241, 0.35) !important;
+}
+
+.ac-copy-btn.copied {
+    background: #10b981 !important;
+    color: #ffffff !important;
+    border-color: #10b981 !important;
+    transform: scale(1.05) !important;
+}
+
 /* Mobile Card View (Screens <= 768px) */
 .ac-mobile-card-list {
     display: none;
@@ -538,12 +572,16 @@ foreach ($conversions as $cvItem) {
                     <td style="font-family:monospace;font-size:11px;white-space:nowrap">
                         <div style="font-weight:700;color:#6366f1" title="Conversion ID: <?= Helpers::e($c['conversion_id']) ?>">
                             <?= Helpers::e($c['conversion_id']) ?>
-                            <button type="button" class="btn btn-link p-0 ms-1 text-muted" style="font-size:10px;text-decoration:none" onclick="navigator.clipboard.writeText('<?= Helpers::e($c['conversion_id']) ?>');this.innerText='✓';setTimeout(()=>this.innerText='📋',1000)" title="Copy Conversion ID">📋</button>
+                            <button type="button" class="ac-copy-btn" onclick="acCopyToClipboard('<?= Helpers::e($c['conversion_id']) ?>', this)" title="Copy Conversion ID">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            </button>
                         </div>
                         <?php if (!empty($c['click_id'])): ?>
                         <div style="font-size:10.5px;color:var(--text-muted);margin-top:3px" title="Click ID: <?= Helpers::e($c['click_id']) ?>">
                             <span style="opacity:0.75">Click:</span> <?= Helpers::e($c['click_id']) ?>
-                            <button type="button" class="btn btn-link p-0 ms-1 text-muted" style="font-size:10px;text-decoration:none" onclick="navigator.clipboard.writeText('<?= Helpers::e($c['click_id']) ?>');this.innerText='✓';setTimeout(()=>this.innerText='📋',1000)" title="Copy Click ID">📋</button>
+                            <button type="button" class="ac-copy-btn" onclick="acCopyToClipboard('<?= Helpers::e($c['click_id']) ?>', this)" title="Copy Click ID">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            </button>
                         </div>
                         <?php endif; ?>
                     </td>
@@ -799,6 +837,20 @@ foreach ($conversions as $cvItem) {
 </div>
 
 <script>
+function acCopyToClipboard(text, btn) {
+    if (!text) return;
+    var copySvg = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+    var checkSvg = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+    navigator.clipboard.writeText(text).then(function() {
+        btn.innerHTML = checkSvg;
+        btn.classList.add('copied');
+        setTimeout(function() {
+            btn.innerHTML = copySvg;
+            btn.classList.remove('copied');
+        }, 1200);
+    });
+}
+
 $(function() {
     $('#tbl-conversions').DataTable({
         destroy: true,
