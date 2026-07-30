@@ -515,17 +515,27 @@ foreach ($clicks as $cl) {
 }
 ?>
 
-<div class="stats-grid mb-3" style="grid-template-columns:repeat(<?= $hideFraudRejected ? 3 : 4 ?>,1fr)">
-    <div class="stat-card"><div class="stat-label">Total Clicks</div><div class="stat-value"><?= number_format($totalClicks) ?></div></div>
+<div class="mgr-stats-grid">
+    <div class="mgr-stat-card stat-clicks">
+        <div class="mgr-stat-label">Total Clicks</div>
+        <div class="mgr-stat-value"><?= number_format($totalClicks) ?></div>
+    </div>
     <?php if (!$hideFraudRejected): ?>
-    <div class="stat-card" style="cursor:pointer" onclick="openFraudScorePanel()">
-        <div class="stat-label">Fraud</div>
-        <div class="stat-value" style="color:var(--danger)"><?= number_format($fraudCount) ?></div>
-        <div class="stat-sub"><?= $totalClicks>0?round($fraudCount/$totalClicks*100,1):0 ?>% rate</div>
+    <div class="mgr-stat-card stat-fraud" style="cursor:pointer" onclick="openFraudScorePanel()">
+        <div class="mgr-stat-label">Fraud Clicks</div>
+        <div class="mgr-stat-value" style="color:#8B5CF6"><?= number_format($fraudCount) ?></div>
+        <div class="mgr-stat-sub" style="color:#8B5CF6"><?= $totalClicks>0?round($fraudCount/$totalClicks*100,1):0 ?>% rate</div>
     </div>
     <?php endif; ?>
-    <div class="stat-card"><div class="stat-label">Approved Payout</div><div class="stat-value" style="color:var(--secondary)">$<?= number_format($approvedPayoutTotal,2) ?></div><div class="stat-sub">Approved conversions only</div></div>
-    <div class="stat-card"><div class="stat-label">Period</div><div class="stat-value" style="font-size:14px"><?= Helpers::e($from) ?> → <?= Helpers::e($to) ?></div></div>
+    <div class="mgr-stat-card stat-payout">
+        <div class="mgr-stat-label">Approved Payout</div>
+        <div class="mgr-stat-value" style="color:#059669">$<?= number_format($approvedPayoutTotal,2) ?></div>
+        <div class="mgr-stat-sub">Approved conversions only</div>
+    </div>
+    <div class="mgr-stat-card stat-conv">
+        <div class="mgr-stat-label">Period</div>
+        <div class="mgr-stat-value" style="font-size:14px"><?= Helpers::e($from) ?> → <?= Helpers::e($to) ?></div>
+    </div>
 </div>
 
 <div class="card">
@@ -651,18 +661,31 @@ $statusCounts = array_count_values(array_column($convRows, 'status'));
 
 
 
-<div class="stats-grid mb-3" style="grid-template-columns:repeat(<?= $hideFraudRejected ? 4 : 5 ?>,1fr)">
-    <div class="stat-card"><div class="stat-label">Total</div><div class="stat-value"><?= number_format(count($convRows)) ?></div></div>
-    <div class="stat-card"><div class="stat-label">Approved</div><div class="stat-value" style="color:var(--secondary)"><?= number_format($statusCounts['approved'] ?? 0) ?></div></div>
-    <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-value" style="color:#F59E0B"><?= number_format($statusCounts['pending'] ?? 0) ?></div></div>
+<div class="mgr-stats-grid">
+    <div class="mgr-stat-card stat-clicks">
+        <div class="mgr-stat-label">Total</div>
+        <div class="mgr-stat-value"><?= number_format(count($convRows)) ?></div>
+    </div>
+    <div class="mgr-stat-card stat-approved">
+        <div class="mgr-stat-label">Approved</div>
+        <div class="mgr-stat-value" style="color:#10B981"><?= number_format($statusCounts['approved'] ?? 0) ?></div>
+    </div>
+    <div class="mgr-stat-card stat-conv">
+        <div class="mgr-stat-label">Pending</div>
+        <div class="mgr-stat-value" style="color:#F59E0B"><?= number_format($statusCounts['pending'] ?? 0) ?></div>
+    </div>
     <?php if (!$hideFraudRejected): ?>
-    <div class="stat-card" style="cursor:pointer" onclick="openRejectedDetail()">
-        <div class="stat-label">Rejected</div>
-        <div class="stat-value" style="color:var(--danger)"><?= number_format($statusCounts['rejected'] ?? 0) ?></div>
-        <div class="stat-sub" style="color:#EF4444">Drill down ↗</div>
+    <div class="mgr-stat-card stat-rejected" style="cursor:pointer" onclick="openRejectedDetail()">
+        <div class="mgr-stat-label">Rejected</div>
+        <div class="mgr-stat-value" style="color:#EF4444"><?= number_format($statusCounts['rejected'] ?? 0) ?></div>
+        <div class="mgr-stat-sub" style="color:#EF4444">Drill down ↗</div>
     </div>
     <?php endif; ?>
-    <div class="stat-card"><div class="stat-label">Approved Payout</div><div class="stat-value" style="color:var(--secondary)">$<?= number_format($totPayout,2) ?></div><div class="stat-sub">Approved only</div></div>
+    <div class="mgr-stat-card stat-payout">
+        <div class="mgr-stat-label">Approved Payout</div>
+        <div class="mgr-stat-value" style="color:#059669">$<?= number_format($totPayout,2) ?></div>
+        <div class="mgr-stat-sub">Approved only</div>
+    </div>
 </div>
 
 <div class="card">
@@ -789,11 +812,23 @@ $_slaTotClk = array_sum(array_column($_slaRows,'clicks'));
 $_slaTotCv  = array_sum(array_column($_slaRows,'conversions'));
 $_slaPay    = array_sum(array_column($_slaRows,'payout'));
 ?>
-<div class="stats-grid mb-3" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr))">
-    <div class="stat-card"><div class="stat-label">SL Clicks</div><div class="stat-value"><?= number_format($_slaTotClk) ?></div></div>
-    <div class="stat-card"><div class="stat-label">Conversions</div><div class="stat-value" style="color:var(--secondary)"><?= number_format($_slaTotCv) ?></div></div>
-    <div class="stat-card"><div class="stat-label">CR%</div><div class="stat-value"><?= $_slaTotClk>0?round($_slaTotCv/$_slaTotClk*100,2):0 ?>%</div></div>
-    <div class="stat-card"><div class="stat-label">Payout</div><div class="stat-value">$<?= number_format($_slaPay,2) ?></div></div>
+<div class="mgr-stats-grid">
+    <div class="mgr-stat-card stat-clicks">
+        <div class="mgr-stat-label">SL Clicks</div>
+        <div class="mgr-stat-value"><?= number_format($_slaTotClk) ?></div>
+    </div>
+    <div class="mgr-stat-card stat-approved">
+        <div class="mgr-stat-label">Conversions</div>
+        <div class="mgr-stat-value" style="color:#10B981"><?= number_format($_slaTotCv) ?></div>
+    </div>
+    <div class="mgr-stat-card stat-conv">
+        <div class="mgr-stat-label">CR%</div>
+        <div class="mgr-stat-value"><?= $_slaTotClk>0?round($_slaTotCv/$_slaTotClk*100,2):0 ?>%</div>
+    </div>
+    <div class="mgr-stat-card stat-payout">
+        <div class="mgr-stat-label">Payout</div>
+        <div class="mgr-stat-value" style="color:#059669">$<?= number_format($_slaPay,2) ?></div>
+    </div>
 </div>
 
 <!-- Affiliate Summary table -->
