@@ -351,8 +351,8 @@ html[data-theme="dark"] .tb-mobile-item .m-label {
                     <?php else: ?>
                         <?php foreach ($conversions as $c): ?>
                             <tr>
-                                <td><code title="<?= Helpers::e($c['conversion_id']) ?>"><?= Helpers::e(substr($c['conversion_id'], 0, 16)) ?>...</code></td>
-                                <td><code title="<?= Helpers::e($c['click_id']) ?>"><?= Helpers::e(substr($c['click_id'], 0, 12)) ?>...</code></td>
+                                <td><code style="font-size:11px"><?= Helpers::e($c['conversion_id']) ?></code></td>
+                                <td><code style="font-size:11px"><?= Helpers::e($c['click_id']) ?></code></td>
                                 <td>
                                     <strong><?= Helpers::e($c['aff_name'] ?: 'N/A') ?></strong>
                                     <?php if (!empty($c['affiliate_code'])): ?>

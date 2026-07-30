@@ -126,7 +126,18 @@
                 $visitRef = $c['referrer'] ?: ($c['ck_referer'] ?? '');
             ?>
             <tr>
-                <td style="font-family:monospace;font-size:11px"><?= substr(Helpers::e($c['conversion_id']),0,8) ?>...</td>
+                <td style="font-family:monospace;font-size:11px;white-space:nowrap">
+                    <div style="font-weight:600" title="Conversion ID: <?= Helpers::e($c['conversion_id']) ?>">
+                        <?= Helpers::e($c['conversion_id']) ?>
+                        <button type="button" class="btn btn-link p-0 ms-1 text-muted" style="font-size:10px;text-decoration:none" onclick="navigator.clipboard.writeText('<?= Helpers::e($c['conversion_id']) ?>');this.innerText='✓';setTimeout(()=>this.innerText='📋',1000)" title="Copy Conversion ID">📋</button>
+                    </div>
+                    <?php if (!empty($c['click_id'])): ?>
+                    <div style="font-size:10.5px;color:var(--text-muted);margin-top:2px" title="Click ID: <?= Helpers::e($c['click_id']) ?>">
+                        <span style="opacity:0.7">Click:</span> <?= Helpers::e($c['click_id']) ?>
+                        <button type="button" class="btn btn-link p-0 ms-1 text-muted" style="font-size:10px;text-decoration:none" onclick="navigator.clipboard.writeText('<?= Helpers::e($c['click_id']) ?>');this.innerText='✓';setTimeout(()=>this.innerText='📋',1000)" title="Copy Click ID">📋</button>
+                    </div>
+                    <?php endif; ?>
+                </td>
                 <td>
                     <div class="fw-bold"><?= Helpers::e($c['aff_name']) ?></div>
                     <div class="text-sm text-muted"><?= Helpers::e($c['affiliate_code']) ?></div>
