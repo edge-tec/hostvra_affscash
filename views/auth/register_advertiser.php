@@ -32,8 +32,8 @@ body {
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   width: 100%;
-  max-width: 640px;
-  margin: 0 auto;
+  max-width: 520px !important;
+  margin: 0 auto !important;
   overflow: hidden;
   position: relative;
   z-index: 1;
@@ -271,13 +271,15 @@ select:-webkit-autofill:focus {
                     <input type="text" name="last_name" class="form-control" required value="<?= Helpers::e($_POST['last_name'] ?? '') ?>">
                 </div>
             </div>
-            <div class="form-group">
-                <label>Company Name *</label>
-                <input type="text" name="company" class="form-control" required value="<?= Helpers::e($_POST['company'] ?? '') ?>">
-            </div>
-            <div class="form-group">
-                <label>Business Email *</label>
-                <input type="email" name="email" class="form-control" required value="<?= Helpers::e($_POST['email'] ?? '') ?>">
+            <div class="form-row cols-2">
+                <div class="form-group">
+                    <label>Company Name *</label>
+                    <input type="text" name="company" class="form-control" required value="<?= Helpers::e($_POST['company'] ?? '') ?>">
+                </div>
+                <div class="form-group">
+                    <label>Business Email *</label>
+                    <input type="email" name="email" class="form-control" required value="<?= Helpers::e($_POST['email'] ?? '') ?>">
+                </div>
             </div>
             <div class="form-row cols-2">
                 <div class="form-group">
@@ -327,7 +329,7 @@ select:-webkit-autofill:focus {
             <div class="contact-alert">
                 &#9888; Please provide at least one contact method so we can reach you.
             </div>
-            <div class="form-row cols-2" style="grid-template-columns:1fr 1fr 1fr;gap:12px">
+            <div class="form-row cols-2">
                 <div class="form-group">
                     <label style="display:flex;align-items:center;gap:5px;font-weight:600">
                         <span style="background:#2AABEE;color:#fff;border-radius:4px;padding:2px 6px;font-size:11px">TG</span> Telegram ID
@@ -344,14 +346,14 @@ select:-webkit-autofill:focus {
                            value="<?= Helpers::e($_POST['skype'] ?? '') ?>"
                            oninput="checkAdvContact()">
                 </div>
-                <div class="form-group">
-                    <label style="display:flex;align-items:center;gap:5px;font-weight:600">
-                        <span style="background:#5865F2;color:#fff;border-radius:4px;padding:2px 6px;font-size:11px">DC</span> Discord ID
-                    </label>
-                    <input type="text" name="discord" id="adv_discord" class="form-control" placeholder="username"
-                           value="<?= Helpers::e($_POST['discord'] ?? '') ?>"
-                           oninput="checkAdvContact()">
-                </div>
+            </div>
+            <div class="form-group">
+                <label style="display:flex;align-items:center;gap:5px;font-weight:600">
+                    <span style="background:#5865F2;color:#fff;border-radius:4px;padding:2px 6px;font-size:11px">DC</span> Discord ID
+                </label>
+                <input type="text" name="discord" id="adv_discord" class="form-control" placeholder="username"
+                       value="<?= Helpers::e($_POST['discord'] ?? '') ?>"
+                       oninput="checkAdvContact()">
             </div>
             <div id="adv-contact-warn" style="display:none;color:#DC2626;font-size:12px;margin:-8px 0 12px;font-weight:600">
                 &#9888; Fill in at least one contact method to continue.
