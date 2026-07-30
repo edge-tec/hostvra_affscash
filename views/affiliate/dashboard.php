@@ -1374,13 +1374,14 @@ try {
          LEFT JOIN smartlink_offers so ON so.offer_id = cv.offer_id
          LEFT JOIN smartlinks sl2 ON sl2.id = so.smartlink_id
          LEFT JOIN offers o ON o.id = cv.offer_id
-         WHERE cv.affiliate_id = ? AND $_dashFraudRiskSql
+         WHERE cv.affiliate_id = ? AND cv.is_hidden = 0 AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%') AND (ck.source IS NULL OR ck.source != 'traffic_back') AND $_dashFraudRiskSql
          ORDER BY cv.converted_at DESC LIMIT 5",
         [(int)Auth::affiliateId()]
     ) ?: [];
     $_dashFraudCount = (int)(Database::fetchOne(
         "SELECT COUNT(*) AS c FROM conversions cv
-         WHERE cv.affiliate_id = ? AND $_dashFraudRiskSql",
+         LEFT JOIN clicks ck ON ck.click_id = cv.click_id
+         WHERE cv.affiliate_id = ? AND cv.is_hidden = 0 AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%') AND (ck.source IS NULL OR ck.source != 'traffic_back') AND $_dashFraudRiskSql",
         [(int)Auth::affiliateId()]
     )['c'] ?? 0);
 } catch (\Throwable $_e) { $_dashFraud = []; $_dashFraudCount = 0; }

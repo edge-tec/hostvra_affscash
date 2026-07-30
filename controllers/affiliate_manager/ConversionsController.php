@@ -50,7 +50,7 @@ if (empty($affIds)) {
          JOIN users u ON u.id=af.user_id
          LEFT JOIN clicks ck ON ck.click_id = c.click_id
          LEFT JOIN fraud_logs fl ON fl.click_id = c.click_id
-         WHERE c.affiliate_id IN ($inSql) AND c.is_hidden=0 $statusSql
+         WHERE c.affiliate_id IN ($inSql) AND c.is_hidden=0 AND (c.hide_reason IS NULL OR c.hide_reason NOT LIKE '%traffic_back%') AND (ck.source IS NULL OR ck.source != 'traffic_back') $statusSql
          ORDER BY c.converted_at DESC LIMIT 500",
         $params
     );

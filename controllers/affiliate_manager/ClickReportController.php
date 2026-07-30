@@ -21,15 +21,15 @@ if (empty($affIds)) {
 
 $inSql = implode(',', array_fill(0, count($affIds), '?'));
 $params = [date('Y-m-d 00:00:00', strtotime($from)), date('Y-m-d 23:59:59', strtotime($to))];
-$where  = ["c.clicked_at BETWEEN ? AND ?", "c.affiliate_id IN ($inSql)"];
+$where  = ["c.clicked_at BETWEEN ? AND ?", "c.affiliate_id IN ($inSql)", "(c.source IS NULL OR c.source != 'traffic_back')"];
 $params = array_merge($params, $affIds);
 
 if ($offerId > 0) { $where[] = 'c.offer_id = ?'; $params[] = $offerId; }
 if ($selAffId > 0 && in_array($selAffId, $affIds)) { $where[] = 'c.affiliate_id = ?'; $params[] = $selAffId; }
 if ($clickFilter === 'converted') {
-    $where[] = 'EXISTS (SELECT 1 FROM conversions _cv WHERE _cv.click_id = c.click_id AND _cv.is_hidden = 0)';
+    $where[] = 'EXISTS (SELECT 1 FROM conversions _cv WHERE _cv.click_id = c.click_id AND _cv.is_hidden = 0 AND (_cv.hide_reason IS NULL OR _cv.hide_reason NOT LIKE \'%traffic_back%\'))';
 } elseif ($clickFilter === 'approved') {
-    $where[] = "EXISTS (SELECT 1 FROM conversions _cv WHERE _cv.click_id = c.click_id AND _cv.status = 'approved' AND _cv.is_hidden = 0)";
+    $where[] = "EXISTS (SELECT 1 FROM conversions _cv WHERE _cv.click_id = c.click_id AND _cv.status = 'approved' AND _cv.is_hidden = 0 AND (_cv.hide_reason IS NULL OR _cv.hide_reason NOT LIKE '%traffic_back%'))";
 }
 
 $whereStr = implode(' AND ', $where);
@@ -52,6 +52,7 @@ if (Helpers::get('export') === 'csv') {
          LEFT JOIN conversions cv ON cv.click_id = c.click_id
                AND cv.status IN ('approved','pending')
                AND cv.is_hidden = 0
+               AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')
          WHERE $whereStr
          ORDER BY c.clicked_at DESC
          LIMIT $limit",

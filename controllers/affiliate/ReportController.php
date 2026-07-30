@@ -96,28 +96,28 @@ if (in_array($tab, $perfTabs)) {
             $cvJoin = "LEFT JOIN (
                 SELECT DATE(converted_at) as cv_date, SUM(payout) as approved_payout
                 FROM conversions
-                WHERE affiliate_id=? AND status='approved' AND is_hidden=0
+                WHERE affiliate_id=? AND status='approved' AND is_hidden=0 AND (hide_reason IS NULL OR hide_reason NOT LIKE '%traffic_back%')
                 GROUP BY DATE(converted_at)
             ) cv_pay ON cv_pay.cv_date = sd.stat_date
             LEFT JOIN (
                 SELECT DATE(converted_at) as cv_date,
                        SUM(CASE WHEN COALESCE(fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_count
                 FROM conversions
-                WHERE affiliate_id=? AND is_hidden=0
+                WHERE affiliate_id=? AND is_hidden=0 AND (hide_reason IS NULL OR hide_reason NOT LIKE '%traffic_back%')
                 GROUP BY DATE(converted_at)
             ) cv_fraud ON cv_fraud.cv_date = sd.stat_date";
         } else {
             $cvJoin = "LEFT JOIN (
                 SELECT offer_id, SUM(payout) as approved_payout
                 FROM conversions
-                WHERE affiliate_id=? AND status='approved' AND is_hidden=0
+                WHERE affiliate_id=? AND status='approved' AND is_hidden=0 AND (hide_reason IS NULL OR hide_reason NOT LIKE '%traffic_back%')
                 GROUP BY offer_id
             ) cv_pay ON cv_pay.offer_id = sd.offer_id
             LEFT JOIN (
                 SELECT offer_id,
                        SUM(CASE WHEN COALESCE(fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_count
                 FROM conversions
-                WHERE affiliate_id=? AND is_hidden=0
+                WHERE affiliate_id=? AND is_hidden=0 AND (hide_reason IS NULL OR hide_reason NOT LIKE '%traffic_back%')
                 GROUP BY offer_id
             ) cv_fraud ON cv_fraud.offer_id = sd.offer_id";
         }
@@ -149,7 +149,7 @@ if (in_array($tab, $perfTabs)) {
         // approved payout comes from conversions joined via click_id.
         $grpCol = $tab === 'country' ? 'c.country' : 'c.sub1';
 
-        $clkWhere  = ['c.affiliate_id=?', 'c.clicked_at BETWEEN ? AND ?', 'c.status = \'valid\''];
+        $clkWhere  = ['c.affiliate_id=?', 'c.clicked_at BETWEEN ? AND ?', 'c.status = \'valid\'', '(c.source IS NULL OR c.source != \'traffic_back\')'];
         $clkParams = [$affId, $dateFrom, $dateTo];
         if ($offerId > 0) { $clkWhere[] = 'c.offer_id=?'; $clkParams[] = $offerId; }
         if ($country !== '' && $tab !== 'country') { $clkWhere[] = 'c.country=?'; $clkParams[] = strtoupper($country); }
@@ -168,7 +168,7 @@ if (in_array($tab, $perfTabs)) {
                     SUM(CASE WHEN cv.id IS NOT NULL AND COALESCE(cv.fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud,
                     COALESCE(SUM(CASE WHEN cv.status='approved' AND cv.is_hidden=0 THEN cv.payout ELSE 0 END), 0) as payout
              FROM clicks c
-             LEFT JOIN conversions cv ON cv.click_id = c.click_id AND cv.is_hidden = 0
+             LEFT JOIN conversions cv ON cv.click_id = c.click_id AND cv.is_hidden = 0 AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')
              WHERE $whereStr
              GROUP BY $grpCol
              ORDER BY clicks DESC
@@ -212,16 +212,16 @@ if (in_array($tab, $perfTabs)) {
 
 $clicks = null;
 if ($tab === 'click') {
-    $clkWhere  = ['c.affiliate_id=?', 'c.clicked_at BETWEEN ? AND ?'];
+    $clkWhere  = ['c.affiliate_id=?', 'c.clicked_at BETWEEN ? AND ?', '(c.source IS NULL OR c.source != \'traffic_back\')'];
     $clkParams = [$affId, $dateFrom, $dateTo];
     if ($offerId > 0)    { $clkWhere[] = 'c.offer_id=?';  $clkParams[] = $offerId; }
     if ($country !== '') { $clkWhere[] = 'c.country=?';   $clkParams[] = strtoupper($country); }
     if ($sub1 !== '')    { $clkWhere[] = 'c.sub1 LIKE ?'; $clkParams[] = '%'.$sub1.'%'; }
     if ($clickId !== '') { $clkWhere[] = 'c.click_id=?';  $clkParams[] = $clickId; }
     if ($clickFilter === 'converted') {
-        $clkWhere[] = 'EXISTS (SELECT 1 FROM conversions _cv WHERE _cv.click_id = c.click_id AND _cv.is_hidden = 0)';
+        $clkWhere[] = 'EXISTS (SELECT 1 FROM conversions _cv WHERE _cv.click_id = c.click_id AND _cv.is_hidden = 0 AND (_cv.hide_reason IS NULL OR _cv.hide_reason NOT LIKE \'%traffic_back%\'))';
     } elseif ($clickFilter === 'approved') {
-        $clkWhere[] = "EXISTS (SELECT 1 FROM conversions _cv WHERE _cv.click_id = c.click_id AND _cv.status = 'approved' AND _cv.is_hidden = 0)";
+        $clkWhere[] = "EXISTS (SELECT 1 FROM conversions _cv WHERE _cv.click_id = c.click_id AND _cv.status = 'approved' AND _cv.is_hidden = 0 AND (_cv.hide_reason IS NULL OR _cv.hide_reason NOT LIKE '%traffic_back%'))";
     }
     $whereStr = implode(' AND ', $clkWhere);
 
@@ -237,7 +237,7 @@ if ($tab === 'click') {
                 cv.payout       as conv_payout,
                 cv.converted_at as conv_time
          FROM clicks c
-         LEFT JOIN conversions cv ON cv.click_id = c.click_id AND cv.is_hidden = 0
+         LEFT JOIN conversions cv ON cv.click_id = c.click_id AND cv.is_hidden = 0 AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')
          LEFT JOIN smartlinks sl ON sl.id = COALESCE(c.smartlink_id, cv.smartlink_id)
          LEFT JOIN smartlink_offers so ON so.offer_id = c.offer_id
          LEFT JOIN smartlinks sl2 ON sl2.id = so.smartlink_id
@@ -285,7 +285,7 @@ if ($tab === 'click') {
 // ─── Conversions tab ──────────────────────────────────────────────────────
 $convRows = null;
 if ($tab === 'conversion') {
-    $cvWhere  = ['cv.affiliate_id=?', 'cv.converted_at BETWEEN ? AND ?', 'cv.is_hidden=0'];
+    $cvWhere  = ['cv.affiliate_id=?', 'cv.converted_at BETWEEN ? AND ?', 'cv.is_hidden=0', "(cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')", "(ck.source IS NULL OR ck.source != 'traffic_back')"];
     $cvParams = [$affId, $dateFrom, $dateTo];
     if ($offerId > 0)    { $cvWhere[] = 'cv.offer_id=?'; $cvParams[] = $offerId; }
     if ($country !== '') {

@@ -221,7 +221,7 @@ function _fr_build_click_report(int $affId, string $from, string $to): array {
 }
 
 function _fr_build_conversion_report(int $affId, string $from, string $to): array {
-    $baseConv = "FROM conversions cv WHERE cv.affiliate_id = ? AND cv.converted_at BETWEEN ? AND ?";
+    $baseConv = "FROM conversions cv WHERE cv.affiliate_id = ? AND cv.converted_at BETWEEN ? AND ? AND cv.is_hidden = 0 AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')";
     $p        = [$affId, $from, $to];
 
     $total        = (int)(Database::fetchOne("SELECT COUNT(*) AS c {$baseConv}", $p)['c'] ?? 0);

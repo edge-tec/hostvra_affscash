@@ -1279,12 +1279,12 @@ if (!empty($_dashAffIds)) {
              JOIN affiliates af ON af.id = cv.affiliate_id
              JOIN users u ON u.id = af.user_id
              LEFT JOIN offers o ON o.id = cv.offer_id
-             WHERE cv.affiliate_id IN ($_in) AND $_dashFraudRiskSql
+             WHERE cv.affiliate_id IN ($_in) AND cv.is_hidden = 0 AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%') AND $_dashFraudRiskSql
              ORDER BY cv.converted_at DESC LIMIT 5",
             $_dashAffIds
         ) ?: [];
         $_dashFraudCount = (int)(Database::fetchOne(
-            "SELECT COUNT(*) AS c FROM conversions cv WHERE cv.affiliate_id IN ($_in) AND $_dashFraudRiskSql",
+            "SELECT COUNT(*) AS c FROM conversions cv WHERE cv.affiliate_id IN ($_in) AND cv.is_hidden = 0 AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%') AND $_dashFraudRiskSql",
             $_dashAffIds
         )['c'] ?? 0);
     } catch (\Throwable $_e) {}

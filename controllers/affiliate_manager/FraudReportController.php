@@ -92,6 +92,8 @@ if (!empty($affIds)) {
                  LEFT JOIN offers o ON o.id = cv.offer_id
                  WHERE cv.affiliate_id IN ($in)
                    AND cv.is_hidden = 0
+                   AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')
+                   AND (ck.source IS NULL OR ck.source != 'traffic_back')
                    AND $riskSql
                  ORDER BY cv.converted_at DESC LIMIT 5000",
                 $affIds
@@ -134,6 +136,8 @@ if (!empty($affIds)) {
              LEFT JOIN fraud_logs fl ON fl.click_id = cv.click_id
              WHERE cv.affiliate_id IN ($in)
                AND cv.is_hidden = 0
+               AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')
+               AND (ck.source IS NULL OR ck.source != 'traffic_back')
                AND $riskSql
              ORDER BY cv.converted_at DESC LIMIT 1000",
             $affIds
@@ -141,8 +145,11 @@ if (!empty($affIds)) {
 
         $count30 = (int)(Database::fetchOne(
             "SELECT COUNT(*) AS c FROM conversions cv
+             LEFT JOIN clicks ck ON ck.click_id = cv.click_id
              WHERE cv.affiliate_id IN ($in)
                AND cv.is_hidden = 0
+               AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')
+               AND (ck.source IS NULL OR ck.source != 'traffic_back')
                AND $riskSql
                AND cv.converted_at >= NOW() - INTERVAL 30 DAY",
             $affIds

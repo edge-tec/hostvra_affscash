@@ -85,7 +85,7 @@ function mgrSdWhere(array $activeAffIds, string $activeInSql, int $offerId, stri
 
 // ─── build click WHERE ────────────────────────────────────────────────────
 function mgrClkWhere(array $activeAffIds, string $activeInSql, int $offerId, string $country, string $sub1, string $dateFrom, string $dateTo): array {
-    $where  = ["c.clicked_at BETWEEN ? AND ?", "c.affiliate_id IN ($activeInSql)"];
+    $where  = ["c.clicked_at BETWEEN ? AND ?", "c.affiliate_id IN ($activeInSql)", "(c.source IS NULL OR c.source != 'traffic_back')"];
     $params = array_merge([$dateFrom, $dateTo], $activeAffIds);
     if ($offerId > 0)   { $where[] = 'c.offer_id=?';    $params[] = $offerId; }
     if ($country !== '') { $where[] = 'c.country=?';     $params[] = strtoupper($country); }
@@ -95,7 +95,7 @@ function mgrClkWhere(array $activeAffIds, string $activeInSql, int $offerId, str
 
 // ─── build conversion WHERE ───────────────────────────────────────────────
 function mgrCvWhere(array $activeAffIds, string $activeInSql, int $offerId, string $country, string $sub1, string $dateFrom, string $dateTo): array {
-    $where  = ["cv.converted_at BETWEEN ? AND ?", "cv.affiliate_id IN ($activeInSql)"];
+    $where  = ["cv.converted_at BETWEEN ? AND ?", "cv.affiliate_id IN ($activeInSql)", "cv.is_hidden = 0", "(cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')"];
     $params = array_merge([$dateFrom, $dateTo], $activeAffIds);
     if ($offerId > 0)   { $where[] = 'cv.offer_id=?';   $params[] = $offerId; }
     if ($country !== '') {
