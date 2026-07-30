@@ -199,105 +199,82 @@ html[data-theme="dark"] #tbl-conversions tbody td {
    COMPACT VIBRANT 3D STATUS BADGES & DISTINCT ACTION BUTTONS
    ═══════════════════════════════════════════════════════════════════════ */
 
-/* Status Badges */
-.ac-badge-approved {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-    color: #ffffff !important;
-    font-weight: 800 !important;
-    font-size: 10px !important;
-    padding: 3px 8px !important;
-    border-radius: 5px !important;
-    box-shadow: 0 2px 5px rgba(16, 185, 129, 0.25) !important;
+/* Status Badges & Buttons Unified Base */
+.ac-badge-approved,
+.ac-badge-rejected,
+.ac-badge-pending,
+.ac-btn-approve,
+.ac-btn-reject,
+.ac-btn-cb {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    padding: 4px 10px !important;
+    border-radius: 20px !important;
+    line-height: 1.2 !important;
     display: inline-flex !important;
     align-items: center !important;
-    gap: 3px !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    white-space: nowrap !important;
     letter-spacing: 0.02em !important;
+    box-sizing: border-box !important;
+    border: none !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12) !important;
+}
+
+.ac-badge-approved {
+    background: #10b981 !important;
+    color: #ffffff !important;
 }
 
 .ac-badge-rejected {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    background: #ef4444 !important;
     color: #ffffff !important;
-    font-weight: 800 !important;
-    font-size: 10px !important;
-    padding: 3px 8px !important;
-    border-radius: 5px !important;
-    box-shadow: 0 2px 5px rgba(239, 68, 68, 0.25) !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 3px !important;
-    letter-spacing: 0.02em !important;
 }
 
 .ac-badge-pending {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    background: #f59e0b !important;
     color: #ffffff !important;
-    font-weight: 800 !important;
-    font-size: 10px !important;
-    padding: 3px 8px !important;
-    border-radius: 5px !important;
-    box-shadow: 0 2px 5px rgba(245, 158, 11, 0.25) !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 3px !important;
-    letter-spacing: 0.02em !important;
 }
 
-/* Distinct Compact 3D Action Buttons */
+/* Distinct Compact Action Buttons */
 .ac-btn-approve {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    background: #10b981 !important;
     color: #ffffff !important;
-    font-weight: 800 !important;
-    font-size: 10.5px !important;
-    padding: 3px 9px !important;
-    border-radius: 5px !important;
-    border: none !important;
-    box-shadow: 0 2px 5px rgba(16, 185, 129, 0.25) !important;
     cursor: pointer !important;
     transition: all 0.15s ease !important;
-    white-space: nowrap !important;
 }
 
 .ac-btn-approve:hover {
+    background: #059669 !important;
     transform: translateY(-1px) !important;
     box-shadow: 0 4px 10px rgba(16, 185, 129, 0.35) !important;
     color: #ffffff !important;
 }
 
 .ac-btn-reject {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    background: #ef4444 !important;
     color: #ffffff !important;
-    font-weight: 800 !important;
-    font-size: 10.5px !important;
-    padding: 3px 9px !important;
-    border-radius: 5px !important;
-    border: none !important;
-    box-shadow: 0 2px 5px rgba(239, 68, 68, 0.25) !important;
     cursor: pointer !important;
     transition: all 0.15s ease !important;
-    white-space: nowrap !important;
 }
 
 .ac-btn-reject:hover {
+    background: #dc2626 !important;
     transform: translateY(-1px) !important;
     box-shadow: 0 4px 10px rgba(239, 68, 68, 0.35) !important;
     color: #ffffff !important;
 }
 
 .ac-btn-cb {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    background: #f59e0b !important;
     color: #ffffff !important;
-    font-weight: 800 !important;
-    font-size: 10.5px !important;
-    padding: 3px 9px !important;
-    border-radius: 5px !important;
-    border: none !important;
-    box-shadow: 0 2px 5px rgba(245, 158, 11, 0.25) !important;
     cursor: pointer !important;
     transition: all 0.15s ease !important;
-    white-space: nowrap !important;
 }
 
 .ac-btn-cb:hover {
+    background: #d97706 !important;
     transform: translateY(-1px) !important;
     box-shadow: 0 4px 10px rgba(245, 158, 11, 0.35) !important;
     color: #ffffff !important;
