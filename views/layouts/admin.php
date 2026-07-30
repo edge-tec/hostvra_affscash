@@ -629,6 +629,10 @@ function fmtTs(ts, opts) {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
         Email Notifications
     </a>
+    <a href="/admin/ai-seo" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/ai-seo') ? 'active' : '' ?>" style="background:linear-gradient(90deg,rgba(79,70,229,0.1),transparent);border-left:3px solid #4F46E5;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#4F46E5" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <span style="font-weight:700;color:#4F46E5">AI SEO Manager</span>
+    </a>
     <a href="/admin/search-console" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/search-console') ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         Search Console

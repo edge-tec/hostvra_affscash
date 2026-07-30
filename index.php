@@ -61,6 +61,13 @@ require BASE_PATH . '/core/RiskEngine.php';
 require BASE_PATH . '/core/TrafficSourceOverride.php';
 require BASE_PATH . '/core/TrafficSourceDetector.php';
 require BASE_PATH . '/core/AdvancedTrafficSourceOverride.php';
+require BASE_PATH . '/core/AiSeoEngine.php';
+require BASE_PATH . '/core/AiSchemaGenerator.php';
+require BASE_PATH . '/core/GeoOptimizer.php';
+require BASE_PATH . '/core/AiCrawlerManager.php';
+require BASE_PATH . '/core/LlmsTxtGenerator.php';
+require BASE_PATH . '/core/XmlSitemapGenerator.php';
+require BASE_PATH . '/core/PerformanceOptimizer.php';
 
 // Initialize config
 Config::init(CONFIG_PATH);
@@ -96,49 +103,67 @@ date_default_timezone_set(Config::get('config', 'app.timezone') ?? 'UTC');
 Auth::start();
 
 // ── Global Blocklist Guard ───────────────────────────────────────────────────
-// Runs on every request before any route is dispatched. Hard-blocks (HTTP 403)
-// any visitor whose IP, user-agent, affiliate ID, or affiliate code matches an
-// active scope=all entry in fraud_blocklist. Tracking endpoints add a second
-// scope=clicks/conversions check internally (smartlink, click, postback).
-// Admin sessions are exempt — see Blocklist::guard() for self-lockout safety.
 Blocklist::guard();
+
+// ── AI SEO Redirect Guard ───────────────────────────────────────────────────
+AiSeoEngine::checkRedirect($_SERVER['REQUEST_URI'] ?? '/');
 
 // ─── Routes ────────────────────────────────────────────────────────────────
 $r = new Router();
 
-// ── SEO: serve sitemap.xml and robots.txt ─────────────────────────────────
-// The static files on disk (written by /admin/search-console actions) take
-// priority. If they're missing we generate the same content on the fly so
-// crawlers never hit a 404.
+// ── SEO: serve sitemap.xml, robots.txt, llms.txt ─────────────────────────
 Router::get('/sitemap.xml', function() {
-    $file = BASE_PATH . '/sitemap.xml';
-    if (file_exists($file)) {
-        header('Content-Type: application/xml; charset=utf-8');
-        readfile($file); exit;
-    }
-    require_once BASE_PATH . '/core/GoogleSearchConsole.php';
-    require_once BASE_PATH . '/core/SeoSitemap.php';
     header('Content-Type: application/xml; charset=utf-8');
-    echo GoogleSearchConsole::buildSitemapXml(SeoSitemap::buildUrls());
+    echo XmlSitemapGenerator::buildSitemapIndex();
+    exit;
+});
+
+Router::get('/sitemap/pages.xml', function() {
+    header('Content-Type: application/xml; charset=utf-8');
+    echo XmlSitemapGenerator::buildPagesSitemap();
+    exit;
+});
+Router::get('/sitemap/offers.xml', function() {
+    header('Content-Type: application/xml; charset=utf-8');
+    echo XmlSitemapGenerator::buildOffersSitemap();
+    exit;
+});
+Router::get('/sitemap/categories.xml', function() {
+    header('Content-Type: application/xml; charset=utf-8');
+    echo XmlSitemapGenerator::buildCategoriesSitemap();
+    exit;
+});
+Router::get('/sitemap/blogs.xml', function() {
+    header('Content-Type: application/xml; charset=utf-8');
+    echo XmlSitemapGenerator::buildBlogsSitemap();
+    exit;
+});
+Router::get('/sitemap/images.xml', function() {
+    header('Content-Type: application/xml; charset=utf-8');
+    echo XmlSitemapGenerator::buildImagesSitemap();
+    exit;
+});
+Router::get('/sitemap/videos.xml', function() {
+    header('Content-Type: application/xml; charset=utf-8');
+    echo XmlSitemapGenerator::buildVideosSitemap();
     exit;
 });
 
 Router::get('/robots.txt', function() {
-    $file = BASE_PATH . '/robots.txt';
     header('Content-Type: text/plain; charset=utf-8');
-    if (file_exists($file)) { readfile($file); exit; }
-    require_once BASE_PATH . '/core/GoogleSearchConsole.php';
-    $siteUrl = rtrim(Config::get('config', 'app.url') ?? '', '/');
-    $cfg     = ['site_url' => $siteUrl, 'robots_index' => true];
-    try {
-        $rows = Database::fetchAll("SELECT setting_key, setting_value FROM seo_settings WHERE setting_key IN ('site_url','robots_index','robots_disallow')");
-        foreach ($rows as $r) {
-            if ($r['setting_key'] === 'site_url' && $r['setting_value']) $cfg['site_url'] = rtrim($r['setting_value'], '/');
-            if ($r['setting_key'] === 'robots_index')    $cfg['robots_index']    = $r['setting_value'] !== '0';
-            if ($r['setting_key'] === 'robots_disallow') $cfg['robots_disallow'] = $r['setting_value'];
-        }
-    } catch (\Throwable $_e) {}
-    echo GoogleSearchConsole::buildRobotsTxt($cfg);
+    echo AiCrawlerManager::buildRobotsTxt();
+    exit;
+});
+
+Router::get('/llms.txt', function() {
+    header('Content-Type: text/markdown; charset=utf-8');
+    echo LlmsTxtGenerator::buildLlmsTxt();
+    exit;
+});
+
+Router::get('/llms-full.txt', function() {
+    header('Content-Type: text/markdown; charset=utf-8');
+    echo LlmsTxtGenerator::buildLlmsFullTxt();
     exit;
 });
 
@@ -367,10 +392,85 @@ Router::any('/admin/fraud-alerts',       function() { require BASE_PATH . '/cont
 Router::any('/admin/vpn-log', function() { require BASE_PATH . '/controllers/admin/VpnLogController.php'; });
 Router::any('/admin/notifications', function() { require BASE_PATH . '/controllers/admin/NotificationController.php'; });
 Router::any('/admin/registration-questions', function() { require BASE_PATH . '/controllers/admin/RegistrationQuestionsController.php'; });
-Router::any('/admin/reports', function() { require BASE_PATH . '/controllers/admin/ReportController.php'; });
-Router::any('/admin/reports/clicks', function() { require BASE_PATH . '/controllers/admin/ClickReportController.php'; });
-Router::any('/admin/reports/traffic-back', function() { require BASE_PATH . '/controllers/admin/TrafficBackReportController.php'; });
-Router::any('/admin/reports/traffic-source-override', function() { require BASE_PATH . '/controllers/admin/TrafficSourceOverrideReportController.php'; });
+Router::any('/admin/ai-seo', function() { require BASE_PATH . '/controllers/admin/AiSeoController.php'; });
+
+// ── Enterprise REST APIs for AI SEO & LLM Discovery ─────────────────────────────
+Router::get('/api/seo/metadata', function() {
+    header('Content-Type: application/json; charset=utf-8');
+    $url = Helpers::get('url') ?: '/';
+    echo json_encode(['success' => true, 'data' => AiSeoEngine::getPageMetadata($url)]);
+    exit;
+});
+
+Router::get('/api/seo/schema', function() {
+    header('Content-Type: application/json; charset=utf-8');
+    $url = Helpers::get('url') ?: '/';
+    $aiMeta = AiSeoEngine::getPageMetadata($url);
+    $schemas = [
+        AiSchemaGenerator::organization(),
+        AiSchemaGenerator::website(),
+        AiSchemaGenerator::webpage($aiMeta['canonical_url'], $aiMeta['title'], $aiMeta['meta_description'])
+    ];
+    echo AiSchemaGenerator::buildGraph($schemas);
+    exit;
+});
+
+Router::get('/api/seo/sitemap', function() {
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(['success' => true, 'urls' => XmlSitemapGenerator::buildPagesSitemap()]);
+    exit;
+});
+
+Router::get('/api/seo/faq', function() {
+    header('Content-Type: application/json; charset=utf-8');
+    $url = Helpers::get('url') ?: '/';
+    $faqs = Database::fetchAll("SELECT question, answer FROM ai_seo_faqs WHERE target_url = ? AND is_published=1", [$url]);
+    echo json_encode(['success' => true, 'faqs' => $faqs]);
+    exit;
+});
+
+Router::get('/api/seo/ai-summary', function() {
+    header('Content-Type: application/json; charset=utf-8');
+    $url = Helpers::get('url') ?: '/';
+    $meta = AiSeoEngine::getPageMetadata($url);
+    echo json_encode([
+        'success' => true,
+        'url' => $url,
+        'summary' => $meta['ai_summary'] ?? $meta['meta_description'],
+        'primary_entity' => $meta['primary_entity'] ?? 'Affiliate Marketing'
+    ]);
+    exit;
+});
+
+Router::get('/api/seo/breadcrumb', function() {
+    header('Content-Type: application/json; charset=utf-8');
+    $url = Helpers::get('url') ?: '/';
+    $crumbs = [
+        ['name' => 'Home', 'url' => '/']
+    ];
+    if ($url !== '/') {
+        $parts = array_filter(explode('/', $url));
+        $path = '';
+        foreach ($parts as $p) {
+            $path .= '/' . $p;
+            $crumbs[] = ['name' => ucfirst($p), 'url' => $path];
+        }
+    }
+    echo json_encode(['success' => true, 'breadcrumbs' => $crumbs]);
+    exit;
+});
+
+Router::get('/api/seo/llms-txt', function() {
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(['success' => true, 'content' => LlmsTxtGenerator::buildLlmsTxt()]);
+    exit;
+});
+
+Router::get('/api/seo/reports', function() {
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(['success' => true, 'scores' => AiSeoEngine::getScores()]);
+    exit;
+});
 
 Router::any('/admin/reports/affiliates', function() { require BASE_PATH . '/controllers/admin/AffiliateReportController.php'; });
 Router::any('/admin/reports/duplicate-conversions', function() { require BASE_PATH . '/controllers/admin/DuplicateConversionsController.php'; });

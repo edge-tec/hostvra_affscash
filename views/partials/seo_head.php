@@ -1,89 +1,99 @@
 <?php
 /**
- * Public-page SEO <head> partial.
+ * Public-page Enterprise AI SEO <head> partial.
  *
- * Renders canonical URL, meta tags, robots directives, verification meta,
- * and analytics/tag-manager snippets from the seo_settings table populated
- * by /admin/search-console. Safe to include before any other head links —
- * outputs nothing if a setting is empty.
- *
- * Caller-overridable variables (set before include):
- *   $seoTitle       — overrides default <title>
- *   $seoDescription — overrides admin meta_description
- *   $seoCanonical   — overrides auto-computed canonical URL
- *   $seoNoindex     — bool, force noindex on this page
+ * Renders canonical URL, meta tags, Open Graph, Twitter Cards, AI Summaries,
+ * Performance Resource Hints, and validated Schema.org JSON-LD graph.
  */
 
-// ── One-time seo_settings reader (per request) ─────────────────────────────
-if (!function_exists('seoHeadGet')) {
-    function seoHeadGet(string $key, string $default = ''): string
-    {
-        static $cache = null;
-        if ($cache === null) {
-            $cache = [];
-            try {
-                $rows = Database::fetchAll("SELECT setting_key, setting_value FROM seo_settings");
-                foreach ($rows as $r) $cache[$r['setting_key']] = (string)($r['setting_value'] ?? '');
-            } catch (\Throwable $_e) { /* table may not exist on fresh installs */ }
-        }
-        return $cache[$key] ?? $default;
+// Load AI SEO core engines
+require_once BASE_PATH . '/core/AiSeoEngine.php';
+require_once BASE_PATH . '/core/AiSchemaGenerator.php';
+require_once BASE_PATH . '/core/GeoOptimizer.php';
+require_once BASE_PATH . '/core/PerformanceOptimizer.php';
+
+AiSeoEngine::initSchema();
+
+$reqUri = $_SERVER['REQUEST_URI'] ?? '/';
+$aiMeta = AiSeoEngine::getPageMetadata($reqUri);
+
+$_seoSiteUrl = rtrim(AiSeoEngine::getSetting('brand_organization_url', Config::get('config', 'app.url') ?? 'https://affscash.net'), '/');
+$_seoTitle = $seoTitle ?? $aiMeta['title'] ?? 'Affscash — Best High Paying CPA Affiliate Network';
+$_seoDesc  = $seoDescription ?? $aiMeta['meta_description'] ?? 'Affscash is a global CPA Affiliate Network providing exclusive high-paying offers, AI Smartlink technology, and 24/7 support.';
+$_seoKeywords = $seoKeywords ?? $aiMeta['meta_keywords'] ?? 'CPA network, affiliate marketing, smartlink, high paying offers';
+$_seoCanonical = $seoCanonical ?? $aiMeta['canonical_url'] ?? ($_seoSiteUrl . strtok($reqUri, '?'));
+$_seoRobots = !empty($seoNoindex) ? 'noindex, nofollow' : ($aiMeta['robots_meta'] ?? 'index, follow');
+
+$_ogTitle = $aiMeta['og_title'] ?? $_seoTitle;
+$_ogDesc  = $aiMeta['og_description'] ?? $_seoDesc;
+$_ogImg   = $aiMeta['og_image'] ?? ($_seoSiteUrl . '/logoo.png');
+
+$_twTitle = $aiMeta['twitter_title'] ?? $_seoTitle;
+$_twDesc  = $aiMeta['twitter_description'] ?? $_seoDesc;
+$_twImg   = $aiMeta['twitter_image'] ?? $_ogImg;
+
+$_aiSummary = $aiMeta['ai_summary'] ?? $_seoDesc;
+$_primaryEntity = $aiMeta['primary_entity'] ?? 'Affiliate Marketing';
+
+// Build Schema Graph
+$schemas = [];
+$schemas[] = AiSchemaGenerator::organization();
+$schemas[] = AiSchemaGenerator::website();
+$schemas[] = AiSchemaGenerator::webpage($_seoCanonical, $_seoTitle, $_seoDesc);
+
+// Fetch FAQs for page if exist
+try {
+    $faqs = Database::fetchAll("SELECT question, answer FROM ai_seo_faqs WHERE target_url = ? AND is_published=1", [$aiMeta['page_url']]);
+    if (!empty($faqs)) {
+        $faqSchema = AiSchemaGenerator::faqPage($faqs);
+        if ($faqSchema) $schemas[] = $faqSchema;
     }
+} catch (\Throwable $_e) {}
+
+// If custom schema provided by caller
+if (!empty($seoSchema) && is_array($seoSchema)) {
+    $schemas[] = $seoSchema;
 }
 
-$_seoSiteUrl     = rtrim(seoHeadGet('site_url', Config::get('config', 'app.url') ?? ''), '/');
-$_seoDesc        = $seoDescription ?? seoHeadGet('meta_description');
-$_seoKeywords    = seoHeadGet('meta_keywords');
-$_seoVerifyMeta  = seoHeadGet('verification_meta');
-$_seoGaId        = seoHeadGet('google_analytics_id');
-$_seoGtmId       = seoHeadGet('google_tag_manager_id');
-$_seoIndex       = seoHeadGet('robots_index',  '1') !== '0';
-$_seoFollow      = seoHeadGet('robots_follow', '1') !== '0';
-if (!empty($seoNoindex)) $_seoIndex = false;
-
-// Auto-canonical: strip query string by default, but allow callers to override.
-$_seoCanonical = $seoCanonical ?? null;
-if ($_seoCanonical === null && $_seoSiteUrl !== '') {
-    $_path = strtok($_SERVER['REQUEST_URI'] ?? '/', '?');
-    $_seoCanonical = $_seoSiteUrl . ($_path === false ? '/' : $_path);
-}
+$schemaGraphJson = AiSchemaGenerator::buildGraph($schemas);
 ?>
-<?php if (!empty($seoTitle)): ?>
-<title><?= htmlspecialchars($seoTitle, ENT_QUOTES, 'UTF-8') ?></title>
-<?php endif; ?>
-<?php if ($_seoDesc !== ''): ?>
+<!-- Core Title & Meta Tags -->
+<title><?= htmlspecialchars($_seoTitle, ENT_QUOTES, 'UTF-8') ?></title>
 <meta name="description" content="<?= htmlspecialchars($_seoDesc, ENT_QUOTES, 'UTF-8') ?>">
-<?php endif; ?>
-<?php if ($_seoKeywords !== ''): ?>
 <meta name="keywords" content="<?= htmlspecialchars($_seoKeywords, ENT_QUOTES, 'UTF-8') ?>">
-<?php endif; ?>
-<meta name="robots" content="<?= ($_seoIndex ? 'index' : 'noindex') ?>, <?= ($_seoFollow ? 'follow' : 'nofollow') ?>">
-<?php if ($_seoCanonical): ?>
+<meta name="robots" content="<?= htmlspecialchars($_seoRobots, ENT_QUOTES, 'UTF-8') ?>">
 <link rel="canonical" href="<?= htmlspecialchars($_seoCanonical, ENT_QUOTES, 'UTF-8') ?>">
-<?php endif; ?>
-<?php if ($_seoVerifyMeta !== ''): ?>
-<?php
-// Accept either the full <meta ...> tag pasted from Search Console,
-// or just the content="..." value, and emit a clean <meta> in both cases.
-$_seoVerifyContent = $_seoVerifyMeta;
-if (preg_match('/content\s*=\s*"([^"]+)"/i', $_seoVerifyMeta, $_m)) $_seoVerifyContent = $_m[1];
-?>
-<meta name="google-site-verification" content="<?= htmlspecialchars($_seoVerifyContent, ENT_QUOTES, 'UTF-8') ?>">
-<?php endif; ?>
-<?php if ($_seoGtmId !== ''): /* GTM head snippet */ ?>
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','<?= htmlspecialchars($_seoGtmId, ENT_QUOTES, 'UTF-8') ?>');</script>
-<?php endif; ?>
-<?php if ($_seoGaId !== ''): /* GA4 tag */ ?>
-<script async src="https://www.googletagmanager.com/gtag/js?id=<?= htmlspecialchars($_seoGaId, ENT_QUOTES, 'UTF-8') ?>"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','<?= htmlspecialchars($_seoGaId, ENT_QUOTES, 'UTF-8') ?>');</script>
-<?php endif; ?>
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="<?= htmlspecialchars($_seoCanonical, ENT_QUOTES, 'UTF-8') ?>">
+<meta property="og:title" content="<?= htmlspecialchars($_ogTitle, ENT_QUOTES, 'UTF-8') ?>">
+<meta property="og:description" content="<?= htmlspecialchars($_ogDesc, ENT_QUOTES, 'UTF-8') ?>">
+<meta property="og:image" content="<?= htmlspecialchars($_ogImg, ENT_QUOTES, 'UTF-8') ?>">
+<meta property="og:site_name" content="Affscash">
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="<?= htmlspecialchars($_seoCanonical, ENT_QUOTES, 'UTF-8') ?>">
+<meta name="twitter:title" content="<?= htmlspecialchars($_twTitle, ENT_QUOTES, 'UTF-8') ?>">
+<meta name="twitter:description" content="<?= htmlspecialchars($_twDesc, ENT_QUOTES, 'UTF-8') ?>">
+<meta name="twitter:image" content="<?= htmlspecialchars($_twImg, ENT_QUOTES, 'UTF-8') ?>">
+
+<!-- AI SEO & GEO Discoverability Meta -->
+<meta name="ai-summary" content="<?= htmlspecialchars($_aiSummary, ENT_QUOTES, 'UTF-8') ?>">
+<meta name="primary-entity" content="<?= htmlspecialchars($_primaryEntity, ENT_QUOTES, 'UTF-8') ?>">
+<meta name="reading-time" content="<?= (int)($aiMeta['reading_time'] ?? 2) ?> min">
+
+<!-- Performance Resource Hints -->
+<?= PerformanceOptimizer::renderResourceHints() ?>
+
 <?php 
 $fav = (class_exists('Config')) ? Config::get('config','app.favicon') : null;
 if (!$fav) { $fav = '/x-icon.png'; }
 ?>
 <link rel="icon" href="<?= Helpers::e($fav) ?>" type="image/png">
 
-<?php if (!empty($seoSchema)): ?>
+<!-- JSON-LD Schema Graph -->
 <script type="application/ld+json">
-<?= $seoSchema ?>
+<?= $schemaGraphJson ?>
 </script>
-<?php endif; ?>
