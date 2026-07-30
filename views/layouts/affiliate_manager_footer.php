@@ -181,14 +181,14 @@ html[data-theme="light"] .footer-copyright-text {
         <?php endif; ?>
     </div>
     <div class="footer-nav-container">
-        <a href="/terms-of-service" target="_blank" class="footer-link"><?= $iconHtml ?>Terms &amp; Conditions</a>
-        <a href="/privacy-policy" target="_blank" class="footer-link"><?= $iconHtml ?>Privacy Policy</a>
-        <a href="/affiliate-agreement" target="_blank" class="footer-link"><?= $iconHtml ?>Affiliate Agreement</a>
-        <a href="/anti-fraud-policy" target="_blank" class="footer-link"><?= $iconHtml ?>Anti-Fraud Policy</a>
-        <a href="/gdpr-compliance-policy" target="_blank" class="footer-link"><?= $iconHtml ?>GDPR Compliance</a>
-        <a href="/refund-payment-policy" target="_blank" class="footer-link"><?= $iconHtml ?>Refund Policy</a>
-        <a href="/cookie-policy" target="_blank" class="footer-link"><?= $iconHtml ?>Cookie Policy</a>
-        <a href="/dashboard-disclaimers" target="_blank" class="footer-link"><?= $iconHtml ?>Dashboard Disclaimers</a>
+        <a href="/terms-of-service" target="_blank" class="footer-link">Terms &amp; Conditions</a>
+        <a href="/privacy-policy" target="_blank" class="footer-link">Privacy Policy</a>
+        <a href="/affiliate-agreement" target="_blank" class="footer-link">Affiliate Agreement</a>
+        <a href="/anti-fraud-policy" target="_blank" class="footer-link">Anti-Fraud Policy</a>
+        <a href="/gdpr-compliance-policy" target="_blank" class="footer-link">GDPR Compliance</a>
+        <a href="/refund-payment-policy" target="_blank" class="footer-link">Refund Policy</a>
+        <a href="/cookie-policy" target="_blank" class="footer-link">Cookie Policy</a>
+        <a href="/dashboard-disclaimers" target="_blank" class="footer-link">Dashboard Disclaimers</a>
     </div>
     <?php if ($copyright): ?>
     <div class="footer-copyright-text"><?= Helpers::e($copyright) ?></div>
