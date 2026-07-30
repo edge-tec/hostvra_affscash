@@ -225,6 +225,26 @@ class AiSeoEngine
             }
         }
 
+        // Seed default high-converting FAQs if empty
+        $faqCnt = Database::fetchOne("SELECT COUNT(*) as c FROM `ai_seo_faqs`")['c'] ?? 0;
+        if ((int)$faqCnt === 0) {
+            $defaultFaqs = [
+                ['/', 'What is Affscash CPA Network?', 'Affscash is a premier global performance affiliate marketing network connecting publishers and media buyers with high-paying direct advertisers, AI Smartlink technology, and weekly payouts.'],
+                ['/', 'How fast are affiliate payouts on Affscash?', 'Affscash offers weekly payouts every Monday via Wire Transfer, USDT (TRC-20 / ERC-20), Bitcoin, PayPal, WebMoney, and Payoneer once the minimum payout threshold is reached.'],
+                ['/', 'How do I get fast account approval as a publisher?', 'Simply complete the publisher registration form on Affscash with your real contact details and basic traffic information for fast review by our account management team.'],
+                ['/', 'What traffic sources are allowed on Affscash?', 'We accept Search (SEO/PPC), Social Media (Facebook, TikTok, Instagram), Push Notifications, Native Ads, Email Marketing, Pop-under, and Mobile In-App traffic.'],
+                ['/offers', 'What type of CPA offers are available on Affscash?', 'Affscash features thousands of high-converting CPA, CPL (SOI/DOI), CPI, and Smartlink offers across Dating, Finance, Sweepstakes, Gaming, and E-commerce verticals.'],
+                ['/offers', 'What is an AI Smartlink and how does it work?', 'An AI Smartlink is an intelligent tracking link algorithm that analyzes each visitor\'s GEO location, device type, OS, and browser in real-time to route them to the highest-converting offer automatically.'],
+                ['/offers/best-dating-cpa-offers', 'What are the highest paying dating CPA offers?', 'Affscash offers premium mainstream and casual dating CPA/CPL campaigns with payouts ranging from $2.50 up to $120+ per lead/conversion depending on Tier-1, Tier-2, or Tier-3 GEOs.']
+            ];
+            foreach ($defaultFaqs as $f) {
+                Database::query(
+                    "INSERT INTO `ai_seo_faqs` (`target_url`, `question`, `answer`, `is_published`) VALUES (?,?,?,1)",
+                    $f
+                );
+            }
+        }
+
         // Seed default settings if empty
         $setCnt = Database::fetchOne("SELECT COUNT(*) as c FROM `ai_seo_settings`")['c'] ?? 0;
         if ((int)$setCnt === 0) {
