@@ -158,11 +158,11 @@ html[data-theme="dark"] .ac-table-card {
 #tbl-conversions thead th {
     background: #f8fafc !important;
     color: #475569 !important;
-    font-size: 11.5px !important;
+    font-size: 11px !important;
     font-weight: 700 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.05em !important;
-    padding: 14px 16px !important;
+    padding: 8px 10px !important;
     border-bottom: 2px solid #e2e8f0 !important;
 }
 
@@ -186,7 +186,7 @@ tr.ac-row-pending  { background: rgba(245, 158, 11, 0.025) !important; }
 }
 
 #tbl-conversions tbody td {
-    padding: 14px 16px !important;
+    padding: 7px 10px !important;
     vertical-align: middle !important;
     border-bottom: 1px solid #f1f5f9 !important;
 }
@@ -196,7 +196,7 @@ html[data-theme="dark"] #tbl-conversions tbody td {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   VIBRANT 3D STATUS BADGES & DISTINCT ACTION BUTTONS
+   COMPACT VIBRANT 3D STATUS BADGES & DISTINCT ACTION BUTTONS
    ═══════════════════════════════════════════════════════════════════════ */
 
 /* Status Badges */
@@ -204,62 +204,62 @@ html[data-theme="dark"] #tbl-conversions tbody td {
     background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
     color: #ffffff !important;
     font-weight: 800 !important;
-    font-size: 11px !important;
-    padding: 5px 12px !important;
-    border-radius: 8px !important;
-    box-shadow: 0 3px 10px rgba(16, 185, 129, 0.35) !important;
+    font-size: 10px !important;
+    padding: 3px 8px !important;
+    border-radius: 5px !important;
+    box-shadow: 0 2px 5px rgba(16, 185, 129, 0.25) !important;
     display: inline-flex !important;
     align-items: center !important;
-    gap: 4px !important;
-    letter-spacing: 0.03em !important;
+    gap: 3px !important;
+    letter-spacing: 0.02em !important;
 }
 
 .ac-badge-rejected {
     background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
     color: #ffffff !important;
     font-weight: 800 !important;
-    font-size: 11px !important;
-    padding: 5px 12px !important;
-    border-radius: 8px !important;
-    box-shadow: 0 3px 10px rgba(239, 68, 68, 0.35) !important;
+    font-size: 10px !important;
+    padding: 3px 8px !important;
+    border-radius: 5px !important;
+    box-shadow: 0 2px 5px rgba(239, 68, 68, 0.25) !important;
     display: inline-flex !important;
     align-items: center !important;
-    gap: 4px !important;
-    letter-spacing: 0.03em !important;
+    gap: 3px !important;
+    letter-spacing: 0.02em !important;
 }
 
 .ac-badge-pending {
     background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
     color: #ffffff !important;
     font-weight: 800 !important;
-    font-size: 11px !important;
-    padding: 5px 12px !important;
-    border-radius: 8px !important;
-    box-shadow: 0 3px 10px rgba(245, 158, 11, 0.35) !important;
+    font-size: 10px !important;
+    padding: 3px 8px !important;
+    border-radius: 5px !important;
+    box-shadow: 0 2px 5px rgba(245, 158, 11, 0.25) !important;
     display: inline-flex !important;
     align-items: center !important;
-    gap: 4px !important;
-    letter-spacing: 0.03em !important;
+    gap: 3px !important;
+    letter-spacing: 0.02em !important;
 }
 
-/* Distinct 3D Action Buttons */
+/* Distinct Compact 3D Action Buttons */
 .ac-btn-approve {
     background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
     color: #ffffff !important;
     font-weight: 800 !important;
-    font-size: 11.5px !important;
-    padding: 6px 14px !important;
-    border-radius: 8px !important;
+    font-size: 10.5px !important;
+    padding: 3px 9px !important;
+    border-radius: 5px !important;
     border: none !important;
-    box-shadow: 0 3px 10px rgba(16, 185, 129, 0.35) !important;
+    box-shadow: 0 2px 5px rgba(16, 185, 129, 0.25) !important;
     cursor: pointer !important;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transition: all 0.15s ease !important;
     white-space: nowrap !important;
 }
 
 .ac-btn-approve:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.45) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.35) !important;
     color: #ffffff !important;
 }
 
@@ -267,19 +267,19 @@ html[data-theme="dark"] #tbl-conversions tbody td {
     background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
     color: #ffffff !important;
     font-weight: 800 !important;
-    font-size: 11.5px !important;
-    padding: 6px 14px !important;
-    border-radius: 8px !important;
+    font-size: 10.5px !important;
+    padding: 3px 9px !important;
+    border-radius: 5px !important;
     border: none !important;
-    box-shadow: 0 3px 10px rgba(239, 68, 68, 0.35) !important;
+    box-shadow: 0 2px 5px rgba(239, 68, 68, 0.25) !important;
     cursor: pointer !important;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transition: all 0.15s ease !important;
     white-space: nowrap !important;
 }
 
 .ac-btn-reject:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 6px 16px rgba(239, 68, 68, 0.45) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.35) !important;
     color: #ffffff !important;
 }
 
@@ -287,19 +287,19 @@ html[data-theme="dark"] #tbl-conversions tbody td {
     background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
     color: #ffffff !important;
     font-weight: 800 !important;
-    font-size: 11.5px !important;
-    padding: 6px 14px !important;
-    border-radius: 8px !important;
+    font-size: 10.5px !important;
+    padding: 3px 9px !important;
+    border-radius: 5px !important;
     border: none !important;
-    box-shadow: 0 3px 10px rgba(245, 158, 11, 0.35) !important;
+    box-shadow: 0 2px 5px rgba(245, 158, 11, 0.25) !important;
     cursor: pointer !important;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transition: all 0.15s ease !important;
     white-space: nowrap !important;
 }
 
 .ac-btn-cb:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.45) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.35) !important;
     color: #ffffff !important;
 }
 
