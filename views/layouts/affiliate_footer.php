@@ -530,7 +530,8 @@ if (!$_isOnSupportPage):
                     body.appendChild(meta);
                     if (m.id > _lcwLastId) _lcwLastId = m.id;
                 });
-                if (scrollToEnd || _lcwOpen) body.scrollTop = body.scrollHeight;
+                var lcwAtBottom = (body.scrollHeight - body.scrollTop - body.clientHeight) <= 40;
+                if (scrollToEnd || lcwAtBottom) body.scrollTop = body.scrollHeight;
                 _lcwLoaded = true;
                 lcwUpdateBadge();
             })

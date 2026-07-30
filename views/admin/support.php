@@ -441,6 +441,7 @@ function loadMessages(since, isInitialLoad) {
     .then(function(data){
         var box = document.getElementById('chat-messages');
         if (!box) return;
+        initScrollListener();
         if (data.conversation) {
             _selStatus = data.conversation.status;
             var badge = document.getElementById('chat-status-badge');
@@ -455,8 +456,14 @@ function loadMessages(since, isInitialLoad) {
             if (btnReopen) btnReopen.style.display = (_selStatus === 'closed' && _selConvId) ? '' : 'none';
         }
 
-        var atBottom = (box.scrollHeight - box.scrollTop) <= (box.clientHeight + 120);
+        var distFromBottom = box.scrollHeight - box.scrollTop - box.clientHeight;
+        var isAtBottom = (distFromBottom <= 30) && !_userScrolledUp;
 
+        if (isInitialLoad) {
+            _userScrolledUp = false;
+        }
+
+        var newMsgCount = 0;
         (data.messages||[]).forEach(function(m){
             if (_renderedIds[m.id]) {
                 var existing = box.querySelector('[data-id="'+m.id+'"]');
@@ -477,7 +484,7 @@ function loadMessages(since, isInitialLoad) {
             if (m.id > _lastId) _lastId = m.id;
         });
 
-        if (isInitialLoad || atBottom) {
+        if (isInitialLoad || (isAtBottom && newMsgCount > 0)) {
             scrollToBottom(isInitialLoad ? false : true);
         }
         if (isInitialLoad) loadConversations();
@@ -514,7 +521,7 @@ function sendMessage() {
     inp.value=''; inp.style.height=''; cancelAttachment();
     fetch('/api/chat?action=send', { method:'POST', body: fd })
     .then(function(r){return r.json();})
-    .then(function(){ loadMessages(_lastId); });
+    .then(function(){ _userScrolledUp = false; loadMessages(0, false); scrollToBottom(true); });
 }
 
 function editMsg(id) {

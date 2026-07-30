@@ -258,8 +258,22 @@ function renderMsg(m) {
     return div;
 }
 
+var _userScrolledUp = false;
+
+function initScrollListener() {
+    var box = document.getElementById('chat-messages');
+    if (box && !box.dataset.hasScrollListener) {
+        box.dataset.hasScrollListener = 'true';
+        box.addEventListener('scroll', function() {
+            var distFromBottom = box.scrollHeight - box.scrollTop - box.clientHeight;
+            _userScrolledUp = (distFromBottom > 30);
+        });
+    }
+}
+
 function scrollToBottom(smooth){
     var box = document.getElementById('chat-messages');
+    if (!box) return;
     if (smooth) {
         box.scrollTo({top: box.scrollHeight, behavior:'smooth'});
     } else {
@@ -276,6 +290,7 @@ function loadMessages(since, isInitialLoad) {
     .then(function(data){
         var box = document.getElementById('chat-messages');
         if (!box) return;
+        initScrollListener();
         var loadEl = document.getElementById('chat-loading'); if (loadEl) loadEl.remove();
         if (data.my_user_id) _myUserId = data.my_user_id;
 
@@ -303,9 +318,11 @@ function loadMessages(since, isInitialLoad) {
         var emptyEl = box.querySelector('.empty-chat-msg');
         if (emptyEl) emptyEl.remove();
 
-        var atBottom = (box.scrollHeight - box.scrollTop) <= (box.clientHeight + 120);
+        var distFromBottom = box.scrollHeight - box.scrollTop - box.clientHeight;
+        var isAtBottom = (distFromBottom <= 30) && !_userScrolledUp;
 
         if (isInitialLoad) {
+            _userScrolledUp = false;
             _renderedIds = {};
             _lastDateLabel = '';
         }
@@ -337,7 +354,7 @@ function loadMessages(since, isInitialLoad) {
             newMsgCount++;
         });
 
-        if (isInitialLoad || (atBottom && newMsgCount > 0)) {
+        if (isInitialLoad || (isAtBottom && newMsgCount > 0)) {
             scrollToBottom(isInitialLoad ? false : true);
         }
     })
@@ -404,13 +421,13 @@ function sendMessage() {
     fetch('/api/chat?action=send', { method:'POST', body: fd })
     .then(function(r){return r.json();})
     .then(function(){
-        // Full reload to flush banners / pick up new conversation
+        _userScrolledUp = false;
         var box = document.getElementById('chat-messages');
         box.innerHTML = '';
         _lastId = 0;
         _renderedIds = {};
         _lastDateLabel = '';
-        loadMessages(0);
+        loadMessages(0, true);
     });
 }
 
