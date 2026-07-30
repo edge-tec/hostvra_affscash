@@ -197,6 +197,34 @@ class AiSeoEngine
             }
         }
 
+        // Seed top high-volume CPA & Dating keywords if empty
+        $kwCnt = Database::fetchOne("SELECT COUNT(*) as c FROM `ai_seo_keywords`")['c'] ?? 0;
+        if ((int)$kwCnt === 0) {
+            $defaultKeywords = [
+                ['best cpa affiliate network', '/offers', 'CPA Network', 14800],
+                ['high paying cpa offers', '/offers/high-paying-affiliate-offers', 'Offer', 12200],
+                ['cpa marketing for beginners', '/blog', 'Affiliate Marketing', 18500],
+                ['instant approval cpa networks', '/register/affiliate', 'CPA Network', 9900],
+                ['top cpa affiliate networks 2026', '/offers', 'Affiliate Marketing', 8100],
+                ['best dating cpa offers', '/offers/best-dating-cpa-offers', 'Dating', 22400],
+                ['casual dating cpa network', '/category/dating-offers', 'Dating', 15100],
+                ['high converting dating smartlink', '/offers/best-dating-cpa-offers', 'Smartlink', 11300],
+                ['dating affiliate programs high payout', '/offers/best-dating-cpa-offers', 'Dating', 13500],
+                ['single opt in dating offers', '/category/dating-offers', 'Offer', 8900],
+                ['best cpl affiliate networks', '/offers/best-cpa-offers', 'Offer', 16700],
+                ['high paying cps affiliate offers', '/offers/high-paying-affiliate-offers', 'Offer', 14200],
+                ['finance cpa offers high payout', '/offers/best-finance-cpa-offers', 'Finance', 19800],
+                ['sweepstakes cpa offers gift card', '/offers/best-sweepstakes-offers', 'Sweepstakes', 17300],
+                ['crypto cpa offers weekly payout', '/offers/best-finance-cpa-offers', 'Finance', 10500]
+            ];
+            foreach ($defaultKeywords as $k) {
+                Database::query(
+                    "INSERT IGNORE INTO `ai_seo_keywords` (`keyword`, `target_url`, `entity_name`, `search_volume`) VALUES (?,?,?,?)",
+                    $k
+                );
+            }
+        }
+
         // Seed default settings if empty
         $setCnt = Database::fetchOne("SELECT COUNT(*) as c FROM `ai_seo_settings`")['c'] ?? 0;
         if ((int)$setCnt === 0) {
