@@ -191,6 +191,8 @@ elseif ($action === 'edit') {
         $telegram        = trim(Helpers::post('telegram') ?? '') ?: null;
         $skype           = trim(Helpers::post('skype')    ?? '') ?: null;
         $discord         = trim(Helpers::post('discord')  ?? '') ?: null;
+        $socialPlatform  = strtolower(trim(Helpers::post('social_platform') ?? '')) ?: null;
+        $socialProfileUrl = trim(Helpers::post('social_profile_url') ?? '') ?: null;
 
         if (!$fname || !$lname) $errors[] = 'First and last name are required.';
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Invalid email address.';
@@ -237,7 +239,9 @@ elseif ($action === 'edit') {
                 'payment_threshold' => $payThreshold,
                 'payment_details'   => $payDetails,
                 'payment_terms'     => $payTerms,
-                'allow_email_change'=> $allowEmailChange,
+                'allow_email_change'  => $allowEmailChange,
+                'social_platform'     => $socialPlatform,
+                'social_profile_url'  => $socialProfileUrl,
             ], 'id=?', [$id]);
 
             // Notify if status changed

@@ -91,6 +91,28 @@
                     <input type="text" name="phone" class="form-control" value="<?= Helpers::e($aff['phone'] ?? '') ?>">
                 </div>
             </div>
+
+            <!-- Social Media Verification -->
+            <div class="form-row cols-2" style="margin-top:4px">
+                <div class="form-group">
+                    <label>Social Media Platform</label>
+                    <select name="social_platform" class="form-control">
+                        <option value="">— None —</option>
+                        <?php
+                        $spVal = $aff['social_platform'] ?? '';
+                        $spOpts = ['facebook'=>'Facebook','instagram'=>'Instagram','x'=>'X (Twitter)','linkedin'=>'LinkedIn','tiktok'=>'TikTok','youtube'=>'YouTube','telegram'=>'Telegram','reddit'=>'Reddit','snapchat'=>'Snapchat','pinterest'=>'Pinterest','threads'=>'Threads','other'=>'Other'];
+                        foreach ($spOpts as $spKey=>$spLabel): ?>
+                        <option value="<?= $spKey ?>" <?= $spVal === $spKey ? 'selected' : '' ?>><?= $spLabel ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Social Media Profile URL</label>
+                    <input type="url" name="social_profile_url" class="form-control" placeholder="https://facebook.com/yourprofile"
+                           value="<?= Helpers::e($aff['social_profile_url'] ?? '') ?>">
+                </div>
+            </div>
+
             <button type="submit" class="btn btn-primary">Save Profile</button>
         </form>
     </div>

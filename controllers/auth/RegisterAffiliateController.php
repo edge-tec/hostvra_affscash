@@ -8,6 +8,8 @@ try { Database::query("ALTER TABLE users ADD COLUMN telegram VARCHAR(200) DEFAUL
 try { Database::query("ALTER TABLE users ADD COLUMN discord VARCHAR(200) DEFAULT NULL"); } catch(Exception $e) {}
 try { Database::query("ALTER TABLE users ADD COLUMN address VARCHAR(500) DEFAULT NULL"); } catch(Exception $e) {}
 try { Database::query("ALTER TABLE affiliates ADD COLUMN registration_ip VARCHAR(45) DEFAULT NULL"); } catch(\Throwable $_e) {}
+try { Database::query("ALTER TABLE affiliates ADD COLUMN social_platform VARCHAR(50) DEFAULT NULL"); } catch(\Throwable $_e) {}
+try { Database::query("ALTER TABLE affiliates ADD COLUMN social_profile_url VARCHAR(500) DEFAULT NULL"); } catch(\Throwable $_e) {}
 
 // ── VPN/Proxy/TOR registration guard ─────────────────────────────────────
 $_vpnRegEnabled = (Config::get('config', 'vpn_detection.registration_enabled') ?? '1') === '1';
@@ -65,6 +67,8 @@ if (Helpers::isPost()) {
         $skype    = trim(Helpers::post('skype') ?? '') ?: null;
         $telegram = trim(Helpers::post('telegram') ?? '') ?: null;
         $discord  = trim(Helpers::post('discord') ?? '') ?: null;
+        $socialPlatform   = strtolower(trim(Helpers::post('social_platform') ?? ''));
+        $socialProfileUrl = trim(Helpers::post('social_profile_url') ?? '');
         $pass     = Helpers::postRaw('password');
         $confirm  = Helpers::postRaw('confirm_password');
 
@@ -89,6 +93,45 @@ if (Helpers::isPost()) {
         if (!$country)            $errors[] = 'Country is required.';
         if (!$address)            $errors[] = 'Street address is required.';
         if (!$skype && !$telegram && !$discord) $errors[] = 'At least one contact method is required (Telegram, Skype, or Discord).';
+
+        // Social Media Verification — mandatory
+        $validPlatforms = ['facebook','instagram','x','linkedin','tiktok','youtube','telegram','reddit','snapchat','pinterest','threads','other'];
+        if (!$socialPlatform || !in_array($socialPlatform, $validPlatforms, true)) {
+            $errors[] = 'Please select a social media platform.';
+        }
+        if (!$socialProfileUrl) {
+            $errors[] = 'Please enter a valid social media profile URL.';
+        } elseif (!str_starts_with($socialProfileUrl, 'https://')) {
+            $errors[] = 'Social media URL must begin with https://';
+        } elseif ($socialPlatform && $socialPlatform !== 'other' && in_array($socialPlatform, $validPlatforms, true)) {
+            $platformDomains = [
+                'facebook'  => ['facebook.com','fb.com'],
+                'instagram' => ['instagram.com'],
+                'x'         => ['x.com','twitter.com'],
+                'linkedin'  => ['linkedin.com'],
+                'tiktok'    => ['tiktok.com'],
+                'youtube'   => ['youtube.com','youtu.be'],
+                'telegram'  => ['t.me','telegram.me'],
+                'reddit'    => ['reddit.com'],
+                'snapchat'  => ['snapchat.com'],
+                'pinterest' => ['pinterest.com'],
+                'threads'   => ['threads.net'],
+            ];
+            if (isset($platformDomains[$socialPlatform])) {
+                $parsedHost = strtolower(parse_url($socialProfileUrl, PHP_URL_HOST) ?? '');
+                $parsedHost = preg_replace('/^www\./', '', $parsedHost);
+                $domainMatch = false;
+                foreach ($platformDomains[$socialPlatform] as $allowedDomain) {
+                    if ($parsedHost === $allowedDomain || str_ends_with($parsedHost, '.' . $allowedDomain)) {
+                        $domainMatch = true;
+                        break;
+                    }
+                }
+                if (!$domainMatch) {
+                    $errors[] = 'The URL does not match the selected social media platform.';
+                }
+            }
+        }
         
         // Enforce strong password complexity rules
         $passErrors = RegistrationSecurity::validatePassword($pass);
@@ -145,6 +188,8 @@ if (Helpers::isPost()) {
                     'affiliate_code'        => $affCode,
                     'registration_answers'  => json_encode($answers),
                     'registration_ip'       => Helpers::getIp(),
+                    'social_platform'       => $socialPlatform ?: null,
+                    'social_profile_url'    => $socialProfileUrl ?: null,
                 ]);
 
                 // ── Hook referral ─────────────────────────────────────────

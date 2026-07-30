@@ -9,9 +9,12 @@ $userId  = Auth::id();
 try { Database::query("ALTER TABLE affiliates ADD COLUMN IF NOT EXISTS payment_details TEXT DEFAULT NULL"); } catch(\Throwable $e) {}
 try { Database::query("ALTER TABLE affiliates ADD COLUMN IF NOT EXISTS payment_terms VARCHAR(20) NOT NULL DEFAULT 'monthly'"); } catch(\Throwable $e) {}
 try { Database::query("ALTER TABLE affiliates ADD COLUMN IF NOT EXISTS allow_email_change TINYINT(1) NOT NULL DEFAULT 0"); } catch(\Throwable $e) {}
+try { Database::query("ALTER TABLE affiliates ADD COLUMN IF NOT EXISTS social_platform VARCHAR(50) DEFAULT NULL"); } catch(\Throwable $e) {}
+try { Database::query("ALTER TABLE affiliates ADD COLUMN IF NOT EXISTS social_profile_url VARCHAR(500) DEFAULT NULL"); } catch(\Throwable $e) {}
 
 $aff = Database::fetchOne(
-    "SELECT af.*, u.first_name, u.last_name, u.email, u.company, u.phone, u.country, u.profile_pic 
+    "SELECT af.*, u.first_name, u.last_name, u.email, u.company, u.phone, u.country, u.profile_pic,
+            af.social_platform, af.social_profile_url 
      FROM users u 
      LEFT JOIN affiliates af ON u.id=af.user_id 
      WHERE u.id=?", 
@@ -93,6 +96,14 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
                 'phone'       => $phone,
                 'profile_pic' => $profilePic,
             ], 'id=?', [$userId]);
+
+            // Save social media fields to affiliates table
+            $socialPlatform  = strtolower(trim(Helpers::post('social_platform') ?? '')) ?: null;
+            $socialProfileUrl = trim(Helpers::post('social_profile_url') ?? '') ?: null;
+            Database::update('affiliates', [
+                'social_platform'    => $socialPlatform,
+                'social_profile_url' => $socialProfileUrl,
+            ], 'id=?', [$affId]);
 
             // Email change (only if allowed)
             $newEmail = strtolower(trim(Helpers::postRaw('email')));

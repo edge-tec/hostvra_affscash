@@ -346,6 +346,35 @@ select:-webkit-autofill {
                 &#9888; Fill in at least one contact method to continue.
             </div>
 
+            <p class="section-title">Social Media Verification <span style="color:#EF4444;font-size:11px;font-weight:600;text-transform:none;letter-spacing:0">(required)</span></p>
+            <div class="form-group">
+                <label>Select Social Media Platform *</label>
+                <select name="social_platform" id="social_platform" class="form-control" required onchange="onSocialPlatformChange()">
+                    <option value="">— Select Platform —</option>
+                    <option value="facebook" <?= ($_POST['social_platform'] ?? '') === 'facebook' ? 'selected' : '' ?>>Facebook</option>
+                    <option value="instagram" <?= ($_POST['social_platform'] ?? '') === 'instagram' ? 'selected' : '' ?>>Instagram</option>
+                    <option value="x" <?= ($_POST['social_platform'] ?? '') === 'x' ? 'selected' : '' ?>>X (Twitter)</option>
+                    <option value="linkedin" <?= ($_POST['social_platform'] ?? '') === 'linkedin' ? 'selected' : '' ?>>LinkedIn</option>
+                    <option value="tiktok" <?= ($_POST['social_platform'] ?? '') === 'tiktok' ? 'selected' : '' ?>>TikTok</option>
+                    <option value="youtube" <?= ($_POST['social_platform'] ?? '') === 'youtube' ? 'selected' : '' ?>>YouTube</option>
+                    <option value="telegram" <?= ($_POST['social_platform'] ?? '') === 'telegram' ? 'selected' : '' ?>>Telegram</option>
+                    <option value="reddit" <?= ($_POST['social_platform'] ?? '') === 'reddit' ? 'selected' : '' ?>>Reddit</option>
+                    <option value="snapchat" <?= ($_POST['social_platform'] ?? '') === 'snapchat' ? 'selected' : '' ?>>Snapchat</option>
+                    <option value="pinterest" <?= ($_POST['social_platform'] ?? '') === 'pinterest' ? 'selected' : '' ?>>Pinterest</option>
+                    <option value="threads" <?= ($_POST['social_platform'] ?? '') === 'threads' ? 'selected' : '' ?>>Threads</option>
+                    <option value="other" <?= ($_POST['social_platform'] ?? '') === 'other' ? 'selected' : '' ?>>Other</option>
+                </select>
+            </div>
+            <div class="form-group" id="social-url-group" style="display:<?= !empty($_POST['social_platform']) ? 'block' : 'none' ?>">
+                <label id="social-url-label">Social Media Profile URL *</label>
+                <input type="url" name="social_profile_url" id="social_profile_url" class="form-control"
+                       placeholder="https://facebook.com/yourprofile" required
+                       value="<?= Helpers::e($_POST['social_profile_url'] ?? '') ?>"
+                       oninput="validateSocialUrl()">
+                <div id="social-url-error" style="display:none;color:#DC2626;font-size:12px;margin-top:4px;font-weight:600"></div>
+                <div id="social-url-ok" style="display:none;color:#10B981;font-size:12px;margin-top:4px;font-weight:600">✓ URL matches the selected platform.</div>
+            </div>
+
             <p class="section-title">Account Security</p>
             <div class="form-row cols-2">
                 <div class="form-group">
@@ -527,6 +556,83 @@ function checkContactFields() {
             document.getElementById(id).style.borderColor = '';
         });
     }
+}
+
+// ── Social Media Verification JS ─────────────────────────────────────────
+var socialPlatformMeta = {
+    facebook:  {label: 'Facebook Profile URL *',   placeholder: 'https://facebook.com/yourprofile',    domains: ['facebook.com','fb.com']},
+    instagram: {label: 'Instagram Profile URL *',  placeholder: 'https://instagram.com/yourprofile',   domains: ['instagram.com']},
+    x:         {label: 'X (Twitter) Profile URL *', placeholder: 'https://x.com/yourhandle',           domains: ['x.com','twitter.com']},
+    linkedin:  {label: 'LinkedIn Profile URL *',   placeholder: 'https://linkedin.com/in/yourprofile', domains: ['linkedin.com']},
+    tiktok:    {label: 'TikTok Profile URL *',     placeholder: 'https://tiktok.com/@yourprofile',     domains: ['tiktok.com']},
+    youtube:   {label: 'YouTube Channel URL *',    placeholder: 'https://youtube.com/@yourchannel',    domains: ['youtube.com','youtu.be']},
+    telegram:  {label: 'Telegram Profile URL *',   placeholder: 'https://t.me/yourusername',           domains: ['t.me','telegram.me']},
+    reddit:    {label: 'Reddit Profile URL *',     placeholder: 'https://reddit.com/user/yourname',    domains: ['reddit.com']},
+    snapchat:  {label: 'Snapchat Profile URL *',   placeholder: 'https://snapchat.com/add/yourname',   domains: ['snapchat.com']},
+    pinterest: {label: 'Pinterest Profile URL *',  placeholder: 'https://pinterest.com/yourprofile',   domains: ['pinterest.com']},
+    threads:   {label: 'Threads Profile URL *',    placeholder: 'https://threads.net/@yourprofile',    domains: ['threads.net']},
+    other:     {label: 'Social Media Profile URL *',placeholder: 'https://example.com/yourprofile',    domains: []}
+};
+
+function onSocialPlatformChange() {
+    var sel = document.getElementById('social_platform');
+    var urlGrp = document.getElementById('social-url-group');
+    var urlLabel = document.getElementById('social-url-label');
+    var urlInput = document.getElementById('social_profile_url');
+    var platform = sel.value;
+
+    if (platform) {
+        urlGrp.style.display = 'block';
+        var meta = socialPlatformMeta[platform] || socialPlatformMeta['other'];
+        urlLabel.textContent = meta.label;
+        urlInput.placeholder = meta.placeholder;
+        validateSocialUrl();
+    } else {
+        urlGrp.style.display = 'none';
+        document.getElementById('social-url-error').style.display = 'none';
+        document.getElementById('social-url-ok').style.display = 'none';
+    }
+}
+
+function validateSocialUrl() {
+    var platform = document.getElementById('social_platform').value;
+    var url = document.getElementById('social_profile_url').value.trim();
+    var errEl = document.getElementById('social-url-error');
+    var okEl  = document.getElementById('social-url-ok');
+
+    errEl.style.display = 'none';
+    okEl.style.display  = 'none';
+
+    if (!url) return;
+
+    if (!url.startsWith('https://')) {
+        errEl.textContent = '⚠ URL must begin with https://';
+        errEl.style.display = 'block';
+        return;
+    }
+
+    if (platform && platform !== 'other') {
+        var meta = socialPlatformMeta[platform];
+        if (meta && meta.domains.length) {
+            try {
+                var host = new URL(url).hostname.toLowerCase().replace(/^www\./, '');
+                var matched = meta.domains.some(function(d) {
+                    return host === d || host.endsWith('.' + d);
+                });
+                if (!matched) {
+                    errEl.textContent = '⚠ URL does not match ' + (platform === 'x' ? 'X (Twitter)' : platform.charAt(0).toUpperCase() + platform.slice(1)) + '. Expected: ' + meta.domains.join(' or ');
+                    errEl.style.display = 'block';
+                    return;
+                }
+            } catch(e) {
+                errEl.textContent = '⚠ Invalid URL format.';
+                errEl.style.display = 'block';
+                return;
+            }
+        }
+    }
+
+    okEl.style.display = 'block';
 }
 
 document.addEventListener('DOMContentLoaded', function() {

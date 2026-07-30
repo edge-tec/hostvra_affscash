@@ -127,6 +127,29 @@
                            value="<?= Helpers::e($affiliate['discord'] ?? '') ?>">
                 </div>
             </div>
+            <div class="form-row cols-2" style="margin-top:12px">
+                <div class="form-group mb-0">
+                    <label style="display:flex;align-items:center;gap:6px">
+                        <span style="background:#6366F1;color:#fff;border-radius:4px;padding:2px 6px;font-size:11px;font-weight:700">SM</span> Social Media Platform
+                    </label>
+                    <select name="social_platform" class="form-control">
+                        <option value="">— None —</option>
+                        <?php
+                        $spVal = $affiliate['social_platform'] ?? '';
+                        $spOpts = ['facebook'=>'Facebook','instagram'=>'Instagram','x'=>'X (Twitter)','linkedin'=>'LinkedIn','tiktok'=>'TikTok','youtube'=>'YouTube','telegram'=>'Telegram','reddit'=>'Reddit','snapchat'=>'Snapchat','pinterest'=>'Pinterest','threads'=>'Threads','other'=>'Other'];
+                        foreach ($spOpts as $spKey=>$spLabel): ?>
+                        <option value="<?= $spKey ?>" <?= $spVal === $spKey ? 'selected' : '' ?>><?= $spLabel ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="form-group mb-0">
+                    <label style="display:flex;align-items:center;gap:6px">
+                        <span style="background:#6366F1;color:#fff;border-radius:4px;padding:2px 6px;font-size:11px;font-weight:700">🔗</span> Social Profile URL
+                    </label>
+                    <input type="url" name="social_profile_url" class="form-control" placeholder="https://facebook.com/yourprofile"
+                           value="<?= Helpers::e($affiliate['social_profile_url'] ?? '') ?>">
+                </div>
+            </div>
         </div>
     </div>
 

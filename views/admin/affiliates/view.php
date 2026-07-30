@@ -207,6 +207,38 @@ require_once BASE_PATH . '/views/admin/_payment_details_display.php';
                 No contact details provided.
             </div>
             <?php endif; ?>
+
+            <?php
+            // Social Media Verification
+            $socialPlatform  = trim($affiliate['social_platform'] ?? '');
+            $socialUrl       = trim($affiliate['social_profile_url'] ?? '');
+            if ($socialPlatform && $socialUrl):
+                $socialLabels = [
+                    'facebook'=>'Facebook','instagram'=>'Instagram','x'=>'X (Twitter)','linkedin'=>'LinkedIn',
+                    'tiktok'=>'TikTok','youtube'=>'YouTube','telegram'=>'Telegram','reddit'=>'Reddit',
+                    'snapchat'=>'Snapchat','pinterest'=>'Pinterest','threads'=>'Threads','other'=>'Other',
+                ];
+                $socialColors = [
+                    'facebook'=>'#1877F2','instagram'=>'#E4405F','x'=>'#000000','linkedin'=>'#0A66C2',
+                    'tiktok'=>'#010101','youtube'=>'#FF0000','telegram'=>'#2AABEE','reddit'=>'#FF4500',
+                    'snapchat'=>'#FFFC00','pinterest'=>'#BD081C','threads'=>'#000000','other'=>'#6B7280',
+                ];
+                $sLabel = $socialLabels[$socialPlatform] ?? ucfirst($socialPlatform);
+                $sColor = $socialColors[$socialPlatform] ?? '#6B7280';
+                $sBadge = strtoupper(substr($sLabel, 0, 2));
+            ?>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);margin-top:4px">
+                <span style="background:<?= $sColor ?>;color:#fff;border-radius:4px;padding:3px 8px;font-size:11px;font-weight:700;flex-shrink:0"><?= $sBadge ?></span>
+                <span style="font-size:12px;color:var(--text-muted);width:120px;flex-shrink:0"><?= $sLabel ?> Profile</span>
+                <a href="<?= Helpers::e($socialUrl) ?>" target="_blank" rel="noopener"
+                   style="font-size:13px;font-weight:600;color:<?= $sColor ?>;text-decoration:none;word-break:break-all">
+                    <?= Helpers::e($socialUrl) ?>
+                </a>
+                <button type="button" onclick="navigator.clipboard.writeText('<?= Helpers::e($socialUrl) ?>')"
+                        style="margin-left:auto;font-size:11px;padding:2px 8px;border:1px solid var(--border);border-radius:4px;background:var(--bg);cursor:pointer;color:var(--text-muted)"
+                        title="Copy">&#128203;</button>
+            </div>
+            <?php endif; ?>
             <?php
             $address = trim($affiliate['address'] ?? '');
             if ($address):
