@@ -172,12 +172,17 @@ html[data-theme="dark"] #tbl-conversions thead th {
     border-bottom-color: rgba(255, 255, 255, 0.1) !important;
 }
 
+/* Status Row Tinting */
+tr.ac-row-approved { background: rgba(16, 185, 129, 0.02) !important; }
+tr.ac-row-rejected { background: rgba(239, 68, 68, 0.025) !important; }
+tr.ac-row-pending  { background: rgba(245, 158, 11, 0.025) !important; }
+
 #tbl-conversions tbody tr {
     transition: all 0.2s ease !important;
 }
 
 #tbl-conversions tbody tr:hover {
-    background: rgba(99, 102, 241, 0.04) !important;
+    background: rgba(99, 102, 241, 0.05) !important;
 }
 
 #tbl-conversions tbody td {
@@ -188,6 +193,114 @@ html[data-theme="dark"] #tbl-conversions thead th {
 
 html[data-theme="dark"] #tbl-conversions tbody td {
     border-bottom-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   VIBRANT 3D STATUS BADGES & DISTINCT ACTION BUTTONS
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Status Badges */
+.ac-badge-approved {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    font-size: 11px !important;
+    padding: 5px 12px !important;
+    border-radius: 8px !important;
+    box-shadow: 0 3px 10px rgba(16, 185, 129, 0.35) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    letter-spacing: 0.03em !important;
+}
+
+.ac-badge-rejected {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    font-size: 11px !important;
+    padding: 5px 12px !important;
+    border-radius: 8px !important;
+    box-shadow: 0 3px 10px rgba(239, 68, 68, 0.35) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    letter-spacing: 0.03em !important;
+}
+
+.ac-badge-pending {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    font-size: 11px !important;
+    padding: 5px 12px !important;
+    border-radius: 8px !important;
+    box-shadow: 0 3px 10px rgba(245, 158, 11, 0.35) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    letter-spacing: 0.03em !important;
+}
+
+/* Distinct 3D Action Buttons */
+.ac-btn-approve {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    font-size: 11.5px !important;
+    padding: 6px 14px !important;
+    border-radius: 8px !important;
+    border: none !important;
+    box-shadow: 0 3px 10px rgba(16, 185, 129, 0.35) !important;
+    cursor: pointer !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    white-space: nowrap !important;
+}
+
+.ac-btn-approve:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.45) !important;
+    color: #ffffff !important;
+}
+
+.ac-btn-reject {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    font-size: 11.5px !important;
+    padding: 6px 14px !important;
+    border-radius: 8px !important;
+    border: none !important;
+    box-shadow: 0 3px 10px rgba(239, 68, 68, 0.35) !important;
+    cursor: pointer !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    white-space: nowrap !important;
+}
+
+.ac-btn-reject:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(239, 68, 68, 0.45) !important;
+    color: #ffffff !important;
+}
+
+.ac-btn-cb {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    font-size: 11.5px !important;
+    padding: 6px 14px !important;
+    border-radius: 8px !important;
+    border: none !important;
+    box-shadow: 0 3px 10px rgba(245, 158, 11, 0.35) !important;
+    cursor: pointer !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    white-space: nowrap !important;
+}
+
+.ac-btn-cb:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.45) !important;
+    color: #ffffff !important;
 }
 
 /* Compact Horizontal Fraud Score Grid */
@@ -212,27 +325,6 @@ html[data-theme="dark"] #tbl-conversions tbody td {
 .ac-fs-green { background: rgba(16, 185, 129, 0.12) !important; color: #10b981 !important; }
 .ac-fs-yellow { background: rgba(245, 158, 11, 0.15) !important; color: #d97706 !important; }
 .ac-fs-red { background: rgba(239, 68, 68, 0.15) !important; color: #dc2626 !important; }
-
-/* Action Buttons 3D Hover */
-.ac-btn-action {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 5px 12px !important;
-    font-size: 11.5px !important;
-    font-weight: 700 !important;
-    border-radius: 8px !important;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    border: none !important;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06) !important;
-    white-space: nowrap !important;
-    cursor: pointer !important;
-}
-
-.ac-btn-action:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
-}
 
 /* Mobile Card View (Screens <= 768px) */
 .ac-mobile-card-list {
@@ -391,7 +483,7 @@ foreach ($conversions as $cvItem) {
                         <th>Referrer Info</th>
                         <th>Fraud Scores</th>
                         <th>Converted At</th>
-                        <th style="width:140px">Actions</th>
+                        <th style="width:170px">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -462,8 +554,9 @@ foreach ($conversions as $cvItem) {
 
                     // Referrer
                     $visitRef = $c['referrer'] ?: ($c['ck_referer'] ?? '');
+                    $rowClass = 'ac-row-' . ($c['status'] ?? 'pending');
                 ?>
-                <tr>
+                <tr class="<?= $rowClass ?>">
                     <!-- IDs Column -->
                     <td style="font-family:monospace;font-size:11px;white-space:nowrap">
                         <div style="font-weight:700;color:#6366f1" title="Conversion ID: <?= Helpers::e($c['conversion_id']) ?>">
@@ -511,11 +604,11 @@ foreach ($conversions as $cvItem) {
                     <!-- Status Column -->
                     <td>
                         <?php if ($c['status'] === 'approved'): ?>
-                            <span class="badge bg-success px-2 py-1 shadow-sm" style="font-size:11px">● APPROVED</span>
+                            <span class="ac-badge-approved">✓ APPROVED</span>
                         <?php elseif ($c['status'] === 'pending'): ?>
-                            <span class="badge bg-warning text-dark px-2 py-1 shadow-sm" style="font-size:11px">● PENDING</span>
+                            <span class="ac-badge-pending">⏳ PENDING</span>
                         <?php else: ?>
-                            <span class="badge bg-danger px-2 py-1 shadow-sm" style="font-size:11px">● REJECTED</span>
+                            <span class="ac-badge-rejected">✕ REJECTED</span>
                         <?php endif; ?>
 
                         <?php if(!empty($c['is_fraud'])): ?>
@@ -612,7 +705,7 @@ foreach ($conversions as $cvItem) {
                         <?= date('M j, H:i', strtotime($c['converted_at'])) ?>
                     </td>
 
-                    <!-- 3D Actions Column -->
+                    <!-- 3D Actions Column with Distinct Gradient Buttons -->
                     <td>
                         <div class="d-flex align-items-center gap-1 flex-wrap">
                             <?php if ($c['status'] !== 'approved'): ?>
@@ -622,15 +715,17 @@ foreach ($conversions as $cvItem) {
                                 <input type="hidden" name="conversion_id" value="<?= Helpers::e($c['conversion_id']) ?>">
                                 <input type="hidden" name="status" value="approved">
                                 <input type="hidden" name="redirect_back" value="/admin/conversions?<?= Helpers::e(http_build_query(array_filter(['status'=>$status,'from'=>$from,'to'=>$to,'click_id'=>$clickId??null]))) ?>">
-                                <button class="ac-btn-action bg-success text-white">✓ Approve</button>
+                                <button class="ac-btn-approve">✓ Approve</button>
                             </form>
                             <?php else: ?>
-                            <span class="badge bg-success-soft text-success border border-success px-2 py-1" style="font-size:11px;font-weight:700">✓ Approved</span>
+                            <span class="ac-badge-approved">✓ APPROVED</span>
                             <?php endif; ?>
 
                             <?php if ($c['status'] !== 'rejected'): ?>
-                            <button type="button" class="ac-btn-action bg-danger text-white"
+                            <button type="button" class="ac-btn-reject"
                                     onclick="openRejectModal('<?= Helpers::e($c['conversion_id']) ?>')">✕ Reject</button>
+                            <?php else: ?>
+                            <span class="ac-badge-rejected">✕ REJECTED</span>
                             <?php endif; ?>
 
                             <?php if ($c['status'] === 'approved'): ?>
@@ -640,7 +735,7 @@ foreach ($conversions as $cvItem) {
                                 <input type="hidden" name="conversion_id" value="<?= Helpers::e($c['conversion_id']) ?>">
                                 <input type="hidden" name="status" value="chargebacked">
                                 <input type="hidden" name="redirect_back" value="/admin/conversions?<?= Helpers::e(http_build_query(array_filter(['status'=>$status,'from'=>$from,'to'=>$to,'click_id'=>$clickId??null]))) ?>">
-                                <button class="ac-btn-action bg-warning text-dark">↩ CB</button>
+                                <button class="ac-btn-cb">↩ CB</button>
                             </form>
                             <?php endif; ?>
                         </div>
@@ -662,11 +757,11 @@ foreach ($conversions as $cvItem) {
                     <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
                         <div>
                             <?php if ($c['status'] === 'approved'): ?>
-                                <span class="badge bg-success">APPROVED</span>
+                                <span class="ac-badge-approved">APPROVED</span>
                             <?php elseif ($c['status'] === 'pending'): ?>
-                                <span class="badge bg-warning text-dark">PENDING</span>
+                                <span class="ac-badge-pending">PENDING</span>
                             <?php else: ?>
-                                <span class="badge bg-danger">REJECTED</span>
+                                <span class="ac-badge-rejected">REJECTED</span>
                             <?php endif; ?>
                         </div>
                         <div>
@@ -712,11 +807,11 @@ foreach ($conversions as $cvItem) {
                                 <input type="hidden" name="conversion_id" value="<?= Helpers::e($c['conversion_id']) ?>">
                                 <input type="hidden" name="status" value="approved">
                                 <input type="hidden" name="redirect_back" value="/admin/conversions?<?= Helpers::e(http_build_query(array_filter(['status'=>$status,'from'=>$from,'to'=>$to,'click_id'=>$clickId??null]))) ?>">
-                                <button class="btn btn-success btn-sm py-0 px-2" style="font-size:11px">✓</button>
+                                <button class="ac-btn-approve py-1 px-2" style="font-size:11px">✓</button>
                             </form>
                             <?php endif; ?>
                             <?php if ($c['status'] !== 'rejected'): ?>
-                            <button type="button" class="btn btn-danger btn-sm py-0 px-2" style="font-size:11px" onclick="openRejectModal('<?= Helpers::e($c['conversion_id']) ?>')">✕</button>
+                            <button type="button" class="ac-btn-reject py-1 px-2" style="font-size:11px" onclick="openRejectModal('<?= Helpers::e($c['conversion_id']) ?>')">✕</button>
                             <?php endif; ?>
                         </div>
                     </div>
