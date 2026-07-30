@@ -328,6 +328,9 @@ Router::any('/admin/affiliates/create', function() { $_GET['action']='create'; r
 Router::any('/admin/affiliates/reactivate', function() { $_GET['action']='reactivate'; require BASE_PATH . '/controllers/admin/AffiliateController.php'; });
 Router::any('/admin/affiliates/approve-offer', function() { $_GET['action']='approve_offer'; require BASE_PATH . '/controllers/admin/AffiliateController.php'; });
 Router::any('/admin/affiliates/reject-offer',  function() { $_GET['action']='reject_offer';  require BASE_PATH . '/controllers/admin/AffiliateController.php'; });
+Router::any('/admin/affiliates/{id}/view', function($id) { $_GET['id']=$id; require BASE_PATH . '/controllers/admin/AffiliateController.php'; });
+Router::any('/admin/affiliates/{id}/approve-offer', function($id) { $_GET['action']='approve_offer'; require BASE_PATH . '/controllers/admin/AffiliateController.php'; });
+Router::any('/admin/affiliates/{id}/reject-offer',  function($id) { $_GET['action']='reject_offer';  require BASE_PATH . '/controllers/admin/AffiliateController.php'; });
 Router::any('/admin/affiliates/{id}', function($id) { $_GET['id']=$id; require BASE_PATH . '/controllers/admin/AffiliateController.php'; });
 Router::any('/admin/advertisers', function() { require BASE_PATH . '/controllers/admin/AdvertiserController.php'; });
 Router::any('/admin/advertisers/create', function() { $_GET['action']='create'; require BASE_PATH . '/controllers/admin/AdvertiserController.php'; });

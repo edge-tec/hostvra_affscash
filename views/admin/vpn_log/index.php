@@ -133,7 +133,7 @@
                     $affCode = !empty($log['affiliate_code']) ? trim($log['affiliate_code']) : '';
                     ?>
                     <?php if ($affId): ?>
-                    <a href="/admin/affiliates/<?= $affId ?>/view" style="color:#4F46E5;font-weight:600;text-decoration:none">
+                    <a href="/admin/affiliates/<?= $affId ?>" style="color:#4F46E5;font-weight:600;text-decoration:none">
                         <?= Helpers::e($affName !== '' ? $affName : ('Affiliate #' . $affId)) ?>
                     </a>
                     <div style="font-size:11px;color:#94A3B8">
