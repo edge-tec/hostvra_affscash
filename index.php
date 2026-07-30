@@ -492,6 +492,7 @@ Router::get('/api/seo/reports', function() {
 
 Router::any('/admin/reports/affiliates', function() { require BASE_PATH . '/controllers/admin/AffiliateReportController.php'; });
 Router::any('/admin/reports/duplicate-conversions', function() { require BASE_PATH . '/controllers/admin/DuplicateConversionsController.php'; });
+Router::any('/admin/reports/traffic-source-override', function() { require BASE_PATH . '/controllers/admin/TrafficSourceOverrideReportController.php'; });
 Router::any('/admin/conversions', function() { require BASE_PATH . '/controllers/admin/ConversionController.php'; });
 Router::any('/admin/rejection-reasons', function() { require BASE_PATH . '/controllers/admin/RejectionReasonsController.php'; });
 Router::any('/admin/vpn-proxy-skip', function() { require BASE_PATH . '/controllers/admin/VpnProxySkipController.php'; });
