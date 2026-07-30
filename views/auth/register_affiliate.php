@@ -467,30 +467,30 @@ select:-webkit-autofill {
             <?php endif; ?>
 
             <!-- Mandatory consent — Privacy Policy + Terms & Conditions -->
-            <div style="margin-top:20px;padding:14px 16px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px">
-                <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:#334155">
+            <div style="margin-top:20px;padding:14px 16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px">
+                <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.85)">
                     <input type="checkbox" name="agree_privacy" value="1" required
                            <?= !empty($_POST['agree_privacy']) ? 'checked' : '' ?>
-                           style="margin-top:3px;accent-color:#4F46E5;width:16px;height:16px;flex-shrink:0">
-                    <span>I have read and accept the <a href="/privacy-policy" target="_blank" style="color:#4F46E5;font-weight:600">Privacy Policy</a>. <span style="color:#DC2626">*</span></span>
+                           style="margin-top:3px;accent-color:#7c3aed;width:16px;height:16px;flex-shrink:0">
+                    <span>I have read and accept the <a href="/privacy-policy" target="_blank" style="color:#a78bfa;font-weight:600">Privacy Policy</a>. <span style="color:#EF4444">*</span></span>
                 </label>
-                <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:#334155;margin-top:10px">
+                <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.85);margin-top:10px">
                     <input type="checkbox" name="agree_terms" value="1" required
                            <?= !empty($_POST['agree_terms']) ? 'checked' : '' ?>
-                           style="margin-top:3px;accent-color:#4F46E5;width:16px;height:16px;flex-shrink:0">
-                    <span>I agree to the <a href="/terms-of-service" target="_blank" style="color:#4F46E5;font-weight:600">Terms &amp; Conditions</a>. <span style="color:#DC2626">*</span></span>
+                           style="margin-top:3px;accent-color:#7c3aed;width:16px;height:16px;flex-shrink:0">
+                    <span>I agree to the <a href="/terms-of-service" target="_blank" style="color:#a78bfa;font-weight:600">Terms &amp; Conditions</a>. <span style="color:#EF4444">*</span></span>
                 </label>
-                <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:#334155;margin-top:10px">
+                <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.85);margin-top:10px">
                     <input type="checkbox" name="agree_affiliate" value="1" required
                            <?= !empty($_POST['agree_affiliate']) ? 'checked' : '' ?>
-                           style="margin-top:3px;accent-color:#4F46E5;width:16px;height:16px;flex-shrink:0">
-                    <span>I agree to the <a href="/affiliate-agreement" target="_blank" style="color:#4F46E5;font-weight:600">Affiliate Agreement</a>. <span style="color:#DC2626">*</span></span>
+                           style="margin-top:3px;accent-color:#7c3aed;width:16px;height:16px;flex-shrink:0">
+                    <span>I agree to the <a href="/affiliate-agreement" target="_blank" style="color:#a78bfa;font-weight:600">Affiliate Agreement</a>. <span style="color:#EF4444">*</span></span>
                 </label>
-                <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:#334155;margin-top:10px">
+                <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.85);margin-top:10px">
                     <input type="checkbox" name="agree_fraud" value="1" required
                            <?= !empty($_POST['agree_fraud']) ? 'checked' : '' ?>
-                           style="margin-top:3px;accent-color:#4F46E5;width:16px;height:16px;flex-shrink:0">
-                    <span>I agree to the <a href="/anti-fraud-policy" target="_blank" style="color:#4F46E5;font-weight:600">Anti-Fraud Policy</a>. <span style="color:#DC2626">*</span></span>
+                           style="margin-top:3px;accent-color:#7c3aed;width:16px;height:16px;flex-shrink:0">
+                    <span>I agree to the <a href="/anti-fraud-policy" target="_blank" style="color:#a78bfa;font-weight:600">Anti-Fraud Policy</a>. <span style="color:#EF4444">*</span></span>
                 </label>
             </div>
 
