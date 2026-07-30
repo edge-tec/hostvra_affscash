@@ -30,70 +30,252 @@
 </div>
 <?php endif; ?>
 
-<!-- Summary Cards -->
-<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:20px">
-    <div class="card" style="padding:16px 20px">
-        <div style="font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Blocked Today</div>
-        <div style="font-size:28px;font-weight:800;color:#DC2626"><?= number_format((int)($todayBlocked['cnt'] ?? 0)) ?></div>
+<style>
+/* 3D Glassmorphism VPN Log Control Panel */
+#vpn-filter-card {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.9) 100%) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(99, 102, 241, 0.2) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 16px 40px -10px rgba(99, 102, 241, 0.12), 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+    margin-bottom: 24px !important;
+    overflow: hidden !important;
+}
+
+html[data-theme="dark"] #vpn-filter-card {
+    background: linear-gradient(180deg, rgba(24, 18, 55, 0.95) 0%, rgba(18, 12, 42, 0.9) 100%) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4) !important;
+}
+
+.vpn-filter-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)) !important;
+    gap: 16px 20px !important;
+    align-items: flex-end !important;
+    width: 100% !important;
+}
+
+.vpn-filter-grid .form-group {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    margin-bottom: 0 !important;
+}
+
+.vpn-filter-grid label {
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    color: #475569 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    margin-bottom: 0 !important;
+}
+
+html[data-theme="dark"] .vpn-filter-grid label {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.vpn-filter-grid .form-control {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    padding: 9px 13px !important;
+    border: 1.5px solid #E2E8F0 !important;
+    border-radius: 12px !important;
+    background: #ffffff !important;
+    color: #1E293B !important;
+    outline: none !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02) !important;
+}
+
+html[data-theme="dark"] .vpn-filter-grid .form-control {
+    background: rgba(30, 24, 60, 0.85) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+}
+
+.vpn-filter-grid .form-control:hover {
+    border-color: #A5B4FC !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.08) !important;
+}
+
+.vpn-filter-grid .form-control:focus {
+    border-color: #6366F1 !important;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.18) !important;
+}
+
+.vpn-btn-apply {
+    background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 13.5px !important;
+    padding: 10px 24px !important;
+    border-radius: 12px !important;
+    border: none !important;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35) !important;
+    cursor: pointer !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    width: 100% !important;
+}
+
+.vpn-btn-apply:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 18px rgba(99, 102, 241, 0.45) !important;
+    color: #ffffff !important;
+}
+
+.vpn-btn-export {
+    background: #F1F5F9 !important;
+    color: #475569 !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    padding: 9px 18px !important;
+    border-radius: 12px !important;
+    border: 1px solid #CBD5E1 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    width: 100% !important;
+}
+
+.vpn-btn-export:hover {
+    background: #E2E8F0 !important;
+    color: #1E293B !important;
+}
+
+/* 3D KPI Stats Grid */
+.vpn-stats-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+    gap: 16px !important;
+    margin-bottom: 24px !important;
+}
+
+.vpn-stat-card {
+    background: #ffffff !important;
+    border: 1px solid #E2E8F0 !important;
+    border-radius: 16px !important;
+    padding: 18px 22px !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.03) !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+html[data-theme="dark"] .vpn-stat-card {
+    background: rgba(20, 14, 45, 0.8) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.vpn-stat-card:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 10px 24px rgba(99, 102, 241, 0.15) !important;
+    border-color: rgba(99, 102, 241, 0.3) !important;
+}
+
+.vpn-stat-card.stat-today { border-top: 3px solid #DC2626 !important; }
+.vpn-stat-card.stat-30days { border-top: 3px solid #EA580C !important; }
+.vpn-stat-card.stat-type { border-top: 3px solid #7C3AED !important; }
+
+.vpn-stat-label {
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    color: #64748B !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    margin-bottom: 4px !important;
+}
+
+html[data-theme="dark"] .vpn-stat-label {
+    color: rgba(255, 255, 255, 0.65) !important;
+}
+
+.vpn-stat-value {
+    font-size: 28px !important;
+    font-weight: 800 !important;
+    color: #0F172A !important;
+    line-height: 1.1 !important;
+}
+
+html[data-theme="dark"] .vpn-stat-value {
+    color: #ffffff !important;
+}
+</style>
+
+<!-- Summary Cards Grid -->
+<div class="vpn-stats-grid">
+    <div class="vpn-stat-card stat-today">
+        <div class="vpn-stat-label">Blocked Today</div>
+        <div class="vpn-stat-value" style="color:#DC2626"><?= number_format((int)($todayBlocked['cnt'] ?? 0)) ?></div>
     </div>
-    <div class="card" style="padding:16px 20px">
-        <div style="font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Last 30 Days</div>
-        <div style="font-size:28px;font-weight:800;color:#EA580C"><?= number_format((int)($totalBlocked['cnt'] ?? 0)) ?></div>
+    <div class="vpn-stat-card stat-30days">
+        <div class="vpn-stat-label">Last 30 Days</div>
+        <div class="vpn-stat-value" style="color:#EA580C"><?= number_format((int)($totalBlocked['cnt'] ?? 0)) ?></div>
     </div>
     <?php foreach ($typeCounts as $tc): ?>
-    <div class="card" style="padding:16px 20px">
-        <div style="font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px"><?= Helpers::e($tc['detection_type']) ?></div>
-        <div style="font-size:28px;font-weight:800;color:#7C3AED"><?= number_format((int)$tc['cnt']) ?></div>
+    <div class="vpn-stat-card stat-type">
+        <div class="vpn-stat-label"><?= Helpers::e($tc['detection_type']) ?></div>
+        <div class="vpn-stat-value" style="color:#7C3AED"><?= number_format((int)$tc['cnt']) ?></div>
     </div>
     <?php endforeach; ?>
 </div>
 
 <!-- Filters -->
-<div class="card mb-3">
-    <div class="card-body" style="padding:14px 16px">
-        <form method="GET" action="/affiliate_manager/vpn-log" style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end">
-            <div>
-                <label style="font-size:11px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:3px">IP Address</label>
-                <input type="text" name="q_ip" class="form-control" placeholder="e.g. 192.168." value="<?= Helpers::e($qIp) ?>" style="width:160px">
+<div class="card mb-3 filter-card filter-open" id="vpn-filter-card">
+    <div class="card-body" style="padding: 22px 24px">
+        <form method="GET" action="/affiliate_manager/vpn-log">
+            <div class="vpn-filter-grid">
+                <div class="form-group">
+                    <label>IP Address</label>
+                    <input type="text" name="q_ip" class="form-control" placeholder="e.g. 192.168." value="<?= Helpers::e($qIp) ?>">
+                </div>
+                <div class="form-group">
+                    <label>Affiliate</label>
+                    <input type="text" name="q_aff" class="form-control" placeholder="Name or ID" value="<?= Helpers::e($qAff) ?>">
+                </div>
+                <div class="form-group">
+                    <label>Detection Type</label>
+                    <select name="q_type" class="form-control">
+                        <option value="">All Types</option>
+                        <option value="Proxy"          <?= $qType === 'Proxy'          ? 'selected' : '' ?>>Proxy</option>
+                        <option value="VPN/Hosting"    <?= $qType === 'VPN/Hosting'    ? 'selected' : '' ?>>VPN/Hosting</option>
+                        <option value="VPN"            <?= $qType === 'VPN'            ? 'selected' : '' ?>>VPN (FraudIQ)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>From</label>
+                    <input type="date" name="date_from" class="form-control" value="<?= Helpers::e($dateFrom) ?>">
+                </div>
+                <div class="form-group">
+                    <label>To</label>
+                    <input type="date" name="date_to" class="form-control" value="<?= Helpers::e($dateTo) ?>">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="vpn-btn-apply">Filter</button>
+                </div>
+                <?php if ($qIp || $qAff || $qType || $dateFrom || $dateTo): ?>
+                <div class="form-group">
+                    <a href="/affiliate_manager/vpn-log" class="vpn-btn-export" style="text-align:center;text-decoration:none">Clear</a>
+                </div>
+                <?php endif; ?>
+                <div class="form-group">
+                    <button type="submit" name="export" value="1" class="vpn-btn-export">&#128190; Export CSV</button>
+                </div>
             </div>
-            <div>
-                <label style="font-size:11px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:3px">Affiliate</label>
-                <input type="text" name="q_aff" class="form-control" placeholder="Name or ID" value="<?= Helpers::e($qAff) ?>" style="width:150px">
-            </div>
-            <div>
-                <label style="font-size:11px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:3px">Detection Type</label>
-                <select name="q_type" class="form-control">
-                    <option value="">All Types</option>
-                    <option value="Proxy"          <?= $qType === 'Proxy'          ? 'selected' : '' ?>>Proxy</option>
-                    <option value="VPN/Hosting"    <?= $qType === 'VPN/Hosting'    ? 'selected' : '' ?>>VPN/Hosting</option>
-                    <option value="VPN"            <?= $qType === 'VPN'            ? 'selected' : '' ?>>VPN (FraudIQ)</option>
-                </select>
-            </div>
-            <div>
-                <label style="font-size:11px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:3px">From</label>
-                <input type="date" name="date_from" class="form-control" value="<?= Helpers::e($dateFrom) ?>">
-            </div>
-            <div>
-                <label style="font-size:11px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:3px">To</label>
-                <input type="date" name="date_to" class="form-control" value="<?= Helpers::e($dateTo) ?>">
-            </div>
-            <button type="submit" class="btn btn-primary btn-sm">Filter</button>
-            <?php if ($qIp || $qAff || $qType || $dateFrom || $dateTo): ?>
-            <a href="/affiliate_manager/vpn-log" class="btn btn-secondary btn-sm">Clear</a>
-            <?php endif; ?>
-            <button type="submit" name="export" value="1" class="btn btn-secondary btn-sm" style="margin-left:auto">&#128190; Export CSV</button>
         </form>
     </div>
 </div>
 
 <!-- Log Table -->
-<div class="card">
-    <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
-        <span class="card-title">Blocked Attempts <span style="font-weight:400;color:#94A3B8;font-size:13px">(showing latest 1,000)</span></span>
+<div class="card" style="border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,0.03);overflow:hidden">
+    <div class="card-header" style="background:#f8fafc;padding:16px 20px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center">
+        <span class="card-title" style="font-weight:800;font-size:14px;color:#1e293b">Blocked Attempts <span style="font-weight:400;color:#94A3B8;font-size:13px">(showing latest 1,000)</span></span>
         <form method="POST" onsubmit="return confirm('Delete log entries older than 30 days for your assigned affiliates?')">
             <?= Helpers::csrf() ?>
             <input type="hidden" name="action" value="clear_log">
-            <button type="submit" class="btn btn-secondary btn-sm" style="font-size:12px">&#128465; Clear Old Entries (&gt;30 days)</button>
+            <button type="submit" class="btn btn-secondary btn-sm" style="font-size:12px;border-radius:10px;padding:6px 14px;font-weight:600">&#128465; Clear Old Entries (&gt;30 days)</button>
         </form>
     </div>
     <div class="table-wrap">

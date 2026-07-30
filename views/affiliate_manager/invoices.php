@@ -1,34 +1,179 @@
-<?php require BASE_PATH . '/views/layouts/affiliate_manager.php'; ?>
+<style>
+/* 3D Glassmorphism Invoices Navigation & KPI Cards */
+.inv-tab-nav {
+    display: flex !important;
+    gap: 8px !important;
+    margin-bottom: 24px !important;
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    padding: 6px !important;
+    border-radius: 20px !important;
+    border: 1px solid rgba(99, 102, 241, 0.15) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03) !important;
+    width: fit-content !important;
+}
+
+html[data-theme="dark"] .inv-tab-nav {
+    background: rgba(20, 14, 45, 0.7) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.inv-tab-btn {
+    padding: 9px 20px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    border-radius: 14px !important;
+    text-decoration: none !important;
+    color: #64748B !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+
+html[data-theme="dark"] .inv-tab-btn {
+    color: rgba(255, 255, 255, 0.65) !important;
+}
+
+.inv-tab-btn:hover {
+    color: #6366F1 !important;
+    background: rgba(99, 102, 241, 0.08) !important;
+}
+
+.inv-tab-btn.active {
+    background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35) !important;
+}
+
+/* 3D KPI Stats Grid */
+.inv-stats-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+    gap: 16px !important;
+    margin-bottom: 24px !important;
+}
+
+.inv-stat-card {
+    background: #ffffff !important;
+    border: 1px solid #E2E8F0 !important;
+    border-radius: 16px !important;
+    padding: 18px 22px !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.03) !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+html[data-theme="dark"] .inv-stat-card {
+    background: rgba(20, 14, 45, 0.8) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.inv-stat-card:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 10px 24px rgba(99, 102, 241, 0.15) !important;
+    border-color: rgba(99, 102, 241, 0.3) !important;
+}
+
+.inv-stat-card.stat-invoices { border-top: 3px solid #6366F1 !important; }
+.inv-stat-card.stat-pending { border-top: 3px solid #F59E0B !important; }
+.inv-stat-card.stat-paid { border-top: 3px solid #10B981 !important; }
+
+.inv-stat-label {
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    color: #64748B !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    margin-bottom: 4px !important;
+}
+
+html[data-theme="dark"] .inv-stat-label {
+    color: rgba(255, 255, 255, 0.65) !important;
+}
+
+.inv-stat-value {
+    font-size: 28px !important;
+    font-weight: 800 !important;
+    color: #0F172A !important;
+    line-height: 1.1 !important;
+}
+
+html[data-theme="dark"] .inv-stat-value {
+    color: #ffffff !important;
+}
+
+.inv-btn-primary {
+    background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    padding: 8px 18px !important;
+    border-radius: 12px !important;
+    border: none !important;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35) !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    transition: all 0.2s ease !important;
+}
+
+.inv-btn-primary:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 18px rgba(99, 102, 241, 0.45) !important;
+    color: #ffffff !important;
+}
+
+/* Badges */
+.ac-badge-approved {
+    background: #10b981 !important;
+    color: #ffffff !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    padding: 3px 9px !important;
+    border-radius: 20px !important;
+}
+.ac-badge-pending {
+    background: #f59e0b !important;
+    color: #ffffff !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    padding: 3px 9px !important;
+    border-radius: 20px !important;
+}
+.ac-badge-rejected {
+    background: #ef4444 !important;
+    color: #ffffff !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    padding: 3px 9px !important;
+    border-radius: 20px !important;
+}
+</style>
 
 <div class="page-header">
     <div><h1>&#128196; Invoices &amp; Earnings</h1><p>Manage invoices and track your commission earnings</p></div>
     <?php if ($tab === 'affiliates'): ?>
-    <a href="/affiliate_manager/invoices?action=create" class="btn btn-primary btn-sm">+ Create Invoice</a>
+    <a href="/affiliate_manager/invoices?action=create" class="inv-btn-primary">+ Create Invoice</a>
     <?php endif; ?>
 </div>
 
 <!-- Tab Nav -->
-<div style="display:flex;gap:4px;margin-bottom:20px;border-bottom:2px solid #E2E8F0;padding-bottom:0">
-    <a href="/affiliate_manager/invoices?tab=affiliates"
-       style="padding:10px 20px;font-size:13px;font-weight:600;border-radius:8px 8px 0 0;text-decoration:none;
-              color:<?= $tab==='affiliates'?'#7C3AED':'#64748B' ?>;
-              border-bottom:<?= $tab==='affiliates'?'2px solid #7C3AED':'2px solid transparent' ?>;margin-bottom:-2px">
+<div class="inv-tab-nav">
+    <a href="/affiliate_manager/invoices?tab=affiliates" class="inv-tab-btn <?= $tab==='affiliates'?'active':'' ?>">
         &#128101; Affiliate Invoices
     </a>
-    <a href="/affiliate_manager/invoices?tab=my_invoices"
-       style="padding:10px 20px;font-size:13px;font-weight:600;border-radius:8px 8px 0 0;text-decoration:none;
-              color:<?= $tab==='my_invoices'?'#7C3AED':'#64748B' ?>;
-              border-bottom:<?= $tab==='my_invoices'?'2px solid #7C3AED':'2px solid transparent' ?>;margin-bottom:-2px">
+    <a href="/affiliate_manager/invoices?tab=my_invoices" class="inv-tab-btn <?= $tab==='my_invoices'?'active':'' ?>">
         &#128179; My Invoices
         <?php if (($myPending ?? 0) > 0): ?>
         <span style="background:#F59E0B;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:4px">$<?= number_format($myPending ?? 0, 0) ?></span>
         <?php endif; ?>
     </a>
     <?php if (!($mgrHideEarnings ?? 0)): ?>
-    <a href="/affiliate_manager/invoices?action=earnings"
-       style="padding:10px 20px;font-size:13px;font-weight:600;border-radius:8px 8px 0 0;text-decoration:none;
-              color:<?= $tab==='earnings'?'#7C3AED':'#64748B' ?>;
-              border-bottom:<?= $tab==='earnings'?'2px solid #7C3AED':'2px solid transparent' ?>;margin-bottom:-2px">
+    <a href="/affiliate_manager/invoices?action=earnings" class="inv-tab-btn <?= $tab==='earnings'?'active':'' ?>">
         &#128200; My Earnings
     </a>
     <?php endif; ?>
@@ -37,21 +182,18 @@
 <?php if ($tab === 'affiliates'): ?>
 <!-- ── AFFILIATE INVOICES TAB ─────────────────────────────────────────────────── -->
 
-<div class="stats-grid mb-3" style="grid-template-columns:repeat(3,1fr)">
-    <div class="stat-card">
-        <div class="stat-icon blue">&#128196;</div>
-        <div class="stat-label">Total Invoices</div>
-        <div class="stat-value"><?= number_format(count($invoices ?? [])) ?></div>
+<div class="inv-stats-grid">
+    <div class="inv-stat-card stat-invoices">
+        <div class="inv-stat-label">Total Invoices</div>
+        <div class="inv-stat-value"><?= number_format(count($invoices ?? [])) ?></div>
     </div>
-    <div class="stat-card">
-        <div class="stat-icon orange">&#9203;</div>
-        <div class="stat-label">Pending Amount</div>
-        <div class="stat-value" style="color:var(--warning)">$<?= number_format($totalPending ?? 0, 2) ?></div>
+    <div class="inv-stat-card stat-pending">
+        <div class="inv-stat-label">Pending Amount</div>
+        <div class="inv-stat-value" style="color:#F59E0B">$<?= number_format($totalPending ?? 0, 2) ?></div>
     </div>
-    <div class="stat-card">
-        <div class="stat-icon green">&#10003;</div>
-        <div class="stat-label">Total Paid</div>
-        <div class="stat-value" style="color:var(--secondary)">$<?= number_format($totalPaid ?? 0, 2) ?></div>
+    <div class="inv-stat-card stat-paid">
+        <div class="inv-stat-label">Total Paid</div>
+        <div class="inv-stat-value" style="color:#10B981">$<?= number_format($totalPaid ?? 0, 2) ?></div>
     </div>
 </div>
 
@@ -60,10 +202,10 @@
     <p>No affiliates assigned to your account.</p>
 </div></div>
 <?php else: ?>
-<div class="card">
-    <div class="card-header">
-        <span class="card-title">Affiliate Invoice List</span>
-        <a href="/affiliate_manager/invoices?action=create" class="btn btn-primary btn-sm">+ New Invoice</a>
+<div class="card" style="border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,0.03);overflow:hidden">
+    <div class="card-header" style="background:#f8fafc;padding:16px 20px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center">
+        <span class="card-title" style="font-weight:800;font-size:14px;color:#1e293b">Affiliate Invoice List</span>
+        <a href="/affiliate_manager/invoices?action=create" class="inv-btn-primary">+ New Invoice</a>
     </div>
     <div class="table-wrap">
         <table id="tbl-invoices">
@@ -87,13 +229,16 @@
                     <?= Helpers::e($i['period_start'] ?? '—') ?> – <?= Helpers::e($i['period_end'] ?? '—') ?>
                 </td>
                 <td>
-                    <?php $sc = ['sent'=>'warning','paid'=>'success','draft'=>'info','void'=>'muted']; ?>
-                    <span class="badge badge-<?= $sc[$i['status']] ?? 'muted' ?>"><?= ucfirst($i['status']) ?></span>
+                    <?php 
+                    $st = strtolower($i['status'] ?? 'draft');
+                    $stClass = $st === 'paid' ? 'ac-badge-approved' : ($st === 'sent' || $st === 'pending' ? 'ac-badge-pending' : 'ac-badge-rejected');
+                    ?>
+                    <span class="<?= $stClass ?>"><?= ucfirst($i['status']) ?></span>
                 </td>
                 <td class="text-sm text-muted"><?= date('M j, Y', strtotime($i['created_at'])) ?></td>
                 <td class="text-sm text-muted"><?= $i['paid_at'] ? date('M j, Y', strtotime($i['paid_at'])) : '—' ?></td>
                 <td style="white-space:nowrap">
-                    <a href="/affiliate_manager/invoices?action=view&id=<?= $i['id'] ?>" class="btn btn-secondary btn-sm">View</a>
+                    <a href="/affiliate_manager/invoices?action=view&id=<?= $i['id'] ?>" class="btn btn-secondary btn-sm" style="border-radius:10px;padding:4px 12px">View</a>
                 </td>
             </tr>
             <?php endforeach; ?>
@@ -107,30 +252,27 @@
 <?php elseif ($tab === 'my_invoices'): ?>
 <!-- ── MY INVOICES TAB (admin-generated for this manager) ─────────────────────── -->
 
-<div class="stats-grid mb-3" style="grid-template-columns:repeat(3,1fr)">
-    <div class="stat-card">
-        <div class="stat-icon blue">&#128196;</div>
-        <div class="stat-label">My Total Invoices</div>
-        <div class="stat-value"><?= number_format(count($myInvoices)) ?></div>
+<div class="inv-stats-grid">
+    <div class="inv-stat-card stat-invoices">
+        <div class="inv-stat-label">My Total Invoices</div>
+        <div class="inv-stat-value"><?= number_format(count($myInvoices)) ?></div>
     </div>
-    <div class="stat-card">
-        <div class="stat-icon orange">&#9203;</div>
-        <div class="stat-label">Pending Amount</div>
-        <div class="stat-value" style="color:var(--warning)">$<?= number_format($myPending, 2) ?></div>
+    <div class="inv-stat-card stat-pending">
+        <div class="inv-stat-label">Pending Amount</div>
+        <div class="inv-stat-value" style="color:#F59E0B">$<?= number_format($myPending, 2) ?></div>
     </div>
-    <div class="stat-card">
-        <div class="stat-icon green">&#10003;</div>
-        <div class="stat-label">Total Paid</div>
-        <div class="stat-value" style="color:var(--secondary)">$<?= number_format($myPaid, 2) ?></div>
+    <div class="inv-stat-card stat-paid">
+        <div class="inv-stat-label">Total Paid</div>
+        <div class="inv-stat-value" style="color:#10B981">$<?= number_format($myPaid, 2) ?></div>
     </div>
 </div>
 
-<div class="card">
-    <div class="card-header">
-        <span class="card-title">My Earnings Statements</span>
+<div class="card" style="border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,0.03);overflow:hidden">
+    <div class="card-header" style="background:#f8fafc;padding:16px 20px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center">
+        <span class="card-title" style="font-weight:800;font-size:14px;color:#1e293b">My Earnings Statements</span>
         <div style="display:flex;align-items:center;gap:10px">
             <span class="text-muted text-sm">Invoices generated by admin for your commissions</span>
-            <a href="/affiliate_manager/invoices?action=request_invoice" class="btn btn-primary btn-sm">
+            <a href="/affiliate_manager/invoices?action=request_invoice" class="inv-btn-primary">
                 &#128229; Request Payout Invoice
             </a>
         </div>
