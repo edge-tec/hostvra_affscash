@@ -120,13 +120,13 @@
                 <div class="card-body">
                     <?php if (!empty($post['image'])): ?>
                     <div style="margin-bottom:12px;border-radius:8px;overflow:hidden">
-                        <img src="<?= Helpers::e($post['image']) ?>" alt="" style="width:100%;height:140px;object-fit:cover">
+                        <img src="<?= Helpers::e($post['image']) ?>" alt="" style="width:100%;max-height:240px;object-fit:contain;background:#0f0826;border-radius:8px;display:block">
                     </div>
                     <?php endif; ?>
                     <input type="file" name="image" class="form-control"
                            accept="image/jpeg,image/png,image/gif,image/webp" id="img-input">
                     <div id="img-preview" style="display:none;margin-top:10px;border-radius:8px;overflow:hidden">
-                        <img id="img-preview-img" src="" alt="" style="width:100%;height:140px;object-fit:cover">
+                        <img id="img-preview-img" src="" alt="" style="width:100%;max-height:240px;object-fit:contain;background:#0f0826;border-radius:8px;display:block">
                     </div>
                     <div style="font-size:11px;color:#94A3B8;margin-top:6px">Recommended: 1200×630px JPEG/PNG</div>
                 </div>

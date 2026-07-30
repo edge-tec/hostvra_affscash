@@ -88,14 +88,17 @@ require BASE_PATH . '/views/layouts/public_top.php';
 
     <!-- Featured image (if not used as banner background) -->
     <?php if ($post['image']): ?>
-    <div style="border-radius:20px;overflow:hidden;margin-bottom:36px;box-shadow:0 10px 40px rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);aspect-ratio:16/7">
+    <div style="border-radius:20px;overflow:hidden;margin-bottom:36px;box-shadow:0 10px 40px rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.08);background:rgba(15,10,36,0.65);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:10px;display:flex;align-items:center;justify-content:center">
       <img src="<?= Helpers::e($post['image']) ?>" alt="<?= Helpers::e($post['title']) ?>"
-           style="width:100%;height:100%;object-fit:cover;display:block">
+           style="width:100%;height:auto;max-height:680px;object-fit:contain;display:block;border-radius:14px;margin:0 auto">
     </div>
     <?php endif; ?>
 
     <!-- Article body -->
     <div style="font-size:16px;line-height:1.85;color:rgba(255,255,255,0.8);max-width:720px;margin:0 auto">
+      <style>
+        .post-body img { max-width:100% !important; height:auto !important; object-fit:contain !important; border-radius:12px; margin:20px auto; display:block; }
+      </style>
       <?php if ($post['excerpt']): ?>
       <p style="font-size:18px;color:#fff;font-weight:500;line-height:1.6;margin-bottom:28px;border-left:4px solid #7c3aed;padding-left:20px;font-style:italic"><?= Helpers::e($post['excerpt']) ?></p>
       <?php endif; ?>
@@ -125,8 +128,8 @@ require BASE_PATH . '/views/layouts/public_top.php';
           $rpDate = $rp['published_at'] ? date('d M Y', strtotime($rp['published_at'])) : '';
         ?>
         <a href="/blog/<?= Helpers::e($rp['slug']) ?>" style="background:rgba(15,10,36,0.65);border-radius:14px;border:1px solid rgba(255,255,255,0.08);overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.1);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);text-decoration:none;display:flex;flex-direction:column;transition:all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='rgba(124,58,237,0.3)';" onmouseout="this.style.transform='';this.style.borderColor='rgba(255,255,255,0.08)';">
-          <div style="aspect-ratio:16/9;overflow:hidden;border-bottom:1px solid rgba(255,255,255,0.08)">
-            <img src="<?= Helpers::e($rpImg) ?>" alt="<?= Helpers::e($rp['title']) ?>" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy">
+          <div style="aspect-ratio:16/9;overflow:hidden;border-bottom:1px solid rgba(255,255,255,0.08);background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;padding:6px">
+            <img src="<?= Helpers::e($rpImg) ?>" alt="<?= Helpers::e($rp['title']) ?>" style="width:100%;height:100%;object-fit:contain;display:block" loading="lazy">
           </div>
           <div style="padding:16px">
             <h4 style="font-size:15px;color:#fff;margin-bottom:6px;line-height:1.3;margin-top:0"><?= Helpers::e($rp['title']) ?></h4>

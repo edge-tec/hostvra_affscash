@@ -10,8 +10,8 @@
 }
 .news-card:hover { border-color:#C7D2FE; box-shadow:0 8px 24px rgba(79,70,229,.1);  text-decoration:none; }
 .news-card.unread { border-color:#C7D2FE; }
-.news-card-img { height:180px; overflow:hidden; position:relative; background:linear-gradient(135deg,#4F46E5,#7C3AED); }
-.news-card-img img { width:100%; height:100%; object-fit:cover; }
+.news-card-img { height:180px; overflow:hidden; position:relative; background:linear-gradient(135deg,#0f0826,#1e1b4b); display:flex; align-items:center; justify-content:center; padding:6px; }
+.news-card-img img { width:100%; height:100%; object-fit:contain; display:block; }
 .news-card-img .no-img { display:flex; align-items:center; justify-content:center; height:100%; font-size:36px; }
 .news-hot-badge { position:absolute; top:10px; left:10px; background:#EF4444; color:#fff; border-radius:20px; padding:3px 12px; font-size:11px; font-weight:700; }
 .news-time-badge { position:absolute; top:10px; right:10px; background:rgba(0,0,0,.55); color:#fff; border-radius:20px; padding:3px 10px; font-size:11px; font-weight:500; }

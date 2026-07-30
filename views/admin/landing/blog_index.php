@@ -62,8 +62,8 @@
 <?php foreach ($posts as $p): ?>
 <div class="card" style="overflow:hidden;display:flex;flex-direction:column">
     <?php if ($p['image']): ?>
-    <div style="height:150px;overflow:hidden;position:relative">
-        <img src="<?= Helpers::e($p['image']) ?>" alt="" style="width:100%;height:100%;object-fit:cover">
+    <div style="height:180px;overflow:hidden;position:relative;background:linear-gradient(135deg,#0f0826,#1e1b4b);display:flex;align-items:center;justify-content:center;padding:8px">
+        <img src="<?= Helpers::e($p['image']) ?>" alt="" style="width:100%;height:100%;object-fit:contain;display:block">
         <?php if ($p['is_featured']): ?>
         <span style="position:absolute;top:10px;left:10px;background:#F59E0B;color:#fff;border-radius:20px;padding:3px 12px;font-size:11px;font-weight:700">⭐ Featured</span>
         <?php endif; ?>

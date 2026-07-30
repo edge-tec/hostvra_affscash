@@ -257,7 +257,7 @@ function _sendBlogPostEmail(int $postId, string $title, string $excerpt, string 
                 <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.8">New Blog Post</div>
                 <h1 style="margin:6px 0 0;font-size:22px;line-height:1.3">' . $titleH . '</h1>
             </div>'
-            . ($imgUrl !== '' ? '<img src="' . htmlspecialchars($imgUrl, ENT_QUOTES, 'UTF-8') . '" alt="" style="display:block;width:100%;max-height:280px;object-fit:cover">' : '') .
+            . ($imgUrl !== '' ? '<img src="' . htmlspecialchars($imgUrl, ENT_QUOTES, 'UTF-8') . '" alt="" style="display:block;width:100%;max-height:360px;object-fit:contain;background:#0f0826">' : '') .
             '<div style="padding:22px 28px">
                 <p style="margin:0 0 14px;font-size:14px;color:#334155">Hi {NAME},</p>
                 <p style="margin:0 0 14px;font-size:14px;color:#334155">A new post just went live on the ' . htmlspecialchars($siteName, ENT_QUOTES, 'UTF-8') . ' blog.</p>

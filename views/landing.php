@@ -1080,8 +1080,8 @@ try {
       border-color: rgba(124,58,237,0.3);
       box-shadow: 0 20px 45px rgba(124,58,237,0.25);
     }
-    .blog-card-img{position:relative;overflow:hidden;aspect-ratio:16/10;transform:translateZ(15px);transform-style:preserve-3d}
-    .blog-card-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+    .blog-card-img{position:relative;overflow:hidden;aspect-ratio:16/10;transform:translateZ(15px);transform-style:preserve-3d;background:rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;padding:6px}
+    .blog-card-img img{width:100%;height:100%;object-fit:contain;display:block;transition:transform .4s}
     .blog-card:hover .blog-card-img img{}
     .blog-card-cat{position:absolute;top:14px;left:14px;background:var(--grad-brand);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase;transform:translateZ(10px)}
     .blog-card-body{padding:22px 22px 20px;flex:1;display:flex;flex-direction:column;gap:10px;transform:translateZ(25px)}

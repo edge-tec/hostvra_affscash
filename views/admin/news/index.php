@@ -26,8 +26,8 @@
 <?php foreach ($newsList as $n): ?>
 <div class="card" style="overflow:hidden;display:flex;flex-direction:column">
     <?php if ($n['image']): ?>
-    <div style="height:160px;overflow:hidden;position:relative">
-        <img src="<?= Helpers::e($n['image']) ?>" alt="" style="width:100%;height:100%;object-fit:cover">
+    <div style="height:180px;overflow:hidden;position:relative;background:linear-gradient(135deg,#0f0826,#1e1b4b);display:flex;align-items:center;justify-content:center;padding:8px">
+        <img src="<?= Helpers::e($n['image']) ?>" alt="" style="width:100%;height:100%;object-fit:contain;display:block">
         <?php if ($n['is_hot']): ?>
         <span style="position:absolute;top:10px;left:10px;background:#EF4444;color:#fff;border-radius:20px;padding:3px 12px;font-size:11px;font-weight:700">🔥 HOT</span>
         <?php endif; ?>

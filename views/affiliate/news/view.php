@@ -3,14 +3,15 @@
 
 <style>
 .news-article { max-width:780px; margin:0 auto; }
-.news-article-hero { border-radius:12px; overflow:hidden; margin-bottom:28px; max-height:400px; }
-.news-article-hero img { width:100%; height:100%; object-fit:cover; }
+.news-article-hero { border-radius:16px; overflow:hidden; margin-bottom:28px; background:linear-gradient(135deg,#0f0826 0%,#1e1b4b 100%); border:1px solid #E2E8F0; box-shadow:0 10px 30px rgba(0,0,0,0.08); padding:10px; display:flex; align-items:center; justify-content:center; }
+.news-article-hero img { width:100%; height:auto; max-height:650px; object-fit:contain; display:block; border-radius:12px; margin:0 auto; }
 .news-article-meta { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:20px; font-size:13px; color:#64748B; }
 .news-article-title { font-size:28px; font-weight:800; line-height:1.3; color:#0F172A; margin-bottom:16px; }
 .news-article-summary { font-size:15px; color:#475569; line-height:1.7; margin-bottom:24px; padding-bottom:24px; border-bottom:1px solid #E2E8F0; }
 .ql-snow .ql-editor { padding:0; font-size:15px; line-height:1.8; color:#334155; }
 .ql-snow .ql-editor h1,.ql-snow .ql-editor h2,.ql-snow .ql-editor h3 { color:#0F172A; font-weight:700; margin:20px 0 10px; }
 .ql-snow .ql-editor p { margin-bottom:14px; }
+.ql-snow .ql-editor img { max-width:100% !important; height:auto !important; object-fit:contain !important; border-radius:8px; margin:16px auto; display:block; }
 .ql-snow .ql-editor a { color:#4F46E5; }
 .ql-snow .ql-editor blockquote { border-left:4px solid #C7D2FE; padding:10px 16px; background:#EEF2FF; color:#3730A3; border-radius:0 6px 6px 0; margin:16px 0; }
 .ql-toolbar { display:none !important; }

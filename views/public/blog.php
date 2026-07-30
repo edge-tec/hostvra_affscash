@@ -106,9 +106,9 @@ require BASE_PATH . '/views/layouts/public_top.php';
         $fLink = $featuredPost['slug'] ? '/blog/' . Helpers::e($featuredPost['slug']) : '/blog';
     ?>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-bottom:52px;align-items:center;background:rgba(15,10,36,0.6);border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:32px;box-shadow:0 10px 40px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.1);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)" class="featured-post-grid">
-      <div style="border-radius:20px;overflow:hidden;aspect-ratio:16/10;box-shadow:0 10px 30px rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.08)">
+      <div style="border-radius:20px;overflow:hidden;aspect-ratio:16/10;box-shadow:0 10px 30px rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.08);background:rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;padding:8px">
         <img src="<?= Helpers::e($fImg) ?>" alt="<?= Helpers::e($featuredPost['title']) ?>"
-             style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy">
+             style="width:100%;height:100%;object-fit:contain;display:block;border-radius:12px" loading="lazy">
       </div>
       <div>
         <?php if ($featuredPost['is_featured']): ?>
@@ -138,9 +138,9 @@ require BASE_PATH . '/views/layouts/public_top.php';
         $bLink = $bp['slug'] ? '/blog/' . Helpers::e($bp['slug']) : '/blog';
       ?>
       <div style="background:rgba(15,10,36,0.65);border-radius:18px;border:1px solid rgba(255,255,255,0.08);overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.1);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);display:flex;flex-direction:column;transform:perspective(1000px) rotateX(1deg)" onmouseover="this.style.transform='translateY(-6px) scale(1.02) perspective(1000px) rotateX(0deg)';this.style.boxShadow='0 20px 45px rgba(124,58,237,0.2)';this.style.borderColor='rgba(124,58,237,0.3)'" onmouseout="this.style.transform='';this.style.boxShadow='0 10px 30px rgba(0,0,0,0.25)';this.style.borderColor='rgba(255,255,255,0.08)'">
-        <div style="aspect-ratio:16/9;overflow:hidden;border-bottom:1px solid rgba(255,255,255,0.08)">
+        <div style="aspect-ratio:16/9;overflow:hidden;border-bottom:1px solid rgba(255,255,255,0.08);background:rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;padding:6px">
           <img src="<?= Helpers::e($bImg) ?>" alt="<?= Helpers::e($bp['title']) ?>"
-               style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s" loading="lazy">
+               style="width:100%;height:100%;object-fit:contain;display:block;transition:transform .3s" loading="lazy">
         </div>
         <div style="padding:20px 22px;flex:1;display:flex;flex-direction:column;gap:10px">
           <?php if ($bp['category']): ?>
