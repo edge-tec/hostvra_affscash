@@ -29,7 +29,13 @@ try { Database::query("ALTER TABLE support_messages ADD COLUMN attachment_name V
 try { Database::query("ALTER TABLE support_messages ADD COLUMN attachment_type VARCHAR(50) NULL"); } catch(\Throwable $e) {}
 try { Database::query("ALTER TABLE support_messages ADD COLUMN attachment_size INT NULL"); } catch(\Throwable $e) {}
 try { Database::query("ALTER TABLE support_messages ADD COLUMN is_deleted TINYINT(1) NOT NULL DEFAULT 0"); } catch(\Throwable $e) {}
+try { Database::query("ALTER TABLE support_messages ADD COLUMN read_at DATETIME NULL"); } catch(\Throwable $e) {}
+try { Database::query("ALTER TABLE support_messages ADD COLUMN delivered_at DATETIME NULL"); } catch(\Throwable $e) {}
 try { Database::query("ALTER TABLE support_messages ADD INDEX idx_conv (conversation_id)"); } catch(\Throwable $e) {}
+try { Database::query("ALTER TABLE support_messages ADD INDEX idx_read_status (affiliate_id, owner_type, is_read, sender_role)"); } catch(\Throwable $e) {}
+try { Database::query("ALTER TABLE support_messages ADD INDEX idx_conv_read (conversation_id, is_read)"); } catch(\Throwable $e) {}
+try { Database::query("ALTER TABLE support_messages ADD INDEX idx_read_at (read_at)"); } catch(\Throwable $e) {}
+try { Database::query("ALTER TABLE support_messages ADD INDEX idx_delivered_at (delivered_at)"); } catch(\Throwable $e) {}
 // `owner_type` lets the same `affiliate_id` column store either an affiliate
 // or an advertiser id. Defaults to 'affiliate' so every legacy row remains valid.
 try { Database::query("ALTER TABLE support_messages      ADD COLUMN owner_type VARCHAR(20) NOT NULL DEFAULT 'affiliate'"); } catch(\Throwable $e) {}
@@ -441,7 +447,7 @@ if ($action === 'messages') {
     if ($since) { $where .= " AND sm.id > ?"; $params[] = $since; }
 
     $rows = Database::fetchAll(
-        "SELECT sm.id, sm.sender_id, sm.sender_role, sm.message, sm.created_at, sm.is_read,
+        "SELECT sm.id, sm.sender_id, sm.sender_role, sm.message, sm.created_at, sm.is_read, sm.read_at, sm.delivered_at,
                 sm.edited_at, sm.conversation_id,
                 sm.attachment_path, sm.attachment_name, sm.attachment_type, sm.attachment_size,
                 CONCAT(u.first_name,' ',u.last_name) as sender_name
@@ -451,24 +457,63 @@ if ($action === 'messages') {
         $params
     );
 
-    // Mark unread messages from the other side as read.
+    // 1) Mark unread incoming messages as delivered if not already set.
+    // 2) Mark unread incoming messages as read with exact read_at timestamp.
     try {
         if ($role === 'affiliate' || $role === 'advertiser') {
-            // End user — read other-side messages (admin/manager/etc).
+            // End user — deliver and read messages sent by admin/manager.
             Database::query(
-                "UPDATE support_messages SET is_read=1
+                "UPDATE support_messages SET delivered_at = IFNULL(delivered_at, NOW())
+                 WHERE affiliate_id=? AND owner_type=? AND sender_role NOT IN ('affiliate','advertiser') AND delivered_at IS NULL",
+                [$affId, $ownerType]
+            );
+            Database::query(
+                "UPDATE support_messages SET is_read=1, read_at = IFNULL(read_at, NOW()), delivered_at = IFNULL(delivered_at, NOW())
                  WHERE affiliate_id=? AND owner_type=? AND sender_role NOT IN ('affiliate','advertiser') AND is_read=0",
                 [$affId, $ownerType]
             );
         } else {
-            // Admin/manager — read the owner's own messages.
+            // Admin/manager — deliver and read messages sent by affiliate/advertiser.
             Database::query(
-                "UPDATE support_messages SET is_read=1
+                "UPDATE support_messages SET delivered_at = IFNULL(delivered_at, NOW())
+                 WHERE affiliate_id=? AND owner_type=? AND sender_role IN ('affiliate','advertiser') AND delivered_at IS NULL",
+                [$affId, $ownerType]
+            );
+            Database::query(
+                "UPDATE support_messages SET is_read=1, read_at = IFNULL(read_at, NOW()), delivered_at = IFNULL(delivered_at, NOW())
                  WHERE affiliate_id=? AND owner_type=? AND sender_role IN ('affiliate','advertiser') AND is_read=0",
                 [$affId, $ownerType]
             );
         }
     } catch (\Throwable $e) {}
+
+    // Process and enrich rows with read status, delivered_at, read_at and formatted timestamps.
+    $processedRows = [];
+    foreach ($rows as $r) {
+        $isRead = (int)$r['is_read'];
+        $readAt = $r['read_at'];
+        $deliveredAt = $r['delivered_at'];
+        
+        // Determine live status: 'read', 'delivered', or 'sent'
+        $status = 'sent';
+        if ($isRead === 1) {
+            $status = 'read';
+        } elseif ($deliveredAt !== null) {
+            $status = 'delivered';
+        }
+
+        $formattedReadAt = null;
+        if ($readAt) {
+            $formattedReadAt = date('g:i A', strtotime($readAt));
+        }
+
+        $r['is_read'] = $isRead;
+        $r['read_at'] = $readAt;
+        $r['delivered_at'] = $deliveredAt;
+        $r['status'] = $status;
+        $r['formatted_read_at'] = $formattedReadAt;
+        $processedRows[] = $r;
+    }
 
     // Resolve current conversation status so the UI can render the badge.
     $convInfo = null;
@@ -481,10 +526,46 @@ if ($action === 'messages') {
     } catch (\Throwable $e) {}
 
     echo json_encode([
-        'messages'     => $rows,
+        'messages'     => $processedRows,
         'conversation' => $convInfo,
         'my_user_id'   => (int)Auth::id(),
     ]);
+    exit;
+}
+
+// ─── ACTION: mark_read — batch mark unread messages as read ───────────────
+if ($action === 'mark_read') {
+    if ($role === 'affiliate' || $role === 'advertiser') {
+        [$affId, $ownerType] = chat_owner_for_role($role);
+    } else {
+        $affId      = (int)(Helpers::get('affiliate_id') ?: Helpers::postRaw('affiliate_id'));
+        $ownerType  = (Helpers::get('owner_type') ?: Helpers::postRaw('owner_type')) === 'advertiser' ? 'advertiser' : 'affiliate';
+    }
+    if (!chat_can_access_owner($affId, $ownerType, $role)) {
+        echo json_encode(['error' => 'Forbidden']); exit;
+    }
+    $convId = (int)(Helpers::get('conversation_id') ?: Helpers::postRaw('conversation_id'));
+
+    $markedCount = 0;
+    try {
+        $where  = "affiliate_id=? AND owner_type=? AND is_read=0";
+        $params = [$affId, $ownerType];
+        if ($role === 'affiliate' || $role === 'advertiser') {
+            $where .= " AND sender_role NOT IN ('affiliate','advertiser')";
+        } else {
+            $where .= " AND sender_role IN ('affiliate','advertiser')";
+        }
+        if ($convId > 0) {
+            $where .= " AND conversation_id=?";
+            $params[] = $convId;
+        }
+        $markedCount = Database::query(
+            "UPDATE support_messages SET is_read=1, read_at=IFNULL(read_at, NOW()), delivered_at=IFNULL(delivered_at, NOW()) WHERE $where",
+            $params
+        );
+    } catch (\Throwable $e) {}
+
+    echo json_encode(['ok' => true, 'marked_count' => (int)$markedCount]);
     exit;
 }
 

@@ -909,7 +909,7 @@ document.addEventListener('click', function(e) {
         if (sb) { sb.textContent=n; sb.style.display=n>0?'inline':'none'; }
         if (tb) { tb.textContent=n; tb.style.display=n>0?'flex':'none'; }
     }).catch(function(){});
-    setTimeout(pollAdminChat, 30000);
+    setTimeout(pollAdminChat, 6000);
 })();
 
 (function pollOnlineBadge(){

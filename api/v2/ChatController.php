@@ -10,6 +10,8 @@ try {
 
     try { Database::query("ALTER TABLE support_messages ADD COLUMN is_deleted TINYINT(1) NOT NULL DEFAULT 0"); } catch(\Throwable $e) {}
     try { Database::query("ALTER TABLE support_messages ADD COLUMN is_read TINYINT(1) NOT NULL DEFAULT 0"); } catch(\Throwable $e) {}
+    try { Database::query("ALTER TABLE support_messages ADD COLUMN read_at DATETIME NULL"); } catch(\Throwable $e) {}
+    try { Database::query("ALTER TABLE support_messages ADD COLUMN delivered_at DATETIME NULL"); } catch(\Throwable $e) {}
     try { Database::query("ALTER TABLE support_messages ADD COLUMN owner_type VARCHAR(20) NOT NULL DEFAULT 'affiliate'"); } catch(\Throwable $e) {}
     try { Database::query("ALTER TABLE support_conversations ADD COLUMN owner_type VARCHAR(20) NOT NULL DEFAULT 'affiliate'"); } catch(\Throwable $e) {}
     try { Database::query("ALTER TABLE support_messages ADD COLUMN edited_at DATETIME NULL"); } catch(\Throwable $e) {}
@@ -17,6 +19,11 @@ try {
     try { Database::query("ALTER TABLE support_messages ADD COLUMN attachment_name VARCHAR(255) NULL"); } catch(\Throwable $e) {}
     try { Database::query("ALTER TABLE support_messages ADD COLUMN attachment_type VARCHAR(50) NULL"); } catch(\Throwable $e) {}
     try { Database::query("ALTER TABLE support_messages ADD COLUMN attachment_size INT NULL"); } catch(\Throwable $e) {}
+    try { Database::query("ALTER TABLE support_messages ADD INDEX idx_conv (conversation_id)"); } catch(\Throwable $e) {}
+    try { Database::query("ALTER TABLE support_messages ADD INDEX idx_read_status (affiliate_id, owner_type, is_read, sender_role)"); } catch(\Throwable $e) {}
+    try { Database::query("ALTER TABLE support_messages ADD INDEX idx_read_at (read_at)"); } catch(\Throwable $e) {}
+    try { Database::query("ALTER TABLE support_messages ADD INDEX idx_delivered_at (delivered_at)"); } catch(\Throwable $e) {}
+
     $action = $_GET['action'] ?? 'list';
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $input = json_decode(file_get_contents('php://input'), true) ?: [];
@@ -34,6 +41,39 @@ try {
     if ($action !== 'download') {
         header('Content-Type: application/json');
     }
+
+    if ($action === 'unread_count') {
+        $count = Database::fetchOne(
+            "SELECT COUNT(*) as cnt FROM support_messages WHERE affiliate_id=? AND owner_type='affiliate' AND sender_role!='affiliate' AND is_read=0 AND is_deleted=0",
+            [$affId]
+        );
+        echo json_encode([
+            'success' => true,
+            'count'   => (int)($count['cnt'] ?? 0)
+        ]);
+        exit;
+    }
+
+    if ($action === 'mark_read') {
+        $convId = (int)($input['conversation_id'] ?? $_GET['conversation_id'] ?? 0);
+        $where = "affiliate_id=? AND owner_type='affiliate' AND sender_role!='affiliate' AND is_read=0";
+        $params = [$affId];
+        if ($convId > 0) {
+            $where .= " AND conversation_id=?";
+            $params[] = $convId;
+        }
+        $updated = Database::query(
+            "UPDATE support_messages SET is_read=1, read_at=IFNULL(read_at, NOW()), delivered_at=IFNULL(delivered_at, NOW()) WHERE $where",
+            $params
+        );
+        if ($updated > 0 && file_exists(__DIR__ . '/../../core/BadgeSyncHelper.php')) {
+            require_once __DIR__ . '/../../core/BadgeSyncHelper.php';
+            BadgeSyncHelper::emitReadSync(Auth::id());
+        }
+        echo json_encode(['success' => true, 'marked_count' => (int)$updated]);
+        exit;
+    }
+
     if ($action === 'messages' || $action === 'list') {
         // Find open conversation
         $openConv = Database::fetchOne("SELECT id FROM support_conversations WHERE affiliate_id=? AND owner_type='affiliate' AND status='open'", [$affId]);
@@ -41,8 +81,25 @@ try {
         $messages = [];
         if ($openConv) {
             $convId = $openConv['id'];
-            $messages = Database::fetchAll(
-                "SELECT sm.id, sm.sender_id, sm.sender_role, sm.message, sm.created_at, sm.is_read,
+            
+            // Mark unread messages from admin as delivered and read
+            Database::query(
+                "UPDATE support_messages SET delivered_at = IFNULL(delivered_at, NOW())
+                 WHERE conversation_id=? AND sender_role NOT IN ('affiliate','advertiser') AND delivered_at IS NULL",
+                [$convId]
+            );
+            $updated = Database::query(
+                "UPDATE support_messages SET is_read=1, read_at=IFNULL(read_at, NOW()), delivered_at=IFNULL(delivered_at, NOW())
+                 WHERE conversation_id=? AND sender_role NOT IN ('affiliate','advertiser') AND is_read=0",
+                [$convId]
+            );
+            if ($updated > 0 && file_exists(__DIR__ . '/../../core/BadgeSyncHelper.php')) {
+                require_once __DIR__ . '/../../core/BadgeSyncHelper.php';
+                BadgeSyncHelper::emitReadSync(Auth::id());
+            }
+
+            $rawMessages = Database::fetchAll(
+                "SELECT sm.id, sm.sender_id, sm.sender_role, sm.message, sm.created_at, sm.is_read, sm.read_at, sm.delivered_at,
                         sm.attachment_path, sm.attachment_name, sm.attachment_type, sm.attachment_size,
                         CONCAT(u.first_name,' ',u.last_name) as sender_name
                  FROM support_messages sm JOIN users u ON u.id=sm.sender_id
@@ -51,15 +108,19 @@ try {
                 [$convId]
             );
 
-            // Mark unread messages from admin as read
-            $updated = Database::query(
-                "UPDATE support_messages SET is_read=1
-                 WHERE conversation_id=? AND sender_role NOT IN ('affiliate','advertiser') AND is_read=0",
-                [$convId]
-            );
-            if ($updated > 0) {
-                require_once __DIR__ . '/../../core/BadgeSyncHelper.php';
-                BadgeSyncHelper::emitReadSync(Auth::id());
+            foreach ($rawMessages as $m) {
+                $isRead = (int)$m['is_read'];
+                $readAt = $m['read_at'];
+                $deliveredAt = $m['delivered_at'];
+                $status = $isRead === 1 ? 'read' : ($deliveredAt !== null ? 'delivered' : 'sent');
+                $formattedReadAt = $readAt ? date('g:i A', strtotime($readAt)) : null;
+
+                $m['is_read'] = $isRead;
+                $m['read_at'] = $readAt;
+                $m['delivered_at'] = $deliveredAt;
+                $m['status'] = $status;
+                $m['formatted_read_at'] = $formattedReadAt;
+                $messages[] = $m;
             }
         }
 

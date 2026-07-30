@@ -544,7 +544,6 @@ if (!$_isOnSupportPage):
                 var b = document.getElementById('lcw-badge');
                 if (!b) return;
                 var c = (d && d.count) || 0;
-                if (_lcwOpen) c = 0;
                 if (c > 0) { b.textContent = c > 9 ? '9+' : c; b.style.display = 'flex'; }
                 else b.style.display = 'none';
             })
