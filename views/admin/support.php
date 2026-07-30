@@ -286,6 +286,8 @@ function renderMsg(m) {
     div.className = 'ac-msg-row ' + (isMine ? 'mine' : 'theirs');
     div.dataset.id = m.id;
     div.dataset.date = m.created_at;
+    div.setAttribute('data-is-read', m.is_read || 0);
+    div.setAttribute('data-status', m.status || (m.is_read ? 'read' : 'sent'));
     var edited = m.edited_at ? '<span class="ac-edited">(edited)</span>' : '';
     var receipt = isMine ? renderReadReceipt(m) : '';
     var actions = '';
@@ -422,12 +424,13 @@ function selectConversation(affId, name, code, convId, status) {
     document.getElementById('btn-reopen-conv').style.display = (_selStatus === 'closed' && _selConvId) ? '' : 'none';
 
     document.getElementById('chat-messages').innerHTML = '';
-    loadMessages(0);
-    _msgPoll = setInterval(function(){ loadMessages(0); }, 2500);
+    _lastId = 0; _renderedIds = {}; _lastDateLabel = '';
+    loadMessages(0, true);
+    _msgPoll = setInterval(function(){ loadMessages(0, false); }, 2500);
     renderConvList(_convData);
 }
 
-function loadMessages(since) {
+function loadMessages(since, isInitialLoad) {
     if (!_selAffId) return;
     var url = '/api/chat?action=messages&affiliate_id='+_selAffId+'&owner_type='+_ownerType;
     if (_selConvId) url += '&conversation_id='+_selConvId;
@@ -437,21 +440,34 @@ function loadMessages(since) {
     .then(function(r){return r.json();})
     .then(function(data){
         var box = document.getElementById('chat-messages');
+        if (!box) return;
         if (data.conversation) {
             _selStatus = data.conversation.status;
             var badge = document.getElementById('chat-status-badge');
-            badge.classList.remove('open','closed');
-            badge.classList.add(_selStatus === 'closed' ? 'closed' : 'open');
-            badge.textContent = _selStatus === 'closed' ? '✕ Closed' : '● Open';
-            document.getElementById('btn-close-conv').style.display  = (_selStatus === 'open')   ? '' : 'none';
-            document.getElementById('btn-reopen-conv').style.display = (_selStatus === 'closed') ? '' : 'none';
+            if (badge) {
+                badge.classList.remove('open','closed');
+                badge.classList.add(_selStatus === 'closed' ? 'closed' : 'open');
+                badge.textContent = _selStatus === 'closed' ? '✕ Closed' : '● Open';
+            }
+            var btnClose = document.getElementById('btn-close-conv');
+            var btnReopen = document.getElementById('btn-reopen-conv');
+            if (btnClose)  btnClose.style.display  = (_selStatus === 'open'   && _selConvId) ? '' : 'none';
+            if (btnReopen) btnReopen.style.display = (_selStatus === 'closed' && _selConvId) ? '' : 'none';
         }
-        if (!since) { box.innerHTML = ''; _renderedIds = {}; _lastDateLabel = ''; }
-        var atBottom = box.scrollHeight - box.scrollTop <= box.clientHeight + 80;
+
+        var atBottom = (box.scrollHeight - box.scrollTop) <= (box.clientHeight + 120);
+
         (data.messages||[]).forEach(function(m){
             if (_renderedIds[m.id]) {
                 var existing = box.querySelector('[data-id="'+m.id+'"]');
-                if (existing) existing.replaceWith(renderMsg(m));
+                if (existing) {
+                    var oldRead = existing.getAttribute('data-is-read');
+                    var oldStatus = existing.getAttribute('data-status');
+                    var newStatus = String(m.status || (m.is_read ? 'read' : 'sent'));
+                    if (oldRead !== String(m.is_read) || oldStatus !== newStatus) {
+                        existing.replaceWith(renderMsg(m));
+                    }
+                }
                 return;
             }
             var label = dateLabelFor(m.created_at);
@@ -460,8 +476,11 @@ function loadMessages(since) {
             _renderedIds[m.id] = true;
             if (m.id > _lastId) _lastId = m.id;
         });
-        if (!since || atBottom) scrollToBottom(!since ? false : true);
-        if (!since) loadConversations();
+
+        if (isInitialLoad || atBottom) {
+            scrollToBottom(isInitialLoad ? false : true);
+        }
+        if (isInitialLoad) loadConversations();
     });
 }
 

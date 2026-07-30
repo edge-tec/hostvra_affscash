@@ -267,22 +267,28 @@ function scrollToBottom(smooth){
     }
 }
 
-function loadMessages(since) {
+function loadMessages(since, isInitialLoad) {
+    if (typeof isInitialLoad === 'undefined') {
+        isInitialLoad = (!since && Object.keys(_renderedIds).length === 0);
+    }
     fetch('/api/chat?action=messages&affiliate_id='+_affId+(since?'&since='+since:'')+'&_t='+Date.now())
     .then(function(r){return r.json();})
     .then(function(data){
         var box = document.getElementById('chat-messages');
+        if (!box) return;
         var loadEl = document.getElementById('chat-loading'); if (loadEl) loadEl.remove();
         if (data.my_user_id) _myUserId = data.my_user_id;
 
-        if (!since && data.conversation && data.conversation.status === 'closed') {
-            box.insertAdjacentHTML('afterbegin',
-                '<div class="sc-status-banner closed">&#10003; This support conversation has been marked as Solved. '+
-                'Send a new message below to start a new ticket.</div>');
+        if (isInitialLoad && data.conversation && data.conversation.status === 'closed') {
+            if (!box.querySelector('.sc-status-banner.closed')) {
+                box.insertAdjacentHTML('afterbegin',
+                    '<div class="sc-status-banner closed">&#10003; This support conversation has been marked as Solved. '+
+                    'Send a new message below to start a new ticket.</div>');
+            }
         }
 
         if (!data.messages || !data.messages.length) {
-            if (!_lastId && !box.querySelector('.empty-chat-msg')) {
+            if (isInitialLoad && !_lastId && !box.querySelector('.empty-chat-msg')) {
                 box.insertAdjacentHTML('beforeend',
                     '<div class="sc-msg-row theirs empty-chat-msg">'+
                     '<div class="sc-meta">Support Team</div>'+
@@ -297,27 +303,30 @@ function loadMessages(since) {
         var emptyEl = box.querySelector('.empty-chat-msg');
         if (emptyEl) emptyEl.remove();
 
-        var atBottom = box.scrollHeight - box.scrollTop <= box.clientHeight + 80;
+        var atBottom = (box.scrollHeight - box.scrollTop) <= (box.clientHeight + 120);
 
-        // If full reload, reset tracking
-        if (!since) {
+        if (isInitialLoad) {
             _renderedIds = {};
             _lastDateLabel = '';
         }
 
+        var newMsgCount = 0;
         data.messages.forEach(function(m){
-            // Deduplicate
             if (_renderedIds[m.id]) {
-                // Update in place if it already exists (for edits)
                 var existing = box.querySelector('[data-id="'+m.id+'"]');
-                if (existing) existing.replaceWith(renderMsg(m));
+                if (existing) {
+                    var oldRead = existing.getAttribute('data-is-read');
+                    var oldStatus = existing.getAttribute('data-status');
+                    var newStatus = String(m.status || (m.is_read ? 'read' : 'sent'));
+                    if (oldRead !== String(m.is_read) || oldStatus !== newStatus) {
+                        existing.replaceWith(renderMsg(m));
+                    }
+                }
                 return;
             }
 
-            // Date separator
             var label = dateLabelFor(m.created_at);
             if (label !== _lastDateLabel) {
-                // Check if this separator already exists for full reloads
                 box.appendChild(renderDateSep(label));
                 _lastDateLabel = label;
             }
@@ -325,10 +334,11 @@ function loadMessages(since) {
             box.appendChild(renderMsg(m));
             _renderedIds[m.id] = true;
             if (m.id > _lastId) _lastId = m.id;
+            newMsgCount++;
         });
 
-        if (!since || atBottom) {
-            scrollToBottom(!since ? false : true);
+        if (isInitialLoad || (atBottom && newMsgCount > 0)) {
+            scrollToBottom(isInitialLoad ? false : true);
         }
     })
     .catch(function(e){
@@ -451,8 +461,8 @@ function chatKeyDown(e) {
     if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); sendMessage(); }
 }
 
-loadMessages(0);
-_polling = setInterval(function(){ loadMessages(0); }, 2500);
+loadMessages(0, true);
+_polling = setInterval(function(){ loadMessages(0, false); }, 2500);
 </script>
 
 <?php require BASE_PATH . '/views/layouts/affiliate_footer.php'; ?>
