@@ -24,18 +24,234 @@ $tabs = [
 ?>
 
 <!-- Tab bar -->
-<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px;border-bottom:2px solid #E2E8F0;padding-bottom:0">
+<div class="mgr-report-tabs">
     <?php foreach ($tabs as $key => $t):
         $isActive = $tab === $key;
         $qs = http_build_query(array_merge($_GET, ['tab'=>$key, 'export'=>null]));
         $qs = preg_replace('/export=[^&]*&?/', '', $qs);
     ?>
-    <a href="?<?= $qs ?>"
-       style="display:inline-flex;align-items:center;gap:6px;padding:10px 16px;font-size:13px;font-weight:600;border-radius:6px 6px 0 0;border:1px solid <?= $isActive?'#E2E8F0':'transparent' ?>;border-bottom:<?= $isActive?'2px solid #fff':'2px solid transparent' ?>;margin-bottom:-2px;background:<?= $isActive?'#fff':'transparent' ?>;color:<?= $isActive?'var(--primary)':'var(--text-muted)' ?>;text-decoration:none">
+    <a href="?<?= $qs ?>" class="mgr-report-tab <?= $isActive ? 'active' : '' ?>">
         <?= $t['icon'] ?> <?= $t['label'] ?>
     </a>
     <?php endforeach; ?>
 </div>
+
+<style>
+/* 3D Glassmorphism Manager Report Tabs */
+.mgr-report-tabs {
+    display: flex !important;
+    gap: 8px !important;
+    flex-wrap: wrap !important;
+    margin-bottom: 20px !important;
+    background: rgba(248, 250, 252, 0.8) !important;
+    border: 1px solid rgba(226, 232, 240, 0.8) !important;
+    border-radius: 14px !important;
+    padding: 8px 12px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02) !important;
+}
+
+html[data-theme="dark"] .mgr-report-tabs {
+    background: rgba(30, 22, 60, 0.6) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.mgr-report-tab {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+    padding: 9px 16px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    border-radius: 10px !important;
+    color: #64748B !important;
+    text-decoration: none !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    white-space: nowrap !important;
+    border: 1px solid transparent !important;
+}
+
+html[data-theme="dark"] .mgr-report-tab {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.mgr-report-tab:hover {
+    color: #1E293B !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    transform: translateY(-1px) !important;
+}
+
+.mgr-report-tab.active {
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%) !important;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35) !important;
+    border-color: transparent !important;
+}
+
+/* 3D Glassmorphism Manager Report Control Panel */
+#mgr-filter-card {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.9) 100%) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(99, 102, 241, 0.2) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 16px 40px -10px rgba(99, 102, 241, 0.12), 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+    margin-bottom: 24px !important;
+    overflow: hidden !important;
+}
+
+html[data-theme="dark"] #mgr-filter-card {
+    background: linear-gradient(180deg, rgba(24, 18, 55, 0.95) 0%, rgba(18, 12, 42, 0.9) 100%) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4) !important;
+}
+
+.mgr-filter-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)) !important;
+    gap: 16px 20px !important;
+    align-items: flex-end !important;
+    width: 100% !important;
+    margin-top: 14px !important;
+}
+
+.mgr-filter-grid .form-group {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    margin-bottom: 0 !important;
+}
+
+.mgr-filter-grid label {
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    color: #475569 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    margin-bottom: 0 !important;
+}
+
+html[data-theme="dark"] .mgr-filter-grid label {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.mgr-filter-grid .form-control {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    padding: 9px 13px !important;
+    border: 1.5px solid #E2E8F0 !important;
+    border-radius: 12px !important;
+    background: #ffffff !important;
+    color: #1E293B !important;
+    outline: none !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02) !important;
+}
+
+html[data-theme="dark"] .mgr-filter-grid .form-control {
+    background: rgba(30, 24, 60, 0.85) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+}
+
+.mgr-filter-grid .form-control:hover {
+    border-color: #A5B4FC !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.08) !important;
+}
+
+.mgr-filter-grid .form-control:focus {
+    border-color: #6366F1 !important;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.18) !important;
+}
+
+.mgr-btn-apply {
+    background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 13.5px !important;
+    padding: 10px 24px !important;
+    border-radius: 12px !important;
+    border: none !important;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35) !important;
+    cursor: pointer !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    width: 100% !important;
+}
+
+.mgr-btn-apply:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 18px rgba(99, 102, 241, 0.45) !important;
+    color: #ffffff !important;
+}
+
+/* 3D KPI Stats Grid Layout */
+.mgr-stats-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)) !important;
+    gap: 16px !important;
+    margin-bottom: 24px !important;
+}
+
+.mgr-stat-card {
+    background: #ffffff !important;
+    border: 1px solid #E2E8F0 !important;
+    border-radius: 14px !important;
+    padding: 16px 18px !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.03) !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+html[data-theme="dark"] .mgr-stat-card {
+    background: rgba(20, 14, 45, 0.8) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.mgr-stat-card:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 10px 24px rgba(99, 102, 241, 0.15) !important;
+    border-color: rgba(99, 102, 241, 0.3) !important;
+}
+
+.mgr-stat-card.stat-clicks { border-top: 3px solid #6366F1 !important; }
+.mgr-stat-card.stat-conv { border-top: 3px solid #3B82F6 !important; }
+.mgr-stat-card.stat-approved { border-top: 3px solid #10B981 !important; }
+.mgr-stat-card.stat-rejected { border-top: 3px solid #EF4444 !important; }
+.mgr-stat-card.stat-fraud { border-top: 3px solid #8B5CF6 !important; }
+.mgr-stat-card.stat-payout { border-top: 3px solid #059669 !important; }
+
+.mgr-stat-label {
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    color: #64748B !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    margin-bottom: 4px !important;
+}
+
+html[data-theme="dark"] .mgr-stat-label {
+    color: rgba(255, 255, 255, 0.65) !important;
+}
+
+.mgr-stat-value {
+    font-size: 24px !important;
+    font-weight: 800 !important;
+    color: #0F172A !important;
+    line-height: 1.1 !important;
+}
+
+html[data-theme="dark"] .mgr-stat-value {
+    color: #ffffff !important;
+}
+
+.mgr-stat-sub {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    color: #94A3B8 !important;
+    margin-top: 4px !important;
+}
+</style>
 
 <!-- Filter bar -->
 <div class="card mb-3 filter-card filter-open" id="mgr-filter-card">
@@ -46,80 +262,82 @@ $tabs = [
         </span>
         <span class="filter-toggle-icon">▲</span>
     </button>
-    <div class="card-body">
-        <form method="GET" id="mgr-report-form" class="d-flex gap-3 align-center" style="flex-wrap:wrap">
+    <div class="card-body" style="padding: 20px 24px">
+        <form method="GET" id="mgr-report-form">
             <input type="hidden" name="tab" value="<?= Helpers::e($tab) ?>">
             <?php $drpFromId='mgr-from'; $drpToId='mgr-to'; $drpFormId='mgr-report-form'; include BASE_PATH.'/views/partials/date_range_picker.php'; ?>
 
-            <div class="form-group mb-0">
-                <label>From</label>
-                <input type="date" id="mgr-from" name="from" class="form-control" value="<?= Helpers::e($from) ?>">
-            </div>
-            <div class="form-group mb-0">
-                <label>To</label>
-                <input type="date" id="mgr-to" name="to" class="form-control" value="<?= Helpers::e($to) ?>">
-            </div>
+            <div class="mgr-filter-grid">
+                <div class="form-group">
+                    <label>From</label>
+                    <input type="date" id="mgr-from" name="from" class="form-control" value="<?= Helpers::e($from) ?>">
+                </div>
+                <div class="form-group">
+                    <label>To</label>
+                    <input type="date" id="mgr-to" name="to" class="form-control" value="<?= Helpers::e($to) ?>">
+                </div>
 
-            <div class="form-group mb-0">
-                <label>Affiliate</label>
-                <select name="affiliate_id" class="form-control">
-                    <option value="">All Managed</option>
-                    <?php foreach ($affList as $a): ?>
-                    <option value="<?= $a['id'] ?>" <?= $affId==$a['id']?'selected':'' ?>><?= Helpers::e($a['name']) ?> (<?= Helpers::e($a['affiliate_code']) ?>)</option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+                <div class="form-group">
+                    <label>Affiliate</label>
+                    <select name="affiliate_id" class="form-control">
+                        <option value="">All Managed</option>
+                        <?php foreach ($affList as $a): ?>
+                        <option value="<?= $a['id'] ?>" <?= $affId==$a['id']?'selected':'' ?>><?= Helpers::e($a['name']) ?> (<?= Helpers::e($a['affiliate_code']) ?>)</option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
-            <div class="form-group mb-0">
-                <label>Offer</label>
-                <select name="offer_id" class="form-control">
-                    <option value="">All Offers</option>
-                    <?php foreach ($offerList as $o): ?>
-                    <option value="<?= $o['id'] ?>" <?= $offerId==$o['id']?'selected':'' ?>><?= Helpers::e($o['name']) ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+                <div class="form-group">
+                    <label>Offer</label>
+                    <select name="offer_id" class="form-control">
+                        <option value="">All Offers</option>
+                        <?php foreach ($offerList as $o): ?>
+                        <option value="<?= $o['id'] ?>" <?= $offerId==$o['id']?'selected':'' ?>><?= Helpers::e($o['name']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
-            <div class="form-group mb-0">
-                <label>Country</label>
-                <select name="country" class="form-control">
-                    <option value="">All Countries</option>
-                    <?php foreach ($countryList as $c): ?>
-                    <option value="<?= Helpers::e($c['country']) ?>" <?= $country===$c['country']?'selected':'' ?>><?= Helpers::flag($c['country']) ?> <?= Helpers::e($c['country']) ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+                <div class="form-group">
+                    <label>Country</label>
+                    <select name="country" class="form-control">
+                        <option value="">All Countries</option>
+                        <?php foreach ($countryList as $c): ?>
+                        <option value="<?= Helpers::e($c['country']) ?>" <?= $country===$c['country']?'selected':'' ?>><?= Helpers::flag($c['country']) ?> <?= Helpers::e($c['country']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
-            <div class="form-group mb-0">
-                <label>Aff Sub 1</label>
-                <input type="text" name="sub1" class="form-control" value="<?= Helpers::e($sub1) ?>" placeholder="sub1…" style="width:110px">
-            </div>
+                <div class="form-group">
+                    <label>Aff Sub 1</label>
+                    <input type="text" name="sub1" class="form-control" value="<?= Helpers::e($sub1) ?>" placeholder="sub1…">
+                </div>
 
-            <?php if ($tab === 'sl_report' && !empty($mgrSlList)): ?>
-            <div class="form-group mb-0">
-                <label>SmartLink</label>
-                <select name="sl_id" class="form-control">
-                    <option value="">All SmartLinks</option>
-                    <?php foreach ($mgrSlList as $sl): ?>
-                    <option value="<?= $sl['id'] ?>" <?= $slId==$sl['id']?'selected':'' ?>><?= Helpers::e($sl['name']) ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <?php endif; ?>
+                <?php if ($tab === 'sl_report' && !empty($mgrSlList)): ?>
+                <div class="form-group">
+                    <label>SmartLink</label>
+                    <select name="sl_id" class="form-control">
+                        <option value="">All SmartLinks</option>
+                        <?php foreach ($mgrSlList as $sl): ?>
+                        <option value="<?= $sl['id'] ?>" <?= $slId==$sl['id']?'selected':'' ?>><?= Helpers::e($sl['name']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <?php endif; ?>
 
-            <?php if (in_array($tab, ['click','conversion','sl_report'])): ?>
-            <div class="form-group mb-0">
-                <label>Limit</label>
-                <select name="limit" class="form-control">
-                    <?php foreach ([200,500,1000,2000,5000] as $l): ?>
-                    <option value="<?= $l ?>" <?= $limit==$l?'selected':'' ?>><?= number_format($l) ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <?php endif; ?>
+                <?php if (in_array($tab, ['click','conversion','sl_report'])): ?>
+                <div class="form-group">
+                    <label>Limit</label>
+                    <select name="limit" class="form-control">
+                        <?php foreach ([200,500,1000,2000,5000] as $l): ?>
+                        <option value="<?= $l ?>" <?= $limit==$l?'selected':'' ?>><?= number_format($l) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <?php endif; ?>
 
-            <div style="align-self:flex-end">
-                <button class="btn btn-primary">Apply</button>
+                <div class="form-group">
+                    <button type="submit" class="mgr-btn-apply">Apply</button>
+                </div>
             </div>
         </form>
     </div>
@@ -133,27 +351,39 @@ $tabs = [
 <?php /* ═══════════════════ PERFORMANCE TABS ═══════════════════ */ ?>
 <?php if (in_array($tab, ['day','offer','country','sub','affiliate'])): ?>
 
-
-
-<div class="stats-grid mb-3" style="grid-template-columns:repeat(<?= $hideFraudRejected ? 4 : 6 ?>,1fr)">
-    <div class="stat-card"><div class="stat-label">Clicks</div><div class="stat-value"><?= number_format($totals['clicks']) ?></div><div class="stat-sub">Unique: <?= number_format($totals['uclicks']) ?></div></div>
-    <div class="stat-card"><div class="stat-label">Conversions</div><div class="stat-value"><?= number_format($totals['conversions']) ?></div></div>
-    <div class="stat-card"><div class="stat-label">Approved</div><div class="stat-value" style="color:var(--secondary)"><?= number_format($totals['approved']) ?></div></div>
+<div class="mgr-stats-grid">
+    <div class="mgr-stat-card stat-clicks">
+        <div class="mgr-stat-label">Clicks</div>
+        <div class="mgr-stat-value"><?= number_format($totals['clicks']) ?></div>
+        <div class="mgr-stat-sub">Unique: <?= number_format($totals['uclicks']) ?></div>
+    </div>
+    <div class="mgr-stat-card stat-conv">
+        <div class="mgr-stat-label">Conversions</div>
+        <div class="mgr-stat-value"><?= number_format($totals['conversions']) ?></div>
+    </div>
+    <div class="mgr-stat-card stat-approved">
+        <div class="mgr-stat-label">Approved</div>
+        <div class="mgr-stat-value" style="color:#10B981"><?= number_format($totals['approved']) ?></div>
+    </div>
     <?php if (!$hideFraudRejected): ?>
     <!-- REJECTED card -->
-    <div class="stat-card" style="cursor:pointer;border:1.5px solid transparent;transition:border-color .2s" onclick="openRejectedDetail()" onmouseenter="this.style.borderColor='#EF4444'" onmouseleave="this.style.borderColor='transparent'">
-        <div class="stat-label">Rejected</div>
-        <div class="stat-value" style="color:var(--danger)"><?= number_format($totals['rejected']) ?></div>
-        <div class="stat-sub" style="color:#EF4444">Click to drill down ↗</div>
+    <div class="mgr-stat-card stat-rejected" style="cursor:pointer" onclick="openRejectedDetail()">
+        <div class="mgr-stat-label">Rejected</div>
+        <div class="mgr-stat-value" style="color:#EF4444"><?= number_format($totals['rejected']) ?></div>
+        <div class="mgr-stat-sub" style="color:#EF4444">Click to drill down ↗</div>
     </div>
     <!-- FRAUD card -->
-    <div class="stat-card" style="cursor:pointer;border:1.5px solid transparent;transition:border-color .2s" onclick="openFraudScorePanel()" onmouseenter="this.style.borderColor='#7C3AED'" onmouseleave="this.style.borderColor='transparent'">
-        <div class="stat-label">Fraud Clicks</div>
-        <div class="stat-value" style="color:var(--danger)"><?= number_format($totals['fraud_clicks']) ?></div>
-        <div class="stat-sub" style="color:#7C3AED">IPQS score ↗</div>
+    <div class="mgr-stat-card stat-fraud" style="cursor:pointer" onclick="openFraudScorePanel()">
+        <div class="mgr-stat-label">Fraud Clicks</div>
+        <div class="mgr-stat-value" style="color:#8B5CF6"><?= number_format($totals['fraud_clicks']) ?></div>
+        <div class="mgr-stat-sub" style="color:#8B5CF6">IPQS score ↗</div>
     </div>
     <?php endif; ?>
-    <div class="stat-card"><div class="stat-label">Approved Payout</div><div class="stat-value" style="color:var(--secondary)">$<?= number_format($totals['payout'],2) ?></div><div class="stat-sub">Approved only</div></div>
+    <div class="mgr-stat-card stat-payout">
+        <div class="mgr-stat-label">Approved Payout</div>
+        <div class="mgr-stat-value" style="color:#059669">$<?= number_format($totals['payout'],2) ?></div>
+        <div class="mgr-stat-sub">Approved only</div>
+    </div>
 </div>
 
 <div class="card">
