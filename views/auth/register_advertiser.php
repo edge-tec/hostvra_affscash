@@ -21,75 +21,95 @@ body {
       radial-gradient(ellipse 40% 45% at 10% 70%,rgba(232,25,122,.06),transparent) !important;
 <?php endif; ?>
   color: #fff !important;
-  padding:40px 20px;
+  padding: 40px 20px;
   overflow-x: hidden;
 }
 .auth-box {
-  background: rgba(15, 10, 36, 0.65) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: linear-gradient(145deg, rgba(20, 14, 45, 0.85) 0%, rgba(10, 6, 26, 0.92) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
   border-radius: 20px !important;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.35), inset 0 1px 1px rgba(255,255,255,0.15) !important;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.18) !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   width: 100%;
-  max-width: 520px !important;
+  max-width: 620px !important;
   margin: 0 auto !important;
   overflow: hidden;
   position: relative;
   z-index: 1;
 }
-.auth-header { padding:28px 32px 16px; color:#fff; text-align:center; }
-.auth-header h1 { font-size:20px; font-weight:700; color:#fff; }
-.auth-header p { font-size:13px; color:rgba(255,255,255,0.6); margin-top:4px; }
-.auth-footer { padding:16px 32px; background:rgba(15,10,36,0.3) !important; border-top:1px solid rgba(255,255,255,0.06) !important; text-align:center; font-size:13px; color:rgba(255,255,255,0.5) !important; border-radius:0 0 16px 16px; }
-.auth-footer a { color:#a855f7; font-weight:600; text-decoration:none; }
-.section-title { font-size:13px; font-weight:700; color:#a855f7; text-transform:uppercase; letter-spacing:.06em; margin:24px 0 16px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.08); }
-.form-label, label { color: rgba(255,255,255,0.85) !important; font-size:12.5px !important; font-weight:600 !important; margin-bottom:6px !important; display:inline-block !important; }
+.auth-header { padding: 32px 36px 16px; color:#fff; text-align:center; }
+.auth-header h1 { font-size: 22px; font-weight: 800; color:#fff; letter-spacing: -0.01em; }
+.auth-header p { font-size: 13.5px; color: rgba(255,255,255,0.65); margin-top: 6px; }
+.auth-body { padding: 28px 36px 36px; }
+.auth-footer { padding: 18px 36px; background: rgba(10, 6, 26, 0.5) !important; border-top: 1px solid rgba(255,255,255,0.06) !important; text-align: center; font-size: 13px; color: rgba(255,255,255,0.55) !important; border-radius: 0 0 20px 20px; }
+.auth-footer a { color: #a855f7; font-weight: 600; text-decoration: none; }
+.section-title { font-size: 12.5px; font-weight: 800; color: #c084fc; text-transform: uppercase; letter-spacing: .08em; margin: 24px 0 14px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 8px; }
+.form-label, label { color: rgba(255,255,255,0.85) !important; font-size: 12.5px !important; font-weight: 600 !important; margin-bottom: 6px !important; display: inline-block !important; }
 
-/* Sleek translucent dark input controls */
-.form-control, .form-control-custom,
-input[type="text"], input[type="password"], input[type="email"], input[type="tel"], input[type="url"], input[type="number"], select, textarea {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+.form-group { margin-bottom: 16px; }
+.form-row.cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 0; }
+
+/* High Specificity Translucent Dark Input Controls (Overrides any global white styles) */
+html body .auth-box input[type="text"],
+html body .auth-box input[type="password"],
+html body .auth-box input[type="email"],
+html body .auth-box input[type="tel"],
+html body .auth-box input[type="url"],
+html body .auth-box input[type="number"],
+html body .auth-box select,
+html body .auth-box textarea,
+html body .auth-box .form-control,
+html[data-theme="dark"] body .auth-box input,
+html[data-theme="dark"] body .auth-box select,
+html[data-theme="dark"] body .auth-box .form-control {
+  background-color: rgba(18, 12, 38, 0.85) !important;
+  background: rgba(18, 12, 38, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
   border-radius: 10px !important;
   color: #ffffff !important;
-  padding: 12px 14px !important;
-  font-size: 13.5px !important;
-  transition: all 0.2s ease-in-out !important;
+  -webkit-text-fill-color: #ffffff !important;
+  padding: 10px 14px !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+  transition: all 0.25s ease-in-out !important;
   outline: none !important;
   box-shadow: none !important;
+  height: 46px !important;
+  box-sizing: border-box !important;
 }
 
-.form-control:focus, .form-control-custom:focus,
-input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus, input[type="tel"]:focus, input[type="url"]:focus, select:focus, textarea:focus {
-  background: rgba(255, 255, 255, 0.08) !important;
+html body .auth-box input:focus,
+html body .auth-box select:focus,
+html body .auth-box textarea:focus,
+html body .auth-box .form-control:focus {
+  background-color: rgba(28, 18, 55, 0.95) !important;
+  background: rgba(28, 18, 55, 0.95) !important;
   border-color: #a855f7 !important;
-  box-shadow: 0 0 16px rgba(168, 85, 247, 0.35) !important;
+  box-shadow: 0 0 18px rgba(168, 85, 247, 0.35) !important;
 }
 
 /* Ensure select option dropdowns have a dark background */
-select option {
+html body .auth-box select option {
   background-color: #0f0a24 !important;
   color: #ffffff !important;
   padding: 10px !important;
 }
 
 /* Complete Browser Autofill Override */
-input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
-input:-webkit-autofill:active,
-select:-webkit-autofill,
-select:-webkit-autofill:hover,
-select:-webkit-autofill:focus {
+html body .auth-box input:-webkit-autofill,
+html body .auth-box input:-webkit-autofill:hover, 
+html body .auth-box input:-webkit-autofill:focus, 
+html body .auth-box input:-webkit-autofill:active,
+html body .auth-box select:-webkit-autofill {
   -webkit-text-fill-color: #ffffff !important;
-  -webkit-box-shadow: 0 0 0 1000px #0b071e inset !important;
-  box-shadow: 0 0 0 1000px #0b071e inset !important;
+  -webkit-box-shadow: 0 0 0 1000px #0d0722 inset !important;
+  box-shadow: 0 0 0 1000px #0d0722 inset !important;
   transition: background-color 5000s ease-in-out 0s;
 }
 
 /* Placeholder styling */
-::placeholder {
+html body .auth-box ::placeholder {
   color: rgba(255, 255, 255, 0.35) !important;
 }
 
@@ -97,30 +117,45 @@ select:-webkit-autofill:focus {
   background: linear-gradient(135deg,#7c3aed 0%,#3b82f6 50%,#0ea5e9 100%) !important;
   border: none !important;
   color: #fff !important;
-  box-shadow: 0 4px 16px rgba(124,58,237,0.3) !important;
+  box-shadow: 0 4px 20px rgba(124,58,237,0.4) !important;
   padding: 14px 20px !important;
   font-weight: 700 !important;
-  border-radius: 10px !important;
+  border-radius: 12px !important;
   font-size: 15px !important;
   letter-spacing: 0.02em !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+.btn-primary:hover, button[type="submit"]:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 8px 28px rgba(124,58,237,0.55) !important;
 }
 
-/* Responsive media query overrides for form grids */
-@media (max-width: 768px) {
+/* Responsive media query overrides */
+@media (max-width: 680px) {
+  .auth-box {
+    max-width: 100% !important;
+    border-radius: 16px !important;
+  }
+  .auth-header {
+    padding: 24px 20px 12px !important;
+  }
+  .auth-body {
+    padding: 20px 20px 24px !important;
+  }
   .form-row.cols-2,
-  .form-row,
   div[style*="grid-template-columns"],
   #contact-fields {
     grid-template-columns: 1fr !important;
+    gap: 0 !important;
   }
 }
 .contact-alert {
   background: rgba(245, 158, 11, 0.1) !important;
   border: 1px solid rgba(245, 158, 11, 0.3) !important;
   color: #fde047 !important;
-  border-radius: 8px !important;
-  padding: 10px 14px !important;
-  margin-bottom: 14px !important;
+  border-radius: 10px !important;
+  padding: 12px 14px !important;
+  margin-bottom: 16px !important;
   font-size: 13px !important;
 }
 

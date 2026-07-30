@@ -47,45 +47,61 @@ body {
 .section-title { font-size:13px; font-weight:700; color:#a855f7; text-transform:uppercase; letter-spacing:.06em; margin:24px 0 16px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.08); }
 .form-label, label { color: rgba(255,255,255,0.85) !important; font-size:12.5px !important; font-weight:600 !important; margin-bottom:6px !important; display:inline-block !important; }
 
-/* Sleek translucent dark input controls */
-.form-control, .form-control-custom,
-input[type="text"], input[type="password"], input[type="email"], input[type="tel"], input[type="url"], input[type="number"], select, textarea {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+/* High Specificity Translucent Dark Input Controls (Overrides any global white styles) */
+html body .auth-box input[type="text"],
+html body .auth-box input[type="password"],
+html body .auth-box input[type="email"],
+html body .auth-box input[type="tel"],
+html body .auth-box input[type="url"],
+html body .auth-box input[type="number"],
+html body .auth-box select,
+html body .auth-box textarea,
+html body .auth-box .form-control,
+html[data-theme="dark"] body .auth-box input,
+html[data-theme="dark"] body .auth-box select,
+html[data-theme="dark"] body .auth-box .form-control {
+  background-color: rgba(18, 12, 38, 0.85) !important;
+  background: rgba(18, 12, 38, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
   border-radius: 10px !important;
   color: #ffffff !important;
-  padding: 12px 14px !important;
-  font-size: 13.5px !important;
-  transition: all 0.2s ease-in-out !important;
+  -webkit-text-fill-color: #ffffff !important;
+  padding: 10px 14px !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+  transition: all 0.25s ease-in-out !important;
   outline: none !important;
   box-shadow: none !important;
+  height: 46px !important;
+  box-sizing: border-box !important;
 }
 
-.form-control:focus, .form-control-custom:focus,
-input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus, input[type="tel"]:focus, input[type="url"]:focus, select:focus, textarea:focus {
-  background: rgba(255, 255, 255, 0.08) !important;
+html body .auth-box input:focus,
+html body .auth-box select:focus,
+html body .auth-box textarea:focus,
+html body .auth-box .form-control:focus {
+  background-color: rgba(28, 18, 55, 0.95) !important;
+  background: rgba(28, 18, 55, 0.95) !important;
   border-color: #a855f7 !important;
-  box-shadow: 0 0 16px rgba(168, 85, 247, 0.35) !important;
+  box-shadow: 0 0 18px rgba(168, 85, 247, 0.35) !important;
 }
 
 /* Ensure select option dropdowns have a dark background */
-select option {
+html body .auth-box select option {
   background-color: #0f0a24 !important;
   color: #ffffff !important;
   padding: 10px !important;
 }
 
 /* Complete Browser Autofill Override */
-input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
-input:-webkit-autofill:active,
-select:-webkit-autofill,
-select:-webkit-autofill:hover,
-select:-webkit-autofill:focus {
+html body .auth-box input:-webkit-autofill,
+html body .auth-box input:-webkit-autofill:hover, 
+html body .auth-box input:-webkit-autofill:focus, 
+html body .auth-box input:-webkit-autofill:active,
+html body .auth-box select:-webkit-autofill {
   -webkit-text-fill-color: #ffffff !important;
-  -webkit-box-shadow: 0 0 0 1000px #0b071e inset !important;
-  box-shadow: 0 0 0 1000px #0b071e inset !important;
+  -webkit-box-shadow: 0 0 0 1000px #0d0722 inset !important;
+  box-shadow: 0 0 0 1000px #0d0722 inset !important;
   transition: background-color 5000s ease-in-out 0s;
 }
 
