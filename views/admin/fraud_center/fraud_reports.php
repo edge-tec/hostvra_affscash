@@ -6,34 +6,275 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
 ?>
 
 <style>
-.fr-header-card { background: #ffffff; border: 1px solid #E2E8F0; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); margin-bottom: 24px; overflow: hidden; }
-.fr-header-tabs { display: flex; background: #F8FAFC; border-bottom: 1px solid #E2E8F0; padding: 0 16px; }
-.fr-header-tab { padding: 14px 20px; font-size: 14px; font-weight: 600; color: #64748B; text-decoration: none; border-bottom: 2px solid transparent; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
-.fr-header-tab:hover { color: #334155; border-bottom-color: #CBD5E1; }
-.fr-header-tab.active { color: #4F46E5; border-bottom-color: #4F46E5; }
-.fr-filter-section { padding: 20px; }
-.fr-filter-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
-.fr-filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px 20px; align-items: start; }
-.fr-filter-grid > div { display: flex; flex-direction: column; gap: 0; }
-.fr-filter-grid label { display: block; margin-bottom: 8px; font-size: 11px; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.05em; }
-.fr-filter-grid select, .fr-filter-grid input[type=text], .fr-filter-grid input[type=date] { font-size: 13px; padding: 10px 14px; border: 1px solid #CBD5E1; border-radius: 8px; background: #F8FAFC; color: #1E293B; outline: none; transition: all 0.2s; width: 100%; box-sizing: border-box; }
-.fr-filter-grid select:hover, .fr-filter-grid input:hover { border-color: #94A3B8; }
-.fr-filter-grid select:focus, .fr-filter-grid input:focus { background: #fff; border-color: #6366F1; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
-.fr-filter-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; padding-top: 16px; border-top: 1px dashed #E2E8F0; }
-.fr-filter-actions-right { display: flex; gap: 12px; }
-.fr-filter-actions-left { display: flex; align-items: center; gap: 12px; }
-.fr-export-wrapper { margin-left: auto; }
+/* ═══════════════════════════════════════════════════════════════════════
+   3D GLASSMORPHISM FRAUD REPORTS CONTROL CENTER STYLES
+   ═══════════════════════════════════════════════════════════════════════ */
+.fr-header-card {
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid #E2E8F0 !important;
+    border-radius: 16px !important;
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05), 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+    margin-bottom: 24px !important;
+    overflow: hidden !important;
+}
+
+html[data-theme="dark"] .fr-header-card {
+    background: rgba(20, 14, 45, 0.85) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+.fr-header-tabs {
+    display: flex !important;
+    background: rgba(248, 250, 252, 0.8) !important;
+    border-bottom: 1px solid #E2E8F0 !important;
+    padding: 8px 16px !important;
+    gap: 8px !important;
+}
+
+html[data-theme="dark"] .fr-header-tabs {
+    background: rgba(30, 22, 60, 0.6) !important;
+    border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.fr-header-tab {
+    padding: 10px 20px !important;
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
+    color: #64748B !important;
+    text-decoration: none !important;
+    border-radius: 10px !important;
+    border: 1px solid transparent !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+html[data-theme="dark"] .fr-header-tab {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.fr-header-tab:hover {
+    color: #1E293B !important;
+    background: rgba(255, 255, 255, 0.8) !important;
+    transform: translateY(-1px) !important;
+}
+
+.fr-header-tab.active {
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%) !important;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35) !important;
+}
+
+.fr-filter-section {
+    padding: 22px 24px !important;
+}
+
+.fr-filter-top {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 20px !important;
+    flex-wrap: wrap !important;
+    gap: 14px !important;
+}
+
+.fr-filter-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+    gap: 16px 20px !important;
+    align-items: start !important;
+}
+
+.fr-filter-grid label {
+    display: block !important;
+    margin-bottom: 6px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    color: #64748B !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+}
+
+html[data-theme="dark"] .fr-filter-grid label {
+    color: rgba(255, 255, 255, 0.65) !important;
+}
+
+.fr-filter-grid select,
+.fr-filter-grid input[type=text],
+.fr-filter-grid input[type=date] {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    padding: 9px 13px !important;
+    border: 1px solid #CBD5E1 !important;
+    border-radius: 10px !important;
+    background: #ffffff !important;
+    color: #1E293B !important;
+    outline: none !important;
+    transition: all 0.2s ease !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02) !important;
+}
+
+html[data-theme="dark"] .fr-filter-grid select,
+html[data-theme="dark"] .fr-filter-grid input {
+    background: rgba(30, 24, 60, 0.8) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+}
+
+.fr-filter-grid select:hover,
+.fr-filter-grid input:hover {
+    border-color: #94A3B8 !important;
+}
+
+.fr-filter-grid select:focus,
+.fr-filter-grid input:focus {
+    background: #ffffff !important;
+    border-color: #6366F1 !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2) !important;
+}
+
+.fr-filter-actions {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-top: 22px !important;
+    padding-top: 18px !important;
+    border-top: 1px dashed #E2E8F0 !important;
+    flex-wrap: wrap !important;
+    gap: 14px !important;
+}
+
+html[data-theme="dark"] .fr-filter-actions {
+    border-top-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.fr-filter-actions-right {
+    display: flex !important;
+    gap: 12px !important;
+    align-items: center !important;
+}
+
+/* 3D Fraud Only Checkbox Pill */
+.fr-fraud-check-pill {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 9px !important;
+    cursor: pointer !important;
+    background: rgba(99, 102, 241, 0.08) !important;
+    padding: 8px 16px !important;
+    border-radius: 10px !important;
+    border: 1px solid rgba(99, 102, 241, 0.25) !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.fr-fraud-check-pill:hover {
+    background: rgba(99, 102, 241, 0.14) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15) !important;
+}
+
+.fr-fraud-check-pill input {
+    width: 16px !important;
+    height: 16px !important;
+    accent-color: #6366F1 !important;
+    cursor: pointer !important;
+}
+
+.fr-fraud-check-pill span {
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #4F46E5 !important;
+}
+
+html[data-theme="dark"] .fr-fraud-check-pill span {
+    color: #818CF8 !important;
+}
+
+/* 3D Action Buttons */
+.fr-btn-apply {
+    background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    padding: 9px 24px !important;
+    border-radius: 10px !important;
+    border: none !important;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35) !important;
+    cursor: pointer !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.fr-btn-apply:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 18px rgba(99, 102, 241, 0.45) !important;
+    color: #ffffff !important;
+}
+
+.fr-btn-reset {
+    background: #F1F5F9 !important;
+    color: #475569 !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    padding: 9px 18px !important;
+    border-radius: 10px !important;
+    border: 1px solid #CBD5E1 !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+}
+
+.fr-btn-reset:hover {
+    background: #E2E8F0 !important;
+    color: #1E293B !important;
+}
+
+/* 3D Summary Cards Grid */
+.fr-summary-bar {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)) !important;
+    gap: 14px !important;
+    margin-bottom: 22px !important;
+}
+
+.fr-sum-box {
+    background: #ffffff !important;
+    border: 1px solid #E2E8F0 !important;
+    border-radius: 12px !important;
+    padding: 14px 16px !important;
+    text-align: center !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+    transition: all 0.2s ease !important;
+}
+
+html[data-theme="dark"] .fr-sum-box {
+    background: rgba(20, 14, 45, 0.8) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.fr-sum-box:hover {
+    transform: translateY(-2px) !important;
+}
+
+.fr-sum-box .val { font-size: 22px !important; font-weight: 800 !important; color: #0F172A !important; line-height: 1.1 !important; }
+html[data-theme="dark"] .fr-sum-box .val { color: #ffffff !important; }
+.fr-sum-box .lbl { font-size: 11px !important; font-weight: 700 !important; color: #64748B !important; text-transform: uppercase !important; letter-spacing: .04em !important; margin-top: 4px !important; }
+
+.fr-sum-box.ok { border-top: 3px solid #10B981 !important; }
+.fr-sum-box.ok .val { color: #10B981 !important; }
+.fr-sum-box.warn { border-top: 3px solid #F59E0B !important; }
+.fr-sum-box.warn .val { color: #F59E0B !important; }
+.fr-sum-box.danger { border-top: 3px solid #EF4444 !important; }
+.fr-sum-box.danger .val { color: #EF4444 !important; }
+
 .risk-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; white-space: nowrap; }
 .risk-badge.high { background-color: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
 .risk-badge.medium { background-color: #FFFBEB; color: #D97706; border: 1px solid #FDE68A; }
 .risk-badge.low { background-color: #F0FDF4; color: #16A34A; border: 1px solid #BBF7D0; }
-.fr-summary-bar { display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:16px; }
-.fr-sum-box { background:#fff;border:1px solid #E5E7EB;border-radius:10px;padding:12px 16px;text-align:center; }
-.fr-sum-box .val { font-size:22px;font-weight:800;color:#111827;line-height:1.1; }
-.fr-sum-box .lbl { font-size:11px;font-weight:600;color:#9CA3AF;text-transform:uppercase;letter-spacing:.04em;margin-top:3px; }
-.fr-sum-box.danger .val { color:#DC2626; }
-.fr-sum-box.warn .val   { color:#D97706; }
-.fr-sum-box.ok .val     { color:#059669; }
 .fr-bulk-bar { display:none;align-items:center;gap:8px;padding:10px 16px;background:#EEF2FF;border:1px solid #C7D2FE;border-radius:8px;margin-bottom:12px;font-size:13px;font-weight:600;color:#3730A3; }
 .fr-bulk-bar.visible { display:flex; }
 .fraud-row { background:#FFF7F7; }
@@ -149,15 +390,15 @@ require BASE_PATH . "/views/layouts/{$layoutStr}.php";
             <div class="fr-filter-actions">
                 <div class="fr-filter-actions-left">
                     <?php if ($tab === 'conversions'): ?>
-                    <label for="fraudOnly" style="display:flex;align-items:center;gap:8px;cursor:pointer;background:#EEF2FF;padding:8px 14px;border-radius:8px;border:1px solid #C7D2FE;transition:all 0.2s">
-                        <input type="checkbox" name="fraud_only" value="1" id="fraudOnly" <?= $fraudOnly?'checked':'' ?> style="width:16px;height:16px;accent-color:#4F46E5;margin:0">
-                        <span style="font-size:13px;font-weight:700;color:#4F46E5;line-height:1">Show Fraud Flagged Only</span>
+                    <label for="fraudOnly" class="fr-fraud-check-pill">
+                        <input type="checkbox" name="fraud_only" value="1" id="fraudOnly" <?= $fraudOnly?'checked':'' ?>>
+                        <span>Show Fraud Flagged Only 🛡️</span>
                     </label>
                     <?php endif; ?>
                 </div>
                 <div class="fr-filter-actions-right">
-                    <a href="?tab=<?= $tab ?>" class="fds-btn fds-btn-outline" style="padding:10px 20px;font-weight:600">Clear Filters</a>
-                    <button type="submit" class="fds-btn fds-btn-primary" style="padding:10px 24px;font-weight:600;background:#4F46E5;border:none">Apply Filters</button>
+                    <a href="?tab=<?= $tab ?>" class="fr-btn-reset">Clear Filters</a>
+                    <button type="submit" class="fr-btn-apply">Apply Filters</button>
                 </div>
             </div>
         </form>
