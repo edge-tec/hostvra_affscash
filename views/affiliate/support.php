@@ -15,7 +15,7 @@
 .sc-chat-header{display:flex;justify-content:flex-end;padding:10px 16px;border-bottom:1px solid var(--border);background:#F8FAFC;flex-shrink:0;flex-wrap:wrap;gap:8px}
 
 /* ── Messages Area ────────────────────────────────────────────────── */
-.sc-messages{flex:1;overflow-y:auto;overflow-x:hidden;padding:16px;display:flex;flex-direction:column;gap:4px;background:linear-gradient(180deg,#F8FAFC 0%,#F1F5F9 100%);scroll-behavior:smooth}
+.sc-messages{flex:1;overflow-y:auto;overflow-x:hidden;padding:16px;display:flex;flex-direction:column;gap:4px;background:linear-gradient(180deg,#F8FAFC 0%,#F1F5F9 100%)}
 
 /* ── Date Separator ───────────────────────────────────────────────── */
 .sc-date-sep{display:flex;align-items:center;gap:12px;margin:16px 0 8px;user-select:none}
@@ -187,7 +187,7 @@ function attachmentHtml(m){
     var name = escHtml(m.attachment_name || 'file');
     var dl   = '/api/chat?action=download&id=' + m.id;
     if ((m.attachment_type||'').indexOf('image/') === 0) {
-        return '<a href="'+dl+'" target="_blank"><img class="sc-att-img" src="'+dl+'" alt="'+name+'" loading="lazy" onerror="this.style.display=\'none\';this.insertAdjacentHTML(\'afterend\',\'<span style=\\\'font-size:11px;opacity:.7\\\'>Preview unavailable</span>\');"></a>';
+        return '<a href="'+dl+'" target="_blank"><img class="sc-att-img" src="'+dl+'" alt="'+name+'" loading="lazy" onload="if(!_userScrolledUp){scrollToBottom();}" onerror="this.style.display=\'none\';this.insertAdjacentHTML(\'afterend\',\'<span style=\\\'font-size:11px;opacity:.7\\\'>Preview unavailable</span>\');"></a>';
     }
     var ext = attExtLabel(m);
     var sizeTxt = m.attachment_size ? fmtBytes(m.attachment_size) : '';
@@ -241,6 +241,8 @@ function renderMsg(m) {
     div.className = 'sc-msg-row ' + (isMine ? 'mine' : 'theirs');
     div.dataset.id = m.id;
     div.dataset.date = m.created_at;
+    div.setAttribute('data-is-read', m.is_read || 0);
+    div.setAttribute('data-status', m.status || (m.is_read ? 'read' : 'sent'));
     var edited = m.edited_at ? '<span class="sc-edited">(edited)</span>' : '';
     var canEdit = isMine && (m.message||'').trim() !== '';
     var receipt = isMine ? renderReadReceipt(m) : '';
@@ -259,26 +261,28 @@ function renderMsg(m) {
 }
 
 var _userScrolledUp = false;
+var _isProgrammaticScroll = false;
 
 function initScrollListener() {
     var box = document.getElementById('chat-messages');
     if (box && !box.dataset.hasScrollListener) {
         box.dataset.hasScrollListener = 'true';
         box.addEventListener('scroll', function() {
+            if (_isProgrammaticScroll) return;
             var distFromBottom = box.scrollHeight - box.scrollTop - box.clientHeight;
-            _userScrolledUp = (distFromBottom > 30);
+            _userScrolledUp = (distFromBottom > 40);
         });
     }
 }
 
-function scrollToBottom(smooth){
+function scrollToBottom(){
     var box = document.getElementById('chat-messages');
     if (!box) return;
-    if (smooth) {
-        box.scrollTo({top: box.scrollHeight, behavior:'smooth'});
-    } else {
-        box.scrollTop = box.scrollHeight;
-    }
+    _isProgrammaticScroll = true;
+    box.scrollTop = box.scrollHeight;
+    requestAnimationFrame(function() {
+        _isProgrammaticScroll = false;
+    });
 }
 
 function loadMessages(since, isInitialLoad) {
@@ -319,7 +323,7 @@ function loadMessages(since, isInitialLoad) {
         if (emptyEl) emptyEl.remove();
 
         var distFromBottom = box.scrollHeight - box.scrollTop - box.clientHeight;
-        var isAtBottom = (distFromBottom <= 30) && !_userScrolledUp;
+        var wasAtBottom = (distFromBottom <= 40) && !_userScrolledUp;
 
         if (isInitialLoad) {
             _userScrolledUp = false;
@@ -333,10 +337,13 @@ function loadMessages(since, isInitialLoad) {
                 var existing = box.querySelector('[data-id="'+m.id+'"]');
                 if (existing) {
                     var oldRead = existing.getAttribute('data-is-read');
-                    var oldStatus = existing.getAttribute('data-status');
-                    var newStatus = String(m.status || (m.is_read ? 'read' : 'sent'));
-                    if (oldRead !== String(m.is_read) || oldStatus !== newStatus) {
-                        existing.replaceWith(renderMsg(m));
+                    if (oldRead !== String(m.is_read)) {
+                        existing.setAttribute('data-is-read', m.is_read || 0);
+                        existing.setAttribute('data-status', m.status || (m.is_read ? 'read' : 'sent'));
+                        var receiptEl = existing.querySelector('.sc-read-receipt');
+                        if (receiptEl && m.sender_role === 'affiliate') {
+                            receiptEl.outerHTML = renderReadReceipt(m);
+                        }
                     }
                 }
                 return;
@@ -354,8 +361,8 @@ function loadMessages(since, isInitialLoad) {
             newMsgCount++;
         });
 
-        if (isInitialLoad || (isAtBottom && newMsgCount > 0)) {
-            scrollToBottom(isInitialLoad ? false : true);
+        if (isInitialLoad || (wasAtBottom && newMsgCount > 0)) {
+            scrollToBottom();
         }
     })
     .catch(function(e){

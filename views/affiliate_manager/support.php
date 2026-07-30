@@ -52,7 +52,7 @@
 .mc-status-badge.closed{background:#FEE2E2;color:#991B1B}
 
 /* ── Messages Area ────────────────────────────────────────────────── */
-.mc-messages{flex:1;overflow-y:auto;overflow-x:hidden;padding:16px 20px;display:flex;flex-direction:column;gap:4px;background:linear-gradient(180deg,#F8FAFC 0%,#F1F5F9 100%);scroll-behavior:smooth}
+.mc-messages{flex:1;overflow-y:auto;overflow-x:hidden;padding:16px 20px;display:flex;flex-direction:column;gap:4px;background:linear-gradient(180deg,#F8FAFC 0%,#F1F5F9 100%)}
 
 /* ── Input Area ───────────────────────────────────────────────────── */
 .mc-input-row{display:flex;gap:8px;align-items:flex-end}
@@ -206,7 +206,7 @@ function attachmentHtml(m){
     var name = escHtml(m.attachment_name||'file');
     var dl = '/api/chat?action=download&id='+m.id;
     if ((m.attachment_type||'').indexOf('image/')===0) {
-        return '<a href="'+dl+'" target="_blank"><img class="mc-att-img" src="'+dl+'" alt="'+name+'" loading="lazy" onerror="this.style.display=\'none\'"></a>';
+        return '<a href="'+dl+'" target="_blank"><img class="mc-att-img" src="'+dl+'" alt="'+name+'" loading="lazy" onload="if(!_userScrolledUp){scrollToBottom();}" onerror="this.style.display=\'none\'"></a>';
     }
     var ext = attExtLabel(m);
     var sizeTxt = m.attachment_size ? fmtBytes(m.attachment_size) : '';
@@ -258,6 +258,8 @@ function renderMsg(m) {
     div.className = 'mc-msg-row ' + (isMine ? 'mine' : 'theirs');
     div.dataset.id = m.id;
     div.dataset.date = m.created_at;
+    div.setAttribute('data-is-read', m.is_read || 0);
+    div.setAttribute('data-status', m.status || (m.is_read ? 'read' : 'sent'));
     var edited = m.edited_at ? '<span class="mc-edited">(edited)</span>' : '';
     var receipt = isMine ? renderReadReceipt(m) : '';
     var actions = '';
@@ -273,10 +275,29 @@ function renderMsg(m) {
     return div;
 }
 
-function scrollToBottom(smooth){
+var _userScrolledUp = false;
+var _isProgrammaticScroll = false;
+
+function initScrollListener() {
     var box = document.getElementById('chat-messages');
-    if (smooth) box.scrollTo({top:box.scrollHeight,behavior:'smooth'});
-    else box.scrollTop = box.scrollHeight;
+    if (box && !box.dataset.hasScrollListener) {
+        box.dataset.hasScrollListener = 'true';
+        box.addEventListener('scroll', function() {
+            if (_isProgrammaticScroll) return;
+            var distFromBottom = box.scrollHeight - box.scrollTop - box.clientHeight;
+            _userScrolledUp = (distFromBottom > 40);
+        });
+    }
+}
+
+function scrollToBottom(){
+    var box = document.getElementById('chat-messages');
+    if (!box) return;
+    _isProgrammaticScroll = true;
+    box.scrollTop = box.scrollHeight;
+    requestAnimationFrame(function() {
+        _isProgrammaticScroll = false;
+    });
 }
 
 function loadConversations() {
@@ -333,6 +354,7 @@ function showConvList(){
 function selectConversation(affId, name, code, convId, status) {
     _selAffId = affId; _selConvId = convId||0; _selStatus = status||'open';
     _lastId = 0; _renderedIds = {}; _lastDateLabel = '';
+    _userScrolledUp = false;
     if (_msgPoll) clearInterval(_msgPoll);
 
     document.getElementById('chat-empty').style.display      = 'none';
@@ -366,19 +388,6 @@ function selectConversation(affId, name, code, convId, status) {
     renderConvList(_convData);
 }
 
-var _userScrolledUp = false;
-
-function initScrollListener() {
-    var box = document.getElementById('chat-messages');
-    if (box && !box.dataset.hasScrollListener) {
-        box.dataset.hasScrollListener = 'true';
-        box.addEventListener('scroll', function() {
-            var distFromBottom = box.scrollHeight - box.scrollTop - box.clientHeight;
-            _userScrolledUp = (distFromBottom > 30);
-        });
-    }
-}
-
 function loadMessages(since, isInitialLoad) {
     if (!_selAffId) return;
     var url = '/api/chat?action=messages&affiliate_id='+_selAffId;
@@ -406,7 +415,7 @@ function loadMessages(since, isInitialLoad) {
         }
 
         var distFromBottom = box.scrollHeight - box.scrollTop - box.clientHeight;
-        var isAtBottom = (distFromBottom <= 30) && !_userScrolledUp;
+        var wasAtBottom = (distFromBottom <= 40) && !_userScrolledUp;
 
         if (isInitialLoad) {
             _userScrolledUp = false;
@@ -421,10 +430,13 @@ function loadMessages(since, isInitialLoad) {
                 var existing = box.querySelector('[data-id="'+m.id+'"]');
                 if (existing) {
                     var oldRead = existing.getAttribute('data-is-read');
-                    var oldStatus = existing.getAttribute('data-status');
-                    var newStatus = String(m.status || (m.is_read ? 'read' : 'sent'));
-                    if (oldRead !== String(m.is_read) || oldStatus !== newStatus) {
-                        existing.replaceWith(renderMsg(m));
+                    if (oldRead !== String(m.is_read)) {
+                        existing.setAttribute('data-is-read', m.is_read || 0);
+                        existing.setAttribute('data-status', m.status || (m.is_read ? 'read' : 'sent'));
+                        var receiptEl = existing.querySelector('.mc-read-receipt');
+                        if (receiptEl && m.sender_role !== 'affiliate') {
+                            receiptEl.outerHTML = renderReadReceipt(m);
+                        }
                     }
                 }
                 return;
@@ -437,8 +449,8 @@ function loadMessages(since, isInitialLoad) {
             newMsgCount++;
         });
 
-        if (isInitialLoad || (isAtBottom && newMsgCount > 0)) {
-            scrollToBottom(isInitialLoad ? false : true);
+        if (isInitialLoad || (wasAtBottom && newMsgCount > 0)) {
+            scrollToBottom();
         }
         if (isInitialLoad) loadConversations();
     })

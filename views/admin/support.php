@@ -75,7 +75,7 @@
 .ac-att-preview{font-size:12px;color:#475569;background:#EEF2FF;border:1px solid #C7D2FE;border-radius:10px;padding:8px 12px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
 
 /* ── Messages Area ────────────────────────────────────────────────── */
-.ac-messages{flex:1;overflow-y:auto;overflow-x:hidden;padding:16px 20px;display:flex;flex-direction:column;gap:4px;background:linear-gradient(180deg,#F8FAFC 0%,#F1F5F9 100%);scroll-behavior:smooth}
+.ac-messages{flex:1;overflow-y:auto;overflow-x:hidden;padding:16px 20px;display:flex;flex-direction:column;gap:4px;background:linear-gradient(180deg,#F8FAFC 0%,#F1F5F9 100%)}
 
 /* ── Mobile Back Button ───────────────────────────────────────────── */
 .ac-back-btn{display:none;background:none;border:none;cursor:pointer;font-size:13px;color:#4F46E5;font-weight:600;padding:4px 8px;border-radius:6px}
@@ -215,6 +215,30 @@ var _convPoll    = null;
 var _attPending  = null;
 var _renderedIds = {};
 var _lastDateLabel = '';
+var _userScrolledUp = false;
+var _isProgrammaticScroll = false;
+
+function initScrollListener() {
+    var box = document.getElementById('chat-messages');
+    if (box && !box.dataset.hasScrollListener) {
+        box.dataset.hasScrollListener = 'true';
+        box.addEventListener('scroll', function() {
+            if (_isProgrammaticScroll) return;
+            var distFromBottom = box.scrollHeight - box.scrollTop - box.clientHeight;
+            _userScrolledUp = (distFromBottom > 40);
+        });
+    }
+}
+
+function scrollToBottom(){
+    var box = document.getElementById('chat-messages');
+    if (!box) return;
+    _isProgrammaticScroll = true;
+    box.scrollTop = box.scrollHeight;
+    requestAnimationFrame(function() {
+        _isProgrammaticScroll = false;
+    });
+}
 
 function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function fmtBytes(b){ b=+b||0; if(b<1024)return b+' B'; if(b<1048576)return (b/1024).toFixed(1)+' KB'; return (b/1048576).toFixed(1)+' MB'; }
@@ -234,7 +258,7 @@ function attachmentHtml(m){
     var name = escHtml(m.attachment_name || 'file');
     var dl   = '/api/chat?action=download&id=' + m.id;
     if ((m.attachment_type||'').indexOf('image/') === 0) {
-        return '<a href="'+dl+'" target="_blank"><img class="ac-att-img" src="'+dl+'" alt="'+name+'" loading="lazy" onerror="this.style.display=\'none\';this.insertAdjacentHTML(\'afterend\',\'<span style=\\\'font-size:11px;color:#94A3B8\\\'>Preview unavailable</span>\');"></a>';
+        return '<a href="'+dl+'" target="_blank"><img class="ac-att-img" src="'+dl+'" alt="'+name+'" loading="lazy" onload="if(!_userScrolledUp){scrollToBottom();}" onerror="this.style.display=\'none\';this.insertAdjacentHTML(\'afterend\',\'<span style=\\\'font-size:11px;color:#94A3B8\\\'>Preview unavailable</span>\');"></a>';
     }
     var ext = attExtLabel(m);
     var sizeTxt = m.attachment_size ? fmtBytes(m.attachment_size) : '';
@@ -303,12 +327,6 @@ function renderMsg(m) {
         '</div>'+
         '<div class="ac-actions">'+actions+'</div>';
     return div;
-}
-
-function scrollToBottom(smooth){
-    var box = document.getElementById('chat-messages');
-    if (smooth) box.scrollTo({top:box.scrollHeight,behavior:'smooth'});
-    else box.scrollTop = box.scrollHeight;
 }
 
 function setOwnerType(t){
@@ -394,6 +412,7 @@ function selectConversation(affId, name, code, convId, status) {
     _selAffId  = affId; _selName = name; _selCode = code;
     _selConvId = convId || 0; _selStatus = status || 'open';
     _lastId = 0; _renderedIds = {}; _lastDateLabel = '';
+    _userScrolledUp = false;
     if (_msgPoll) clearInterval(_msgPoll);
 
     document.getElementById('chat-empty').style.display      = 'none';
@@ -424,7 +443,6 @@ function selectConversation(affId, name, code, convId, status) {
     document.getElementById('btn-reopen-conv').style.display = (_selStatus === 'closed' && _selConvId) ? '' : 'none';
 
     document.getElementById('chat-messages').innerHTML = '';
-    _lastId = 0; _renderedIds = {}; _lastDateLabel = '';
     loadMessages(0, true);
     _msgPoll = setInterval(function(){ loadMessages(0, false); }, 2500);
     renderConvList(_convData);
@@ -457,10 +475,12 @@ function loadMessages(since, isInitialLoad) {
         }
 
         var distFromBottom = box.scrollHeight - box.scrollTop - box.clientHeight;
-        var isAtBottom = (distFromBottom <= 30) && !_userScrolledUp;
+        var wasAtBottom = (distFromBottom <= 40) && !_userScrolledUp;
 
         if (isInitialLoad) {
             _userScrolledUp = false;
+            _renderedIds = {};
+            _lastDateLabel = '';
         }
 
         var newMsgCount = 0;
@@ -469,10 +489,13 @@ function loadMessages(since, isInitialLoad) {
                 var existing = box.querySelector('[data-id="'+m.id+'"]');
                 if (existing) {
                     var oldRead = existing.getAttribute('data-is-read');
-                    var oldStatus = existing.getAttribute('data-status');
-                    var newStatus = String(m.status || (m.is_read ? 'read' : 'sent'));
-                    if (oldRead !== String(m.is_read) || oldStatus !== newStatus) {
-                        existing.replaceWith(renderMsg(m));
+                    if (oldRead !== String(m.is_read)) {
+                        existing.setAttribute('data-is-read', m.is_read || 0);
+                        existing.setAttribute('data-status', m.status || (m.is_read ? 'read' : 'sent'));
+                        var receiptEl = existing.querySelector('.ac-read-receipt');
+                        if (receiptEl && (m.sender_role === 'admin' || m.sender_role === 'affiliate_manager')) {
+                            receiptEl.outerHTML = renderReadReceipt(m);
+                        }
                     }
                 }
                 return;
