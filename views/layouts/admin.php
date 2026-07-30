@@ -480,9 +480,13 @@ function fmtTs(ts, opts) {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V9z"/><polyline points="15 3 15 9 21 9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
         Click Report
     </a>
-    <a href="/admin/reports/traffic-back" class="nav-link <?= str_starts_with($_SERVER['REQUEST_URI'],'/admin/reports/traffic-back') ? 'active' : '' ?>">
+    <a href="/admin/reports/traffic-back" class="nav-link <?= str_starts_with(strtok($_SERVER['REQUEST_URI'],'?'),'/admin/reports/traffic-back') && !str_starts_with(strtok($_SERVER['REQUEST_URI'],'?'),'/admin/reports/traffic-back-conversions') ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
         Traffic Back Report
+    </a>
+    <a href="/admin/reports/traffic-back-conversions" class="nav-link <?= str_starts_with(strtok($_SERVER['REQUEST_URI'],'?'),'/admin/reports/traffic-back-conversions') ? 'active' : '' ?>">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        Traffic Back Conversions
     </a>
     <a href="/admin/reports/traffic-source-override" class="nav-link <?= str_starts_with($_SERVER['REQUEST_URI'],'/admin/reports/traffic-source-override') ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>

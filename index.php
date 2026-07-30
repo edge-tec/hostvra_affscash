@@ -493,6 +493,7 @@ Router::get('/api/seo/reports', function() {
 Router::any('/admin/reports', function() { require BASE_PATH . '/controllers/admin/ReportController.php'; });
 Router::any('/admin/reports/clicks', function() { require BASE_PATH . '/controllers/admin/ClickReportController.php'; });
 Router::any('/admin/reports/traffic-back', function() { require BASE_PATH . '/controllers/admin/TrafficBackReportController.php'; });
+Router::any('/admin/reports/traffic-back-conversions', function() { require BASE_PATH . '/controllers/admin/TrafficBackConversionsController.php'; });
 Router::any('/admin/reports/affiliates', function() { require BASE_PATH . '/controllers/admin/AffiliateReportController.php'; });
 Router::any('/admin/reports/duplicate-conversions', function() { require BASE_PATH . '/controllers/admin/DuplicateConversionsController.php'; });
 Router::any('/admin/reports/traffic-source-override', function() { require BASE_PATH . '/controllers/admin/TrafficSourceOverrideReportController.php'; });
