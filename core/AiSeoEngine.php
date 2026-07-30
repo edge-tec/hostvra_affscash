@@ -225,21 +225,29 @@ class AiSeoEngine
             }
         }
 
-        // Seed default high-converting FAQs if empty
+        // Seed default high-converting FAQs if empty or incomplete
         $faqCnt = Database::fetchOne("SELECT COUNT(*) as c FROM `ai_seo_faqs`")['c'] ?? 0;
-        if ((int)$faqCnt === 0) {
+        if ((int)$faqCnt < 15) {
             $defaultFaqs = [
                 ['/', 'What is Affscash CPA Network?', 'Affscash is a premier global performance affiliate marketing network connecting publishers and media buyers with high-paying direct advertisers, AI Smartlink technology, and weekly payouts.'],
                 ['/', 'How fast are affiliate payouts on Affscash?', 'Affscash offers weekly payouts every Monday via Wire Transfer, USDT (TRC-20 / ERC-20), Bitcoin, PayPal, WebMoney, and Payoneer once the minimum payout threshold is reached.'],
                 ['/', 'How do I get fast account approval as a publisher?', 'Simply complete the publisher registration form on Affscash with your real contact details and basic traffic information for fast review by our account management team.'],
                 ['/', 'What traffic sources are allowed on Affscash?', 'We accept Search (SEO/PPC), Social Media (Facebook, TikTok, Instagram), Push Notifications, Native Ads, Email Marketing, Pop-under, and Mobile In-App traffic.'],
+                ['/', 'What is the minimum payout threshold on Affscash?', 'The minimum payout threshold on Affscash is $50 for digital wallets and crypto payments, and $500 for bank wire transfers.'],
+                ['/', 'Does Affscash provide real-time conversion tracking?', 'Yes, Affscash provides sub-second real-time click and conversion tracking, S2S Postbacks, and comprehensive performance reporting breakdowns by GEO, OS, browser, and device.'],
                 ['/offers', 'What type of CPA offers are available on Affscash?', 'Affscash features thousands of high-converting CPA, CPL (SOI/DOI), CPI, and Smartlink offers across Dating, Finance, Sweepstakes, Gaming, and E-commerce verticals.'],
                 ['/offers', 'What is an AI Smartlink and how does it work?', 'An AI Smartlink is an intelligent tracking link algorithm that analyzes each visitor\'s GEO location, device type, OS, and browser in real-time to route them to the highest-converting offer automatically.'],
-                ['/offers/best-dating-cpa-offers', 'What are the highest paying dating CPA offers?', 'Affscash offers premium mainstream and casual dating CPA/CPL campaigns with payouts ranging from $2.50 up to $120+ per lead/conversion depending on Tier-1, Tier-2, or Tier-3 GEOs.']
+                ['/offers', 'What is the difference between SOI and DOI CPL offers?', 'SOI (Single Opt-In) requires a user to enter their email address without confirmation, giving higher conversion rates. DOI (Double Opt-In) requires email confirmation, offering higher payout per lead.'],
+                ['/offers/best-dating-cpa-offers', 'What are the highest paying dating CPA offers?', 'Affscash offers premium mainstream and casual dating CPA/CPL campaigns with payouts ranging from $2.50 up to $120+ per lead/conversion depending on Tier-1, Tier-2, or Tier-3 GEOs.'],
+                ['/offers/best-dating-cpa-offers', 'Why is Dating CPA marketing so profitable?', 'Dating CPA marketing has high global conversion rates, massive audience demand across all age demographics, and flexible conversion flows (SOI/DOI/Credit Card trial).'],
+                ['/offers/best-finance-cpa-offers', 'What are Finance CPA offers and how do they payout?', 'Finance CPA offers cover loan applications, crypto exchange signups, trading accounts, and credit cards, offering top payouts ranging from $30 up to $500+ per validated conversion.'],
+                ['/offers/best-sweepstakes-offers', 'How do Sweepstakes CPA offers convert?', 'Sweepstakes CPA offers reward users with entry into prizes like iPhones, gift cards, or cash, converting easily via CC-submit (credit card trial) or email submit forms.'],
+                ['/blog', 'How to maximize EPC in CPA affiliate marketing?', 'To maximize EPC (Earn Per Click), use AI Smartlinks for remnant traffic, split-test landing pages, segment campaigns by GEO and device, and optimize ad creatives based on real-time postback data.'],
+                ['/blog', 'What is S2S Server-to-Server Postback tracking?', 'S2S (Server-to-Server) Postback tracking passes conversion data directly between advertiser and affiliate tracking servers via HTTP requests, ensuring 100% accuracy without reliance on browser cookies.']
             ];
             foreach ($defaultFaqs as $f) {
                 Database::query(
-                    "INSERT INTO `ai_seo_faqs` (`target_url`, `question`, `answer`, `is_published`) VALUES (?,?,?,1)",
+                    "INSERT IGNORE INTO `ai_seo_faqs` (`target_url`, `question`, `answer`, `is_published`) VALUES (?,?,?,1)",
                     $f
                 );
             }
