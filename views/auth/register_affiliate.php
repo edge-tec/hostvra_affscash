@@ -45,32 +45,65 @@ body {
 .auth-footer { padding:16px 32px; background:rgba(15,10,36,0.3) !important; border-top:1px solid rgba(255,255,255,0.06) !important; text-align:center; font-size:13px; color:rgba(255,255,255,0.5) !important; }
 .auth-footer a { color:#a855f7; font-weight:600; text-decoration:none; }
 .section-title { font-size:13px; font-weight:700; color:#a855f7; text-transform:uppercase; letter-spacing:.06em; margin:24px 0 16px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.08); }
-.form-label, label { color: rgba(255,255,255,0.8) !important; font-size:12px !important; }
-.form-control, .form-control-custom, input[type="text"], input[type="password"], input[type="email"], select, textarea {
-  background: rgba(255,255,255,0.03) !important;
-  border: 1px solid rgba(255,255,255,0.08) !important;
-  color: #fff !important;
+.form-label, label { color: rgba(255,255,255,0.85) !important; font-size:12.5px !important; font-weight:600 !important; margin-bottom:6px !important; display:inline-block !important; }
+
+/* Sleek translucent dark input controls */
+.form-control, .form-control-custom,
+input[type="text"], input[type="password"], input[type="email"], input[type="tel"], input[type="url"], input[type="number"], select, textarea {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 10px !important;
+  color: #ffffff !important;
+  padding: 12px 14px !important;
+  font-size: 13.5px !important;
+  transition: all 0.2s ease-in-out !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
-.form-control:focus, .form-control-custom:focus {
-  border-color: rgba(124,58,237,0.4) !important;
-  box-shadow: 0 0 12px rgba(124,58,237,0.2) !important;
+
+.form-control:focus, .form-control-custom:focus,
+input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus, input[type="tel"]:focus, input[type="url"]:focus, select:focus, textarea:focus {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: #a855f7 !important;
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.35) !important;
 }
-/* Autofill override: prevents browser autofill from making the box background white */
+
+/* Ensure select option dropdowns have a dark background */
+select option {
+  background-color: #0f0a24 !important;
+  color: #ffffff !important;
+  padding: 10px !important;
+}
+
+/* Complete Browser Autofill Override */
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
 input:-webkit-autofill:active,
-select:-webkit-autofill {
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
   -webkit-text-fill-color: #ffffff !important;
   -webkit-box-shadow: 0 0 0 1000px #0b071e inset !important;
   box-shadow: 0 0 0 1000px #0b071e inset !important;
   transition: background-color 5000s ease-in-out 0s;
 }
+
+/* Placeholder styling */
+::placeholder {
+  color: rgba(255, 255, 255, 0.35) !important;
+}
+
 .btn-primary, button[type="submit"] {
   background: linear-gradient(135deg,#7c3aed 0%,#3b82f6 50%,#0ea5e9 100%) !important;
   border: none !important;
   color: #fff !important;
   box-shadow: 0 4px 16px rgba(124,58,237,0.3) !important;
+  padding: 14px 20px !important;
+  font-weight: 700 !important;
+  border-radius: 10px !important;
+  font-size: 15px !important;
+  letter-spacing: 0.02em !important;
 }
 
 /* Responsive media query overrides for form grids */
@@ -104,11 +137,11 @@ select:-webkit-autofill {
 }
 .password-toggle-btn {
     position: absolute;
-    right: 10px;
+    right: 12px;
     background: none;
     border: none;
     cursor: pointer;
-    color: var(--text-muted);
+    color: rgba(255,255,255,0.6);
     font-size: 16px;
     padding: 4px;
     display: flex;
@@ -118,17 +151,17 @@ select:-webkit-autofill {
     z-index: 10;
 }
 .password-toggle-btn:hover {
-    color: var(--primary);
+    color: #a855f7;
 }
 
 /* Password strength meter styling */
 .password-strength-container {
     margin-top: 12px;
     margin-bottom: 20px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px;
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 10px;
+    padding: 16px;
     transition: all 0.3s ease;
 }
 .password-strength-label-row {
@@ -140,7 +173,7 @@ select:-webkit-autofill {
     font-weight: 600;
 }
 .password-strength-label-row .title {
-    color: var(--text);
+    color: rgba(255, 255, 255, 0.9) !important;
 }
 .password-strength-status {
     font-size: 11px;
@@ -151,15 +184,15 @@ select:-webkit-autofill {
     letter-spacing: 0.05em;
     display: inline-block;
 }
-.status-default { background: var(--border); color: var(--text-muted); }
-.status-weak { background: #FEE2E2; color: #EF4444; }
-.status-medium { background: #FEF3C7; color: #D97706; }
-.status-good { background: #D1FAE5; color: #059669; }
-.status-strong { background: #DCFCE7; color: #15803D; }
+.status-default { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
+.status-weak { background: rgba(239,68,68,0.2); color: #F87171; }
+.status-medium { background: rgba(245,158,11,0.2); color: #FBBF24; }
+.status-good { background: rgba(16,185,129,0.2); color: #34D399; }
+.status-strong { background: rgba(16,185,129,0.25); color: #10B981; }
 
 .password-strength-bar {
     height: 6px;
-    background: var(--border);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 3px;
     overflow: hidden;
     margin-bottom: 12px;
@@ -174,7 +207,7 @@ select:-webkit-autofill {
 .password-requirements-title {
     font-size: 11px;
     font-weight: 700;
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.5) !important;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin-bottom: 6px;
@@ -189,7 +222,7 @@ select:-webkit-autofill {
 }
 .password-requirement-item {
     font-size: 12px;
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.5) !important;
     display: flex;
     align-items: center;
     gap: 6px;
