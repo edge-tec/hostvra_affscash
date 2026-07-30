@@ -18,7 +18,8 @@ if (!$_advRegEnabled) {
 }
 
 // ── VPN/Proxy/TOR registration guard ─────────────────────────────────────
-if (Helpers::isPost()) {
+$_vpnRegEnabled = (Config::get('config', 'vpn_detection.registration_enabled') ?? '1') === '1';
+if ($_vpnRegEnabled && Helpers::isPost()) {
     $_vpnCheck = RegistrationVpnGuard::checkIp(Helpers::getIp());
     if ($_vpnCheck['blocked']) {
         http_response_code(403);

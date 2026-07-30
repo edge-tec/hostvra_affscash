@@ -1372,7 +1372,11 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 </div>
 <?php elseif ($activeTab === 'vpn_detection'): ?>
-<?php $vpnEnabled = (Config::get('config', 'vpn_detection.enabled') ?? '0') === '1'; ?>
+<?php
+    $vpnEnabled    = (Config::get('config', 'vpn_detection.enabled') ?? '0') === '1';
+    $vpnRegEnabled = (Config::get('config', 'vpn_detection.registration_enabled') ?? '1') === '1';
+    $vpnLoginEnabled = (Config::get('config', 'vpn_detection.login_enabled') ?? '0') === '1';
+?>
 <div class="card" style="max-width:680px">
     <div class="card-header" style="background:linear-gradient(135deg,#1E1B4B,#4F46E5);border-radius:8px 8px 0 0">
         <span class="card-title" style="color:#fff">&#128737; VPN &amp; Proxy Detection</span>
@@ -1381,6 +1385,12 @@ document.addEventListener('DOMContentLoaded', function() {
         <form method="POST">
             <?= Helpers::csrf() ?>
             <input type="hidden" name="tab" value="vpn_detection">
+
+            <!-- ═══ SECTION: Tracking / Click VPN Detection ═══ -->
+            <div style="font-weight:800;font-size:15px;color:#1E293B;margin-bottom:2px;display:flex;align-items:center;gap:8px">
+                <span style="font-size:18px">&#127760;</span> Click / Tracking Traffic
+            </div>
+            <div style="font-size:12px;color:#94A3B8;margin-bottom:14px">Blocks VPN/Proxy traffic on affiliate tracking links and smartlinks</div>
 
             <!-- Enable / Disable toggle -->
             <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:18px 0;border-bottom:1px solid #F1F5F9;gap:20px">
@@ -1402,6 +1412,67 @@ document.addEventListener('DOMContentLoaded', function() {
                            onchange="this.closest('form').submit()">
                     <span style="position:absolute;cursor:pointer;inset:0;background:<?= $vpnEnabled ? '#10B981' : '#CBD5E1' ?>;border-radius:34px;transition:.3s">
                         <span style="position:absolute;height:22px;width:22px;left:<?= $vpnEnabled ? '27px' : '3px' ?>;bottom:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,.2)"></span>
+                    </span>
+                </label>
+            </div>
+
+            <!-- ═══ SECTION: Registration VPN Detection ═══ -->
+            <div style="margin-top:28px;font-weight:800;font-size:15px;color:#1E293B;margin-bottom:2px;display:flex;align-items:center;gap:8px">
+                <span style="font-size:18px">&#128221;</span> User Registration
+            </div>
+            <div style="font-size:12px;color:#94A3B8;margin-bottom:14px">Blocks VPN/Proxy users from registering as Affiliate or Advertiser</div>
+
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:18px 0;border-bottom:1px solid #F1F5F9;gap:20px">
+                <div style="flex:1">
+                    <div style="font-weight:700;font-size:14px;color:#1E293B;margin-bottom:4px">Enable Registration VPN/Proxy Block</div>
+                    <div style="font-size:13px;color:#64748B;line-height:1.6">
+                        When <strong>enabled</strong>, users connecting via VPN, proxy, Tor, or datacenter IP cannot submit registration forms (Affiliate &amp; Advertiser). A blocked page is shown with instructions to disconnect.<br>
+                        When <strong>disabled</strong>, registration is open to all users regardless of VPN/Proxy status.
+                    </div>
+                    <div style="margin-top:10px;display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;background:<?= $vpnRegEnabled ? '#DCFCE7' : '#F1F5F9' ?>;color:<?= $vpnRegEnabled ? '#15803D' : '#64748B' ?>">
+                        <span style="width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block"></span>
+                        <?= $vpnRegEnabled ? 'Active — VPN/Proxy registrations are blocked' : 'Inactive — All registrations are allowed' ?>
+                    </div>
+                </div>
+                <label style="position:relative;display:inline-block;width:52px;height:28px;flex-shrink:0;margin-top:4px">
+                    <input type="checkbox" name="vpn_registration_enabled" value="1"
+                           <?= $vpnRegEnabled ? 'checked' : '' ?>
+                           style="opacity:0;width:0;height:0"
+                           onchange="this.closest('form').submit()">
+                    <span style="position:absolute;cursor:pointer;inset:0;background:<?= $vpnRegEnabled ? '#10B981' : '#CBD5E1' ?>;border-radius:34px;transition:.3s">
+                        <span style="position:absolute;height:22px;width:22px;left:<?= $vpnRegEnabled ? '27px' : '3px' ?>;bottom:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,.2)"></span>
+                    </span>
+                </label>
+            </div>
+
+            <!-- ═══ SECTION: Login VPN Detection ═══ -->
+            <div style="margin-top:28px;font-weight:800;font-size:15px;color:#1E293B;margin-bottom:2px;display:flex;align-items:center;gap:8px">
+                <span style="font-size:18px">&#128274;</span> User Login
+            </div>
+            <div style="font-size:12px;color:#94A3B8;margin-bottom:14px">Blocks VPN/Proxy users from logging in (Admin accounts are always exempt)</div>
+
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:18px 0;border-bottom:1px solid #F1F5F9;gap:20px">
+                <div style="flex:1">
+                    <div style="font-weight:700;font-size:14px;color:#1E293B;margin-bottom:4px">Enable Login VPN/Proxy Block</div>
+                    <div style="font-size:13px;color:#64748B;line-height:1.6">
+                        When <strong>enabled</strong>, users (Affiliates, Advertisers, Managers) connecting via VPN, proxy, Tor, or datacenter IP are blocked from logging in. A blocked page is shown.<br>
+                        When <strong>disabled</strong>, login works normally for all users regardless of VPN/Proxy status.
+                    </div>
+                    <div style="margin-top:8px;background:#FFF7ED;border:1px solid #FED7AA;border-radius:8px;padding:10px 14px;font-size:12px;color:#9A3412;line-height:1.5">
+                        <strong>&#9888; Admin accounts are always exempt</strong> — Admins can log in even when this setting is enabled to prevent self-lockout.
+                    </div>
+                    <div style="margin-top:10px;display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;background:<?= $vpnLoginEnabled ? '#DCFCE7' : '#F1F5F9' ?>;color:<?= $vpnLoginEnabled ? '#15803D' : '#64748B' ?>">
+                        <span style="width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block"></span>
+                        <?= $vpnLoginEnabled ? 'Active — VPN/Proxy logins are blocked' : 'Inactive — All logins are allowed' ?>
+                    </div>
+                </div>
+                <label style="position:relative;display:inline-block;width:52px;height:28px;flex-shrink:0;margin-top:4px">
+                    <input type="checkbox" name="vpn_login_enabled" value="1"
+                           <?= $vpnLoginEnabled ? 'checked' : '' ?>
+                           style="opacity:0;width:0;height:0"
+                           onchange="this.closest('form').submit()">
+                    <span style="position:absolute;cursor:pointer;inset:0;background:<?= $vpnLoginEnabled ? '#10B981' : '#CBD5E1' ?>;border-radius:34px;transition:.3s">
+                        <span style="position:absolute;height:22px;width:22px;left:<?= $vpnLoginEnabled ? '27px' : '3px' ?>;bottom:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,.2)"></span>
                     </span>
                 </label>
             </div>

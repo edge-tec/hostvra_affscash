@@ -10,7 +10,8 @@ try { Database::query("ALTER TABLE users ADD COLUMN address VARCHAR(500) DEFAULT
 try { Database::query("ALTER TABLE affiliates ADD COLUMN registration_ip VARCHAR(45) DEFAULT NULL"); } catch(\Throwable $_e) {}
 
 // ── VPN/Proxy/TOR registration guard ─────────────────────────────────────
-if (Helpers::isPost()) {
+$_vpnRegEnabled = (Config::get('config', 'vpn_detection.registration_enabled') ?? '1') === '1';
+if ($_vpnRegEnabled && Helpers::isPost()) {
     $_vpnCheck = RegistrationVpnGuard::checkIp(Helpers::getIp());
     if ($_vpnCheck['blocked']) {
         http_response_code(403);

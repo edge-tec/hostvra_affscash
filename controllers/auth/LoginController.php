@@ -33,6 +33,27 @@ if (Helpers::isPost()) {
             $email    = Helpers::postRaw('email');
             $password = Helpers::postRaw('password');
             $remember = (Helpers::postRaw('remember') === '1');
+
+            // ── VPN/Proxy/TOR login guard ─────────────────────────────────────
+            // Only active when admin enables it. Admin accounts are always exempt.
+            $_vpnLoginEnabled = (Config::get('config', 'vpn_detection.login_enabled') ?? '0') === '1';
+            if ($_vpnLoginEnabled) {
+                // Quick role lookup — do NOT reveal whether the email exists
+                $_loginUser = Database::fetchOne("SELECT `role` FROM `users` WHERE `email` = ?", [strtolower(trim($email))]);
+                if ($_loginUser && $_loginUser['role'] !== 'admin') {
+                    $_vpnCheck = RegistrationVpnGuard::checkIp(Helpers::getIp());
+                    if ($_vpnCheck['blocked']) {
+                        if ($isAjax) {
+                            Helpers::json(['success' => false, 'error' => 'Login is not allowed while using VPN or Proxy. Please disconnect and try again.']);
+                        }
+                        http_response_code(403);
+                        $_vpnBlockReason = $_vpnCheck['reason'];
+                        require BASE_PATH . '/views/auth/login_vpn_blocked.php';
+                        return;
+                    }
+                }
+            }
+
             $result   = Auth::login($email, $password, $remember);
             if ($result['success']) {
                 if (!empty($result['2fa_required'])) {

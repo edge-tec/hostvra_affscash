@@ -455,6 +455,8 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
 
     elseif ($tab === 'vpn_detection') {
         Config::set('config', 'vpn_detection.enabled', isset($_POST['vpn_detection_enabled']) ? '1' : '0');
+        Config::set('config', 'vpn_detection.registration_enabled', isset($_POST['vpn_registration_enabled']) ? '1' : '0');
+        Config::set('config', 'vpn_detection.login_enabled', isset($_POST['vpn_login_enabled']) ? '1' : '0');
         $success = true;
     }
 
