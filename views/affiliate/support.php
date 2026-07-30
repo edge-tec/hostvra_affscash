@@ -219,16 +219,16 @@ function renderReadReceipt(m) {
     if (parseInt(m.is_read) === 1 || m.status === 'read') {
         var readTime = m.formatted_read_at || (m.read_at ? new Date(m.read_at.replace(' ','T')).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '');
         var tooltip = 'Read' + (readTime ? ' at ' + readTime : '');
-        return '<span class="sc-read-receipt read" title="'+escHtml(tooltip)+'" style="margin-left:6px;display:inline-flex;align-items:center;gap:2px;color:#60A5FA;font-size:10px;font-weight:600">'+
-               '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><polyline points="18 6 7 17 2 12"/><polyline points="22 10 14 18"/></svg>'+
-               (readTime ? '<span style="font-size:9.5px;color:rgba(255,255,255,0.85);margin-left:2px">Read '+escHtml(readTime)+'</span>' : '')+
+        return '<span class="sc-read-receipt read" title="'+escHtml(tooltip)+'" style="margin-left:6px;display:inline-flex;align-items:center;gap:2px;color:#2563EB;font-size:10px;font-weight:600">'+
+               '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><polyline points="18 6 7 17 2 12"/><polyline points="22 10 14 18"/></svg>'+
+               (readTime ? '<span style="font-size:9.5px;color:#2563EB;margin-left:2px;font-weight:600">Read '+escHtml(readTime)+'</span>' : '')+
                '</span>';
     } else if (m.delivered_at || m.status === 'delivered') {
-        return '<span class="sc-read-receipt delivered" title="Delivered" style="margin-left:6px;display:inline-flex;align-items:center;color:rgba(255,255,255,0.7)">'+
+        return '<span class="sc-read-receipt delivered" title="Delivered" style="margin-left:6px;display:inline-flex;align-items:center;color:#64748B">'+
                '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><polyline points="18 6 7 17 2 12"/><polyline points="22 10 14 18"/></svg>'+
                '</span>';
     } else {
-        return '<span class="sc-read-receipt sent" title="Sent" style="margin-left:6px;display:inline-flex;align-items:center;color:rgba(255,255,255,0.7)">'+
+        return '<span class="sc-read-receipt sent" title="Sent" style="margin-left:6px;display:inline-flex;align-items:center;color:#94A3B8">'+
                '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><polyline points="20 6 9 17 4 12"/></svg>'+
                '</span>';
     }
