@@ -1,8 +1,7 @@
 <?php
 require BASE_PATH . '/views/layouts/admin.php';
 ?>
-<div class="main-content">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
         <div>
             <h1 style="font-size:24px;font-weight:800;color:#0F172A;margin:0 0 4px;display:flex;align-items:center;gap:10px">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" stroke-width="2.5">
@@ -690,4 +689,3 @@ require BASE_PATH . '/views/layouts/admin.php';
         <p style="color:#64748B;font-size:13px">Module active and integrated with automatic AI SEO engine.</p>
     </div>
     <?php endif; ?>
-</div>
