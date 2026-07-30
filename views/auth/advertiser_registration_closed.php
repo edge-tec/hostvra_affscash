@@ -11,7 +11,7 @@
 <?php $_authBgKey = 'auth_bg_advreg'; require BASE_PATH . '/views/partials/auth_bg.php'; ?>
 <style>
 body { display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px; background:linear-gradient(135deg,#EEF2FF 0%,#F0FDF4 100%); }
-.auth-box { background:var(--card-bg); border:1px solid var(--border); border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,.08); width:100%; max-width:480px; overflow:hidden; text-align:center; }
+.auth-box { background:var(--card-bg); border:1px solid var(--border); border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,.08); width:100%; max-width:640px; overflow:hidden; text-align:center; }
 .closed-icon { width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg,#FCA5A5,#EF4444); display:flex; align-items:center; justify-content:center; margin:32px auto 18px; box-shadow:0 8px 24px rgba(239,68,68,.30); }
 .closed-icon svg { width:32px; height:32px; color:#fff; }
 .closed-title { font-size:20px; font-weight:800; color:var(--text); margin:0 6px; }

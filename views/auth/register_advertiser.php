@@ -32,7 +32,7 @@ body {
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   width: 100%;
-  max-width: 600px;
+  max-width: 640px;
   margin: 0 auto;
   overflow: hidden;
   position: relative;
@@ -248,12 +248,46 @@ select:-webkit-autofill {
             </div>
             <div class="form-row cols-2">
                 <div class="form-group">
-                    <label>Phone</label>
-                    <input type="text" name="phone" class="form-control" value="<?= Helpers::e($_POST['phone'] ?? '') ?>">
+                    <label>Phone Number *</label>
+                    <input type="tel" name="phone" class="form-control" required placeholder="+1 555 000 0000" value="<?= Helpers::e($_POST['phone'] ?? '') ?>">
                 </div>
                 <div class="form-group">
-                    <label>Country (2-letter code)</label>
-                    <input type="text" name="country" class="form-control" maxlength="2" placeholder="US" value="<?= Helpers::e($_POST['country'] ?? '') ?>">
+                    <label>Country *</label>
+                    <select name="country" class="form-control" required>
+                        <option value="">— Select Country —</option>
+                        <?php
+                        $countries = [
+                            'AF'=>'Afghanistan','AL'=>'Albania','DZ'=>'Algeria','AR'=>'Argentina','AU'=>'Australia',
+                            'AT'=>'Austria','AZ'=>'Azerbaijan','BH'=>'Bahrain','BD'=>'Bangladesh','BY'=>'Belarus',
+                            'BE'=>'Belgium','BZ'=>'Belize','BJ'=>'Benin','BO'=>'Bolivia','BA'=>'Bosnia and Herzegovina',
+                            'BR'=>'Brazil','BN'=>'Brunei','BG'=>'Bulgaria','KH'=>'Cambodia','CA'=>'Canada',
+                            'CL'=>'Chile','CN'=>'China','CO'=>'Colombia','CR'=>'Costa Rica','HR'=>'Croatia',
+                            'CU'=>'Cuba','CY'=>'Cyprus','CZ'=>'Czech Republic','DK'=>'Denmark','DO'=>'Dominican Republic',
+                            'EC'=>'Ecuador','EG'=>'Egypt','SV'=>'El Salvador','EE'=>'Estonia','ET'=>'Ethiopia',
+                            'FI'=>'Finland','FR'=>'France','GE'=>'Georgia','DE'=>'Germany','GH'=>'Ghana',
+                            'GR'=>'Greece','GT'=>'Guatemala','HN'=>'Honduras','HK'=>'Hong Kong','HU'=>'Hungary',
+                            'IN'=>'India','ID'=>'Indonesia','IR'=>'Iran','IQ'=>'Iraq','IE'=>'Ireland',
+                            'IL'=>'Israel','IT'=>'Italy','JM'=>'Jamaica','JP'=>'Japan','JO'=>'Jordan',
+                            'KZ'=>'Kazakhstan','KE'=>'Kenya','KW'=>'Kuwait','LV'=>'Latvia','LB'=>'Lebanon',
+                            'LT'=>'Lithuania','LU'=>'Luxembourg','MY'=>'Malaysia','MV'=>'Maldives','MX'=>'Mexico',
+                            'MD'=>'Moldova','MN'=>'Mongolia','MA'=>'Morocco','MM'=>'Myanmar','NP'=>'Nepal',
+                            'NL'=>'Netherlands','NZ'=>'New Zealand','NG'=>'Nigeria','NO'=>'Norway','OM'=>'Oman',
+                            'PK'=>'Pakistan','PS'=>'Palestine','PA'=>'Panama','PY'=>'Paraguay','PE'=>'Peru',
+                            'PH'=>'Philippines','PL'=>'Poland','PT'=>'Portugal','QA'=>'Qatar','RO'=>'Romania',
+                            'RU'=>'Russia','SA'=>'Saudi Arabia','SN'=>'Senegal','RS'=>'Serbia','SG'=>'Singapore',
+                            'SK'=>'Slovakia','ZA'=>'South Africa','KR'=>'South Korea','ES'=>'Spain','LK'=>'Sri Lanka',
+                            'SE'=>'Sweden','CH'=>'Switzerland','SY'=>'Syria','TW'=>'Taiwan','TJ'=>'Tajikistan',
+                            'TZ'=>'Tanzania','TH'=>'Thailand','TN'=>'Tunisia','TR'=>'Turkey','TM'=>'Turkmenistan',
+                            'UG'=>'Uganda','UA'=>'Ukraine','AE'=>'United Arab Emirates','GB'=>'United Kingdom',
+                            'US'=>'United States','UY'=>'Uruguay','UZ'=>'Uzbekistan','VE'=>'Venezuela',
+                            'VN'=>'Vietnam','YE'=>'Yemen','ZM'=>'Zambia','ZW'=>'Zimbabwe',
+                        ];
+                        $selCountry = strtoupper($_POST['country'] ?? '');
+                        foreach ($countries as $code => $name):
+                        ?>
+                        <option value="<?= $code ?>" <?= $selCountry === $code ? 'selected' : '' ?>><?= $name ?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
             </div>
             <p class="section-title">Contact Details <span style="color:#EF4444;font-size:11px;font-weight:600;text-transform:none;letter-spacing:0">(at least one required)</span></p>
@@ -366,18 +400,18 @@ select:-webkit-autofill {
             <?php endif; ?>
 
             <!-- Mandatory consent — Privacy Policy + Terms & Conditions -->
-            <div style="margin-top:20px;padding:14px 16px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px">
-                <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:#334155">
+            <div style="margin-top:20px;padding:14px 16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px">
+                <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.85)">
                     <input type="checkbox" name="agree_privacy" value="1" required
                            <?= !empty($_POST['agree_privacy']) ? 'checked' : '' ?>
-                           style="margin-top:3px;accent-color:#0F766E;width:16px;height:16px;flex-shrink:0">
-                    <span>I have read and accept the <a href="/privacy-policy" target="_blank" style="color:#0F766E;font-weight:600">Privacy Policy</a>. <span style="color:#DC2626">*</span></span>
+                           style="margin-top:3px;accent-color:#7c3aed;width:16px;height:16px;flex-shrink:0">
+                    <span>I have read and accept the <a href="/privacy-policy" target="_blank" style="color:#a78bfa;font-weight:600">Privacy Policy</a>. <span style="color:#EF4444">*</span></span>
                 </label>
-                <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:#334155;margin-top:10px">
+                <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.85);margin-top:10px">
                     <input type="checkbox" name="agree_terms" value="1" required
                            <?= !empty($_POST['agree_terms']) ? 'checked' : '' ?>
-                           style="margin-top:3px;accent-color:#0F766E;width:16px;height:16px;flex-shrink:0">
-                    <span>I agree to the <a href="/terms-of-service" target="_blank" style="color:#0F766E;font-weight:600">Terms &amp; Conditions</a>. <span style="color:#DC2626">*</span></span>
+                           style="margin-top:3px;accent-color:#7c3aed;width:16px;height:16px;flex-shrink:0">
+                    <span>I agree to the <a href="/terms-of-service" target="_blank" style="color:#a78bfa;font-weight:600">Terms &amp; Conditions</a>. <span style="color:#EF4444">*</span></span>
                 </label>
             </div>
 

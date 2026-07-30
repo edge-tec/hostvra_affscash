@@ -32,7 +32,7 @@ body {
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   width: 100%;
-  max-width: 600px;
+  max-width: 640px;
   margin: 0 auto;
   overflow: hidden;
   position: relative;
