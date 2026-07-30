@@ -135,6 +135,42 @@ class AiCrawlerManager
                 'agent' => 'Meta-ExternalAgent',
                 'desc' => 'Meta AI agent for web content analysis.',
                 'setting_key' => 'ai_crawler_meta'
+            ],
+            'similarwebbot' => [
+                'name' => 'Similarweb Bot',
+                'agent' => 'SimilarwebBot',
+                'desc' => 'Similarweb traffic & site intelligence crawler.',
+                'setting_key' => 'ai_crawler_similarweb'
+            ],
+            'similartechbot' => [
+                'name' => 'SimilarTech Bot',
+                'agent' => 'SimilarTechBot',
+                'desc' => 'SimilarTech web tech stack analysis crawler.',
+                'setting_key' => 'ai_crawler_similartech'
+            ],
+            'ahrefsbot' => [
+                'name' => 'AhrefsBot',
+                'agent' => 'AhrefsBot',
+                'desc' => 'Ahrefs SEO & backlink crawler.',
+                'setting_key' => 'ai_crawler_ahrefs'
+            ],
+            'semrushbot' => [
+                'name' => 'SemrushBot',
+                'agent' => 'SemrushBot',
+                'desc' => 'Semrush SEO audit and position tracking crawler.',
+                'setting_key' => 'ai_crawler_semrush'
+            ],
+            'dotbot' => [
+                'name' => 'DotBot (Moz)',
+                'agent' => 'dotbot',
+                'desc' => 'Moz Open Site Explorer backlink crawler.',
+                'setting_key' => 'ai_crawler_dotbot'
+            ],
+            'mj12bot' => [
+                'name' => 'MJ12bot (Majestic)',
+                'agent' => 'MJ12bot',
+                'desc' => 'Majestic SEO backlink intelligence crawler.',
+                'setting_key' => 'ai_crawler_mj12bot'
             ]
         ];
     }
