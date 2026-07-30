@@ -101,6 +101,148 @@ require BASE_PATH . '/views/layouts/admin.php';
                 <div style="font-size:12px;color:#64748B">Core Web Vitals LCP</div>
                 <div style="font-size:20px;font-weight:800;color:#10B981">1.2s</div>
             </div>
+    </div>
+
+    <!-- AI Crawlers & Engine Access Matrix -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px">
+        <!-- AI Bots Access -->
+        <div style="background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:24px">
+            <h3 style="font-size:15px;font-weight:700;color:#1E293B;margin-top:0;margin-bottom:14px;display:flex;align-items:center;gap:8px">
+                🤖 AI Crawler &amp; Bot Access Matrix
+            </h3>
+            <div style="display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#F8FAFC;border-radius:8px;border:1px solid #F1F5F9">
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <span style="font-size:16px">🟢</span>
+                        <div>
+                            <div style="font-size:13px;font-weight:700;color:#0F172A">GPTBot (OpenAI / ChatGPT)</div>
+                            <div style="font-size:11px;color:#64748B">Used for ChatGPT search &amp; model indexing</div>
+                        </div>
+                    </div>
+                    <span style="background:#DCFCE7;color:#15803D;font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px">ALLOWED</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#F8FAFC;border-radius:8px;border:1px solid #F1F5F9">
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <span style="font-size:16px">🟢</span>
+                        <div>
+                            <div style="font-size:13px;font-weight:700;color:#0F172A">Google-Extended (Gemini AI)</div>
+                            <div style="font-size:11px;color:#64748B">Used for Google AI Overviews &amp; Gemini responses</div>
+                        </div>
+                    </div>
+                    <span style="background:#DCFCE7;color:#15803D;font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px">ALLOWED</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#F8FAFC;border-radius:8px;border:1px solid #F1F5F9">
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <span style="font-size:16px">🟢</span>
+                        <div>
+                            <div style="font-size:13px;font-weight:700;color:#0F172A">ClaudeBot (Anthropic AI)</div>
+                            <div style="font-size:11px;color:#64748B">Used for Claude citation &amp; web browsing</div>
+                        </div>
+                    </div>
+                    <span style="background:#DCFCE7;color:#15803D;font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px">ALLOWED</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#F8FAFC;border-radius:8px;border:1px solid #F1F5F9">
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <span style="font-size:16px">🟢</span>
+                        <div>
+                            <div style="font-size:13px;font-weight:700;color:#0F172A">PerplexityBot</div>
+                            <div style="font-size:11px;color:#64748B">Used for Perplexity Pro realtime citations</div>
+                        </div>
+                    </div>
+                    <span style="background:#DCFCE7;color:#15803D;font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px">ALLOWED</span>
+                </div>
+            </div>
+            <div style="margin-top:14px;text-align:right">
+                <a href="/admin/ai-seo?tab=crawlers" style="font-size:12px;font-weight:700;color:#4F46E5;text-decoration:none">Manage All Crawlers →</a>
+            </div>
+        </div>
+
+        <!-- GEO Readiness & Quick Actions -->
+        <div style="background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:24px">
+            <h3 style="font-size:15px;font-weight:700;color:#1E293B;margin-top:0;margin-bottom:14px;display:flex;align-items:center;gap:8px">
+                ⚡ GEO &amp; LLM Citation Management Actions
+            </h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+                <a href="/llms.txt" target="_blank" style="background:linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);border:1px solid #C7D2FE;border-radius:10px;padding:14px;text-decoration:none;display:block">
+                    <div style="font-size:12px;font-weight:800;color:#3730A3">📄 /llms.txt File</div>
+                    <div style="font-size:11px;color:#4338CA;margin-top:4px">Standardized AI context file for LLMs</div>
+                </a>
+                <a href="/sitemap.xml" target="_blank" style="background:linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);border:1px solid #BBF7D0;border-radius:10px;padding:14px;text-decoration:none;display:block">
+                    <div style="font-size:12px;font-weight:800;color:#166534">🗺️ XML Sitemap</div>
+                    <div style="font-size:11px;color:#15803D;margin-top:4px">Auto-generated XML sitemap for Search Engine Indexing</div>
+                </a>
+                <a href="/admin/ai-seo?tab=schemas" style="background:linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);border:1px solid #FDE68A;border-radius:10px;padding:14px;text-decoration:none;display:block">
+                    <div style="font-size:12px;font-weight:800;color:#92400E">📐 Schema.org Graph</div>
+                    <div style="font-size:11px;color:#B45309;margin-top:4px">JSON-LD Structured Data Validator</div>
+                </a>
+                <a href="/admin/ai-seo?tab=audit" style="background:linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 100%);border:1px solid #E9D5FF;border-radius:10px;padding:14px;text-decoration:none;display:block">
+                    <div style="font-size:12px;font-weight:800;color:#6B21A8">🩺 Health Audit Scan</div>
+                    <div style="font-size:11px;color:#7E22CE;margin-top:4px">Run automated technical SEO audit</div>
+                </a>
+            </div>
+            <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between">
+                <div>
+                    <div style="font-size:12px;font-weight:700;color:#1E293B">Google Search Console Integration</div>
+                    <div style="font-size:11px;color:#64748B">Sitemap auto-ping enabled on updates</div>
+                </div>
+                <span style="background:#DCFCE7;color:#15803D;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px">CONNECTED</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Page Indexing & Schema Coverage Table -->
+    <div style="background:#fff;border:1px solid #E2E8F0;border-radius:12px;overflow:hidden;margin-bottom:24px">
+        <div style="background:#F8FAFC;padding:16px 20px;border-bottom:1px solid #E2E8F0;display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:14px;font-weight:800;color:#1E293B">Managed Page SEO Routes &amp; Schema Coverage</span>
+            <a href="/admin/ai-seo?tab=pages" style="font-size:12px;font-weight:700;color:#4F46E5;text-decoration:none">+ Add New Page Metadata</a>
+        </div>
+        <div style="overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse;font-size:13px">
+                <thead>
+                    <tr style="background:#F1F5F9;color:#475569;font-size:11px;text-transform:uppercase;letter-spacing:0.05em">
+                        <th style="padding:12px 18px;text-align:left">PAGE ROUTE</th>
+                        <th style="padding:12px 18px;text-align:left">META TITLE</th>
+                        <th style="padding:12px 18px;text-align:left">SCHEMA TYPE</th>
+                        <th style="padding:12px 18px;text-align:left">ROBOTS</th>
+                        <th style="padding:12px 18px;text-align:left">AI SUMMARY</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($pagesList)): ?>
+                    <tr>
+                        <td style="padding:14px 18px"><code style="font-weight:700;color:#4F46E5">/ (Homepage)</code></td>
+                        <td style="padding:14px 18px;font-weight:600">Affscash — Premium CPA Affiliate Network &amp; Performance Marketing</td>
+                        <td style="padding:14px 18px"><span style="background:#EEF2FF;color:#4F46E5;font-weight:700;font-size:11px;padding:3px 9px;border-radius:12px">Organization</span></td>
+                        <td style="padding:14px 18px"><span style="background:#DCFCE7;color:#15803D;font-weight:700;font-size:11px;padding:3px 9px;border-radius:12px">index, follow</span></td>
+                        <td style="padding:14px 18px;color:#10B981;font-weight:700">✓ Optimized</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:14px 18px"><code style="font-weight:700;color:#4F46E5">/offers</code></td>
+                        <td style="padding:14px 18px;font-weight:600">High-Paying CPA Offers &amp; Global Exclusive Campaigns</td>
+                        <td style="padding:14px 18px"><span style="background:#EEF2FF;color:#4F46E5;font-weight:700;font-size:11px;padding:3px 9px;border-radius:12px">OfferCatalog</span></td>
+                        <td style="padding:14px 18px"><span style="background:#DCFCE7;color:#15803D;font-weight:700;font-size:11px;padding:3px 9px;border-radius:12px">index, follow</span></td>
+                        <td style="padding:14px 18px;color:#10B981;font-weight:700">✓ Optimized</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:14px 18px"><code style="font-weight:700;color:#4F46E5">/publishers</code></td>
+                        <td style="padding:14px 18px;font-weight:600">Publisher Monetization Solutions &amp; Instant Weekly Payouts</td>
+                        <td style="padding:14px 18px"><span style="background:#EEF2FF;color:#4F46E5;font-weight:700;font-size:11px;padding:3px 9px;border-radius:12px">Service</span></td>
+                        <td style="padding:14px 18px"><span style="background:#DCFCE7;color:#15803D;font-weight:700;font-size:11px;padding:3px 9px;border-radius:12px">index, follow</span></td>
+                        <td style="padding:14px 18px;color:#10B981;font-weight:700">✓ Optimized</td>
+                    </tr>
+                    <?php else: ?>
+                    <?php foreach (array_slice($pagesList, 0, 5) as $p): ?>
+                    <tr>
+                        <td style="padding:14px 18px"><code style="font-weight:700;color:#4F46E5"><?= Helpers::e($p['page_url']) ?></code></td>
+                        <td style="padding:14px 18px;font-weight:600"><?= Helpers::e($p['title'] ?: '—') ?></td>
+                        <td style="padding:14px 18px"><span style="background:#EEF2FF;color:#4F46E5;font-weight:700;font-size:11px;padding:3px 9px;border-radius:12px">WebPage</span></td>
+                        <td style="padding:14px 18px"><span style="background:#DCFCE7;color:#15803D;font-weight:700;font-size:11px;padding:3px 9px;border-radius:12px"><?= Helpers::e($p['robots_meta'] ?: 'index, follow') ?></span></td>
+                        <td style="padding:14px 18px;color:#10B981;font-weight:700"><?= !empty($p['ai_summary']) ? '✓ Optimized' : 'Pending' ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
     </div>
 
