@@ -1,39 +1,44 @@
+<?php require BASE_PATH . '/views/layouts/affiliate_manager.php'; ?>
+
 <style>
-/* 3D Glassmorphism Invoices Navigation & KPI Cards */
+/* 3D Glassmorphism Invoices Navigation & Control System */
 .inv-tab-nav {
     display: flex !important;
+    align-items: center !important;
     gap: 8px !important;
     margin-bottom: 24px !important;
-    background: rgba(255, 255, 255, 0.7) !important;
-    backdrop-filter: blur(16px) !important;
-    -webkit-backdrop-filter: blur(16px) !important;
-    padding: 6px !important;
-    border-radius: 20px !important;
-    border: 1px solid rgba(99, 102, 241, 0.15) !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03) !important;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.85) 100%) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    padding: 6px 10px !important;
+    border-radius: 18px !important;
+    border: 1px solid rgba(99, 102, 241, 0.2) !important;
+    box-shadow: 0 8px 24px -4px rgba(99, 102, 241, 0.1), 0 3px 10px rgba(0, 0, 0, 0.03) !important;
     width: fit-content !important;
 }
 
 html[data-theme="dark"] .inv-tab-nav {
-    background: rgba(20, 14, 45, 0.7) !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
+    background: linear-gradient(180deg, rgba(24, 18, 55, 0.95) 0%, rgba(18, 12, 42, 0.9) 100%) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
 }
 
 .inv-tab-btn {
-    padding: 9px 20px !important;
-    font-size: 13px !important;
+    padding: 10px 22px !important;
+    font-size: 13.5px !important;
     font-weight: 700 !important;
-    border-radius: 14px !important;
+    border-radius: 13px !important;
     text-decoration: none !important;
-    color: #64748B !important;
+    color: #475569 !important;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
     display: inline-flex !important;
     align-items: center !important;
-    gap: 6px !important;
+    gap: 8px !important;
+    white-space: nowrap !important;
 }
 
 html[data-theme="dark"] .inv-tab-btn {
-    color: rgba(255, 255, 255, 0.65) !important;
+    color: rgba(255, 255, 255, 0.7) !important;
 }
 
 .inv-tab-btn:hover {
@@ -50,8 +55,8 @@ html[data-theme="dark"] .inv-tab-btn {
 /* 3D KPI Stats Grid */
 .inv-stats-grid {
     display: grid !important;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
-    gap: 16px !important;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+    gap: 18px !important;
     margin-bottom: 24px !important;
 }
 
@@ -59,35 +64,35 @@ html[data-theme="dark"] .inv-tab-btn {
     background: #ffffff !important;
     border: 1px solid #E2E8F0 !important;
     border-radius: 16px !important;
-    padding: 18px 22px !important;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.03) !important;
+    padding: 20px 24px !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03) !important;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
     display: flex !important;
     flex-direction: column !important;
 }
 
 html[data-theme="dark"] .inv-stat-card {
-    background: rgba(20, 14, 45, 0.8) !important;
+    background: rgba(20, 14, 45, 0.85) !important;
     border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 .inv-stat-card:hover {
     transform: translateY(-3px) !important;
-    box-shadow: 0 10px 24px rgba(99, 102, 241, 0.15) !important;
-    border-color: rgba(99, 102, 241, 0.3) !important;
+    box-shadow: 0 12px 28px rgba(99, 102, 241, 0.16) !important;
+    border-color: rgba(99, 102, 241, 0.35) !important;
 }
 
-.inv-stat-card.stat-invoices { border-top: 3px solid #6366F1 !important; }
-.inv-stat-card.stat-pending { border-top: 3px solid #F59E0B !important; }
-.inv-stat-card.stat-paid { border-top: 3px solid #10B981 !important; }
+.inv-stat-card.stat-invoices { border-top: 3.5px solid #6366F1 !important; }
+.inv-stat-card.stat-pending { border-top: 3.5px solid #F59E0B !important; }
+.inv-stat-card.stat-paid { border-top: 3.5px solid #10B981 !important; }
 
 .inv-stat-label {
     font-size: 11px !important;
     font-weight: 800 !important;
     color: #64748B !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.05em !important;
-    margin-bottom: 4px !important;
+    letter-spacing: 0.06em !important;
+    margin-bottom: 6px !important;
 }
 
 html[data-theme="dark"] .inv-stat-label {
@@ -95,7 +100,7 @@ html[data-theme="dark"] .inv-stat-label {
 }
 
 .inv-stat-value {
-    font-size: 28px !important;
+    font-size: 32px !important;
     font-weight: 800 !important;
     color: #0F172A !important;
     line-height: 1.1 !important;
@@ -110,7 +115,7 @@ html[data-theme="dark"] .inv-stat-value {
     color: #ffffff !important;
     font-weight: 700 !important;
     font-size: 13px !important;
-    padding: 8px 18px !important;
+    padding: 9px 20px !important;
     border-radius: 12px !important;
     border: none !important;
     box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35) !important;
@@ -118,7 +123,8 @@ html[data-theme="dark"] .inv-stat-value {
     display: inline-flex !important;
     align-items: center !important;
     gap: 6px !important;
-    transition: all 0.2s ease !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    cursor: pointer !important;
 }
 
 .inv-btn-primary:hover {
@@ -127,30 +133,55 @@ html[data-theme="dark"] .inv-stat-value {
     color: #ffffff !important;
 }
 
+.inv-btn-action {
+    background: #F1F5F9 !important;
+    color: #334155 !important;
+    font-weight: 700 !important;
+    font-size: 11.5px !important;
+    padding: 5px 14px !important;
+    border-radius: 10px !important;
+    border: 1px solid #CBD5E1 !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    transition: all 0.15s ease !important;
+}
+
+.inv-btn-action:hover {
+    background: #E2E8F0 !important;
+    color: #0F172A !important;
+    border-color: #94A3B8 !important;
+    transform: translateY(-1px) !important;
+}
+
 /* Badges */
 .ac-badge-approved {
     background: #10b981 !important;
     color: #ffffff !important;
     font-size: 11px !important;
     font-weight: 700 !important;
-    padding: 3px 9px !important;
+    padding: 4px 10px !important;
     border-radius: 20px !important;
+    display: inline-block !important;
 }
 .ac-badge-pending {
     background: #f59e0b !important;
     color: #ffffff !important;
     font-size: 11px !important;
     font-weight: 700 !important;
-    padding: 3px 9px !important;
+    padding: 4px 10px !important;
     border-radius: 20px !important;
+    display: inline-block !important;
 }
 .ac-badge-rejected {
     background: #ef4444 !important;
     color: #ffffff !important;
     font-size: 11px !important;
     font-weight: 700 !important;
-    padding: 3px 9px !important;
+    padding: 4px 10px !important;
     border-radius: 20px !important;
+    display: inline-block !important;
 }
 </style>
 
@@ -292,22 +323,23 @@ html[data-theme="dark"] .inv-stat-value {
             </td></tr>
             <?php else: ?>
             <?php foreach ($myInvoices as $i):
-                $sc = ['sent'=>'warning','paid'=>'success','draft'=>'info','void'=>'muted'];
+                $st = strtolower($i['status'] ?? 'draft');
+                $stClass = $st === 'paid' ? 'ac-badge-approved' : ($st === 'sent' || $st === 'pending' ? 'ac-badge-pending' : 'ac-badge-rejected');
             ?>
             <tr>
-                <td><code style="font-size:12px;background:#F1F5F9;padding:2px 6px;border-radius:4px"><?= Helpers::e($i['invoice_number'] ?? '#'.$i['id']) ?></code></td>
-                <td class="fw-bold" style="color:<?= $i['status']==='paid'?'var(--secondary)':'inherit' ?>">$<?= number_format($i['total'] ?? 0, 2) ?></td>
-                <td class="text-sm text-muted">
+                <td><code style="font-size:12px;background:#F1F5F9;padding:3px 8px;border-radius:6px;font-weight:700;color:#6366F1"><?= Helpers::e($i['invoice_number'] ?? '#'.$i['id']) ?></code></td>
+                <td class="fw-bold" style="font-size:13.5px;color:<?= $st==='paid'?'#059669':'#0F172A' ?>">$<?= number_format($i['total'] ?? 0, 2) ?></td>
+                <td class="text-sm text-muted" style="white-space:nowrap">
                     <?= $i['period_start'] ? date('M j, Y', strtotime($i['period_start'])) : '—' ?>
                     <?= $i['period_end'] ? ' – '.date('M j, Y', strtotime($i['period_end'])) : '' ?>
                 </td>
-                <td><span class="badge badge-<?= $sc[$i['status']] ?? 'muted' ?>"><?= ucfirst($i['status']) ?></span></td>
-                <td class="text-sm text-muted"><?= date('M j, Y', strtotime($i['created_at'])) ?></td>
-                <td class="text-sm text-muted"><?= $i['due_date'] ? date('M j, Y', strtotime($i['due_date'])) : '—' ?></td>
-                <td class="text-sm text-muted"><?= $i['paid_at'] ? date('M j, Y', strtotime($i['paid_at'])) : '—' ?></td>
+                <td><span class="<?= $stClass ?>"><?= ucfirst($i['status']) ?></span></td>
+                <td class="text-sm text-muted" style="white-space:nowrap"><?= date('M j, Y', strtotime($i['created_at'])) ?></td>
+                <td class="text-sm text-muted" style="white-space:nowrap"><?= $i['due_date'] ? date('M j, Y', strtotime($i['due_date'])) : '—' ?></td>
+                <td class="text-sm text-muted" style="white-space:nowrap"><?= $i['paid_at'] ? date('M j, Y', strtotime($i['paid_at'])) : '—' ?></td>
                 <td style="white-space:nowrap">
-                    <a href="/affiliate_manager/invoices?action=my_invoice_view&id=<?= $i['id'] ?>" class="btn btn-secondary btn-sm">View</a>
-                    <a href="/affiliate_manager/invoices?action=my_invoice_pdf&id=<?= $i['id'] ?>" class="btn btn-secondary btn-sm" target="_blank">PDF</a>
+                    <a href="/affiliate_manager/invoices?action=my_invoice_view&id=<?= $i['id'] ?>" class="inv-btn-action">View</a>
+                    <a href="/affiliate_manager/invoices?action=my_invoice_pdf&id=<?= $i['id'] ?>" class="inv-btn-action" target="_blank">PDF</a>
                 </td>
             </tr>
             <?php endforeach; ?>
