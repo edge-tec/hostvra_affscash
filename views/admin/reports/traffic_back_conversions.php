@@ -3,49 +3,168 @@ $title = "Traffic Back Conversions Report";
 require BASE_PATH . '/views/layouts/admin.php';
 ?>
 
-<div class="page-header d-flex align-items-center justify-content-between">
+<style>
+/* ═══════════════════════════════════════════════════════════════════════
+   TRAFFIC BACK CONVERSIONS KPI CARDS & RESPONSIVE GRID
+   ═══════════════════════════════════════════════════════════════════════ */
+.tb-kpi-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+    gap: 16px !important;
+    margin-bottom: 24px !important;
+}
+
+.tb-kpi-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 14px !important;
+    padding: 18px 20px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+}
+
+html[data-theme="dark"] .tb-kpi-card {
+    background: rgba(20, 14, 45, 0.75) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25) !important;
+}
+
+.tb-kpi-card:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08) !important;
+}
+
+.tb-card-top {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-bottom: 10px !important;
+}
+
+.tb-kpi-card .tb-title {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    color: #64748b !important;
+}
+
+html[data-theme="dark"] .tb-kpi-card .tb-title {
+    color: rgba(255, 255, 255, 0.65) !important;
+}
+
+.tb-card-icon {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 18px !important;
+}
+
+.tb-kpi-card .tb-val {
+    font-size: 26px !important;
+    font-weight: 800 !important;
+    line-height: 1.1 !important;
+    color: #0f172a !important;
+}
+
+html[data-theme="dark"] .tb-kpi-card .tb-val {
+    color: #ffffff !important;
+}
+
+.tb-kpi-card .tb-sub {
+    font-size: 12.5px !important;
+    font-weight: 600 !important;
+    margin-top: 6px !important;
+}
+
+/* Color Accent Variations */
+.tb-card-total .tb-card-icon { background: rgba(99, 102, 241, 0.12) !important; color: #6366f1 !important; }
+.tb-card-approved .tb-card-icon { background: rgba(16, 185, 129, 0.12) !important; color: #10b981 !important; }
+.tb-card-approved .tb-val { color: #10b981 !important; }
+.tb-card-pending .tb-card-icon { background: rgba(245, 158, 11, 0.12) !important; color: #f59e0b !important; }
+.tb-card-pending .tb-val { color: #f59e0b !important; }
+.tb-card-rejected .tb-card-icon { background: rgba(239, 68, 68, 0.12) !important; color: #ef4444 !important; }
+.tb-card-rejected .tb-val { color: #ef4444 !important; }
+
+/* Responsive Breakpoints */
+@media (max-width: 840px) {
+    .tb-kpi-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+    }
+}
+@media (max-width: 480px) {
+    .tb-kpi-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+</style>
+
+<div class="page-header d-flex align-items-center justify-content-between mb-4">
     <div>
-        <h1>Traffic Back Conversions Report</h1>
-        <p class="text-muted">Conversions generated from Traffic Back URL redirects (Admin Exclusive Report).</p>
+        <h1 class="h3 font-weight-bold mb-1">Traffic Back Conversions Report</h1>
+        <p class="text-muted mb-0">Conversions generated from Traffic Back URL redirects (Admin Exclusive Report).</p>
     </div>
     <div>
-        <a href="<?= Helpers::e($_SERVER['REQUEST_URI']) . (str_contains($_SERVER['REQUEST_URI'], '?') ? '&' : '?') . 'export=csv' ?>" class="btn btn-outline-primary">
+        <a href="<?= Helpers::e($_SERVER['REQUEST_URI']) . (str_contains($_SERVER['REQUEST_URI'], '?') ? '&' : '?') . 'export=csv' ?>" class="btn btn-outline-primary shadow-sm">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" class="me-1"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             Export CSV
         </a>
     </div>
 </div>
 
-<!-- Summary Cards -->
-<div class="row g-3 mb-4">
-    <div class="col-md-3 col-sm-6">
-        <div class="card p-3 border-0 shadow-sm" style="background:rgba(255,255,255,0.03);border-radius:12px">
-            <div class="text-muted small text-uppercase font-weight-bold">Total Traffic Back Convs</div>
-            <div class="h3 mb-0 mt-1 font-weight-bold"><?= number_format($summary['total']) ?></div>
+<!-- Responsive 4-Column KPI Grid -->
+<div class="tb-kpi-grid">
+    <!-- Card 1: Total -->
+    <div class="tb-kpi-card tb-card-total">
+        <div class="tb-card-top">
+            <span class="tb-title">Total Traffic Back Convs</span>
+            <div class="tb-card-icon">🔄</div>
         </div>
+        <div class="tb-val"><?= number_format($summary['total']) ?></div>
+        <div class="tb-sub text-muted">All tracked instances</div>
     </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="card p-3 border-0 shadow-sm" style="background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.2) !important;border-radius:12px">
-            <div class="text-success small text-uppercase font-weight-bold">Approved Convs</div>
-            <div class="h3 mb-0 mt-1 font-weight-bold text-success"><?= number_format($summary['approved_count']) ?></div>
-            <div class="small text-muted mt-1">$<?= number_format((float)$summary['approved_payout'], 2) ?> Payout</div>
+
+    <!-- Card 2: Approved -->
+    <div class="tb-kpi-card tb-card-approved">
+        <div class="tb-card-top">
+            <span class="tb-title">Approved Convs</span>
+            <div class="tb-card-icon">✅</div>
         </div>
+        <div class="tb-val"><?= number_format($summary['approved_count']) ?></div>
+        <div class="tb-sub text-success font-weight-bold">$<?= number_format((float)$summary['approved_payout'], 2) ?> Payout</div>
     </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="card p-3 border-0 shadow-sm" style="background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.2) !important;border-radius:12px">
-            <div class="text-warning small text-uppercase font-weight-bold">Pending Convs</div>
-            <div class="h3 mb-0 mt-1 font-weight-bold text-warning"><?= number_format($summary['pending_count']) ?></div>
+
+    <!-- Card 3: Pending -->
+    <div class="tb-kpi-card tb-card-pending">
+        <div class="tb-card-top">
+            <span class="tb-title">Pending Convs</span>
+            <div class="tb-card-icon">⏳</div>
         </div>
+        <div class="tb-val"><?= number_format($summary['pending_count']) ?></div>
+        <div class="tb-sub text-warning font-weight-bold">Awaiting review</div>
     </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="card p-3 border-0 shadow-sm" style="background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.2) !important;border-radius:12px">
-            <div class="text-danger small text-uppercase font-weight-bold">Rejected Convs</div>
-            <div class="h3 mb-0 mt-1 font-weight-bold text-danger"><?= number_format($summary['rejected_count']) ?></div>
+
+    <!-- Card 4: Rejected -->
+    <div class="tb-kpi-card tb-card-rejected">
+        <div class="tb-card-top">
+            <span class="tb-title">Rejected Convs</span>
+            <div class="tb-card-icon">❌</div>
         </div>
+        <div class="tb-val"><?= number_format($summary['rejected_count']) ?></div>
+        <div class="tb-sub text-danger font-weight-bold">Declined or blocked</div>
     </div>
 </div>
 
-<!-- Filters -->
+<!-- Filter Bar -->
 <div class="card mb-4">
     <div class="card-body">
         <form method="GET" action="/admin/reports/traffic-back-conversions" class="d-flex gap-3 align-items-center" style="flex-wrap:wrap">
@@ -108,7 +227,7 @@ require BASE_PATH . '/views/layouts/admin.php';
 <!-- Table -->
 <div class="card">
     <div class="card-header d-flex align-items-center justify-content-between">
-        <span class="card-title mb-0">Traffic Back Conversions List</span>
+        <span class="card-title mb-0 font-weight-bold">Traffic Back Conversions List</span>
         <span class="badge bg-secondary"><?= count($conversions) ?> records</span>
     </div>
     <div class="table-responsive">
