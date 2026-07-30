@@ -143,9 +143,24 @@ Router::get('/sitemap/images.xml', function() {
     echo XmlSitemapGenerator::buildImagesSitemap();
     exit;
 });
+Router::get('/sitemap-images.xml', function() {
+    header('Content-Type: application/xml; charset=utf-8');
+    echo XmlSitemapGenerator::buildImagesSitemap();
+    exit;
+});
 Router::get('/sitemap/videos.xml', function() {
     header('Content-Type: application/xml; charset=utf-8');
     echo XmlSitemapGenerator::buildVideosSitemap();
+    exit;
+});
+Router::get('/sitemap-videos.xml', function() {
+    header('Content-Type: application/xml; charset=utf-8');
+    echo XmlSitemapGenerator::buildVideosSitemap();
+    exit;
+});
+Router::get('/sitemap-news.xml', function() {
+    header('Content-Type: application/xml; charset=utf-8');
+    echo XmlSitemapGenerator::buildBlogsSitemap();
     exit;
 });
 

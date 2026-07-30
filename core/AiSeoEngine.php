@@ -36,8 +36,19 @@ class AiSeoEngine
                 `primary_entity` VARCHAR(150) DEFAULT NULL,
                 `related_entities` TEXT DEFAULT NULL,
                 `semantic_keywords` TEXT DEFAULT NULL,
+                `related_keywords` TEXT DEFAULT NULL,
+                `nlp_keywords` TEXT DEFAULT NULL,
+                `context_keywords` TEXT DEFAULT NULL,
+                `search_intent` VARCHAR(100) DEFAULT 'Commercial',
+                `user_intent` VARCHAR(100) DEFAULT 'Transactional',
                 `ai_summary` TEXT DEFAULT NULL,
-                `ai_description` TEXT DEFAULT NULL,
+                `short_summary` TEXT DEFAULT NULL,
+                `long_summary` LONGTEXT DEFAULT NULL,
+                `key_points` TEXT DEFAULT NULL,
+                `key_takeaways` TEXT DEFAULT NULL,
+                `topic_cluster` VARCHAR(150) DEFAULT 'Affiliate Marketing',
+                `related_searches` TEXT DEFAULT NULL,
+                `people_also_ask` TEXT DEFAULT NULL,
                 `content_summary` TEXT DEFAULT NULL,
                 `reading_time` INT DEFAULT 1,
                 `ai_citation_snippet` TEXT DEFAULT NULL,
@@ -52,6 +63,20 @@ class AiSeoEngine
                 `last_scanned_at` DATETIME DEFAULT NULL,
                 `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+            // Auto-add new columns if table already existed
+            $colsToAdd = [
+                'short_summary' => 'TEXT DEFAULT NULL',
+                'long_summary' => 'LONGTEXT DEFAULT NULL',
+                'related_keywords' => 'TEXT DEFAULT NULL',
+                'nlp_keywords' => 'TEXT DEFAULT NULL',
+                'search_intent' => 'VARCHAR(100) DEFAULT "Commercial"',
+                'key_takeaways' => 'TEXT DEFAULT NULL',
+                'people_also_ask' => 'TEXT DEFAULT NULL'
+            ];
+            foreach ($colsToAdd as $cName => $cDef) {
+                try { Database::query("ALTER TABLE `ai_seo_pages` ADD COLUMN `{$cName}` {$cDef}"); } catch (\Throwable $_e) {}
+            }
 
             // 2. AI SEO Global Settings
             Database::query("CREATE TABLE IF NOT EXISTS `ai_seo_settings` (

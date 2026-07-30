@@ -16,17 +16,53 @@ class AiCrawlerManager
     public static function getCrawlers(): array
     {
         return [
-            'gptbot' => [
-                'name' => 'GPTBot',
-                'agent' => 'GPTBot',
-                'desc' => 'OpenAI ChatGPT web crawler used to fetch content for GPT models.',
-                'setting_key' => 'ai_crawler_gptbot'
+            'googlebot' => [
+                'name' => 'Googlebot',
+                'agent' => 'Googlebot',
+                'desc' => 'Main Google Search web crawler.',
+                'setting_key' => 'ai_crawler_googlebot'
+            ],
+            'googlebot_news' => [
+                'name' => 'Googlebot-News',
+                'agent' => 'Googlebot-News',
+                'desc' => 'Google News articles crawler.',
+                'setting_key' => 'ai_crawler_googlebot_news'
+            ],
+            'googlebot_image' => [
+                'name' => 'Googlebot-Image',
+                'agent' => 'Googlebot-Image',
+                'desc' => 'Google Image Search crawler.',
+                'setting_key' => 'ai_crawler_googlebot_image'
+            ],
+            'googlebot_video' => [
+                'name' => 'Googlebot-Video',
+                'agent' => 'Googlebot-Video',
+                'desc' => 'Google Video Search crawler.',
+                'setting_key' => 'ai_crawler_googlebot_video'
             ],
             'google_extended' => [
                 'name' => 'Google-Extended',
                 'agent' => 'Google-Extended',
                 'desc' => 'Google AI crawler used for Gemini and Google AI features.',
                 'setting_key' => 'ai_crawler_google_extended'
+            ],
+            'gptbot' => [
+                'name' => 'GPTBot',
+                'agent' => 'GPTBot',
+                'desc' => 'OpenAI ChatGPT web crawler used to fetch content for GPT models.',
+                'setting_key' => 'ai_crawler_gptbot'
+            ],
+            'chatgpt_user' => [
+                'name' => 'ChatGPT-User',
+                'agent' => 'ChatGPT-User',
+                'desc' => 'OpenAI ChatGPT real-time user browsing agent.',
+                'setting_key' => 'ai_crawler_chatgpt_user'
+            ],
+            'oai_searchbot' => [
+                'name' => 'OAI-SearchBot',
+                'agent' => 'OAI-SearchBot',
+                'desc' => 'OpenAI SearchBot for SearchGPT search indexing.',
+                'setting_key' => 'ai_crawler_oai_searchbot'
             ],
             'claudebot' => [
                 'name' => 'ClaudeBot',
@@ -51,6 +87,36 @@ class AiCrawlerManager
                 'agent' => 'Applebot-Extended',
                 'desc' => 'Apple Intelligence & Siri search crawler.',
                 'setting_key' => 'ai_crawler_applebot'
+            ],
+            'duckassistbot' => [
+                'name' => 'DuckAssistBot',
+                'agent' => 'DuckAssistBot',
+                'desc' => 'DuckDuckGo AI DuckAssist summary crawler.',
+                'setting_key' => 'ai_crawler_duckassist'
+            ],
+            'bravebot' => [
+                'name' => 'Bravebot',
+                'agent' => 'Bravebot',
+                'desc' => 'Brave Search AI engine crawler.',
+                'setting_key' => 'ai_crawler_bravebot'
+            ],
+            'yandexbot' => [
+                'name' => 'YandexBot',
+                'agent' => 'YandexBot',
+                'desc' => 'Yandex search engine spider.',
+                'setting_key' => 'ai_crawler_yandex'
+            ],
+            'baiduspider' => [
+                'name' => 'BaiduSpider',
+                'agent' => 'Baiduspider',
+                'desc' => 'Baidu search engine crawler.',
+                'setting_key' => 'ai_crawler_baidu'
+            ],
+            'ccbot' => [
+                'name' => 'CCBot',
+                'agent' => 'CCBot',
+                'desc' => 'Common Crawl web repository crawler.',
+                'setting_key' => 'ai_crawler_ccbot'
             ],
             'amazonbot' => [
                 'name' => 'Amazonbot',
