@@ -89,13 +89,21 @@ html[data-theme="dark"] .tb-kpi-card .tb-val {
 .tb-card-total .tb-card-icon { background: rgba(99, 102, 241, 0.12) !important; color: #6366f1 !important; }
 .tb-card-approved .tb-card-icon { background: rgba(16, 185, 129, 0.12) !important; color: #10b981 !important; }
 .tb-card-approved .tb-val { color: #10b981 !important; }
+.tb-card-revenue .tb-card-icon { background: rgba(6, 182, 212, 0.12) !important; color: #06b6d4 !important; }
+.tb-card-revenue .tb-val { color: #06b6d4 !important; }
 .tb-card-pending .tb-card-icon { background: rgba(245, 158, 11, 0.12) !important; color: #f59e0b !important; }
 .tb-card-pending .tb-val { color: #f59e0b !important; }
 .tb-card-rejected .tb-card-icon { background: rgba(239, 68, 68, 0.12) !important; color: #ef4444 !important; }
 .tb-card-rejected .tb-val { color: #ef4444 !important; }
 
 /* Responsive Breakpoints */
-@media (max-width: 840px) {
+@media (max-width: 1100px) {
+    .tb-kpi-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 14px !important;
+    }
+}
+@media (max-width: 768px) {
     .tb-kpi-grid {
         grid-template-columns: repeat(2, 1fr) !important;
         gap: 12px !important;
@@ -121,7 +129,7 @@ html[data-theme="dark"] .tb-kpi-card .tb-val {
     </div>
 </div>
 
-<!-- Responsive 4-Column KPI Grid -->
+<!-- Responsive 5-Column KPI Grid -->
 <div class="tb-kpi-grid">
     <!-- Card 1: Total -->
     <div class="tb-kpi-card tb-card-total">
@@ -143,7 +151,17 @@ html[data-theme="dark"] .tb-kpi-card .tb-val {
         <div class="tb-sub text-success font-weight-bold">$<?= number_format((float)$summary['approved_payout'], 2) ?> Payout</div>
     </div>
 
-    <!-- Card 3: Pending -->
+    <!-- Card 3: Revenue -->
+    <div class="tb-kpi-card tb-card-revenue">
+        <div class="tb-card-top">
+            <span class="tb-title">Traffic Back Revenue</span>
+            <div class="tb-card-icon">💵</div>
+        </div>
+        <div class="tb-val">$<?= number_format((float)$summary['approved_revenue'], 2) ?></div>
+        <div class="tb-sub text-info font-weight-bold">Gross Earned Revenue</div>
+    </div>
+
+    <!-- Card 4: Pending -->
     <div class="tb-kpi-card tb-card-pending">
         <div class="tb-card-top">
             <span class="tb-title">Pending Convs</span>
@@ -153,7 +171,7 @@ html[data-theme="dark"] .tb-kpi-card .tb-val {
         <div class="tb-sub text-warning font-weight-bold">Awaiting review</div>
     </div>
 
-    <!-- Card 4: Rejected -->
+    <!-- Card 5: Rejected -->
     <div class="tb-kpi-card tb-card-rejected">
         <div class="tb-card-top">
             <span class="tb-title">Rejected Convs</span>
