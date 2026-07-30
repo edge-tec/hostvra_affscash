@@ -9,7 +9,7 @@ require BASE_PATH . '/views/layouts/admin.php';
    ═══════════════════════════════════════════════════════════════════════ */
 .tb-kpi-grid {
     display: grid !important;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
     gap: 16px !important;
     margin-bottom: 24px !important;
 }
@@ -47,7 +47,7 @@ html[data-theme="dark"] .tb-kpi-card {
 }
 
 .tb-kpi-card .tb-title {
-    font-size: 12px !important;
+    font-size: 11.5px !important;
     font-weight: 700 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.05em !important;
@@ -96,19 +96,96 @@ html[data-theme="dark"] .tb-kpi-card .tb-val {
 .tb-card-rejected .tb-card-icon { background: rgba(239, 68, 68, 0.12) !important; color: #ef4444 !important; }
 .tb-card-rejected .tb-val { color: #ef4444 !important; }
 
-/* Responsive Breakpoints */
-@media (max-width: 1100px) {
-    .tb-kpi-grid {
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 14px !important;
-    }
+/* Desktop & Horizontal Table Wrapper */
+.tb-table-wrapper {
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    border-radius: 0 0 14px 14px !important;
 }
+
+.tb-conv-table {
+    width: 100% !important;
+    min-width: 980px !important;
+    border-collapse: collapse !important;
+}
+
+.tb-conv-table code {
+    white-space: nowrap !important;
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+    font-size: 12px !important;
+}
+
+/* Mobile Card View (for screens <= 768px) */
+.tb-mobile-card-list {
+    display: none;
+    padding: 12px;
+}
+
+.tb-mobile-item {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+html[data-theme="dark"] .tb-mobile-item {
+    background: rgba(20, 14, 45, 0.9);
+    border-color: rgba(255,255,255,0.1);
+}
+
+.tb-mobile-item .m-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+}
+
+html[data-theme="dark"] .tb-mobile-item .m-header {
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.tb-mobile-item .m-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+.tb-mobile-item .m-label {
+    color: #64748b;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+html[data-theme="dark"] .tb-mobile-item .m-label {
+    color: rgba(255,255,255,0.6);
+}
+
+.tb-mobile-item .m-val {
+    text-align: right;
+    font-weight: 500;
+}
+
+/* Responsive Visibility Switch */
 @media (max-width: 768px) {
+    .tb-desktop-table-container {
+        display: none !important;
+    }
+    .tb-mobile-card-list {
+        display: block !important;
+    }
     .tb-kpi-grid {
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 12px !important;
+        gap: 10px !important;
     }
 }
+
 @media (max-width: 480px) {
     .tb-kpi-grid {
         grid-template-columns: 1fr !important;
@@ -242,69 +319,148 @@ html[data-theme="dark"] .tb-kpi-card .tb-val {
     </div>
 </div>
 
-<!-- Table -->
+<!-- Main Container -->
 <div class="card">
     <div class="card-header d-flex align-items-center justify-content-between">
         <span class="card-title mb-0 font-weight-bold">Traffic Back Conversions List</span>
         <span class="badge bg-secondary"><?= count($conversions) ?> records</span>
     </div>
-    <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-            <thead>
-                <tr>
-                    <th>Conversion ID</th>
-                    <th>Click ID</th>
-                    <th>Affiliate</th>
-                    <th>Offer</th>
-                    <th>Status</th>
-                    <th>IP / Country</th>
-                    <th>Payout</th>
-                    <th>Revenue</th>
-                    <th>Converted At</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (empty($conversions)): ?>
+
+    <!-- Desktop & Tablet Smooth Scroll Table -->
+    <div class="tb-desktop-table-container">
+        <div class="tb-table-wrapper">
+            <table class="table table-hover align-middle mb-0 tb-conv-table">
+                <thead>
                     <tr>
-                        <td colspan="9" class="text-center text-muted py-4">No Traffic Back conversions found for the selected criteria.</td>
+                        <th style="width:170px">Conversion ID</th>
+                        <th style="width:140px">Click ID</th>
+                        <th style="width:180px">Affiliate</th>
+                        <th>Offer</th>
+                        <th style="width:120px">Status</th>
+                        <th style="width:150px">IP / Country</th>
+                        <th style="width:110px">Payout</th>
+                        <th style="width:110px">Revenue</th>
+                        <th style="width:160px">Converted At</th>
                     </tr>
-                <?php else: ?>
-                    <?php foreach ($conversions as $c): ?>
+                </thead>
+                <tbody>
+                    <?php if (empty($conversions)): ?>
                         <tr>
-                            <td><code><?= Helpers::e($c['conversion_id']) ?></code></td>
-                            <td><code title="<?= Helpers::e($c['click_id']) ?>"><?= Helpers::e(substr($c['click_id'], 0, 16)) ?>...</code></td>
-                            <td>
-                                <strong><?= Helpers::e($c['aff_name'] ?: 'N/A') ?></strong>
-                                <?php if (!empty($c['affiliate_code'])): ?>
-                                    <br><span class="badge bg-dark" style="font-size:10px"><?= Helpers::e($c['affiliate_code']) ?></span>
-                                <?php endif; ?>
-                            </td>
-                            <td><?= Helpers::e($c['offer_name'] ?: 'N/A') ?></td>
-                            <td>
-                                <?php if ($c['status'] === 'approved'): ?>
-                                    <span class="badge bg-success">Approved</span>
-                                <?php elseif ($c['status'] === 'pending'): ?>
-                                    <span class="badge bg-warning text-dark">Pending</span>
-                                <?php else: ?>
-                                    <span class="badge bg-danger">Rejected</span>
-                                    <?php if (!empty($c['rejection_reason'])): ?>
-                                        <br><small class="text-muted" style="font-size:10px"><?= Helpers::e($c['rejection_reason']) ?></small>
-                                    <?php endif; ?>
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <?= Helpers::e($c['ip_address']) ?>
-                                <?php if (!empty($c['country'])): ?>
-                                    <span class="badge bg-light text-dark ms-1"><?= Helpers::e($c['country']) ?></span>
-                                <?php endif; ?>
-                            </td>
-                            <td><strong class="text-success">$<?= number_format((float)$c['payout'], 4) ?></strong></td>
-                            <td><strong class="text-info">$<?= number_format((float)$c['revenue'], 4) ?></strong></td>
-                            <td class="text-nowrap small text-muted"><?= Helpers::e($c['converted_at']) ?></td>
+                            <td colspan="9" class="text-center text-muted py-4">No Traffic Back conversions found for the selected criteria.</td>
                         </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </tbody>
-        </table>
+                    <?php else: ?>
+                        <?php foreach ($conversions as $c): ?>
+                            <tr>
+                                <td><code title="<?= Helpers::e($c['conversion_id']) ?>"><?= Helpers::e(substr($c['conversion_id'], 0, 16)) ?>...</code></td>
+                                <td><code title="<?= Helpers::e($c['click_id']) ?>"><?= Helpers::e(substr($c['click_id'], 0, 12)) ?>...</code></td>
+                                <td>
+                                    <strong><?= Helpers::e($c['aff_name'] ?: 'N/A') ?></strong>
+                                    <?php if (!empty($c['affiliate_code'])): ?>
+                                        <br><span class="badge bg-dark" style="font-size:10px"><?= Helpers::e($c['affiliate_code']) ?></span>
+                                    <?php endif; ?>
+                                </td>
+                                <td><strong><?= Helpers::e($c['offer_name'] ?: 'N/A') ?></strong></td>
+                                <td>
+                                    <?php if ($c['status'] === 'approved'): ?>
+                                        <span class="badge bg-success">Approved</span>
+                                    <?php elseif ($c['status'] === 'pending'): ?>
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    <?php else: ?>
+                                        <span class="badge bg-danger">Rejected</span>
+                                        <?php if (!empty($c['rejection_reason'])): ?>
+                                            <br><small class="text-muted" style="font-size:10px"><?= Helpers::e($c['rejection_reason']) ?></small>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <span style="font-size:12px;font-family:monospace"><?= Helpers::e($c['ip_address']) ?></span>
+                                    <?php if (!empty($c['country'])): ?>
+                                        <span class="badge bg-light text-dark ms-1"><?= Helpers::e($c['country']) ?></span>
+                                    <?php endif; ?>
+                                </td>
+                                <td><strong class="text-success">$<?= number_format((float)$c['payout'], 4) ?></strong></td>
+                                <td><strong class="text-info">$<?= number_format((float)$c['revenue'], 4) ?></strong></td>
+                                <td class="text-nowrap small text-muted"><?= Helpers::e($c['converted_at']) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Mobile Stacked Card List (Screens <= 768px) -->
+    <div class="tb-mobile-card-list">
+        <?php if (empty($conversions)): ?>
+            <div class="text-center text-muted py-4">No Traffic Back conversions found for the selected criteria.</div>
+        <?php else: ?>
+            <?php foreach ($conversions as $c): ?>
+                <div class="tb-mobile-item">
+                    <div class="m-header">
+                        <div>
+                            <?php if ($c['status'] === 'approved'): ?>
+                                <span class="badge bg-success">Approved</span>
+                            <?php elseif ($c['status'] === 'pending'): ?>
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            <?php else: ?>
+                                <span class="badge bg-danger">Rejected</span>
+                            <?php endif; ?>
+                        </div>
+                        <div class="text-end">
+                            <span class="text-success font-weight-bold" style="font-size:14px">$<?= number_format((float)$c['payout'], 2) ?></span>
+                            <span class="text-muted mx-1">|</span>
+                            <span class="text-info font-weight-bold" style="font-size:14px">$<?= number_format((float)$c['revenue'], 2) ?> Rev</span>
+                        </div>
+                    </div>
+
+                    <div class="m-row">
+                        <span class="m-label">Offer Name</span>
+                        <span class="m-val text-primary font-weight-bold"><?= Helpers::e($c['offer_name'] ?: 'N/A') ?></span>
+                    </div>
+
+                    <div class="m-row">
+                        <span class="m-label">Affiliate</span>
+                        <span class="m-val">
+                            <?= Helpers::e($c['aff_name'] ?: 'N/A') ?>
+                            <?php if (!empty($c['affiliate_code'])): ?>
+                                <span class="badge bg-dark ms-1" style="font-size:10px"><?= Helpers::e($c['affiliate_code']) ?></span>
+                            <?php endif; ?>
+                        </span>
+                    </div>
+
+                    <div class="m-row">
+                        <span class="m-label">IP / Country</span>
+                        <span class="m-val">
+                            <code style="font-size:11px"><?= Helpers::e($c['ip_address']) ?></code>
+                            <?php if (!empty($c['country'])): ?>
+                                <span class="badge bg-light text-dark ms-1"><?= Helpers::e($c['country']) ?></span>
+                            <?php endif; ?>
+                        </span>
+                    </div>
+
+                    <div class="m-row">
+                        <span class="m-label">Conversion ID</span>
+                        <span class="m-val"><code style="font-size:11px"><?= Helpers::e($c['conversion_id']) ?></code></span>
+                    </div>
+
+                    <div class="m-row">
+                        <span class="m-label">Click ID</span>
+                        <span class="m-val"><code style="font-size:11px"><?= Helpers::e($c['click_id']) ?></code></span>
+                    </div>
+
+                    <?php if (!empty($c['rejection_reason'])): ?>
+                        <div class="m-row">
+                            <span class="m-label text-danger">Reason</span>
+                            <span class="m-val text-danger small"><?= Helpers::e($c['rejection_reason']) ?></span>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="m-row mt-2 pt-2 style="border-top:1px dashed rgba(0,0,0,0.1)">
+                        <span class="m-label">Converted At</span>
+                        <span class="m-val text-muted small"><?= Helpers::e($c['converted_at']) ?></span>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
     </div>
 </div>
