@@ -10,10 +10,95 @@ $iconHtml = $favIcon ? '<img src="'.Helpers::e($favIcon).'" style="width:12px;he
 ?>
 <style>
 @media (min-width: 769px) { .mobile-footer-logo { display: none !important; } }
-.footer-link { color:#64748B; text-decoration:none; display:inline-flex; align-items:center; }
-.footer-link:hover { color:#475569; }
+
+/* 3D Glassmorphism Responsive Dashboard Footer */
+footer.app-3d-footer {
+    text-align: center !important;
+    padding: 24px 20px 20px !important;
+    font-size: 12.5px !important;
+    color: rgba(255, 255, 255, 0.75) !important;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.96) 0%, rgba(10, 15, 30, 0.99) 100%) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-top: 1px solid rgba(99, 102, 241, 0.25) !important;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    z-index: 10 !important;
+}
+
+html[data-theme="light"] footer.app-3d-footer {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(241, 245, 249, 0.98) 100%) !important;
+    border-top-color: rgba(99, 102, 241, 0.2) !important;
+    color: #475569 !important;
+    box-shadow: 0 -8px 30px rgba(99, 102, 241, 0.08) !important;
+}
+
+.footer-nav-container {
+    display: flex !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    gap: 8px 12px !important;
+    margin: 0 auto 16px !important;
+    max-width: 1200px !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+.footer-link {
+    color: rgba(255, 255, 255, 0.8) !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 6px 14px !important;
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    border-radius: 20px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(8px) !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    white-space: nowrap !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+html[data-theme="light"] .footer-link {
+    color: #334155 !important;
+    background: rgba(255, 255, 255, 0.8) !important;
+    border-color: rgba(226, 232, 240, 0.9) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03) !important;
+}
+
+.footer-link:hover {
+    color: #ffffff !important;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.4) 0%, rgba(79, 70, 229, 0.5) 100%) !important;
+    border-color: rgba(129, 140, 248, 0.6) !important;
+    transform: translateY(-2px) scale(1.02) !important;
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35) !important;
+}
+
+html[data-theme="light"] .footer-link:hover {
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%) !important;
+    border-color: transparent !important;
+}
+
+.footer-copyright-text {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    position: relative !important;
+    z-index: 2 !important;
+    letter-spacing: 0.01em !important;
+}
+
+html[data-theme="light"] .footer-copyright-text {
+    color: #64748B !important;
+}
 </style>
-<footer style="text-align:center;padding:20px;font-size:12px;color:#94A3B8;border-top:1px solid #1E293B;background:#0F172A;position:relative;overflow:hidden;">
+
+<footer class="app-3d-footer">
     <canvas class="footer-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0"></canvas>
     <script>
     (function() {
@@ -88,15 +173,15 @@ $iconHtml = $favIcon ? '<img src="'.Helpers::e($favIcon).'" style="width:12px;he
         animate();
     })();
     </script>
-    <div class="mobile-footer-logo" style="margin-bottom:16px;">
+    <div class="mobile-footer-logo" style="margin-bottom:16px;position:relative;z-index:2">
         <?php if ($siteLogo): ?>
         <img src="<?= Helpers::e($siteLogo) ?>" alt="Logo" style="max-height:36px; max-width:140px; object-fit:contain; filter:brightness(0) invert(1);">
         <?php else: ?>
         <span style="font-weight:bold; color:#94A3B8; font-size:16px;"><?= Helpers::e(Config::get('config','app.name') ?? 'AffTracker') ?></span>
         <?php endif; ?>
     </div>
-    <div style="display:flex; justify-content:center; flex-wrap:wrap; gap:16px; margin-bottom:12px;">
-        <a href="/terms-of-service" target="_blank" class="footer-link"><?= $iconHtml ?>Terms & Conditions</a>
+    <div class="footer-nav-container">
+        <a href="/terms-of-service" target="_blank" class="footer-link"><?= $iconHtml ?>Terms &amp; Conditions</a>
         <a href="/privacy-policy" target="_blank" class="footer-link"><?= $iconHtml ?>Privacy Policy</a>
         <a href="/affiliate-agreement" target="_blank" class="footer-link"><?= $iconHtml ?>Affiliate Agreement</a>
         <a href="/anti-fraud-policy" target="_blank" class="footer-link"><?= $iconHtml ?>Anti-Fraud Policy</a>
@@ -106,7 +191,7 @@ $iconHtml = $favIcon ? '<img src="'.Helpers::e($favIcon).'" style="width:12px;he
         <a href="/dashboard-disclaimers" target="_blank" class="footer-link"><?= $iconHtml ?>Dashboard Disclaimers</a>
     </div>
     <?php if ($copyright): ?>
-    <div><?= Helpers::e($copyright) ?></div>
+    <div class="footer-copyright-text"><?= Helpers::e($copyright) ?></div>
     <?php endif; ?>
 </footer>
 
