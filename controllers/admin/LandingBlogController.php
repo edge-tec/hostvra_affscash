@@ -133,6 +133,9 @@ if ($action === 'toggle') {
             if ($postId) {
                 $wasPublished = ($post['status'] ?? '') === 'published';
                 Database::update('landing_posts', $data, 'id=?', [$postId]);
+                if (class_exists('SeoKeywordModule')) {
+                    SeoKeywordModule::handlePostSave((int)$postId, $_POST);
+                }
 
                 // Send the blast only when this save transitions the post into
                 // 'published' for the first time AND the broadcast hasn't run
@@ -153,6 +156,11 @@ if ($action === 'toggle') {
                         Database::update('landing_posts', ['email_sent' => 1], 'id=?', [(int)$newId]);
                     } catch (\Throwable $_) {}
                 }
+                $targetPostId = $postId ?: (int)($newId ?? 0);
+                if ($targetPostId > 0 && class_exists('SeoKeywordModule')) {
+                    SeoKeywordModule::handlePostSave($targetPostId, $_POST);
+                }
+
                 Helpers::flash('success', 'Blog post ' . ($status === 'published' ? 'published.' : 'saved as draft.') . ($emailedAffiliates > 0 ? ' Email sent to ' . $emailedAffiliates . ' affiliate(s).' : ''));
             }
             // Refresh sitemap.xml so the new/updated slug is picked up immediately.

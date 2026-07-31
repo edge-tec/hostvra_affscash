@@ -106,7 +106,7 @@ html body .auth-box select:-webkit-autofill {
 }
 
 /* Placeholder styling */
-::placeholder {
+html body .auth-box ::placeholder {
   color: rgba(255, 255, 255, 0.35) !important;
 }
 

@@ -68,6 +68,7 @@ require BASE_PATH . '/core/AiCrawlerManager.php';
 require BASE_PATH . '/core/LlmsTxtGenerator.php';
 require BASE_PATH . '/core/XmlSitemapGenerator.php';
 require BASE_PATH . '/core/PerformanceOptimizer.php';
+require BASE_PATH . '/core/SeoKeywordModule.php';
 
 // Initialize config
 Config::init(CONFIG_PATH);
@@ -411,6 +412,7 @@ Router::any('/admin/vpn-log', function() { require BASE_PATH . '/controllers/adm
 Router::any('/admin/notifications', function() { require BASE_PATH . '/controllers/admin/NotificationController.php'; });
 Router::any('/admin/registration-questions', function() { require BASE_PATH . '/controllers/admin/RegistrationQuestionsController.php'; });
 Router::any('/admin/ai-seo', function() { require BASE_PATH . '/controllers/admin/AiSeoController.php'; });
+Router::any('/admin/seo-keywords/ajax', function() { require BASE_PATH . '/controllers/admin/SeoKeywordAjaxController.php'; });
 
 // ── Enterprise REST APIs for AI SEO & LLM Discovery ─────────────────────────────
 Router::get('/api/seo/metadata', function() {

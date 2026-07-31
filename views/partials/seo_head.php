@@ -83,6 +83,11 @@ $schemaGraphJson = AiSchemaGenerator::buildGraph($schemas);
 <meta name="ai-summary" content="<?= htmlspecialchars($_aiSummary, ENT_QUOTES, 'UTF-8') ?>">
 <meta name="primary-entity" content="<?= htmlspecialchars($_primaryEntity, ENT_QUOTES, 'UTF-8') ?>">
 <meta name="reading-time" content="<?= (int)($aiMeta['reading_time'] ?? 2) ?> min">
+<?php
+if (!empty($post) && is_array($post) && class_exists('SeoKeywordModule')) {
+    echo SeoKeywordModule::renderPublicPostHead($post);
+}
+?>
 
 <!-- Performance Resource Hints -->
 <?= PerformanceOptimizer::renderResourceHints() ?>

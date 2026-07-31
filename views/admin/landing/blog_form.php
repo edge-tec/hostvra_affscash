@@ -63,6 +63,9 @@
                     </div>
                 </div>
             </div>
+
+            <!-- SEO Keywords Module Section -->
+            <?php require BASE_PATH . '/views/admin/landing/seo_keywords_section.php'; ?>
         </div>
 
         <!-- Sidebar settings -->
