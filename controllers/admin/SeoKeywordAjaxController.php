@@ -9,24 +9,25 @@ Auth::check('admin');
 
 header('Content-Type: application/json; charset=utf-8');
 
-$action = Helpers::get('action') ?? Helpers::post('action') ?? '';
+$action = $_POST['action'] ?? $_GET['action'] ?? '';
 
 if ($action === 'autocomplete') {
-    $query = Helpers::get('q') ?? Helpers::post('q') ?? '';
+    $query = trim((string)($_GET['q'] ?? $_POST['q'] ?? ''));
     $suggestions = SeoKeywordModule::getSuggestions($query);
     echo json_encode(['success' => true, 'suggestions' => $suggestions]);
     exit;
 }
 
 // All mutating actions require CSRF token validation
-if (!Auth::verifyCsrf(Helpers::postRaw('_token') ?? Helpers::get('_token') ?? '')) {
+$token = $_POST['_token'] ?? $_GET['_token'] ?? '';
+if (!Auth::verifyCsrf($token)) {
     http_response_code(403);
     echo json_encode(['success' => false, 'error' => 'Invalid or expired security token (CSRF).']);
     exit;
 }
 
 if ($action === 'save_keywords') {
-    $postId = (int)Helpers::post('post_id');
+    $postId = (int)($_POST['post_id'] ?? $_GET['post_id'] ?? 0);
     $keywords = $_POST['keywords'] ?? [];
 
     if (!is_array($keywords)) {
@@ -40,7 +41,7 @@ if ($action === 'save_keywords') {
 }
 
 if ($action === 'preview_seo') {
-    $postId = (int)Helpers::post('post_id');
+    $postId = (int)($_POST['post_id'] ?? $_GET['post_id'] ?? 0);
     $keywords = $_POST['keywords'] ?? [];
     
     $post = [];
@@ -48,9 +49,9 @@ if ($action === 'preview_seo') {
         $post = Database::fetchOne("SELECT * FROM landing_posts WHERE id=?", [$postId]) ?: [];
     }
     if (empty($post['title'])) {
-        $post['title']   = trim(Helpers::postRaw('title') ?? 'Sample Post Title');
-        $post['excerpt'] = trim(Helpers::postRaw('excerpt') ?? '');
-        $post['slug']    = trim(Helpers::postRaw('slug') ?? 'post-sample');
+        $post['title']   = trim((string)($_POST['title'] ?? 'Sample Post Title'));
+        $post['excerpt'] = trim((string)($_POST['excerpt'] ?? ''));
+        $post['slug']    = trim((string)($_POST['slug'] ?? 'post-sample'));
     }
 
     $cleanedByTypes = [];
