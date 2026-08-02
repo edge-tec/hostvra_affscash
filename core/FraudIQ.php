@@ -148,7 +148,7 @@ class FraudIQ {
         try { Database::query("ALTER TABLE `conversions` ADD COLUMN `fraud_score`      TINYINT UNSIGNED DEFAULT NULL"); } catch (\Throwable $_e) {}
         try { Database::query("ALTER TABLE `conversions` ADD COLUMN `fraud_checked_at` DATETIME         DEFAULT NULL"); } catch (\Throwable $_e) {}
 
-        $mode       = $cfg['mode'] ?? 'block';
+        $mode       = $cfg['mode'] ?? 'score_only';
         $hasApiKey  = !empty($cfg['ipqs_api_key']);
         $isEnabled  = array_key_exists('ipqs_enabled', $cfg) ? (bool)$cfg['ipqs_enabled'] : $hasApiKey;
         $hasProvider = $hasApiKey && $isEnabled;

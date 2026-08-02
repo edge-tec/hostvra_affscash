@@ -123,7 +123,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token')) && Helpers
 
     // Merge IPQS fields into existing config — do NOT replace the entire array.
     // Replacing $fraudCfg would wipe IPQuery, FraudDefense, Scamalytics, etc. settings.
-    $fraudCfg['mode']                = in_array(Helpers::postRaw('fraud_mode'), ['block','score_only']) ? Helpers::postRaw('fraud_mode') : 'block';
+    $fraudCfg['mode']                = in_array(Helpers::postRaw('fraud_mode'), ['block','score_only']) ? Helpers::postRaw('fraud_mode') : 'score_only';
     $fraudCfg['ipqs_enabled']        = isset($_POST['ipqs_enabled']);
     $fraudCfg['ipqs_api_key']        = $apiKey;
     $fraudCfg['check_on_conversion'] = isset($_POST['check_on_conversion']);

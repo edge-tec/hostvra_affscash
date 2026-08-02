@@ -124,7 +124,7 @@ foreach ($pendingConversions as $conv) {
                         [$score, $conv['click_id'], $score]
                     );
                 } catch (\Throwable $_e) {}
-                if ($action !== 'allow') {
+                if ($action !== 'allow' && ($cfg['mode'] ?? 'score_only') !== 'score_only') {
                     try { Database::update('clicks', ['is_fraud' => 1], 'click_id=? AND is_fraud=0', [$conv['click_id']]); } catch (\Throwable $_e) {}
                 }
             }
@@ -217,8 +217,10 @@ foreach ($pendingConversions as $conv) {
 }
 
 // ── Part 2: Score unscored clicks from last 24h (IPQS only) ──────────────
+// In Score-Only mode: skip click-time scan — IPQS scoring fires strictly after conversion.
 $flagged = 0;
-if ($ipqsEnabled) {
+$fraudMode = $cfg['mode'] ?? 'score_only';
+if ($ipqsEnabled && $fraudMode !== 'score_only') {
     $clicks = Database::fetchAll(
         "SELECT click_id, ip_address FROM clicks WHERE COALESCE(fraud_score,0)=0 AND is_fraud=0 AND clicked_at > DATE_SUB(NOW(), INTERVAL 24 HOUR) AND status='valid' LIMIT 50"
     );

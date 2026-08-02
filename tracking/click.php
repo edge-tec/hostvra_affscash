@@ -684,10 +684,11 @@ $isDuplicate = Database::fetchOne(
 $isUnique = $isDuplicate ? 0 : 1;
 
 // Fraud check (IPQualityScore)
-// Score-Only mode: skip click-time check — scoring fires after conversion instead.
+// Score-Only mode: skip click-time check — scoring fires strictly after conversion instead.
 $fraudResult = ['score' => 0, 'action' => 'allow'];
 $_fraudCfg = Config::get('fraud') ?? [];
-if (!$isDuplicate && (($_fraudCfg['mode'] ?? 'block') !== 'score_only')) {
+$_fraudMode = $_fraudCfg['mode'] ?? 'score_only';
+if (!$isDuplicate && $_fraudMode !== 'score_only') {
     if (($_fraudCfg['ipqs_enabled'] ?? false) && !empty($_fraudCfg['ipqs_api_key'])) {
         $fraudResult = FraudIQ::checkIPQS($ip, $clickId);
     }

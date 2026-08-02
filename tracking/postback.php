@@ -1134,6 +1134,14 @@ if ($isAutoHidden) {
                 "UPDATE `conversions` SET `fraud_score`=?, `fraud_checked_at`=NOW() WHERE `conversion_id`=?",
                 [$_fraudScore, $convId]
             );
+            if ($_fraudScore > 0) {
+                try {
+                    Database::query(
+                        "UPDATE `clicks` SET `fraud_score`=? WHERE `click_id`=? AND (COALESCE(`fraud_score`,0) < ?)",
+                        [$_fraudScore, $clickId, $_fraudScore]
+                    );
+                } catch (\Throwable $_e) {}
+            }
             PostbackFirer::log('[postback.php] IPQS (hidden) conv=' . $convId . ' score=' . $_fraudScore);
         } else {
             Database::query(
@@ -1163,6 +1171,14 @@ if ($isPending) {
                 "UPDATE `conversions` SET `fraud_score`=?, `fraud_checked_at`=NOW() WHERE `conversion_id`=?",
                 [$_fraudScore, $convId]
             );
+            if ($_fraudScore > 0) {
+                try {
+                    Database::query(
+                        "UPDATE `clicks` SET `fraud_score`=? WHERE `click_id`=? AND (COALESCE(`fraud_score`,0) < ?)",
+                        [$_fraudScore, $clickId, $_fraudScore]
+                    );
+                } catch (\Throwable $_e) {}
+            }
             PostbackFirer::log('[postback.php] IPQS (pending) conv=' . $convId . ' score=' . $_fraudScore);
         } else {
             Database::query(

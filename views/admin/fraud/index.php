@@ -7,7 +7,7 @@
     </div>
     <div style="display:flex;gap:8px">
         <a href="/admin/fraud?export=csv" class="btn btn-secondary">&#8595; Fraud Clicks CSV</a>
-        <?php if (($fraudCfg['mode'] ?? 'block') === 'score_only'): ?>
+        <?php if (($fraudCfg['mode'] ?? 'score_only') === 'score_only'): ?>
         <a href="/admin/fraud?export=conversion_csv" class="btn btn-secondary">&#8595; Conversion Scores CSV</a>
         <?php endif; ?>
     </div>
@@ -143,7 +143,7 @@
                 <input type="hidden" name="action" value="save_settings">
 
                 <!-- ── Detection Mode ── -->
-                <?php $currentMode = $fraudCfg['mode'] ?? 'block'; ?>
+                <?php $currentMode = $fraudCfg['mode'] ?? 'score_only'; ?>
                 <div style="margin-bottom:18px">
                     <p style="font-size:13px;font-weight:700;color:var(--text-muted);margin:0 0 10px">Detection Mode</p>
                     <label style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:8px;cursor:pointer;border:2px solid <?= $currentMode==='block' ? 'var(--primary,#4f46e5)' : 'var(--border)' ?>;background:<?= $currentMode==='block' ? 'var(--primary-light,#eef2ff)' : 'var(--bg-subtle,#f8f9fa)' ?>;margin-bottom:8px" id="lbl-mode-block">
@@ -189,7 +189,7 @@
                 </div>
 
                 <!-- ── Conversion Trigger (Block Mode only) ── -->
-                <div id="row-check-on-conv" style="<?= ($fraudCfg['mode'] ?? 'block') === 'score_only' ? 'display:none' : '' ?>">
+                <div id="row-check-on-conv" style="<?= ($fraudCfg['mode'] ?? 'score_only') === 'score_only' ? 'display:none' : '' ?>">
                     <div class="form-check mb-2" style="border:2px solid var(--primary,#4f46e5);border-radius:6px;padding:10px 14px;background:var(--primary-light,#eef2ff)">
                         <?php
                         // Block Mode now enforces blocking by default. The checkbox is
@@ -209,7 +209,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="row-score-only-note" style="<?= ($fraudCfg['mode'] ?? 'block') !== 'score_only' ? 'display:none' : '' ?>;margin-bottom:12px;padding:10px 14px;border-radius:6px;background:#ecfeff;border:2px solid #0891b2;font-size:12px;color:#0c4a6e">
+                <div id="row-score-only-note" style="<?= ($fraudCfg['mode'] ?? 'score_only') !== 'score_only' ? 'display:none' : '' ?>;margin-bottom:12px;padding:10px 14px;border-radius:6px;background:#ecfeff;border:2px solid #0891b2;font-size:12px;color:#0c4a6e">
                     <strong>&#128270; Score-Only Mode active:</strong> Fraud score is checked after every conversion and saved automatically. No conversions are blocked — admin reviews scores manually in the Fraud Score Report.
                 </div>
 
@@ -715,7 +715,7 @@
     </div>
 </div>
 
-<?php if (($fraudCfg['mode'] ?? 'block') === 'score_only'): ?>
+<?php if (($fraudCfg['mode'] ?? 'score_only') === 'score_only'): ?>
 <!-- ── Score-Only Conversion Monitoring Panel ───────────────────────────── -->
 <div class="card" style="margin-bottom:20px">
     <div class="card-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
