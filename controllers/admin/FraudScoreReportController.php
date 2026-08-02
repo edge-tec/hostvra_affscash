@@ -558,6 +558,7 @@ try {
                 cv.offer_id, o.name as offer_name,
                 cv.ip_address, cv.fraud_score, cv.fraud_checked_at,
                 cv.status, cv.payout, cv.converted_at,
+                COALESCE(cv.rejection_reason, '') as rejection_reason, cv.rejected_at,
                 CONCAT(u.first_name,' ',u.last_name) as aff_name,
                 cv.ipquery_risk_score, cv.ipquery_risk_level,
                 cv.ipquery_vpn, cv.ipquery_proxy, cv.ipquery_tor, cv.ipquery_datacenter,

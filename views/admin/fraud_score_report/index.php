@@ -325,7 +325,7 @@
                         <span style="display:inline-block;padding:2px 8px;border-radius:6px;background:#FFFBEB;color:#D97706;border:1px solid #FCD34D;font-weight:700;font-size:11px" title="Conversion fraud score check pending">⚠️ Not Checked</span>
                     <?php endif; ?>
                 </td>
-                <td>
+                <td data-cell="status">
                     <?php
                     $stBadge = match($cv['status']) {
                         'approved' => 'badge-success',
@@ -334,6 +334,12 @@
                     };
                     ?>
                     <span class="badge <?= $stBadge ?>"><?= ucfirst(Helpers::e($cv['status'])) ?></span>
+                    <?php if ($cv['status'] === 'rejected'): ?>
+                        <?php $_rReason = !empty($cv['rejection_reason']) ? $cv['rejection_reason'] : 'Fraud Rejection'; ?>
+                        <div style="margin-top:4px;font-size:10.5px;color:#dc2626;line-height:1.3;max-width:140px;word-break:break-word;" title="<?= Helpers::e($_rReason) ?>">
+                            <strong>Reason:</strong> <?= Helpers::e(mb_strlen($_rReason) > 35 ? mb_substr($_rReason, 0, 35) . '…' : $_rReason) ?>
+                        </div>
+                    <?php endif; ?>
                 </td>
                 <td class="fw-bold text-sm">$<?= number_format($cv['payout'], 2) ?></td>
                 <td class="text-muted" style="font-size:12px;white-space:nowrap"><?= Helpers::e(date('M j, Y H:i', strtotime($cv['converted_at']))) ?></td>
