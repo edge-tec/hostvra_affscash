@@ -126,6 +126,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token')) && Helpers
     $fraudCfg['mode']                = in_array(Helpers::postRaw('fraud_mode'), ['block','score_only']) ? Helpers::postRaw('fraud_mode') : 'score_only';
     $fraudCfg['ipqs_enabled']        = isset($_POST['ipqs_enabled']);
     $fraudCfg['ipqs_api_key']        = $apiKey;
+    $fraudCfg['ipqs_proxy']          = trim((string)Helpers::postRaw('ipqs_proxy'));
     $fraudCfg['check_on_conversion'] = isset($_POST['check_on_conversion']);
     $fraudCfg['timeout_seconds']     = max(10, (int)($_POST['timeout_seconds'] ?? 10));
     $fraudCfg['fail_open']           = isset($_POST['fail_open']);

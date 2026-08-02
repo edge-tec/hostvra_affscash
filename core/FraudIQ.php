@@ -1318,14 +1318,19 @@ class FraudIQ {
                  . urlencode($apiKey) . '/' . $testIp
                  . '?strictness=0&fast=1';
 
-        $ch = curl_init($url);
-        curl_setopt_array($ch, [
+        $cfg = Config::get('fraud') ?? [];
+        $ch  = curl_init($url);
+        $opts = [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT        => 15,
             CURLOPT_CONNECTTIMEOUT => 5,
             CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_USERAGENT      => 'AffiliateTracker/1.0',
-        ]);
+            CURLOPT_USERAGENT      => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+        ];
+        if (!empty($cfg['ipqs_proxy'])) {
+            $opts[CURLOPT_PROXY] = trim((string)$cfg['ipqs_proxy']);
+        }
+        curl_setopt_array($ch, $opts);
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $curlErr  = curl_error($ch);

@@ -186,6 +186,16 @@
                         </div>
                         <div id="ipqs-test-result" style="display:none;margin-top:8px;padding:8px 12px;border-radius:6px;font-size:13px"></div>
                     </div>
+                    <div class="form-group mt-3">
+                        <label>Outgoing Proxy / Rotating Proxy <small class="text-muted">(Optional — Hides Server IP from IPQS)</small></label>
+                        <input type="text" name="ipqs_proxy" class="form-control"
+                               value="<?= Helpers::e($fraudCfg['ipqs_proxy'] ?? '') ?>"
+                               placeholder="e.g. http://username:password@proxy-ip:port or http://123.45.67.89:8080"
+                               style="font-family:monospace">
+                        <div class="form-hint">
+                            Set an outgoing HTTP/SOCKS5 proxy to mask your server IP address when rotating trial API keys. IPQS will see requests coming from the proxy IP instead of your server.
+                        </div>
+                    </div>
                 </div>
 
                 <!-- ── Conversion Trigger (Block Mode only) ── -->
