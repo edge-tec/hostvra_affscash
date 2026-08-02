@@ -46,16 +46,34 @@ class FraudIQ {
              . urlencode($apiKey) . '/' . $safeIp
              . '?strictness=1&allow_public_access_points=1&fast=1&lighter_penalties=0';
 
+        $userAgents = [
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15',
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+        ];
+        $randomAgent = $userAgents[array_rand($userAgents)];
+
         $ch = curl_init($url);
-        curl_setopt_array($ch, [
+        $curlOpts = [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT        => $timeoutSeconds,
             CURLOPT_CONNECTTIMEOUT => 5,
             CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_USERAGENT      => 'AffiliateTracker/1.0',
+            CURLOPT_USERAGENT      => $randomAgent,
+            CURLOPT_HTTPHEADER     => [
+                'Accept: application/json, text/plain, */*',
+                'Accept-Language: en-US,en;q=0.9',
+                'Cache-Control: no-cache',
+            ],
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_MAXREDIRS      => 2,
-        ]);
+        ];
+        if (!empty($cfg['ipqs_proxy'])) {
+            $curlOpts[CURLOPT_PROXY] = trim((string)$cfg['ipqs_proxy']);
+        }
+        curl_setopt_array($ch, $curlOpts);
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $curlErr  = curl_error($ch);
