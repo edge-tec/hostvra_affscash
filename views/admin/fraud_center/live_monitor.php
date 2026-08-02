@@ -216,30 +216,151 @@ include BASE_PATH . '/views/partials/fraud_filter_bar.php';
 
 <!-- Live click stream -->
 <div class="fds-card">
-    <div class="fds-card-header">
-        <span class="fds-card-title">&#9889; Click Stream (last 60 min)</span>
-        <span class="fds-text-muted fds-text-sm"><?= count($recentClicks) ?> rows shown</span>
+    <div class="fds-card-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+        <div style="display:flex;align-items:center;gap:10px">
+            <span class="fds-card-title">&#9889; Click Stream (last 60 min)</span>
+            <span class="fds-badge fds-badge-muted" id="cs-row-count"><?= count($recentClicks) ?> rows shown</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <input type="text" id="cs-search" placeholder="🔍 Search IP, Offer, Affiliate, UA..."
+                   style="padding:6px 12px;border:1px solid #D1D5DB;border-radius:6px;font-size:12px;width:240px"
+                   onkeyup="filterClickStream()">
+        </div>
     </div>
-    <div class="fds-table-wrap">
-        <table class="fds-table">
-            <thead><tr><th>Time</th><th>IP</th><th>Offer</th><th>Affiliate</th><th>User Agent</th></tr></thead>
+    <div class="fds-table-wrap" style="overflow-x:auto;-webkit-overflow-scrolling:touch">
+        <table class="fds-table" style="min-width:980px">
+            <thead>
+                <tr>
+                    <th style="width:85px">Time</th>
+                    <th style="width:190px">IP Address</th>
+                    <th style="min-width:180px">Offer</th>
+                    <th style="width:130px">Affiliate</th>
+                    <th style="min-width:320px">User Agent / Details</th>
+                    <th style="width:80px;text-align:right">Action</th>
+                </tr>
+            </thead>
             <tbody>
             <?php foreach ($recentClicks as $cl): ?>
-            <tr>
-                <td class="fds-text-muted fds-text-sm"><?= date('H:i:s', strtotime($cl['clicked_at'])) ?></td>
-                <td><a href="/admin/fraud-center/ip-intelligence?ip=<?= urlencode($cl['ip_address'] ?? '') ?>" class="fds-link"><?= Helpers::e($cl['ip_address'] ?? '—') ?></a></td>
-                <td class="fds-text-sm"><?= Helpers::e($cl['offer_name'] ?? '—') ?></td>
-                <td class="fds-text-sm"><?= Helpers::e($cl['affiliate_code'] ?? '—') ?></td>
-                <td class="fds-text-sm fds-text-muted" style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="<?= Helpers::e($cl['user_agent'] ?? '') ?>"><?= Helpers::e(substr($cl['user_agent'] ?? '—', 0, 80)) ?></td>
+            <?php
+                $uaFull = trim($cl['user_agent'] ?? '');
+                $ip = $cl['ip_address'] ?? '—';
+                $isIpv6 = strpos($ip, ':') !== false;
+                $searchIndex = strtolower($ip . ' ' . ($cl['offer_name'] ?? '') . ' ' . ($cl['affiliate_code'] ?? '') . ' ' . $uaFull);
+            ?>
+            <tr class="cs-row" data-search="<?= Helpers::e($searchIndex) ?>">
+                <td class="fds-text-muted fds-text-sm" style="white-space:nowrap;font-weight:600"><?= date('H:i:s', strtotime($cl['clicked_at'])) ?></td>
+                <td style="white-space:nowrap">
+                    <a href="/admin/fraud-center/ip-intelligence?ip=<?= urlencode($ip) ?>" class="fds-link" style="font-family:monospace;font-size:12px;<?= $isIpv6 ? 'font-weight:700;color:#6366F1' : '' ?>" title="<?= Helpers::e($ip) ?>">
+                        <?= Helpers::e($ip) ?>
+                    </a>
+                </td>
+                <td class="fds-text-sm" style="font-weight:600;color:#1E293B"><?= Helpers::e($cl['offer_name'] ?? '—') ?></td>
+                <td class="fds-text-sm" style="white-space:nowrap"><span class="fds-badge fds-badge-muted" style="font-family:monospace"><?= Helpers::e($cl['affiliate_code'] ?? '—') ?></span></td>
+                <td>
+                    <div style="font-size:12px;color:#475569;word-break:break-all;line-height:1.4;max-height:4.2em;overflow:hidden;position:relative" title="<?= Helpers::e($uaFull) ?>">
+                        <?= Helpers::e($uaFull !== '' ? $uaFull : '—') ?>
+                    </div>
+                </td>
+                <td style="text-align:right;white-space:nowrap">
+                    <button type="button" class="fds-btn fds-btn-sm fds-btn-outline" style="padding:3px 8px;font-size:11px" onclick='openClickDetailModal(<?= json_encode([
+                        "time" => date("Y-m-d H:i:s", strtotime($cl["clicked_at"])),
+                        "ip" => $ip,
+                        "offer" => $cl["offer_name"] ?? "—",
+                        "affiliate" => $cl["affiliate_code"] ?? "—",
+                        "ua" => $uaFull ?: "Not provided",
+                        "country" => $cl["country"] ?? "",
+                        "device" => $cl["device_type"] ?? "",
+                        "os" => $cl["os"] ?? "",
+                        "browser" => $cl["browser"] ?? "",
+                        "status" => $cl["status"] ?? "valid",
+                        "fraud_score" => (int)($cl["fraud_score"] ?? 0)
+                    ], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>)'>
+                        👁 View
+                    </button>
+                </td>
             </tr>
             <?php endforeach; ?>
-            <?php if (empty($recentClicks)): ?><tr><td colspan="5" class="fds-empty">No clicks in the last 60 minutes</td></tr><?php endif; ?>
+            <?php if (empty($recentClicks)): ?><tr><td colspan="6" class="fds-empty">No clicks in the last 60 minutes</td></tr><?php endif; ?>
             </tbody>
         </table>
     </div>
 </div>
 
+<!-- Full Click Detail Modal -->
+<div id="csDetailModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,.6);backdrop-filter:blur(4px);z-index:99999;align-items:center;justify-content:center;padding:20px">
+    <div style="background:#fff;border-radius:14px;max-width:650px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 25px -5px rgba(0,0,0,.3);border:1px solid #E2E8F0">
+        <div style="padding:18px 24px;border-bottom:1px solid #E2E8F0;display:flex;align-items:center;justify-content:space-between;background:#F8FAFC;border-top-left-radius:14px;border-top-right-radius:14px">
+            <h3 style="margin:0;font-size:16px;font-weight:800;color:#0F172A;display:flex;align-items:center;gap:8px">
+                <span>&#9889; Click Stream Event Details</span>
+            </h3>
+            <button onclick="closeClickDetailModal()" style="border:none;background:none;font-size:22px;cursor:pointer;color:#64748B;line-height:1">&times;</button>
+        </div>
+        <div style="padding:24px" id="csDetailBody">
+            <!-- Modal content injected dynamically -->
+        </div>
+        <div style="padding:14px 24px;background:#F8FAFC;border-top:1px solid #E2E8F0;display:flex;justify-content:flex-end;border-bottom-left-radius:14px;border-bottom-right-radius:14px">
+            <button onclick="closeClickDetailModal()" class="fds-btn fds-btn-secondary">Close</button>
+        </div>
+    </div>
+</div>
+
 <script>
+function openClickDetailModal(data) {
+    var modal = document.getElementById('csDetailModal');
+    var body = document.getElementById('csDetailBody');
+    if (!modal || !body) return;
+    
+    var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px">';
+    html += '<div><div style="font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase">Timestamp</div><div style="font-weight:700;color:#0F172A;font-size:13px">' + escapeHtml(data.time) + '</div></div>';
+    html += '<div><div style="font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase">IP Address</div><div style="font-weight:700;color:#4F46E5;font-family:monospace;font-size:13px"><a href="/admin/fraud-center/ip-intelligence?ip=' + encodeURIComponent(data.ip) + '" target="_blank">' + escapeHtml(data.ip) + '</a></div></div>';
+    html += '<div><div style="font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase">Offer</div><div style="font-weight:700;color:#0F172A;font-size:13px">' + escapeHtml(data.offer) + '</div></div>';
+    html += '<div><div style="font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase">Affiliate Code</div><div style="font-weight:700;color:#0F172A;font-size:13px">' + escapeHtml(data.affiliate) + '</div></div>';
+    html += '</div>';
+
+    if (data.device || data.os || data.browser || data.country || data.fraud_score > 0) {
+        html += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:12px;background:#F1F5F9;border-radius:8px;margin-bottom:18px;font-size:12px">';
+        html += '<div><span style="color:#64748B">Country:</span> <strong>' + escapeHtml(data.country || 'N/A') + '</strong></div>';
+        html += '<div><span style="color:#64748B">Device:</span> <strong>' + escapeHtml(data.device || 'N/A') + '</strong></div>';
+        html += '<div><span style="color:#64748B">OS:</span> <strong>' + escapeHtml(data.os || 'N/A') + '</strong></div>';
+        html += '<div><span style="color:#64748B">Fraud Score:</span> <strong>' + escapeHtml(String(data.fraud_score)) + '</strong></div>';
+        html += '</div>';
+    }
+
+    html += '<div style="margin-top:12px"><div style="font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase;margin-bottom:6px">Full User Agent String</div>';
+    html += '<div style="padding:12px;background:#0F172A;color:#38BDF8;font-family:monospace;font-size:12px;border-radius:8px;word-break:break-all;white-space:pre-wrap;user-select:all;line-height:1.5">' + escapeHtml(data.ua) + '</div></div>';
+
+    body.innerHTML = html;
+    modal.style.display = 'flex';
+}
+
+function closeClickDetailModal() {
+    var modal = document.getElementById('csDetailModal');
+    if (modal) modal.style.display = 'none';
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+}
+
+function filterClickStream() {
+    var input = document.getElementById('cs-search');
+    var filter = input ? input.value.toLowerCase().trim() : '';
+    var rows = document.querySelectorAll('.cs-row');
+    var visible = 0;
+    rows.forEach(function(row) {
+        var text = row.getAttribute('data-search') || '';
+        if (!filter || text.indexOf(filter) !== -1) {
+            row.style.display = '';
+            visible++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+    var cnt = document.getElementById('cs-row-count');
+    if (cnt) cnt.textContent = visible + ' rows shown';
+}
+
 (function(){
     var ctx = document.getElementById('lmChart');
     if (!ctx || typeof Chart === 'undefined') return;

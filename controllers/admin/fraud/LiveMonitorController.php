@@ -80,6 +80,7 @@ if (($_GET['export'] ?? '') === 'csv') {
 // Last-60-minutes click stream (sampled, max 200 rows)
 $recentClicks = Database::fetchAll(
     "SELECT c.id, c.ip_address, c.user_agent, c.clicked_at, c.offer_id,
+            c.country, c.device_type, c.os, c.browser, c.fraud_score, c.status,
             o.name AS offer_name, a.affiliate_code
      FROM clicks c
      LEFT JOIN offers o ON o.id = c.offer_id
