@@ -443,6 +443,7 @@ if ($_affCode !== '' && $filterAffiliate === 0) {
 }
 $filterOffer     = (int)Helpers::get('offer_id');
 $filterClickId   = trim(Helpers::get('click_id') ?? '');
+$filterCheckStatus = Helpers::get('check_status') ?: 'all';
 $filterScoreMin  = Helpers::get('score_min') !== null && Helpers::get('score_min') !== '' ? (int)Helpers::get('score_min') : 0;
 $filterScoreMax  = Helpers::get('score_max') !== null && Helpers::get('score_max') !== '' ? (int)Helpers::get('score_max') : 100;
 $sortBy          = in_array(Helpers::get('sort'), ['fraud_score','converted_at']) ? Helpers::get('sort') : 'converted_at';
@@ -460,6 +461,11 @@ $params = [$dateFrom, $dateTo];
 if (in_array($filterStatus, ['pending','approved','rejected'])) {
     $where[]  = 'cv.status = ?';
     $params[] = $filterStatus;
+}
+if ($filterCheckStatus === 'checked') {
+    $where[]  = 'cv.fraud_checked_at IS NOT NULL';
+} elseif ($filterCheckStatus === 'unchecked') {
+    $where[]  = 'cv.fraud_checked_at IS NULL';
 }
 if ($filterAffiliate) {
     $where[]  = 'cv.affiliate_id = ?';

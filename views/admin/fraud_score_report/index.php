@@ -44,12 +44,13 @@
             <div style="font-size:28px;font-weight:700;color:#1E293B;margin-top:4px"><?= number_format($stats['total'] ?? 0) ?></div>
         </div>
     </div>
-    <div class="card" style="margin:0">
+    <a href="/admin/fraud-score-report?check_status=unchecked" class="card" style="margin:0;text-decoration:none;transition:transform .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
         <div class="card-body" style="padding:16px 20px">
-            <div class="text-muted" style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Pending Check</div>
-            <div style="font-size:28px;font-weight:700;color:#F59E0B;margin-top:4px"><?= number_format($stats['pending_check'] ?? 0) ?></div>
+            <div class="text-muted" style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px">⚠️ Unchecked Conversions</div>
+            <div style="font-size:28px;font-weight:700;color:#D97706;margin-top:4px"><?= number_format($stats['pending_check'] ?? 0) ?></div>
+            <div style="font-size:11px;color:#D97706;font-weight:600;margin-top:2px">Click to view unchecked &rarr;</div>
         </div>
-    </div>
+    </a>
     <div class="card" style="margin:0">
         <div class="card-body" style="padding:16px 20px">
             <div class="text-muted" style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Avg Fraud Score</div>
@@ -107,6 +108,14 @@
                     <option value="pending" <?= $filterStatus==='pending'?'selected':'' ?>>Pending</option>
                     <option value="approved" <?= $filterStatus==='approved'?'selected':'' ?>>Approved</option>
                     <option value="rejected" <?= $filterStatus==='rejected'?'selected':'' ?>>Rejected</option>
+                </select>
+            </div>
+            <div class="form-group mb-0" style="min-width:160px">
+                <label style="font-size:12px">Fraud Check Status</label>
+                <select name="check_status" class="form-control" style="font-size:13px">
+                    <option value="all" <?= ($filterCheckStatus ?? 'all')==='all'?'selected':'' ?>>All (Checked & Unchecked)</option>
+                    <option value="checked" <?= ($filterCheckStatus ?? '')==='checked'?'selected':'' ?>>Checked Only</option>
+                    <option value="unchecked" <?= ($filterCheckStatus ?? '')==='unchecked'?'selected':'' ?>>⚠️ Unchecked Only</option>
                 </select>
             </div>
             <div class="form-group mb-0" style="min-width:180px">
@@ -244,7 +253,7 @@
                 <?php
                 // Helper: render a small score badge (0–100, null=N/A)
                 $scoreBadge = function(?int $s, string $provider = '') use ($cv): string {
-                    if ($s === null) return '<span style="color:#D1D5DB;font-size:11px">—</span>';
+                    if ($s === null) return '<span style="display:inline-block;padding:2px 6px;border-radius:6px;font-size:10px;font-weight:700;background:#FFFBEB;color:#D97706;border:1px solid #FDE68A">Not Checked</span>';
                     if ($s >= 75)      { $bg='#FEF2F2'; $col='#DC2626'; }
                     elseif ($s >= 40)  { $bg='#FFFBEB'; $col='#D97706'; }
                     else               { $bg='#ECFDF5'; $col='#059669'; }
@@ -261,14 +270,16 @@
                 ?>
                 <td style="font-family:monospace;font-size:12px"><?= Helpers::e($cv['ip_address']) ?></td>
                 <td data-cell="ipqs">
-                    <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:12px;font-size:13px;font-weight:700;background:<?= $scoreBg ?>;color:<?= $scoreColor ?>">
-                        <?php if ($scoreNull): ?>
-                        <span style="width:7px;height:7px;border-radius:50%;background:#9CA3AF;animation:pulse 1.5s ease-in-out infinite;display:inline-block"></span>
-                        Pending
-                        <?php else: ?>
-                        <?= $score ?>
-                        <?php endif; ?>
+                    <?php if ($scoreNull): ?>
+                    <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;background:#FFFBEB;color:#D97706;border:1px solid #FDE68A" title="This conversion has not been fraud-checked yet">
+                        <span style="width:6px;height:6px;border-radius:50%;background:#D97706;animation:pulse 1.5s ease-in-out infinite;display:inline-block"></span>
+                        Not Checked
                     </span>
+                    <?php else: ?>
+                    <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:12px;font-size:13px;font-weight:700;background:<?= $scoreBg ?>;color:<?= $scoreColor ?>">
+                        <?= $score ?>
+                    </span>
+                    <?php endif; ?>
                 </td>
                 <!-- IPQuery score -->
                 <td data-cell="ipquery" style="white-space:nowrap">
@@ -311,7 +322,7 @@
                     <?php if ($cv['fraud_checked_at']): ?>
                         <?= Helpers::e(date('M j H:i', strtotime($cv['fraud_checked_at']))) ?>
                     <?php else: ?>
-                        <span style="color:#D1D5DB">—</span>
+                        <span style="display:inline-block;padding:2px 8px;border-radius:6px;background:#FFFBEB;color:#D97706;border:1px solid #FCD34D;font-weight:700;font-size:11px" title="Conversion fraud score check pending">⚠️ Not Checked</span>
                     <?php endif; ?>
                 </td>
                 <td>
