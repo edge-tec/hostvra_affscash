@@ -69,6 +69,15 @@ if ($action === 'index') {
         $params
     );
 
+    // Fetch active affiliates for selection dropdown
+    $affiliates = Database::fetchAll(
+        "SELECT af.id, af.affiliate_code, u.first_name, u.last_name, u.email
+         FROM affiliates af
+         JOIN users u ON u.id = af.user_id
+         WHERE u.status = 'active'
+         ORDER BY af.affiliate_code ASC"
+    );
+
     // ── CSV Export ────────────────────────────────────────────────────────────
     if ($isExport) {
         $filename = 'inhouse-offers-' . date('Y-m-d') . '.csv';
