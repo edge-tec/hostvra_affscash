@@ -324,26 +324,26 @@ foreach ($offers as $o) {
         </div>
 
         <!-- Overview Badges -->
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:20px">
-            <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:10px 14px">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px">
+            <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:10px">
                 <div style="font-size:10px;font-weight:700;color:#64748B;text-transform:uppercase">Offer Type</div>
                 <div id="modal-ih-type" style="font-size:12px;font-weight:700;color:#4F46E5;margin-top:2px">-</div>
             </div>
-            <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:10px 14px">
+            <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:10px">
                 <div style="font-size:10px;font-weight:700;color:#64748B;text-transform:uppercase">Payout / Revenue</div>
-                <div id="modal-ih-payout" style="font-size:12px;font-weight:700;color:#15803D;margin-top:2px">$0.00</div>
+                <div id="modal-ih-payout" style="font-size:12px;font-weight:700;color:#15803D;margin-top:2px;word-break:break-word">$0.00</div>
             </div>
-            <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:10px 14px">
+            <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:10px">
                 <div style="font-size:10px;font-weight:700;color:#64748B;text-transform:uppercase">Access Control</div>
-                <div id="modal-ih-access" style="font-size:12px;font-weight:700;margin-top:2px">-</div>
+                <div id="modal-ih-access" style="font-size:12px;font-weight:700;margin-top:2px;word-break:break-word">-</div>
             </div>
-            <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:10px 14px">
+            <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:10px">
                 <div style="font-size:10px;font-weight:700;color:#64748B;text-transform:uppercase">Status</div>
                 <div id="modal-ih-status" style="font-size:12px;font-weight:700;margin-top:2px">-</div>
             </div>
-            <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:10px 14px">
+            <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:10px">
                 <div style="font-size:10px;font-weight:700;color:#64748B;text-transform:uppercase">Approved Affiliates</div>
-                <div id="modal-ih-affs" style="font-size:12px;font-weight:700;color:#0F172A;margin-top:2px">0</div>
+                <div id="modal-ih-affs" style="font-size:12px;font-weight:700;color:#0F172A;margin-top:2px;word-break:break-word">0</div>
             </div>
         </div>
 
@@ -479,8 +479,8 @@ function openIhOfferDetailsModal(offerId) {
     document.getElementById('modal-ih-id-badge').textContent = '#' + o.id;
     document.getElementById('modal-ih-type').textContent = o.offer_type || o.payout_type || 'Standard';
     document.getElementById('modal-ih-payout').textContent = '$' + Number(o.payout_amount).toFixed(2) + ' / $' + Number(o.revenue_amount).toFixed(2) + ' rev';
-    document.getElementById('modal-ih-access').innerHTML = o.require_approval ? '<span class="badge badge-warning" style="font-size:11px">Manual Approval</span>' : '<span class="badge badge-success" style="font-size:11px">Auto Access</span>';
-    document.getElementById('modal-ih-status').innerHTML = '<span class="badge badge-' + (o.status === 'active' ? 'success' : (o.status === 'paused' ? 'warning' : 'muted')) + '">' + o.status + '</span>';
+    document.getElementById('modal-ih-access').innerHTML = o.require_approval ? '<span class="badge badge-warning" style="font-size:10.5px;padding:3px 7px;white-space:normal;line-height:1.2;display:inline-block">Manual Approval</span>' : '<span class="badge badge-success" style="font-size:10.5px;padding:3px 7px;white-space:normal;line-height:1.2;display:inline-block">Auto Access</span>';
+    document.getElementById('modal-ih-status').innerHTML = '<span class="badge badge-' + (o.status === 'active' ? 'success' : (o.status === 'paused' ? 'warning' : 'muted')) + '" style="font-size:10.5px;padding:3px 7px;white-space:normal;line-height:1.2;display:inline-block">' + o.status + '</span>';
     document.getElementById('modal-ih-affs').textContent = o.aff_count + ' approved affiliates';
     document.getElementById('modal-ih-description').textContent = o.description || 'No description provided for this offer.';
     document.getElementById('modal-ih-edit-btn').href = '/admin/inhouse-offers/' + o.id + '/edit';

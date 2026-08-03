@@ -351,8 +351,8 @@ function openSlDetailsModal(slId) {
     document.getElementById('modal-sl-id-badge').textContent = '#' + sl.id;
     document.getElementById('modal-sl-slug').textContent = sl.slug;
     document.getElementById('modal-sl-rotation').textContent = sl.rotation_type;
-    document.getElementById('modal-sl-access').innerHTML = sl.require_approval ? '<span class="badge badge-warning" style="font-size:11px">Manual Approval</span>' : '<span class="badge badge-success" style="font-size:11px">Auto Access</span>';
-    document.getElementById('modal-sl-status').innerHTML = '<span class="badge badge-' + (sl.status === 'active' ? 'success' : 'muted') + '">' + sl.status + '</span>';
+    document.getElementById('modal-sl-access').innerHTML = sl.require_approval ? '<span class="badge badge-warning" style="font-size:10.5px;padding:3px 7px;white-space:normal;line-height:1.2;display:inline-block">Manual Approval</span>' : '<span class="badge badge-success" style="font-size:10.5px;padding:3px 7px;white-space:normal;line-height:1.2;display:inline-block">Auto Access</span>';
+    document.getElementById('modal-sl-status').innerHTML = '<span class="badge badge-' + (sl.status === 'active' ? 'success' : 'muted') + '" style="font-size:10.5px;padding:3px 7px;white-space:normal;line-height:1.2;display:inline-block">' + sl.status + '</span>';
     document.getElementById('modal-sl-stats').textContent = Number(sl.total_clicks).toLocaleString() + ' / ' + Number(sl.total_convs).toLocaleString();
     document.getElementById('modal-sl-description').textContent = sl.description || 'No description provided for this smartlink.';
     document.getElementById('modal-sl-edit-btn').href = '/admin/smartlinks?action=edit&id=' + sl.id;
