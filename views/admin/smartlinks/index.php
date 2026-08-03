@@ -153,25 +153,44 @@ foreach ($smartlinks as $sl) {
 </div>
 
 <!-- ── SMARTLINK DETAILS MODAL ───────────────────────────────────────────── -->
-<div id="slDetailsModal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,0.65);z-index:10000;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px)">
-    <div style="background:#fff;border-radius:16px;padding:24px;max-width:760px;width:100%;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);max-height:90vh;overflow-y:auto">
+<style>
+.details-modal-dialog {
+    background:#fff;border-radius:16px;padding:24px;max-width:760px;width:95vw;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);max-height:90vh;overflow-y:auto;box-sizing:border-box;
+}
+.modal-link-grid {
+    display:grid;grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));gap:12px;align-items:end;
+}
+.modal-copy-group {
+    display:flex;width:100%;gap:4px;align-items:center;
+}
+.modal-copy-group input {
+    flex:1;min-width:0;
+}
+@media (max-width: 640px) {
+    .details-modal-dialog { padding: 16px; border-radius: 12px; width: 98vw; }
+    .modal-link-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<div id="slDetailsModal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,0.65);z-index:10000;align-items:center;justify-content:center;padding:12px;backdrop-filter:blur(3px)">
+    <div class="details-modal-dialog">
         <!-- Header -->
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:16px;border-bottom:1px solid #E2E8F0;margin-bottom:20px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:16px;border-bottom:1px solid #E2E8F0;margin-bottom:20px;gap:10px">
             <div>
-                <div style="display:flex;align-items:center;gap:8px">
-                    <h3 id="modal-sl-title" style="margin:0;font-size:18px;font-weight:700;color:#0F172A">Smartlink Details</h3>
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                    <h3 id="modal-sl-title" style="margin:0;font-size:18px;font-weight:700;color:#0F172A;word-break:break-word">Smartlink Details</h3>
                     <span id="modal-sl-id-badge" style="background:#F1F5F9;color:#475569;font-family:monospace;font-size:12px;padding:2px 8px;border-radius:6px;font-weight:700">#0</span>
                 </div>
                 <div style="font-size:12px;color:#64748B;margin-top:2px">Comprehensive configuration, traffic rules & affiliate tracking link</div>
             </div>
-            <button type="button" onclick="closeSlDetailsModal()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#94A3B8;line-height:1">&times;</button>
+            <button type="button" onclick="closeSlDetailsModal()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#94A3B8;line-height:1;padding:0">&times;</button>
         </div>
 
         <!-- Overview Badges -->
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:20px">
             <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:10px 14px">
                 <div style="font-size:10px;font-weight:700;color:#64748B;text-transform:uppercase">Slug</div>
-                <div id="modal-sl-slug" style="font-family:monospace;font-size:12px;font-weight:700;color:#334155;margin-top:2px">-</div>
+                <div id="modal-sl-slug" style="font-family:monospace;font-size:12px;font-weight:700;color:#334155;margin-top:2px;word-break:break-all">-</div>
             </div>
             <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:10px 14px">
                 <div style="font-size:10px;font-weight:700;color:#64748B;text-transform:uppercase">Rotation</div>
@@ -194,7 +213,7 @@ foreach ($smartlinks as $sl) {
         <!-- Description Box -->
         <div style="margin-bottom:20px">
             <label style="font-size:12px;font-weight:700;color:#334155;display:block;margin-bottom:6px">&#128220; Description & Traffic Restrictions</label>
-            <div id="modal-sl-description" style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:14px;font-size:13px;line-height:1.6;color:#334155;max-height:200px;overflow-y:auto;white-space:pre-wrap">No description provided.</div>
+            <div id="modal-sl-description" style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:14px;font-size:13px;line-height:1.6;color:#334155;max-height:200px;overflow-y:auto;white-space:pre-wrap;word-break:break-word">No description provided.</div>
         </div>
 
         <!-- Separate Affiliate Tracking Link Box inside Modal -->
@@ -202,10 +221,10 @@ foreach ($smartlinks as $sl) {
             <div style="font-size:13px;font-weight:700;color:#1E40AF;margin-bottom:8px;display:flex;align-items:center;gap:6px">
                 <span>&#128279; Generate Affiliate Smartlink</span>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px;align-items:center">
+            <div class="modal-link-grid">
                 <div>
                     <label style="font-size:11px;font-weight:700;color:#475569;display:block;margin-bottom:4px">Select Affiliate:</label>
-                    <select class="form-select form-select-sm" id="modal-sl-aff-select" style="font-size:12px;border-radius:6px;border:1px solid #93C5FD" onchange="updateModalSlAffLink()">
+                    <select class="form-select form-select-sm" id="modal-sl-aff-select" style="font-size:12px;border-radius:6px;border:1px solid #93C5FD;width:100%" onchange="updateModalSlAffLink()">
                         <option value="{AFF_CODE}">-- Generic Placeholder ({AFF_CODE}) --</option>
                         <?php foreach ($affiliates as $aff): ?>
                         <option value="<?= Helpers::e($aff['affiliate_code']) ?>">
@@ -216,18 +235,18 @@ foreach ($smartlinks as $sl) {
                 </div>
                 <div>
                     <label style="font-size:11px;font-weight:700;color:#475569;display:block;margin-bottom:4px">Smartlink URL:</label>
-                    <div class="copy-group">
+                    <div class="modal-copy-group">
                         <input type="text" id="modal-sl-url-input" class="form-control" readonly style="font-size:11px;background:#fff">
-                        <button type="button" class="btn btn-secondary btn-sm" data-copy="modal-sl-url-input">Copy</button>
-                        <button type="button" class="btn btn-sm" style="background:#7C3AED;color:#fff;border:none;cursor:pointer" id="modal-sl-short-btn" onclick="adminShortenSlModal()">&#9986; Short</button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-copy="modal-sl-url-input" style="white-space:nowrap">Copy</button>
+                        <button type="button" class="btn btn-sm" style="background:#7C3AED;color:#fff;border:none;cursor:pointer;white-space:nowrap" id="modal-sl-short-btn" onclick="adminShortenSlModal()">&#9986; Short</button>
                     </div>
                 </div>
             </div>
             <div id="modal-sl-short-result" style="display:none;margin-top:8px">
-                <div class="copy-group">
+                <div class="modal-copy-group">
                     <input type="text" id="modal-sl-short-url" class="form-control" readonly style="font-size:11px">
-                    <button type="button" class="btn btn-secondary btn-sm" data-copy="modal-sl-short-url">Copy</button>
-                    <a id="modal-sl-short-open" href="#" target="_blank" class="btn btn-sm btn-secondary">Open</a>
+                    <button type="button" class="btn btn-secondary btn-sm" data-copy="modal-sl-short-url" style="white-space:nowrap">Copy</button>
+                    <a id="modal-sl-short-open" href="#" target="_blank" class="btn btn-sm btn-secondary" style="white-space:nowrap">Open</a>
                 </div>
             </div>
         </div>
@@ -235,8 +254,8 @@ foreach ($smartlinks as $sl) {
         <!-- Offers List Table -->
         <div style="margin-bottom:20px">
             <label style="font-size:12px;font-weight:700;color:#334155;display:block;margin-bottom:6px">&#127919; Smartlink Offers & Targeting Rules</label>
-            <div style="border:1px solid #E2E8F0;border-radius:10px;overflow:hidden">
-                <table style="width:100%;font-size:12px;border-collapse:collapse">
+            <div style="border:1px solid #E2E8F0;border-radius:10px;overflow-x:auto;-webkit-overflow-scrolling:touch">
+                <table style="width:100%;min-width:540px;font-size:12px;border-collapse:collapse">
                     <thead style="background:#F8FAFC;border-bottom:1px solid #E2E8F0">
                         <tr>
                             <th style="padding:8px 12px;text-align:left">Offer / Target URL</th>

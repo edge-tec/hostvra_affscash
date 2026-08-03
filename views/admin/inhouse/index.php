@@ -290,22 +290,41 @@ foreach ($offers as $o) {
 </div>
 
 <!-- ── IN-HOUSE OFFER DETAILS MODAL ────────────────────────────────────── -->
-<div id="ihOfferDetailsModal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,0.65);z-index:10000;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px)">
-    <div style="background:#fff;border-radius:16px;padding:24px;max-width:760px;width:100%;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);max-height:90vh;overflow-y:auto">
+<style>
+.ih-modal-dialog {
+    background:#fff;border-radius:16px;padding:24px;max-width:760px;width:95vw;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);max-height:90vh;overflow-y:auto;box-sizing:border-box;
+}
+.ih-link-grid {
+    display:grid;grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));gap:12px;align-items:end;
+}
+.ih-copy-group {
+    display:flex;width:100%;gap:4px;align-items:center;
+}
+.ih-copy-group input {
+    flex:1;min-width:0;
+}
+@media (max-width: 640px) {
+    .ih-modal-dialog { padding: 16px; border-radius: 12px; width: 98vw; }
+    .ih-link-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<div id="ihOfferDetailsModal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,0.65);z-index:10000;align-items:center;justify-content:center;padding:12px;backdrop-filter:blur(3px)">
+    <div class="ih-modal-dialog">
         <!-- Header -->
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:16px;border-bottom:1px solid #E2E8F0;margin-bottom:20px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:16px;border-bottom:1px solid #E2E8F0;margin-bottom:20px;gap:10px">
             <div>
-                <div style="display:flex;align-items:center;gap:8px">
-                    <h3 id="modal-ih-title" style="margin:0;font-size:18px;font-weight:700;color:#0F172A">In-House Offer Details</h3>
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                    <h3 id="modal-ih-title" style="margin:0;font-size:18px;font-weight:700;color:#0F172A;word-break:break-word">In-House Offer Details</h3>
                     <span id="modal-ih-id-badge" style="background:#F1F5F9;color:#475569;font-family:monospace;font-size:12px;padding:2px 8px;border-radius:6px;font-weight:700">#0</span>
                 </div>
                 <div style="font-size:12px;color:#64748B;margin-top:2px">Full offer configuration, targeting rules & affiliate tracking link</div>
             </div>
-            <button type="button" onclick="closeIhOfferDetailsModal()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#94A3B8;line-height:1">&times;</button>
+            <button type="button" onclick="closeIhOfferDetailsModal()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#94A3B8;line-height:1;padding:0">&times;</button>
         </div>
 
         <!-- Overview Badges -->
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:20px">
             <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:10px 14px">
                 <div style="font-size:10px;font-weight:700;color:#64748B;text-transform:uppercase">Offer Type</div>
                 <div id="modal-ih-type" style="font-size:12px;font-weight:700;color:#4F46E5;margin-top:2px">-</div>
@@ -331,7 +350,7 @@ foreach ($offers as $o) {
         <!-- Description Box -->
         <div style="margin-bottom:20px">
             <label style="font-size:12px;font-weight:700;color:#334155;display:block;margin-bottom:6px">&#128220; Description & Traffic Terms</label>
-            <div id="modal-ih-description" style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:14px;font-size:13px;line-height:1.6;color:#334155;max-height:200px;overflow-y:auto;white-space:pre-wrap">No description provided.</div>
+            <div id="modal-ih-description" style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:14px;font-size:13px;line-height:1.6;color:#334155;max-height:200px;overflow-y:auto;white-space:pre-wrap;word-break:break-word">No description provided.</div>
         </div>
 
         <!-- Separate Affiliate Tracking Link Box inside Modal -->
@@ -339,10 +358,10 @@ foreach ($offers as $o) {
             <div style="font-size:13px;font-weight:700;color:#1E40AF;margin-bottom:8px;display:flex;align-items:center;gap:6px">
                 <span>&#128279; Generate Affiliate Tracking Link</span>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px;align-items:center">
+            <div class="ih-link-grid">
                 <div>
                     <label style="font-size:11px;font-weight:700;color:#475569;display:block;margin-bottom:4px">Select Affiliate:</label>
-                    <select class="form-select form-select-sm" id="modal-ih-aff-select" style="font-size:12px;border-radius:6px;border:1px solid #93C5FD" onchange="updateModalIhAffLink()">
+                    <select class="form-select form-select-sm" id="modal-ih-aff-select" style="font-size:12px;border-radius:6px;border:1px solid #93C5FD;width:100%" onchange="updateModalIhAffLink()">
                         <option value="{CODE}">-- Generic Placeholder ({CODE}) --</option>
                         <?php foreach ($affiliates as $aff): ?>
                         <option value="<?= Helpers::e($aff['affiliate_code']) ?>">
@@ -353,24 +372,24 @@ foreach ($offers as $o) {
                 </div>
                 <div>
                     <label style="font-size:11px;font-weight:700;color:#475569;display:block;margin-bottom:4px">Tracking Link URL:</label>
-                    <div class="copy-group">
+                    <div class="ih-copy-group">
                         <input type="text" id="modal-ih-url-input" class="form-control" readonly style="font-size:11px;background:#fff">
-                        <button type="button" class="btn btn-secondary btn-sm" data-copy="modal-ih-url-input">Copy</button>
-                        <button type="button" class="btn btn-sm" style="background:#7C3AED;color:#fff;border:none;cursor:pointer" id="modal-ih-short-btn" onclick="adminShortenIhModal()">&#9986; Short</button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-copy="modal-ih-url-input" style="white-space:nowrap">Copy</button>
+                        <button type="button" class="btn btn-sm" style="background:#7C3AED;color:#fff;border:none;cursor:pointer;white-space:nowrap" id="modal-ih-short-btn" onclick="adminShortenIhModal()">&#9986; Short</button>
                     </div>
                 </div>
             </div>
             <div id="modal-ih-short-result" style="display:none;margin-top:8px">
-                <div class="copy-group">
+                <div class="ih-copy-group">
                     <input type="text" id="modal-ih-short-url" class="form-control" readonly style="font-size:11px">
-                    <button type="button" class="btn btn-secondary btn-sm" data-copy="modal-ih-short-url">Copy</button>
-                    <a id="modal-ih-short-open" href="#" target="_blank" class="btn btn-sm btn-secondary">Open</a>
+                    <button type="button" class="btn btn-secondary btn-sm" data-copy="modal-ih-short-url" style="white-space:nowrap">Copy</button>
+                    <a id="modal-ih-short-open" href="#" target="_blank" class="btn btn-sm btn-secondary" style="white-space:nowrap">Open</a>
                 </div>
             </div>
         </div>
 
         <!-- Targeting & Caps Summary -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-bottom:20px">
             <div style="border:1px solid #E2E8F0;border-radius:10px;padding:12px">
                 <div style="font-size:12px;font-weight:700;color:#334155;margin-bottom:6px">&#127758; Targeted GEOs</div>
                 <div id="modal-ih-geos" style="font-size:12px;color:#475569">All Geos</div>
