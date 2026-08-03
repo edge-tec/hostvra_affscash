@@ -64,6 +64,28 @@ if ($action === 'index') {
          ) cv_stats ON cv_stats.smartlink_id = sl.id
          GROUP BY sl.id ORDER BY sl.created_at DESC"
     );
+
+    // Fetch active affiliates for selection dropdown
+    $affiliates = Database::fetchAll(
+        "SELECT af.id, af.affiliate_code, u.first_name, u.last_name, u.email
+         FROM affiliates af
+         JOIN users u ON u.id = af.user_id
+         WHERE u.status = 'active'
+         ORDER BY af.affiliate_code ASC"
+    );
+
+    // Fetch all smartlink offer rows with offer names for details modal
+    $rawSlOffers = Database::fetchAll(
+        "SELECT so.*, o.name as offer_name, o.payout_amount as offer_payout
+         FROM smartlink_offers so
+         LEFT JOIN offers o ON o.id = so.offer_id
+         ORDER BY so.smartlink_id ASC, so.id ASC"
+    );
+    $slOffersMap = [];
+    foreach ($rawSlOffers as $soRow) {
+        $slOffersMap[$soRow['smartlink_id']][] = $soRow;
+    }
+
     require BASE_PATH . '/views/admin/smartlinks/index.php';
 }
 
