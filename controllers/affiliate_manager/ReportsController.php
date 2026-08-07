@@ -95,7 +95,14 @@ function mgrClkWhere(array $activeAffIds, string $activeInSql, int $offerId, str
 
 // ─── build conversion WHERE ───────────────────────────────────────────────
 function mgrCvWhere(array $activeAffIds, string $activeInSql, int $offerId, string $country, string $sub1, string $dateFrom, string $dateTo): array {
-    $where  = ["cv.converted_at BETWEEN ? AND ?", "cv.affiliate_id IN ($activeInSql)", "cv.is_hidden = 0", "(cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')"];
+    $where  = [
+        "cv.converted_at BETWEEN ? AND ?",
+        "cv.affiliate_id IN ($activeInSql)",
+        "cv.is_hidden = 0",
+        "(cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')",
+        "NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = cv.click_id AND _ck_tb.source = 'traffic_back')",
+        "NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = cv.click_id)"
+    ];
     $params = array_merge([$dateFrom, $dateTo], $activeAffIds);
     if ($offerId > 0)   { $where[] = 'cv.offer_id=?';   $params[] = $offerId; }
     if ($country !== '') {

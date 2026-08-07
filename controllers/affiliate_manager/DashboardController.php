@@ -34,6 +34,8 @@ if (!empty($affIds)) {
              WHERE cv.affiliate_id IN ($in30)
                AND cv.converted_at >= ?
                AND cv.is_hidden = 0
+               AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')
+               AND NOT EXISTS (SELECT 1 FROM traffic_back_logs tbl WHERE tbl.click_id = cv.click_id)
                AND fl.fraud_score IS NOT NULL",
             array_merge($affIds, [$since30])
         );

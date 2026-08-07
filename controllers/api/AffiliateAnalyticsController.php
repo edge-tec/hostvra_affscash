@@ -50,7 +50,7 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $to))   $to   = date('Y-m-d');
 $clickP = [$affId, $from . ' 00:00:00', $to . ' 23:59:59'];
 $clickW = "affiliate_id=? AND clicked_at BETWEEN ? AND ?";
 $convP  = [$affId, $from . ' 00:00:00', $to . ' 23:59:59'];
-$convW  = "affiliate_id=? AND converted_at BETWEEN ? AND ? AND COALESCE(is_hidden,0)=0";
+$convW  = "affiliate_id=? AND converted_at BETWEEN ? AND ? AND COALESCE(is_hidden,0)=0 AND (hide_reason IS NULL OR hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = conversions.click_id AND _ck_tb.source = 'traffic_back') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = conversions.click_id)";
 $statsP = [$affId, $from, $to];
 $statsW = "affiliate_id=? AND stat_date BETWEEN ? AND ?";
 
@@ -109,7 +109,7 @@ if ($action === 'stats') {
     // percentage tracks every other KPI's filter state.
     $fraudConvCur = 0; $totalConvForPct = 0; $fraudConvPrev = 0; $totalConvPrev = 0;
     try {
-        $fcWhere  = ['c.affiliate_id=?', 'c.converted_at BETWEEN ? AND ?', 'COALESCE(c.is_hidden,0)=0'];
+        $fcWhere  = ['c.affiliate_id=?', 'c.converted_at BETWEEN ? AND ?', 'COALESCE(c.is_hidden,0)=0', '(c.hide_reason IS NULL OR c.hide_reason NOT LIKE \'%traffic_back%\')', 'NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = c.click_id AND _ck_tb.source = \'traffic_back\')', 'NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = c.click_id)'];
         $fcParams = [$affId, $from . ' 00:00:00', $to . ' 23:59:59'];
         if ($offerId) { $fcWhere[] = 'c.offer_id=?'; $fcParams[] = $offerId; }
         if ($country) { $fcWhere[] = 'ck.country=?';  $fcParams[] = $country; }
@@ -124,7 +124,7 @@ if ($action === 'stats') {
         $fraudConvCur     = (int)($fcCur['fraud'] ?? 0);
         $totalConvForPct  = (int)($fcCur['total'] ?? 0);
 
-        $fcPrevWhere  = ['c.affiliate_id=?', 'c.converted_at BETWEEN ? AND ?', 'COALESCE(c.is_hidden,0)=0'];
+        $fcPrevWhere  = ['c.affiliate_id=?', 'c.converted_at BETWEEN ? AND ?', 'COALESCE(c.is_hidden,0)=0', '(c.hide_reason IS NULL OR c.hide_reason NOT LIKE \'%traffic_back%\')', 'NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = c.click_id AND _ck_tb.source = \'traffic_back\')', 'NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = c.click_id)'];
         $fcPrevParams = [$affId, $prevFrom . ' 00:00:00', $prevTo . ' 23:59:59'];
         if ($offerId) { $fcPrevWhere[] = 'c.offer_id=?'; $fcPrevParams[] = $offerId; }
         if ($country) { $fcPrevWhere[] = 'ck.country=?';  $fcPrevParams[] = $country; }
@@ -191,7 +191,7 @@ if ($action === 'trend') {
         if ($device)  { $hW[] = 'device_type=?'; $hP[] = $device; }
         $hWhere = implode(' AND ', $hW);
 
-        $cvW = ['c.affiliate_id=?', 'c.converted_at BETWEEN ? AND ?', 'COALESCE(c.is_hidden,0)=0'];
+        $cvW = ['c.affiliate_id=?', 'c.converted_at BETWEEN ? AND ?', 'COALESCE(c.is_hidden,0)=0', '(c.hide_reason IS NULL OR c.hide_reason NOT LIKE \'%traffic_back%\')', 'NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = c.click_id AND _ck_tb.source = \'traffic_back\')', 'NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = c.click_id)'];
         $cvP = [$affId, $appStart, $appEnd];
         if ($offerId) { $cvW[] = 'c.offer_id=?'; $cvP[] = $offerId; }
         if ($country) { $cvW[] = 'country=?';  $cvP[] = $country; }
@@ -337,7 +337,7 @@ if ($action === 'countries') {
     );
     // Build an alias-qualified WHERE to avoid column ambiguity after the JOIN
     // (clicks also has affiliate_id, offer_id, country — must prefix with cv.)
-    $cvJoinW = "cv.affiliate_id=? AND cv.converted_at BETWEEN ? AND ? AND COALESCE(cv.is_hidden,0)=0";
+    $cvJoinW = "cv.affiliate_id=? AND cv.converted_at BETWEEN ? AND ? AND COALESCE(cv.is_hidden,0)=0 AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = cv.click_id AND _ck_tb.source = 'traffic_back') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = cv.click_id)";
     $cvJoinP = [$affId, $from . ' 00:00:00', $to . ' 23:59:59'];
     if ($offerId) { $cvJoinW .= " AND cv.offer_id=?"; $cvJoinP[] = $offerId; }
     if ($country) { $cvJoinW .= " AND ck.country=?"; $cvJoinP[] = $country; }
@@ -485,6 +485,9 @@ if ($action === 'conversions') {
              WHERE c.affiliate_id = ?
                AND c.converted_at BETWEEN ? AND ?
                AND COALESCE(c.is_hidden, 0) = 0
+               AND (c.hide_reason IS NULL OR c.hide_reason NOT LIKE '%traffic_back%')
+               AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = c.click_id AND _ck_tb.source = 'traffic_back')
+               AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = c.click_id)
              ORDER BY c.converted_at DESC
              LIMIT $limit",
             [$affId, $from . ' 00:00:00', $to . ' 23:59:59']

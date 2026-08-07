@@ -29,6 +29,9 @@ $nextCandidates = Database::fetchAll(
                 WHERE c.affiliate_id = ?
                   AND c.status = 'approved'
                   AND COALESCE(c.is_hidden, 0) = 0
+                  AND (c.hide_reason IS NULL OR c.hide_reason NOT LIKE '%traffic_back%')
+                  AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = c.click_id AND _ck_tb.source = 'traffic_back')
+                  AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = c.click_id)
                   AND c.converted_at >= COALESCE(r.publish_at, r.created_at)
                   AND (r.expires_at IS NULL OR c.converted_at < r.expires_at)
             ), 0) AS earned_in_window

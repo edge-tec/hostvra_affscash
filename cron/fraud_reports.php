@@ -221,7 +221,7 @@ function _fr_build_click_report(int $affId, string $from, string $to): array {
 }
 
 function _fr_build_conversion_report(int $affId, string $from, string $to): array {
-    $baseConv = "FROM conversions cv WHERE cv.affiliate_id = ? AND cv.converted_at BETWEEN ? AND ? AND cv.is_hidden = 0 AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')";
+    $baseConv = "FROM conversions cv WHERE cv.affiliate_id = ? AND cv.converted_at BETWEEN ? AND ? AND cv.is_hidden = 0 AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = cv.click_id AND _ck_tb.source = 'traffic_back') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = cv.click_id)";
     $p        = [$affId, $from, $to];
 
     $total        = (int)(Database::fetchOne("SELECT COUNT(*) AS c {$baseConv}", $p)['c'] ?? 0);
@@ -232,6 +232,8 @@ function _fr_build_conversion_report(int $affId, string $from, string $to): arra
         "SELECT COUNT(*) AS c FROM conversions cv
          LEFT JOIN clicks ck ON ck.click_id = cv.click_id
          WHERE cv.affiliate_id = ? AND cv.converted_at BETWEEN ? AND ?
+           AND cv.is_hidden = 0 AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')
+           AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = cv.click_id)
            AND ck.id IS NOT NULL AND TIMESTAMPDIFF(SECOND, ck.clicked_at, cv.converted_at) < 30
            AND TIMESTAMPDIFF(SECOND, ck.clicked_at, cv.converted_at) >= 0",
         $p

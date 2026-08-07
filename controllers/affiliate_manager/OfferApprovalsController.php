@@ -153,7 +153,7 @@ $requests = Database::fetchAll(
         u.country,
         af.traffic_sources,
         (SELECT COUNT(*) FROM clicks cl WHERE cl.affiliate_id=ao.affiliate_id AND cl.status='valid') as total_clicks,
-        (SELECT COUNT(*) FROM conversions cv WHERE cv.affiliate_id=ao.affiliate_id AND cv.status='approved' AND cv.is_hidden=0) as total_conversions
+        (SELECT COUNT(*) FROM conversions cv WHERE cv.affiliate_id=ao.affiliate_id AND cv.status='approved' AND cv.is_hidden=0 AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = cv.click_id AND _ck_tb.source = 'traffic_back') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = cv.click_id)) as total_conversions
      FROM affiliate_offers ao
      JOIN offers o ON o.id = ao.offer_id
      JOIN affiliates af ON af.id = ao.affiliate_id

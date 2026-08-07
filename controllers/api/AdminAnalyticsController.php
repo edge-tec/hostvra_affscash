@@ -102,8 +102,14 @@ function adminClicksWhere($from, $to, $offerId, $affId, $country, $device, $mana
 
 // ── WHERE builder for conversions table ───────────────────────────────────
 function adminConvWhere($from, $to, $offerId, $affId, $country, $managerAffIds) {
+    $role = \Auth::role();
     $w = ['c.converted_at BETWEEN ? AND ?', 'COALESCE(c.is_hidden,0)=0'];
     $p = [$from . ' 00:00:00', $to . ' 23:59:59'];
+    if ($role !== 'admin') {
+        $w[] = "(c.hide_reason IS NULL OR c.hide_reason NOT LIKE '%traffic_back%')";
+        $w[] = "NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = c.click_id AND _ck_tb.source = 'traffic_back')";
+        $w[] = "NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = c.click_id)";
+    }
     if ($offerId) { $w[] = 'c.offer_id = ?'; $p[] = $offerId; }
     if ($affId)   { $w[] = 'c.affiliate_id = ?'; $p[] = $affId; }
     if ($country) { $w[] = 'ck.country = ?'; $p[] = $country; }
@@ -562,8 +568,12 @@ if ($action === 'conv_status') {
 if ($action === 'conversions') {
     $limit = min(25, max(5, (int)(Helpers::get('limit') ?? 15)));
 
-    // Build a simpler where for this join query
     $cW = ['c.converted_at BETWEEN ? AND ?', 'COALESCE(c.is_hidden,0)=0'];
+    if ($role !== 'admin') {
+        $cW[] = "(c.hide_reason IS NULL OR c.hide_reason NOT LIKE '%traffic_back%')";
+        $cW[] = "NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = c.click_id AND _ck_tb.source = 'traffic_back')";
+        $cW[] = "NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = c.click_id)";
+    }
     $cP = [$from . ' 00:00:00', $to . ' 23:59:59'];
     if ($offerId) { $cW[] = 'c.offer_id = ?'; $cP[] = $offerId; }
     if ($affId)   { $cW[] = 'c.affiliate_id = ?'; $cP[] = $affId; }

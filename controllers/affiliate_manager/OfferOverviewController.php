@@ -52,7 +52,7 @@ $chartData = Database::fetchAll(
 
 // ── Conversion status pie ─────────────────────────────────────────────────
 $convStatus = Database::fetchAll(
-    "SELECT status, COUNT(*) as cnt FROM conversions WHERE offer_id=? AND affiliate_id IN ($inSql) AND is_hidden=0 GROUP BY status",
+    "SELECT status, COUNT(*) as cnt FROM conversions WHERE offer_id=? AND affiliate_id IN ($inSql) AND is_hidden=0 AND (hide_reason IS NULL OR hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = conversions.click_id AND _ck_tb.source = 'traffic_back') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = conversions.click_id) GROUP BY status",
     array_merge([$offerId], $inParams)
 );
 
@@ -93,7 +93,7 @@ $recentConversions = Database::fetchAll(
      FROM conversions cv
      JOIN affiliates af ON af.id=cv.affiliate_id
      JOIN users u ON u.id=af.user_id
-     WHERE cv.offer_id=? AND cv.affiliate_id IN ($inSql) AND cv.is_hidden=0
+     WHERE cv.offer_id=? AND cv.affiliate_id IN ($inSql) AND cv.is_hidden=0 AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = cv.click_id AND _ck_tb.source = 'traffic_back') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = cv.click_id)
      ORDER BY cv.converted_at DESC LIMIT 20",
     array_merge([$offerId], $inParams)
 );
@@ -101,11 +101,11 @@ $recentConversions = Database::fetchAll(
 // ── Cap usage (conversions, matching click.php enforcement with CURDATE()) ─
 $todayCapUsed = (int)(Database::fetchOne(
     "SELECT COUNT(*) AS c FROM conversions
-     WHERE offer_id=? AND DATE(converted_at)=CURDATE() AND status IN ('pending','approved') AND is_hidden=0",
+     WHERE offer_id=? AND DATE(converted_at)=CURDATE() AND status IN ('pending','approved') AND is_hidden=0 AND (hide_reason IS NULL OR hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = conversions.click_id AND _ck_tb.source = 'traffic_back') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = conversions.click_id)",
     [$offerId]
 )['c'] ?? 0);
 $totalCapUsed = (int)(Database::fetchOne(
-    "SELECT COUNT(*) AS c FROM conversions WHERE offer_id=? AND status IN ('pending','approved') AND is_hidden=0",
+    "SELECT COUNT(*) AS c FROM conversions WHERE offer_id=? AND status IN ('pending','approved') AND is_hidden=0 AND (hide_reason IS NULL OR hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = conversions.click_id AND _ck_tb.source = 'traffic_back') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = conversions.click_id)",
     [$offerId]
 )['c'] ?? 0);
 $todayClicks = (int)($todayStats['clicks'] ?? 0);

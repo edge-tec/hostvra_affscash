@@ -38,7 +38,7 @@ if (!empty($affParams)) {
 }
 
 // ─── Conversion WHERE clause ──────────────────────────────────────────────────
-$convBase = "converted_at BETWEEN ? AND ? AND is_hidden=0";
+$convBase = "converted_at BETWEEN ? AND ? AND is_hidden=0 AND (hide_reason IS NULL OR hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = conversions.click_id AND _ck_tb.source = 'traffic_back') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = conversions.click_id)";
 $convBaseParams = [$from . ' 00:00:00', $to . ' 23:59:59'];
 if ($offerId) { $convBase .= " AND offer_id=?"; $convBaseParams[] = $offerId; }
 

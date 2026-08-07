@@ -156,7 +156,7 @@ try {
                         SUM(CASE WHEN cv.status='rejected' THEN 1 ELSE 0 END) as rejected,
                         COALESCE(SUM(CASE WHEN cv.status='approved' AND cv.is_hidden=0 THEN cv.payout ELSE 0 END), 0) as payout
                  FROM clicks c
-                 LEFT JOIN conversions cv ON cv.click_id = c.click_id AND cv.is_hidden = 0
+                 LEFT JOIN conversions cv ON cv.click_id = c.click_id AND cv.is_hidden = 0 AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs tbl WHERE tbl.click_id = cv.click_id)
                  WHERE $whereStr
                  GROUP BY $grpCol ORDER BY clicks DESC LIMIT $limit",
                 $clkParams
@@ -208,7 +208,7 @@ try {
                     cv.converted_at as conv_time
              FROM clicks c
              LEFT JOIN offers o ON o.id = c.offer_id
-             LEFT JOIN conversions cv ON cv.click_id = c.click_id AND cv.is_hidden = 0
+             LEFT JOIN conversions cv ON cv.click_id = c.click_id AND cv.is_hidden = 0 AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs tbl WHERE tbl.click_id = cv.click_id)
              WHERE $whereStr
              ORDER BY c.clicked_at DESC
              LIMIT $limit",
@@ -223,7 +223,7 @@ try {
         exit;
 
     } elseif ($tab === 'conversion') {
-        $cvWhere  = ["cv.converted_at BETWEEN ? AND ?", "cv.affiliate_id IN ($activeInSql)", "cv.is_hidden=0"];
+        $cvWhere  = ["cv.converted_at BETWEEN ? AND ?", "cv.affiliate_id IN ($activeInSql)", "cv.is_hidden=0", "(cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')", "(ck.source IS NULL OR ck.source != 'traffic_back')", "NOT EXISTS (SELECT 1 FROM traffic_back_logs tbl WHERE tbl.click_id = cv.click_id)"];
         $cvParams = array_merge([$dateFrom, $dateTo], $activeAffIds);
         if ($offerId > 0)    { $cvWhere[] = 'cv.offer_id=?'; $cvParams[] = $offerId; }
         if ($country !== '') {
@@ -278,7 +278,7 @@ try {
              FROM clicks c
              LEFT JOIN smartlinks sl ON sl.id = c.smartlink_id
              LEFT JOIN offers o ON o.id = c.offer_id
-             LEFT JOIN conversions cv ON cv.click_id = c.click_id AND cv.is_hidden = 0
+             LEFT JOIN conversions cv ON cv.click_id = c.click_id AND cv.is_hidden = 0 AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs tbl WHERE tbl.click_id = cv.click_id)
              WHERE $slClkWhere
              ORDER BY c.clicked_at DESC LIMIT $limit",
             $slClkParams

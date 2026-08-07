@@ -34,7 +34,7 @@ $offers = Database::fetchAll(
     "SELECT o.*,
             (SELECT COUNT(*) FROM affiliate_offers ao WHERE ao.offer_id=o.id AND ao.status='approved') as aff_count,
             (SELECT COUNT(*) FROM clicks c WHERE c.offer_id=o.id AND DATE(c.clicked_at)=CURDATE()) as today_clicks,
-            (SELECT COUNT(*) FROM conversions cv WHERE cv.offer_id=o.id AND DATE(cv.converted_at)=CURDATE() AND cv.is_hidden=0) as today_convs
+            (SELECT COUNT(*) FROM conversions cv WHERE cv.offer_id=o.id AND DATE(cv.converted_at)=CURDATE() AND cv.is_hidden=0 AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = cv.click_id AND _ck_tb.source = 'traffic_back') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = cv.click_id)) as today_convs
      FROM offers o
      WHERE $whereStr
      ORDER BY o.created_at DESC",

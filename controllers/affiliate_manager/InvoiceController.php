@@ -96,6 +96,9 @@ elseif ($action === 'load_offers') {
          FROM conversions c JOIN offers o ON o.id=c.offer_id
          WHERE c.affiliate_id=? AND c.status='approved'
            AND COALESCE(c.is_hidden, 0) = 0
+           AND (c.hide_reason IS NULL OR c.hide_reason NOT LIKE '%traffic_back%')
+           AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = c.click_id AND _ck_tb.source = 'traffic_back')
+           AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = c.click_id)
            AND DATE(c.created_at) BETWEEN ? AND ?
          GROUP BY o.id, o.name ORDER BY total_payout DESC",
         [$affId, $from, $to]

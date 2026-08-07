@@ -26,9 +26,9 @@ try {
         $_balRow      = Database::fetchOne("SELECT balance FROM affiliates WHERE id=?", [$_affId]);
         $_affBalance  = (float)($_balRow['balance'] ?? 0);
         $_msStart     = date('Y-m-01');
-        $_affApproved = (float)(Database::fetchOne("SELECT COALESCE(SUM(payout),0) as t FROM conversions WHERE affiliate_id=? AND status='approved'", [$_affId])['t'] ?? 0);
-        $_affPending  = (float)(Database::fetchOne("SELECT COALESCE(SUM(payout),0) as t FROM conversions WHERE affiliate_id=? AND status='pending'",  [$_affId])['t'] ?? 0);
-        $_affMonthly  = (float)(Database::fetchOne("SELECT COALESCE(SUM(payout),0) as t FROM conversions WHERE affiliate_id=? AND status='approved' AND converted_at>=?", [$_affId, $_msStart])['t'] ?? 0);
+        $_affApproved = (float)(Database::fetchOne("SELECT COALESCE(SUM(payout),0) as t FROM conversions WHERE affiliate_id=? AND status='approved' AND is_hidden=0 AND (hide_reason IS NULL OR hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = conversions.click_id AND _ck_tb.source = 'traffic_back') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = conversions.click_id)", [$_affId])['t'] ?? 0);
+        $_affPending  = (float)(Database::fetchOne("SELECT COALESCE(SUM(payout),0) as t FROM conversions WHERE affiliate_id=? AND status='pending' AND is_hidden=0 AND (hide_reason IS NULL OR hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = conversions.click_id AND _ck_tb.source = 'traffic_back') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = conversions.click_id)",  [$_affId])['t'] ?? 0);
+        $_affMonthly  = (float)(Database::fetchOne("SELECT COALESCE(SUM(payout),0) as t FROM conversions WHERE affiliate_id=? AND status='approved' AND is_hidden=0 AND (hide_reason IS NULL OR hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = conversions.click_id AND _ck_tb.source = 'traffic_back') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = conversions.click_id) AND converted_at>=?", [$_affId, $_msStart])['t'] ?? 0);
     }
 } catch(\Exception $_e) {}
 ?>

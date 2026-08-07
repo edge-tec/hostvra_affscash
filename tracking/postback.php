@@ -443,13 +443,14 @@ if (!empty($click['ip_address']) && $click['ip_address'] !== '0.0.0.0') {
 $isAutoHidden = false;
 $hideReason   = '';
 
-// Duplicate conversions must NEVER be automatically hidden.
-if ($convStatus !== 'rejected' && empty($rejectionReason)) {
-    // Hard-hide traffic_back conversions from managers and affiliates.
-    if (($click['source'] ?? '') === 'traffic_back') {
-        $isAutoHidden = true;
-        $hideReason   = 'traffic_back_url';
-    }
+// Hard-hide traffic_back conversions from managers and affiliates ALWAYS.
+if (($click['source'] ?? '') === 'traffic_back' || (!empty($click['click_id']) && Database::fetchOne("SELECT 1 FROM traffic_back_logs WHERE click_id=? LIMIT 1", [$click['click_id']]))) {
+    $isAutoHidden = true;
+    $hideReason   = 'traffic_back_url';
+}
+
+// Duplicate conversions must NEVER be automatically hidden by autohide rules.
+if (!$isAutoHidden && $convStatus !== 'rejected' && empty($rejectionReason)) {
 
     try {
         $hideRules = Database::fetchAll(

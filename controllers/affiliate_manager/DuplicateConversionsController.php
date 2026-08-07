@@ -64,7 +64,10 @@ try {
     Database::query(
         "UPDATE conversions SET is_hidden = 0 
          WHERE is_hidden = 1 
-           AND (status = 'rejected' OR rejection_reason LIKE '%duplicate%' OR rejection_reason LIKE '%Duplicate%')"
+           AND (status = 'rejected' OR rejection_reason LIKE '%duplicate%' OR rejection_reason LIKE '%Duplicate%')
+           AND (hide_reason IS NULL OR hide_reason NOT LIKE '%traffic_back%')
+           AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = conversions.click_id AND _ck_tb.source = 'traffic_back')
+           AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = conversions.click_id)"
     );
 } catch (\Throwable $_e) {}
 
@@ -89,6 +92,9 @@ if ($hasAffiliates) {
             WHERE affiliate_id IN ($inSql)
               AND offer_id IS NOT NULL AND offer_id > 0
               AND ip_address IS NOT NULL AND ip_address <> ''
+              AND (hide_reason IS NULL OR hide_reason NOT LIKE '%traffic_back%')
+              AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = conversions.click_id AND _ck_tb.source = 'traffic_back')
+              AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = conversions.click_id)
             GROUP BY offer_id, ip_address
             HAVING dup_count > 1
          ) dup ON dup.offer_id = cv.offer_id AND dup.ip_address = cv.ip_address
@@ -96,6 +102,9 @@ if ($hasAffiliates) {
          LEFT JOIN affiliates af ON af.id = cv.affiliate_id
          LEFT JOIN users u       ON u.id  = af.user_id
          WHERE cv.affiliate_id IN ($inSql)
+           AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')
+           AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = cv.click_id AND _ck_tb.source = 'traffic_back')
+           AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = cv.click_id)
            AND (
                cv.converted_at BETWEEN ? AND ?
                OR (cv.rejected_at IS NOT NULL AND cv.rejected_at BETWEEN ? AND ?)

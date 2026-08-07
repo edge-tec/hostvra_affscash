@@ -96,28 +96,28 @@ if (in_array($tab, $perfTabs)) {
             $cvJoin = "LEFT JOIN (
                 SELECT DATE(converted_at) as cv_date, SUM(payout) as approved_payout
                 FROM conversions
-                WHERE affiliate_id=? AND status='approved' AND is_hidden=0 AND (hide_reason IS NULL OR hide_reason NOT LIKE '%traffic_back%')
+                WHERE affiliate_id=? AND status='approved' AND is_hidden=0 AND (hide_reason IS NULL OR hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = conversions.click_id AND _ck_tb.source = 'traffic_back') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = conversions.click_id)
                 GROUP BY DATE(converted_at)
             ) cv_pay ON cv_pay.cv_date = sd.stat_date
             LEFT JOIN (
                 SELECT DATE(converted_at) as cv_date,
                        SUM(CASE WHEN COALESCE(fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_count
                 FROM conversions
-                WHERE affiliate_id=? AND is_hidden=0 AND (hide_reason IS NULL OR hide_reason NOT LIKE '%traffic_back%')
+                WHERE affiliate_id=? AND is_hidden=0 AND (hide_reason IS NULL OR hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = conversions.click_id AND _ck_tb.source = 'traffic_back') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = conversions.click_id)
                 GROUP BY DATE(converted_at)
             ) cv_fraud ON cv_fraud.cv_date = sd.stat_date";
         } else {
             $cvJoin = "LEFT JOIN (
                 SELECT offer_id, SUM(payout) as approved_payout
                 FROM conversions
-                WHERE affiliate_id=? AND status='approved' AND is_hidden=0 AND (hide_reason IS NULL OR hide_reason NOT LIKE '%traffic_back%')
+                WHERE affiliate_id=? AND status='approved' AND is_hidden=0 AND (hide_reason IS NULL OR hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = conversions.click_id AND _ck_tb.source = 'traffic_back') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = conversions.click_id)
                 GROUP BY offer_id
             ) cv_pay ON cv_pay.offer_id = sd.offer_id
             LEFT JOIN (
                 SELECT offer_id,
                        SUM(CASE WHEN COALESCE(fraud_score,0) >= 60 THEN 1 ELSE 0 END) as fraud_count
                 FROM conversions
-                WHERE affiliate_id=? AND is_hidden=0 AND (hide_reason IS NULL OR hide_reason NOT LIKE '%traffic_back%')
+                WHERE affiliate_id=? AND is_hidden=0 AND (hide_reason IS NULL OR hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = conversions.click_id AND _ck_tb.source = 'traffic_back') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = conversions.click_id)
                 GROUP BY offer_id
             ) cv_fraud ON cv_fraud.offer_id = sd.offer_id";
         }
@@ -219,9 +219,9 @@ if ($tab === 'click') {
     if ($sub1 !== '')    { $clkWhere[] = 'c.sub1 LIKE ?'; $clkParams[] = '%'.$sub1.'%'; }
     if ($clickId !== '') { $clkWhere[] = 'c.click_id=?';  $clkParams[] = $clickId; }
     if ($clickFilter === 'converted') {
-        $clkWhere[] = 'EXISTS (SELECT 1 FROM conversions _cv WHERE _cv.click_id = c.click_id AND _cv.is_hidden = 0 AND (_cv.hide_reason IS NULL OR _cv.hide_reason NOT LIKE \'%traffic_back%\'))';
+        $clkWhere[] = 'EXISTS (SELECT 1 FROM conversions _cv WHERE _cv.click_id = c.click_id AND _cv.is_hidden = 0 AND (_cv.hide_reason IS NULL OR _cv.hide_reason NOT LIKE \'%traffic_back%\') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs tbl WHERE tbl.click_id = _cv.click_id))';
     } elseif ($clickFilter === 'approved') {
-        $clkWhere[] = "EXISTS (SELECT 1 FROM conversions _cv WHERE _cv.click_id = c.click_id AND _cv.status = 'approved' AND _cv.is_hidden = 0 AND (_cv.hide_reason IS NULL OR _cv.hide_reason NOT LIKE '%traffic_back%'))";
+        $clkWhere[] = "EXISTS (SELECT 1 FROM conversions _cv WHERE _cv.click_id = c.click_id AND _cv.status = 'approved' AND _cv.is_hidden = 0 AND (_cv.hide_reason IS NULL OR _cv.hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs tbl WHERE tbl.click_id = _cv.click_id))";
     }
     $whereStr = implode(' AND ', $clkWhere);
 
@@ -237,7 +237,7 @@ if ($tab === 'click') {
                 cv.payout       as conv_payout,
                 cv.converted_at as conv_time
          FROM clicks c
-         LEFT JOIN conversions cv ON cv.click_id = c.click_id AND cv.is_hidden = 0 AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')
+         LEFT JOIN conversions cv ON cv.click_id = c.click_id AND cv.is_hidden = 0 AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs tbl WHERE tbl.click_id = cv.click_id)
          LEFT JOIN smartlinks sl ON sl.id = COALESCE(c.smartlink_id, cv.smartlink_id)
          LEFT JOIN smartlink_offers so ON so.offer_id = c.offer_id
          LEFT JOIN smartlinks sl2 ON sl2.id = so.smartlink_id
@@ -285,7 +285,7 @@ if ($tab === 'click') {
 // ─── Conversions tab ──────────────────────────────────────────────────────
 $convRows = null;
 if ($tab === 'conversion') {
-    $cvWhere  = ['cv.affiliate_id=?', 'cv.converted_at BETWEEN ? AND ?', 'cv.is_hidden=0', "(cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')", "(ck.source IS NULL OR ck.source != 'traffic_back')"];
+    $cvWhere  = ['cv.affiliate_id=?', 'cv.converted_at BETWEEN ? AND ?', 'cv.is_hidden=0', "(cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')", "(ck.source IS NULL OR ck.source != 'traffic_back')", "NOT EXISTS (SELECT 1 FROM traffic_back_logs tbl WHERE tbl.click_id = cv.click_id)"];
     $cvParams = [$affId, $dateFrom, $dateTo];
     if ($offerId > 0)    { $cvWhere[] = 'cv.offer_id=?'; $cvParams[] = $offerId; }
     if ($country !== '') {

@@ -29,7 +29,7 @@ try {
          JOIN affiliates af ON af.id = c.affiliate_id
          JOIN users u ON u.id = af.user_id
          LEFT JOIN clicks cl ON cl.click_id = c.click_id
-         WHERE c.affiliate_id IN ($inPlaceholders)
+         WHERE c.affiliate_id IN ($inPlaceholders) AND COALESCE(c.is_hidden, 0) = 0 AND (c.hide_reason IS NULL OR c.hide_reason NOT LIKE '%traffic_back%') AND (cl.source IS NULL OR cl.source != 'traffic_back') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs tbl WHERE tbl.click_id = c.click_id)
          ORDER BY c.converted_at DESC
          LIMIT 500",
          $affIds

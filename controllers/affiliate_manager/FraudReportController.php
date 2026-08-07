@@ -94,6 +94,7 @@ if (!empty($affIds)) {
                    AND cv.is_hidden = 0
                    AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')
                    AND (ck.source IS NULL OR ck.source != 'traffic_back')
+                   AND NOT EXISTS (SELECT 1 FROM traffic_back_logs tbl WHERE tbl.click_id = cv.click_id)
                    AND $riskSql
                  ORDER BY cv.converted_at DESC LIMIT 5000",
                 $affIds
@@ -138,6 +139,7 @@ if (!empty($affIds)) {
                AND cv.is_hidden = 0
                AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')
                AND (ck.source IS NULL OR ck.source != 'traffic_back')
+               AND NOT EXISTS (SELECT 1 FROM traffic_back_logs tbl WHERE tbl.click_id = cv.click_id)
                AND $riskSql
              ORDER BY cv.converted_at DESC LIMIT 1000",
             $affIds
@@ -150,6 +152,7 @@ if (!empty($affIds)) {
                AND cv.is_hidden = 0
                AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')
                AND (ck.source IS NULL OR ck.source != 'traffic_back')
+               AND NOT EXISTS (SELECT 1 FROM traffic_back_logs tbl WHERE tbl.click_id = cv.click_id)
                AND $riskSql
                AND cv.converted_at >= NOW() - INTERVAL 30 DAY",
             $affIds

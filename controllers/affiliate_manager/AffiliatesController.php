@@ -215,7 +215,7 @@ else {
                 SUM(CASE WHEN cv.fraud_checked_at IS NOT NULL THEN 1 ELSE 0 END) as fraud_checked_count
          FROM users u
          JOIN affiliates af ON af.user_id=u.id
-         LEFT JOIN conversions cv ON cv.affiliate_id = af.id AND COALESCE(cv.is_hidden,0)=0
+         LEFT JOIN conversions cv ON cv.affiliate_id = af.id AND COALESCE(cv.is_hidden,0)=0 AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = cv.click_id AND _ck_tb.source = 'traffic_back') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = cv.click_id)
          WHERE af.id IN (" . implode(',', array_fill(0, count($affIds), '?')) . ")
          GROUP BY u.id, u.email, u.first_name, u.last_name, u.company, u.status, u.created_at,
                   af.affiliate_code, af.balance, af.id
