@@ -392,16 +392,33 @@ $convId     = Helpers::uuid();
 // If another conversion already exists for this offer and IP (even from another affiliate),
 // automatically mark this new one as a duplicate so it appears in the Duplicate Conversions report.
 $rejectionReason = '';
-if (!empty($click['ip_address']) && $click['ip_address'] !== '0.0.0.0') {
-    // Find all existing approved/pending conversions for this IP/Offer
+$isTrafficBack = (($click['source'] ?? '') === 'traffic_back' || (!empty($click['click_id']) && Database::fetchOne("SELECT 1 FROM traffic_back_logs WHERE click_id=? LIMIT 1", [$click['click_id']])));
+
+// Traffic Back URL conversions are completely independent from normal offer conversion duplicate detection.
+if (!$isTrafficBack && !empty($click['ip_address']) && $click['ip_address'] !== '0.0.0.0') {
+    // Find all existing approved/pending conversions for this IP/Offer (excluding Traffic Back URL conversions)
     $existingConvs = Database::fetchAll(
-        "SELECT id, conversion_id, affiliate_id, payout, status FROM conversions WHERE offer_id = ? AND ip_address = ? AND status IN ('approved', 'pending')",
+        "SELECT cv.id, cv.conversion_id, cv.affiliate_id, cv.payout, cv.status 
+         FROM conversions cv
+         WHERE cv.offer_id = ? 
+           AND cv.ip_address = ? 
+           AND cv.status IN ('approved', 'pending')
+           AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')
+           AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = cv.click_id AND _ck_tb.source = 'traffic_back')
+           AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = cv.click_id)",
         [(int)$click['offer_id'], $click['ip_address']]
     );
     
-    // Also check if there's ANY conversion to trigger the duplicate logic
+    // Also check if there's ANY non-traffic-back conversion to trigger the duplicate logic
     $existingIpConv = count($existingConvs) > 0 ? true : Database::fetchOne(
-        "SELECT id FROM conversions WHERE offer_id = ? AND ip_address = ? LIMIT 1",
+        "SELECT cv.id 
+         FROM conversions cv
+         WHERE cv.offer_id = ? 
+           AND cv.ip_address = ? 
+           AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%')
+           AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = cv.click_id AND _ck_tb.source = 'traffic_back')
+           AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = cv.click_id)
+         LIMIT 1",
         [(int)$click['offer_id'], $click['ip_address']]
     );
 

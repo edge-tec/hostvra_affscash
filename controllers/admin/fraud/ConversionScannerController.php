@@ -49,7 +49,7 @@ if ($tab === 'fast' || $tab === 'all') {
 }
 
 if ($tab === 'duplicate') {
-    $dupWhere  = "cv.converted_at BETWEEN ? AND ? AND cv.ip_address IS NOT NULL";
+    $dupWhere  = "cv.converted_at BETWEEN ? AND ? AND cv.ip_address IS NOT NULL AND (cv.hide_reason IS NULL OR cv.hide_reason NOT LIKE '%traffic_back%') AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = cv.click_id AND _ck_tb.source = 'traffic_back') AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = cv.click_id)";
     $dupParams = [$dr['date_from'], $dr['date_to']];
     if ($affId > 0)   { $dupWhere .= " AND cv.affiliate_id=?"; $dupParams[] = $affId; }
     if ($offerId > 0) { $dupWhere .= " AND cv.offer_id=?";     $dupParams[] = $offerId; }
