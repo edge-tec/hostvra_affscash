@@ -11,7 +11,7 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
 
     if (in_array($action, ['approve','reject'], true) && $affId && $offerId) {
         $ao = Database::fetchOne(
-            "SELECT ao.*, o.name as offer_name, u.email, u.first_name, u.last_name
+            "SELECT ao.*, o.name as offer_name, o.payout_type, o.payout_amount, o.revenue_amount, u.email, u.first_name, u.last_name
              FROM affiliate_offers ao
              JOIN offers o ON o.id = ao.offer_id
              JOIN affiliates af ON af.id = ao.affiliate_id
@@ -21,6 +21,9 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         );
 
         if ($ao) {
+            $revsharePct = Mailer::calculateRevSharePercentage($ao);
+            $revshareStr = 'RevShare: ' . $revsharePct;
+
             if ($action === 'approve') {
                 Database::update('affiliate_offers',
                     ['status' => 'approved', 'approved_at' => date('Y-m-d H:i:s'), 'approved_by' => Auth::id()],
@@ -42,10 +45,12 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
                     );
                     try {
                         Mailer::sendEvent($affUser['email'], $affUser['first_name'] . ' ' . $affUser['last_name'], 'offer_approved', [
-                            'name'       => $affUser['first_name'] . ' ' . $affUser['last_name'],
-                            'offer_name' => $ao['offer_name'],
-                            'app_url'    => rtrim(Config::get('config', 'app.url') ?? '', '/'),
-                            'site_name'  => Config::get('config', 'app.name') ?? 'AffiliateTracker',
+                            'name'            => $affUser['first_name'] . ' ' . $affUser['last_name'],
+                            'offer_name'      => $ao['offer_name'],
+                            'revshare'        => $revshareStr,
+                            'revshare_percent'=> $revsharePct,
+                            'app_url'         => rtrim(Config::get('config', 'app.url') ?? '', '/'),
+                            'site_name'       => Config::get('config', 'app.name') ?? 'AffiliateTracker',
                         ]);
                     } catch (Exception $e) {}
                 }
@@ -71,10 +76,12 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
                     );
                     try {
                         Mailer::sendEvent($affUser['email'], $affUser['first_name'] . ' ' . $affUser['last_name'], 'offer_rejected', [
-                            'name'       => $affUser['first_name'] . ' ' . $affUser['last_name'],
-                            'offer_name' => $ao['offer_name'],
-                            'app_url'    => rtrim(Config::get('config', 'app.url') ?? '', '/'),
-                            'site_name'  => Config::get('config', 'app.name') ?? 'AffiliateTracker',
+                            'name'            => $affUser['first_name'] . ' ' . $affUser['last_name'],
+                            'offer_name'      => $ao['offer_name'],
+                            'revshare'        => $revshareStr,
+                            'revshare_percent'=> $revsharePct,
+                            'app_url'         => rtrim(Config::get('config', 'app.url') ?? '', '/'),
+                            'site_name'       => Config::get('config', 'app.name') ?? 'AffiliateTracker',
                         ]);
                     } catch (Exception $e) {}
                 }

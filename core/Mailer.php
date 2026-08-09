@@ -16,6 +16,15 @@ class Mailer
      * @param string $eventType  e.g. 'affiliate_created', 'affiliate_approved' …
      * @param array  $vars       Placeholder values: ['name'=>'John', 'status'=>'active', …]
      */
+    /**
+     * Send a transactional email based on an event type.
+     * Loads the template, renders placeholders, applies master theme, then sends.
+     *
+     * @param string $toEmail
+     * @param string $toName
+     * @param string $eventType  e.g. 'affiliate_created', 'affiliate_approved' …
+     * @param array  $vars       Placeholder values: ['name'=>'John', 'status'=>'active', …]
+     */
     public static function sendEvent(string $toEmail, string $toName, string $eventType, array $vars = []): bool
     {
         $tpl = Database::fetchOne(
@@ -26,18 +35,22 @@ class Mailer
             return false; // template disabled or missing
         }
 
-        $subject = self::replacePlaceholders($tpl['subject'],  $vars);
+        $vars    = self::enrichVars($vars);
+        $subject = self::replacePlaceholders($tpl['subject'],   $vars);
         $body    = self::replacePlaceholders($tpl['html_body'], $vars);
-        $body    = self::applyTheme($body, $subject);
+        $body    = self::applyTheme($body, $subject, $vars);
 
         return self::send($toEmail, $toName, $subject, $body, $eventType);
     }
 
     /**
-     * Send a raw email (used for promotional blasts).
+     * Send a raw email (used for promotional blasts & custom notifications).
      */
-    public static function sendRaw(string $toEmail, string $toName, string $subject, string $htmlBody, string $eventType = 'blast'): bool
+    public static function sendRaw(string $toEmail, string $toName, string $subject, string $htmlBody, string $eventType = 'blast', array $vars = []): bool
     {
+        $vars     = self::enrichVars($vars);
+        $htmlBody = self::replacePlaceholders($htmlBody, $vars);
+        $htmlBody = self::applyTheme($htmlBody, $subject, $vars);
         return self::send($toEmail, $toName, $subject, $htmlBody, $eventType);
     }
 
@@ -328,46 +341,186 @@ class Mailer
      * "Truthy" means: not '', not null, not false, not '0', not 'false'.
      */
     /**
-     * Wrap raw HTML in a beautiful branded email template with the site logo.
+     * Dynamically calculate/format the RevShare percentage from offer or context data.
      */
-    public static function applyTheme(string $body, string $title = ''): string
+    public static function calculateRevSharePercentage($data = null): string
     {
-        // Don't double-wrap if it already looks like a full layout
-        if (stripos($body, 'max-width:620px') !== false || stripos($body, 'max-width:600px') !== false) {
-            return $body;
+        if (is_numeric($data) && (float)$data > 0) {
+            return number_format((float)$data, 2) . '%';
         }
 
-        $cfg     = Config::get('config') ?? [];
-        $appName = $cfg['app']['name'] ?? 'Affiliate Network';
-        $appUrl  = rtrim($cfg['app']['url'] ?? '', '/');
-        $appLogo = $cfg['app']['logo'] ?? '';
-        
-        $appEsc = htmlspecialchars($appName, ENT_QUOTES);
-        
-        $headerBranding = '';
-        if (!empty($appLogo)) {
-            $logoUrl = filter_var($appLogo, FILTER_VALIDATE_URL) ? $appLogo : $appUrl . '/' . ltrim($appLogo, '/');
-            $logoEsc = htmlspecialchars($logoUrl, ENT_QUOTES);
-            $headerBranding = "<img src=\"{$logoEsc}\" alt=\"{$appEsc}\" style=\"max-height:40px;max-width:200px;object-fit:contain\">";
-        } else {
-            $headerBranding = "<div style=\"font-size:20px;font-weight:800;color:#fff;letter-spacing:.02em\">{$appEsc}</div>";
+        if (is_array($data)) {
+            if (!empty($data['revshare_percent'])) {
+                $val = (float)str_replace('%', '', (string)$data['revshare_percent']);
+                if ($val > 0) return number_format($val, 2) . '%';
+            }
+            if (isset($data['revshare']) && is_numeric($data['revshare']) && (float)$data['revshare'] > 0) {
+                return number_format((float)$data['revshare'], 2) . '%';
+            }
+
+            $payoutType = strtoupper((string)($data['payout_type'] ?? ''));
+            $payoutAmt  = (float)($data['payout_amount'] ?? ($data['payout'] ?? 0));
+            $revenueAmt = (float)($data['revenue_amount'] ?? ($data['revenue'] ?? 0));
+
+            if ($payoutType === 'REVSHARE' && $payoutAmt > 0) {
+                return number_format($payoutAmt, 2) . '%';
+            }
+
+            if ($revenueAmt > 0 && $payoutAmt > 0) {
+                $ratio = ($payoutAmt / $revenueAmt) * 100;
+                return number_format($ratio, 2) . '%';
+            }
         }
+
+        // Global default RevShare percentage from configuration or 25.00%
+        $default = Config::get('config', 'app.default_revshare') ?? '25.00';
+        return number_format((float)$default, 2) . '%';
+    }
+
+    /**
+     * Enrich email variables with site metadata, logo, and RevShare info.
+     */
+    public static function enrichVars(array $vars): array
+    {
+        $cfg    = Config::get('config') ?? [];
+        $app    = $cfg['app']['name'] ?? 'AffsCash';
+        $appUrl = rtrim((string)($cfg['app']['url'] ?? ''), '/');
+
+        if (empty($vars['site_name'])) $vars['site_name'] = $app;
+        if (empty($vars['app_url']))   $vars['app_url']   = $appUrl;
+
+        // Auto-calculate RevShare
+        $revsharePct = self::calculateRevSharePercentage($vars);
+        if (empty($vars['revshare_percent'])) {
+            $vars['revshare_percent'] = $revsharePct;
+        }
+        if (empty($vars['revshare'])) {
+            $vars['revshare'] = 'RevShare: ' . $revsharePct;
+        }
+
+        // Ensure commission string incorporates RevShare if not already present
+        if (!empty($vars['commission']) && is_string($vars['commission']) && stripos($vars['commission'], 'revshare') === false) {
+            $vars['commission'] .= ' &middot; RevShare: ' . $revsharePct;
+        }
+
+        // Logo HTML placeholder
+        if (empty($vars['logo_html'])) {
+            $logoSetting = $cfg['app']['logo_url'] ?? ($cfg['app']['logo'] ?? '');
+            if ($logoSetting) {
+                $logoUrl = (str_starts_with($logoSetting, 'http://') || str_starts_with($logoSetting, 'https://'))
+                    ? $logoSetting
+                    : $appUrl . '/' . ltrim($logoSetting, '/');
+                $vars['logo_html'] = '<img src="' . htmlspecialchars($logoUrl, ENT_QUOTES, 'UTF-8') . '" alt="' . htmlspecialchars($app, ENT_QUOTES, 'UTF-8') . '" style="max-height:48px;max-width:220px;height:auto;width:auto;display:inline-block;vertical-align:middle;border:0;outline:none;" border="0">';
+            } else {
+                $vars['logo_html'] = '<div style="font-size:22px;font-weight:800;color:#ffffff;letter-spacing:.02em;">' . htmlspecialchars($app, ENT_QUOTES, 'UTF-8') . '</div>';
+            }
+        }
+
+        return $vars;
+    }
+
+    /**
+     * Sanitize inner body HTML by extracting body content and removing redundant headers/wrappers.
+     */
+    private static function sanitizeInnerBody(string $html): string
+    {
+        if (preg_match('/<body[^>]*>(.*?)<\/body>/is', $html, $matches)) {
+            $html = $matches[1];
+        }
+        $html = preg_replace('/<!DOCTYPE[^>]*>/i', '', $html);
+        $html = preg_replace('/<\/?html[^>]*>/i', '', $html);
+        $html = preg_replace('/<head[^>]*>.*?<\/head>/is', '', $html);
+        $html = preg_replace('/\{\{logo_html\}\}/i', '', $html);
+
+        return trim($html);
+    }
+
+    /**
+     * Master centralized email template wrapper containing Header Logo, Responsive Body, and Footer.
+     */
+    public static function applyTheme(string $body, string $title = '', array $vars = []): string
+    {
+        $cfg     = Config::get('config') ?? [];
+        $app     = $cfg['app']['name'] ?? 'AffsCash';
+        $appUrl  = rtrim((string)($cfg['app']['url'] ?? ''), '/');
+
+        // Resolve logo URL
+        $logoSetting = $cfg['app']['logo_url'] ?? ($cfg['app']['logo'] ?? '');
+        if ($logoSetting) {
+            $logoUrl = (str_starts_with($logoSetting, 'http://') || str_starts_with($logoSetting, 'https://'))
+                ? $logoSetting
+                : $appUrl . '/' . ltrim($logoSetting, '/');
+        } else {
+            $logoUrl = $appUrl ? $appUrl . '/assets/img/logo.png' : '';
+        }
+
+        $appEsc  = htmlspecialchars($app, ENT_QUOTES, 'UTF-8');
+        $logoEsc = htmlspecialchars($logoUrl, ENT_QUOTES, 'UTF-8');
+
+        if ($logoUrl) {
+            $logoHtml = '<img src="' . $logoEsc . '" alt="' . $appEsc . '" style="max-height:48px;max-width:220px;width:auto;height:auto;display:inline-block;vertical-align:middle;border:0;outline:none;text-decoration:none;" border="0">';
+        } else {
+            $logoHtml = '<div style="font-size:22px;font-weight:800;color:#ffffff;letter-spacing:.02em;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;">' . $appEsc . '</div>';
+        }
+
+        $titleHtml = '';
+        if ($title) {
+            $titleEsc = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
+            $titleHtml = '<div style="font-size:12px;color:rgba(255,255,255,0.9);margin-top:6px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;">' . $titleEsc . '</div>';
+        }
+
+        $cleanBody = self::sanitizeInnerBody($body);
+        $dateYear  = date('Y');
 
         return <<<HTML
-<div style="background:#F8FAFC;padding:40px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;">
-  <div style="max-width:620px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 8px 24px rgba(148,163,184,0.15);">
-    <div style="padding:32px;text-align:center;background:linear-gradient(135deg, rgba(167,139,250,0.15) 0%, rgba(124,58,237,0.15) 100%);border-bottom:1px solid rgba(124,58,237,0.2);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);">
-      {$headerBranding}
-      <div style="font-size:14px;color:#4F46E5;margin-top:8px;font-weight:600;letter-spacing:0.5px">{$title}</div>
-    </div>
-    <div style="padding:32px;color:#334155;font-size:15px;line-height:1.7;">
-      {$body}
-    </div>
-    <div style="padding:20px 32px;background:#F8FAFC;text-align:center;border-top:1px solid #E2E8F0;">
-      <p style="color:#64748B;font-size:12px;margin:0">{$appEsc} &bull; This is an automated message.</p>
-    </div>
-  </div>
-</div>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{$appEsc}</title>
+    <style type="text/css">
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+        img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+        @media screen and (max-width: 600px) {
+            .email-container { width: 100% !important; max-width: 100% !important; }
+            .content-cell { padding: 20px 16px !important; }
+            .header-cell { padding: 24px 16px !important; }
+        }
+    </style>
+</head>
+<body style="margin:0;padding:0;background-color:#F8FAFC;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#0F172A;">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#F8FAFC;padding:24px 12px;">
+    <tr>
+        <td align="center">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" class="email-container" style="max-width:620px;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #E2E8F0;box-shadow:0 4px 12px rgba(15,23,42,0.06);">
+                <!-- HEADER / BRANDING -->
+                <tr>
+                    <td align="center" class="header-cell" style="background:linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);padding:28px 24px;text-align:center;">
+                        {$logoHtml}
+                        {$titleHtml}
+                    </td>
+                </tr>
+                <!-- CONTENT AREA -->
+                <tr>
+                    <td class="content-cell" style="padding:32px 28px;color:#334155;font-size:14.5px;line-height:1.65;">
+                        {$cleanBody}
+                    </td>
+                </tr>
+                <!-- FOOTER -->
+                <tr>
+                    <td align="center" style="padding:20px 24px;background-color:#F8FAFC;border-top:1px solid #E2E8F0;text-align:center;font-size:12px;color:#64748B;line-height:1.5;">
+                        <p style="margin:0 0 4px 0;font-weight:600;color:#475569;">{$appEsc}</p>
+                        <p style="margin:0;font-size:11px;color:#94A3B8;">&copy; {$dateYear} {$appEsc}. All rights reserved. &bull; Automated System Notification</p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
 HTML;
     }
 

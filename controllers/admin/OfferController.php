@@ -662,10 +662,12 @@ function _broadcastNewOfferEmail(int $offerId): int {
 
     // Build "commission information" text — payout type (CPA/CPL/RevShare),
     // base payout, plus revenue if visible to affiliates.
-    $payoutType = strtoupper((string)($offer['payout_type'] ?? 'CPA'));
-    $payoutAmt  = number_format((float)$offer['payout_amount'], 2);
-    $commission = $payoutType . ' &middot; $' . $payoutAmt . ' per conversion';
-    $geos       = '';
+    $revsharePct = Mailer::calculateRevSharePercentage($offer);
+    $revshareStr = 'RevShare: ' . $revsharePct;
+    $payoutType  = strtoupper((string)($offer['payout_type'] ?? 'CPA'));
+    $payoutAmt   = number_format((float)$offer['payout_amount'], 2);
+    $commission  = $payoutType . ' &middot; $' . $payoutAmt . ' per conversion (' . $revshareStr . ')';
+    $geos        = '';
     if (!empty($offer['geo_targeting'])) {
         $g = json_decode($offer['geo_targeting'], true);
         if (is_array($g) && $g) $geos = implode(', ', array_map('strtoupper', $g));
@@ -707,6 +709,8 @@ function _broadcastNewOfferEmail(int $offerId): int {
             'geos'            => htmlspecialchars($geos, ENT_QUOTES, 'UTF-8'),
             'is_geos'         => $geos !== '',
             'commission'      => $commission, // contains HTML
+            'revshare'        => $revshareStr,
+            'revshare_percent'=> $revsharePct,
             'status_badge'    => $statusBadge, // contains HTML
             'offer_desc_html' => $offerDescH, // contains HTML
             'offers_url'      => htmlspecialchars($offersUrl, ENT_QUOTES, 'UTF-8'),
@@ -734,7 +738,7 @@ function _broadcastOfferStatusChangeEmail(int $offerId, string $oldStatus, strin
     if ($oldStatus === $newStatus) return 0;
 
     $offer = Database::fetchOne(
-        "SELECT o.id, o.name, o.category, COALESCE(au.company, CONCAT(au.first_name,' ',au.last_name)) AS advertiser_name
+        "SELECT o.id, o.name, o.category, o.payout_type, o.payout_amount, o.revenue_amount, COALESCE(au.company, CONCAT(au.first_name,' ',au.last_name)) AS advertiser_name
          FROM offers o
          LEFT JOIN advertisers adv ON adv.id = o.advertiser_id
          LEFT JOIN users au ON au.id = adv.user_id
@@ -743,6 +747,8 @@ function _broadcastOfferStatusChangeEmail(int $offerId, string $oldStatus, strin
     );
     if (!$offer) return 0;
 
+    $revsharePct = Mailer::calculateRevSharePercentage($offer);
+    $revshareStr = 'RevShare: ' . $revsharePct;
     $siteName = Config::get('config','app.name') ?? 'AffsCash';
     $appUrl   = rtrim((string)(Config::get('config','app.url') ?: ''), '/');
     $offersUrl= $appUrl . '/affiliate/offers';
@@ -763,13 +769,15 @@ function _broadcastOfferStatusChangeEmail(int $offerId, string $oldStatus, strin
         if ($name === '') $name = 'Affiliate';
         
         $vars = [
-            'name'       => htmlspecialchars($name, ENT_QUOTES, 'UTF-8'),
-            'offer_name' => htmlspecialchars($offerName, ENT_QUOTES, 'UTF-8'),
-            'site_name'  => htmlspecialchars($siteName, ENT_QUOTES, 'UTF-8'),
-            'old_status' => htmlspecialchars(ucfirst($oldStatus), ENT_QUOTES, 'UTF-8'),
-            'new_status' => htmlspecialchars(ucfirst($newStatus), ENT_QUOTES, 'UTF-8'),
-            'offers_url' => htmlspecialchars($offersUrl, ENT_QUOTES, 'UTF-8'),
-            'app_url'    => htmlspecialchars($appUrl, ENT_QUOTES, 'UTF-8')
+            'name'            => htmlspecialchars($name, ENT_QUOTES, 'UTF-8'),
+            'offer_name'      => htmlspecialchars($offerName, ENT_QUOTES, 'UTF-8'),
+            'site_name'       => htmlspecialchars($siteName, ENT_QUOTES, 'UTF-8'),
+            'old_status'      => htmlspecialchars(ucfirst($oldStatus), ENT_QUOTES, 'UTF-8'),
+            'new_status'      => htmlspecialchars(ucfirst($newStatus), ENT_QUOTES, 'UTF-8'),
+            'revshare'        => $revshareStr,
+            'revshare_percent'=> $revsharePct,
+            'offers_url'      => htmlspecialchars($offersUrl, ENT_QUOTES, 'UTF-8'),
+            'app_url'         => htmlspecialchars($appUrl, ENT_QUOTES, 'UTF-8')
         ];
 
         try { if (Mailer::sendEvent($r['email'], $name, 'offer_status', $vars)) $sent++; } catch (\Throwable $e) {}
@@ -781,13 +789,15 @@ function _broadcastOfferLinkChangeEmail(int $offerId): int {
     if ((Config::get('config', 'app.offer_link_notify') ?? '0') !== '1') return 0;
 
     $offer = Database::fetchOne(
-        "SELECT o.id, o.name, o.category
+        "SELECT o.id, o.name, o.category, o.payout_type, o.payout_amount, o.revenue_amount
          FROM offers o
          WHERE o.id = ? LIMIT 1",
         [$offerId]
     );
     if (!$offer) return 0;
 
+    $revsharePct = Mailer::calculateRevSharePercentage($offer);
+    $revshareStr = 'RevShare: ' . $revsharePct;
     $siteName = Config::get('config','app.name') ?? 'AffsCash';
     $appUrl   = rtrim((string)(Config::get('config','app.url') ?: ''), '/');
     $offersUrl= $appUrl . '/affiliate/offers';
@@ -808,11 +818,13 @@ function _broadcastOfferLinkChangeEmail(int $offerId): int {
         if ($name === '') $name = 'Affiliate';
         
         $vars = [
-            'name'       => htmlspecialchars($name, ENT_QUOTES, 'UTF-8'),
-            'offer_name' => htmlspecialchars($offerName, ENT_QUOTES, 'UTF-8'),
-            'site_name'  => htmlspecialchars($siteName, ENT_QUOTES, 'UTF-8'),
-            'offers_url' => htmlspecialchars($offersUrl, ENT_QUOTES, 'UTF-8'),
-            'app_url'    => htmlspecialchars($appUrl, ENT_QUOTES, 'UTF-8')
+            'name'            => htmlspecialchars($name, ENT_QUOTES, 'UTF-8'),
+            'offer_name'      => htmlspecialchars($offerName, ENT_QUOTES, 'UTF-8'),
+            'site_name'       => htmlspecialchars($siteName, ENT_QUOTES, 'UTF-8'),
+            'revshare'        => $revshareStr,
+            'revshare_percent'=> $revsharePct,
+            'offers_url'      => htmlspecialchars($offersUrl, ENT_QUOTES, 'UTF-8'),
+            'app_url'         => htmlspecialchars($appUrl, ENT_QUOTES, 'UTF-8')
         ];
 
         try { if (Mailer::sendEvent($r['email'], $name, 'offer_link', $vars)) $sent++; } catch (\Throwable $e) {}

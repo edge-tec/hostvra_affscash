@@ -4,26 +4,7 @@ $pageTitle = 'Email Notifications';
 
 if (!function_exists('wrapWithLogo')) {
     function wrapWithLogo(string $htmlBody): string {
-        $logo     = Config::get('config', 'app.logo');
-        $siteName = Config::get('config', 'app.name') ?? 'AffiliateTracker';
-        $appUrl   = rtrim(Config::get('config', 'app.url') ?? '', '/');
-
-        $logoHtml = $logo
-            ? '<img src="' . $appUrl . '/' . ltrim($logo, '/') . '" alt="' . htmlspecialchars($siteName) . '" style="max-height:50px;max-width:200px">'
-            : '<strong style="font-size:20px">' . htmlspecialchars($siteName) . '</strong>';
-
-        return '
-    <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto">
-        <div style="background:linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);padding:20px;text-align:center;border-radius:8px 8px 0 0">
-            ' . $logoHtml . '
-        </div>
-        <div style="padding:24px;border:1px solid #E2E8F0;border-top:none;border-radius:0 0 8px 8px">
-            ' . $htmlBody . '
-        </div>
-        <div style="text-align:center;font-size:11px;color:#94A3B8;margin-top:12px">
-            &copy; ' . date('Y') . ' ' . htmlspecialchars($siteName) . '
-        </div>
-    </div>';
+        return Mailer::applyTheme($htmlBody, 'Broadcast');
     }
 }
 
