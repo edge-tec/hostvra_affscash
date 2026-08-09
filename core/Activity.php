@@ -320,4 +320,37 @@ class Activity {
             );
         } catch (Exception $e) {}
     }
+
+    /**
+     * General activity log helper for admin/system actions.
+     */
+    public static function log($userId, string $action, ?string $objectType = null, $objectId = null, $oldData = null, $newData = null): void {
+        try {
+            self::ensureTables();
+            Database::query(
+                "CREATE TABLE IF NOT EXISTS `admin_activity_log` (
+                    `id`          INT AUTO_INCREMENT PRIMARY KEY,
+                    `user_id`     INT NULL,
+                    `action`      VARCHAR(100) NOT NULL,
+                    `object_type` VARCHAR(50)  NULL,
+                    `object_id`   VARCHAR(50)  NULL,
+                    `old_data`    TEXT NULL,
+                    `new_data`    TEXT NULL,
+                    `created_at`  DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    INDEX `idx_user` (`user_id`),
+                    INDEX `idx_action` (`action`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
+            );
+            Database::insert('admin_activity_log', [
+                'user_id'     => $userId ? (int)$userId : null,
+                'action'      => $action,
+                'object_type' => $objectType,
+                'object_id'   => $objectId !== null ? (string)$objectId : null,
+                'old_data'    => is_array($oldData) ? json_encode($oldData) : $oldData,
+                'new_data'    => is_array($newData) ? json_encode($newData) : $newData,
+            ]);
+        } catch (\Throwable $e) {
+            // Silently swallow errors so activity logging never breaks primary workflows
+        }
+    }
 }
