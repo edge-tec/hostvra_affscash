@@ -1070,6 +1070,7 @@ function geoFlag(code) {
     }
     renderTags();
     updateSelectAll();
+}());
 </script>
 
 <script>
