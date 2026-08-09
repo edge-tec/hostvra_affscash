@@ -349,9 +349,17 @@ function fmtTs(ts, opts) {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
     </div>
     <div class="sidebar-group-items">
-        <a href="/admin/offers" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/offers') && !str_contains($_SERVER['REQUEST_URI'],'/admin/offer-approvals') && !str_contains($_SERVER['REQUEST_URI'],'/admin/inhouse-offers') ? 'active' : '' ?>">
+        <a href="/admin/offers" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/offers') && !str_contains($_SERVER['REQUEST_URI'],'/admin/offer-approvals') && !str_contains($_SERVER['REQUEST_URI'],'/admin/inhouse-offers') && !str_contains($_SERVER['REQUEST_URI'],'/admin/offer-categories') && !str_contains($_SERVER['REQUEST_URI'],'/admin/offer-types') ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
         Offers
+    </a>
+    <a href="/admin/offer-categories" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/offer-categories') ? 'active' : '' ?>">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        Categories
+    </a>
+    <a href="/admin/offer-types" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/offer-types') ? 'active' : '' ?>">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+        Offer Types
     </a>
     <a href="/admin/offer-approvals" class="nav-link <?= str_contains($_SERVER['REQUEST_URI'],'/admin/offer-approvals') ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 11 17 15 13"/></svg>

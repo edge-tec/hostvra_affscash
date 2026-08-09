@@ -15,6 +15,9 @@ try { Database::query("ALTER TABLE offers ADD COLUMN require_approval TINYINT(1)
 // Backwards compatible: when this column is empty/null, existing readers fall back to the URL.
 try { Database::query("ALTER TABLE offers ADD COLUMN landing_page_names TEXT DEFAULT NULL"); } catch (Exception $e) {}
 try { Database::query("ALTER TABLE offers MODIFY COLUMN status ENUM('active','paused','expired','pending','deleted') DEFAULT 'pending'"); } catch (Exception $e) {}
+// Offer taxonomy columns
+try { Database::query("ALTER TABLE offers ADD COLUMN category_id INT UNSIGNED NULL DEFAULT NULL"); } catch (Exception $e) {}
+try { Database::query("ALTER TABLE offers ADD COLUMN offer_type_id INT UNSIGNED NULL DEFAULT NULL"); } catch (Exception $e) {}
 
 // offer_links table
 try { Database::query("CREATE TABLE IF NOT EXISTS `offer_links` (
@@ -39,9 +42,11 @@ $action = Helpers::get('action') ?: (isset($_GET['id']) ? 'edit' : 'index');
 if ($action === 'index') {
     $qFilter         = Helpers::get('q');
     $catFilter       = Helpers::get('category');
+    $catIdFilter     = (int)Helpers::get('category_id');
     $typeFilter      = Helpers::get('payout_type');
     $statusFilter    = Helpers::get('status_filter');
     $offerTypeFilter = Helpers::get('offer_type');
+    $typeIdFilter    = (int)Helpers::get('offer_type_id');
     $countryFilter   = Helpers::get('country');
     $deviceFilter    = Helpers::get('device');
     $idFilter        = (int)Helpers::get('offer_id');
@@ -49,14 +54,16 @@ if ($action === 'index') {
 
     $whereFilters = ['1=1'];
     $filterParams = [];
-    if ($idFilter > 0)    { $whereFilters[] = "o.id = ?";                                    $filterParams[] = $idFilter; }
-    if ($qFilter)         { $whereFilters[] = "o.name LIKE ?";                               $filterParams[] = '%' . $qFilter . '%'; }
-    if ($catFilter)       { $whereFilters[] = "o.category = ?";                              $filterParams[] = $catFilter; }
-    if ($typeFilter)      { $whereFilters[] = "o.payout_type = ?";                           $filterParams[] = $typeFilter; }
-    if ($statusFilter)    { $whereFilters[] = "o.status = ?";                                $filterParams[] = $statusFilter; }
-    if ($offerTypeFilter) { $whereFilters[] = "o.offer_type = ?";                            $filterParams[] = $offerTypeFilter; }
-    if ($countryFilter)   { $whereFilters[] = "JSON_CONTAINS(o.geo_targeting, JSON_QUOTE(?))"; $filterParams[] = $countryFilter; }
-    if ($deviceFilter)    { $whereFilters[] = "JSON_CONTAINS(o.device_targeting, JSON_QUOTE(?))"; $filterParams[] = $deviceFilter; }
+    if ($idFilter > 0)     { $whereFilters[] = "o.id = ?";                                    $filterParams[] = $idFilter; }
+    if ($qFilter)          { $whereFilters[] = "o.name LIKE ?";                               $filterParams[] = '%' . $qFilter . '%'; }
+    if ($catFilter)        { $whereFilters[] = "o.category = ?";                              $filterParams[] = $catFilter; }
+    if ($catIdFilter > 0)  { $whereFilters[] = "o.category_id = ?";                           $filterParams[] = $catIdFilter; }
+    if ($typeFilter)       { $whereFilters[] = "o.payout_type = ?";                           $filterParams[] = $typeFilter; }
+    if ($statusFilter)     { $whereFilters[] = "o.status = ?";                                $filterParams[] = $statusFilter; }
+    if ($offerTypeFilter)  { $whereFilters[] = "o.offer_type = ?";                            $filterParams[] = $offerTypeFilter; }
+    if ($typeIdFilter > 0) { $whereFilters[] = "o.offer_type_id = ?";                         $filterParams[] = $typeIdFilter; }
+    if ($countryFilter)    { $whereFilters[] = "JSON_CONTAINS(o.geo_targeting, JSON_QUOTE(?))"; $filterParams[] = $countryFilter; }
+    if ($deviceFilter)     { $whereFilters[] = "JSON_CONTAINS(o.device_targeting, JSON_QUOTE(?))"; $filterParams[] = $deviceFilter; }
     switch ($accessFilter) {
         case 'active':     $whereFilters[] = "o.status = 'active'"; break;
         case 'inactive':   $whereFilters[] = "o.status != 'active'"; break;
@@ -80,6 +87,9 @@ if ($action === 'index') {
 
     $categories = Database::fetchAll("SELECT DISTINCT category FROM offers WHERE category IS NOT NULL AND category != '' ORDER BY category");
     $offerTypes  = Database::fetchAll("SELECT DISTINCT offer_type FROM offers WHERE offer_type IS NOT NULL AND offer_type != '' ORDER BY offer_type");
+    // Database-driven taxonomy categories and types
+    $dbCategories = []; try { $dbCategories = Database::fetchAll("SELECT id, name FROM offer_categories WHERE status='active' ORDER BY sort_order, name"); } catch (\Throwable $_) {}
+    $dbOfferTypes = []; try { $dbOfferTypes = Database::fetchAll("SELECT id, name, category_id FROM offer_types WHERE status='active' ORDER BY sort_order, name"); } catch (\Throwable $_) {}
     $allAffiliates = Database::fetchAll(
         "SELECT af.id, af.affiliate_code, CONCAT(u.first_name,' ',u.last_name) as name FROM affiliates af JOIN users u ON u.id=af.user_id WHERE u.status='active' ORDER BY name"
     );
@@ -203,6 +213,16 @@ elseif ($action === 'create') {
         if (!$offerUrl) $errors[] = 'At least one Offer URL is required.';
 
         if (empty($errors)) {
+            // Taxonomy: category_id and offer_type_id from database
+            $categoryId  = ((int)Helpers::postRaw('category_id')) ?: null;
+            $offerTypeIdVal = ((int)Helpers::postRaw('offer_type_id')) ?: null;
+
+            // Validate offer_type belongs to category (if both set)
+            if ($categoryId && $offerTypeIdVal) {
+                $validType = Database::fetchOne("SELECT id FROM offer_types WHERE id = ? AND category_id = ?", [$offerTypeIdVal, $categoryId]);
+                if (!$validType) $offerTypeIdVal = null; // Silently clear invalid type
+            }
+
             $id = Database::insert('offers', [
                 'advertiser_id'      => $advId,
                 'name'               => $name,
@@ -212,6 +232,8 @@ elseif ($action === 'create') {
                 'landing_page_names' => $landingPageNames,
                 'preview_url'        => Helpers::postRaw('preview_url'),
                 'category'           => Helpers::post('category'),
+                'category_id'        => $categoryId,
+                'offer_type_id'      => $offerTypeIdVal,
                 'geo_targeting'      => $geos ? json_encode($geos) : null,
                 'device_targeting'   => $devices ? json_encode($devices) : null,
                 'offer_type'         => $offerType ?: null,
@@ -364,6 +386,16 @@ elseif ($action === 'edit' && isset($_GET['id'])) {
             if (!$offerUrl) $errors[] = 'At least one Offer URL is required.';
 
             if (empty($errors)) {
+                // Taxonomy: category_id and offer_type_id from database
+                $categoryId  = ((int)Helpers::postRaw('category_id')) ?: null;
+                $offerTypeIdVal = ((int)Helpers::postRaw('offer_type_id')) ?: null;
+
+                // Validate offer_type belongs to category (if both set)
+                if ($categoryId && $offerTypeIdVal) {
+                    $validType = Database::fetchOne("SELECT id FROM offer_types WHERE id = ? AND category_id = ?", [$offerTypeIdVal, $categoryId]);
+                    if (!$validType) $offerTypeIdVal = null;
+                }
+
                 Database::update('offers', [
                     'name'               => $name,
                     'description'        => $description,
@@ -372,6 +404,8 @@ elseif ($action === 'edit' && isset($_GET['id'])) {
                     'landing_page_names' => $landingPageNames,
                     'preview_url'        => Helpers::postRaw('preview_url'),
                     'category'           => Helpers::post('category'),
+                    'category_id'        => $categoryId,
+                    'offer_type_id'      => $offerTypeIdVal,
                     'geo_targeting'      => $geos ? json_encode($geos) : null,
                     'device_targeting'   => $devices ? json_encode($devices) : null,
                     'offer_type'         => $offerType ?: null,

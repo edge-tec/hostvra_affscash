@@ -154,12 +154,17 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
 // Offer filters
 $qFilter         = Helpers::get('q');
 $catFilter       = Helpers::get('category');
+$catIdFilter     = (int)Helpers::get('category_id');
 $typeFilter      = Helpers::get('payout_type');
 $offerTypeFilter = Helpers::get('offer_type');
+$typeIdFilter    = (int)Helpers::get('offer_type_id');
 $countryFilter   = Helpers::get('country');
 $deviceFilter    = Helpers::get('device');
 $idFilter        = (int)Helpers::get('offer_id');
 $accessFilter    = Helpers::get('access_filter') ?: '';
+
+$dbCategories = []; try { $dbCategories = Database::fetchAll("SELECT id, name FROM offer_categories WHERE status='active' ORDER BY sort_order, name"); } catch (\Throwable $_) {}
+$dbOfferTypes = []; try { $dbOfferTypes = Database::fetchAll("SELECT id, name, category_id FROM offer_types WHERE status='active' ORDER BY sort_order, name"); } catch (\Throwable $_) {}
 
 // Private offers are normally hidden — but if this affiliate is in the
 // private_offer_access list for a given offer, that offer becomes visible.
@@ -170,13 +175,15 @@ $offerWhere = [
     "(o.is_inhouse IS NULL OR o.is_inhouse = 0)",
 ];
 $offerParams = [];
-if ($idFilter > 0)    { $offerWhere[] = "o.id = ?";             $offerParams[] = $idFilter; }
-if ($qFilter)         { $offerWhere[] = "o.name LIKE ?";        $offerParams[] = '%'.$qFilter.'%'; }
-if ($catFilter)       { $offerWhere[] = "o.category = ?";       $offerParams[] = $catFilter; }
-if ($typeFilter)      { $offerWhere[] = "o.payout_type = ?";    $offerParams[] = $typeFilter; }
-if ($offerTypeFilter) { $offerWhere[] = "o.offer_type = ?";     $offerParams[] = $offerTypeFilter; }
-if ($countryFilter)   { $offerWhere[] = "JSON_CONTAINS(o.geo_targeting, JSON_QUOTE(?))"; $offerParams[] = $countryFilter; }
-if ($deviceFilter)    { $offerWhere[] = "JSON_CONTAINS(o.device_targeting, JSON_QUOTE(?))"; $offerParams[] = $deviceFilter; }
+if ($idFilter > 0)     { $offerWhere[] = "o.id = ?";             $offerParams[] = $idFilter; }
+if ($qFilter)          { $offerWhere[] = "o.name LIKE ?";        $offerParams[] = '%'.$qFilter.'%'; }
+if ($catFilter)        { $offerWhere[] = "o.category = ?";       $offerParams[] = $catFilter; }
+if ($catIdFilter > 0)  { $offerWhere[] = "o.category_id = ?";    $offerParams[] = $catIdFilter; }
+if ($typeFilter)       { $offerWhere[] = "o.payout_type = ?";    $offerParams[] = $typeFilter; }
+if ($offerTypeFilter)  { $offerWhere[] = "o.offer_type = ?";     $offerParams[] = $offerTypeFilter; }
+if ($typeIdFilter > 0) { $offerWhere[] = "o.offer_type_id = ?"; $offerParams[] = $typeIdFilter; }
+if ($countryFilter)    { $offerWhere[] = "JSON_CONTAINS(o.geo_targeting, JSON_QUOTE(?))"; $offerParams[] = $countryFilter; }
+if ($deviceFilter)     { $offerWhere[] = "JSON_CONTAINS(o.device_targeting, JSON_QUOTE(?))"; $offerParams[] = $deviceFilter; }
 switch ($accessFilter) {
     case 'request':    $offerWhere[] = "o.require_approval = 1"; break;
     case 'all_access': $offerWhere[] = "o.require_approval = 0"; break;

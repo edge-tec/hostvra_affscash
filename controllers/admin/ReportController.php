@@ -99,7 +99,9 @@ $sub1           = trim(Helpers::get('sub1') ?: '');
 $trafficSource  = trim(Helpers::get('traffic_source') ?: '');
 $limit          = min((int)(Helpers::get('limit') ?: 1000), 10000);
 
-$slId    = (int)(Helpers::get('sl_id') ?: 0);
+$slId        = (int)(Helpers::get('sl_id') ?: 0);
+$categoryId  = (int)(Helpers::get('category_id') ?: 0);
+$offerTypeId = (int)(Helpers::get('offer_type_id') ?: 0);
 
 $offerList = Database::fetchAll("SELECT id, name FROM offers ORDER BY name");
 $affList   = Database::fetchAll(
@@ -108,6 +110,8 @@ $affList   = Database::fetchAll(
 $countryList = Database::fetchAll(
     "SELECT DISTINCT country FROM clicks WHERE country != '' ORDER BY country"
 );
+$dbCategories = []; try { $dbCategories = Database::fetchAll("SELECT id, name FROM offer_categories WHERE status='active' ORDER BY sort_order, name"); } catch (\Throwable $_e) {}
+$dbOfferTypes = []; try { $dbOfferTypes = Database::fetchAll("SELECT id, name, category_id FROM offer_types WHERE status='active' ORDER BY sort_order, name"); } catch (\Throwable $_e) {}
 $slList = [];
 try {
     $slList = Database::fetchAll("SELECT id, name, slug FROM smartlinks WHERE status='active' ORDER BY name");
@@ -118,18 +122,26 @@ $dateFrom = date('Y-m-d 00:00:00', strtotime($from));
 $dateTo   = date('Y-m-d 23:59:59', strtotime($to));
 
 // Build click WHERE parts
-function buildClickWhere(int $offerId, int $affId, string $country, string $sub1): array {
+function buildClickWhere(int $offerId, int $affId, string $country, string $sub1, int $categoryId = 0, int $offerTypeId = 0): array {
     $where  = ['c.clicked_at BETWEEN ? AND ?'];
     $params = [];  // date params added later
     if ($offerId > 0) { $where[] = 'c.offer_id = ?';      $params[] = $offerId; }
     if ($affId   > 0) { $where[] = 'c.affiliate_id = ?';  $params[] = $affId; }
     if ($country !== '') { $where[] = 'c.country = ?';    $params[] = strtoupper($country); }
     if ($sub1    !== '') { $where[] = 'c.sub1 LIKE ?';    $params[] = '%'.$sub1.'%'; }
+    if ($categoryId > 0) {
+        $where[] = 'EXISTS(SELECT 1 FROM offers o WHERE o.id = c.offer_id AND o.category_id = ?)';
+        $params[] = $categoryId;
+    }
+    if ($offerTypeId > 0) {
+        $where[] = 'EXISTS(SELECT 1 FROM offers o WHERE o.id = c.offer_id AND o.offer_type_id = ?)';
+        $params[] = $offerTypeId;
+    }
     return [$where, $params];
 }
 
 // Build conversion WHERE parts
-function buildConvWhere(int $offerId, int $affId, string $country, string $sub1, string $trafficSource = ''): array {
+function buildConvWhere(int $offerId, int $affId, string $country, string $sub1, string $trafficSource = '', int $categoryId = 0, int $offerTypeId = 0): array {
     $where  = ['cv.converted_at BETWEEN ? AND ?'];
     $params = [];
     if ($offerId > 0) { $where[] = 'cv.offer_id = ?';     $params[] = $offerId; }
@@ -145,6 +157,14 @@ function buildConvWhere(int $offerId, int $affId, string $country, string $sub1,
     if ($trafficSource !== '') {
         $where[] = "COALESCE(cv.traffic_source, 'Unknown') = ?";
         $params[] = $trafficSource;
+    }
+    if ($categoryId > 0) {
+        $where[] = 'EXISTS(SELECT 1 FROM offers o WHERE o.id = cv.offer_id AND o.category_id = ?)';
+        $params[] = $categoryId;
+    }
+    if ($offerTypeId > 0) {
+        $where[] = 'EXISTS(SELECT 1 FROM offers o WHERE o.id = cv.offer_id AND o.offer_type_id = ?)';
+        $params[] = $offerTypeId;
     }
     return [$where, $params];
 }
@@ -426,7 +446,7 @@ if ($tab === 'offer_report') {
 // ─── Clicks tab ───────────────────────────────────────────────────────────
 $clicks = null;
 if ($tab === 'clicks') {
-    [$clkWhere, $clkExtra] = buildClickWhere($offerId, $affId, $country, $sub1);
+    [$clkWhere, $clkExtra] = buildClickWhere($offerId, $affId, $country, $sub1, $categoryId, $offerTypeId);
     $clkParams = array_merge([$dateFrom, $dateTo], $clkExtra);
     $whereStr  = implode(' AND ', $clkWhere);
 
@@ -507,7 +527,7 @@ $convStatusFilter = match($tab) {
 };
 
 if (in_array($tab, ['conversions','rejected','pending','autohide'])) {
-    [$cvWhere, $cvExtra] = buildConvWhere($offerId, $affId, $country, $sub1, $trafficSource);
+    [$cvWhere, $cvExtra] = buildConvWhere($offerId, $affId, $country, $sub1, $trafficSource, $categoryId, $offerTypeId);
     $cvParams = array_merge([$dateFrom, $dateTo], $cvExtra);
 
     if ($tab === 'autohide') {

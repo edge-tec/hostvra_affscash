@@ -994,7 +994,8 @@ INSERT IGNORE INTO `schema_migrations` (migration, batch, status) VALUES
     ('0007_upgrade_safety.sql',               1, 'applied'),
     ('0008_manager_commission_from_profit.sql',1, 'applied'),
     ('0009_manager_invoice_balance.sql',      1, 'applied'),
-    ('0010_manager_commission_fix.sql',       1, 'applied');
+    ('0010_manager_commission_fix.sql',       1, 'applied'),
+    ('0024_offer_categories_types.sql',       1, 'applied');
 
 -- ── Traffic Source Tracking on conversions ────────────────────────────────
 ALTER TABLE `conversions` ADD COLUMN IF NOT EXISTS `traffic_source`      VARCHAR(50)   DEFAULT 'Unknown';
@@ -1027,3 +1028,50 @@ ALTER TABLE `clicks` ADD COLUMN IF NOT EXISTS `override_source` VARCHAR(50) DEFA
 ALTER TABLE `clicks` ADD COLUMN IF NOT EXISTS `override_rule_id` INT UNSIGNED DEFAULT NULL;
 ALTER TABLE `conversions` ADD COLUMN IF NOT EXISTS `override_source` VARCHAR(50) DEFAULT NULL;
 ALTER TABLE `conversions` ADD COLUMN IF NOT EXISTS `override_rule_id` INT UNSIGNED DEFAULT NULL;
+
+-- ── Offer Categories & Offer Types (Two-level taxonomy) ──────────────────────
+CREATE TABLE IF NOT EXISTS `offer_categories` (
+    `id`          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `name`        VARCHAR(100) NOT NULL,
+    `slug`        VARCHAR(120) NOT NULL,
+    `description` TEXT NULL,
+    `status`      ENUM('active','inactive') NOT NULL DEFAULT 'active',
+    `sort_order`  INT NOT NULL DEFAULT 0,
+    `created_at`  DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`  DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY `uq_cat_name` (`name`),
+    UNIQUE KEY `uq_cat_slug` (`slug`),
+    INDEX `idx_cat_status` (`status`),
+    INDEX `idx_cat_sort` (`sort_order`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `offer_types` (
+    `id`          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `category_id` INT UNSIGNED NOT NULL,
+    `name`        VARCHAR(100) NOT NULL,
+    `slug`        VARCHAR(120) NOT NULL,
+    `description` TEXT NULL,
+    `status`      ENUM('active','inactive') NOT NULL DEFAULT 'active',
+    `sort_order`  INT NOT NULL DEFAULT 0,
+    `created_at`  DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`  DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY `uq_type_cat_name` (`category_id`, `name`),
+    UNIQUE KEY `uq_type_slug` (`slug`),
+    INDEX `idx_type_category` (`category_id`),
+    INDEX `idx_type_status` (`status`),
+    INDEX `idx_type_sort` (`sort_order`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `offers` ADD COLUMN IF NOT EXISTS `category_id`   INT UNSIGNED NULL DEFAULT NULL;
+ALTER TABLE `offers` ADD COLUMN IF NOT EXISTS `offer_type_id` INT UNSIGNED NULL DEFAULT NULL;
+ALTER TABLE `offers` ADD INDEX IF NOT EXISTS `idx_offer_category_id` (`category_id`);
+ALTER TABLE `offers` ADD INDEX IF NOT EXISTS `idx_offer_type_id`     (`offer_type_id`);
+
+-- Seed initial offer categories
+INSERT IGNORE INTO `offer_categories` (`name`, `slug`, `status`, `sort_order`) VALUES
+    ('Sweepstakes',       'sweepstakes',     'active', 1),
+    ('Finance',           'finance',         'active', 2),
+    ('Free Trials',       'free-trials',     'active', 3),
+    ('Subscriptions',     'subscriptions',   'active', 4),
+    ('Mobile Apps',       'mobile-apps',     'active', 5),
+    ('Health & Wellness', 'health-wellness', 'active', 6);

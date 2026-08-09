@@ -18,17 +18,30 @@
             </div>
             <div class="form-group" style="margin-bottom:0;min-width:140px">
                 <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Category</label>
-                <select name="category" class="form-control">
+                <select name="category_id" class="form-control">
                     <option value="">All Categories</option>
-                    <?php foreach ($categories as $cat): ?>
-                    <option value="<?= Helpers::e($cat['category']) ?>" <?= ($catFilter ?? '') === $cat['category'] ? 'selected' : '' ?>><?= Helpers::e($cat['category']) ?></option>
-                    <?php endforeach; ?>
+                    <?php if (!empty($dbCategories)): ?>
+                        <?php foreach ($dbCategories as $dbc): ?>
+                        <option value="<?= $dbc['id'] ?>" <?= (($catIdFilter ?? 0) == $dbc['id']) ? 'selected' : '' ?>><?= Helpers::e($dbc['name']) ?></option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </select>
             </div>
             <div class="form-group" style="margin-bottom:0;min-width:130px">
-                <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Payout Type</label>
-                <select name="payout_type" class="form-control">
+                <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Offer Type</label>
+                <select name="offer_type_id" class="form-control">
                     <option value="">All Types</option>
+                    <?php if (!empty($dbOfferTypes)): ?>
+                        <?php foreach ($dbOfferTypes as $ot): ?>
+                        <option value="<?= $ot['id'] ?>" <?= (($typeIdFilter ?? 0) == $ot['id']) ? 'selected' : '' ?>><?= Helpers::e($ot['name']) ?></option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;min-width:130px">
+                <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Payout Model</label>
+                <select name="payout_type" class="form-control">
+                    <option value="">All Models</option>
                     <?php foreach (['CPA','CPL','CPS','CPM','CPC','RevShare','Trial','Other'] as $pt): ?>
                     <option value="<?= $pt ?>" <?= ($typeFilter ?? '') === $pt ? 'selected' : '' ?>><?= $pt ?></option>
                     <?php endforeach; ?>
@@ -40,15 +53,6 @@
                     <option value="">All Statuses</option>
                     <?php foreach (['active','paused','pending'] as $sf): ?>
                     <option value="<?= $sf ?>" <?= ($statusFilter ?? '') === $sf ? 'selected' : '' ?>><?= ucfirst($sf) ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div class="form-group" style="margin-bottom:0;min-width:130px">
-                <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Offer Type</label>
-                <select name="offer_type" class="form-control">
-                    <option value="">All Types</option>
-                    <?php foreach ($offerTypes ?? [] as $ot): ?>
-                    <option value="<?= Helpers::e($ot['offer_type']) ?>" <?= ($offerTypeFilter ?? '') === $ot['offer_type'] ? 'selected' : '' ?>><?= Helpers::e($ot['offer_type']) ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>

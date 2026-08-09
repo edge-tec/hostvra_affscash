@@ -39,12 +39,26 @@ require BASE_PATH . '/views/layouts/admin.php';
                     </div>
                     <div class="form-group">
                         <label>Category</label>
-                        <select name="category" class="form-control">
-                            <option value="">— None —</option>
-                            <?php foreach(['Finance','Health & Beauty','eCommerce','Gaming','Dating','Software','Travel','Education','Insurance','Crypto','Other'] as $cat): ?>
-                            <option value="<?= $cat ?>" <?= ($offer['category'] ?? '') === $cat ? 'selected' : '' ?>><?= $cat ?></option>
+                        <?php
+                        // Fetch active categories from database
+                        $dbCategories = [];
+                        try { $dbCategories = Database::fetchAll("SELECT id, name FROM offer_categories WHERE status='active' ORDER BY sort_order, name"); } catch (\Throwable $_e) {}
+                        ?>
+                        <select name="category_id" id="offerCategorySelect" class="form-control" onchange="loadOfferTypes(this.value)">
+                            <option value="">— Select Category —</option>
+                            <?php foreach($dbCategories as $dbCat): ?>
+                            <option value="<?= $dbCat['id'] ?>" <?= (($offer['category_id'] ?? '') == $dbCat['id']) ? 'selected' : '' ?>><?= Helpers::e($dbCat['name']) ?></option>
                             <?php endforeach; ?>
                         </select>
+                        <!-- Preserve old category string field for backward compat -->
+                        <input type="hidden" name="category" value="<?= Helpers::e($offer['category'] ?? '') ?>" id="offerCategoryLegacy">
+                    </div>
+                    <div class="form-group">
+                        <label>Offer Type</label>
+                        <select name="offer_type_id" id="offerTypeSelect" class="form-control">
+                            <option value="">— Select Category First —</option>
+                        </select>
+                        <div class="form-hint">Offer types are loaded dynamically based on the selected category.</div>
                     </div>
                     <div class="form-group">
                         <label>Description</label>
@@ -1056,6 +1070,58 @@ function geoFlag(code) {
     }
     renderTags();
     updateSelectAll();
-}());
+</script>
+
+<script>
+// ── Dynamic Offer Type loading based on Category selection ──────────────────
+function loadOfferTypes(categoryId) {
+    const typeSelect = document.getElementById('offerTypeSelect');
+    const legacyInput = document.getElementById('offerCategoryLegacy');
+
+    // Update legacy category name from the selected option text
+    const catSelect = document.getElementById('offerCategorySelect');
+    if (legacyInput && catSelect) {
+        const selectedOpt = catSelect.options[catSelect.selectedIndex];
+        legacyInput.value = selectedOpt ? selectedOpt.textContent.trim() : '';
+    }
+
+    if (!categoryId) {
+        typeSelect.innerHTML = '<option value="">— Select Category First —</option>';
+        return;
+    }
+
+    typeSelect.innerHTML = '<option value="">Loading...</option>';
+    typeSelect.disabled = true;
+
+    fetch('/admin/offer-categories?action=types&category_id=' + categoryId)
+        .then(r => r.json())
+        .then(data => {
+            typeSelect.disabled = false;
+            if (data.success && data.types.length > 0) {
+                let html = '<option value="">— Select Offer Type —</option>';
+                const currentTypeId = '<?= (int)($offer['offer_type_id'] ?? 0) ?>';
+                data.types.forEach(t => {
+                    const sel = (t.id == currentTypeId) ? ' selected' : '';
+                    html += '<option value="' + t.id + '"' + sel + '>' + t.name + '</option>';
+                });
+                typeSelect.innerHTML = html;
+            } else {
+                typeSelect.innerHTML = '<option value="">— No types for this category —</option>';
+            }
+        })
+        .catch(() => {
+            typeSelect.disabled = false;
+            typeSelect.innerHTML = '<option value="">— Error loading types —</option>';
+        });
+}
+
+// On page load, if category is already selected (edit mode), load its types
+(function() {
+    const catSelect = document.getElementById('offerCategorySelect');
+    if (catSelect && catSelect.value) {
+        loadOfferTypes(catSelect.value);
+    }
+})();
 </script>
 <?php require BASE_PATH . '/views/layouts/admin_footer.php'; ?>
+

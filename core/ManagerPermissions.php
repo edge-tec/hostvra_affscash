@@ -38,6 +38,8 @@ class ManagerPermissions
         'view_offer_performance' => ['label' => 'View offer performance',           'default' => 1, 'group' => 'access'],
         'access_affiliate_tickets' => ['label' => 'Access affiliate tickets',       'default' => 1, 'group' => 'support'],
         'traffic_source_override'  => ['label' => 'Traffic Source Override',        'default' => 1, 'group' => 'access'],
+        'manage_offer_categories'  => ['label' => 'Manage offer categories',        'default' => 0, 'group' => 'offers'],
+        'manage_offer_types'       => ['label' => 'Manage offer types',             'default' => 0, 'group' => 'offers'],
         // Optional "elevated" permissions — admin must opt-in.
         'edit_affiliate_payouts' => ['label' => 'Edit affiliate payouts',           'default' => 0, 'group' => 'access'],
         'generate_invoices'      => ['label' => 'Allow invoice generator access',   'default' => 0, 'group' => 'invoice'],

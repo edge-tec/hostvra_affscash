@@ -12,8 +12,10 @@ try {
     if ($action === 'list') {
         $qFilter         = $_GET['q'] ?? '';
         $catFilter       = $_GET['category'] ?? '';
+        $catIdFilter     = (int)($_GET['category_id'] ?? 0);
         $typeFilter      = $_GET['payout_type'] ?? '';
         $offerTypeFilter = $_GET['offer_type'] ?? '';
+        $typeIdFilter    = (int)($_GET['offer_type_id'] ?? 0);
         $countryFilter   = $_GET['country'] ?? '';
         $deviceFilter    = $_GET['device'] ?? '';
         $accessFilter    = $_GET['access_filter'] ?? '';
@@ -33,8 +35,10 @@ try {
 
         if ($qFilter)         { $offerWhere[] = "o.name LIKE ?";        $offerParams[] = '%'.$qFilter.'%'; }
         if ($catFilter)       { $offerWhere[] = "o.category = ?";       $offerParams[] = $catFilter; }
+        if ($catIdFilter > 0) { $offerWhere[] = "o.category_id = ?";    $offerParams[] = $catIdFilter; }
         if ($typeFilter)      { $offerWhere[] = "o.payout_type = ?";    $offerParams[] = $typeFilter; }
         if ($offerTypeFilter) { $offerWhere[] = "o.offer_type = ?";     $offerParams[] = $offerTypeFilter; }
+        if ($typeIdFilter > 0){ $offerWhere[] = "o.offer_type_id = ?"; $offerParams[] = $typeIdFilter; }
         if ($countryFilter)   { $offerWhere[] = "JSON_CONTAINS(o.geo_targeting, JSON_QUOTE(?))"; $offerParams[] = $countryFilter; }
         if ($deviceFilter)    { $offerWhere[] = "JSON_CONTAINS(o.device_targeting, JSON_QUOTE(?))"; $offerParams[] = $deviceFilter; }
         
@@ -46,13 +50,17 @@ try {
 
         try {
             $offers = Database::fetchAll(
-                "SELECT o.id, o.name, o.description, o.category, o.offer_type, o.require_approval, 
+                "SELECT o.id, o.name, o.description, o.category, o.category_id, o.offer_type, o.offer_type_id,
+                 oc.name as category_name, ot.name as offer_type_name,
+                 o.require_approval, 
                  o.geo_targeting as countries, o.device_targeting as devices,
                  o.payout_type, o.payout_amount as payout, o.preview_url, 
                  ao.status as access_status, ao.custom_payout
                  FROM offers o
                  LEFT JOIN affiliate_offers ao ON ao.offer_id = o.id AND ao.affiliate_id = ?
                  LEFT JOIN private_offer_access poa ON poa.offer_id = o.id AND poa.affiliate_id = ?
+                 LEFT JOIN offer_categories oc ON oc.id = o.category_id
+                 LEFT JOIN offer_types ot ON ot.id = o.offer_type_id
                  WHERE $offerWhereStr
                    AND (ao.status IS NULL OR ao.status NOT IN ('blocked','rejected'))
                  ORDER BY o.created_at DESC",

@@ -92,6 +92,26 @@ $tabIcons = [
             <?php endif; ?>
 
             <div class="form-group mb-0">
+                <label>Category</label>
+                <select name="category_id" class="form-control">
+                    <option value="">All Categories</option>
+                    <?php foreach ($dbCategories ?? [] as $dbc): ?>
+                    <option value="<?= $dbc['id'] ?>" <?= ($categoryId ?? 0) == $dbc['id'] ? 'selected' : '' ?>><?= Helpers::e($dbc['name']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div class="form-group mb-0">
+                <label>Offer Type</label>
+                <select name="offer_type_id" class="form-control">
+                    <option value="">All Offer Types</option>
+                    <?php foreach ($dbOfferTypes ?? [] as $ot): ?>
+                    <option value="<?= $ot['id'] ?>" <?= ($offerTypeId ?? 0) == $ot['id'] ? 'selected' : '' ?>><?= Helpers::e($ot['name']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div class="form-group mb-0">
                 <label>Offer</label>
                 <select name="offer_id" class="form-control">
                     <option value="">All Offers</option>

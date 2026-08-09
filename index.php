@@ -357,6 +357,14 @@ Router::any('/admin/offers/create', function() { $_GET['action']='create'; requi
 Router::any('/admin/offers/{id}/overview', function($id) { $_GET['id']=$id; require BASE_PATH . '/controllers/admin/OfferOverviewController.php'; });
 Router::any('/admin/offers/{id}', function($id) { $_GET['id']=$id; require BASE_PATH . '/controllers/admin/OfferController.php'; });
 
+// Offer Categories & Types
+Router::any('/admin/offer-categories', function() { require BASE_PATH . '/controllers/admin/OfferCategoryController.php'; });
+Router::any('/admin/offer-categories/create', function() { $_GET['action']='create'; require BASE_PATH . '/controllers/admin/OfferCategoryController.php'; });
+Router::any('/admin/offer-categories/{id}', function($id) { $_GET['id']=$id; require BASE_PATH . '/controllers/admin/OfferCategoryController.php'; });
+Router::any('/admin/offer-types', function() { require BASE_PATH . '/controllers/admin/OfferTypeController.php'; });
+Router::any('/admin/offer-types/create', function() { $_GET['action']='create'; require BASE_PATH . '/controllers/admin/OfferTypeController.php'; });
+Router::any('/admin/offer-types/{id}', function($id) { $_GET['id']=$id; require BASE_PATH . '/controllers/admin/OfferTypeController.php'; });
+
 // Private Offers — restricted-visibility offers with per-affiliate access list
 Router::any('/admin/private-offers', function() { require BASE_PATH . '/controllers/admin/PrivateOfferController.php'; });
 
@@ -661,6 +669,8 @@ Router::any('/api/v2/notifications', function() { require BASE_PATH . '/api/v2/N
 Router::any('/api/v2/admin/dashboard', function() { require BASE_PATH . '/api/v2/admin/DashboardController.php'; });
 Router::any('/api/v2/admin/offers', function() { require BASE_PATH . '/api/v2/admin/OfferController.php'; });
 Router::post('/api/v2/admin/offers/action', function() { require BASE_PATH . '/api/v2/admin/OfferActionController.php'; });
+Router::any('/api/v2/admin/offer-categories', function() { require BASE_PATH . '/api/v2/admin/OfferCategoryController.php'; });
+Router::any('/api/v2/admin/offer-types', function() { require BASE_PATH . '/api/v2/admin/OfferTypeController.php'; });
 
 Router::any('/api/v2/admin/smartlinks', function() { require BASE_PATH . '/api/v2/admin/SmartlinkController.php'; });
 

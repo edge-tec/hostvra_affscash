@@ -40,20 +40,24 @@ var _trackDomains = <?= $_domainListJson ?>;
             </div>
             <div class="form-group mb-0">
                 <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Category</label>
-                <select name="category" class="form-control">
+                <select name="category_id" class="form-control">
                     <option value="">All Categories</option>
-                    <?php foreach ($filterCategories as $fc): ?>
-                    <option value="<?= Helpers::e($fc['category']) ?>" <?= ($catFilter ?? '') === $fc['category'] ? 'selected' : '' ?>><?= Helpers::e($fc['category']) ?></option>
-                    <?php endforeach; ?>
+                    <?php if (!empty($dbCategories)): ?>
+                        <?php foreach ($dbCategories as $dbc): ?>
+                        <option value="<?= $dbc['id'] ?>" <?= (($catIdFilter ?? 0) == $dbc['id']) ? 'selected' : '' ?>><?= Helpers::e($dbc['name']) ?></option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </select>
             </div>
             <div class="form-group mb-0">
                 <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px">Offer Type</label>
-                <select name="offer_type" class="form-control">
+                <select name="offer_type_id" class="form-control">
                     <option value="">All Types</option>
-                    <?php foreach ($filterOfferTypes as $ft): ?>
-                    <option value="<?= Helpers::e($ft['offer_type']) ?>" <?= ($offerTypeFilter ?? '') === $ft['offer_type'] ? 'selected' : '' ?>><?= Helpers::e($ft['offer_type']) ?></option>
-                    <?php endforeach; ?>
+                    <?php if (!empty($dbOfferTypes)): ?>
+                        <?php foreach ($dbOfferTypes as $ot): ?>
+                        <option value="<?= $ot['id'] ?>" <?= (($typeIdFilter ?? 0) == $ot['id']) ? 'selected' : '' ?>><?= Helpers::e($ot['name']) ?></option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </select>
             </div>
             <div class="form-group mb-0">
