@@ -182,7 +182,7 @@ document.querySelectorAll('.toggle-type-btn').forEach(btn => {
         const fd = new FormData();
         fd.append('ajax_action', 'toggle_status');
         fd.append('id', id);
-        fd.append('_token', '<?= $_SESSION['_csrf'] ?? '' ?>');
+        fd.append('_token', '<?= Auth::generateCsrf() ?>');
         fetch('/admin/offer-types', { method: 'POST', body: fd })
         .then(r => r.json())
         .then(d => {

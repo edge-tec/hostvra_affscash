@@ -163,7 +163,7 @@ document.querySelectorAll('.toggle-status-btn').forEach(btn => {
         const fd = new FormData();
         fd.append('ajax_action', 'toggle_status');
         fd.append('id', id);
-        fd.append('_token', '<?= $_SESSION['_csrf'] ?? '' ?>');
+        fd.append('_token', '<?= Auth::generateCsrf() ?>');
         fetch('/admin/offer-categories', { method: 'POST', body: fd })
         .then(r => r.json())
         .then(d => {
@@ -185,7 +185,7 @@ function runSeeder() {
     btn.disabled = true; btn.textContent = 'Seeding...';
     const fd = new FormData();
     fd.append('ajax_action', 'run_seeder');
-    fd.append('_token', '<?= $_SESSION['_csrf'] ?? '' ?>');
+    fd.append('_token', '<?= Auth::generateCsrf() ?>');
     fetch('/admin/offer-categories', { method: 'POST', body: fd })
     .then(r => r.json())
     .then(d => {
