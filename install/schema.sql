@@ -1074,4 +1074,5 @@ INSERT IGNORE INTO `offer_categories` (`name`, `slug`, `status`, `sort_order`) V
     ('Free Trials',       'free-trials',     'active', 3),
     ('Subscriptions',     'subscriptions',   'active', 4),
     ('Mobile Apps',       'mobile-apps',     'active', 5),
-    ('Health & Wellness', 'health-wellness', 'active', 6);
+    ('Health & Wellness', 'health-wellness', 'active', 6),
+    ('Dating',            'dating',          'active', 7);

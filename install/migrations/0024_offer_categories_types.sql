@@ -52,7 +52,8 @@ INSERT IGNORE INTO `offer_categories` (`name`, `slug`, `status`, `sort_order`) V
     ('Free Trials',       'free-trials',        'active', 3),
     ('Subscriptions',     'subscriptions',      'active', 4),
     ('Mobile Apps',       'mobile-apps',        'active', 5),
-    ('Health & Wellness', 'health-wellness',    'active', 6);
+    ('Health & Wellness', 'health-wellness',    'active', 6),
+    ('Dating',            'dating',             'active', 7);
 
 -- Finance sub-types
 INSERT IGNORE INTO `offer_types` (`category_id`, `name`, `slug`, `status`, `sort_order`)
@@ -83,3 +84,20 @@ FROM (SELECT 'Beauty'        AS name, 'beauty'        AS slug, 1 AS sort_order
 ) t
 CROSS JOIN `offer_categories` c WHERE c.slug = 'health-wellness'
 AND NOT EXISTS (SELECT 1 FROM `offer_types` ot WHERE ot.category_id = c.id AND ot.name = t.name);
+
+-- Dating sub-types
+INSERT IGNORE INTO `offer_types` (`category_id`, `name`, `slug`, `status`, `sort_order`)
+SELECT c.id, t.name, t.slug, 'active', t.sort_order
+FROM (SELECT 'Mainstream Dating' AS name, 'mainstream-dating' AS slug, 1 AS sort_order
+      UNION ALL SELECT 'Adult Dating',     'adult-dating',      2
+      UNION ALL SELECT 'Casual Dating',    'casual-dating',     3
+) t
+CROSS JOIN `offer_categories` c WHERE c.slug = 'dating'
+AND NOT EXISTS (SELECT 1 FROM `offer_types` ot WHERE ot.category_id = c.id AND ot.name = t.name);
+
+-- Backfill: Assign previous offers without a category or with Dating to the Dating category
+UPDATE `offers`
+SET `category_id` = (SELECT `id` FROM `offer_categories` WHERE `slug` = 'dating' LIMIT 1),
+    `category` = 'Dating'
+WHERE `category_id` IS NULL OR `category` = 'Dating' OR `category` IS NULL OR `category` = '';
+

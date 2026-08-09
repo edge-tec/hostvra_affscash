@@ -28,6 +28,7 @@ class OfferCategorySeeder
         'Subscriptions'     => [],
         'Mobile Apps'       => ['App Installs'],
         'Health & Wellness' => ['Beauty', 'Personal Care', 'Weight Loss'],
+        'Dating'            => ['Mainstream Dating', 'Adult Dating', 'Casual Dating'],
     ];
 
     /**
@@ -35,7 +36,7 @@ class OfferCategorySeeder
      */
     public static function run(): array
     {
-        $created = ['categories' => 0, 'types' => 0, 'skipped' => 0];
+        $created = ['categories' => 0, 'types' => 0, 'skipped' => 0, 'offers_assigned' => 0];
         $sortOrder = 0;
 
         foreach (self::TAXONOMY as $categoryName => $offerTypes) {
@@ -94,6 +95,17 @@ class OfferCategorySeeder
                 ]);
                 $created['types']++;
             }
+        }
+
+        // Backfill: Assign previous offers (category_id IS NULL or category = 'Dating') to Dating category
+        $datingCat = Database::fetchOne("SELECT id FROM offer_categories WHERE slug = 'dating'");
+        if ($datingCat) {
+            $datingId = (int)$datingCat['id'];
+            $updated = Database::query(
+                "UPDATE offers SET category_id = ?, category = 'Dating' WHERE category_id IS NULL OR category = 'Dating' OR category IS NULL OR category = ''",
+                [$datingId]
+            )->rowCount();
+            $created['offers_assigned'] = $updated;
         }
 
         return $created;
