@@ -2917,7 +2917,35 @@ try {
         });
       });
     }
-    function buildAll(){track.innerHTML=OFFER_DATA.map(buildCard).join('');allCards=Array.from(track.querySelectorAll('.offer-card'));visCards=allCards.slice();if(countEl)countEl.textContent=allCards.length+' Offers';calc();resetAuto();if(!chartsBuilt){buildCharts();chartsBuilt=true;}initOfferCard3DTilt();}
+    function syncCatTabs(){
+      var tabsEl=document.getElementById('affTabs');
+      if(!tabsEl)return;
+      var existingCats=[];
+      tabsEl.querySelectorAll('.aff-tab').forEach(function(t){
+        existingCats.push(t.getAttribute('data-cat'));
+      });
+      OFFER_DATA.forEach(function(o){
+        if(o.cat && !existingCats.includes(o.cat)){
+          existingCats.push(o.cat);
+          var btn=document.createElement('button');
+          btn.className='aff-tab';
+          btn.setAttribute('data-cat', o.cat);
+          btn.textContent=getCatLabel(o.cat);
+          tabsEl.appendChild(btn);
+        }
+      });
+      tabsEl.querySelectorAll('.aff-tab').forEach(function(tab){
+        if(tab.getAttribute('data-bound'))return;
+        tab.setAttribute('data-bound','true');
+        tab.addEventListener('click',function(){
+          tabsEl.querySelectorAll('.aff-tab').forEach(function(t){t.classList.remove('active');});
+          tab.classList.add('active');
+          filterCat(tab.getAttribute('data-cat'));
+        });
+      });
+    }
+
+    function buildAll(){syncCatTabs();track.innerHTML=OFFER_DATA.map(buildCard).join('');allCards=Array.from(track.querySelectorAll('.offer-card'));visCards=allCards.slice();if(countEl)countEl.textContent=allCards.length+' Offers';calc();resetAuto();if(!chartsBuilt){buildCharts();chartsBuilt=true;}initOfferCard3DTilt();}
     function filterCat(cat){cur=0;allCards.forEach(function(c){c.style.display=(cat==='all'||c.getAttribute('data-cat')===cat)?'':'none';});visCards=allCards.filter(function(c){return c.style.display!=='none';});if(countEl)countEl.textContent=visCards.length+' Offers';track.style.transition='none';track.style.transform='translateX(0)';calc();resetAuto();initOfferCard3DTilt();}
     document.querySelectorAll('.aff-tab').forEach(function(tab){tab.addEventListener('click',function(){document.querySelectorAll('.aff-tab').forEach(function(t){t.classList.remove('active');});tab.classList.add('active');filterCat(tab.getAttribute('data-cat'));});});
     function calc(){if(!visCards.length)return;var vis=getVisible(),cw=track.parentElement.offsetWidth,nw=Math.floor((cw-GAP*(vis-1))/vis);allCards.forEach(function(c){c.style.flex='0 0 '+nw+'px';c.style.maxWidth=nw+'px';c.style.minWidth=nw+'px';});cardW=nw+GAP;maxIdx=Math.max(0,visCards.length-vis);if(cur>maxIdx)cur=maxIdx;buildDots(vis);render(false);}
