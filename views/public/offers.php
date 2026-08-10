@@ -265,10 +265,14 @@ require BASE_PATH . '/views/layouts/public_top.php';
                 
                 // Format payout
                 $sym = ($o['currency'] === 'EUR') ? '€' : (($o['currency'] === 'GBP') ? '£' : '$');
-                if ($o['payout_type'] === 'RevShare') {
+                $isRevShare = (strcasecmp($o['payout_type'] ?? '', 'RevShare') === 0 
+                               || stripos($o['payout_type'] ?? '', 'revshare') !== false 
+                               || stripos($o['offer_type'] ?? '', 'revshare') !== false 
+                               || stripos($o['name'] ?? '', 'revshare') !== false);
+                if ($isRevShare) {
                     $payoutStr = number_format($o['payout_amount'], 2) . '% RevShare';
                 } else {
-                    $payoutStr = $sym . number_format($o['payout_amount'], 2) . ' ' . $o['payout_type'];
+                    $payoutStr = $sym . number_format($o['payout_amount'], 2) . ' ' . ($o['payout_type'] ?? 'CPA');
                 }
 
                 // Format GEO

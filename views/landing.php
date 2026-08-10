@@ -2758,14 +2758,21 @@ try {
   var AFF_API = '/api/data.php';
 
   var FALLBACK_OFFERS = [
+    {id:125,name:"PersonalLoans.com (US) (CPL)",cat:"financial",sub:"FINANCE · REVSHARE",geos:["US"],payout:"80.00% RevShare",payStyle:"--grad-green",hot:true,top:true,img:"https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=400&q=70"},
+    {id:124,name:"Cash App Gift Card (US) (Trial)",cat:"financial",sub:"FINANCE · CPA",geos:["US"],payout:"$11.00",payStyle:"--grad-gold",hot:true,top:true,img:"https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=400&q=70"},
+    {id:123,name:"Walmart Car Emergency (US) (Trial)",cat:"financial",sub:"FINANCE · CPA",geos:["US"],payout:"$12.00",payStyle:"--grad-gold",hot:true,top:true,img:"https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=400&q=70"},
+    {id:122,name:"YourInsurance Quotes (US)",cat:"financial",sub:"FINANCE · CPA",geos:["US"],payout:"$4.00",payStyle:"--grad-warm",hot:false,top:true,img:"https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&q=70"},
+    {id:301,name:"SmartLink - CPS",cat:"soi",sub:"DATING · REVSHARE",geos:["WW"],payout:"80.00% RevShare",payStyle:"--grad-green",hot:true,top:true,img:"https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&q=70"},
+    {id:302,name:"CPI ServerlessVPN",cat:"software",sub:"MOBILE APPS · REVSHARE",geos:["WW"],payout:"70.00% RevShare",payStyle:"--grad-green",hot:true,top:true,img:"https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&q=70"},
+    {id:303,name:"Tolet24",cat:"soi",sub:"DATING · CPC",geos:["WW"],payout:"$0.10 CPC",payStyle:"--grad-cool",hot:false,top:true,img:"https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400&q=70"},
     {id:286,name:"CharmDate Hot",cat:"soi",sub:"Dating · Tier-1",geos:["US","GB","CH","DK","FI"],payout:"$9.00",payStyle:"--grad-gold",hot:true,top:true,img:"https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400&q=70"},
-    {id:285,name:"UkrainianGirlsDate",cat:"soi",sub:"Dating · Tier-1",geos:["AU","CA","GB","US"],payout:"$5.00",payStyle:"--grad-gold",hot:true,top:true,img:"https://images.unsplash.com/photo-1554151228-14d9def656e4?w=400&q=70"},
-    {id:62, name:"Super Smartlink",cat:"smartlink",sub:"Dating · Global",geos:["WW"],payout:"80% Rev",payStyle:"--grad-green",hot:true,top:true,img:"https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&q=70"},
+    {id:62, name:"Super Smartlink",cat:"smartlink",sub:"Dating · Global",geos:["WW"],payout:"80.00% RevShare",payStyle:"--grad-green",hot:true,top:true,img:"https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&q=70"},
     {id:289,name:"uMobix.org",cat:"software",sub:"Monitoring App · CPS",geos:["AU","CA","GB","US"],payout:"$42.00",payStyle:"--grad-cool",hot:true,top:true,img:"https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&q=70"},
     {id:296,name:"Ckwin Casino",cat:"casino",sub:"Casino · Per Sale",geos:["WW"],payout:"$25.00",payStyle:"--grad-gold",hot:true,top:true,img:"https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=400&q=70"},
     {id:281,name:"VideoChat FTD",cat:"cam",sub:"Cam · FTD",geos:["AU","CA","GB","US"],payout:"$15.00",payStyle:"linear-gradient(135deg,#a855f7,#ec4899)",hot:true,top:true,img:"https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&q=70"},
-    {id:285,name:"PersonalLoan24",cat:"financial",sub:"Loan Offers · US",geos:["US"],payout:"80% Rev",payStyle:"--grad-green",hot:true,top:true,img:"https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=400&q=70"},
     {id:255,name:"Maturedates UK",cat:"doi",sub:"Mature Dating · UK",geos:["GB"],payout:"$5.00",payStyle:"--grad-warm",hot:true,top:true,img:"https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&q=70"},
+    {id:285,name:"UkrainianGirlsDate",cat:"soi",sub:"Dating · Tier-1",geos:["AU","CA","GB","US"],payout:"$5.00",payStyle:"--grad-gold",hot:true,top:true,img:"https://images.unsplash.com/photo-1554151228-14d9def656e4?w=400&q=70"},
+    {id:304,name:"LoveArrow CPS Dating",cat:"cps",sub:"Dating · CPS",geos:["US","GB"],payout:"$35.00",payStyle:"--grad-gold",hot:true,top:true,img:"https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=400&q=70"}
   ];
 
   var FALLBACK_SLIDES = [
@@ -2838,15 +2845,43 @@ try {
   function loadSlidesFromAPI(){fetch(AFF_API+'?resource=slider&action=list&_t='+Date.now()).then(function(r){return r.json();}).then(function(j){_heroRender((j.success&&j.data&&j.data.length)?j.data:FALLBACK_SLIDES,false);}).catch(function(){if(!_heroInitDone)_heroRender(FALLBACK_SLIDES,true);});}
   function initLiveHeroSlider(){loadSlidesFromAPI();setInterval(loadSlidesFromAPI,_HERO_POLL_MS);}
 
-  function getCatBadgeClass(c){return{soi:'badge-soi',doi:'badge-doi',smartlink:'badge-smartlink',casino:'badge-casino',cam:'badge-cam',software:'badge-software',financial:'badge-financial',cps:'badge-cps'}[c]||'badge-soi';}
-  function getCatLabel(c){return{soi:'SOI',doi:'DOI',smartlink:'Smartlink',casino:'Casino',cam:'Cam',software:'Software',financial:'Financial',cps:'CPS'}[c]||c.toUpperCase();}
+  function getCatBadgeClass(c){return{soi:'badge-soi',doi:'badge-doi',smartlink:'badge-smartlink',casino:'badge-casino',cam:'badge-cam',software:'badge-software',financial:'badge-financial',cps:'badge-cps',mobile:'badge-software'}[''+c]||'badge-soi';}
+  function getCatLabel(c){return{soi:'SOI',doi:'DOI',smartlink:'Smartlink',casino:'Casino',cam:'Cam',software:'Software',financial:'Financial',cps:'CPS',mobile:'Mobile Apps'}[''+c]||(''+c).toUpperCase();}
 
   function buildCard(o){
     var geos=Array.isArray(o.geos)?o.geos:(o.geos||'WW').split(/\s+/).filter(Boolean);
-    var geoHtml=(geos.includes('WW')||geos.includes('Worldwide'))?'<span class="ctag ww">🌍 Worldwide</span>':geos.slice(0,5).map(function(g){return'<span class="ctag">'+g+'</span>';}).join('')+(geos.length>5?'<span class="ctag">+'+(geos.length-5)+'</span>':'');
+    var geoHtml=(geos.includes('WW')||geos.includes('Worldwide')||geos.includes('Global'))?'<span class="ctag ww">🌍 Worldwide</span>':geos.slice(0,5).map(function(g){return'<span class="ctag">'+g+'</span>';}).join('')+(geos.length>5?'<span class="ctag">+'+(geos.length-5)+'</span>':'');
     var ov=(o.hot?'<span class="badge-hot-pill">🔥 Hot</span>':'')+(o.top?'<span class="badge-top-pill">⭐ Top</span>':'')+(o.isNew?'<span class="badge-new-pill">✨ New</span>':'');
     var pg=o.payStyle&&o.payStyle.startsWith('--')?'var('+o.payStyle+')':o.payStyle||'var(--grad-gold)';
-    var ps=String(o.payoutDisplay||o.payout||'');var pf=ps.length>4?'16px':'22px';
+    var ps=String(o.payoutDisplay||o.payout||'');
+
+    // RevShare Check & Formatting Safeguard:
+    var isRev = false;
+    var subLower = String(o.sub || '').toLowerCase();
+    var payLower = String(o.payoutType || o.payout_type || '').toLowerCase();
+    var psLower  = ps.toLowerCase();
+
+    if (subLower.includes('revshare') || payLower.includes('revshare') || psLower.includes('rev') || ps.includes('%')) {
+      isRev = true;
+    }
+
+    if (isRev) {
+      ps = ps.replace(/\$/g, '').trim();
+      if (!ps.includes('%')) {
+        var num = parseFloat(ps);
+        if (!isNaN(num)) {
+          ps = num.toFixed(2) + '%';
+        } else {
+          ps = ps + '%';
+        }
+      }
+      if (!psLower.includes('rev')) {
+        ps = ps + ' RevShare';
+      }
+      pg = 'var(--grad-green)';
+    }
+
+    var pf=ps.length>6?'16px':'22px';
     return'<div class="offer-card" data-cat="'+o.cat+'">'
       +'<div class="offer-card-img-wrap"><img class="offer-card-img" src="'+(o.img||'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=70')+'" alt="'+o.name+'" loading="lazy">'
       +(ov?'<div class="offer-badge-overlay">'+ov+'</div>':'')+'</div>'

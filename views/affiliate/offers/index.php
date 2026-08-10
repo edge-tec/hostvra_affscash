@@ -217,13 +217,11 @@ foreach ($offers as $o) {
 
         <!-- 3D Payout & Target Specs -->
         <div style="display:flex;gap:14px;background:linear-gradient(135deg,#F0FDF4 0%,#ECFDF5 100%);border:1px solid #A7F3D0;border-radius:14px;padding:12px 16px;box-shadow:inset 0 1px 2px rgba(255,255,255,0.7);margin-top:auto">
-            <?php if(!$g_isRevShare): ?>
             <div>
                 <div class="stat-label" style="font-size:10px;font-weight:800;color:#047857;letter-spacing:.05em;text-transform:uppercase">PAYOUT</div>
-                <div style="font-size:22px;font-weight:800;color:#059669">$<?= number_format($g_payout,2) ?></div>
+                <div style="font-size:22px;font-weight:800;color:#059669"><?= $g_isRevShare ? number_format($g_payout,2).'%' : '$'.number_format($g_payout,2) ?></div>
                 <?php if($g_isCustom): ?><span style="font-size:10px;background:#D1FAE5;color:#065F46;padding:1px 6px;border-radius:8px;font-weight:700">✓ Custom</span><?php endif; ?>
             </div>
-            <?php endif; ?>
             <div style="flex:1;min-width:0">
                 <div class="stat-label" style="font-size:10px;font-weight:800;color:#64748B;letter-spacing:.05em;text-transform:uppercase">GEO &amp; DEVICES</div>
                 <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">
