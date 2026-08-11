@@ -274,9 +274,16 @@ require BASE_PATH . '/views/layouts/admin.php';
 
 <!-- Log Table -->
 <div class="card">
-    <div class="card-header">
-        <span class="card-title">Postback fire log</span>
-        <span class="text-sm text-muted"><?= Helpers::e($from) ?> &rarr; <?= Helpers::e($to) ?></span>
+    <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <div>
+            <span class="card-title">Postback fire log</span>
+            <span class="text-sm text-muted"><?= Helpers::e($from) ?> &rarr; <?= Helpers::e($to) ?></span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+            <button type="button" id="btn-toggle-all-details" class="btn btn-sm btn-outline-primary" onclick="toggleAllLogDetails()" style="font-size:12px" data-expanded="false">
+                👁 Expand All (Full URL &amp; Response)
+            </button>
+        </div>
     </div>
     <div class="table-wrap" style="overflow-x:auto">
         <table id="tbl-pb-logs" style="font-size:12px">
@@ -290,8 +297,8 @@ require BASE_PATH . '/views/layouts/admin.php';
                     <th>HTTP</th>
                     <th>Result</th>
                     <th>Attempts</th>
-                    <th>Fired URL</th>
-                    <th>Response</th>
+                    <th style="min-width:200px">Fired URL</th>
+                    <th style="min-width:160px">Response</th>
                     <th>Fired At</th>
                     <th>Action</th>
                 </tr>
@@ -343,13 +350,29 @@ require BASE_PATH . '/views/layouts/admin.php';
                         <?= (int)($r['attempt_count'] ?? 1) ?>
                     </span>
                 </td>
-                <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
-                    title="<?= Helpers::e($r['fired_url']) ?>">
-                    <code style="font-size:10px"><?= Helpers::e(substr($r['fired_url'], 0, 90)) ?>…</code>
+                <td class="pb-url-cell" style="min-width:220px;max-width:380px;cursor:pointer;vertical-align:top" onclick="toggleLogCell(this)" title="Click to expand/collapse full URL">
+                    <div class="pb-short-val" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+                        <code style="font-size:10px;color:#2563EB"><?= Helpers::e($r['fired_url']) ?></code>
+                    </div>
+                    <div class="pb-full-val" style="display:none;word-break:break-all;white-space:pre-wrap;font-size:11px;background:#F8FAFC;padding:6px 8px;border-radius:6px;border:1px solid #CBD5E1;margin-top:2px">
+                        <code style="font-size:11px;color:#1E40AF;word-break:break-all"><?= Helpers::e($r['fired_url']) ?></code>
+                        <div style="margin-top:4px;text-align:right">
+                            <button type="button" class="btn btn-xs btn-light" style="font-size:10px;padding:1px 6px" onclick="event.stopPropagation();copyPbText(this, '<?= Helpers::e(addslashes($r['fired_url'])) ?>')">📋 Copy URL</button>
+                        </div>
+                    </div>
                 </td>
-                <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
-                    title="<?= Helpers::e($r['response_body'] ?? '') ?>">
-                    <?= Helpers::e(substr($r['response_body'] ?? '', 0, 60)) ?>
+                <td class="pb-resp-cell" style="min-width:180px;max-width:300px;cursor:pointer;vertical-align:top" onclick="toggleLogCell(this)" title="Click to expand/collapse response body">
+                    <div class="pb-short-val" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+                        <span style="font-size:11px"><?= Helpers::e($r['response_body'] ?? '—') ?></span>
+                    </div>
+                    <div class="pb-full-val" style="display:none;word-break:break-all;white-space:pre-wrap;font-size:11px;background:#F8FAFC;padding:6px 8px;border-radius:6px;border:1px solid #CBD5E1;margin-top:2px;max-height:200px;overflow-y:auto">
+                        <pre style="margin:0;font-size:11px;white-space:pre-wrap;word-break:break-all;font-family:monospace"><?= Helpers::e($r['response_body'] ?? '—') ?></pre>
+                        <?php if (!empty($r['response_body'])): ?>
+                        <div style="margin-top:4px;text-align:right">
+                            <button type="button" class="btn btn-xs btn-light" style="font-size:10px;padding:1px 6px" onclick="event.stopPropagation();copyPbText(this, '<?= Helpers::e(addslashes($r['response_body'])) ?>')">📋 Copy Response</button>
+                        </div>
+                        <?php endif; ?>
+                    </div>
                 </td>
                 <td class="text-muted" style="white-space:nowrap"><?= date('M j, H:i:s', strtotime($r['fired_at'])) ?></td>
                 <td style="white-space:nowrap">
@@ -373,5 +396,74 @@ require BASE_PATH . '/views/layouts/admin.php';
         </table>
     </div>
 </div>
+
+<script>
+function toggleLogCell(cell) {
+    var shortEl = cell.querySelector('.pb-short-val');
+    var fullEl = cell.querySelector('.pb-full-val');
+    if (!shortEl || !fullEl) return;
+    if (fullEl.style.display === 'none' || fullEl.style.display === '') {
+        fullEl.style.display = 'block';
+        shortEl.style.display = 'none';
+    } else {
+        fullEl.style.display = 'none';
+        shortEl.style.display = 'block';
+    }
+}
+
+function toggleAllLogDetails(forcedState) {
+    var btn = document.getElementById('btn-toggle-all-details');
+    var allShorts = document.querySelectorAll('.pb-short-val');
+    var allFulls = document.querySelectorAll('.pb-full-val');
+    
+    var currentlyExpanded = (btn && btn.getAttribute('data-expanded') === 'true');
+    var shouldExpand = (typeof forcedState === 'boolean') ? forcedState : !currentlyExpanded;
+    
+    allShorts.forEach(function(el) {
+        el.style.display = shouldExpand ? 'none' : 'block';
+    });
+    allFulls.forEach(function(el) {
+        el.style.display = shouldExpand ? 'block' : 'none';
+    });
+    
+    if (btn) {
+        btn.setAttribute('data-expanded', shouldExpand ? 'true' : 'false');
+        btn.innerHTML = shouldExpand
+            ? '🔒 Collapse All (Compact View)'
+            : '👁 Expand All (Full URL &amp; Response)';
+    }
+    try {
+        localStorage.setItem('postback_logs_full_view', shouldExpand ? '1' : '0');
+    } catch(e) {}
+}
+
+function copyPbText(btn, text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function() {
+            var orig = btn.innerHTML;
+            btn.innerHTML = '✓ Copied!';
+            setTimeout(function() { btn.innerHTML = orig; }, 2000);
+        });
+    } else {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        var orig = btn.innerHTML;
+        btn.innerHTML = '✓ Copied!';
+        setTimeout(function() { btn.innerHTML = orig; }, 2000);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        if (localStorage.getItem('postback_logs_full_view') === '1') {
+            toggleAllLogDetails(true);
+        }
+    } catch(e) {}
+});
+</script>
 
 <?php require BASE_PATH . '/views/layouts/admin_footer.php'; ?>

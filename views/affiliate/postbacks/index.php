@@ -329,8 +329,8 @@ $_appUrl = Config::get('config', 'app.url') ?? '';
                 <td style="padding:9px 14px;font-family:monospace;font-size:11px;color:#64748B;white-space:nowrap">
                     <?= substr(Helpers::e($log['conversion_id']), 0, 8) ?>…
                 </td>
-                <td style="padding:9px 14px;max-width:360px">
-                    <div style="font-family:monospace;font-size:10px;color:#475569;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:350px"
+                <td style="padding:9px 14px;max-width:360px;cursor:pointer" onclick="this.querySelector('.pb-aff-url').style.whiteSpace = this.querySelector('.pb-aff-url').style.whiteSpace==='nowrap'?'pre-wrap':'nowrap'" title="Click to toggle full URL">
+                    <div class="pb-aff-url" style="font-family:monospace;font-size:10px;color:#475569;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;word-break:break-all;max-width:350px"
                          title="<?= Helpers::e($log['fired_url'] ?? '') ?>">
                         <?= Helpers::e($log['fired_url'] ?? '—') ?>
                     </div>
