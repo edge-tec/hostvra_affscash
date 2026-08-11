@@ -34,6 +34,29 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
     if (in_array($action, ['approve','reject'], true) && $affId && $offerId
         && in_array($affId, array_map('intval', $affIds), true)) {
 
+        if ($action === 'reject_duplicates') {
+            $aff = Database::fetchOne(
+                "SELECT u.first_name, u.last_name, u.email FROM affiliates af JOIN users u ON u.id=af.user_id WHERE af.id=?",
+                [$affId]
+            );
+            if ($aff) {
+                $fullName = trim($aff['first_name'] . ' ' . $aff['last_name']);
+                $dupApps = Database::fetchAll(
+                    "SELECT ao.id FROM affiliate_offers ao
+                     JOIN affiliates af ON af.id = ao.affiliate_id
+                     JOIN users u ON u.id = af.user_id
+                     WHERE ao.offer_id = ? AND ao.status = 'pending' AND ao.affiliate_id != ?
+                       AND (LOWER(CONCAT(u.first_name,' ',u.last_name)) = LOWER(?) OR u.email = ?)",
+                    [$offerId, $affId, $fullName, $aff['email']]
+                );
+                foreach ($dupApps as $da) {
+                    Database::update('affiliate_offers', ['status' => 'rejected'], 'id=?', [$da['id']]);
+                }
+                Helpers::flash('success', 'Rejected ' . count($dupApps) . ' duplicate application(s) for this offer.');
+            }
+            Helpers::redirect('/affiliate_manager/offer-approvals');
+        }
+
         $ao = Database::fetchOne(
             "SELECT ao.*, o.name as offer_name
              FROM affiliate_offers ao
@@ -148,6 +171,7 @@ $requests = Database::fetchAll(
         o.category     as offer_category,
         CONCAT(u.first_name,' ',u.last_name) as affiliate_name,
         u.email        as affiliate_email,
+        u.phone        as affiliate_phone,
         u.created_at   as affiliate_joined,
         af.affiliate_code,
         u.country,
@@ -159,9 +183,31 @@ $requests = Database::fetchAll(
      JOIN affiliates af ON af.id = ao.affiliate_id
      JOIN users u ON u.id = af.user_id
      $whereStr
-     ORDER BY ao.approved_at DESC",
+     ORDER BY ao.approved_at DESC, ao.id DESC",
     $params
-);
+) ?: [];
+
+foreach ($requests as &$req) {
+    $dupApps = Database::fetchAll(
+        "SELECT u.email, af.affiliate_code, ao.status
+         FROM affiliate_offers ao
+         JOIN affiliates af ON af.id = ao.affiliate_id
+         JOIN users u ON u.id = af.user_id
+         WHERE ao.offer_id = ? AND ao.id != ?
+           AND (
+               LOWER(CONCAT(u.first_name,' ',u.last_name)) = LOWER(?)
+               OR u.email = ?
+               OR (u.phone IS NOT NULL AND u.phone != '' AND u.phone = ?)
+           )",
+        [$req['offer_id'], $req['ao_id'], $req['affiliate_name'], $req['affiliate_email'], $req['affiliate_phone'] ?? '']
+    ) ?: [];
+
+    $req['duplicate_count'] = count($dupApps);
+    $req['duplicate_info']  = implode(', ', array_map(function($d) {
+        return $d['email'] . ' (' . $d['affiliate_code'] . ' - ' . strtoupper($d['status']) . ')';
+    }, $dupApps));
+}
+unset($req);
 
 // Pending count — scoped to this manager's affiliates only
 $pendingCount = Database::fetchOne(

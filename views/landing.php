@@ -206,6 +206,7 @@ try {
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
+  <?= RecaptchaService::renderHeadScript() ?>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Best CPA Network & Affiliate Marketing Platform | <?= $appName ?></title>
@@ -2643,7 +2644,11 @@ try {
         <div class="col-lg-7 fade-up">
           <div class="form-card">
             <h3>Send Us a <em>Message</em></h3>
-            <form id="contactForm" onsubmit="handleSubmit(event)" novalidate>
+            <form id="contactForm" onsubmit="handleSubmit(event)" novalidate
+                  <?php if (RecaptchaService::isEnabled()): ?>
+                  data-recaptcha-sitekey="<?= Helpers::e(RecaptchaService::siteKey()) ?>"
+                  data-recaptcha-action="contact"
+                  <?php endif; ?>>
               <div class="contact-form-row">
                 <div class="form-group"><label for="fname">First Name</label><input type="text" id="fname" class="form-control-custom" placeholder="John" required></div>
                 <div class="form-group"><label for="lname">Last Name</label><input type="text" id="lname" class="form-control-custom" placeholder="Doe" required></div>
@@ -3190,18 +3195,31 @@ try {
     }, 2800);
   })();
 
+  function sendContactForm(fn,ln,em,msg,rcToken,orig,btn,sEl,eEl,etEl,e){
+    fetch('/send_mail.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fname:fn,lname:ln,email:em,message:msg,'g-recaptcha-response':rcToken})})
+      .then(function(r){return r.json();})
+      .then(function(d){if(d.success){sEl.style.display='block';e.target.reset();setTimeout(function(){sEl.style.display='none';},6000);}else{etEl.textContent=d.message||'Failed to send.';eEl.style.display='block';}})
+      .catch(function(){etEl.textContent='Network error. Please contact us via Telegram @affscashnet.';eEl.style.display='block';})
+      .finally(function(){btn.disabled=false;btn.innerHTML=orig;});
+  }
+
   function handleSubmit(e){
+    if (e && e.preventDefault) e.preventDefault();
     var sEl=document.getElementById('formSuccess'),eEl=document.getElementById('formError'),etEl=document.getElementById('errorText'),btn=e.target.querySelector('button[type="submit"]');
     sEl.style.display='none';eEl.style.display='none';
     var fn=document.getElementById('fname').value.trim(),ln=document.getElementById('lname').value.trim(),em=document.getElementById('cemail').value.trim(),msg=document.getElementById('message').value.trim();
     if(!fn||!ln||!em||!msg){etEl.textContent='Please fill in all fields.';eEl.style.display='block';return;}
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){etEl.textContent='Please enter a valid email address.';eEl.style.display='block';return;}
     var orig=btn.innerHTML;btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Sending…';
-    fetch('/send_mail.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fname:fn,lname:ln,email:em,message:msg})})
-      .then(function(r){return r.json();})
-      .then(function(d){if(d.success){sEl.style.display='block';e.target.reset();setTimeout(function(){sEl.style.display='none';},6000);}else{etEl.textContent=d.message||'Failed to send.';eEl.style.display='block';}})
-      .catch(function(){etEl.textContent='Network error. Please contact us via Telegram @affscashnet.';eEl.style.display='block';})
-      .finally(function(){btn.disabled=false;btn.innerHTML=orig;});
+    
+    var siteKey = e.target.getAttribute('data-recaptcha-sitekey') || '';
+    if (siteKey && typeof window.getRecaptchaToken === 'function') {
+      window.getRecaptchaToken(siteKey, 'contact').then(function(token) {
+        sendContactForm(fn,ln,em,msg,token,orig,btn,sEl,eEl,etEl,e);
+      });
+    } else {
+      sendContactForm(fn,ln,em,msg,'',orig,btn,sEl,eEl,etEl,e);
+    }
   }
 
   function hidePreloader(){var p=document.getElementById('preloader');if(p)p.classList.add('hidden');}
@@ -3888,5 +3906,6 @@ window.addEventListener('scroll',function(){var b=document.getElementById('scrol
   loadOffersFromAPI();
 
   </script>
+  <script src="/assets/js/recaptcha.js"></script>
 </body>
 </html>

@@ -55,11 +55,30 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token')) && Helpers
     }
     if ($offer) {
         $existing = Database::fetchOne("SELECT id, status FROM affiliate_offers WHERE affiliate_id=? AND offer_id=?", [$affId, $applyId]);
+        if ($existing && $existing['status'] === 'pending') {
+            Helpers::flash('info', 'You have already submitted an approval request for this offer. Please wait for manager review.');
+            Helpers::redirect('/affiliate/offers');
+        }
         if ($_isLocked($existing)) {
             Helpers::flash('error', 'This offer is not available for new approval requests. Please contact your manager.');
             Helpers::redirect('/affiliate/offers');
         }
         if ($_canReapply($existing)) {
+            $me = Auth::currentUser();
+            // Check if another account with matching name/details applied for this offer
+            $fullName = trim(($me['first_name'] ?? '') . ' ' . ($me['last_name'] ?? ''));
+            $dupMatch = Database::fetchOne(
+                "SELECT u.email, af.affiliate_code FROM affiliate_offers ao
+                 JOIN affiliates af ON af.id = ao.affiliate_id
+                 JOIN users u ON u.id = af.user_id
+                 WHERE ao.offer_id = ? AND ao.affiliate_id != ?
+                   AND (LOWER(CONCAT(u.first_name,' ',u.last_name)) = LOWER(?) OR u.email = ?)",
+                [$applyId, $affId, $fullName, $me['email'] ?? '']
+            );
+            if ($dupMatch) {
+                $promoDesc = '[MULTI_ACCOUNT_DETECTED: Match with ' . $dupMatch['email'] . ' (' . $dupMatch['affiliate_code'] . ')] ' . $promoDesc;
+            }
+
             if ($existing) {
                 // Re-request after admin removed approval — reset the existing row.
                 Database::update('affiliate_offers',
@@ -75,7 +94,6 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token')) && Helpers
                     'notes'        => $promoDesc ?: null,
                 ]);
             }
-            $me = Auth::currentUser();
             Database::insert('notifications', ['user_id'=>null,'target_role'=>'admin','type'=>'info','title'=>'Offer Access Request','message'=>'An affiliate is requesting access to offer: '.$offer['name'],'link'=>'/admin/affiliates']);
             $adminUsers = Database::fetchAll("SELECT email, first_name, last_name FROM users WHERE role='admin' AND status='active' LIMIT 3");
             foreach ($adminUsers as $admin) {
@@ -104,6 +122,10 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         Helpers::redirect('/affiliate/offers');
     }
     $existing = Database::fetchOne("SELECT id, status FROM affiliate_offers WHERE affiliate_id=? AND offer_id=?", [$affId, $offerId]);
+    if ($existing && $existing['status'] === 'pending') {
+        Helpers::flash('info', 'You have already submitted an approval request for this offer. Please wait for manager review.');
+        Helpers::redirect('/affiliate/offers');
+    }
     // Permanently locked states (rejected/blocked) — affiliate cannot re-apply
     // unless admin manually overrides from /admin/affiliates/{id}.
     if ($_isLocked($existing)) {

@@ -48,8 +48,17 @@ if (Helpers::isPost()) {
     } elseif (!Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         $errors[] = 'Invalid form submission.';
     } else {
+        // ── Google reCAPTCHA v3 verification ─────────────────────────────
+        if (RecaptchaService::isEnabled()) {
+            $rcToken = trim($_POST['g-recaptcha-response'] ?? $_POST['recaptcha_token'] ?? '');
+            $verify  = RecaptchaService::verify($rcToken, 'register_advertiser', $_SERVER['REMOTE_ADDR'] ?? '');
+            if (!$verify['success']) {
+                $errors[] = $verify['user_message'] ?: 'Security verification failed. Please try again.';
+            }
+        }
+
         // ── Cloudflare Turnstile verification ─────────────────────────────
-        if (Turnstile::isEnabled()) {
+        if (empty($errors) && Turnstile::isEnabled()) {
             $tsToken = trim($_POST['cf-turnstile-response'] ?? '');
             if (!Turnstile::verify($tsToken, $_SERVER['REMOTE_ADDR'] ?? '')) {
                 $errors[] = 'CAPTCHA verification failed. Please complete the challenge and try again.';

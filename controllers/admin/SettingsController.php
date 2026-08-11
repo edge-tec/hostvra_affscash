@@ -439,6 +439,16 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         if ($tsSiteKey   !== '') Config::set('config', 'turnstile.site_key',   $tsSiteKey);
         if ($tsSecretKey !== '') Config::set('config', 'turnstile.secret_key', $tsSecretKey);
 
+        // Google reCAPTCHA v3
+        $rcEnabled   = isset($_POST['recaptcha_enabled']) ? '1' : '0';
+        $rcSiteKey   = trim(Helpers::postRaw('recaptcha_site_key')   ?? '');
+        $rcSecretKey = trim(Helpers::postRaw('recaptcha_secret_key') ?? '');
+        $rcMinScore  = trim(Helpers::postRaw('recaptcha_min_score')  ?? '');
+        Config::set('config', 'recaptcha.enabled',   $rcEnabled);
+        if ($rcSiteKey   !== '') Config::set('config', 'recaptcha.site_key',   $rcSiteKey);
+        if ($rcSecretKey !== '') Config::set('config', 'recaptcha.secret_key', $rcSecretKey);
+        if ($rcMinScore  !== '') Config::set('config', 'recaptcha.min_score',  $rcMinScore);
+
         // ── Advertiser registration master switch + closed-page message.
         // The path-gate inside RegisterAdvertiserController reads these on
         // every request so the change is effective immediately, no cache.

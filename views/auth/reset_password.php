@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="/assets/css/app.min.css">
 <?php require BASE_PATH . '/views/partials/theme_head.php'; ?>
 <?php require BASE_PATH . '/views/partials/auth_theme.php'; ?>
+<?= RecaptchaService::renderHeadScript() ?>
 <style>
 body {
   display: flex;
@@ -104,7 +105,11 @@ input:-webkit-autofill:active {
                 Choose a strong password of at least 8 characters.
             </p>
 
-            <form method="POST" action="/reset-password?token=<?= urlencode($token) ?>" id="resetForm">
+            <form method="POST" action="/reset-password?token=<?= urlencode($token) ?>" id="resetForm"
+                  <?php if (RecaptchaService::isEnabled()): ?>
+                  data-recaptcha-sitekey="<?= Helpers::e(RecaptchaService::siteKey()) ?>"
+                  data-recaptcha-action="reset_password"
+                  <?php endif; ?>>
                 <?= Helpers::csrf() ?>
                 <div class="form-group">
                     <label for="password">New Password</label>
@@ -131,6 +136,7 @@ input:-webkit-autofill:active {
     </div>
 </div>
 <script src="/assets/js/app.min.js"></script>
+<script src="/assets/js/recaptcha.js"></script>
 <?php if ($tokenValid): ?>
 <script>
 (function(){

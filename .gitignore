@@ -9,6 +9,7 @@ Thumbs.db
 
 # Config files
 config/config.json
+.env
 
 # Installer lock
 install/install.lock

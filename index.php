@@ -38,6 +38,7 @@ require BASE_PATH . '/core/Mailer.php';
 require BASE_PATH . '/core/InvoicePDF.php';
 require BASE_PATH . '/core/Referral.php';
 require BASE_PATH . '/core/Turnstile.php';
+require BASE_PATH . '/core/RecaptchaService.php';
 require BASE_PATH . '/core/Migrator.php';
 require BASE_PATH . '/core/RejectionHelper.php';
 require BASE_PATH . '/core/ExportHelper.php';

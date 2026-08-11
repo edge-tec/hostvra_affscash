@@ -29,9 +29,18 @@ if (!$tokenValid) {
 }
 
 if (Helpers::isPost() && $tokenValid) {
-    if (!Auth::verifyCsrf(Helpers::postRaw('_token'))) {
+    // ── Google reCAPTCHA v3 verification ─────────────────────────────
+    if (RecaptchaService::isEnabled()) {
+        $rcToken = trim($_POST['g-recaptcha-response'] ?? $_POST['recaptcha_token'] ?? '');
+        $verify  = RecaptchaService::verify($rcToken, 'reset_password', $_SERVER['REMOTE_ADDR'] ?? '');
+        if (!$verify['success']) {
+            $error = $verify['user_message'] ?: 'Security verification failed. Please try again.';
+        }
+    }
+
+    if (!$error && !Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         $error = 'Invalid form submission. Please try again.';
-    } else {
+    } elseif (!$error) {
         $password = Helpers::postRaw('password')        ?? '';
         $confirm  = Helpers::postRaw('password_confirm') ?? '';
 

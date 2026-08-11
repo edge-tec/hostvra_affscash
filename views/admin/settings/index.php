@@ -651,7 +651,70 @@
                 <?php endif; ?>
             </div>
 
-            <button type="submit" class="btn btn-primary">Save Security Settings</button>
+            <!-- Google reCAPTCHA v3 -->
+            <?php
+            $rcEnabled   = RecaptchaService::isEnabled();
+            $rcSiteKey   = RecaptchaService::siteKey();
+            $rcMinScore  = RecaptchaService::minScore();
+            ?>
+            <div style="border-top:1px solid #F1F5F9;padding-top:22px;margin-top:20px">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:20px">
+                    <div style="flex:1">
+                        <div style="font-weight:700;font-size:14px;color:#1E293B;margin-bottom:4px;display:flex;align-items:center;gap:8px">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4285F4" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            Google reCAPTCHA v3
+                        </div>
+                        <div style="font-size:13px;color:#64748B;line-height:1.5">Invisible bot protection for public forms using risk analysis score threshold. Configured in <code>.env</code> file or settings below. Get keys from <a href="https://www.google.com/recaptcha/admin" target="_blank" style="color:#4F46E5;font-weight:600">Google reCAPTCHA Admin Console</a>.</div>
+                        <div style="margin-top:8px;display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;background:<?= $rcEnabled ? '#DCFCE7' : '#F1F5F9' ?>;color:<?= $rcEnabled ? '#15803D' : '#64748B' ?>">
+                            <span style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block"></span>
+                            <?= $rcEnabled ? 'Active' : 'Inactive / Disabled' ?>
+                        </div>
+                    </div>
+                    <label style="position:relative;display:inline-block;width:52px;height:28px;flex-shrink:0;margin-top:4px">
+                        <input type="checkbox" name="recaptcha_enabled" value="1" <?= $rcEnabled ? 'checked' : '' ?> style="opacity:0;width:0;height:0">
+                        <span style="position:absolute;cursor:pointer;inset:0;background:<?= $rcEnabled ? '#10B981' : '#CBD5E1' ?>;border-radius:34px;transition:.3s">
+                            <span style="position:absolute;height:22px;width:22px;left:<?= $rcEnabled ? '27px' : '3px' ?>;bottom:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,.2)"></span>
+                        </span>
+                    </label>
+                    <script>
+                    (function(){
+                        var cb = document.querySelector('input[name="recaptcha_enabled"]');
+                        if (!cb) return;
+                        var track = cb.nextElementSibling;
+                        var knob  = track.firstElementChild;
+                        cb.addEventListener('change', function(){
+                            track.style.background = cb.checked ? '#10B981' : '#CBD5E1';
+                            knob.style.left        = cb.checked ? '27px'    : '3px';
+                        });
+                    })();
+                    </script>
+                </div>
+                <div class="form-row cols-3">
+                    <div class="form-group" style="margin-bottom:0">
+                        <label style="font-weight:600;font-size:13px">RECAPTCHA_SITE_KEY <span style="color:#94A3B8;font-weight:400">(Frontend)</span></label>
+                        <input type="text" name="recaptcha_site_key" class="form-control"
+                               value="<?= Helpers::e($rcSiteKey) ?>"
+                               placeholder="6Lxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                        <div class="form-hint">Public site key used in JS API</div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0">
+                        <label style="font-weight:600;font-size:13px">RECAPTCHA_SECRET_KEY <span style="color:#94A3B8;font-weight:400">(Backend ONLY)</span></label>
+                        <input type="password" name="recaptcha_secret_key" class="form-control"
+                               placeholder="Leave blank to keep existing"
+                               autocomplete="new-password">
+                        <div class="form-hint">Private secret key for verification</div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0">
+                        <label style="font-weight:600;font-size:13px">RECAPTCHA_MIN_SCORE <span style="color:#94A3B8;font-weight:400">(0.0 to 1.0)</span></label>
+                        <input type="number" step="0.05" min="0.0" max="1.0" name="recaptcha_min_score" class="form-control"
+                               value="<?= Helpers::e((string)$rcMinScore) ?>"
+                               placeholder="0.5">
+                        <div class="form-hint">Default 0.5. Higher score = stricter</div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="margin-top:24px">Save Security Settings</button>
         </form>
     </div>
 </div>

@@ -9,6 +9,7 @@
 <?php require BASE_PATH . '/views/partials/theme_head.php'; ?>
 <?php require BASE_PATH . '/views/partials/auth_theme.php'; ?>
 <?php $_authBgKey = 'auth_bg_affreg'; require BASE_PATH . '/views/partials/auth_bg.php'; ?>
+<?= RecaptchaService::renderHeadScript() ?>
 <?php if (Turnstile::isEnabled()): ?>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <?php endif; ?>
@@ -286,7 +287,11 @@ html body .auth-box ::placeholder {
         </div>
         <?php endif; ?>
 
-        <form method="POST">
+        <form method="POST"
+              <?php if (RecaptchaService::isEnabled()): ?>
+              data-recaptcha-sitekey="<?= Helpers::e(RecaptchaService::siteKey()) ?>"
+              data-recaptcha-action="register_affiliate"
+              <?php endif; ?>>
             <?= Helpers::csrf() ?>
             <p class="section-title">Personal Information</p>
             <div class="form-row cols-2">
@@ -932,5 +937,6 @@ function onTurnstileExpired() {
   })();
 </script>
 <?php endif; ?>
+<script src="/assets/js/recaptcha.js"></script>
 </body>
 </html>

@@ -34,6 +34,7 @@ define('CONFIG_PATH', BASE_PATH . '/config');
 require_once BASE_PATH . '/core/Config.php';
 require_once BASE_PATH . '/core/Database.php';
 require_once BASE_PATH . '/core/Mailer.php';
+require_once BASE_PATH . '/core/RecaptchaService.php';
 
 try {
     Config::init(CONFIG_PATH);
@@ -82,6 +83,15 @@ $fname   = clean($body['fname']   ?? '');
 $lname   = clean($body['lname']   ?? '');
 $email   = clean($body['email']   ?? '');
 $message = clean($body['message'] ?? '');
+
+// ── GOOGLE reCAPTCHA v3 VERIFICATION ─────────────────
+if (RecaptchaService::isEnabled()) {
+    $rcToken = trim($body['g-recaptcha-response'] ?? $body['recaptcha_token'] ?? '');
+    $verify  = RecaptchaService::verify($rcToken, 'contact', $_contactIp);
+    if (!$verify['success']) {
+        err($verify['user_message'] ?: 'Security verification failed. Please try again.');
+    }
+}
 
 // ── VALIDATE ──────────────────────────────────────────
 if (!$fname || !$lname || !$email || !$message) err('All fields are required');

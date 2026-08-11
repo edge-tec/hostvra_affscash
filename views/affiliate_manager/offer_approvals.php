@@ -194,6 +194,28 @@
             </div>
         </div>
 
+        <?php if (!empty($req['duplicate_count']) && $req['duplicate_count'] > 0): ?>
+        <div style="background:#FFF1F2; border:1px solid #FECDD3; border-radius:8px; padding:10px 14px; margin-top:12px; color:#9F1239; font-size:12px; font-weight:500;">
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+                <div>
+                    ⚠️ <strong>Multi-Account Alert:</strong> This exact offer was also requested by <strong><?= $req['duplicate_count'] ?> other account(s)</strong> with matching name/email/phone:
+                    <span style="font-weight:700; color:#BE123C; margin-left:4px"><?= Helpers::e($req['duplicate_info']) ?></span>
+                </div>
+                <?php if ($req['status'] === 'pending'): ?>
+                <form method="POST" action="/affiliate_manager/offer-approvals" style="margin:0">
+                    <?= Helpers::csrf() ?>
+                    <input type="hidden" name="action" value="reject_duplicates">
+                    <input type="hidden" name="affiliate_id" value="<?= $req['affiliate_id'] ?>">
+                    <input type="hidden" name="offer_id" value="<?= $req['offer_id'] ?>">
+                    <button type="submit" class="btn btn-warning btn-sm" style="font-size:11px; padding:3px 10px;" onclick="return confirm('Reject duplicate application requests for this offer?')">
+                        🚫 Reject Duplicates
+                    </button>
+                </form>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php endif; ?>
+
         <?php if ($req['promotion_description']): ?>
         <div class="oa-promo">
             <strong>📝 Affiliate's Promotion Method</strong>

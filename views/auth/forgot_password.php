@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="/assets/css/app.min.css">
 <?php require BASE_PATH . '/views/partials/theme_head.php'; ?>
 <?php require BASE_PATH . '/views/partials/auth_theme.php'; ?>
+<?= RecaptchaService::renderHeadScript() ?>
 <style>
 body {
   display: flex;
@@ -98,7 +99,11 @@ input:-webkit-autofill:active {
 
             <p style="font-size:13px;color:var(--text-muted);margin:0 0 20px">Enter the email address linked to your account and we will send you a password reset link.</p>
 
-            <form method="POST">
+            <form method="POST"
+                  <?php if (RecaptchaService::isEnabled()): ?>
+                  data-recaptcha-sitekey="<?= Helpers::e(RecaptchaService::siteKey()) ?>"
+                  data-recaptcha-action="forgot_password"
+                  <?php endif; ?>>
                 <?= Helpers::csrf() ?>
                 <div class="form-group">
                     <label for="email">Email Address</label>
@@ -121,6 +126,7 @@ input:-webkit-autofill:active {
     </div>
 </div>
 <script src="/assets/js/app.min.js"></script>
+<script src="/assets/js/recaptcha.js"></script>
 <?php if (empty($_authBgActive)): ?>
 <canvas id="authParticlesCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0"></canvas>
 <?php endif; ?>

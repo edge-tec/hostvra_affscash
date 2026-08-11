@@ -9,6 +9,7 @@
 <?php require BASE_PATH . '/views/partials/theme_head.php'; ?>
 <?php require BASE_PATH . '/views/partials/auth_theme.php'; ?>
 <?php $_authBgKey = 'auth_bg_login';  require BASE_PATH . '/views/partials/auth_bg.php'; ?>
+<?= RecaptchaService::renderHeadScript() ?>
 <?php if (Turnstile::isEnabled()): ?>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <?php endif; ?>
@@ -101,7 +102,11 @@ input:-webkit-autofill:active {
         <div class="alert alert-error"><?= Helpers::e($error) ?></div>
         <?php endif; ?>
 
-        <form method="POST" action="/login">
+        <form method="POST" action="/login"
+              <?php if (RecaptchaService::isEnabled()): ?>
+              data-recaptcha-sitekey="<?= Helpers::e(RecaptchaService::siteKey()) ?>"
+              data-recaptcha-action="login"
+              <?php endif; ?>>
             <?= Helpers::csrf() ?>
             <div class="form-group">
                 <label for="email">Email Address</label>
@@ -157,6 +162,7 @@ input:-webkit-autofill:active {
     </div>
 </div>
 <script src="/assets/js/app.min.js"></script>
+<script src="/assets/js/recaptcha.js"></script>
 <?php if (Turnstile::isEnabled()): ?>
 <script>
 function onTurnstileSuccess(token) {

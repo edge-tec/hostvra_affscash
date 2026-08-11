@@ -11,9 +11,18 @@ $error     = '';
 $success   = '';
 
 if (Helpers::isPost()) {
-    if (!Auth::verifyCsrf(Helpers::postRaw('_token'))) {
+    // ── Google reCAPTCHA v3 verification ─────────────────────────────
+    if (RecaptchaService::isEnabled()) {
+        $rcToken = trim($_POST['g-recaptcha-response'] ?? $_POST['recaptcha_token'] ?? '');
+        $verify  = RecaptchaService::verify($rcToken, 'forgot_password', $_SERVER['REMOTE_ADDR'] ?? '');
+        if (!$verify['success']) {
+            $error = $verify['user_message'] ?: 'Security verification failed. Please try again.';
+        }
+    }
+
+    if (!$error && !Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         $error = 'Invalid form submission. Please try again.';
-    } else {
+    } elseif (!$error) {
         $email = strtolower(trim(Helpers::postRaw('email') ?? ''));
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
