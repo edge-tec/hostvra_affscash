@@ -1255,8 +1255,7 @@ try {
     /* HERO 3D GRAPHIC EXPERIENCES */
     .hero-graphic-3d {
       width: 100%;
-      height: 440px;
-      min-height: 440px;
+      aspect-ratio: 16 / 9;
       position: relative;
       margin: 0 auto;
       perspective: 1200px;
@@ -1291,14 +1290,14 @@ try {
       inset: 0;
       width: 100%;
       height: 100%;
-      border-radius: 18px;
+      border-radius: 16px;
       padding: 0;
       background: #0b071e;
       border: 1px solid rgba(255,255,255,0.14);
       box-shadow: 0 30px 80px rgba(10,5,30,0.55), 0 0 35px rgba(124,58,237,0.22);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      transform: rotateY(-4deg) rotateX(2deg);
+      transform: rotateY(-3deg) rotateX(2deg);
       transform-style: preserve-3d;
       animation: mainFloat 6s infinite ease-in-out;
       overflow: hidden;
@@ -1307,7 +1306,7 @@ try {
     /* HERO SLIDER (INTEGRATED INTO 3D DASHBOARD) */
     .hero-slides{display:flex;width:100%;height:100%;min-height:100%;align-items:stretch;transition:transform .65s cubic-bezier(.4,0,.2,1)}
     .hero-slide{flex:0 0 100%;width:100%;height:100%;min-height:100%;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#0b071e}
-    .hero-slide img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+    .hero-slide img{width:100%;height:100%;object-fit:contain;object-position:center;display:block}
     .hero-slide-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,5,30,0.7) 0%,rgba(10,5,30,0.1) 50%,transparent 100%);z-index:1;pointer-events:none}
     .hero-slide-caption{position:absolute;bottom:20px;left:20px;right:60px;z-index:2;pointer-events:none}
     .hero-slide-caption h3{font-family:'Rajdhani',sans-serif;font-size:clamp(14px,2.2vw,24px);font-weight:700;color:#fff;line-height:1.15;margin-bottom:6px;text-shadow:0 2px 10px rgba(0,0,0,.5)}
@@ -1340,49 +1339,49 @@ try {
 
     /* Clicks Layer */
     .card-clicks {
-      width: 150px;
-      left: -8%;
-      top: 15%;
+      width: 130px;
+      left: -6%;
+      top: 5%;
       animation: subFloat1 5s infinite ease-in-out;
     }
 
     /* Conversions Layer */
     .card-convs {
-      width: 150px;
-      right: -8%;
-      top: 12%;
+      width: 130px;
+      right: -6%;
+      top: 5%;
       animation: subFloat2 6.5s infinite ease-in-out;
     }
 
     /* Revenue/Payout Layer */
     .card-revenue {
-      width: 150px;
-      left: -6%;
-      bottom: -4%;
+      width: 130px;
+      left: -4%;
+      bottom: -6%;
       animation: subFloat3 5.8s infinite ease-in-out;
     }
 
     /* EPC Layer */
     .card-epc {
-      width: 125px;
-      right: 15%;
-      top: -8%;
+      width: 110px;
+      right: 10%;
+      top: -10%;
       animation: subFloat1 7.2s infinite ease-in-out;
     }
 
     /* Fraud Alert Layer */
     .card-fraud {
-      width: 230px;
-      right: -10%;
-      bottom: 10%;
+      width: 180px;
+      right: -8%;
+      bottom: -4%;
       animation: subFloat4 8s infinite ease-in-out;
     }
 
     /* Chat Popup Layer */
     .card-chat {
-      width: 190px;
-      left: -12%;
-      bottom: 20%;
+      width: 160px;
+      left: -10%;
+      bottom: 15%;
       animation: subFloat2 7.8s infinite ease-in-out;
     }
 
