@@ -1287,12 +1287,12 @@ try {
 
     .floating-dashboard-wrap {
       position: absolute;
-      width: 90%;
-      aspect-ratio: 16/14;
-      left: 5%;
-      top: 5%;
-      border-radius: 24px;
-      padding: 6px;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      border-radius: 20px;
+      padding: 0;
       background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
       border: 1px solid rgba(255,255,255,0.12);
       box-shadow: 0 45px 100px rgba(10,5,30,0.45), 0 0 40px rgba(124,58,237,0.15);
@@ -1305,9 +1305,9 @@ try {
     }
 
     /* HERO SLIDER (INTEGRATED INTO 3D DASHBOARD) */
-    .hero-slides{display:flex;width:100%;height:100%;align-items:center;transition:transform .65s cubic-bezier(.4,0,.2,1)}
-    .hero-slide{flex:0 0 100%;position:relative;height:100%;overflow:hidden}
-    .hero-slide img{width:100%;height:100%;object-fit:cover;display:block}
+    .hero-slides{display:flex;width:100%;height:100%;min-height:100%;align-items:stretch;transition:transform .65s cubic-bezier(.4,0,.2,1)}
+    .hero-slide{flex:0 0 100%;width:100%;height:100%;min-height:100%;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+    .hero-slide img{width:100%;height:100%;min-width:100%;min-height:100%;object-fit:fill;display:block}
     .hero-slide-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,5,30,0.85) 0%,rgba(10,5,30,0.2) 60%,transparent 100%);z-index:1}
     .hero-slide-caption{position:absolute;bottom:24px;left:24px;right:60px;z-index:2}
     .hero-slide-caption h3{font-family:'Rajdhani',sans-serif;font-size:clamp(14px,2.2vw,24px);font-weight:700;color:#fff;line-height:1.15;margin-bottom:6px;text-shadow:0 2px 10px rgba(0,0,0,.5)}
@@ -1765,18 +1765,32 @@ try {
       .hero{text-align:center}
       .hero-btns{justify-content:center}
       .hero-visual{margin-top:48px}
+      .hero-graphic-3d{height:460px}
+      .floating-dashboard-wrap{transform:rotateY(-6deg) rotateX(4deg)}
     }
     @media(max-width:767px){
       section{padding:64px 0}
       .form-card{padding:26px 20px}
       .smartlink-highlight{padding:30px 20px}
-      .hero-graphic-3d { height: 460px; }
+      .hero-graphic-3d { height: 360px; }
+      .floating-dashboard-wrap { transform: none !important; border-radius: 14px; width: 100%; height: 100%; top: 0; left: 0; }
       .card-fraud { display: none !important; }
       .card-chat { display: none !important; }
-      .card-clicks { left: 0%; top: 35%; }
-      .card-convs { right: 0%; top: 25%; }
-      .card-revenue { left: 8%; bottom: 6%; }
+      .card-clicks { left: 0%; top: 10%; transform: scale(0.8); }
+      .card-convs { right: 0%; top: 8%; transform: scale(0.8); }
+      .card-revenue { left: 4%; bottom: 4%; transform: scale(0.8); }
       .lock-node { right: 10%; bottom: 6%; }
+      .hero-slide-caption { bottom: 16px; left: 16px; right: 48px; }
+      .hero-slide-caption h3 { font-size: 16px; }
+      .hero-slide-caption p { font-size: 11px; }
+    }
+    @media(max-width:480px){
+      .hero-graphic-3d { height: 260px; }
+      .floating-dashboard-wrap { border-radius: 10px; }
+      .hero-slide-caption { bottom: 10px; left: 10px; right: 36px; }
+      .hero-slide-caption h3 { font-size: 13px; margin-bottom: 2px; }
+      .hero-slide-caption p { font-size: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+      .hero-slider-arrow { width: 26px; height: 26px; font-size: 12px; }
     }
     @media(max-width:900px){.offer-card{flex:0 0 calc(33.333% - 11px) !important}}
     @media(max-width:600px){.offer-card{flex:0 0 calc(50% - 8px) !important}}
