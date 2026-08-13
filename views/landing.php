@@ -437,13 +437,13 @@ try {
     .hero h1{font-size:clamp(36px,5.5vw,62px);margin-bottom:20px;line-height:1.05;color:var(--text)}
     .hero p{color:var(--muted);font-size:15px;margin-bottom:14px}
     .hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
-    .hero-visual{display:flex;align-items:center;justify-content:center;position:relative;z-index:2}
+    .hero-visual{display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:2;width:100%}
     .hero-graphic{width:100%;position:relative;margin:0 auto}
-    .hero-card-stack{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px;width:100%;transform-style:preserve-3d}
-    .hero-stat-card{background:rgba(15,10,36,0.65);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:24px 20px;text-align:center;transition:all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);box-shadow:0 10px 30px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.1);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);position:relative;overflow:hidden;transform:translateZ(10px)}
+    .hero-card-stack{display:grid;grid-template-columns:repeat(4, 1fr);gap:12px;margin-top:24px;width:100%;transform-style:preserve-3d}
+    .hero-stat-card{background:rgba(15,10,36,0.65);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:16px 14px;text-align:center;transition:all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);box-shadow:0 10px 30px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.1);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);position:relative;overflow:hidden;transform:translateZ(10px)}
     .hero-stat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(124,58,237,0.1),transparent);opacity:0.6;pointer-events:none}
     .hero-stat-card:hover{box-shadow:0 20px 45px rgba(124,58,237,0.25);border-color:rgba(124,58,237,0.3)}
-    .hero-stat-card .stat-num{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;display:block;line-height:1;margin-bottom:6px;background:var(--grad-gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 2px 8px rgba(245,158,11,0.3))}
+    .hero-stat-card .stat-num{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;display:block;line-height:1;margin-bottom:4px;background:var(--grad-gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 2px 8px rgba(245,158,11,0.3))}
     .hero-stat-card:nth-child(2) .stat-num{background:var(--grad-green);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 2px 8px rgba(16,185,129,0.3))}
     .hero-stat-card:nth-child(3) .stat-num{background:var(--grad-cool);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 2px 8px rgba(14,165,233,0.3))}
     .hero-stat-card:nth-child(4) .stat-num{background:var(--grad-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 2px 8px rgba(124,58,237,0.3))}
