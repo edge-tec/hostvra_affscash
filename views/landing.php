@@ -1254,7 +1254,8 @@ try {
 
     /* HERO 3D GRAPHIC EXPERIENCES / SLIDER COMPONENT */
     .hero-graphic-3d {
-      width: 100%;
+      width: 50%;
+      max-width: 500px;
       aspect-ratio: 16 / 9;
       overflow: hidden;
       display: flex;
@@ -1265,9 +1266,9 @@ try {
       margin: 0 auto;
       perspective: 1200px;
       z-index: 10;
-      border-radius: 16px;
+      border-radius: 14px;
       border: 1px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 30px 80px rgba(10, 5, 30, 0.6), 0 0 40px rgba(124, 58, 237, 0.2);
+      box-shadow: 0 20px 60px rgba(10, 5, 30, 0.6), 0 0 30px rgba(124, 58, 237, 0.2);
     }
     
     .threed-platform {
@@ -1794,32 +1795,32 @@ try {
       .hero{text-align:center}
       .hero-btns{justify-content:center}
       .hero-visual{margin-top:48px}
-      .hero-graphic-3d{width:100%;height:380px;min-height:380px}
+      .hero-graphic-3d{width:65%;max-width:440px;aspect-ratio:16/9;height:auto;min-height:auto}
       .floating-dashboard-wrap{transform:rotateY(-2deg) rotateX(1deg)}
     }
     @media(max-width:767px){
       section{padding:64px 0}
       .form-card{padding:26px 20px}
       .smartlink-highlight{padding:30px 20px}
-      .hero-graphic-3d { width:100%; height:300px; min-height:300px; }
+      .hero-graphic-3d { width:80%; max-width:380px; aspect-ratio:16/9; height:auto; min-height:auto; }
       .floating-dashboard-wrap { transform: none !important; border-radius: 14px; width: 100%; height: 100%; inset: 0; }
       .card-fraud { display: none !important; }
       .card-chat { display: none !important; }
-      .card-clicks { left: -2%; top: 5%; transform: scale(0.75); }
-      .card-convs { right: -2%; top: 5%; transform: scale(0.75); }
-      .card-revenue { left: 2%; bottom: 2%; transform: scale(0.75); }
+      .card-clicks { left: -2%; top: 5%; transform: scale(0.65); }
+      .card-convs { right: -2%; top: 5%; transform: scale(0.65); }
+      .card-revenue { left: 2%; bottom: 2%; transform: scale(0.65); }
       .lock-node { right: 10%; bottom: 6%; }
-      .hero-slide-caption { bottom: 12px; left: 12px; right: 40px; }
-      .hero-slide-caption h3 { font-size: 15px; }
-      .hero-slide-caption p { font-size: 11px; }
+      .hero-slide-caption { bottom: 10px; left: 10px; right: 36px; }
+      .hero-slide-caption h3 { font-size: 14px; }
+      .hero-slide-caption p { font-size: 10px; }
     }
     @media(max-width:480px){
-      .hero-graphic-3d { width:100%; height:230px; min-height:230px; }
+      .hero-graphic-3d { width:95%; max-width:320px; aspect-ratio:16/9; height:auto; min-height:auto; }
       .floating-dashboard-wrap { border-radius: 10px; }
-      .hero-slide-caption { bottom: 8px; left: 8px; right: 30px; }
-      .hero-slide-caption h3 { font-size: 12px; margin-bottom: 2px; }
-      .hero-slide-caption p { font-size: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-      .hero-slider-arrow { width: 26px; height: 26px; font-size: 12px; }
+      .hero-slide-caption { bottom: 6px; left: 6px; right: 28px; }
+      .hero-slide-caption h3 { font-size: 11px; margin-bottom: 2px; }
+      .hero-slide-caption p { font-size: 9px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+      .hero-slider-arrow { width: 24px; height: 24px; font-size: 11px; }
     }
     @media(max-width:900px){.offer-card{flex:0 0 calc(33.333% - 11px) !important}}
     @media(max-width:600px){.offer-card{flex:0 0 calc(50% - 8px) !important}}
