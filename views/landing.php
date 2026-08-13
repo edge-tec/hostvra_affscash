@@ -1255,8 +1255,8 @@ try {
     /* HERO 3D GRAPHIC EXPERIENCES */
     .hero-graphic-3d {
       width: 100%;
-      aspect-ratio: 16 / 10;
-      max-height: 520px;
+      height: 440px;
+      min-height: 440px;
       position: relative;
       margin: 0 auto;
       perspective: 1200px;
@@ -1291,14 +1291,14 @@ try {
       inset: 0;
       width: 100%;
       height: 100%;
-      border-radius: 20px;
+      border-radius: 18px;
       padding: 0;
       background: #0b071e;
       border: 1px solid rgba(255,255,255,0.14);
-      box-shadow: 0 35px 90px rgba(10,5,30,0.5), 0 0 40px rgba(124,58,237,0.2);
+      box-shadow: 0 30px 80px rgba(10,5,30,0.55), 0 0 35px rgba(124,58,237,0.22);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      transform: rotateY(-5deg) rotateX(3deg);
+      transform: rotateY(-4deg) rotateX(2deg);
       transform-style: preserve-3d;
       animation: mainFloat 6s infinite ease-in-out;
       overflow: hidden;
@@ -1307,7 +1307,7 @@ try {
     /* HERO SLIDER (INTEGRATED INTO 3D DASHBOARD) */
     .hero-slides{display:flex;width:100%;height:100%;min-height:100%;align-items:stretch;transition:transform .65s cubic-bezier(.4,0,.2,1)}
     .hero-slide{flex:0 0 100%;width:100%;height:100%;min-height:100%;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#0b071e}
-    .hero-slide img{width:100%;height:100%;object-fit:contain;object-position:center;display:block}
+    .hero-slide img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
     .hero-slide-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,5,30,0.7) 0%,rgba(10,5,30,0.1) 50%,transparent 100%);z-index:1;pointer-events:none}
     .hero-slide-caption{position:absolute;bottom:20px;left:20px;right:60px;z-index:2;pointer-events:none}
     .hero-slide-caption h3{font-family:'Rajdhani',sans-serif;font-size:clamp(14px,2.2vw,24px);font-weight:700;color:#fff;line-height:1.15;margin-bottom:6px;text-shadow:0 2px 10px rgba(0,0,0,.5)}
@@ -1765,14 +1765,14 @@ try {
       .hero{text-align:center}
       .hero-btns{justify-content:center}
       .hero-visual{margin-top:48px}
-      .hero-graphic-3d{width:100%;aspect-ratio:16/10;max-height:420px}
-      .floating-dashboard-wrap{transform:rotateY(-3deg) rotateX(2deg)}
+      .hero-graphic-3d{width:100%;height:380px;min-height:380px}
+      .floating-dashboard-wrap{transform:rotateY(-2deg) rotateX(1deg)}
     }
     @media(max-width:767px){
       section{padding:64px 0}
       .form-card{padding:26px 20px}
       .smartlink-highlight{padding:30px 20px}
-      .hero-graphic-3d { width:100%; aspect-ratio:16/10; max-height:340px; }
+      .hero-graphic-3d { width:100%; height:300px; min-height:300px; }
       .floating-dashboard-wrap { transform: none !important; border-radius: 14px; width: 100%; height: 100%; inset: 0; }
       .card-fraud { display: none !important; }
       .card-chat { display: none !important; }
@@ -1785,7 +1785,7 @@ try {
       .hero-slide-caption p { font-size: 11px; }
     }
     @media(max-width:480px){
-      .hero-graphic-3d { width:100%; aspect-ratio:16/10; max-height:260px; }
+      .hero-graphic-3d { width:100%; height:230px; min-height:230px; }
       .floating-dashboard-wrap { border-radius: 10px; }
       .hero-slide-caption { bottom: 8px; left: 8px; right: 30px; }
       .hero-slide-caption h3 { font-size: 12px; margin-bottom: 2px; }
