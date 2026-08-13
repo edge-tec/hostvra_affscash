@@ -1252,17 +1252,22 @@ try {
     .badge-top-pill{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:8px;font-weight:800;letter-spacing:.8px;padding:3px 8px;border-radius:20px;text-transform:uppercase;box-shadow:0 3px 8px rgba(245,158,11,.45)}
     .badge-new-pill{background:linear-gradient(135deg,#059669,#0ea5e9);color:#fff;font-size:8px;font-weight:800;letter-spacing:.8px;padding:3px 8px;border-radius:20px;text-transform:uppercase}
 
-    /* HERO 3D GRAPHIC EXPERIENCES */
+    /* HERO 3D GRAPHIC EXPERIENCES / SLIDER COMPONENT */
     .hero-graphic-3d {
       width: 100%;
       aspect-ratio: 16 / 9;
-      position: relative;
-      margin: 0 auto;
-      perspective: 1200px;
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
+      background: #10051f;
+      position: relative;
+      margin: 0 auto;
+      perspective: 1200px;
       z-index: 10;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 30px 80px rgba(10, 5, 30, 0.6), 0 0 40px rgba(124, 58, 237, 0.2);
     }
     
     .threed-platform {
@@ -1292,7 +1297,7 @@ try {
       height: 100%;
       border-radius: 16px;
       padding: 0;
-      background: #0b071e;
+      background: #10051f;
       border: 1px solid rgba(255,255,255,0.14);
       box-shadow: 0 30px 80px rgba(10,5,30,0.55), 0 0 35px rgba(124,58,237,0.22);
       backdrop-filter: blur(20px);
@@ -1303,10 +1308,35 @@ try {
       overflow: hidden;
     }
 
-    /* HERO SLIDER (INTEGRATED INTO 3D DASHBOARD) */
-    .hero-slides{display:flex;width:100%;height:100%;min-height:100%;align-items:stretch;transition:transform .65s cubic-bezier(.4,0,.2,1)}
-    .hero-slide{flex:0 0 100%;width:100%;height:100%;min-height:100%;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#0b071e}
-    .hero-slide img{width:100%;height:100%;object-fit:contain;object-position:center;display:block}
+    /* HERO SLIDER (INTEGRATED INTO DASHBOARD) */
+    .hero-slides {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      min-height: 100%;
+      align-items: center;
+      justify-content: center;
+      transition: transform .65s cubic-bezier(.4, 0, .2, 1);
+    }
+    .hero-slide {
+      flex: 0 0 100%;
+      width: 100%;
+      height: 100%;
+      min-height: 100%;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #10051f;
+    }
+    .hero-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+    }
     .hero-slide-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,5,30,0.7) 0%,rgba(10,5,30,0.1) 50%,transparent 100%);z-index:1;pointer-events:none}
     .hero-slide-caption{position:absolute;bottom:20px;left:20px;right:60px;z-index:2;pointer-events:none}
     .hero-slide-caption h3{font-family:'Rajdhani',sans-serif;font-size:clamp(14px,2.2vw,24px);font-weight:700;color:#fff;line-height:1.15;margin-bottom:6px;text-shadow:0 2px 10px rgba(0,0,0,.5)}
