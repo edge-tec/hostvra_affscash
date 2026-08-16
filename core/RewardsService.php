@@ -574,7 +574,8 @@ class RewardsService
                 "SELECT g.*,
                         CONCAT(COALESCE(u.first_name,''), ' ', COALESCE(u.last_name,'')) AS aff_name,
                         u.email AS aff_email,
-                        af.id AS aff_id
+                        af.id AS aff_id,
+                        af.user_id AS aff_user_id
                  FROM reward_grants g
                  JOIN affiliates af ON af.id = g.affiliate_id
                  JOIN users u ON u.id = af.user_id
@@ -605,7 +606,7 @@ class RewardsService
                 'processing_days' => 'Up to 30 days',
             ];
 
-            // 1. Send Affiliate Notification
+            // 1. Send Affiliate Email Notification
             if (empty($grant['email_sent_affiliate']) || $forceRetry) {
                 if (!filter_var($affEmail, FILTER_VALIDATE_EMAIL)) {
                     $result['errors'][] = "Invalid affiliate email address: '{$affEmail}'";
@@ -622,7 +623,7 @@ class RewardsService
                 $result['affiliate_sent'] = true; // Already sent previously
             }
 
-            // 2. Send Admin Notification
+            // 2. Send Admin Email Notification
             if (empty($grant['email_sent_admin']) || $forceRetry) {
                 $cfg = Config::get('config') ?? [];
                 $adminEmail = $cfg['smtp']['from_email'] 
@@ -643,6 +644,70 @@ class RewardsService
                 }
             } else {
                 $result['admin_sent'] = true; // Already sent previously
+            }
+
+            // 3. Instant In-App Notification Bell & FCM Push for Affiliate Dashboard
+            try {
+                $affUserId = (int)$grant['aff_user_id'];
+                if ($affUserId > 0) {
+                    $notifTitle = '🎉 Reward Unlocked: ' . $grant['title_snapshot'];
+                    $notifMsg   = 'Congratulations! You unlocked the reward "' . $grant['title_snapshot'] . '" (' . $valLabel . '). Check your rewards dashboard to claim.';
+
+                    $existsInApp = Database::fetchOne(
+                        "SELECT 1 FROM notifications WHERE user_id = ? AND title = ? LIMIT 1",
+                        [$affUserId, $notifTitle]
+                    );
+                    if (!$existsInApp || $forceRetry) {
+                        Database::insert('notifications', [
+                            'user_id'     => $affUserId,
+                            'target_role' => 'affiliate',
+                            'type'        => 'success',
+                            'title'       => $notifTitle,
+                            'message'     => $notifMsg,
+                            'link'        => '/affiliate/rewards',
+                            'is_read'     => 0,
+                            'created_at'  => date('Y-m-d H:i:s'),
+                        ]);
+
+                        // FCM Push Notification to Mobile App (if enabled)
+                        if (file_exists(BASE_PATH . '/core/FirebaseMessaging.php')) {
+                            require_once BASE_PATH . '/core/FirebaseMessaging.php';
+                            @FirebaseMessaging::sendToUser(
+                                $affUserId,
+                                $notifTitle,
+                                "You unlocked the reward \"" . $grant['title_snapshot'] . "\" (" . $valLabel . "). Tap to view.",
+                                ['type' => 'reward', 'deep_link_route' => 'rewards']
+                            );
+                        }
+                    }
+                }
+            } catch (\Throwable $ne) {
+                error_log('[RewardsService::sendRewardClaimNotifications] In-app notification error: ' . $ne->getMessage());
+            }
+
+            // 4. Instant In-App Notification for Admin Dashboard
+            try {
+                $admNotifTitle = '🎁 New Reward Claim Alert';
+                $admNotifMsg   = $affName . ' (ID #' . $grant['affiliate_id'] . ') claimed reward "' . $grant['title_snapshot'] . '" (' . $valLabel . ').';
+
+                $existsAdmNotif = Database::fetchOne(
+                    "SELECT 1 FROM notifications WHERE target_role = 'admin' AND title = ? AND message = ? LIMIT 1",
+                    [$admNotifTitle, $admNotifMsg]
+                );
+                if (!$existsAdmNotif || $forceRetry) {
+                    Database::insert('notifications', [
+                        'user_id'     => null,
+                        'target_role' => 'admin',
+                        'type'        => 'info',
+                        'title'       => $admNotifTitle,
+                        'message'     => $admNotifMsg,
+                        'link'        => '/admin/rewards?tab=grants',
+                        'is_read'     => 0,
+                        'created_at'  => date('Y-m-d H:i:s'),
+                    ]);
+                }
+            } catch (\Throwable $ane) {
+                error_log('[RewardsService::sendRewardClaimNotifications] Admin in-app notification error: ' . $ane->getMessage());
             }
 
         } catch (\Throwable $e) {

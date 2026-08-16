@@ -184,6 +184,14 @@ if (!isset($grantByRule)) {
                 <td>
                     <?php $b = ['granted'=>'warning','claimed'=>'info','paid'=>'success','cancelled'=>'muted'][$g['status']] ?? 'muted'; ?>
                     <span class="badge badge-<?= $b ?>"><?= Helpers::e($g['status']) ?></span>
+                    <?php if ($g['status'] === 'granted'): ?>
+                    <form method="POST" style="display:inline-block;margin-left:8px">
+                        <?= Helpers::csrf() ?>
+                        <input type="hidden" name="action" value="claim_reward">
+                        <input type="hidden" name="grant_id" value="<?= (int)$g['id'] ?>">
+                        <button type="submit" class="btn btn-primary btn-sm" style="padding:2px 10px;font-size:11px">🎁 Claim Reward</button>
+                    </form>
+                    <?php endif; ?>
                 </td>
             </tr>
             <?php endforeach; ?>
