@@ -316,7 +316,7 @@
         min-width: 0 !important;
     }
     .rw-table tbody td.rw-td-top::before { display: none !important; }
-    .rw-table tbody td.rw-td-top > div {
+    .rw-table tbody td.rw-td-top > div.rw-td-info {
         flex: 1 1 0% !important;
         min-width: 0 !important;
         max-width: 100% !important;
@@ -415,10 +415,10 @@
                         <div class="rw-thumb"<?= !empty($r['image_path']) ? ' style="background-image:url(\'' . Helpers::e($r['image_path']) . '\')"' : '' ?>>
                             <?= empty($r['image_path']) ? '🎁' : '' ?>
                         </div>
-                        <div>
-                            <div style="font-weight:700;line-height:1.25;color:#0F172A"><?= Helpers::e($r['title']) ?></div>
+                        <div class="rw-td-info">
+                            <div style="font-weight:700;line-height:1.25;color:#0F172A;word-break:break-word;overflow-wrap:anywhere"><?= Helpers::e($r['title']) ?></div>
                             <?php if ($cleanDesc !== ''): ?>
-                            <div style="font-size:11.5px;color:#64748B;margin-top:2px"><?= Helpers::e(mb_strimwidth($cleanDesc, 0, 85, '…')) ?></div>
+                            <div style="font-size:11.5px;color:#64748B;margin-top:2px;word-break:break-word;overflow-wrap:anywhere"><?= Helpers::e($cleanDesc) ?></div>
                             <?php endif; ?>
                             <?php if (!empty($r['badge_label'])): ?>
                             <span class="rw-badge-chip" style="background:<?= Helpers::e($bg) ?>;margin-top:4px"><?= Helpers::e($r['badge_label']) ?></span>
