@@ -249,10 +249,34 @@
     .rw-table tbody td[data-label] > * {
         text-align: right !important;
         max-width: calc(100% - 88px) !important;
-        flex: 1 1 auto !important;
+        flex: 0 1 auto !important;
         min-width: 0 !important;
         word-break: break-word !important;
         overflow-wrap: anywhere !important;
+    }
+    .rw-table tbody td .rw-thumb {
+        width: 52px !important;
+        min-width: 52px !important;
+        max-width: 52px !important;
+        height: 38px !important;
+        flex: 0 0 52px !important;
+        border-radius: 6px !important;
+        background-size: cover !important;
+        background-position: center !important;
+    }
+    .rw-table tbody td .rw-toggle {
+        width: 36px !important;
+        min-width: 36px !important;
+        max-width: 36px !important;
+        height: 20px !important;
+        flex: 0 0 36px !important;
+        display: inline-block !important;
+    }
+    .rw-table tbody td .rw-vis-tag {
+        display: inline-block !important;
+        width: auto !important;
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
     }
     .rw-table tbody td.rw-mini-actions {
         display: flex !important;
@@ -260,8 +284,14 @@
         align-items: center !important;
         gap: 6px !important;
         flex-wrap: wrap !important;
+        flex: 0 0 auto !important;
+        width: auto !important;
         max-width: calc(100% - 88px) !important;
         white-space: normal !important;
+    }
+    .rw-table tbody td.rw-mini-actions > * {
+        flex: 0 0 auto !important;
+        width: auto !important;
     }
     .rw-table tbody td.rw-mini-actions form {
         display: inline-block !important;
