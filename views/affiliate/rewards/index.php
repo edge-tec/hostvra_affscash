@@ -46,7 +46,8 @@
     $pct = min(100, (float)$nextRule['threshold_usd'] > 0
         ? round(($nextEarned / (float)$nextRule['threshold_usd']) * 100, 1)
         : 0);
-    $ruleStart = $nextRule['start_date'] ?? ($nextRule['publish_at'] ?: $nextRule['created_at']);
+    $lastGrantTs = RewardsService::lastGrantTimestamp($affId);
+    $cycleStart  = $lastGrantTs ?: ($nextRule['publish_at'] ?: $nextRule['created_at']);
 ?>
 <div class="ar-hero">
     <div>
@@ -60,15 +61,14 @@
             <span>$<?= number_format($nextEarned, 2) ?></span>
             <span>$<?= number_format((float)$nextRule['threshold_usd'], 2) ?></span>
         </div>
-        <?php if ($ruleStart): ?>
+        <?php if ($cycleStart): ?>
         <div style="margin-top:6px;font-size:11px;opacity:.7">
             Counting earnings between
-            <strong style="opacity:1"><?= Helpers::e(date('M j, Y', strtotime((string)$ruleStart))) ?></strong>
+            <strong style="opacity:1"><?= Helpers::e(date('M j, Y', strtotime((string)$cycleStart))) ?></strong>
             <?php if (!empty($nextRule['expires_at'])): ?>
                 and <strong style="opacity:1"><?= Helpers::e(date('M j, Y', strtotime((string)$nextRule['expires_at']))) ?></strong>.
-                After that the counter resets for the next reward.
             <?php else: ?>
-                and onward (no expiry).
+                and onward. Counter resets after unlock.
             <?php endif; ?>
         </div>
         <?php endif; ?>

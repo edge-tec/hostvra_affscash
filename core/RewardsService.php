@@ -302,62 +302,113 @@ class RewardsService
     // ── Granting (called from conversion-approval hook) ─────────────────────
 
     /**
-     * For a given affiliate, find all active rules whose threshold is now
-     * met and grant any that haven't been granted yet. Idempotent thanks to
-     * the UNIQUE (rule_id, affiliate_id) index — duplicate INSERTs are no-ops.
+     * Get the timestamp of the affiliate's last unlocked reward grant.
+     * Returns null if the affiliate has not unlocked any rewards yet.
+     */
+    public static function lastGrantTimestamp(int $affiliateId): ?string
+    {
+        if ($affiliateId <= 0) return null;
+        self::ensureSchema();
+        try {
+            $row = Database::fetchOne(
+                "SELECT MAX(granted_at) AS last_ts FROM reward_grants WHERE affiliate_id = ?",
+                [$affiliateId]
+            );
+            return !empty($row['last_ts']) ? (string)$row['last_ts'] : null;
+        } catch (\Throwable $_) { return null; }
+    }
+
+    /**
+     * Calculate current cycle earnings for an affiliate toward a reward rule.
+     *
+     * Independent Cycle Logic:
+     * - Baseline start date is the LATER of:
+     *   1) The reward rule's publish_at / created_at date.
+     *   2) The affiliate's last unlocked reward grant timestamp (granted_at).
+     * - Conversions before the last unlocked reward are consumed/reset to $0.
+     * - Only approved non-hidden conversions after the last grant timestamp count.
+     */
+    public static function currentCycleEarnings(int $affiliateId, int $ruleId): float
+    {
+        if ($affiliateId <= 0 || $ruleId <= 0) return 0.0;
+        self::ensureSchema();
+        try {
+            $row = Database::fetchOne(
+                "SELECT COALESCE((
+                    SELECT SUM(c.payout)
+                    FROM conversions c
+                    WHERE c.affiliate_id = ?
+                      AND c.status = 'approved'
+                      AND COALESCE(c.is_hidden, 0) = 0
+                      AND (c.hide_reason IS NULL OR c.hide_reason NOT LIKE '%traffic_back%')
+                      AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = c.click_id AND _ck_tb.source = 'traffic_back')
+                      AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = c.click_id)
+                      AND c.converted_at >= GREATEST(
+                          COALESCE(r.publish_at, r.created_at),
+                          COALESCE((SELECT MAX(g.granted_at) FROM reward_grants g WHERE g.affiliate_id = c.affiliate_id), '1970-01-01 00:00:00')
+                      )
+                      AND (r.expires_at IS NULL OR c.converted_at <= r.expires_at)
+                ), 0) AS cycle_earnings
+                FROM reward_rules r
+                WHERE r.id = ? LIMIT 1",
+                [$affiliateId, $ruleId]
+            );
+            return (float)($row['cycle_earnings'] ?? 0);
+        } catch (\Throwable $_) { return 0.0; }
+    }
+
+    /** Alias for backward compatibility */
+    public static function earningsSinceRuleStart(int $affiliateId, int $ruleId): float
+    {
+        return self::currentCycleEarnings($affiliateId, $ruleId);
+    }
+
+    // ── Granting (called from conversion-approval hook) ─────────────────────
+
+    /**
+     * For a given affiliate, check active un-granted rules and unlock the next
+     * rule whose target cycle threshold is now met.
+     *
+     * Reset & Cycle Protection:
+     * - Unlocking a reward inserts a record into reward_grants with granted_at = NOW().
+     * - Instantly resets the qualifying earnings baseline to $0.00 for subsequent rules.
+     * - Unlocks only ONE reward per completed target cycle so multiple rewards
+     *   are never unlocked simultaneously from the same historical pool.
      */
     public static function checkAndGrant(int $affiliateId): array
     {
         if ($affiliateId <= 0) return [];
         self::ensureSchema();
 
-        // Per-rule earnings: only payouts from conversions that converted
-        // INSIDE the reward's window count toward unlocking it.
-        //   window start = publish_at (falls back to created_at when null)
-        //   window end   = expires_at (no end when null)
-        // Earnings before the window started, after the window ended, or made
-        // toward another (already-expired) reward never carry across — each
-        // reward's counter starts fresh from its own publish_at and freezes at
-        // its own expires_at.
         try {
-            $rows = Database::fetchAll(
-                "SELECT r.*, COALESCE(r.publish_at, r.created_at) AS start_date,
-                        COALESCE((
-                            SELECT SUM(c.payout)
-                            FROM conversions c
-                            WHERE c.affiliate_id = ?
-                              AND c.status = 'approved'
-                              AND COALESCE(c.is_hidden, 0) = 0
-                              AND (c.hide_reason IS NULL OR c.hide_reason NOT LIKE '%traffic_back%')
-                              AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = c.click_id AND _ck_tb.source = 'traffic_back')
-                              AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = c.click_id)
-                              AND c.converted_at >= COALESCE(r.publish_at, r.created_at)
-                              AND (r.expires_at IS NULL OR c.converted_at <= r.expires_at)
-                        ), 0) AS earned_in_window
+            $rules = Database::fetchAll(
+                "SELECT r.*, COALESCE(r.publish_at, r.created_at) AS start_date
                  FROM reward_rules r
                  WHERE r.active = 1
                    AND (r.publish_at IS NULL OR r.publish_at <= NOW())
-                 ORDER BY r.threshold_usd ASC",
+                   AND (r.expires_at IS NULL OR r.expires_at >= NOW())
+                   AND r.id NOT IN (SELECT rule_id FROM reward_grants WHERE affiliate_id = ?)
+                 ORDER BY r.sort_order ASC, r.threshold_usd ASC",
                 [$affiliateId]
             ) ?: [];
         } catch (\Throwable $_) { return []; }
 
         $granted = [];
-        foreach ($rows as $rule) {
-            $earnedSince = (float)$rule['earned_in_window'];
-            if ($earnedSince < (float)$rule['threshold_usd']) continue;
-
+        foreach ($rules as $rule) {
             $rid = (int)$rule['id'];
+            $cycleEarned = self::currentCycleEarnings($affiliateId, $rid);
+            if ($cycleEarned < (float)$rule['threshold_usd']) {
+                continue;
+            }
+
             try {
-                // INSERT IGNORE protects against double-grants under race.
-                // lifetime_at_grant stores the per-rule earnings at grant time
-                // (the metric that actually triggered the unlock).
+                // INSERT IGNORE protects against double-grants under race conditions.
                 $stmt = Database::query(
                     "INSERT IGNORE INTO reward_grants
-                        (rule_id, affiliate_id, lifetime_at_grant, kind, value_amount, value_text, title_snapshot)
-                     VALUES (?,?,?,?,?,?,?)",
+                        (rule_id, affiliate_id, lifetime_at_grant, kind, value_amount, value_text, title_snapshot, granted_at)
+                     VALUES (?,?,?,?,?,?,?, NOW())",
                     [
-                        $rid, $affiliateId, $earnedSince, $rule['kind'],
+                        $rid, $affiliateId, $cycleEarned, $rule['kind'],
                         $rule['value_amount'], $rule['value_text'], $rule['title'],
                     ]
                 );
@@ -371,41 +422,15 @@ class RewardsService
                             );
                         } catch (\Throwable $_) {}
                     }
+                    // After granting ONE reward, granted_at is set to NOW(), which
+                    // resets current cycle progress to $0 for the next reward. Break loop.
+                    break;
                 }
             } catch (\Throwable $e) {
                 error_log('[RewardsService::checkAndGrant] ' . $e->getMessage());
             }
         }
         return $granted;
-    }
-
-    // Earnings counted toward a single reward — approved, non-hidden conversion
-    // payouts that fell INSIDE the reward's publish_at → expires_at window.
-    // After expires_at the counter freezes: earnings made later don't count
-    // (and earnings before publish_at never did).
-    public static function earningsSinceRuleStart(int $affiliateId, int $ruleId): float
-    {
-        if ($affiliateId <= 0 || $ruleId <= 0) return 0.0;
-        try {
-            $row = Database::fetchOne(
-                "SELECT COALESCE((
-                    SELECT SUM(c.payout)
-                    FROM conversions c
-                    WHERE c.affiliate_id = ?
-                      AND c.status = 'approved'
-                      AND COALESCE(c.is_hidden, 0) = 0
-                      AND (c.hide_reason IS NULL OR c.hide_reason NOT LIKE '%traffic_back%')
-                      AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = c.click_id AND _ck_tb.source = 'traffic_back')
-                      AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = c.click_id)
-                      AND c.converted_at >= COALESCE(r.publish_at, r.created_at)
-                      AND (r.expires_at IS NULL OR c.converted_at <= r.expires_at)
-                ), 0) AS earned_in_window
-                FROM reward_rules r
-                WHERE r.id = ? LIMIT 1",
-                [$affiliateId, $ruleId]
-            );
-            return (float)($row['earned_in_window'] ?? 0);
-        } catch (\Throwable $_) { return 0.0; }
     }
 
     public static function grantsForAffiliate(int $affiliateId, int $limit = 100): array

@@ -85,7 +85,7 @@
                     <strong>$<?= number_format((float)$reward['threshold_usd'], 2) ?></strong>
                 </div>
                 <div class="rd-info-row">
-                    <span class="text-muted">Your earnings in reward window<?= Helpers::e($windowLabel) ?></span>
+                    <span class="text-muted">Your earnings in current target cycle</span>
                     <strong>$<?= number_format($earned, 2) ?></strong>
                 </div>
                 <?php if (!$isUnlocked): ?>
