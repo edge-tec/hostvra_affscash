@@ -62,20 +62,22 @@
 
 /* Mobile responsive card view (< 768px) */
 @media (max-width: 768px) {
-    .rw-table-wrap { background: transparent; border: none; overflow-x: visible; }
-    .rw-table { display: block; width: 100%; }
+    .rw-table-wrap { background: transparent; border: none; overflow-x: hidden; width: 100%; }
+    .rw-table { display: block; width: 100%; box-sizing: border-box; }
     .rw-table thead { display: none; }
-    .rw-table tbody { display: block; width: 100%; }
+    .rw-table tbody { display: block; width: 100%; box-sizing: border-box; }
     .rw-table tbody tr {
         display: block;
         background: #fff;
         border: 1px solid #E2E8F0;
         border-radius: 12px;
         margin-bottom: 14px;
-        padding: 14px;
+        padding: 12px 14px;
         box-shadow: 0 2px 8px rgba(15,23,42,.04);
         box-sizing: border-box;
         position: relative;
+        width: 100%;
+        overflow: hidden;
     }
     .rw-table tbody td {
         display: flex;
@@ -84,6 +86,9 @@
         padding: 8px 0;
         border-bottom: 1px solid #F1F5F9;
         font-size: 13px;
+        box-sizing: border-box;
+        width: 100%;
+        gap: 8px;
     }
     .rw-table tbody td:last-child { border-bottom: none; }
     .rw-table tbody td[data-label]::before {
@@ -93,16 +98,45 @@
         text-transform: uppercase;
         letter-spacing: .04em;
         color: #64748B;
-        margin-right: 12px;
+        flex-shrink: 0;
+    }
+    .rw-table tbody td > * {
+        text-align: right;
+        max-width: 65%;
+        word-break: break-word;
+    }
+    .rw-mini-actions {
+        display: flex !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        gap: 6px !important;
+        flex-wrap: wrap !important;
+        max-width: 65% !important;
+        white-space: normal !important;
+    }
+    .rw-mini-actions form {
+        display: inline-block !important;
+        margin: 0 !important;
+    }
+    .rw-mini-actions .btn {
+        padding: 4px 10px !important;
+        font-size: 11.5px !important;
+        flex-shrink: 0 !important;
     }
     .rw-td-top {
         display: flex !important;
-        align-items: center !important;
+        align-items: flex-start !important;
         gap: 10px !important;
         border-bottom: 1px solid #E2E8F0 !important;
         padding-bottom: 10px !important;
         margin-bottom: 4px !important;
         justify-content: flex-start !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    .rw-td-top > * {
+        text-align: left !important;
+        max-width: 100% !important;
     }
     .rw-td-top::before { display: none !important; }
 }
