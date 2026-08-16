@@ -159,11 +159,20 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         $gid = (int)Helpers::postRaw('grant_id');
         if ($gid > 0) {
             $res = RewardsService::sendRewardClaimNotifications($gid, true);
-            if ($res['affiliate_sent'] || $res['admin_sent']) {
-                Helpers::flash('success', 'Reward claim notification emails resent successfully.');
+            $affMail = $res['affiliate_email'] ?? 'Affiliate';
+            $admMail = $res['admin_email']     ?? 'Admin';
+
+            if (!empty($res['affiliate_sent']) && !empty($res['admin_sent'])) {
+                Helpers::flash('success', "Reward claim emails resent successfully to Affiliate ({$affMail}) and Admin ({$admMail}).");
+            } elseif (!empty($res['affiliate_sent'])) {
+                $err = !empty($res['admin_err']) ? $res['admin_err'] : implode(' ', $res['errors']);
+                Helpers::flash('warning', "Affiliate email sent to {$affMail}, but Admin email failed: {$err}");
+            } elseif (!empty($res['admin_sent'])) {
+                $err = !empty($res['affiliate_err']) ? $res['affiliate_err'] : implode(' ', $res['errors']);
+                Helpers::flash('warning', "Admin email sent to {$admMail}, but Affiliate email failed: {$err}");
             } else {
-                $errStr = implode(' ', $res['errors']);
-                Helpers::flash('error', 'Notification failed: ' . ($errStr ?: 'Check mailer/SMTP configuration.'));
+                $errStr = implode(' | ', $res['errors']);
+                Helpers::flash('error', 'Email delivery failed: ' . ($errStr ?: 'Check SMTP configuration in Admin Settings > Mailer.'));
             }
         }
         Helpers::redirect('/admin/rewards?tab=grants');

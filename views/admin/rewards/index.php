@@ -537,7 +537,7 @@
                             <button class="btn btn-primary btn-sm" type="submit">Save</button>
                         </form>
                     </details>
-                    <form method="POST" style="display:inline-block;margin-left:4px" onsubmit="return confirm('Resend claim notification emails to affiliate and admin?')">
+                    <form method="POST" style="display:inline-block;margin-left:4px" onsubmit="if(!confirm('Resend claim notification emails to affiliate and admin?')) return false; var b=this.querySelector('button'); if(b){ b.disabled=true; b.innerHTML='⏳ Sending...'; }">
                         <?= Helpers::csrf() ?>
                         <input type="hidden" name="submit_type" value="resend_reward_email">
                         <input type="hidden" name="grant_id" value="<?= (int)$g['id'] ?>">

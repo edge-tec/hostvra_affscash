@@ -7,15 +7,8 @@ class Mailer
 {
     // ── Public API ───────────────────────────────────────────────────────────
 
-    /**
-     * Send a transactional email based on an event type.
-     * Loads the template, renders placeholders, then sends.
-     *
-     * @param string $toEmail
-     * @param string $toName
-     * @param string $eventType  e.g. 'affiliate_created', 'affiliate_approved' …
-     * @param array  $vars       Placeholder values: ['name'=>'John', 'status'=>'active', …]
-     */
+    public static ?string $lastError = null;
+
     /**
      * Send a transactional email based on an event type.
      * Loads the template, renders placeholders, applies master theme, then sends.
@@ -27,12 +20,26 @@ class Mailer
      */
     public static function sendEvent(string $toEmail, string $toName, string $eventType, array $vars = []): bool
     {
+        self::$lastError = null;
         $tpl = Database::fetchOne(
             "SELECT subject, html_body, is_active FROM email_templates WHERE event_type=? LIMIT 1",
             [$eventType]
         );
+
+        if (!$tpl) {
+            // Auto-ensure reward templates if missing
+            if (class_exists('RewardsService')) {
+                try { RewardsService::ensureSchema(); } catch (\Throwable $_) {}
+            }
+            $tpl = Database::fetchOne(
+                "SELECT subject, html_body, is_active FROM email_templates WHERE event_type=? LIMIT 1",
+                [$eventType]
+            );
+        }
+
         if (!$tpl || !$tpl['is_active']) {
-            return false; // template disabled or missing
+            self::$lastError = "Email template for event type '{$eventType}' is disabled or missing in database.";
+            return false;
         }
 
         $vars    = self::enrichVars($vars);
@@ -570,14 +577,18 @@ HTML;
     private static function send(string $toEmail, string $toName, string $subject, string $htmlBody, string $eventType): bool
     {
         $cfg = Config::get('config') ?? [];
-        $smtpHost = $cfg['smtp']['host'] ?? '';
-        $fromEmail = $cfg['smtp']['from_email'] ?? ($cfg['app']['name'] ?? 'System') . '@noreply.local';
-        $fromName  = $cfg['smtp']['from_name']  ?? ($cfg['app']['name'] ?? 'System');
+        $smtpHost  = $cfg['smtp']['host'] ?? $cfg['email']['host'] ?? '';
+        $fromEmail = $cfg['smtp']['from_email'] ?? $cfg['email']['from_address'] ?? (($cfg['app']['name'] ?? 'System') . '@noreply.local');
+        $fromName  = $cfg['smtp']['from_name']  ?? $cfg['email']['from_name'] ?? ($cfg['app']['name'] ?? 'System');
 
         $status = 'failed';
         $errMsg = '';
 
         try {
+            if (!filter_var($toEmail, FILTER_VALIDATE_EMAIL)) {
+                throw new \InvalidArgumentException("Invalid recipient email address: '{$toEmail}'");
+            }
+
             if ($smtpHost) {
                 self::sendSmtp($toEmail, $toName, $fromEmail, $fromName, $subject, $htmlBody, $cfg['smtp'] ?? []);
             } else {
@@ -586,13 +597,14 @@ HTML;
                 $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
                 $headers .= "From: " . self::encodeHeader($fromName) . " <$fromEmail>\r\n";
                 $headers .= "Reply-To: $fromEmail\r\n";
-                if (!mail($toEmail, $subject, $htmlBody, $headers)) {
-                    throw new \RuntimeException('mail() returned false');
+                if (!@mail($toEmail, $subject, $htmlBody, $headers)) {
+                    throw new \RuntimeException("SMTP host is not configured in Admin Settings -> Email/SMTP, and server mail() function returned false.");
                 }
             }
             $status = 'sent';
         } catch (\Throwable $e) {
             $errMsg = $e->getMessage();
+            self::$lastError = $errMsg;
         }
 
         // Log attempt

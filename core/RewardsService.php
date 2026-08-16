@@ -609,14 +609,18 @@ class RewardsService
             // 1. Send Affiliate Email Notification
             if (empty($grant['email_sent_affiliate']) || $forceRetry) {
                 if (!filter_var($affEmail, FILTER_VALIDATE_EMAIL)) {
-                    $result['errors'][] = "Invalid affiliate email address: '{$affEmail}'";
+                    $err = "Invalid affiliate email address: '{$affEmail}'";
+                    $result['errors'][] = $err;
+                    $result['affiliate_err'] = $err;
                 } else {
                     $sent = Mailer::sendEvent($affEmail, $affName, 'reward_claimed_affiliate', $vars);
                     if ($sent) {
                         $result['affiliate_sent'] = true;
                         Database::query("UPDATE reward_grants SET email_sent_affiliate = 1 WHERE id = ?", [$grantId]);
                     } else {
-                        $result['errors'][] = "Failed to deliver email to affiliate ({$affEmail}). Check SMTP configuration.";
+                        $err = "Affiliate email delivery failed ({$affEmail}): " . (Mailer::$lastError ?: "SMTP or mail() function error.");
+                        $result['errors'][] = $err;
+                        $result['affiliate_err'] = $err;
                     }
                 }
             } else {
@@ -627,24 +631,44 @@ class RewardsService
             if (empty($grant['email_sent_admin']) || $forceRetry) {
                 $cfg = Config::get('config') ?? [];
                 $adminEmail = $cfg['smtp']['from_email'] 
+                    ?? $cfg['email']['from_address']
                     ?? $cfg['app']['admin_email'] 
                     ?? Database::fetchColumn("SELECT email FROM users WHERE role='admin' AND is_active=1 LIMIT 1") 
                     ?? 'admin@localhost';
 
+                $result['admin_email'] = $adminEmail;
+
                 if (!filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
-                    $result['errors'][] = "Invalid admin email address: '{$adminEmail}'";
+                    $err = "Invalid admin email address: '{$adminEmail}'";
+                    $result['errors'][] = $err;
+                    $result['admin_err'] = $err;
                 } else {
                     $sentAdm = Mailer::sendEvent($adminEmail, 'Admin', 'reward_claimed_admin', $vars);
                     if ($sentAdm) {
                         $result['admin_sent'] = true;
                         Database::query("UPDATE reward_grants SET email_sent_admin = 1 WHERE id = ?", [$grantId]);
                     } else {
-                        $result['errors'][] = "Failed to deliver notification to admin ({$adminEmail}). Check SMTP configuration.";
+                        $err = "Admin email delivery failed ({$adminEmail}): " . (Mailer::$lastError ?: "SMTP or mail() function error.");
+                        $result['errors'][] = $err;
+                        $result['admin_err'] = $err;
                     }
                 }
             } else {
                 $result['admin_sent'] = true; // Already sent previously
             }
+
+            $result['affiliate_email'] = $affEmail;
+            error_log(sprintf(
+                '[RewardsService::sendRewardClaimNotifications] Grant #%d | Affiliate ID: %d (%s, sent: %s, err: %s) | Admin (%s, sent: %s, err: %s)',
+                $grantId,
+                (int)$grant['affiliate_id'],
+                $affEmail,
+                $result['affiliate_sent'] ? 'YES' : 'NO',
+                $result['affiliate_err'] ?? 'none',
+                $result['admin_email'] ?? 'unknown',
+                $result['admin_sent'] ? 'YES' : 'NO',
+                $result['admin_err'] ?? 'none'
+            ));
 
             // 3. Instant In-App Notification Bell & FCM Push for Affiliate Dashboard
             try {
