@@ -31,7 +31,7 @@
 .rw-badge-pick.active{outline:2px solid #0F172A;outline-offset:2px;border-radius:99px}
 
 .rw-table-wrap{background:#fff;border:1px solid #E2E8F0;border-radius:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;display:block}
-.rw-table{width:100%;border-collapse:collapse;font-size:13px;min-width:680px}
+.rw-table{width:100%;border-collapse:collapse;font-size:13px}
 .rw-table thead th{background:#F8FAFC;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#64748B;padding:10px 12px;text-align:left;border-bottom:1px solid #E2E8F0}
 .rw-table tbody td{padding:11px 12px;border-bottom:1px solid #F1F5F9;vertical-align:middle}
 .rw-table tbody tr:hover td{background:#FAFAFC}
@@ -39,7 +39,7 @@
 .rw-handle{cursor:grab;color:#94A3B8;font-size:18px;line-height:1;user-select:none;padding:0 4px}
 .rw-handle:active{cursor:grabbing}
 
-.rw-thumb{width:54px;height:36px;border-radius:6px;background:#F1F5F9 center/cover no-repeat;border:1px solid #E2E8F0;display:flex;align-items:center;justify-content:center;color:#94A3B8;font-size:18px}
+.rw-thumb{width:54px;height:36px;border-radius:6px;background:#F1F5F9 center/cover no-repeat;border:1px solid #E2E8F0;display:flex;align-items:center;justify-content:center;color:#94A3B8;font-size:18px;flex-shrink:0}
 
 .rw-toggle{position:relative;display:inline-block;width:36px;height:20px}
 .rw-toggle input{opacity:0;width:0;height:0}
@@ -49,16 +49,63 @@
 .rw-toggle input:checked + .t .k{left:19px}
 
 .rw-filter{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px;background:#fff;border:1px solid #E2E8F0;border-radius:10px;padding:10px 12px;max-width:100%;box-sizing:border-box}
-.rw-filter input,.rw-filter select{height:34px;font-size:12.5px;padding:4px 10px;border:1px solid #E2E8F0;border-radius:6px;background:#fff;max-width:100%;box-sizing:border-box}
+.rw-filter input,.rw-filter select{height:36px;font-size:12.5px;padding:4px 10px;border:1px solid #E2E8F0;border-radius:6px;background:#fff;max-width:100%;box-sizing:border-box}
 .rw-filter .grow{flex:1 1 180px;min-width:0}
 
 @media(max-width:640px){
-    .rw-filter{flex-direction:column;align-items:stretch}
-    .rw-filter select, .rw-filter input, .rw-filter button, .rw-filter a{width:100%}
+    .rw-filter{flex-direction:column;align-items:stretch;gap:10px;padding:12px}
+    .rw-filter select, .rw-filter input, .rw-filter button, .rw-filter a{width:100%!important;flex:1 1 100%!important;box-sizing:border-box!important;margin:0!important}
 }
 
 #ruleDescToolbar{display:flex;flex-wrap:wrap;gap:4px 6px;padding:6px;background:#FAFAFC}
 #ruleDescToolbar .ql-formats{margin-right:4px!important}
+
+/* Mobile responsive card view (< 768px) */
+@media (max-width: 768px) {
+    .rw-table-wrap { background: transparent; border: none; overflow-x: visible; }
+    .rw-table { display: block; width: 100%; }
+    .rw-table thead { display: none; }
+    .rw-table tbody { display: block; width: 100%; }
+    .rw-table tbody tr {
+        display: block;
+        background: #fff;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        margin-bottom: 14px;
+        padding: 14px;
+        box-shadow: 0 2px 8px rgba(15,23,42,.04);
+        box-sizing: border-box;
+        position: relative;
+    }
+    .rw-table tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #F1F5F9;
+        font-size: 13px;
+    }
+    .rw-table tbody td:last-child { border-bottom: none; }
+    .rw-table tbody td[data-label]::before {
+        content: attr(data-label);
+        font-weight: 700;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        color: #64748B;
+        margin-right: 12px;
+    }
+    .rw-td-top {
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        border-bottom: 1px solid #E2E8F0 !important;
+        padding-bottom: 10px !important;
+        margin-bottom: 4px !important;
+        justify-content: flex-start !important;
+    }
+    .rw-td-top::before { display: none !important; }
+}
 
 .rw-vis-tag{display:inline-block;padding:2px 7px;border-radius:99px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
 .rw-vis-public   {background:#E0F2FE;color:#075985}
@@ -138,7 +185,7 @@
                         <textarea name="description" id="ruleDesc" style="display:none"></textarea>
                         <!-- Quill toolbar + editor container -->
                         <div id="ruleDescQuillWrap" style="border:1px solid #D1D5DB;border-radius:6px;overflow:hidden;background:#fff">
-                            <div id="ruleDescToolbar" style="border-bottom:1px solid #E5E7EB">
+                            <div id="ruleDescToolbar" style="border-bottom:1px solid #E5E5EB">
                                 <span class="ql-formats">
                                     <select class="ql-header"><option value="1">H1</option><option value="2">H2</option><option value="3">H3</option><option value="">Normal</option></select>
                                 </span>
@@ -209,7 +256,7 @@
                         <div class="form-group" style="align-self:center"><label style="display:flex;align-items:center;gap:8px;margin-top:24px;font-weight:600"><input type="checkbox" name="active" id="ruleActive" value="1" checked> Active</label></div>
                     </div>
 
-                    <div style="display:flex;gap:8px;margin-top:6px">
+                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap">
                         <button class="btn btn-primary" type="submit">Save Reward</button>
                         <button class="btn btn-secondary" type="reset" onclick="resetForm()">Clear form</button>
                     </div>
@@ -224,7 +271,7 @@
                 <form method="POST" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
                     <?= Helpers::csrf() ?>
                     <input type="hidden" name="submit_type" value="save_badge">
-                    <input type="text"  name="badge_new_label" class="form-control" placeholder="Badge label" maxlength="60" required style="flex:1;min-width:160px">
+                    <input type="text"  name="badge_new_label" class="form-control" placeholder="Badge label" maxlength="60" required style="flex:1 1 140px;min-width:0">
                     <input type="color" name="badge_new_color" class="form-control" value="#4F46E5" style="height:34px;width:48px;padding:2px 4px">
                     <button class="btn btn-secondary btn-sm" type="submit">+ Add badge</button>
                 </form>
@@ -281,11 +328,10 @@
                     <thead>
                         <tr>
                             <th style="width:30px"></th>
-                            <th style="width:70px"></th>
                             <th>Reward</th>
                             <th>Visibility</th>
                             <th>Threshold</th>
-                            <th>Reward</th>
+                            <th>Reward Kind</th>
                             <th>Active</th>
                             <th style="white-space:nowrap">Actions</th>
                         </tr>
@@ -296,28 +342,34 @@
                             ? '$' . number_format((float)$r['value_amount'], 2)
                             : (string)$r['value_text'];
                         $bg = $r['badge_color'] ?: '#94A3B8';
+                        $cleanDesc = trim(strip_tags(html_entity_decode((string)($r['description'] ?? ''))));
                     ?>
                     <tr data-rid="<?= (int)$r['id'] ?>">
-                        <td><span class="rw-handle" title="Drag to reorder">≡</span><input type="hidden" name="order[]" value="<?= (int)$r['id'] ?>"></td>
-                        <td>
+                        <td class="rw-td-top">
+                            <span class="rw-handle" title="Drag to reorder">≡</span>
+                            <input type="hidden" name="order[]" value="<?= (int)$r['id'] ?>">
                             <div class="rw-thumb"<?= !empty($r['image_path']) ? ' style="background-image:url(\'' . Helpers::e($r['image_path']) . '\')"' : '' ?>>
                                 <?= empty($r['image_path']) ? '🎁' : '' ?>
                             </div>
+                            <div style="flex:1;min-width:0">
+                                <div style="font-weight:700;line-height:1.25;color:#0F172A"><?= Helpers::e($r['title']) ?></div>
+                                <?php if ($cleanDesc !== ''): ?>
+                                <div style="font-size:11.5px;color:#64748B;margin-top:2px"><?= Helpers::e(mb_strimwidth($cleanDesc, 0, 80, '…')) ?></div>
+                                <?php endif; ?>
+                                <?php if (!empty($r['badge_label'])): ?>
+                                <span class="rw-badge-chip" style="background:<?= Helpers::e($bg) ?>;margin-top:4px"><?= Helpers::e($r['badge_label']) ?></span>
+                                <?php endif; ?>
+                            </div>
                         </td>
-                        <td>
-                            <div style="font-weight:700"><?= Helpers::e($r['title']) ?></div>
-                            <div style="font-size:11.5px;color:#64748B"><?= Helpers::e(mb_strimwidth((string)($r['description'] ?? ''), 0, 70, '…')) ?></div>
-                            <?php if (!empty($r['badge_label'])): ?>
-                            <span class="rw-badge-chip" style="background:<?= Helpers::e($bg) ?>;margin-top:5px"><?= Helpers::e($r['badge_label']) ?></span>
-                            <?php endif; ?>
+                        <td data-label="Visibility"><span class="rw-vis-tag rw-vis-<?= Helpers::e($r['visibility'] ?? 'public') ?>"><?= Helpers::e($r['visibility'] ?? 'public') ?></span></td>
+                        <td data-label="Threshold">$<?= number_format((float)$r['threshold_usd'], 2) ?></td>
+                        <td data-label="Reward">
+                            <div>
+                                <span class="badge badge-info"><?= Helpers::e($r['kind']) ?></span>
+                                <span style="font-size:11.5px;color:#64748B;margin-left:4px"><?= Helpers::e($valLabel) ?></span>
+                            </div>
                         </td>
-                        <td><span class="rw-vis-tag rw-vis-<?= Helpers::e($r['visibility'] ?? 'public') ?>"><?= Helpers::e($r['visibility'] ?? 'public') ?></span></td>
-                        <td>$<?= number_format((float)$r['threshold_usd'], 2) ?></td>
-                        <td>
-                            <span class="badge badge-info"><?= Helpers::e($r['kind']) ?></span>
-                            <div style="font-size:11.5px;color:#64748B"><?= Helpers::e($valLabel) ?></div>
-                        </td>
-                        <td>
+                        <td data-label="Active">
                             <form method="POST" style="display:inline">
                                 <?= Helpers::csrf() ?>
                                 <input type="hidden" name="submit_type" value="toggle_active">
@@ -328,7 +380,7 @@
                                 </label>
                             </form>
                         </td>
-                        <td class="rw-mini-actions" style="white-space:nowrap">
+                        <td data-label="Actions" class="rw-mini-actions" style="white-space:nowrap">
                             <button type="button" class="btn btn-secondary btn-sm" onclick="editRule(<?= htmlspecialchars(json_encode($r), ENT_QUOTES) ?>)">Edit</button>
                             <form method="POST">
                                 <?= Helpers::csrf() ?>
@@ -346,7 +398,7 @@
                     </tr>
                     <?php endforeach; ?>
                     <?php if (empty($rules)): ?>
-                    <tr><td colspan="8" class="text-center text-muted" style="padding:32px">No rules match the current filter.</td></tr>
+                    <tr><td colspan="7" class="text-center text-muted" style="padding:32px">No rules match the current filter.</td></tr>
                     <?php endif; ?>
                     </tbody>
                 </table>
