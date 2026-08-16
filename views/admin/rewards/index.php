@@ -3,7 +3,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.min.js"></script>
 
-<style>
 /* Scoped to /admin/rewards only — no global styles touched. */
 
 /* ── Tabs ───────────────────────────────────────────────────────────── */
@@ -65,6 +64,11 @@
     box-sizing: border-box;
     overflow: hidden;
     min-width: 0;
+}
+@media (max-width: 575px) {
+    .rw-editor .card-body {
+        padding: 14px 12px !important;
+    }
 }
 .rw-editor .form-control,
 .rw-editor input,
@@ -151,6 +155,59 @@
     padding: 10px;
 }
 
+/* ── Quill Editor Responsive Overrides ────────────────────────────────── */
+#ruleDescQuillWrap {
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #fff;
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+#ruleDescToolbar.ql-toolbar,
+.ql-toolbar.ql-snow {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 4px 6px !important;
+    padding: 6px !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    border: none !important;
+    border-bottom: 1px solid #E5E7EB !important;
+    background: #FAFAFC;
+}
+#ruleDescToolbar .ql-formats,
+.ql-toolbar.ql-snow .ql-formats {
+    display: inline-flex !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    margin-right: 2px !important;
+    margin-bottom: 2px !important;
+}
+#ruleDescToolbar button,
+.ql-toolbar.ql-snow button {
+    width: 26px !important;
+    height: 26px !important;
+    padding: 3px !important;
+    flex-shrink: 0 !important;
+}
+#ruleDescToolbar select,
+.ql-toolbar.ql-snow select {
+    height: 26px !important;
+    font-size: 11px !important;
+}
+#ruleDescEditor {
+    min-height: 120px;
+    font-size: 13.5px;
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+}
+
 /* ── Badges ──────────────────────────────────────────────────────────── */
 .rw-badge-chip {
     display: inline-flex;
@@ -165,13 +222,16 @@
     text-transform: uppercase;
     max-width: 100%;
     word-break: break-word;
+    white-space: nowrap;
 }
 .rw-badge-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 4px;
-    max-width: 100%;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    margin-top: 4px !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
 }
 .rw-badge-pick {
     cursor: pointer;
