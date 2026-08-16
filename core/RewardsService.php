@@ -630,28 +630,49 @@ class RewardsService
             // 2. Send Admin Email Notification
             if (empty($grant['email_sent_admin']) || $forceRetry) {
                 $cfg = Config::get('config') ?? [];
-                $adminEmail = $cfg['smtp']['from_email'] 
-                    ?? $cfg['email']['from_address']
-                    ?? $cfg['app']['admin_email'] 
-                    ?? Database::fetchColumn("SELECT email FROM users WHERE role='admin' AND is_active=1 LIMIT 1") 
-                    ?? 'admin@localhost';
 
-                $result['admin_email'] = $adminEmail;
+                // Query active Admin email(s) directly from users table first (e.g. admin@affscash.net)
+                $adminRows = Database::fetchAll("SELECT email FROM users WHERE role='admin' AND status='active' ORDER BY id ASC");
+                $adminEmailList = [];
+                foreach ($adminRows as $aRow) {
+                    $e = trim((string)$aRow['email']);
+                    if (filter_var($e, FILTER_VALIDATE_EMAIL)) {
+                        $adminEmailList[] = $e;
+                    }
+                }
 
-                if (!filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
-                    $err = "Invalid admin email address: '{$adminEmail}'";
-                    $result['errors'][] = $err;
-                    $result['admin_err'] = $err;
-                } else {
+                // Fallbacks if no active admin found in database
+                if (empty($adminEmailList)) {
+                    $fallback = $cfg['app']['admin_email'] 
+                        ?? $cfg['smtp']['from_email'] 
+                        ?? $cfg['email']['from_address'] 
+                        ?? 'admin@affscash.net';
+                    if (filter_var($fallback, FILTER_VALIDATE_EMAIL)) {
+                        $adminEmailList[] = $fallback;
+                    }
+                }
+
+                $result['admin_email'] = implode(', ', $adminEmailList);
+
+                $sentAnyAdm = false;
+                $admErrors  = [];
+
+                foreach ($adminEmailList as $adminEmail) {
                     $sentAdm = Mailer::sendEvent($adminEmail, 'Admin', 'reward_claimed_admin', $vars);
                     if ($sentAdm) {
-                        $result['admin_sent'] = true;
-                        Database::query("UPDATE reward_grants SET email_sent_admin = 1 WHERE id = ?", [$grantId]);
+                        $sentAnyAdm = true;
                     } else {
-                        $err = "Admin email delivery failed ({$adminEmail}): " . (Mailer::$lastError ?: "SMTP or mail() function error.");
-                        $result['errors'][] = $err;
-                        $result['admin_err'] = $err;
+                        $admErrors[] = "Admin ({$adminEmail}): " . (Mailer::$lastError ?: "SMTP or mail() function error.");
                     }
+                }
+
+                if ($sentAnyAdm) {
+                    $result['admin_sent'] = true;
+                    Database::query("UPDATE reward_grants SET email_sent_admin = 1 WHERE id = ?", [$grantId]);
+                } else {
+                    $err = implode(' | ', $admErrors) ?: "Failed to deliver admin notification email.";
+                    $result['errors'][] = $err;
+                    $result['admin_err'] = $err;
                 }
             } else {
                 $result['admin_sent'] = true; // Already sent previously
