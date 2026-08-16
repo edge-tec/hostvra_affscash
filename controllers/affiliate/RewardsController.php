@@ -11,6 +11,26 @@ $pageTitle = 'My Rewards';
 
 $affId = (int)Auth::affiliateId();
 
+if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
+    $postAction = Helpers::post('action');
+    if ($postAction === 'claim_reward') {
+        $grantId = (int)Helpers::post('grant_id');
+        if ($grantId > 0) {
+            $grant = Database::fetchOne("SELECT * FROM reward_grants WHERE id=? AND affiliate_id=? LIMIT 1", [$grantId, $affId]);
+            if ($grant) {
+                if ($grant['status'] === 'granted') {
+                    RewardsService::updateGrantStatus($grantId, 'claimed');
+                }
+                RewardsService::sendRewardClaimNotifications($grantId);
+                Helpers::flash('success', 'Reward claim registered! Confirmation emails have been dispatched.');
+            } else {
+                Helpers::flash('error', 'Reward grant not found.');
+            }
+        }
+        Helpers::redirect('/affiliate/rewards');
+    }
+}
+
 // Auto-grant any newly-crossed milestone rewards for this affiliate
 RewardsService::checkAndGrant($affId);
 

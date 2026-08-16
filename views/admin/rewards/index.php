@@ -521,8 +521,8 @@
                     <?php $b = ['granted'=>'warning','claimed'=>'info','paid'=>'success','cancelled'=>'danger'][$g['status']] ?? 'muted'; ?>
                     <span class="badge badge-<?= $b ?>"><?= Helpers::e($g['status']) ?></span>
                 </td>
-                <td data-label="Action">
-                    <details>
+                <td data-label="Action" style="white-space:nowrap">
+                    <details style="display:inline-block">
                         <summary class="btn btn-secondary btn-sm" style="cursor:pointer">Update</summary>
                         <form method="POST" style="margin-top:8px;background:#F8FAFC;padding:10px;border-radius:6px;max-width:100%;box-sizing:border-box">
                             <?= Helpers::csrf() ?>
@@ -537,6 +537,12 @@
                             <button class="btn btn-primary btn-sm" type="submit">Save</button>
                         </form>
                     </details>
+                    <form method="POST" style="display:inline-block;margin-left:4px" onsubmit="return confirm('Resend claim notification emails to affiliate and admin?')">
+                        <?= Helpers::csrf() ?>
+                        <input type="hidden" name="submit_type" value="resend_reward_email">
+                        <input type="hidden" name="grant_id" value="<?= (int)$g['id'] ?>">
+                        <button class="btn btn-secondary btn-sm" type="submit" title="Resend claim email notifications">✉ Resend Email</button>
+                    </form>
                 </td>
             </tr>
             <?php endforeach; ?>

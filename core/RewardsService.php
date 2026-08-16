@@ -99,11 +99,82 @@ class RewardsService
                 `title_snapshot`  VARCHAR(255) NOT NULL,
                 `status`          ENUM('granted','claimed','paid','cancelled') NOT NULL DEFAULT 'granted',
                 `granted_at`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                `claimed_at`      DATETIME NULL DEFAULT NULL,
+                `email_sent_affiliate` TINYINT(1) NOT NULL DEFAULT 0,
+                `email_sent_admin`     TINYINT(1) NOT NULL DEFAULT 0,
                 `admin_note`      TEXT DEFAULT NULL,
                 UNIQUE KEY `uq_rule_aff` (`rule_id`,`affiliate_id`),
                 KEY `idx_aff`    (`affiliate_id`),
                 KEY `idx_status` (`status`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+        } catch (\Throwable $_) {}
+
+        // Additive columns for reward_grants
+        $grantCols = [
+            'email_sent_affiliate' => "TINYINT(1) NOT NULL DEFAULT 0",
+            'email_sent_admin'     => "TINYINT(1) NOT NULL DEFAULT 0",
+            'claimed_at'           => "DATETIME NULL DEFAULT NULL",
+        ];
+        foreach ($grantCols as $col => $type) {
+            try {
+                $exists = Database::fetchOne(
+                    "SELECT 1 FROM information_schema.COLUMNS
+                     WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'reward_grants' AND COLUMN_NAME = ?",
+                    [$col]
+                );
+                if (!$exists) {
+                    Database::query("ALTER TABLE reward_grants ADD COLUMN `$col` $type");
+                }
+            } catch (\Throwable $_) {}
+        }
+
+        // Seed default email templates for reward claims if missing
+        try {
+            $affTpl = '<div style="font-family:sans-serif;line-height:1.6;color:#0F172A">'
+                . '<h2 style="color:#4F46E5;margin-top:0">🎉 Congratulations {{affiliate_name}}!</h2>'
+                . '<p>You have successfully unlocked and claimed your reward on <strong>{{site_name}}</strong>.</p>'
+                . '<div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:16px;margin:16px 0">'
+                . '<table style="width:100%;border-collapse:collapse;font-size:14px">'
+                . '<tr><td style="padding:6px 0;color:#64748B">Reward Name:</td><td style="padding:6px 0;font-weight:700;color:#0F172A">{{reward_title}}</td></tr>'
+                . '<tr><td style="padding:6px 0;color:#64748B">Reward Value:</td><td style="padding:6px 0;font-weight:700;color:#10B981">{{reward_value}}</td></tr>'
+                . '<tr><td style="padding:6px 0;color:#64748B">Grant / Claim ID:</td><td style="padding:6px 0;font-weight:600;color:#0F172A">#{{grant_id}}</td></tr>'
+                . '<tr><td style="padding:6px 0;color:#64748B">Claim Date & Time:</td><td style="padding:6px 0;color:#0F172A">{{claim_date}}</td></tr>'
+                . '<tr><td style="padding:6px 0;color:#64748B">Current Status:</td><td style="padding:6px 0;font-weight:700;color:#2563EB">{{status}}</td></tr>'
+                . '</table></div>'
+                . '<p style="font-size:13px;color:#475569;background:#F1F5F9;padding:12px;border-radius:8px">'
+                . 'ℹ️ <strong>Fulfillment Notice:</strong> Reward processing and physical gift fulfillment may take <strong>up to 30 days</strong>. If you have any questions, please contact our support team.'
+                . '</p></div>';
+
+            Database::query(
+                "INSERT IGNORE INTO `email_templates` (`event_type`, `label`, `subject`, `html_body`, `is_active`)
+                 VALUES ('reward_claimed_affiliate', 'Reward Claimed (Affiliate)', 'Reward Successfully Claimed – {{reward_title}}', ?, 1)",
+                [$affTpl]
+            );
+
+            $admTpl = '<div style="font-family:sans-serif;line-height:1.6;color:#0F172A">'
+                . '<h2 style="color:#0F172A;margin-top:0">🎁 New Reward Claim Alert</h2>'
+                . '<p>An affiliate has unlocked and claimed a milestone reward on <strong>{{site_name}}</strong>.</p>'
+                . '<div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:16px;margin:16px 0">'
+                . '<table style="width:100%;border-collapse:collapse;font-size:14px">'
+                . '<tr><td style="padding:6px 0;color:#64748B">Affiliate Name:</td><td style="padding:6px 0;font-weight:700;color:#0F172A">{{affiliate_name}}</td></tr>'
+                . '<tr><td style="padding:6px 0;color:#64748B">Affiliate ID:</td><td style="padding:6px 0;font-weight:600;color:#0F172A">#{{affiliate_id}}</td></tr>'
+                . '<tr><td style="padding:6px 0;color:#64748B">Affiliate Email:</td><td style="padding:6px 0;color:#0F172A">{{affiliate_email}}</td></tr>'
+                . '<tr><td style="padding:6px 0;color:#64748B">Reward Name:</td><td style="padding:6px 0;font-weight:700;color:#0F172A">{{reward_title}}</td></tr>'
+                . '<tr><td style="padding:6px 0;color:#64748B">Reward Value:</td><td style="padding:6px 0;font-weight:700;color:#10B981">{{reward_value}}</td></tr>'
+                . '<tr><td style="padding:6px 0;color:#64748B">Grant / Claim ID:</td><td style="padding:6px 0;font-weight:600;color:#0F172A">#{{grant_id}}</td></tr>'
+                . '<tr><td style="padding:6px 0;color:#64748B">Claim Date & Time:</td><td style="padding:6px 0;color:#0F172A">{{claim_date}}</td></tr>'
+                . '<tr><td style="padding:6px 0;color:#64748B">Status:</td><td style="padding:6px 0;font-weight:700;color:#2563EB">{{status}}</td></tr>'
+                . '<tr><td style="padding:6px 0;color:#64748B">Processing Window:</td><td style="padding:6px 0;color:#475569">Up to 30 days fulfillment target</td></tr>'
+                . '</table></div>'
+                . '<p style="font-size:13px;color:#475569">'
+                . 'You can review and process this reward within the standard 30-day fulfillment window in your Admin Dashboard under <a href="{{admin_link}}" style="color:#4F46E5;font-weight:600">Rewards Management</a>.'
+                . '</p></div>';
+
+            Database::query(
+                "INSERT IGNORE INTO `email_templates` (`event_type`, `label`, `subject`, `html_body`, `is_active`)
+                 VALUES ('reward_claimed_admin', 'Reward Claimed (Admin Alert)', 'New Reward Claim – {{affiliate_name}} (#{{affiliate_id}})', ?, 1)",
+                [$admTpl]
+            );
         } catch (\Throwable $_) {}
     }
 
@@ -413,6 +484,7 @@ class RewardsService
                     ]
                 );
                 if ($stmt->rowCount() > 0) {
+                    $grantId   = (int)Database::lastInsertId();
                     $granted[] = $rule;
                     if ($rule['kind'] === 'bonus_credit' && $rule['value_amount'] > 0) {
                         try {
@@ -421,6 +493,12 @@ class RewardsService
                                 [(float)$rule['value_amount'], $affiliateId]
                             );
                         } catch (\Throwable $_) {}
+                    }
+                    // Trigger email notifications automatically for affiliate and admin
+                    try {
+                        self::sendRewardClaimNotifications($grantId);
+                    } catch (\Throwable $_e) {
+                        error_log('[RewardsService::checkAndGrant] Email notification error: ' . $_e->getMessage());
                     }
                     // After granting ONE reward, granted_at is set to NOW(), which
                     // resets current cycle progress to $0 for the next reward. Break loop.
@@ -467,8 +545,111 @@ class RewardsService
         $allowed = ['granted','claimed','paid','cancelled'];
         if (!in_array($status, $allowed, true)) return false;
         $upd = ['status' => $status];
+        if ($status === 'claimed') $upd['claimed_at'] = date('Y-m-d H:i:s');
         if ($note !== null) $upd['admin_note'] = $note;
         Database::update('reward_grants', $upd, 'id = ?', [$grantId]);
         return true;
+    }
+
+    /**
+     * Send email notifications for a reward grant/claim to both Affiliate and Admin.
+     * Idempotent & secure with delivery status logging in email_logs and reward_grants.
+     *
+     * @param int  $grantId     ID from reward_grants table
+     * @param bool $forceRetry  If true, forces resending even if previously sent
+     * @return array  ['affiliate_sent' => bool, 'admin_sent' => bool, 'errors' => array]
+     */
+    public static function sendRewardClaimNotifications(int $grantId, bool $forceRetry = false): array
+    {
+        self::ensureSchema();
+        $result = ['affiliate_sent' => false, 'admin_sent' => false, 'errors' => []];
+
+        if ($grantId <= 0) {
+            $result['errors'][] = 'Invalid grant ID.';
+            return $result;
+        }
+
+        try {
+            $grant = Database::fetchOne(
+                "SELECT g.*,
+                        CONCAT(COALESCE(u.first_name,''), ' ', COALESCE(u.last_name,'')) AS aff_name,
+                        u.email AS aff_email,
+                        af.id AS aff_id
+                 FROM reward_grants g
+                 JOIN affiliates af ON af.id = g.affiliate_id
+                 JOIN users u ON u.id = af.user_id
+                 WHERE g.id = ? LIMIT 1",
+                [$grantId]
+            );
+            if (!$grant) {
+                $result['errors'][] = "Grant #{$grantId} not found.";
+                return $result;
+            }
+
+            $affName  = trim((string)$grant['aff_name']) ?: ('Affiliate #' . $grant['affiliate_id']);
+            $affEmail = trim((string)$grant['aff_email']);
+            $valLabel = ($grant['kind'] === 'cash' || $grant['kind'] === 'bonus_credit')
+                ? '$' . number_format((float)$grant['value_amount'], 2)
+                : (string)($grant['value_text'] ?: ucfirst($grant['kind']));
+
+            $vars = [
+                'affiliate_id'    => (int)$grant['affiliate_id'],
+                'affiliate_name'  => $affName,
+                'affiliate_email' => $affEmail,
+                'reward_title'    => (string)$grant['title_snapshot'],
+                'reward_value'    => $valLabel,
+                'grant_id'        => (int)$grant['id'],
+                'claim_date'      => date('F j, Y, g:i a', strtotime((string)$grant['granted_at'])),
+                'status'          => ucfirst((string)$grant['status']),
+                'admin_link'      => (Config::get('app.url') ?? '') . '/admin/rewards?tab=grants',
+                'processing_days' => 'Up to 30 days',
+            ];
+
+            // 1. Send Affiliate Notification
+            if (empty($grant['email_sent_affiliate']) || $forceRetry) {
+                if (!filter_var($affEmail, FILTER_VALIDATE_EMAIL)) {
+                    $result['errors'][] = "Invalid affiliate email address: '{$affEmail}'";
+                } else {
+                    $sent = Mailer::sendEvent($affEmail, $affName, 'reward_claimed_affiliate', $vars);
+                    if ($sent) {
+                        $result['affiliate_sent'] = true;
+                        Database::query("UPDATE reward_grants SET email_sent_affiliate = 1 WHERE id = ?", [$grantId]);
+                    } else {
+                        $result['errors'][] = "Failed to deliver email to affiliate ({$affEmail}). Check SMTP configuration.";
+                    }
+                }
+            } else {
+                $result['affiliate_sent'] = true; // Already sent previously
+            }
+
+            // 2. Send Admin Notification
+            if (empty($grant['email_sent_admin']) || $forceRetry) {
+                $cfg = Config::get('config') ?? [];
+                $adminEmail = $cfg['smtp']['from_email'] 
+                    ?? $cfg['app']['admin_email'] 
+                    ?? Database::fetchColumn("SELECT email FROM users WHERE role='admin' AND is_active=1 LIMIT 1") 
+                    ?? 'admin@localhost';
+
+                if (!filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
+                    $result['errors'][] = "Invalid admin email address: '{$adminEmail}'";
+                } else {
+                    $sentAdm = Mailer::sendEvent($adminEmail, 'Admin', 'reward_claimed_admin', $vars);
+                    if ($sentAdm) {
+                        $result['admin_sent'] = true;
+                        Database::query("UPDATE reward_grants SET email_sent_admin = 1 WHERE id = ?", [$grantId]);
+                    } else {
+                        $result['errors'][] = "Failed to deliver notification to admin ({$adminEmail}). Check SMTP configuration.";
+                    }
+                }
+            } else {
+                $result['admin_sent'] = true; // Already sent previously
+            }
+
+        } catch (\Throwable $e) {
+            $result['errors'][] = $e->getMessage();
+            error_log('[RewardsService::sendRewardClaimNotifications] Error: ' . $e->getMessage());
+        }
+
+        return $result;
     }
 }

@@ -146,7 +146,25 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         $note   = trim((string)Helpers::postRaw('admin_note'));
         if ($gid > 0) {
             RewardsService::updateGrantStatus($gid, $stat, $note ?: null);
-            Helpers::flash('success', 'Grant updated.');
+            // Optionally trigger notifications if requested
+            try {
+                RewardsService::sendRewardClaimNotifications($gid);
+            } catch (\Throwable $_) {}
+            Helpers::flash('success', 'Grant status updated.');
+        }
+        Helpers::redirect('/admin/rewards?tab=grants');
+    }
+
+    if ($sub === 'resend_reward_email') {
+        $gid = (int)Helpers::postRaw('grant_id');
+        if ($gid > 0) {
+            $res = RewardsService::sendRewardClaimNotifications($gid, true);
+            if ($res['affiliate_sent'] || $res['admin_sent']) {
+                Helpers::flash('success', 'Reward claim notification emails resent successfully.');
+            } else {
+                $errStr = implode(' ', $res['errors']);
+                Helpers::flash('error', 'Notification failed: ' . ($errStr ?: 'Check mailer/SMTP configuration.'));
+            }
         }
         Helpers::redirect('/admin/rewards?tab=grants');
     }
