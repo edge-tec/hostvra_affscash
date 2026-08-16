@@ -152,6 +152,26 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
     }
 }
 
+// Action router: create / edit load dedicated form page (Shop-style modular architecture)
+$action = Helpers::get('action');
+if ($action === 'create') {
+    $rule   = null;
+    $badges = RewardsService::badges();
+    require BASE_PATH . '/views/admin/rewards/edit.php';
+    return;
+}
+if ($action === 'edit' && Helpers::get('id')) {
+    $ruleId = (int)Helpers::get('id');
+    $rule   = Database::fetchOne("SELECT * FROM reward_rules WHERE id = ? LIMIT 1", [$ruleId]);
+    if (!$rule) {
+        Helpers::flash('error', 'Reward rule not found.');
+        Helpers::redirect('/admin/rewards');
+    }
+    $badges = RewardsService::badges();
+    require BASE_PATH . '/views/admin/rewards/edit.php';
+    return;
+}
+
 // Search + filter
 $filters = [
     'search'     => trim((string)(Helpers::get('q') ?? '')),
