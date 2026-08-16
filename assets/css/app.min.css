@@ -2397,7 +2397,7 @@ div.dataTables_wrapper div.dataTables_filter {
 
 /* Lock horizontal overflow so a single overflowing child can't
    create a horizontal-scroll across the whole page. */
-html, body { max-width: 100vw; overflow-x: hidden; }
+html, body { max-width: 100%; overflow-x: hidden; }
 
 /* Universal box-sizing so 100% widths never overflow their
    container because of padding/border. */
@@ -2417,7 +2417,7 @@ html, body { max-width: 100vw; overflow-x: hidden; }
 @media (max-width: 768px) {
     .app-layout    { display: block !important; }
     .sidebar       { flex: 0 0 0 !important; }
-    .main-content  { margin-left: 0 !important; width: 100% !important; max-width: 100vw !important; flex: none !important; }
+    .main-content  { margin-left: 0 !important; width: 100% !important; max-width: 100% !important; flex: none !important; }
     .page-body     { padding: 14px !important; }
 
     /* Hero panel: never narrower than viewport, stack vertically. */
