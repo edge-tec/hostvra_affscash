@@ -5,6 +5,9 @@ try {
     Auth::check('affiliate');
     $affId = (int)Auth::affiliateId();
 
+    // Auto-grant any newly-crossed milestone rewards for this affiliate
+    RewardsService::checkAndGrant($affId);
+
     $grants = RewardsService::grantsForAffiliate($affId, 100);
 
     // Build grant map first so the next-milestone query can exclude unlocked rules.
@@ -21,12 +24,12 @@ try {
                       AND c.status = 'approved'
                       AND COALESCE(c.is_hidden, 0) = 0
                       AND c.converted_at >= COALESCE(r.publish_at, r.created_at)
-                      AND (r.expires_at IS NULL OR c.converted_at < r.expires_at)
+                      AND (r.expires_at IS NULL OR c.converted_at <= r.expires_at)
                 ), 0) AS earned_in_window
          FROM reward_rules r
          WHERE r.active = 1
            AND (r.publish_at IS NULL OR r.publish_at <= NOW())
-           AND (r.expires_at IS NULL OR r.expires_at >  NOW())
+           AND (r.expires_at IS NULL OR r.expires_at >= NOW())
            AND r.id NOT IN (SELECT rule_id FROM reward_grants WHERE affiliate_id = ?)
          ORDER BY r.threshold_usd ASC",
         [$affId, $affId]

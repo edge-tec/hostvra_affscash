@@ -11,6 +11,9 @@ $pageTitle = 'My Rewards';
 
 $affId = (int)Auth::affiliateId();
 
+// Auto-grant any newly-crossed milestone rewards for this affiliate
+RewardsService::checkAndGrant($affId);
+
 $grants = RewardsService::grantsForAffiliate($affId, 100);
 
 // Build grant map first so the next-milestone query can exclude unlocked rules.
@@ -33,12 +36,12 @@ $nextCandidates = Database::fetchAll(
                   AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = c.click_id AND _ck_tb.source = 'traffic_back')
                   AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = c.click_id)
                   AND c.converted_at >= COALESCE(r.publish_at, r.created_at)
-                  AND (r.expires_at IS NULL OR c.converted_at < r.expires_at)
+                  AND (r.expires_at IS NULL OR c.converted_at <= r.expires_at)
             ), 0) AS earned_in_window
      FROM reward_rules r
      WHERE r.active = 1
        AND (r.publish_at IS NULL OR r.publish_at <= NOW())
-       AND (r.expires_at IS NULL OR r.expires_at >  NOW())
+       AND (r.expires_at IS NULL OR r.expires_at >= NOW())
        AND r.id NOT IN (SELECT rule_id FROM reward_grants WHERE affiliate_id = ?)
      ORDER BY r.threshold_usd ASC",
     [$affId, $affId]
@@ -65,7 +68,9 @@ if ($action === 'detail' && isset($_GET['reward_id'])) {
     foreach ($visibleRewards as $vr) {
         if ((int)$vr['id'] === $rewardId) { $reward = $vr; break; }
     }
-    // Only show rewards that are in the visible catalogue for this affiliate.
+    if (!$reward) {
+        $reward = Database::fetchOne("SELECT * FROM reward_rules WHERE id = ?", [$rewardId]);
+    }
     if (!$reward) { Helpers::redirect('/affiliate/rewards'); }
     $isUnlocked   = isset($grantByRule[$rewardId]);
     $rewardEarned = RewardsService::earningsSinceRuleStart($affId, $rewardId);

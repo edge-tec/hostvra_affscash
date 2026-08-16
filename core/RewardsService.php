@@ -318,8 +318,7 @@ class RewardsService
         // Earnings before the window started, after the window ended, or made
         // toward another (already-expired) reward never carry across — each
         // reward's counter starts fresh from its own publish_at and freezes at
-        // its own expires_at. Already-expired rules that were never granted
-        // are skipped here: the unlock window has closed.
+        // its own expires_at.
         try {
             $rows = Database::fetchAll(
                 "SELECT r.*, COALESCE(r.publish_at, r.created_at) AS start_date,
@@ -333,12 +332,11 @@ class RewardsService
                               AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = c.click_id AND _ck_tb.source = 'traffic_back')
                               AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = c.click_id)
                               AND c.converted_at >= COALESCE(r.publish_at, r.created_at)
-                              AND (r.expires_at IS NULL OR c.converted_at < r.expires_at)
+                              AND (r.expires_at IS NULL OR c.converted_at <= r.expires_at)
                         ), 0) AS earned_in_window
                  FROM reward_rules r
                  WHERE r.active = 1
                    AND (r.publish_at IS NULL OR r.publish_at <= NOW())
-                   AND (r.expires_at IS NULL OR r.expires_at >  NOW())
                  ORDER BY r.threshold_usd ASC",
                 [$affiliateId]
             ) ?: [];
@@ -400,7 +398,7 @@ class RewardsService
                       AND NOT EXISTS (SELECT 1 FROM clicks _ck_tb WHERE _ck_tb.click_id = c.click_id AND _ck_tb.source = 'traffic_back')
                       AND NOT EXISTS (SELECT 1 FROM traffic_back_logs _tbl_tb WHERE _tbl_tb.click_id = c.click_id)
                       AND c.converted_at >= COALESCE(r.publish_at, r.created_at)
-                      AND (r.expires_at IS NULL OR c.converted_at < r.expires_at)
+                      AND (r.expires_at IS NULL OR c.converted_at <= r.expires_at)
                 ), 0) AS earned_in_window
                 FROM reward_rules r
                 WHERE r.id = ? LIMIT 1",
