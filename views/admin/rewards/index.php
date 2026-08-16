@@ -3,6 +3,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.min.js"></script>
 
+<style>
 /* Scoped to /admin/rewards only — no global styles touched. */
 
 /* ── Tabs ───────────────────────────────────────────────────────────── */
