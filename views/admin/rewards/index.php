@@ -91,7 +91,7 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 13px;
-    max-width: 100%;
+    table-layout: fixed;
 }
 .rw-table thead th {
     background: #F8FAFC;
@@ -100,14 +100,25 @@
     text-transform: uppercase;
     letter-spacing: .04em;
     color: #64748B;
-    padding: 10px 12px;
+    padding: 12px;
     text-align: left;
     border-bottom: 1px solid #E2E8F0;
 }
 .rw-table tbody td {
-    padding: 12px;
+    padding: 14px 12px;
     border-bottom: 1px solid #F1F5F9;
-    vertical-align: middle;
+    vertical-align: top;
+}
+.rw-td-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+.rw-td-info {
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 .rw-table tbody tr:hover td { background: #FAFAFC; }
 .rw-table tbody tr.dragging { opacity: .45; }
@@ -391,13 +402,12 @@
             <table class="rw-table">
                 <thead>
                     <tr>
-                        <th style="width:30px"></th>
-                        <th>Reward</th>
-                        <th>Visibility</th>
-                        <th>Threshold</th>
-                        <th>Reward Kind</th>
-                        <th>Active</th>
-                        <th style="white-space:nowrap;text-align:right">Actions</th>
+                        <th style="width:42%">Reward Details</th>
+                        <th style="width:12%">Visibility</th>
+                        <th style="width:12%">Threshold</th>
+                        <th style="width:14%">Reward Kind</th>
+                        <th style="width:8%">Active</th>
+                        <th style="white-space:nowrap;text-align:right;width:12%">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="rwSortBody">
@@ -418,7 +428,7 @@
                         <div class="rw-td-info">
                             <div style="font-weight:700;line-height:1.25;color:#0F172A;word-break:break-word;overflow-wrap:anywhere"><?= Helpers::e($r['title']) ?></div>
                             <?php if ($cleanDesc !== ''): ?>
-                            <div style="font-size:11.5px;color:#64748B;margin-top:2px;word-break:break-word;overflow-wrap:anywhere"><?= Helpers::e($cleanDesc) ?></div>
+                            <div style="font-size:11.5px;color:#64748B;margin-top:2px;word-break:break-word;overflow-wrap:anywhere"><?= Helpers::e(mb_strimwidth($cleanDesc, 0, 110, '…')) ?></div>
                             <?php endif; ?>
                             <?php if (!empty($r['badge_label'])): ?>
                             <span class="rw-badge-chip" style="background:<?= Helpers::e($bg) ?>;margin-top:4px"><?= Helpers::e($r['badge_label']) ?></span>
