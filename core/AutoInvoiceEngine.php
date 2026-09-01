@@ -958,6 +958,13 @@ class AutoInvoiceEngine
         array $filters = []
     ): array {
         self::ensureSchema();
+        $dateCondition = "c.converted_at BETWEEN ? AND ?";
+        $params = [$affiliateId, $pStart . ' 00:00:00', $pEnd . ' 23:59:59'];
+        if ($pStart === '2020-01-01' || $pStart <= '2020-01-01') {
+            $dateCondition = "c.converted_at <= ?";
+            $params = [$affiliateId, $pEnd . ' 23:59:59'];
+        }
+
         $sql = "
             SELECT c.id AS db_id, c.conversion_id, c.payout, c.country,
                    c.offer_id, o.name AS offer_name, o.advertiser_id,
@@ -968,14 +975,13 @@ class AutoInvoiceEngine
             LEFT JOIN `advertisers` adv ON adv.id = o.advertiser_id
             LEFT JOIN `users` adv_u ON adv_u.id = adv.user_id
             WHERE c.affiliate_id = ?
-              AND c.converted_at BETWEEN ? AND ?
+              AND {$dateCondition}
               AND c.status = 'approved'
               AND COALESCE(c.is_hidden, 0) = 0
               AND COALESCE(c.is_fraud, 0) = 0
               AND (c.fraud_score IS NULL OR c.fraud_score < 80)
               AND (c.invoice_id IS NULL OR c.invoice_id = 0)
         ";
-        $params = [$affiliateId, $pStart . ' 00:00:00', $pEnd . ' 23:59:59'];
 
         if (!empty($filters['offer_id'])) {
             if (is_array($filters['offer_id'])) {
