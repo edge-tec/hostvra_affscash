@@ -154,10 +154,12 @@
                     <div class="form-group mb-3" id="wrapOfferIntervalDays" style="display:none;">
                         <label style="font-weight:600;font-size:13px;margin-bottom:6px;display:block;">Interval Days</label>
                         <select name="interval_days" id="offerIntervalDays" class="form-control">
-                            <option value="7">Every 7 Days</option>
-                            <option value="15" selected>Every 15 Days</option>
-                            <option value="30">Every 30 Days</option>
+                            <option value="7">Every 7 Days (Weekly)</option>
+                            <option value="14">Every 14 Days (Bi-weekly)</option>
+                            <option value="15" selected>Every 15 Days (Bi-monthly)</option>
+                            <option value="30">Every 30 Days (Monthly)</option>
                             <option value="45">Every 45 Days</option>
+                            <option value="60">Every 60 Days (2 Months)</option>
                         </select>
                     </div>
                 </div>

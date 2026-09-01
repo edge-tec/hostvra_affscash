@@ -71,9 +71,11 @@ $customPeriodEnd = $schedule['custom_period_end'] ?? '';
                         <label style="font-weight:600;font-size:13px;margin-bottom:6px;display:block;">Generate Every X Days</label>
                         <select name="interval_days" id="globalIntervalDays" class="form-control" onchange="updateSchedulerUI()">
                             <option value="7" <?= (int)($schedule['interval_days'] ?? 15) === 7 ? 'selected' : '' ?>>Every 7 Days (Weekly cycle)</option>
+                            <option value="14" <?= (int)($schedule['interval_days'] ?? 15) === 14 ? 'selected' : '' ?>>Every 14 Days (Bi-weekly: Every 2 Weeks)</option>
                             <option value="15" <?= (int)($schedule['interval_days'] ?? 15) === 15 ? 'selected' : '' ?>>Every 15 Days (Bi-monthly: 1st-15th &amp; 16th-End)</option>
-                            <option value="30" <?= (int)($schedule['interval_days'] ?? 15) === 30 ? 'selected' : '' ?>>Every 30 Days</option>
+                            <option value="30" <?= (int)($schedule['interval_days'] ?? 15) === 30 ? 'selected' : '' ?>>Every 30 Days (Monthly cycle)</option>
                             <option value="45" <?= (int)($schedule['interval_days'] ?? 15) === 45 ? 'selected' : '' ?>>Every 45 Days</option>
+                            <option value="60" <?= (int)($schedule['interval_days'] ?? 15) === 60 ? 'selected' : '' ?>>Every 60 Days (2 Months)</option>
                         </select>
                     </div>
 
