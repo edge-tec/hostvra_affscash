@@ -407,35 +407,49 @@ if (typeof $ !== 'undefined' && $.fn && $.fn.dataTable) {
 function triggerRunNow() {
     if (!confirm('Run the automated invoice scheduler now? This will evaluate all eligible conversions and generate invoices for qualifying affiliates.')) return;
     
-    var btn = event.currentTarget;
-    var origText = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = 'Processing...';
+    var btn = (typeof event !== 'undefined' && event && event.currentTarget) ? event.currentTarget : null;
+    var origText = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = 'Processing...';
+    }
 
-    var token = document.querySelector('meta[name="csrf-token"]').content;
+    var tokenMeta = document.querySelector('meta[name="csrf-token"]');
+    var token = tokenMeta ? tokenMeta.getAttribute('content') : '';
     var fd = new FormData();
     fd.append('_token', token);
     fd.append('action', 'run_scheduler_now');
+    fd.append('ajax', '1');
 
     fetch('/admin/auto-invoices', {
         method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        },
         body: fd
     })
-    .then(function(r){ return r.json(); })
+    .then(function(r){ 
+        return r.json().catch(function() {
+            return { success: false, error: 'Non-JSON response from server' };
+        }); 
+    })
     .then(function(d){
         if (d.success) {
             alert(d.message);
             window.location.reload();
         } else {
-            alert('Error: ' + (d.error || 'Failed to run scheduler.'));
+            alert('Scheduler Notice: ' + (d.error || d.message || 'No invoices generated'));
         }
     })
     .catch(function(err){
-        alert('Network error while running scheduler.');
+        alert('Request failed: ' + (err.message || err));
     })
     .finally(function(){
-        btn.disabled = false;
-        btn.innerHTML = origText;
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = origText;
+        }
     });
 }
 </script>
