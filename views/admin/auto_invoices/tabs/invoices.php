@@ -95,7 +95,9 @@
                         <div style="font-family:monospace;font-weight:700;font-size:12.5px;color:#4f46e5;">
                             <?= htmlspecialchars($inv['invoice_number']) ?>
                         </div>
-                        <?php if (!empty($inv['is_auto'])): ?>
+                        <?php if (($inv['trigger_type'] ?? '') === 'OLD_BALANCE_FORCE_PAYMENT'): ?>
+                            <span class="badge" style="font-size:10px;padding:1px 6px;background:#fef3c7;color:#92400e;border:1px solid #fcd34d;font-weight:700;">90D FORCE</span>
+                        <?php elseif (!empty($inv['is_auto'])): ?>
                             <span class="badge badge-info" style="font-size:10px;padding:1px 6px;">AUTO CRON</span>
                         <?php else: ?>
                             <span class="badge badge-muted" style="font-size:10px;padding:1px 6px;">MANUAL</span>

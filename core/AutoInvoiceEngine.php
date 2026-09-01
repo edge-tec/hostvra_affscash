@@ -164,18 +164,21 @@ class AutoInvoiceEngine
                 'custom_end_day'      => "ALTER TABLE `invoice_schedules` ADD COLUMN `custom_end_day` TINYINT UNSIGNED NOT NULL DEFAULT 31 AFTER `custom_start_day`",
                 'custom_period_start' => "ALTER TABLE `invoice_schedules` ADD COLUMN `custom_period_start` DATE NULL DEFAULT NULL AFTER `custom_end_day`",
                 'custom_period_end'   => "ALTER TABLE `invoice_schedules` ADD COLUMN `custom_period_end` DATE NULL DEFAULT NULL AFTER `custom_period_start`",
-                'billing_start'       => "ALTER TABLE `invoices` ADD COLUMN `billing_start` DATE NULL DEFAULT NULL AFTER `period_end`",
-                'billing_end'         => "ALTER TABLE `invoices` ADD COLUMN `billing_end` DATE NULL DEFAULT NULL AFTER `billing_start`",
-                'adjustment'          => "ALTER TABLE `invoices` ADD COLUMN `adjustment` DECIMAL(12,4) NOT NULL DEFAULT 0.0000 AFTER `subtotal`",
-                'chargeback_amount'   => "ALTER TABLE `invoices` ADD COLUMN `chargeback_amount` DECIMAL(12,4) NOT NULL DEFAULT 0.0000 AFTER `adjustment`",
-                'currency'            => "ALTER TABLE `invoices` ADD COLUMN `currency` VARCHAR(10) NOT NULL DEFAULT 'USD' AFTER `total`",
-                'generated_at'        => "ALTER TABLE `invoices` ADD COLUMN `generated_at` DATETIME NULL DEFAULT NULL AFTER `paid_at`",
-                'pdf_path'            => "ALTER TABLE `invoices` ADD COLUMN `pdf_path` VARCHAR(255) NULL DEFAULT NULL AFTER `generated_at`",
-                'is_auto'             => "ALTER TABLE `invoices` ADD COLUMN `is_auto` TINYINT(1) NOT NULL DEFAULT 0 AFTER `pdf_path`",
-                'viewed_at'           => "ALTER TABLE `invoices` ADD COLUMN `viewed_at` DATETIME NULL DEFAULT NULL AFTER `is_auto`",
-                'email_sent_at'       => "ALTER TABLE `invoices` ADD COLUMN `email_sent_at` DATETIME NULL DEFAULT NULL AFTER `viewed_at`",
-                'balance_deducted'    => "ALTER TABLE `invoices` ADD COLUMN `balance_deducted` TINYINT(1) NOT NULL DEFAULT 0 AFTER `email_sent_at`",
-                'period_hash'         => "ALTER TABLE `invoices` ADD COLUMN `period_hash` VARCHAR(64) NULL DEFAULT NULL AFTER `balance_deducted`",
+                'billing_start'          => "ALTER TABLE `invoices` ADD COLUMN `billing_start` DATE NULL DEFAULT NULL AFTER `period_end`",
+                'billing_end'            => "ALTER TABLE `invoices` ADD COLUMN `billing_end` DATE NULL DEFAULT NULL AFTER `billing_start`",
+                'adjustment'             => "ALTER TABLE `invoices` ADD COLUMN `adjustment` DECIMAL(12,4) NOT NULL DEFAULT 0.0000 AFTER `subtotal`",
+                'chargeback_amount'      => "ALTER TABLE `invoices` ADD COLUMN `chargeback_amount` DECIMAL(12,4) NOT NULL DEFAULT 0.0000 AFTER `adjustment`",
+                'currency'               => "ALTER TABLE `invoices` ADD COLUMN `currency` VARCHAR(10) NOT NULL DEFAULT 'USD' AFTER `total`",
+                'generated_at'           => "ALTER TABLE `invoices` ADD COLUMN `generated_at` DATETIME NULL DEFAULT NULL AFTER `paid_at`",
+                'pdf_path'               => "ALTER TABLE `invoices` ADD COLUMN `pdf_path` VARCHAR(255) NULL DEFAULT NULL AFTER `generated_at`",
+                'is_auto'                => "ALTER TABLE `invoices` ADD COLUMN `is_auto` TINYINT(1) NOT NULL DEFAULT 0 AFTER `pdf_path`",
+                'trigger_type'           => "ALTER TABLE `invoices` ADD COLUMN `trigger_type` VARCHAR(32) NOT NULL DEFAULT 'AUTO' AFTER `is_auto`",
+                'advertiser_id'          => "ALTER TABLE `invoices` ADD COLUMN `advertiser_id` INT UNSIGNED NULL DEFAULT NULL AFTER `affiliate_id`",
+                'payment_terms_snapshot' => "ALTER TABLE `invoices` ADD COLUMN `payment_terms_snapshot` VARCHAR(64) NULL DEFAULT NULL AFTER `payment_terms`",
+                'viewed_at'              => "ALTER TABLE `invoices` ADD COLUMN `viewed_at` DATETIME NULL DEFAULT NULL AFTER `trigger_type`",
+                'email_sent_at'          => "ALTER TABLE `invoices` ADD COLUMN `email_sent_at` DATETIME NULL DEFAULT NULL AFTER `viewed_at`",
+                'balance_deducted'       => "ALTER TABLE `invoices` ADD COLUMN `balance_deducted` TINYINT(1) NOT NULL DEFAULT 0 AFTER `email_sent_at`",
+                'period_hash'            => "ALTER TABLE `invoices` ADD COLUMN `period_hash` VARCHAR(64) NULL DEFAULT NULL AFTER `balance_deducted`",
             ];
 
             foreach ($colsToAdd as $sql) {
@@ -184,6 +187,7 @@ class AutoInvoiceEngine
 
             // Conversions column additions
             try { Database::query("ALTER TABLE `conversions` ADD COLUMN `invoice_id` INT UNSIGNED NULL DEFAULT NULL"); } catch (\Throwable $_e) {}
+            try { Database::query("ALTER TABLE `conversions` ADD COLUMN `invoiced_at` DATETIME NULL DEFAULT NULL"); } catch (\Throwable $_e) {}
             try { Database::query("ALTER TABLE `conversions` ADD COLUMN `is_hidden` TINYINT(1) NOT NULL DEFAULT 0"); } catch (\Throwable $_e) {}
 
             // Ensure uploads directory exists
@@ -925,9 +929,62 @@ class AutoInvoiceEngine
     }
 
     /**
+     * Compute Due Date (Payment Time) based on payment terms.
+     */
+    public static function computeDueDate(string $paymentTerms): string
+    {
+        $today = new DateTime();
+        $termLower = strtolower(str_replace([' ', '-', '_'], '', $paymentTerms));
+        if (str_contains($termLower, 'every14') || str_contains($termLower, '14days') || str_contains($termLower, 'net14') || str_contains($termLower, 'biweekly14') || str_contains($termLower, 'biweekly') || str_contains($termLower, 'weekly')) {
+            $today->modify('+2 days');
+        } elseif (str_contains($termLower, 'net60')) {
+            $today->modify('+60 days');
+        } elseif (str_contains($termLower, 'net45')) {
+            $today->modify('+45 days');
+        } elseif (str_contains($termLower, 'net30')) {
+            $today->modify('+30 days');
+        } elseif (str_contains($termLower, 'net15')) {
+            $today->modify('+15 days');
+        } elseif (str_contains($termLower, 'net7')) {
+            $today->modify('+7 days');
+        } elseif (str_contains($termLower, 'immediate')) {
+            // Immediate (today)
+        } else {
+            $today->modify('+2 days');
+        }
+        return $today->format('Y-m-d');
+    }
+
+    /**
+     * Get the latest invoice for an affiliate (and optionally advertiser) to determine period continuity.
+     * Priority Order:
+     * 1. Last Auto Generated invoice for this Affiliate + Advertiser.
+     * 2. Last Manual Paid/Generated invoice for this Affiliate.
+     * 3. NULL if no previous invoice exists.
+     */
+    public static function getLastInvoicePeriod(int $affiliateId, ?int $advertiserId = null): ?array
+    {
+        self::ensureSchema();
+        $sql = "
+            SELECT id, invoice_number, period_start, period_end, billing_start, billing_end, created_at, status, is_auto, trigger_type, advertiser_id
+            FROM `invoices`
+            WHERE `affiliate_id` = ?
+              AND `status` NOT IN ('void', 'cancelled')
+        ";
+        $params = [$affiliateId];
+        if ($advertiserId && $advertiserId > 0) {
+            $sql .= " AND (`advertiser_id` = ? OR `advertiser_id` IS NULL)";
+            $params[] = $advertiserId;
+        }
+        $sql .= " ORDER BY `period_end` DESC, `id` DESC LIMIT 1";
+
+        return Database::fetchOne($sql, $params);
+    }
+
+    /**
      * Check if an active invoice already exists for the given affiliate and exact period (Duplicate Protection).
      */
-    public static function isDuplicate(int $affiliateId, string $periodStart, string $periodEnd, ?int $excludeInvoiceId = null): bool
+    public static function isDuplicate(int $affiliateId, string $periodStart, string $periodEnd, ?int $excludeInvoiceId = null, ?int $advertiserId = null): bool
     {
         self::ensureSchema();
         if ($periodStart === '2020-01-01') {
@@ -943,6 +1000,10 @@ class AutoInvoiceEngine
               AND `status` NOT IN ('void', 'cancelled')
         ";
         $params = [$affiliateId, $periodStart, $periodEnd];
+        if ($advertiserId && $advertiserId > 0) {
+            $sql .= " AND `advertiser_id` = ?";
+            $params[] = $advertiserId;
+        }
         if ($excludeInvoiceId) {
             $sql .= " AND `id` != ?";
             $params[] = $excludeInvoiceId;
@@ -1184,6 +1245,12 @@ class AutoInvoiceEngine
             $rawItems  = $payload['manual_raw_items'] ?? [];
             $dbIds     = $payload['manual_db_ids'] ?? [];
             $subtotal  = (float)($payload['subtotal'] ?? array_sum(array_column($items, 'amount')));
+        } elseif (!empty($payload['target_conversions'])) {
+            $built    = self::buildInvoiceItemsFromConversions($payload['target_conversions']);
+            $items    = $built['items'];
+            $rawItems = $built['raw_items'];
+            $dbIds    = array_column($built['raw_items'], 'conversion_db_id');
+            $subtotal = round(array_sum(array_column($items, 'amount')), 4);
         } else {
             // Apply specific offers scope if configured in affiliate rule
             $offerFilter = !empty($payload['offer_ids']) ? $payload['offer_ids'] : null;
@@ -1316,7 +1383,7 @@ class AutoInvoiceEngine
             }
         }
 
-        // Minimum threshold check (Affiliate Rule / Global Schedule)
+        // Minimum threshold check (Affiliate Rule / Global Schedule / Override)
         $minThreshold = isset($payload['min_threshold']) ? (float)$payload['min_threshold'] : (float)($rule['minimum_amount'] ?? 50.00);
         if ($subtotal < $minThreshold) {
             return [
@@ -1340,37 +1407,44 @@ class AutoInvoiceEngine
         $pdo->beginTransaction();
 
         try {
+            $paymentTermsVal = !empty($payload['payment_terms']) ? $payload['payment_terms'] : ($rule['payment_terms'] ?? 'net15');
+            $triggerTypeVal  = !empty($payload['trigger_type']) ? $payload['trigger_type'] : ($isAuto ? 'AUTO' : 'MANUAL');
+            $advIdVal        = !empty($payload['advertiser_id']) ? (int)$payload['advertiser_id'] : null;
+
             $invoiceData = [
-                'invoice_number'    => $invNum,
-                'type'              => 'affiliate_payout',
-                'affiliate_id'      => $affiliateId,
-                'advertiser_id'     => null,
-                'manager_id'        => null,
-                'balance_before'    => (float)$aff['balance'],
-                'balance_after'     => max(0, (float)$aff['balance'] - $total),
-                'period_start'      => $periodStart,
-                'period_end'        => $periodEnd,
-                'billing_start'     => $periodStart,
-                'billing_end'       => $periodEnd,
-                'items'             => json_encode($items),
-                'subtotal'          => $subtotal,
-                'adjustment'        => $adjustment,
-                'chargeback_amount' => $chargeback,
-                'tax_rate'          => $taxRate,
-                'tax_amount'        => $taxAmount,
-                'total'             => $total,
-                'currency'          => $currency,
-                'status'            => 'sent',
-                'notes'             => $notes,
-                'due_date'          => $dueDate,
-                'paid_at'           => null,
-                'generated_at'      => date('Y-m-d H:i:s'),
-                'pdf_path'          => null,
-                'is_auto'           => $isAuto ? 1 : 0,
-                'period_hash'       => md5($affiliateId . '|' . $periodStart . '|' . $periodEnd),
-                'balance_deducted'  => 1,
-                'created_by'        => $adminId,
-                'created_at'        => date('Y-m-d H:i:s'),
+                'invoice_number'         => $invNum,
+                'type'                   => 'affiliate_payout',
+                'affiliate_id'           => $affiliateId,
+                'advertiser_id'          => $advIdVal,
+                'manager_id'             => null,
+                'balance_before'         => (float)$aff['balance'],
+                'balance_after'          => max(0, (float)$aff['balance'] - $total),
+                'period_start'           => $periodStart,
+                'period_end'             => $periodEnd,
+                'billing_start'          => $periodStart,
+                'billing_end'            => $periodEnd,
+                'items'                  => json_encode($items),
+                'subtotal'               => $subtotal,
+                'adjustment'             => $adjustment,
+                'chargeback_amount'      => $chargeback,
+                'tax_rate'               => $taxRate,
+                'tax_amount'             => $taxAmount,
+                'total'                  => $total,
+                'currency'               => $currency,
+                'status'                 => 'sent',
+                'notes'                  => $notes,
+                'due_date'               => $dueDate,
+                'paid_at'                => null,
+                'generated_at'           => date('Y-m-d H:i:s'),
+                'pdf_path'               => null,
+                'is_auto'                => $isAuto ? 1 : 0,
+                'trigger_type'           => $triggerTypeVal,
+                'payment_terms'          => $paymentTermsVal,
+                'payment_terms_snapshot' => !empty($payload['payment_terms_snapshot']) ? $payload['payment_terms_snapshot'] : $paymentTermsVal,
+                'period_hash'            => md5($affiliateId . '|' . ($advIdVal ?? 0) . '|' . $periodStart . '|' . $periodEnd),
+                'balance_deducted'       => 1,
+                'created_by'             => $adminId,
+                'created_at'             => date('Y-m-d H:i:s'),
             ];
 
             $invoiceId = Database::insert('invoices', $invoiceData);
@@ -1406,7 +1480,7 @@ class AutoInvoiceEngine
                 }
             }
 
-            // Link conversions to this invoice
+            // Link conversions to this invoice and stamp invoiced_at
             if (!empty($dbIds)) {
                 $chunks = array_chunk($dbIds, 500);
                 foreach ($chunks as $chunk) {
@@ -1572,42 +1646,114 @@ class AutoInvoiceEngine
             // Priority rule resolution
             $rule = self::resolveEffectiveRule($affId);
 
-            // Compute billing period
-            [$pStart, $pEnd, $dueDate] = self::computePeriod(
-                $rule['frequency'],
-                $rule['monthly_day'] ?? 1,
-                $rule['interval_days'] ?? 15,
-                $rule['payment_terms'] ?? 'net15',
-                null,
-                $rule['period_type'] ?? 'prev_month',
-                $rule['custom_start_day'] ?? 1,
-                $rule['custom_end_day'] ?? 31,
-                $rule['custom_period_start'] ?? null,
-                $rule['custom_period_end'] ?? null
-            );
+            // Retrieve all unbilled approved conversions for this affiliate
+            $convs = self::getEligibleConversions($affId, '2020-01-01', date('Y-m-d'));
 
-            // Duplicate check
-            if (self::isDuplicate($affId, $pStart, $pEnd)) {
-                $skipped++;
-                $jobLogs[] = "Affiliate #{$affId}: Skipped (Invoice already generated for period {$pStart} - {$pEnd})";
-                continue;
-            }
+            if (!empty($convs)) {
+                // Multi-Advertiser Processing: Group conversions by advertiser_id
+                $byAdv = [];
+                foreach ($convs as $c) {
+                    $advId = (int)($c['advertiser_id'] ?? 0);
+                    $byAdv[$advId][] = $c;
+                }
 
-            // Create invoice
-            $res = self::createInvoice([
-                'affiliate_id' => $affId,
-                'period_start' => $pStart,
-                'period_end'   => $pEnd,
-                'due_date'     => $dueDate,
-            ], $adminId, true);
+                foreach ($byAdv as $advId => $advConvs) {
+                    $advAmount  = round(array_sum(array_column($advConvs, 'payout')), 4);
+                    $oldestDate = min(array_column($advConvs, 'converted_at'));
+                    $newestDate = max(array_column($advConvs, 'converted_at'));
+                    $ageDays    = (int)floor((time() - strtotime($oldestDate)) / 86400);
 
-            if (!empty($res['success'])) {
-                $generated++;
-                $totalAmt += (float)$res['total'];
-                $jobLogs[] = "Affiliate #{$affId}: Generated {$res['invoice_number']} for \${$res['total']}";
+                    // Fetch advertiser rule or fallback
+                    $advRule   = ($advId > 0) ? self::getAdvertiserRule($advId) : null;
+                    $minPayout = ($advRule && !empty($advRule['enabled'])) ? (float)($advRule['minimum_payout'] ?? 50.00) : (float)($rule['minimum_amount'] ?? 50.00);
+                    $advTerms  = ($advRule && !empty($advRule['payment_terms'])) ? $advRule['payment_terms'] : ($rule['payment_terms'] ?? 'net15');
+
+                    // Check Qualification:
+                    // 1. 90-day old balance force payment (Rule #5: OLD_BALANCE_FORCE_PAYMENT)
+                    // 2. Minimum payout threshold met
+                    $isForce90 = ($ageDays >= 90);
+                    $isMinMet  = ($advAmount >= $minPayout);
+
+                    if (!$isForce90 && !$isMinMet) {
+                        $skipped++;
+                        $jobLogs[] = "Affiliate #{$affId} [Adv #{$advId}]: Skipped (Balance \${$advAmount} < Min \${$minPayout}, oldest conversion is {$ageDays}d old - carried forward)";
+                        continue;
+                    }
+
+                    $triggerType = $isForce90 ? 'OLD_BALANCE_FORCE_PAYMENT' : 'AUTO';
+
+                    // Compute period start from last invoice for this affiliate + advertiser
+                    $lastInv = self::getLastInvoicePeriod($affId, $advId);
+                    $pStart  = $lastInv ? date('Y-m-d', strtotime($lastInv['period_end'] . ' +1 day')) : date('Y-m-d', strtotime($oldestDate));
+                    $pEnd    = date('Y-m-d', strtotime($newestDate));
+                    if ($pStart > $pEnd) {
+                        $pStart = date('Y-m-d', strtotime($oldestDate));
+                    }
+
+                    // Compute due date from terms
+                    $dueDate = self::computeDueDate($advTerms);
+
+                    // Create Invoice for this advertiser
+                    $res = self::createInvoice([
+                        'affiliate_id'           => $affId,
+                        'advertiser_id'          => ($advId > 0 ? $advId : null),
+                        'period_start'           => $pStart,
+                        'period_end'             => $pEnd,
+                        'due_date'               => $dueDate,
+                        'payment_terms'          => $advTerms,
+                        'payment_terms_snapshot' => $advTerms,
+                        'trigger_type'           => $triggerType,
+                        'target_conversions'     => $advConvs,
+                        'min_threshold'          => $isForce90 ? 0 : $minPayout,
+                    ], $adminId, true);
+
+                    if (!empty($res['success'])) {
+                        $generated++;
+                        $totalAmt += (float)$res['total'];
+                        $jobLogs[] = "Affiliate #{$affId} [Adv #{$advId}]: Generated {$res['invoice_number']} for \${$res['total']} ({$triggerType})";
+                    } else {
+                        $skipped++;
+                        $jobLogs[] = "Affiliate #{$affId} [Adv #{$advId}]: Skipped ({$res['error']})";
+                    }
+                }
             } else {
-                $skipped++;
-                $jobLogs[] = "Affiliate #{$affId}: Skipped ({$res['error']})";
+                // If conversions table has no unlinked rows, check available account balance
+                $availBalance = (float)$cand['balance'];
+                $minPayout    = (float)($rule['minimum_amount'] ?? 50.00);
+
+                if ($availBalance >= $minPayout && $availBalance > 0) {
+                    $lastInv = self::getLastInvoicePeriod($affId);
+                    $pStart  = $lastInv ? date('Y-m-d', strtotime($lastInv['period_end'] . ' +1 day')) : '2020-01-01';
+                    $pEnd    = date('Y-m-d');
+                    if ($pStart > $pEnd) $pStart = '2020-01-01';
+
+                    $dueDate = self::computeDueDate($rule['payment_terms'] ?? 'net15');
+
+                    $res = self::createInvoice([
+                        'affiliate_id'           => $affId,
+                        'period_start'           => $pStart,
+                        'period_end'             => $pEnd,
+                        'due_date'               => $dueDate,
+                        'payment_terms'          => $rule['payment_terms'] ?? 'net15',
+                        'payment_terms_snapshot' => $rule['payment_terms'] ?? 'net15',
+                        'trigger_type'           => 'AUTO',
+                    ], $adminId, true);
+
+                    if (!empty($res['success'])) {
+                        $generated++;
+                        $totalAmt += (float)$res['total'];
+                        $jobLogs[] = "Affiliate #{$affId}: Generated {$res['invoice_number']} for \${$res['total']} (Available Balance Payout)";
+                    } else {
+                        $skipped++;
+                        $jobLogs[] = "Affiliate #{$affId}: Skipped ({$res['error']})";
+                    }
+                } elseif ($availBalance > 0) {
+                    $skipped++;
+                    $jobLogs[] = "Affiliate #{$affId}: Skipped (Account balance \${$availBalance} < Min threshold \${$minPayout})";
+                } else {
+                    $skipped++;
+                    $jobLogs[] = "Affiliate #{$affId}: Skipped (0 unbilled approved conversions found & \$0.00 balance)";
+                }
             }
         }
 
