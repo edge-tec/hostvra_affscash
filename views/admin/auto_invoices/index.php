@@ -331,6 +331,10 @@ input:checked + .aig-slider:before {
 
 <!-- Global Action JS -->
 <script>
+if (typeof $ !== 'undefined' && $.fn && $.fn.dataTable) {
+    $.fn.dataTable.ext.errMode = 'none';
+}
+
 function triggerRunNow() {
     if (!confirm('Run the automated invoice scheduler now? This will evaluate all eligible conversions and generate invoices for qualifying affiliates.')) return;
     

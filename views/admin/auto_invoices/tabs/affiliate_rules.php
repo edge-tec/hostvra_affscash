@@ -34,14 +34,6 @@
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($affRules)): ?>
-                <tr>
-                    <td colspan="9" class="text-center text-muted" style="padding:40px;">
-                        No custom affiliate billing rules configured yet. All affiliates currently follow the Global Scheduler.
-                    </td>
-                </tr>
-                <?php endif; ?>
-
                 <?php foreach ($affRules as $r): ?>
                 <tr>
                     <td>
@@ -232,7 +224,11 @@ $(function() {
         destroy: true,
         pageLength: 25,
         order: [[7, 'desc']],
-        language: { search: 'Search rules:', lengthMenu: 'Show _MENU_ entries' }
+        language: { 
+            search: 'Search rules:', 
+            lengthMenu: 'Show _MENU_ entries',
+            emptyTable: 'No custom affiliate billing rules configured yet. All affiliates follow the Global Scheduler.'
+        }
     });
 });
 

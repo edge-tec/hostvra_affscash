@@ -85,14 +85,6 @@
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($invoices)): ?>
-                <tr>
-                    <td colspan="10" class="text-center text-muted" style="padding:40px;">
-                        No invoices found matching criteria.
-                    </td>
-                </tr>
-                <?php endif; ?>
-
                 <?php foreach ($invoices as $inv): ?>
                 <tr>
                     <td>
@@ -203,8 +195,12 @@ $(function() {
     $('#tbl-invoices-list').DataTable({
         destroy: true,
         pageLength: 25,
-        order: [[8, 'desc']],
-        language: { search: 'Search invoices:', lengthMenu: 'Show _MENU_ entries' }
+        order: [[0, 'desc']],
+        language: { 
+            search: 'Search invoices:', 
+            lengthMenu: 'Show _MENU_ entries',
+            emptyTable: 'No invoices generated yet.'
+        }
     });
 });
 

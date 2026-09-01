@@ -63,14 +63,6 @@
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($logs)): ?>
-                <tr>
-                    <td colspan="7" class="text-center text-muted" style="padding:40px;">
-                        No audit log entries recorded yet.
-                    </td>
-                </tr>
-                <?php endif; ?>
-
                 <?php foreach ($logs as $l): ?>
                 <tr>
                     <td style="font-size:12px;color:#64748b;white-space:nowrap;">
@@ -151,7 +143,11 @@ $(function() {
         destroy: true,
         pageLength: 25,
         order: [[0, 'desc']],
-        language: { search: 'Search logs:', lengthMenu: 'Show _MENU_ entries' }
+        language: { 
+            search: 'Search audit logs:', 
+            lengthMenu: 'Show _MENU_ entries',
+            emptyTable: 'No audit logs recorded yet.'
+        }
     });
 });
 </script>

@@ -33,14 +33,6 @@
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($offerRules)): ?>
-                <tr>
-                    <td colspan="8" class="text-center text-muted" style="padding:40px;">
-                        No offer-specific billing rules defined. All offers currently follow Global or Affiliate schedules.
-                    </td>
-                </tr>
-                <?php endif; ?>
-
                 <?php foreach ($offerRules as $r): ?>
                 <tr>
                     <td>
@@ -215,7 +207,11 @@ $(function() {
         destroy: true,
         pageLength: 25,
         order: [[6, 'desc']],
-        language: { search: 'Search rules:', lengthMenu: 'Show _MENU_ entries' }
+        language: { 
+            search: 'Search offers:', 
+            lengthMenu: 'Show _MENU_ entries',
+            emptyTable: 'No offer-specific billing rules defined yet. All offers follow Global or Affiliate schedules.'
+        }
     });
 });
 
