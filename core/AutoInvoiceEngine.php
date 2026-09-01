@@ -174,6 +174,7 @@ class AutoInvoiceEngine
                 'is_auto'                => "ALTER TABLE `invoices` ADD COLUMN `is_auto` TINYINT(1) NOT NULL DEFAULT 0 AFTER `pdf_path`",
                 'trigger_type'           => "ALTER TABLE `invoices` ADD COLUMN `trigger_type` VARCHAR(32) NOT NULL DEFAULT 'AUTO' AFTER `is_auto`",
                 'advertiser_id'          => "ALTER TABLE `invoices` ADD COLUMN `advertiser_id` INT UNSIGNED NULL DEFAULT NULL AFTER `affiliate_id`",
+                'payment_terms'          => "ALTER TABLE `invoices` ADD COLUMN `payment_terms` VARCHAR(64) NULL DEFAULT NULL AFTER `due_date`",
                 'payment_terms_snapshot' => "ALTER TABLE `invoices` ADD COLUMN `payment_terms_snapshot` VARCHAR(64) NULL DEFAULT NULL AFTER `payment_terms`",
                 'viewed_at'              => "ALTER TABLE `invoices` ADD COLUMN `viewed_at` DATETIME NULL DEFAULT NULL AFTER `trigger_type`",
                 'email_sent_at'          => "ALTER TABLE `invoices` ADD COLUMN `email_sent_at` DATETIME NULL DEFAULT NULL AFTER `viewed_at`",
@@ -1446,6 +1447,15 @@ class AutoInvoiceEngine
                 'created_by'             => $adminId,
                 'created_at'             => date('Y-m-d H:i:s'),
             ];
+
+            // Ensure schema safety: filter keys to only existing columns in table
+            try {
+                $tblCols = Database::fetchAll("SHOW COLUMNS FROM `invoices`");
+                if (!empty($tblCols)) {
+                    $colMap = array_flip(array_column($tblCols, 'Field'));
+                    $invoiceData = array_intersect_key($invoiceData, $colMap);
+                }
+            } catch (\Throwable $_ce) {}
 
             $invoiceId = Database::insert('invoices', $invoiceData);
 
