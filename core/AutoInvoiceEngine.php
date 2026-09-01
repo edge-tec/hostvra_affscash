@@ -136,8 +136,10 @@ class AutoInvoiceEngine
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
             ");
 
-            // Invoices column additions
+            // Invoices & rules column additions
             $colsToAdd = [
+                'offer_scope'         => "ALTER TABLE `affiliate_invoice_rules` ADD COLUMN `offer_scope` VARCHAR(20) NOT NULL DEFAULT 'all' AFTER `override_global`",
+                'specific_offers'     => "ALTER TABLE `affiliate_invoice_rules` ADD COLUMN `specific_offers` TEXT NULL DEFAULT NULL AFTER `offer_scope`",
                 'period_type'         => "ALTER TABLE `invoice_schedules` ADD COLUMN `period_type` VARCHAR(50) NOT NULL DEFAULT 'prev_month' AFTER `frequency`",
                 'custom_start_day'    => "ALTER TABLE `invoice_schedules` ADD COLUMN `custom_start_day` TINYINT UNSIGNED NOT NULL DEFAULT 1 AFTER `period_type`",
                 'custom_end_day'      => "ALTER TABLE `invoice_schedules` ADD COLUMN `custom_end_day` TINYINT UNSIGNED NOT NULL DEFAULT 31 AFTER `custom_start_day`",
@@ -373,9 +375,25 @@ class AutoInvoiceEngine
             throw new InvalidArgumentException('Invalid affiliate ID');
         }
 
+        $offerScope = in_array($data['offer_scope'] ?? '', ['all', 'specific']) ? $data['offer_scope'] : 'all';
+        $specificOffers = null;
+        if ($offerScope === 'specific') {
+            $rawOffers = $data['specific_offers'] ?? $data['offer_ids'] ?? [];
+            if (is_string($rawOffers)) {
+                $rawOffers = array_filter(array_map('intval', explode(',', $rawOffers)));
+            } elseif (is_array($rawOffers)) {
+                $rawOffers = array_filter(array_map('intval', $rawOffers));
+            }
+            if (!empty($rawOffers)) {
+                $specificOffers = json_encode(array_values($rawOffers));
+            }
+        }
+
         $ruleData = [
             'affiliate_id'    => $affiliateId,
             'override_global' => !empty($data['override_global']) ? 1 : 0,
+            'offer_scope'     => $offerScope,
+            'specific_offers' => $specificOffers,
             'frequency'       => in_array($data['frequency'] ?? '', ['monthly', 'every_x_days', 'weekly', 'custom']) ? $data['frequency'] : 'monthly',
             'monthly_day'     => max(1, min(31, (int)($data['monthly_day'] ?? 1))),
             'interval_days'   => max(1, min(365, (int)($data['interval_days'] ?? 15))),
@@ -542,18 +560,30 @@ class AutoInvoiceEngine
         // 1. Check Affiliate Rule
         $affRule = self::getAffiliateRule($affiliateId);
         if ($affRule && !empty($affRule['enabled']) && !empty($affRule['override_global'])) {
-            return [
-                'source'          => 'affiliate',
-                'frequency'       => $affRule['frequency'],
-                'monthly_day'     => (int)$affRule['monthly_day'],
-                'interval_days'   => (int)$affRule['interval_days'],
-                'minimum_amount'  => (float)$affRule['minimum_amount'],
-                'currency'        => $affRule['currency'] ?: $global['currency'],
-                'payment_method'  => $affRule['payment_method'],
-                'payment_terms'   => $affRule['payment_terms'] ?: $global['payment_terms'],
-                'start_date'      => $affRule['start_date'],
-                'end_date'        => $affRule['end_date'],
-            ];
+            $scopeApplies = true;
+            if (($affRule['offer_scope'] ?? 'all') === 'specific' && $offerId) {
+                $allowed = !empty($affRule['specific_offers']) ? json_decode($affRule['specific_offers'], true) : [];
+                if (!empty($allowed) && !in_array((int)$offerId, $allowed)) {
+                    $scopeApplies = false;
+                }
+            }
+
+            if ($scopeApplies) {
+                return [
+                    'source'          => 'affiliate',
+                    'offer_scope'     => $affRule['offer_scope'] ?? 'all',
+                    'specific_offers' => $affRule['specific_offers'] ?? null,
+                    'frequency'       => $affRule['frequency'],
+                    'monthly_day'     => (int)$affRule['monthly_day'],
+                    'interval_days'   => (int)$affRule['interval_days'],
+                    'minimum_amount'  => (float)$affRule['minimum_amount'],
+                    'currency'        => $affRule['currency'] ?: $global['currency'],
+                    'payment_method'  => $affRule['payment_method'],
+                    'payment_terms'   => $affRule['payment_terms'] ?: $global['payment_terms'],
+                    'start_date'      => $affRule['start_date'],
+                    'end_date'        => $affRule['end_date'],
+                ];
+            }
         }
 
         // 2. Check Offer Rule (if specified)

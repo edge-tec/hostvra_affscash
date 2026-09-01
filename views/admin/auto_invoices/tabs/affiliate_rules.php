@@ -24,6 +24,7 @@
                 <tr>
                     <th>Affiliate</th>
                     <th>Override Global</th>
+                    <th>Offer Scope</th>
                     <th>Frequency</th>
                     <th>Schedule Details</th>
                     <th>Min Amount</th>
@@ -52,6 +53,19 @@
                         <?php endif; ?>
                     </td>
                     <td>
+                        <?php if (($r['offer_scope'] ?? 'all') === 'specific'): ?>
+                            <?php 
+                            $offIds = !empty($r['specific_offers']) ? json_decode($r['specific_offers'], true) : [];
+                            $cnt = is_array($offIds) ? count($offIds) : 0;
+                            ?>
+                            <span class="badge badge-info" style="font-size:11px;background:#ede9fe;color:#6d28d9;border:1px solid #ddd6fe;">
+                                Specific (<?= $cnt ?> <?= $cnt===1?'Offer':'Offers' ?>)
+                            </span>
+                        <?php else: ?>
+                            <span class="badge badge-muted" style="font-size:11px;">All Offers</span>
+                        <?php endif; ?>
+                    </td>
+                    <td>
                         <span class="badge badge-info" style="font-size:11px;text-transform:capitalize;">
                             <?= str_replace('_', ' ', $r['frequency']) ?>
                         </span>
@@ -71,7 +85,7 @@
                         $<?= number_format((float)$r['minimum_amount'], 2) ?> <?= htmlspecialchars($r['currency']) ?>
                     </td>
                     <td>
-                        <code style="font-size:12px;"><?= strtoupper(htmlspecialchars($r['payment_terms'])) ?></code>
+                        <code style="font-size:12px;font-weight:700;color:#4f46e5;background:#eef2ff;padding:2px 6px;border-radius:4px;"><?= strtoupper(htmlspecialchars($r['payment_terms'])) ?></code>
                     </td>
                     <td>
                         <span class="badge badge-<?= !empty($r['enabled']) ? 'success' : 'danger' ?>">
@@ -121,6 +135,33 @@
                         <?php endforeach; ?>
                     </select>
                     <small class="text-muted">You can select multiple affiliates to apply the same billing schedule in bulk.</small>
+                </div>
+
+                <!-- Offer Scope Selection -->
+                <div class="form-group mb-3" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;">
+                    <label style="font-weight:700;font-size:13.5px;color:#1e293b;margin-bottom:6px;display:block;">Offer Scope (Applicable Offers)</label>
+                    <div style="display:flex;gap:20px;margin-bottom:10px;">
+                        <label style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;cursor:pointer;">
+                            <input type="radio" name="offer_scope" value="all" id="affScopeAll" checked onchange="toggleAffOfferScope(this.value)">
+                            All Offers (General Rule)
+                        </label>
+                        <label style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;cursor:pointer;">
+                            <input type="radio" name="offer_scope" value="specific" id="affScopeSpecific" onchange="toggleAffOfferScope(this.value)">
+                            Specific Offer(s) Only
+                        </label>
+                    </div>
+
+                    <div id="wrapSpecificOffers" style="display:none;margin-top:10px;">
+                        <label style="font-size:12px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">Select Specific Offer(s)</label>
+                        <select name="specific_offers[]" id="affSpecificOfferSelect" multiple placeholder="Select specific offers...">
+                            <?php foreach ($offers as $o): ?>
+                            <option value="<?= $o['id'] ?>">
+                                #<?= $o['id'] ?> &ndash; <?= htmlspecialchars($o['name']) ?> ($<?= number_format((float)($o['payout_amount'] ?? $o['payout'] ?? 0), 2) ?>)
+                            </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <small class="text-muted">This billing schedule and payment term will apply exclusively to conversions from these selected offers.</small>
+                    </div>
                 </div>
 
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;margin-bottom:16px;">
@@ -175,10 +216,14 @@
                     <div class="form-group mb-3">
                         <label style="font-weight:600;font-size:13px;margin-bottom:6px;display:block;">Payment Terms</label>
                         <select name="payment_terms" id="affPaymentTerms" class="form-control">
-                            <option value="net15">Net 15</option>
-                            <option value="net30">Net 30</option>
-                            <option value="net7">Net 7</option>
-                            <option value="weekly">Weekly</option>
+                            <option value="net15">Net 15 (+15 Days)</option>
+                            <option value="net30">Net 30 (+30 Days)</option>
+                            <option value="net7">Net 7 (+7 Days)</option>
+                            <option value="net45">Net 45 (+45 Days)</option>
+                            <option value="net60">Net 60 (+60 Days)</option>
+                            <option value="weekly">Weekly (+3 Days)</option>
+                            <option value="biweekly">Bi-weekly (+7 Days)</option>
+                            <option value="immediate">Immediate (Upon Generation)</option>
                         </select>
                     </div>
                 </div>
@@ -213,6 +258,7 @@
 
 <script>
 var affSelectInstance = null;
+var affSpecificOfferSelectInstance = null;
 
 $(function() {
     affSelectInstance = new TomSelect('#affRuleSelect', {
@@ -222,10 +268,17 @@ $(function() {
         create: false
     });
 
+    affSpecificOfferSelectInstance = new TomSelect('#affSpecificOfferSelect', {
+        plugins: ['remove_button'],
+        maxItems: 50,
+        persist: false,
+        create: false
+    });
+
     $('#tbl-aff-rules').DataTable({
         destroy: true,
         pageLength: 25,
-        order: [[7, 'desc']],
+        order: [[8, 'desc']],
         language: { 
             search: 'Search rules:', 
             lengthMenu: 'Show _MENU_ entries',
@@ -234,11 +287,18 @@ $(function() {
     });
 });
 
+function toggleAffOfferScope(val) {
+    document.getElementById('wrapSpecificOffers').style.display = (val === 'specific') ? 'block' : 'none';
+}
+
 function openAffRuleModal() {
     document.getElementById('modalAffTitle').innerText = 'Add Affiliate Billing Rule';
     document.getElementById('formAffRule').reset();
     document.getElementById('affRuleId').value = '';
     if (affSelectInstance) affSelectInstance.clear();
+    if (affSpecificOfferSelectInstance) affSpecificOfferSelectInstance.clear();
+    document.getElementById('affScopeAll').checked = true;
+    toggleAffOfferScope('all');
     toggleAffFreq('monthly');
     document.getElementById('modalAffRule').style.display = 'flex';
 }
@@ -253,14 +313,36 @@ function toggleAffFreq(val) {
 }
 
 function editAffRule(rule) {
-    document.getElementById('modalAffTitle').innerText = 'Edit Affiliate Billing Rule (#' + rule.affiliate_id + ')';
+    document.getElementById('modalAffTitle').innerText = 'Edit Affiliate Billing Rule (Affiliate #' + rule.affiliate_id + ')';
     document.getElementById('affRuleId').value = rule.id;
     if (affSelectInstance) {
         affSelectInstance.clear();
         affSelectInstance.addItem(rule.affiliate_id);
     }
+    
+    // Set offer scope
+    var scope = rule.offer_scope || 'all';
+    if (scope === 'specific') {
+        document.getElementById('affScopeSpecific').checked = true;
+        toggleAffOfferScope('specific');
+        if (affSpecificOfferSelectInstance && rule.specific_offers) {
+            affSpecificOfferSelectInstance.clear();
+            try {
+                var ids = JSON.parse(rule.specific_offers);
+                if (Array.isArray(ids)) {
+                    ids.forEach(function(oid){ affSpecificOfferSelectInstance.addItem(oid); });
+                }
+            } catch(e){}
+        }
+    } else {
+        document.getElementById('affScopeAll').checked = true;
+        toggleAffOfferScope('all');
+        if (affSpecificOfferSelectInstance) affSpecificOfferSelectInstance.clear();
+    }
+
     document.getElementById('affOverrideGlobal').checked = (rule.override_global == 1);
     document.getElementById('affFrequency').value = rule.frequency;
+    toggleAffFreq(rule.frequency);
     document.getElementById('affMonthlyDay').value = rule.monthly_day;
     document.getElementById('affIntervalDays').value = rule.interval_days;
     document.getElementById('affMinAmount').value = rule.minimum_amount;
@@ -269,7 +351,6 @@ function editAffRule(rule) {
     document.getElementById('affPaymentMethod').value = rule.payment_method || '';
     document.getElementById('affEnabled').checked = (rule.enabled == 1);
 
-    toggleAffFreq(rule.frequency);
     document.getElementById('modalAffRule').style.display = 'flex';
 }
 </script>
