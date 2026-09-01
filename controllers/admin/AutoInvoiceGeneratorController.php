@@ -57,9 +57,10 @@ if (Helpers::isPost()) {
             try {
                 $res = AutoInvoiceEngine::runAutoGeneration('admin_manual', $adminId);
                 if (Helpers::isAjax()) {
+                    $detailsStr = !empty($res['logs']) ? "\n\nAffiliate Breakdown:\n" . implode("\n", array_slice($res['logs'], 0, 15)) : '';
                     Helpers::jsonResponse([
                         'success' => true,
-                        'message' => "Scheduler completed: {$res['generated']} generated, {$res['skipped']} skipped. Total: \${$res['total_amt']}",
+                        'message' => "Scheduler completed: {$res['generated']} generated, {$res['skipped']} skipped. Total: \${$res['total_amt']}" . $detailsStr,
                         'result'  => $res,
                     ]);
                 }

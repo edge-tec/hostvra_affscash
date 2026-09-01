@@ -698,18 +698,23 @@ class AutoInvoiceEngine
 
             if ($scopeApplies) {
                 return [
-                    'source'          => 'affiliate',
-                    'offer_scope'     => $affRule['offer_scope'] ?? 'all',
-                    'specific_offers' => $affRule['specific_offers'] ?? null,
-                    'frequency'       => $affRule['frequency'],
-                    'monthly_day'     => (int)$affRule['monthly_day'],
-                    'interval_days'   => (int)$affRule['interval_days'],
-                    'minimum_amount'  => (float)$affRule['minimum_amount'],
-                    'currency'        => $affRule['currency'] ?: $global['currency'],
-                    'payment_method'  => $affRule['payment_method'],
-                    'payment_terms'   => $affRule['payment_terms'] ?: $global['payment_terms'],
-                    'start_date'      => $affRule['start_date'],
-                    'end_date'        => $affRule['end_date'],
+                    'source'              => 'affiliate',
+                    'offer_scope'         => $affRule['offer_scope'] ?? 'all',
+                    'specific_offers'     => $affRule['specific_offers'] ?? null,
+                    'frequency'           => $affRule['frequency'],
+                    'period_type'         => $affRule['period_type'] ?? $global['period_type'] ?? 'all_unbilled',
+                    'custom_start_day'    => (int)($affRule['custom_start_day'] ?? $global['custom_start_day'] ?? 1),
+                    'custom_end_day'      => (int)($affRule['custom_end_day'] ?? $global['custom_end_day'] ?? 31),
+                    'custom_period_start' => $affRule['custom_period_start'] ?? $global['custom_period_start'] ?? null,
+                    'custom_period_end'   => $affRule['custom_period_end'] ?? $global['custom_period_end'] ?? null,
+                    'monthly_day'         => (int)$affRule['monthly_day'],
+                    'interval_days'       => (int)$affRule['interval_days'],
+                    'minimum_amount'      => (float)$affRule['minimum_amount'],
+                    'currency'            => $affRule['currency'] ?: $global['currency'],
+                    'payment_method'      => $affRule['payment_method'],
+                    'payment_terms'       => $affRule['payment_terms'] ?: $global['payment_terms'],
+                    'start_date'          => $affRule['start_date'],
+                    'end_date'            => $affRule['end_date'],
                 ];
             }
         }
