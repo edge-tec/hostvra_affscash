@@ -319,7 +319,7 @@ $affiliates = Database::fetchAll("
 
 // Active Offers list for selects
 $offers = Database::fetchAll("
-    SELECT id, name, payout, payout_type, status
+    SELECT id, name, payout_amount, payout_type, status
     FROM `offers`
     ORDER BY name ASC
 ");

@@ -420,7 +420,7 @@ class AutoInvoiceEngine
     {
         self::ensureSchema();
         $sql = "
-            SELECT r.*, o.name AS offer_name, o.status AS offer_status, o.payout, o.payout_type
+            SELECT r.*, o.name AS offer_name, o.status AS offer_status, o.payout_amount AS payout, o.payout_type
             FROM `offer_invoice_rules` r
             JOIN `offers` o ON o.id = r.offer_id
             WHERE 1=1

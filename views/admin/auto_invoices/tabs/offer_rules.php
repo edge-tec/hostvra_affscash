@@ -121,7 +121,7 @@
                     <select name="offer_ids[]" id="offerRuleSelect" multiple placeholder="Select one or more offers...">
                         <?php foreach ($offers as $o): ?>
                         <option value="<?= $o['id'] ?>">
-                            #<?= $o['id'] ?> &ndash; <?= htmlspecialchars($o['name']) ?> ($<?= number_format((float)$o['payout'],2) ?>)
+                            #<?= $o['id'] ?> &ndash; <?= htmlspecialchars($o['name']) ?> ($<?= number_format((float)($o['payout_amount'] ?? $o['payout'] ?? 0), 2) ?>)
                         </option>
                         <?php endforeach; ?>
                     </select>
