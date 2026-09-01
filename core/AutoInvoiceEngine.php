@@ -1483,14 +1483,15 @@ class AutoInvoiceEngine
         self::ensureSchema();
         $global = self::getGlobalSchedule();
 
-        if (empty($global['enabled'])) {
+        $force = ($triggeredBy === 'admin_manual' || !empty($_GET['force']));
+        if (empty($global['enabled']) && !$force) {
             return [
                 'status'    => 'disabled',
-                'message'   => 'Global auto invoice scheduler is disabled.',
+                'message'   => 'Global auto invoice scheduler is currently disabled. (Turn ON in Admin > Auto Invoices > 1. Invoice Scheduler or pass &force=1 to test)',
                 'generated' => 0,
                 'skipped'   => 0,
                 'total_amt' => 0.0,
-                'logs'      => [],
+                'logs'      => ['Scheduler is turned OFF in Admin Settings. Please enable "Enable Automated Invoice Generation" in tab 1.'],
             ];
         }
 
