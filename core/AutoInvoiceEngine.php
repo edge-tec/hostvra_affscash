@@ -1656,11 +1656,18 @@ class AutoInvoiceEngine
             // Priority rule resolution
             $rule = self::resolveEffectiveRule($affId);
 
-            // Determine latest invoice period across all non-void invoices for this affiliate (Rule #3 & #6)
-            $lastGeneralInv = self::getLastInvoicePeriod($affId);
-            $affMinStartDate = $lastGeneralInv ? date('Y-m-d', strtotime($lastGeneralInv['period_end'] . ' +1 day')) : '2020-01-01';
+            // Determine latest paid invoice period end (Rule #2 & #3: only exclude settled/paid invoices)
+            $lastPaidInv = Database::fetchOne(
+                "SELECT period_end FROM `invoices` 
+                 WHERE `affiliate_id` = ? AND `status` = 'paid' 
+                 ORDER BY `period_end` DESC, `id` DESC LIMIT 1",
+                [$affId]
+            );
+            $affMinStartDate = ($lastPaidInv && !empty($lastPaidInv['period_end'])) 
+                ? date('Y-m-d', strtotime($lastPaidInv['period_end'] . ' +1 day')) 
+                : '2020-01-01';
 
-            // Retrieve only unbilled approved conversions strictly AFTER the last invoice period end
+            // Retrieve all unbilled approved conversions strictly with full offer & advertiser metadata
             $convs = self::getEligibleConversions($affId, $affMinStartDate, date('Y-m-d'));
 
             if (!empty($convs)) {
@@ -1672,10 +1679,15 @@ class AutoInvoiceEngine
                 }
 
                 foreach ($byAdv as $advId => $advConvs) {
-                    // Check advertiser-specific last invoice as well
-                    $lastAdvInv = self::getLastInvoicePeriod($affId, $advId);
-                    if ($lastAdvInv && !empty($lastAdvInv['period_end'])) {
-                        $advMinDate = date('Y-m-d', strtotime($lastAdvInv['period_end'] . ' +1 day'));
+                    // Check advertiser-specific last paid invoice
+                    $lastAdvPaid = Database::fetchOne(
+                        "SELECT period_end FROM `invoices` 
+                         WHERE `affiliate_id` = ? AND (`advertiser_id` = ? OR `advertiser_id` IS NULL) AND `status` = 'paid' 
+                         ORDER BY `period_end` DESC, `id` DESC LIMIT 1",
+                        [$affId, $advId]
+                    );
+                    if ($lastAdvPaid && !empty($lastAdvPaid['period_end'])) {
+                        $advMinDate = date('Y-m-d', strtotime($lastAdvPaid['period_end'] . ' +1 day'));
                         $advConvs = array_values(array_filter($advConvs, function($c) use ($advMinDate) {
                             return substr($c['converted_at'], 0, 10) >= $advMinDate;
                         }));
