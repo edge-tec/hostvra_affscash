@@ -1088,25 +1088,27 @@ class AutoInvoiceEngine
             return ['items' => [], 'raw_items' => [], 'total' => 0.0, 'conversion_count' => 0, 'db_ids' => []];
         }
 
-        $byOffer = [];
+        $byOfferRate = [];
         $rawItems = [];
         $dbIds = [];
         $grandTotal = 0.0;
         $totalConvs = 0;
 
         foreach ($conversions as $c) {
-            $oid = (int)$c['offer_id'];
-            $payout = (float)$c['payout'];
-            $dbId = (int)$c['db_id'];
-            $advId = (int)($c['advertiser_id'] ?? 0);
+            $oid     = (int)$c['offer_id'];
+            $payout  = round((float)$c['payout'], 4);
+            $dbId    = (int)$c['db_id'];
+            $advId   = (int)($c['advertiser_id'] ?? 0);
             $advName = $c['advertiser_name'] ?? 'Direct';
+            $rateKey = $oid . '_' . number_format($payout, 4, '.', '');
 
-            if (!isset($byOffer[$oid])) {
-                $byOffer[$oid] = [
+            if (!isset($byOfferRate[$rateKey])) {
+                $byOfferRate[$rateKey] = [
                     'offer_id'        => $oid,
-                    'offer_name'      => $c['offer_name'],
+                    'offer_name'      => !empty($c['offer_name']) ? $c['offer_name'] : ('Offer #' . $oid),
                     'advertiser_id'   => $advId,
                     'advertiser_name' => $advName,
+                    'rate'            => $payout,
                     'count'           => 0,
                     'total'           => 0.0,
                     'geos'            => [],
@@ -1115,19 +1117,19 @@ class AutoInvoiceEngine
                 ];
             }
 
-            $byOffer[$oid]['count']++;
-            $byOffer[$oid]['total'] += $payout;
-            $byOffer[$oid]['conversion_ids'][] = $c['conversion_id'];
-            $byOffer[$oid]['db_ids'][] = $dbId;
-            if (!empty($c['country']) && !in_array($c['country'], $byOffer[$oid]['geos'])) {
-                $byOffer[$oid]['geos'][] = strtoupper($c['country']);
+            $byOfferRate[$rateKey]['count']++;
+            $byOfferRate[$rateKey]['total'] += $payout;
+            $byOfferRate[$rateKey]['conversion_ids'][] = $c['conversion_id'];
+            $byOfferRate[$rateKey]['db_ids'][] = $dbId;
+            if (!empty($c['country']) && !in_array($c['country'], $byOfferRate[$rateKey]['geos'])) {
+                $byOfferRate[$rateKey]['geos'][] = strtoupper($c['country']);
             }
 
             $rawItems[] = [
                 'conversion_id'    => $c['conversion_id'],
                 'conversion_db_id' => $dbId,
                 'offer_id'         => $oid,
-                'offer_name'       => $c['offer_name'],
+                'offer_name'       => !empty($c['offer_name']) ? $c['offer_name'] : ('Offer #' . $oid),
                 'advertiser_id'    => $advId,
                 'advertiser_name'  => $advName,
                 'geo'              => $c['country'] ?? '',
@@ -1141,10 +1143,10 @@ class AutoInvoiceEngine
         }
 
         $items = [];
-        foreach ($byOffer as $oid => $off) {
-            $count = $off['count'];
-            $total = round($off['total'], 4);
-            $rate  = $count > 0 ? round($total / $count, 4) : 0.0;
+        foreach ($byOfferRate as $rk => $off) {
+            $count   = (int)$off['count'];
+            $rate    = (float)$off['rate'];
+            $amount  = round($off['total'], 2);
             $offCode = 'OFF-' . str_pad((string)$off['offer_id'], 4, '0', STR_PAD_LEFT);
 
             $items[] = [
@@ -1158,7 +1160,7 @@ class AutoInvoiceEngine
                 'conversion_count' => $count,
                 'qty'              => $count,
                 'rate'             => $rate,
-                'amount'           => $total,
+                'amount'           => $amount,
                 'conversion_ids'   => $off['conversion_ids'],
                 'db_ids'           => $off['db_ids'],
             ];
@@ -1349,21 +1351,68 @@ class AutoInvoiceEngine
                 $minRequired  = isset($payload['min_threshold']) ? (float)$payload['min_threshold'] : (float)($rule['minimum_amount'] ?? 50.00);
 
                 if ($availBalance >= $minRequired && $availBalance > 0) {
-                    $items = [[
-                        'offer_id'         => 0,
-                        'offer_name'       => 'Affiliate Commission Balance',
-                        'advertiser_id'    => 0,
-                        'advertiser_name'  => 'Network Payout',
-                        'campaign_id'      => 'AFF-BALANCE',
-                        'description'      => "Affiliate Approved Commission Balance ({$periodStart} to {$periodEnd})",
-                        'geo'              => 'ALL',
-                        'conversion_count' => 1,
-                        'qty'              => 1,
-                        'rate'             => $availBalance,
-                        'amount'           => $availBalance,
-                        'conversion_ids'   => [],
-                        'db_ids'           => [],
-                    ]];
+                    // Fetch top approved converted offers for this affiliate to build offer-wise items
+                    $affOffers = Database::fetchAll("
+                        SELECT o.id AS offer_id, o.name AS offer_name, o.advertiser_id,
+                               COUNT(c.id) AS qty,
+                               ROUND(AVG(c.payout), 2) AS rate,
+                               ROUND(SUM(c.payout), 2) AS amount
+                        FROM `conversions` c
+                        JOIN `offers` o ON o.id = c.offer_id
+                        WHERE c.affiliate_id = ? AND c.status = 'approved'
+                          AND COALESCE(c.is_hidden, 0) = 0
+                          AND COALESCE(c.is_fraud, 0) = 0
+                        GROUP BY o.id, o.name, o.advertiser_id
+                        ORDER BY amount DESC
+                        LIMIT 5
+                    ", [$affiliateId]);
+
+                    if (!empty($affOffers)) {
+                        $items = [];
+                        $sumOfferAmts = array_sum(array_column($affOffers, 'amount'));
+                        foreach ($affOffers as $ao) {
+                            $ratio = $sumOfferAmts > 0 ? ((float)$ao['amount'] / $sumOfferAmts) : (1 / count($affOffers));
+                            $offerAlloc = round($availBalance * $ratio, 2);
+                            $rate = (float)$ao['rate'] > 0 ? (float)$ao['rate'] : 1.0;
+                            $qty = max(1, (int)round($offerAlloc / $rate));
+                            $rate = round($offerAlloc / $qty, 2);
+
+                            $items[] = [
+                                'offer_id'         => (int)$ao['offer_id'],
+                                'offer_name'       => $ao['offer_name'],
+                                'advertiser_id'    => (int)($ao['advertiser_id'] ?? 0),
+                                'advertiser_name'  => 'Direct',
+                                'campaign_id'      => 'OFF-' . str_pad((string)$ao['offer_id'], 4, '0', STR_PAD_LEFT),
+                                'description'      => $ao['offer_name'],
+                                'geo'              => 'US',
+                                'conversion_count' => $qty,
+                                'qty'              => $qty,
+                                'rate'             => $rate,
+                                'amount'           => $offerAlloc,
+                                'conversion_ids'   => [],
+                                'db_ids'           => [],
+                            ];
+                        }
+                    } else {
+                        // If no past conversions exist, fetch active offer
+                        $defaultOffer = Database::fetchOne("SELECT id, name FROM `offers` WHERE `status` = 'active' ORDER BY `id` ASC LIMIT 1");
+                        $offName = $defaultOffer['name'] ?? 'Affiliate Commission Payout';
+                        $items = [[
+                            'offer_id'         => (int)($defaultOffer['id'] ?? 1),
+                            'offer_name'       => $offName,
+                            'advertiser_id'    => 0,
+                            'advertiser_name'  => 'Direct',
+                            'campaign_id'      => 'OFF-' . str_pad((string)($defaultOffer['id'] ?? 1), 4, '0', STR_PAD_LEFT),
+                            'description'      => $offName,
+                            'geo'              => 'US',
+                            'conversion_count' => 1,
+                            'qty'              => 1,
+                            'rate'             => $availBalance,
+                            'amount'           => $availBalance,
+                            'conversion_ids'   => [],
+                            'db_ids'           => [],
+                        ]];
+                    }
                     $rawItems = [];
                     $dbIds    = [];
                     $subtotal = $availBalance;
