@@ -641,6 +641,15 @@ class Helpers {
         exit;
     }
 
+    public static function isAjax(): bool {
+        return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
+            || (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false);
+    }
+
+    public static function jsonResponse(array $data, int $status = 200): void {
+        self::json($data, $status);
+    }
+
     public static function json(array $data, int $status = 200): void {
         http_response_code($status);
         header('Content-Type: application/json');
