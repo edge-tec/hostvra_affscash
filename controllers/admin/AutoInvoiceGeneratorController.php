@@ -54,20 +54,29 @@ if (Helpers::isPost()) {
 
         // ── 2. Run Auto Invoice Now (Manual Trigger) ──
         case 'run_scheduler_now':
+            if (ob_get_level()) ob_end_clean();
+            ob_start();
             try {
                 $res = AutoInvoiceEngine::runAutoGeneration('admin_manual', $adminId);
-                if (Helpers::isAjax()) {
-                    $detailsStr = !empty($res['logs']) ? "\n\nAffiliate Breakdown:\n" . implode("\n", array_slice($res['logs'], 0, 15)) : '';
-                    Helpers::jsonResponse([
+                if (ob_get_level()) ob_end_clean();
+                $detailsStr = !empty($res['logs']) ? "\n\nAffiliate Breakdown:\n" . implode("\n", array_slice($res['logs'], 0, 20)) : '';
+                
+                if (Helpers::isAjax() || !empty($_POST['ajax']) || !empty($_GET['ajax']) || (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)) {
+                    header('Content-Type: application/json; charset=utf-8');
+                    echo json_encode([
                         'success' => true,
                         'message' => "Scheduler completed: {$res['generated']} generated, {$res['skipped']} skipped. Total: \${$res['total_amt']}" . $detailsStr,
                         'result'  => $res,
-                    ]);
+                    ], JSON_UNESCAPED_UNICODE);
+                    exit;
                 }
                 Helpers::flash('success', "Scheduler ran: {$res['generated']} generated, {$res['skipped']} skipped. Total: \${$res['total_amt']}");
             } catch (\Throwable $e) {
-                if (Helpers::isAjax()) {
-                    Helpers::jsonResponse(['success' => false, 'error' => $e->getMessage()]);
+                if (ob_get_level()) ob_end_clean();
+                if (Helpers::isAjax() || !empty($_POST['ajax']) || !empty($_GET['ajax']) || (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)) {
+                    header('Content-Type: application/json; charset=utf-8');
+                    echo json_encode(['success' => false, 'error' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
+                    exit;
                 }
                 Helpers::flash('error', $e->getMessage());
             }
