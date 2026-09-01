@@ -138,18 +138,23 @@ class AutoInvoiceEngine
 
             // Invoices column additions
             $colsToAdd = [
-                'billing_start'     => "ALTER TABLE `invoices` ADD COLUMN `billing_start` DATE NULL DEFAULT NULL AFTER `period_end`",
-                'billing_end'       => "ALTER TABLE `invoices` ADD COLUMN `billing_end` DATE NULL DEFAULT NULL AFTER `billing_start`",
-                'adjustment'        => "ALTER TABLE `invoices` ADD COLUMN `adjustment` DECIMAL(12,4) NOT NULL DEFAULT 0.0000 AFTER `subtotal`",
-                'chargeback_amount' => "ALTER TABLE `invoices` ADD COLUMN `chargeback_amount` DECIMAL(12,4) NOT NULL DEFAULT 0.0000 AFTER `adjustment`",
-                'currency'          => "ALTER TABLE `invoices` ADD COLUMN `currency` VARCHAR(10) NOT NULL DEFAULT 'USD' AFTER `total`",
-                'generated_at'      => "ALTER TABLE `invoices` ADD COLUMN `generated_at` DATETIME NULL DEFAULT NULL AFTER `paid_at`",
-                'pdf_path'          => "ALTER TABLE `invoices` ADD COLUMN `pdf_path` VARCHAR(255) NULL DEFAULT NULL AFTER `generated_at`",
-                'is_auto'           => "ALTER TABLE `invoices` ADD COLUMN `is_auto` TINYINT(1) NOT NULL DEFAULT 0 AFTER `pdf_path`",
-                'viewed_at'         => "ALTER TABLE `invoices` ADD COLUMN `viewed_at` DATETIME NULL DEFAULT NULL AFTER `is_auto`",
-                'email_sent_at'     => "ALTER TABLE `invoices` ADD COLUMN `email_sent_at` DATETIME NULL DEFAULT NULL AFTER `viewed_at`",
-                'balance_deducted'  => "ALTER TABLE `invoices` ADD COLUMN `balance_deducted` TINYINT(1) NOT NULL DEFAULT 0 AFTER `email_sent_at`",
-                'period_hash'       => "ALTER TABLE `invoices` ADD COLUMN `period_hash` VARCHAR(64) NULL DEFAULT NULL AFTER `balance_deducted`",
+                'period_type'         => "ALTER TABLE `invoice_schedules` ADD COLUMN `period_type` VARCHAR(50) NOT NULL DEFAULT 'prev_month' AFTER `frequency`",
+                'custom_start_day'    => "ALTER TABLE `invoice_schedules` ADD COLUMN `custom_start_day` TINYINT UNSIGNED NOT NULL DEFAULT 1 AFTER `period_type`",
+                'custom_end_day'      => "ALTER TABLE `invoice_schedules` ADD COLUMN `custom_end_day` TINYINT UNSIGNED NOT NULL DEFAULT 31 AFTER `custom_start_day`",
+                'custom_period_start' => "ALTER TABLE `invoice_schedules` ADD COLUMN `custom_period_start` DATE NULL DEFAULT NULL AFTER `custom_end_day`",
+                'custom_period_end'   => "ALTER TABLE `invoice_schedules` ADD COLUMN `custom_period_end` DATE NULL DEFAULT NULL AFTER `custom_period_start`",
+                'billing_start'       => "ALTER TABLE `invoices` ADD COLUMN `billing_start` DATE NULL DEFAULT NULL AFTER `period_end`",
+                'billing_end'         => "ALTER TABLE `invoices` ADD COLUMN `billing_end` DATE NULL DEFAULT NULL AFTER `billing_start`",
+                'adjustment'          => "ALTER TABLE `invoices` ADD COLUMN `adjustment` DECIMAL(12,4) NOT NULL DEFAULT 0.0000 AFTER `subtotal`",
+                'chargeback_amount'   => "ALTER TABLE `invoices` ADD COLUMN `chargeback_amount` DECIMAL(12,4) NOT NULL DEFAULT 0.0000 AFTER `adjustment`",
+                'currency'            => "ALTER TABLE `invoices` ADD COLUMN `currency` VARCHAR(10) NOT NULL DEFAULT 'USD' AFTER `total`",
+                'generated_at'        => "ALTER TABLE `invoices` ADD COLUMN `generated_at` DATETIME NULL DEFAULT NULL AFTER `paid_at`",
+                'pdf_path'            => "ALTER TABLE `invoices` ADD COLUMN `pdf_path` VARCHAR(255) NULL DEFAULT NULL AFTER `generated_at`",
+                'is_auto'             => "ALTER TABLE `invoices` ADD COLUMN `is_auto` TINYINT(1) NOT NULL DEFAULT 0 AFTER `pdf_path`",
+                'viewed_at'           => "ALTER TABLE `invoices` ADD COLUMN `viewed_at` DATETIME NULL DEFAULT NULL AFTER `is_auto`",
+                'email_sent_at'       => "ALTER TABLE `invoices` ADD COLUMN `email_sent_at` DATETIME NULL DEFAULT NULL AFTER `viewed_at`",
+                'balance_deducted'    => "ALTER TABLE `invoices` ADD COLUMN `balance_deducted` TINYINT(1) NOT NULL DEFAULT 0 AFTER `email_sent_at`",
+                'period_hash'         => "ALTER TABLE `invoices` ADD COLUMN `period_hash` VARCHAR(64) NULL DEFAULT NULL AFTER `balance_deducted`",
             ];
 
             foreach ($colsToAdd as $sql) {
@@ -189,6 +194,11 @@ class AutoInvoiceEngine
                 'schedule_name'        => 'Default Global Schedule',
                 'enabled'              => 1,
                 'frequency'            => 'monthly',
+                'period_type'          => 'prev_month',
+                'custom_start_day'     => 1,
+                'custom_end_day'       => 31,
+                'custom_period_start'  => null,
+                'custom_period_end'    => null,
                 'monthly_day'          => 1,
                 'interval_days'        => 15,
                 'invoice_time'         => '00:00:00',
@@ -225,6 +235,11 @@ class AutoInvoiceEngine
             'schedule_name'        => trim($data['schedule_name'] ?? 'Default Global Schedule'),
             'enabled'              => !empty($data['enabled']) ? 1 : 0,
             'frequency'            => in_array($data['frequency'] ?? '', ['monthly', 'every_x_days', 'weekly', 'custom']) ? $data['frequency'] : 'monthly',
+            'period_type'          => in_array($data['period_type'] ?? '', ['prev_month', 'current_month', 'bi_monthly_1_15', 'bi_monthly_16_end', 'custom_days', 'custom_dates', 'rolling_days']) ? $data['period_type'] : 'prev_month',
+            'custom_start_day'     => max(1, min(31, (int)($data['custom_start_day'] ?? 1))),
+            'custom_end_day'       => max(1, min(31, (int)($data['custom_end_day'] ?? 31))),
+            'custom_period_start'  => !empty($data['custom_period_start']) ? date('Y-m-d', strtotime($data['custom_period_start'])) : null,
+            'custom_period_end'    => !empty($data['custom_period_end']) ? date('Y-m-d', strtotime($data['custom_period_end'])) : null,
             'monthly_day'          => max(1, min(31, (int)($data['monthly_day'] ?? 1))),
             'interval_days'        => max(1, min(365, (int)($data['interval_days'] ?? 15))),
             'invoice_time'         => !empty($data['invoice_time']) ? date('H:i:s', strtotime($data['invoice_time'])) : '00:00:00',
@@ -564,75 +579,121 @@ class AutoInvoiceEngine
 
         // 3. Fallback to Global Schedule
         return [
-            'source'          => 'global',
-            'frequency'       => $global['frequency'],
-            'monthly_day'     => (int)$global['monthly_day'],
-            'interval_days'   => (int)$global['interval_days'],
-            'minimum_amount'  => (float)$global['min_payout_threshold'],
-            'currency'        => $global['currency'],
-            'payment_method'  => null,
-            'payment_terms'   => $global['payment_terms'],
-            'start_date'      => null,
-            'end_date'        => null,
+            'source'              => 'global',
+            'frequency'           => $global['frequency'],
+            'period_type'         => $global['period_type'] ?? 'prev_month',
+            'custom_start_day'    => (int)($global['custom_start_day'] ?? 1),
+            'custom_end_day'      => (int)($global['custom_end_day'] ?? 31),
+            'custom_period_start' => $global['custom_period_start'] ?? null,
+            'custom_period_end'   => $global['custom_period_end'] ?? null,
+            'monthly_day'         => (int)$global['monthly_day'],
+            'interval_days'       => (int)$global['interval_days'],
+            'minimum_amount'      => (float)$global['min_payout_threshold'],
+            'currency'            => $global['currency'],
+            'payment_method'      => null,
+            'payment_terms'       => $global['payment_terms'],
+            'start_date'          => null,
+            'end_date'            => null,
         ];
     }
 
     /**
-     * Compute billing period [start_date, end_date, due_date] given frequency and terms.
+     * Compute billing period [start_date, end_date, due_date] given frequency, terms, and custom period configuration.
      */
     public static function computePeriod(
         string $frequency,
         int $monthlyDay = 1,
         int $intervalDays = 15,
         string $paymentTerms = 'net15',
-        ?string $refDateStr = null
+        ?string $refDateStr = null,
+        string $periodType = 'prev_month',
+        int $customStartDay = 1,
+        int $customEndDay = 31,
+        ?string $customStartDate = null,
+        ?string $customEndDate = null
     ): array {
         $today = $refDateStr ? new DateTime($refDateStr) : new DateTime();
         $dayOfMonth = (int)$today->format('j');
 
-        switch ($frequency) {
-            case 'monthly':
-                // Previous full calendar month or period ending before current cycle
-                $start = new DateTime('first day of last month');
-                $end   = new DateTime('last day of last month');
-                break;
+        // Check if explicit custom start/end dates are provided
+        if ($periodType === 'custom_dates' && !empty($customStartDate) && !empty($customEndDate)) {
+            $start = new DateTime($customStartDate);
+            $end   = new DateTime($customEndDate);
+        } elseif ($periodType === 'current_month') {
+            $start = new DateTime('first day of this month');
+            $end   = clone $today;
+        } elseif ($periodType === 'bi_monthly_1_15') {
+            $start = new DateTime('first day of this month');
+            $end   = clone $start;
+            $end->modify('+14 days');
+        } elseif ($periodType === 'bi_monthly_16_end') {
+            $start = new DateTime('first day of last month');
+            $start->modify('+15 days');
+            $end = new DateTime('last day of last month');
+        } elseif ($periodType === 'custom_days') {
+            $sDay = max(1, min(31, $customStartDay));
+            $eDay = max(1, min(31, $customEndDay));
+            if ($sDay <= $eDay) {
+                $prevMonth = new DateTime('first day of last month');
+                $maxDays = (int)$prevMonth->format('t');
+                $start = clone $prevMonth;
+                $start->setDate((int)$prevMonth->format('Y'), (int)$prevMonth->format('m'), min($sDay, $maxDays));
+                $end = clone $prevMonth;
+                $end->setDate((int)$prevMonth->format('Y'), (int)$prevMonth->format('m'), min($eDay, $maxDays));
+            } else {
+                $prevMonth = new DateTime('first day of last month');
+                $thisMonth = new DateTime('first day of this month');
+                $start = clone $prevMonth;
+                $start->setDate((int)$prevMonth->format('Y'), (int)$prevMonth->format('m'), min($sDay, (int)$prevMonth->format('t')));
+                $end = clone $thisMonth;
+                $end->setDate((int)$thisMonth->format('Y'), (int)$thisMonth->format('m'), min($eDay, (int)$thisMonth->format('t')));
+            }
+        } elseif ($periodType === 'rolling_days') {
+            $days = max(1, $intervalDays);
+            $end = clone $today;
+            $end->modify('-1 day');
+            $start = clone $end;
+            $start->modify('-' . ($days - 1) . ' days');
+        } else {
+            switch ($frequency) {
+                case 'monthly':
+                    $start = new DateTime('first day of last month');
+                    $end   = new DateTime('last day of last month');
+                    break;
 
-            case 'every_x_days':
-                $days = max(1, $intervalDays);
-                if ($days == 15) {
-                    // Bi-monthly standard: 1st-15th OR 16th-end of month
-                    if ($dayOfMonth <= 15) {
-                        // Current date is in first half -> bill second half of last month
-                        $start = new DateTime('first day of last month');
-                        $start->modify('+15 days'); // 16th of last month
-                        $end = new DateTime('last day of last month');
+                case 'every_x_days':
+                    $days = max(1, $intervalDays);
+                    if ($days == 15) {
+                        if ($dayOfMonth <= 15) {
+                            $start = new DateTime('first day of last month');
+                            $start->modify('+15 days');
+                            $end = new DateTime('last day of last month');
+                        } else {
+                            $start = new DateTime('first day of this month');
+                            $end   = clone $start;
+                            $end->modify('+14 days');
+                        }
                     } else {
-                        // Current date is in second half -> bill first half of current month
-                        $start = new DateTime('first day of this month');
-                        $end   = clone $start;
-                        $end->modify('+14 days'); // 15th
+                        $end = clone $today;
+                        $end->modify('-1 day');
+                        $start = clone $end;
+                        $start->modify('-' . ($days - 1) . ' days');
                     }
-                } else {
-                    // Rolling X days
+                    break;
+
+                case 'weekly':
                     $end = clone $today;
-                    $end->modify('-1 day');
+                    $end->modify('last sunday');
                     $start = clone $end;
-                    $start->modify('-' . ($days - 1) . ' days');
-                }
-                break;
+                    $start->modify('-6 days');
+                    break;
 
-            case 'weekly':
-                $end = clone $today;
-                $end->modify('last sunday');
-                $start = clone $end;
-                $start->modify('-6 days'); // last monday to last sunday
-                break;
-
-            case 'custom':
-            default:
-                $start = new DateTime('first day of last month');
-                $end   = new DateTime('last day of last month');
-                break;
+                case 'custom':
+                default:
+                    $start = new DateTime('first day of last month');
+                    $end   = new DateTime('last day of last month');
+                    break;
+            }
         }
 
         // Calculate Due Date based on payment terms
@@ -856,9 +917,15 @@ class AutoInvoiceEngine
         if (!$periodStart || !$periodEnd) {
             [$calcStart, $calcEnd, $calcDue] = self::computePeriod(
                 $rule['frequency'],
-                $rule['monthly_day'],
-                $rule['interval_days'],
-                $rule['payment_terms']
+                $rule['monthly_day'] ?? 1,
+                $rule['interval_days'] ?? 15,
+                $rule['payment_terms'] ?? 'net15',
+                null,
+                $rule['period_type'] ?? 'prev_month',
+                $rule['custom_start_day'] ?? 1,
+                $rule['custom_end_day'] ?? 31,
+                $rule['custom_period_start'] ?? null,
+                $rule['custom_period_end'] ?? null
             );
             $periodStart = $periodStart ?: $calcStart;
             $periodEnd   = $periodEnd   ?: $calcEnd;
@@ -1180,9 +1247,15 @@ class AutoInvoiceEngine
             // Compute billing period
             [$pStart, $pEnd, $dueDate] = self::computePeriod(
                 $rule['frequency'],
-                $rule['monthly_day'],
-                $rule['interval_days'],
-                $rule['payment_terms']
+                $rule['monthly_day'] ?? 1,
+                $rule['interval_days'] ?? 15,
+                $rule['payment_terms'] ?? 'net15',
+                null,
+                $rule['period_type'] ?? 'prev_month',
+                $rule['custom_start_day'] ?? 1,
+                $rule['custom_end_day'] ?? 31,
+                $rule['custom_period_start'] ?? null,
+                $rule['custom_period_end'] ?? null
             );
 
             // Duplicate check

@@ -5,13 +5,20 @@
 $timezones = timezone_identifiers_list();
 $cronToken = trim((string)Config::get('config', 'fraud_reports.cron_token')) ?: 'affscash_auto_inv_secret';
 $cronUrl   = rtrim(Config::get('config', 'app.url') ?? 'https://affscash.net', '/') . '/cron/auto-invoices?token=' . $cronToken;
+
+$freq = $schedule['frequency'] ?? 'monthly';
+$periodType = $schedule['period_type'] ?? 'prev_month';
+$customStartDay = (int)($schedule['custom_start_day'] ?? 1);
+$customEndDay = (int)($schedule['custom_end_day'] ?? 31);
+$customPeriodStart = $schedule['custom_period_start'] ?? '';
+$customPeriodEnd = $schedule['custom_period_end'] ?? '';
 ?>
 
 <div class="card">
     <div class="card-header" style="background:linear-gradient(135deg,#312e81,#4338ca);border-radius:12px 12px 0 0;padding:18px 24px;display:flex;justify-content:space-between;align-items:center;">
         <div>
             <h3 style="color:#ffffff;margin:0;font-size:16px;font-weight:700;">Global Billing &amp; Invoice Scheduler Configuration</h3>
-            <p style="color:#c7d2fe;margin:4px 0 0 0;font-size:12.5px;">These settings apply to all affiliates unless an affiliate-specific or offer-specific billing rule is defined.</p>
+            <p style="color:#c7d2fe;margin:4px 0 0 0;font-size:12.5px;">Configure automatic billing generation frequency, specific dates, custom calculation periods, and invoice parameters.</p>
         </div>
         <div style="display:flex;align-items:center;gap:10px;">
             <span style="color:#e0e7ff;font-size:13px;font-weight:600;">Status:</span>
@@ -27,7 +34,7 @@ $cronUrl   = rtrim(Config::get('config', 'app.url') ?? 'https://affscash.net', '
             <?= Helpers::csrf() ?>
             <input type="hidden" name="action" value="save_schedule">
 
-            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:24px;">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(340px, 1fr));gap:24px;">
                 <!-- Frequency & Timing -->
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:20px;">
                     <h4 style="margin:0 0 16px 0;font-size:14px;font-weight:700;color:#1e293b;display:flex;align-items:center;gap:8px;">
@@ -35,29 +42,34 @@ $cronUrl   = rtrim(Config::get('config', 'app.url') ?? 'https://affscash.net', '
                         Schedule Frequency &amp; Timing
                     </h4>
 
+                    <!-- Billing Frequency -->
                     <div class="form-group mb-3">
                         <label style="font-weight:600;font-size:13px;margin-bottom:6px;display:block;">Billing Frequency</label>
-                        <select name="frequency" id="globalFrequency" class="form-control" onchange="toggleFrequencyFields(this.value)">
-                            <option value="monthly" <?= ($schedule['frequency'] ?? '') === 'monthly' ? 'selected' : '' ?>>Monthly (Specific day of each month)</option>
-                            <option value="every_x_days" <?= ($schedule['frequency'] ?? '') === 'every_x_days' ? 'selected' : '' ?>>Every X Days (e.g. Every 7, 15, 30 Days)</option>
-                            <option value="weekly" <?= ($schedule['frequency'] ?? '') === 'weekly' ? 'selected' : '' ?>>Weekly (Every Monday)</option>
-                            <option value="custom" <?= ($schedule['frequency'] ?? '') === 'custom' ? 'selected' : '' ?>>Custom Date Range / Rolling</option>
+                        <select name="frequency" id="globalFrequency" class="form-control" onchange="updateSchedulerUI()">
+                            <option value="monthly" <?= $freq === 'monthly' ? 'selected' : '' ?>>Monthly (Specific day of each month)</option>
+                            <option value="every_x_days" <?= $freq === 'every_x_days' ? 'selected' : '' ?>>Every X Days (e.g. Every 7, 15, 30 Days)</option>
+                            <option value="weekly" <?= $freq === 'weekly' ? 'selected' : '' ?>>Weekly (Every Monday)</option>
+                            <option value="custom" <?= $freq === 'custom' ? 'selected' : '' ?>>Custom Date Range / Rolling</option>
                         </select>
                     </div>
 
-                    <div class="form-group mb-3" id="wrapMonthlyDay" style="<?= ($schedule['frequency'] ?? '') !== 'monthly' ? 'display:none;' : '' ?>">
-                        <label style="font-weight:600;font-size:13px;margin-bottom:6px;display:block;">Generate Date (Day of Month)</label>
-                        <select name="monthly_day" class="form-control">
+                    <!-- Generate Date (Day of Month) -->
+                    <div class="form-group mb-3" id="wrapMonthlyDay" style="<?= $freq !== 'monthly' ? 'display:none;' : '' ?>">
+                        <label style="font-weight:600;font-size:13px;margin-bottom:6px;display:block;">Generate Execution Date (Day of Month)</label>
+                        <select name="monthly_day" id="globalMonthlyDay" class="form-control" onchange="updateSchedulerUI()">
                             <?php for ($d = 1; $d <= 31; $d++): ?>
-                            <option value="<?= $d ?>" <?= (int)($schedule['monthly_day'] ?? 1) === $d ? 'selected' : '' ?>><?= $d ?><?= ($d==1?'st':($d==2?'nd':($d==3?'rd':'th'))) ?> of every month</option>
+                            <option value="<?= $d ?>" <?= (int)($schedule['monthly_day'] ?? 1) === $d ? 'selected' : '' ?>>
+                                <?= $d ?><?= ($d==1?'st':($d==2?'nd':($d==3?'rd':'th'))) ?> of every month
+                            </option>
                             <?php endfor; ?>
                         </select>
-                        <small class="text-muted">Invoices will be calculated for the preceding month/cycle on this day.</small>
+                        <small class="text-muted">Cron will automatically execute and generate invoices on this specific day each month.</small>
                     </div>
 
-                    <div class="form-group mb-3" id="wrapIntervalDays" style="<?= ($schedule['frequency'] ?? '') !== 'every_x_days' ? 'display:none;' : '' ?>">
+                    <!-- Generate Every X Days -->
+                    <div class="form-group mb-3" id="wrapIntervalDays" style="<?= $freq !== 'every_x_days' ? 'display:none;' : '' ?>">
                         <label style="font-weight:600;font-size:13px;margin-bottom:6px;display:block;">Generate Every X Days</label>
-                        <select name="interval_days" class="form-control">
+                        <select name="interval_days" id="globalIntervalDays" class="form-control" onchange="updateSchedulerUI()">
                             <option value="7" <?= (int)($schedule['interval_days'] ?? 15) === 7 ? 'selected' : '' ?>>Every 7 Days (Weekly cycle)</option>
                             <option value="15" <?= (int)($schedule['interval_days'] ?? 15) === 15 ? 'selected' : '' ?>>Every 15 Days (Bi-monthly: 1st-15th &amp; 16th-End)</option>
                             <option value="30" <?= (int)($schedule['interval_days'] ?? 15) === 30 ? 'selected' : '' ?>>Every 30 Days</option>
@@ -65,19 +77,81 @@ $cronUrl   = rtrim(Config::get('config', 'app.url') ?? 'https://affscash.net', '
                         </select>
                     </div>
 
+                    <!-- Billing Calculation Period (Which conversions to invoice) -->
+                    <div class="form-group mb-3" style="background:#ffffff;border:1px solid #cbd5e1;border-radius:8px;padding:14px;">
+                        <label style="font-weight:700;font-size:13px;color:#1e293b;margin-bottom:6px;display:block;">
+                            <span style="color:#4f46e5;">&#128197;</span> Invoiced Conversion Period (Calculation Range)
+                        </label>
+                        <select name="period_type" id="globalPeriodType" class="form-control" onchange="updateSchedulerUI()">
+                            <option value="prev_month" <?= $periodType === 'prev_month' ? 'selected' : '' ?>>Previous Full Month (1st to Last Day of Preceding Month)</option>
+                            <option value="current_month" <?= $periodType === 'current_month' ? 'selected' : '' ?>>Current Month to Date (1st of this month to Execution Date)</option>
+                            <option value="bi_monthly_1_15" <?= $periodType === 'bi_monthly_1_15' ? 'selected' : '' ?>>1st to 15th of the Month (First Half)</option>
+                            <option value="bi_monthly_16_end" <?= $periodType === 'bi_monthly_16_end' ? 'selected' : '' ?>>16th to End of the Month (Second Half)</option>
+                            <option value="custom_days" <?= $periodType === 'custom_days' ? 'selected' : '' ?>>Specific Day Range Every Month (Custom Days X to Y)</option>
+                            <option value="custom_dates" <?= $periodType === 'custom_dates' ? 'selected' : '' ?>>Fixed Custom Date Range (Exact Start &amp; End Dates)</option>
+                            <option value="rolling_days" <?= $periodType === 'rolling_days' ? 'selected' : '' ?>>Rolling Last X Days</option>
+                        </select>
+                        <small class="text-muted" style="display:block;margin-top:4px;">Defines the date range of unpaid approved conversions to include in each generated invoice.</small>
+
+                        <!-- Custom Days of Month Range (X to Y) -->
+                        <div id="wrapCustomDays" style="display:<?= $periodType === 'custom_days' ? 'grid' : 'none' ?>;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding-top:12px;border-top:1px dashed #e2e8f0;">
+                            <div>
+                                <label style="font-size:12px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">Period Start Day</label>
+                                <select name="custom_start_day" id="globalCustomStartDay" class="form-control form-control-sm" onchange="updateSchedulerUI()">
+                                    <?php for ($d = 1; $d <= 31; $d++): ?>
+                                    <option value="<?= $d ?>" <?= $customStartDay === $d ? 'selected' : '' ?>>Day <?= $d ?></option>
+                                    <?php endfor; ?>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="font-size:12px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">Period End Day</label>
+                                <select name="custom_end_day" id="globalCustomEndDay" class="form-control form-control-sm" onchange="updateSchedulerUI()">
+                                    <?php for ($d = 1; $d <= 31; $d++): ?>
+                                    <option value="<?= $d ?>" <?= $customEndDay === $d ? 'selected' : '' ?>>Day <?= $d ?></option>
+                                    <?php endfor; ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Fixed Custom Date Range Pickers -->
+                        <div id="wrapCustomDates" style="display:<?= $periodType === 'custom_dates' ? 'grid' : 'none' ?>;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding-top:12px;border-top:1px dashed #e2e8f0;">
+                            <div>
+                                <label style="font-size:12px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">Start Date</label>
+                                <input type="date" name="custom_period_start" id="globalCustomPeriodStart" class="form-control form-control-sm" value="<?= htmlspecialchars($customPeriodStart) ?>" onchange="updateSchedulerUI()">
+                            </div>
+                            <div>
+                                <label style="font-size:12px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">End Date</label>
+                                <input type="date" name="custom_period_end" id="globalCustomPeriodEnd" class="form-control form-control-sm" value="<?= htmlspecialchars($customPeriodEnd) ?>" onchange="updateSchedulerUI()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Execution Time & Timezone -->
                     <div class="grid-2" style="gap:12px;">
                         <div class="form-group mb-3">
                             <label style="font-weight:600;font-size:13px;margin-bottom:6px;display:block;">Invoice Time</label>
-                            <input type="time" name="invoice_time" class="form-control" value="<?= htmlspecialchars(substr($schedule['invoice_time'] ?? '00:00:00', 0, 5)) ?>">
+                            <input type="time" name="invoice_time" id="globalInvoiceTime" class="form-control" value="<?= htmlspecialchars(substr($schedule['invoice_time'] ?? '00:00:00', 0, 5)) ?>" onchange="updateSchedulerUI()">
                         </div>
                         <div class="form-group mb-3">
                             <label style="font-weight:600;font-size:13px;margin-bottom:6px;display:block;">Timezone</label>
-                            <select name="timezone" class="form-control">
+                            <select name="timezone" id="globalTimezone" class="form-control" onchange="updateSchedulerUI()">
                                 <option value="UTC" <?= ($schedule['timezone'] ?? 'UTC') === 'UTC' ? 'selected' : '' ?>>UTC (Default)</option>
-                                <?php foreach (['America/New_York', 'America/Los_Angeles', 'Europe/London', 'Europe/Berlin', 'Asia/Dubai', 'Asia/Singapore', 'Asia/Tokyo', 'Asia/Dhaka'] as $tz): ?>
+                                <?php foreach (['Asia/Dhaka', 'America/New_York', 'America/Los_Angeles', 'Europe/London', 'Europe/Berlin', 'Asia/Dubai', 'Asia/Singapore', 'Asia/Tokyo'] as $tz): ?>
                                 <option value="<?= $tz ?>" <?= ($schedule['timezone'] ?? '') === $tz ? 'selected' : '' ?>><?= $tz ?></option>
                                 <?php endforeach; ?>
                             </select>
+                        </div>
+                    </div>
+
+                    <!-- Live Schedule Summary Box -->
+                    <div id="liveSchedulePreview" style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:8px;padding:12px 14px;margin-top:10px;">
+                        <div style="font-size:12px;font-weight:700;color:#3730a3;margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Live Schedule &amp; Period Preview:
+                        </div>
+                        <div style="font-size:12px;color:#1e293b;line-height:1.6;">
+                            <div>&bull; <strong>Next Run:</strong> <span id="previewNextRun" style="color:#4f46e5;">Calculating...</span></div>
+                            <div>&bull; <strong>Conversions Period:</strong> <span id="previewPeriodRange" style="color:#059669;">Calculating...</span></div>
                         </div>
                     </div>
                 </div>
@@ -162,8 +236,57 @@ $cronUrl   = rtrim(Config::get('config', 'app.url') ?? 'https://affscash.net', '
 </div>
 
 <script>
-function toggleFrequencyFields(val) {
-    document.getElementById('wrapMonthlyDay').style.display = (val === 'monthly') ? 'block' : 'none';
-    document.getElementById('wrapIntervalDays').style.display = (val === 'every_x_days') ? 'block' : 'none';
+function updateSchedulerUI() {
+    const freq = document.getElementById('globalFrequency').value;
+    const periodType = document.getElementById('globalPeriodType').value;
+    const monthlyDay = parseInt(document.getElementById('globalMonthlyDay').value || '1');
+    const timeVal = document.getElementById('globalInvoiceTime').value || '00:00';
+    const tz = document.getElementById('globalTimezone').value || 'UTC';
+
+    // Toggle fields
+    document.getElementById('wrapMonthlyDay').style.display = (freq === 'monthly') ? 'block' : 'none';
+    document.getElementById('wrapIntervalDays').style.display = (freq === 'every_x_days') ? 'block' : 'none';
+    document.getElementById('wrapCustomDays').style.display = (periodType === 'custom_days') ? 'grid' : 'none';
+    document.getElementById('wrapCustomDates').style.display = (periodType === 'custom_dates') ? 'grid' : 'none';
+
+    // Calculate preview Next Run
+    let nextRunText = '';
+    if (freq === 'monthly') {
+        nextRunText = `Day ${monthlyDay} of every month at ${timeVal} (${tz})`;
+    } else if (freq === 'every_x_days') {
+        const days = document.getElementById('globalIntervalDays').value || '15';
+        nextRunText = `Every ${days} Days at ${timeVal} (${tz})`;
+    } else if (freq === 'weekly') {
+        nextRunText = `Every Monday at ${timeVal} (${tz})`;
+    } else {
+        nextRunText = `Custom Schedule at ${timeVal} (${tz})`;
+    }
+    document.getElementById('previewNextRun').textContent = nextRunText;
+
+    // Calculate preview Period
+    let periodText = '';
+    if (periodType === 'prev_month') {
+        periodText = 'Previous Month (1st to Last Day of last month)';
+    } else if (periodType === 'current_month') {
+        periodText = 'Current Month (1st of this month to run date)';
+    } else if (periodType === 'bi_monthly_1_15') {
+        periodText = '1st to 15th of the month';
+    } else if (periodType === 'bi_monthly_16_end') {
+        periodText = '16th to End of the month';
+    } else if (periodType === 'custom_days') {
+        const sDay = document.getElementById('globalCustomStartDay').value || '1';
+        const eDay = document.getElementById('globalCustomEndDay').value || '31';
+        periodText = `Day ${sDay} to Day ${eDay} of every month`;
+    } else if (periodType === 'custom_dates') {
+        const sDate = document.getElementById('globalCustomPeriodStart').value || 'YYYY-MM-DD';
+        const eDate = document.getElementById('globalCustomPeriodEnd').value || 'YYYY-MM-DD';
+        periodText = `${sDate} to ${eDate}`;
+    } else if (periodType === 'rolling_days') {
+        periodText = 'Rolling conversions up to invoice generation date';
+    }
+    document.getElementById('previewPeriodRange').textContent = periodText;
 }
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', updateSchedulerUI);
 </script>
