@@ -780,19 +780,22 @@ class AutoInvoiceEngine
     }
 
     /**
-     * Check if an active invoice already exists for the given affiliate and period (Duplicate Protection).
+     * Check if an active invoice (manual or auto) already exists for the given affiliate and period (Duplicate Protection).
      */
     public static function isDuplicate(int $affiliateId, string $periodStart, string $periodEnd, ?int $excludeInvoiceId = null): bool
     {
         self::ensureSchema();
         $sql = "
-            SELECT id FROM `invoices`
+            SELECT id, invoice_number, is_auto FROM `invoices`
             WHERE `affiliate_id` = ?
-              AND `period_start` = ?
-              AND `period_end` = ?
               AND `status` NOT IN ('void', 'cancelled')
+              AND (
+                  (`period_start` = ? AND `period_end` = ?)
+                  OR (`period_start` <= ? AND `period_end` >= ?)
+                  OR (`period_start` >= ? AND `period_end` <= ?)
+              )
         ";
-        $params = [$affiliateId, $periodStart, $periodEnd];
+        $params = [$affiliateId, $periodStart, $periodEnd, $periodStart, $periodEnd, $periodStart, $periodEnd];
         if ($excludeInvoiceId) {
             $sql .= " AND `id` != ?";
             $params[] = $excludeInvoiceId;
@@ -1029,26 +1032,11 @@ class AutoInvoiceEngine
                 $dbIds    = $built['db_ids'];
                 $subtotal = $built['total'];
             } else {
-                // Fallback for affiliates with manual balance or no new raw conversions
-                $subtotal = (float)$aff['balance'];
-                if ($subtotal <= 0) {
-                    return [
-                        'success' => false,
-                        'error'   => 'No eligible approved conversions or balance to invoice.',
-                        'skipped' => true,
-                    ];
-                }
-                $items = [[
-                    'description'      => "Affiliate Earnings ({$periodStart} to {$periodEnd})",
-                    'conversion_count' => 1,
-                    'qty'              => 1,
-                    'rate'             => $subtotal,
-                    'amount'           => $subtotal,
-                    'offer_id'         => 0,
-                    'offer_name'       => 'Affiliate Earnings',
-                ]];
-                $rawItems = [];
-                $dbIds    = [];
+                return [
+                    'success' => false,
+                    'error'   => 'No unbilled approved conversions found in period (already invoiced manually or 0 conversions).',
+                    'skipped' => true,
+                ];
             }
         }
 
