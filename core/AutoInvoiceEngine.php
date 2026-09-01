@@ -1909,29 +1909,60 @@ class AutoInvoiceEngine
                         continue;
                     }
 
-                    // Compute period start and end based on configured schedule period
-                    $schedPeriodType = $rule['period_type'] ?? ($global['period_type'] ?? 'bi_weekly_14');
-                    $schedFreq       = $rule['frequency'] ?? ($global['frequency'] ?? 'every_x_days');
-                    $schedInterval   = (int)($rule['interval_days'] ?? ($global['interval_days'] ?? 14));
+                    // Compute period start and end with HIGHEST PRIORITY to Advertiser Rule:
+                    // 1. Advertiser Billing Rule (HIGHEST PRIORITY)
+                    // 2. Global Schedule Settings (Fallback)
+                    if ($advRule && !empty($advRule['enabled'])) {
+                        $advFreq       = $advRule['frequency'] ?? 'monthly';
+                        $advInterval   = (int)($advRule['interval_days'] ?? 15);
+                        $advMonthlyDay = (int)($advRule['monthly_day'] ?? 1);
 
-                    if ($schedPeriodType === 'bi_weekly_14' || $schedFreq === 'every_14_days' || ($schedFreq === 'every_x_days' && $schedInterval === 14)) {
-                        $c14    = self::compute14DayCyclePeriod(date('Y-m-d'));
-                        $pStart = $c14['start'];
-                        $pEnd   = $c14['end'];
-                    } elseif ($schedPeriodType === 'all_unbilled') {
-                        $pStart = $lastAdvPaid ? date('Y-m-d', strtotime($lastAdvPaid['period_end'] . ' +1 day')) : date('Y-m-d', strtotime($oldestDate));
-                        $pEnd   = date('Y-m-d', strtotime($newestDate));
+                        if ($advFreq === 'every_14_days' || ($advFreq === 'every_x_days' && $advInterval === 14)) {
+                            $c14    = self::compute14DayCyclePeriod(date('Y-m-d'));
+                            $pStart = $c14['start'];
+                            $pEnd   = $c14['end'];
+                        } elseif ($advFreq === 'monthly') {
+                            $computed = self::computePeriod('monthly', $advMonthlyDay, 30, $advTerms, date('Y-m-d'), 'prev_month');
+                            $pStart = $computed['start_date'];
+                            $pEnd   = $computed['end_date'];
+                        } elseif ($advFreq === 'weekly') {
+                            $computed = self::computePeriod('weekly', 1, 7, $advTerms, date('Y-m-d'), 'prev_month');
+                            $pStart = $computed['start_date'];
+                            $pEnd   = $computed['end_date'];
+                        } elseif ($advFreq === 'every_x_days') {
+                            $computed = self::computePeriod('every_x_days', 1, $advInterval, $advTerms, date('Y-m-d'), 'prev_month');
+                            $pStart = $computed['start_date'];
+                            $pEnd   = $computed['end_date'];
+                        } else {
+                            $computed = self::computePeriod('monthly', 1, 30, $advTerms, date('Y-m-d'), 'prev_month');
+                            $pStart = $computed['start_date'];
+                            $pEnd   = $computed['end_date'];
+                        }
                     } else {
-                        $computed = self::computePeriod(
-                            $schedFreq,
-                            (int)($rule['monthly_day'] ?? ($global['monthly_day'] ?? 1)),
-                            $schedInterval,
-                            $advTerms,
-                            date('Y-m-d'),
-                            $schedPeriodType
-                        );
-                        $pStart = $computed['start_date'];
-                        $pEnd   = $computed['end_date'];
+                        // Fallback to Global / Affiliate Schedule
+                        $schedPeriodType = $rule['period_type'] ?? ($global['period_type'] ?? 'bi_weekly_14');
+                        $schedFreq       = $rule['frequency'] ?? ($global['frequency'] ?? 'every_x_days');
+                        $schedInterval   = (int)($rule['interval_days'] ?? ($global['interval_days'] ?? 14));
+
+                        if ($schedPeriodType === 'bi_weekly_14' || $schedFreq === 'every_14_days' || ($schedFreq === 'every_x_days' && $schedInterval === 14)) {
+                            $c14    = self::compute14DayCyclePeriod(date('Y-m-d'));
+                            $pStart = $c14['start'];
+                            $pEnd   = $c14['end'];
+                        } elseif ($schedPeriodType === 'all_unbilled') {
+                            $pStart = $lastAdvPaid ? date('Y-m-d', strtotime($lastAdvPaid['period_end'] . ' +1 day')) : date('Y-m-d', strtotime($oldestDate));
+                            $pEnd   = date('Y-m-d', strtotime($newestDate));
+                        } else {
+                            $computed = self::computePeriod(
+                                $schedFreq,
+                                (int)($rule['monthly_day'] ?? ($global['monthly_day'] ?? 1)),
+                                $schedInterval,
+                                $advTerms,
+                                date('Y-m-d'),
+                                $schedPeriodType
+                            );
+                            $pStart = $computed['start_date'];
+                            $pEnd   = $computed['end_date'];
+                        }
                     }
 
                     // Compute due date from terms
@@ -1987,25 +2018,54 @@ class AutoInvoiceEngine
                 $advTerms  = ($advRule && !empty($advRule['payment_terms'])) ? $advRule['payment_terms'] : ($rule['payment_terms'] ?? 'net14');
 
                 if ($availBalance >= $minPayout && $availBalance > 0) {
-                    $schedPeriodType = $rule['period_type'] ?? ($global['period_type'] ?? 'bi_weekly_14');
-                    $schedFreq       = $rule['frequency'] ?? ($global['frequency'] ?? 'every_x_days');
-                    $schedInterval   = (int)($rule['interval_days'] ?? ($global['interval_days'] ?? 14));
+                    // Compute period start and end with HIGHEST PRIORITY to Advertiser Rule:
+                    if ($advRule && !empty($advRule['enabled'])) {
+                        $advFreq       = $advRule['frequency'] ?? 'monthly';
+                        $advInterval   = (int)($advRule['interval_days'] ?? 15);
+                        $advMonthlyDay = (int)($advRule['monthly_day'] ?? 1);
 
-                    if ($schedPeriodType === 'bi_weekly_14' || $schedFreq === 'every_14_days' || ($schedFreq === 'every_x_days' && $schedInterval === 14)) {
-                        $c14    = self::compute14DayCyclePeriod(date('Y-m-d'));
-                        $pStart = $c14['start'];
-                        $pEnd   = $c14['end'];
+                        if ($advFreq === 'every_14_days' || ($advFreq === 'every_x_days' && $advInterval === 14)) {
+                            $c14    = self::compute14DayCyclePeriod(date('Y-m-d'));
+                            $pStart = $c14['start'];
+                            $pEnd   = $c14['end'];
+                        } elseif ($advFreq === 'monthly') {
+                            $computed = self::computePeriod('monthly', $advMonthlyDay, 30, $advTerms, date('Y-m-d'), 'prev_month');
+                            $pStart = $computed['start_date'];
+                            $pEnd   = $computed['end_date'];
+                        } elseif ($advFreq === 'weekly') {
+                            $computed = self::computePeriod('weekly', 1, 7, $advTerms, date('Y-m-d'), 'prev_month');
+                            $pStart = $computed['start_date'];
+                            $pEnd   = $computed['end_date'];
+                        } elseif ($advFreq === 'every_x_days') {
+                            $computed = self::computePeriod('every_x_days', 1, $advInterval, $advTerms, date('Y-m-d'), 'prev_month');
+                            $pStart = $computed['start_date'];
+                            $pEnd   = $computed['end_date'];
+                        } else {
+                            $computed = self::computePeriod('monthly', 1, 30, $advTerms, date('Y-m-d'), 'prev_month');
+                            $pStart = $computed['start_date'];
+                            $pEnd   = $computed['end_date'];
+                        }
                     } else {
-                        $computed = self::computePeriod(
-                            $schedFreq,
-                            (int)($rule['monthly_day'] ?? ($global['monthly_day'] ?? 1)),
-                            $schedInterval,
-                            $advTerms,
-                            date('Y-m-d'),
-                            $schedPeriodType
-                        );
-                        $pStart = $computed['start_date'];
-                        $pEnd   = $computed['end_date'];
+                        $schedPeriodType = $rule['period_type'] ?? ($global['period_type'] ?? 'bi_weekly_14');
+                        $schedFreq       = $rule['frequency'] ?? ($global['frequency'] ?? 'every_x_days');
+                        $schedInterval   = (int)($rule['interval_days'] ?? ($global['interval_days'] ?? 14));
+
+                        if ($schedPeriodType === 'bi_weekly_14' || $schedFreq === 'every_14_days' || ($schedFreq === 'every_x_days' && $schedInterval === 14)) {
+                            $c14    = self::compute14DayCyclePeriod(date('Y-m-d'));
+                            $pStart = $c14['start'];
+                            $pEnd   = $c14['end'];
+                        } else {
+                            $computed = self::computePeriod(
+                                $schedFreq,
+                                (int)($rule['monthly_day'] ?? ($global['monthly_day'] ?? 1)),
+                                $schedInterval,
+                                $advTerms,
+                                date('Y-m-d'),
+                                $schedPeriodType
+                            );
+                            $pStart = $computed['start_date'];
+                            $pEnd   = $computed['end_date'];
+                        }
                     }
 
                     $dueDate = self::computeDueDate($advTerms);
