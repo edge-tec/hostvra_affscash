@@ -891,10 +891,13 @@ class AutoInvoiceEngine
             }
         }
 
-        // Calculate Due Date based on payment terms
+        // Calculate Due Date based on payment terms (Paid time)
         $due = clone $today;
         $termLower = strtolower(str_replace([' ', '-', '_'], '', $paymentTerms));
-        if (str_contains($termLower, 'net60')) {
+        if (str_contains($termLower, 'every14') || str_contains($termLower, '14days') || str_contains($termLower, 'net14') || str_contains($termLower, 'biweekly14')) {
+            // Every 14 Days generation -> Paid time is 2 days after invoice generation
+            $due->modify('+2 days');
+        } elseif (str_contains($termLower, 'net60')) {
             $due->modify('+60 days');
         } elseif (str_contains($termLower, 'net45')) {
             $due->modify('+45 days');
@@ -902,18 +905,16 @@ class AutoInvoiceEngine
             $due->modify('+30 days');
         } elseif (str_contains($termLower, 'net15')) {
             $due->modify('+15 days');
-        } elseif (str_contains($termLower, 'net14') || str_contains($termLower, '14days') || str_contains($termLower, 'every14')) {
-            $due->modify('+14 days');
         } elseif (str_contains($termLower, 'net7')) {
             $due->modify('+7 days');
         } elseif (str_contains($termLower, 'biweekly')) {
-            $due->modify('+14 days');
+            $due->modify('+2 days');
         } elseif (str_contains($termLower, 'weekly')) {
-            $due->modify('+3 days');
+            $due->modify('+2 days');
         } elseif (str_contains($termLower, 'immediate')) {
             // Immediate
         } else {
-            $due->modify('+14 days');
+            $due->modify('+2 days');
         }
 
         return [

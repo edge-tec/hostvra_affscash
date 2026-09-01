@@ -118,14 +118,14 @@
                     <div class="form-group mb-3">
                         <label style="font-weight:600;font-size:13px;margin-bottom:6px;display:block;">Payment Terms</label>
                         <select name="payment_terms" id="advPaymentTerms" class="form-control">
-                            <option value="net14">Every 14 Days / Net 14 (+14 Days)</option>
+                            <option value="net14">Every 14 Days (Due in +2 Days)</option>
                             <option value="net15">Net 15 (+15 Days)</option>
                             <option value="net30" selected>Net 30 (+30 Days)</option>
                             <option value="net7">Net 7 (+7 Days)</option>
                             <option value="net45">Net 45 (+45 Days)</option>
                             <option value="net60">Net 60 (+60 Days)</option>
-                            <option value="weekly">Weekly (+3 Days)</option>
-                            <option value="biweekly">Bi-weekly (+7 Days)</option>
+                            <option value="weekly">Weekly (+2 Days)</option>
+                            <option value="biweekly">Bi-weekly (+2 Days)</option>
                             <option value="immediate">Immediate (Upon Generation)</option>
                         </select>
                     </div>

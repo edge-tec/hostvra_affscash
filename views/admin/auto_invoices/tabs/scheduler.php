@@ -187,14 +187,14 @@ $customPeriodEnd = $schedule['custom_period_end'] ?? '';
                         <div class="form-group mb-3">
                             <label style="font-weight:600;font-size:13px;margin-bottom:6px;display:block;">Default Payment Terms</label>
                             <select name="payment_terms" class="form-control">
-                                <option value="net14" <?= ($schedule['payment_terms'] ?? '') === 'net14' ? 'selected' : '' ?>>Every 14 Days / Net 14 (+14 Days)</option>
+                                <option value="net14" <?= ($schedule['payment_terms'] ?? '') === 'net14' ? 'selected' : '' ?>>Every 14 Days (Due in +2 Days)</option>
                                 <option value="net15" <?= ($schedule['payment_terms'] ?? '') === 'net15' ? 'selected' : '' ?>>Net 15 (+15 Days)</option>
                                 <option value="net30" <?= ($schedule['payment_terms'] ?? '') === 'net30' ? 'selected' : '' ?>>Net 30 (+30 Days)</option>
                                 <option value="net7" <?= ($schedule['payment_terms'] ?? '') === 'net7' ? 'selected' : '' ?>>Net 7 (+7 Days)</option>
                                 <option value="net45" <?= ($schedule['payment_terms'] ?? '') === 'net45' ? 'selected' : '' ?>>Net 45 (+45 Days)</option>
                                 <option value="net60" <?= ($schedule['payment_terms'] ?? '') === 'net60' ? 'selected' : '' ?>>Net 60 (+60 Days)</option>
-                                <option value="weekly" <?= ($schedule['payment_terms'] ?? '') === 'weekly' ? 'selected' : '' ?>>Weekly (+3 Days)</option>
-                                <option value="biweekly" <?= ($schedule['payment_terms'] ?? '') === 'biweekly' ? 'selected' : '' ?>>Bi-weekly (+7 Days)</option>
+                                <option value="weekly" <?= ($schedule['payment_terms'] ?? '') === 'weekly' ? 'selected' : '' ?>>Weekly (+2 Days)</option>
+                                <option value="biweekly" <?= ($schedule['payment_terms'] ?? '') === 'biweekly' ? 'selected' : '' ?>>Bi-weekly (+2 Days)</option>
                                 <option value="immediate" <?= ($schedule['payment_terms'] ?? '') === 'immediate' ? 'selected' : '' ?>>Immediate (Upon Generation)</option>
                             </select>
                         </div>
