@@ -217,36 +217,58 @@ document.addEventListener('click', function(e) {
     }
 });
 
+function getCsrfToken() {
+    var meta = document.querySelector('meta[name="csrf-token"]');
+    return meta ? (meta.getAttribute('content') || '') : '';
+}
+
 function updateInvStatus(id, status) {
     if (!confirm('Mark this invoice as ' + status.toUpperCase() + '?')) return;
-    var token = document.querySelector('meta[name="csrf-token"]').content;
     var fd = new FormData();
-    fd.append('_token', token);
+    fd.append('_token', getCsrfToken());
     fd.append('action', 'update_status');
     fd.append('invoice_id', id);
     fd.append('status', status);
 
-    fetch('/admin/auto-invoices?tab=invoices', { method:'POST', body:fd })
+    fetch('/admin/auto-invoices?tab=invoices', { 
+        method: 'POST', 
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        body: fd 
+    })
     .then(function(r){ return r.json(); })
     .then(function(d){
-        if(d.success) window.location.reload();
-        else alert('Error updating status');
+        if (d && d.success) {
+            window.location.reload();
+        } else {
+            alert(d && d.error ? d.error : 'Error updating status');
+        }
+    })
+    .catch(function(err){
+        console.error(err);
+        window.location.reload();
     });
 }
 
 function resendInvEmail(id) {
     if (!confirm('Resend email notification with invoice details to affiliate?')) return;
-    var token = document.querySelector('meta[name="csrf-token"]').content;
     var fd = new FormData();
-    fd.append('_token', token);
+    fd.append('_token', getCsrfToken());
     fd.append('action', 'resend_email');
     fd.append('invoice_id', id);
 
-    fetch('/admin/auto-invoices?tab=invoices', { method:'POST', body:fd })
+    fetch('/admin/auto-invoices?tab=invoices', { 
+        method: 'POST', 
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        body: fd 
+    })
     .then(function(r){ return r.json(); })
     .then(function(d){
-        alert(d.message || 'Email sent.');
+        alert(d && d.message ? d.message : 'Email sent.');
         window.location.reload();
+    })
+    .catch(function(err){
+        console.error(err);
+        alert('Network or server error sending email.');
     });
 }
 
@@ -254,22 +276,29 @@ function cancelInvoice(id) {
     var reason = prompt('Please enter reason for cancelling this invoice (conversions will be unlinked and balance refunded):');
     if (reason === null) return;
 
-    var token = document.querySelector('meta[name="csrf-token"]').content;
     var fd = new FormData();
-    fd.append('_token', token);
+    fd.append('_token', getCsrfToken());
     fd.append('action', 'cancel_invoice');
     fd.append('invoice_id', id);
     fd.append('reason', reason);
 
-    fetch('/admin/auto-invoices?tab=invoices', { method:'POST', body:fd })
+    fetch('/admin/auto-invoices?tab=invoices', { 
+        method: 'POST', 
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        body: fd 
+    })
     .then(function(r){ return r.json(); })
     .then(function(d){
-        if(d.success) {
-            alert('Invoice cancelled and refunded.');
+        if (d && d.success) {
+            alert('Invoice cancelled and balance refunded.');
             window.location.reload();
         } else {
-            alert('Error cancelling invoice');
+            alert(d && d.error ? d.error : 'Error cancelling invoice');
         }
+    })
+    .catch(function(err){
+        console.error(err);
+        alert('Network or server error cancelling invoice.');
     });
 }
 </script>
