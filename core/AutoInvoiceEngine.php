@@ -78,22 +78,41 @@ class AutoInvoiceEngine
             // Offer billing rules table
             Database::query("
                 CREATE TABLE IF NOT EXISTS `offer_invoice_rules` (
-                    `id`                   INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                    `offer_id`             INT UNSIGNED NOT NULL,
-                    `override_global`      TINYINT(1) NOT NULL DEFAULT 1,
-                    `frequency`            ENUM('monthly','every_x_days','weekly','custom') NOT NULL DEFAULT 'monthly',
-                    `monthly_day`          TINYINT UNSIGNED NOT NULL DEFAULT 1,
-                    `interval_days`        SMALLINT UNSIGNED NOT NULL DEFAULT 15,
-                    `minimum_conversions`  INT UNSIGNED NOT NULL DEFAULT 1,
-                    `minimum_revenue`      DECIMAL(12,4) NOT NULL DEFAULT 0.0000,
-                    `start_date`           DATE NULL DEFAULT NULL,
-                    `end_date`             DATE NULL DEFAULT NULL,
-                    `enabled`              TINYINT(1) NOT NULL DEFAULT 1,
-                    `notes`                TEXT NULL DEFAULT NULL,
-                    `created_at`           DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    `updated_at`           DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                    UNIQUE KEY `uniq_offer_id` (`offer_id`),
-                    INDEX `idx_enabled` (`enabled`)
+                    `id`                  INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                    `offer_id`            INT UNSIGNED NOT NULL,
+                    `override_global`     TINYINT(1) NOT NULL DEFAULT 1,
+                    `frequency`           ENUM('monthly','every_x_days','weekly','custom') NOT NULL DEFAULT 'monthly',
+                    `monthly_day`         TINYINT UNSIGNED NOT NULL DEFAULT 1,
+                    `interval_days`       SMALLINT UNSIGNED NOT NULL DEFAULT 15,
+                    `minimum_conversions` INT UNSIGNED NOT NULL DEFAULT 0,
+                    `minimum_revenue`     DECIMAL(12,4) NOT NULL DEFAULT 0.0000,
+                    `start_date`          DATE NULL DEFAULT NULL,
+                    `end_date`            DATE NULL DEFAULT NULL,
+                    `enabled`             TINYINT(1) NOT NULL DEFAULT 1,
+                    `notes`               TEXT NULL DEFAULT NULL,
+                    `created_at`          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    `updated_at`          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    UNIQUE KEY `unique_offer` (`offer_id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+            ");
+
+            // Advertiser invoice rules table
+            Database::query("
+                CREATE TABLE IF NOT EXISTS `advertiser_invoice_rules` (
+                    `id`                  INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                    `advertiser_id`       INT UNSIGNED NOT NULL,
+                    `payment_terms`       VARCHAR(50) NOT NULL DEFAULT 'net30',
+                    `minimum_payout`      DECIMAL(12,4) NOT NULL DEFAULT 50.0000,
+                    `minimum_conversions` INT UNSIGNED NOT NULL DEFAULT 0,
+                    `frequency`           ENUM('monthly','every_x_days','weekly','custom') NOT NULL DEFAULT 'monthly',
+                    `monthly_day`         TINYINT UNSIGNED NOT NULL DEFAULT 1,
+                    `interval_days`       SMALLINT UNSIGNED NOT NULL DEFAULT 15,
+                    `currency`            VARCHAR(10) NOT NULL DEFAULT 'USD',
+                    `enabled`             TINYINT(1) NOT NULL DEFAULT 1,
+                    `notes`               TEXT NULL DEFAULT NULL,
+                    `created_at`          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    `updated_at`          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    UNIQUE KEY `unique_advertiser` (`advertiser_id`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
             ");
 
@@ -546,6 +565,115 @@ class AutoInvoiceEngine
     }
 
     // ──────────────────────────────────────────────────────────────────────────
+    // 3b. ADVERTISER BILLING RULES
+    // ──────────────────────────────────────────────────────────────────────────
+
+    public static function getAdvertiserRules(array $filters = []): array
+    {
+        self::ensureSchema();
+        $sql = "
+            SELECT r.*, adv.company AS adv_company, u.first_name, u.last_name, u.email,
+                   (SELECT COUNT(*) FROM `offers` o WHERE o.advertiser_id = r.advertiser_id) AS total_offers
+            FROM `advertiser_invoice_rules` r
+            JOIN `advertisers` adv ON adv.id = r.advertiser_id
+            JOIN `users` u ON u.id = adv.user_id
+            WHERE 1=1
+        ";
+        $params = [];
+
+        if (!empty($filters['search'])) {
+            $sql .= " AND (adv.company LIKE ? OR u.first_name LIKE ? OR u.last_name LIKE ? OR u.email LIKE ? OR r.advertiser_id = ?)";
+            $term = '%' . $filters['search'] . '%';
+            $params[] = $term;
+            $params[] = $term;
+            $params[] = $term;
+            $params[] = $term;
+            $params[] = (int)$filters['search'];
+        }
+        if (isset($filters['enabled']) && $filters['enabled'] !== '') {
+            $sql .= " AND r.enabled = ?";
+            $params[] = (int)$filters['enabled'];
+        }
+
+        $sql .= " ORDER BY r.updated_at DESC";
+        try {
+            return Database::fetchAll($sql, $params);
+        } catch (\Throwable $e) {
+            error_log('[AutoInvoiceEngine] getAdvertiserRules error: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    public static function getAdvertiserRule(int $advertiserId): ?array
+    {
+        self::ensureSchema();
+        try {
+            return Database::fetchOne("SELECT * FROM `advertiser_invoice_rules` WHERE `advertiser_id` = ?", [$advertiserId]);
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
+    public static function saveAdvertiserRule(array $data, ?int $adminId = null): int
+    {
+        self::ensureSchema();
+        $advertiserId = (int)($data['advertiser_id'] ?? 0);
+        if ($advertiserId <= 0) {
+            throw new InvalidArgumentException('Invalid advertiser ID');
+        }
+
+        $ruleData = [
+            'advertiser_id'       => $advertiserId,
+            'payment_terms'       => trim($data['payment_terms'] ?? 'net30'),
+            'minimum_payout'      => max(0, (float)($data['minimum_payout'] ?? 50.00)),
+            'minimum_conversions' => max(0, (int)($data['minimum_conversions'] ?? 0)),
+            'frequency'           => in_array($data['frequency'] ?? '', ['monthly', 'every_x_days', 'weekly', 'custom']) ? $data['frequency'] : 'monthly',
+            'monthly_day'         => max(1, min(31, (int)($data['monthly_day'] ?? 1))),
+            'interval_days'       => max(1, min(365, (int)($data['interval_days'] ?? 15))),
+            'currency'            => strtoupper(trim($data['currency'] ?? 'USD')),
+            'enabled'             => !empty($data['enabled']) ? 1 : 0,
+            'notes'               => trim($data['notes'] ?? ''),
+        ];
+
+        $existing = self::getAdvertiserRule($advertiserId);
+        if ($existing) {
+            Database::update('advertiser_invoice_rules', $ruleData, 'id = ?', [$existing['id']]);
+            $id = $existing['id'];
+        } else {
+            $id = Database::insert('advertiser_invoice_rules', $ruleData);
+        }
+
+        self::logAction(null, null, 'save_advertiser_rule', 0, 0, 0, $adminId, 'Configured advertiser billing rule for Adv #' . $advertiserId);
+        return $id;
+    }
+
+    public static function batchSaveAdvertiserRules(array $advertiserIds, array $ruleData, ?int $adminId = null): int
+    {
+        $saved = 0;
+        foreach ($advertiserIds as $advId) {
+            $advId = (int)$advId;
+            if ($advId <= 0) continue;
+            $data = $ruleData;
+            $data['advertiser_id'] = $advId;
+            self::saveAdvertiserRule($data, $adminId);
+            $saved++;
+        }
+        return $saved;
+    }
+
+    public static function deleteAdvertiserRule(int $id, ?int $adminId = null): bool
+    {
+        self::ensureSchema();
+        $rule = Database::fetchOne("SELECT * FROM `advertiser_invoice_rules` WHERE `id` = ?", [$id]);
+        if ($rule) {
+            Database::query("DELETE FROM `advertiser_invoice_rules` WHERE `id` = ?", [$id]);
+            self::logAction(null, null, 'delete_advertiser_rule', 0, 0, 0, $adminId, 'Deleted advertiser billing rule ID ' . $id);
+            return true;
+        }
+        return false;
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
     // 4. PRIORITY RULE ENGINE & PERIOD CALCULATION
     // ──────────────────────────────────────────────────────────────────────────
 
@@ -822,9 +950,13 @@ class AutoInvoiceEngine
         self::ensureSchema();
         $sql = "
             SELECT c.id AS db_id, c.conversion_id, c.payout, c.country,
-                   c.offer_id, o.name AS offer_name, c.converted_at, c.status
+                   c.offer_id, o.name AS offer_name, o.advertiser_id,
+                   COALESCE(adv_u.company, CONCAT(adv_u.first_name, ' ', adv_u.last_name), 'Direct') AS advertiser_name,
+                   c.converted_at, c.status
             FROM `conversions` c
             JOIN `offers` o ON o.id = c.offer_id
+            LEFT JOIN `advertisers` adv ON adv.id = o.advertiser_id
+            LEFT JOIN `users` adv_u ON adv_u.id = adv.user_id
             WHERE c.affiliate_id = ?
               AND c.converted_at BETWEEN ? AND ?
               AND c.status = 'approved'
@@ -879,16 +1011,20 @@ class AutoInvoiceEngine
             $oid = (int)$c['offer_id'];
             $payout = (float)$c['payout'];
             $dbId = (int)$c['db_id'];
+            $advId = (int)($c['advertiser_id'] ?? 0);
+            $advName = $c['advertiser_name'] ?? 'Direct';
 
             if (!isset($byOffer[$oid])) {
                 $byOffer[$oid] = [
-                    'offer_id'       => $oid,
-                    'offer_name'     => $c['offer_name'],
-                    'count'          => 0,
-                    'total'          => 0.0,
-                    'geos'           => [],
-                    'conversion_ids' => [],
-                    'db_ids'         => [],
+                    'offer_id'        => $oid,
+                    'offer_name'      => $c['offer_name'],
+                    'advertiser_id'   => $advId,
+                    'advertiser_name' => $advName,
+                    'count'           => 0,
+                    'total'           => 0.0,
+                    'geos'            => [],
+                    'conversion_ids'  => [],
+                    'db_ids'          => [],
                 ];
             }
 
@@ -905,6 +1041,8 @@ class AutoInvoiceEngine
                 'conversion_db_id' => $dbId,
                 'offer_id'         => $oid,
                 'offer_name'       => $c['offer_name'],
+                'advertiser_id'    => $advId,
+                'advertiser_name'  => $advName,
                 'geo'              => $c['country'] ?? '',
                 'payout'           => $payout,
                 'conversion_date'  => $c['converted_at'],
@@ -926,6 +1064,8 @@ class AutoInvoiceEngine
             $items[] = [
                 'offer_id'         => $off['offer_id'],
                 'offer_name'       => $off['offer_name'],
+                'advertiser_id'    => $off['advertiser_id'],
+                'advertiser_name'  => $off['advertiser_name'],
                 'campaign_id'      => $offCode,
                 'description'      => $off['offer_name'] . ' (' . $offCode . ')' . $geosStr,
                 'geo'              => implode(',', $off['geos']),
@@ -1033,34 +1173,83 @@ class AutoInvoiceEngine
             $built = self::buildInvoiceItemsFromConversions($convs);
 
             if (!empty($built['items'])) {
-                $items    = $built['items'];
-                $rawItems = $built['raw_items'];
-                $dbIds    = $built['db_ids'];
-                $subtotal = $built['total'];
+                // Group items by Advertiser and enforce Advertiser Rules (Minimum Payout & Minimum Conversions)
+                $byAdv = [];
+                foreach ($built['items'] as $it) {
+                    $aId = (int)($it['advertiser_id'] ?? 0);
+                    if (!isset($byAdv[$aId])) {
+                        $byAdv[$aId] = ['amount' => 0.0, 'conversions' => 0, 'items' => []];
+                    }
+                    $byAdv[$aId]['amount'] += (float)$it['amount'];
+                    $byAdv[$aId]['conversions'] += (int)$it['conversion_count'];
+                    $byAdv[$aId]['items'][] = $it;
+                }
 
-                // Validate Offer-specific rules (if any offer has individual minimum revenue or conversions)
-                foreach ($items as $itemKey => $item) {
-                    $itemOfferId = (int)$item['offer_id'];
-                    $offerRule = self::getOfferRule($itemOfferId);
-                    if ($offerRule && !empty($offerRule['enabled'])) {
-                        $minRev   = (float)($offerRule['minimum_revenue'] ?? 0);
-                        $minConvs = (int)($offerRule['minimum_conversions'] ?? 0);
+                $validItems = [];
+                $validDbIds = [];
+                $validSubtotal = 0.0;
 
-                        if ($minRev > 0 && (float)$item['amount'] < $minRev) {
-                            return [
-                                'success' => false,
-                                'error'   => "Offer #{$itemOfferId} ({$item['offer_name']}) total amount (\${$item['amount']}) is below required offer minimum revenue (\${$minRev}).",
-                                'skipped' => true,
-                            ];
-                        }
-                        if ($minConvs > 0 && (int)$item['conversion_count'] < $minConvs) {
-                            return [
-                                'success' => false,
-                                'error'   => "Offer #{$itemOfferId} ({$item['offer_name']}) conversion count ({$item['conversion_count']}) is below required offer minimum conversions ({$minConvs}).",
-                                'skipped' => true,
-                            ];
+                foreach ($byAdv as $aId => $advGroup) {
+                    if ($aId > 0) {
+                        $advRule = self::getAdvertiserRule($aId);
+                        if ($advRule && !empty($advRule['enabled'])) {
+                            $minPayout = (float)($advRule['minimum_payout'] ?? 0);
+                            $minConvs  = (int)($advRule['minimum_conversions'] ?? 0);
+
+                            if ($minPayout > 0 && $advGroup['amount'] < $minPayout) {
+                                // Affiliate has not reached this Advertiser's minimum payout threshold yet -> Hold
+                                continue;
+                            }
+                            if ($minConvs > 0 && $advGroup['conversions'] < $minConvs) {
+                                // Minimum conversions not reached -> Hold
+                                continue;
+                            }
                         }
                     }
+
+                    // Also check individual offer rules
+                    foreach ($advGroup['items'] as $it) {
+                        $itemOfferId = (int)$it['offer_id'];
+                        $offerRule = self::getOfferRule($itemOfferId);
+                        if ($offerRule && !empty($offerRule['enabled'])) {
+                            $minRev   = (float)($offerRule['minimum_revenue'] ?? 0);
+                            $minConvs = (int)($offerRule['minimum_conversions'] ?? 0);
+
+                            if ($minRev > 0 && (float)$it['amount'] < $minRev) {
+                                continue;
+                            }
+                            if ($minConvs > 0 && (int)$it['conversion_count'] < $minConvs) {
+                                continue;
+                            }
+                        }
+
+                        $validItems[] = $it;
+                        $validSubtotal += (float)$it['amount'];
+                        if (!empty($it['db_ids'])) {
+                            $validDbIds = array_merge($validDbIds, $it['db_ids']);
+                        }
+                    }
+                }
+
+                if (!empty($validItems)) {
+                    $validDbMap = array_flip($validDbIds);
+                    $validRawItems = [];
+                    foreach ($built['raw_items'] as $ri) {
+                        if (isset($validDbMap[$ri['conversion_db_id']])) {
+                            $validRawItems[] = $ri;
+                        }
+                    }
+
+                    $items    = $validItems;
+                    $rawItems = $validRawItems;
+                    $dbIds    = $validDbIds;
+                    $subtotal = round($validSubtotal, 4);
+                } else {
+                    return [
+                        'success' => false,
+                        'error'   => 'Conversions held: Advertiser or Offer minimum payout threshold has not been reached yet.',
+                        'skipped' => true,
+                    ];
                 }
             } else {
                 return [

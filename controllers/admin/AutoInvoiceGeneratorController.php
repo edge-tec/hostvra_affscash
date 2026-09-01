@@ -147,6 +147,43 @@ if (Helpers::isPost()) {
             Helpers::redirect('/admin/auto-invoices?tab=offer_rules');
             break;
 
+        // ── 6b. Save Advertiser Rule ──
+        case 'save_advertiser_rule':
+            try {
+                $advIds = $_POST['advertiser_ids'] ?? [];
+                if (!is_array($advIds)) {
+                    $advIds = !empty($_POST['advertiser_id']) ? [$_POST['advertiser_id']] : [];
+                }
+
+                if (empty($advIds)) {
+                    throw new Exception('Please select at least one advertiser.');
+                }
+
+                $count = AutoInvoiceEngine::batchSaveAdvertiserRules($advIds, $_POST, $adminId);
+                if (Helpers::isAjax()) {
+                    Helpers::jsonResponse(['success' => true, 'message' => "Saved billing rules for {$count} advertiser(s)."]);
+                }
+                Helpers::flash('success', "Saved billing rules for {$count} advertiser(s).");
+            } catch (\Throwable $e) {
+                if (Helpers::isAjax()) {
+                    Helpers::jsonResponse(['success' => false, 'error' => $e->getMessage()]);
+                }
+                Helpers::flash('error', $e->getMessage());
+            }
+            Helpers::redirect('/admin/auto-invoices?tab=advertiser_rules');
+            break;
+
+        // ── 6c. Delete Advertiser Rule ──
+        case 'delete_advertiser_rule':
+            $id = (int)($_POST['id'] ?? 0);
+            AutoInvoiceEngine::deleteAdvertiserRule($id, $adminId);
+            if (Helpers::isAjax()) {
+                Helpers::jsonResponse(['success' => true, 'message' => 'Advertiser billing rule deleted.']);
+            }
+            Helpers::flash('success', 'Advertiser rule removed.');
+            Helpers::redirect('/admin/auto-invoices?tab=advertiser_rules');
+            break;
+
         // ── 7. Generate Manual Invoice ──
         case 'generate_manual_invoice':
             try {
@@ -346,9 +383,19 @@ $offers = Database::fetchAll("
     ORDER BY name ASC
 ");
 
+$advertisers = Database::fetchAll("
+    SELECT adv.id, adv.company, u.first_name, u.last_name, u.email,
+           COALESCE(NULLIF(adv.company, ''), CONCAT(u.first_name, ' ', u.last_name)) AS name
+    FROM `advertisers` adv
+    JOIN `users` u ON u.id = adv.user_id
+    WHERE u.status = 'active'
+    ORDER BY adv.company ASC, u.first_name ASC
+") ?: [];
+
 // Load tab specific data
 $affRules = [];
 $offerRules = [];
+$advRules = [];
 $invoices = [];
 $logs = [];
 
@@ -360,6 +407,12 @@ if ($tab === 'affiliate_rules') {
     ]);
 } elseif ($tab === 'offer_rules') {
     $offerRules = AutoInvoiceEngine::getOfferRules([
+        'search'    => $_GET['search'] ?? '',
+        'enabled'   => $_GET['enabled'] ?? '',
+        'frequency' => $_GET['frequency'] ?? '',
+    ]);
+} elseif ($tab === 'advertiser_rules') {
+    $advRules = AutoInvoiceEngine::getAdvertiserRules([
         'search'    => $_GET['search'] ?? '',
         'enabled'   => $_GET['enabled'] ?? '',
         'frequency' => $_GET['frequency'] ?? '',

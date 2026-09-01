@@ -345,19 +345,23 @@ input:checked + .aig-slider:before {
     </a>
     <a href="/admin/auto-invoices?tab=offer_rules" class="aig-tab-btn <?= $tab === 'offer_rules' ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
-        3. Offer Billing Rules
+        3. Offer Rules
+    </a>
+    <a href="/admin/auto-invoices?tab=advertiser_rules" class="aig-tab-btn <?= $tab === 'advertiser_rules' ? 'active' : '' ?>">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+        4. Advertiser Rules
     </a>
     <a href="/admin/auto-invoices?tab=invoices" class="aig-tab-btn <?= $tab === 'invoices' ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-        4. Generated Invoices
+        5. Generated Invoices
     </a>
     <a href="/admin/auto-invoices?tab=logs" class="aig-tab-btn <?= $tab === 'logs' ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-        5. Invoice Logs
+        6. Invoice Logs
     </a>
     <a href="/admin/auto-invoices?tab=manual" class="aig-tab-btn <?= $tab === 'manual' ? 'active' : '' ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        6. Manual Generate Invoice
+        7. Manual Generate
     </a>
 </nav>
 
@@ -370,6 +374,9 @@ input:checked + .aig-slider:before {
             break;
         case 'offer_rules':
             require BASE_PATH . '/views/admin/auto_invoices/tabs/offer_rules.php';
+            break;
+        case 'advertiser_rules':
+            require BASE_PATH . '/views/admin/auto_invoices/tabs/advertiser_rules.php';
             break;
         case 'invoices':
             require BASE_PATH . '/views/admin/auto_invoices/tabs/invoices.php';
