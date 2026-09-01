@@ -384,12 +384,12 @@ $offers = Database::fetchAll("
 ");
 
 $advertisers = Database::fetchAll("
-    SELECT adv.id, adv.company, u.first_name, u.last_name, u.email,
-           COALESCE(NULLIF(adv.company, ''), CONCAT(u.first_name, ' ', u.last_name)) AS name
+    SELECT adv.id, u.company, u.first_name, u.last_name, u.email,
+           COALESCE(NULLIF(u.company, ''), CONCAT(u.first_name, ' ', u.last_name)) AS name
     FROM `advertisers` adv
     JOIN `users` u ON u.id = adv.user_id
     WHERE u.status = 'active'
-    ORDER BY adv.company ASC, u.first_name ASC
+    ORDER BY u.company ASC, u.first_name ASC
 ") ?: [];
 
 // Load tab specific data

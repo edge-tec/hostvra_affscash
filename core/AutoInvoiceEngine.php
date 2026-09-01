@@ -572,7 +572,7 @@ class AutoInvoiceEngine
     {
         self::ensureSchema();
         $sql = "
-            SELECT r.*, adv.company AS adv_company, u.first_name, u.last_name, u.email,
+            SELECT r.*, u.company AS adv_company, u.first_name, u.last_name, u.email,
                    (SELECT COUNT(*) FROM `offers` o WHERE o.advertiser_id = r.advertiser_id) AS total_offers
             FROM `advertiser_invoice_rules` r
             JOIN `advertisers` adv ON adv.id = r.advertiser_id
@@ -582,7 +582,7 @@ class AutoInvoiceEngine
         $params = [];
 
         if (!empty($filters['search'])) {
-            $sql .= " AND (adv.company LIKE ? OR u.first_name LIKE ? OR u.last_name LIKE ? OR u.email LIKE ? OR r.advertiser_id = ?)";
+            $sql .= " AND (u.company LIKE ? OR u.first_name LIKE ? OR u.last_name LIKE ? OR u.email LIKE ? OR r.advertiser_id = ?)";
             $term = '%' . $filters['search'] . '%';
             $params[] = $term;
             $params[] = $term;
