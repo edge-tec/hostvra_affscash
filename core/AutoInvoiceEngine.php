@@ -1707,22 +1707,19 @@ class AutoInvoiceEngine
                     $minPayout = ($advRule && !empty($advRule['enabled'])) ? (float)($advRule['minimum_payout'] ?? 50.00) : (float)($rule['minimum_amount'] ?? 50.00);
                     $advTerms  = ($advRule && !empty($advRule['payment_terms'])) ? $advRule['payment_terms'] : ($rule['payment_terms'] ?? 'net15');
 
-                    // Check Qualification:
-                    // 1. 90-day old balance force payment (Rule #5: OLD_BALANCE_FORCE_PAYMENT)
-                    // 2. Minimum payout threshold met
-                    $isForce90 = ($ageDays >= 90);
-                    $isMinMet  = ($advAmount >= $minPayout);
+                    // Check Qualification: Strictly match Advertiser / Affiliate minimum payout threshold
+                    $isMinMet = ($advAmount >= $minPayout);
 
-                    if (!$isForce90 && !$isMinMet) {
+                    if (!$isMinMet) {
                         $skipped++;
-                        $jobLogs[] = "Affiliate #{$affId} [Adv #{$advId}]: Skipped (Balance \${$advAmount} < Min \${$minPayout}, oldest conversion is {$ageDays}d old - carried forward)";
+                        $jobLogs[] = "Affiliate #{$affId} [Adv #{$advId}]: Skipped (Balance \${$advAmount} < Min \${$minPayout} - carried forward until threshold reached)";
                         continue;
                     }
 
-                    $triggerType = $isForce90 ? 'OLD_BALANCE_FORCE_PAYMENT' : 'AUTO';
+                    $triggerType = 'AUTO';
 
                     // Compute period start strictly after last invoice
-                    $pStart  = $lastAdvInv ? date('Y-m-d', strtotime($lastAdvInv['period_end'] . ' +1 day')) : date('Y-m-d', strtotime($oldestDate));
+                    $pStart  = $lastAdvPaid ? date('Y-m-d', strtotime($lastAdvPaid['period_end'] . ' +1 day')) : date('Y-m-d', strtotime($oldestDate));
                     $pEnd    = date('Y-m-d', strtotime($newestDate));
                     if ($pStart > $pEnd) {
                         $pStart = date('Y-m-d', strtotime($oldestDate));
@@ -1740,9 +1737,9 @@ class AutoInvoiceEngine
                         'due_date'               => $dueDate,
                         'payment_terms'          => $advTerms,
                         'payment_terms_snapshot' => $advTerms,
-                        'trigger_type'           => $triggerType,
+                        'trigger_type'           => 'AUTO',
                         'target_conversions'     => $advConvs,
-                        'min_threshold'          => $isForce90 ? 0 : $minPayout,
+                        'min_threshold'          => $minPayout,
                     ], $adminId, true);
 
                     if (!empty($res['success'])) {
