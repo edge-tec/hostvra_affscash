@@ -143,13 +143,19 @@
                     </div>
                     <div class="form-group mb-3">
                         <label style="font-weight:600;font-size:13px;margin-bottom:6px;display:block;">Billing Frequency</label>
-                        <select name="frequency" id="advFrequency" class="form-control">
+                        <select name="frequency" id="advFrequency" class="form-control" onchange="toggleAdvFreqUI()">
+                            <option value="every_14_days">Every 14 Days (Bi-weekly)</option>
                             <option value="monthly">Monthly</option>
-                            <option value="every_x_days">Every X Days</option>
+                            <option value="every_x_days">Every X Days (Custom Interval)</option>
                             <option value="weekly">Weekly</option>
                             <option value="custom">Custom</option>
                         </select>
                     </div>
+                </div>
+
+                <div id="wrapAdvIntervalDays" class="form-group mb-3" style="display:none;">
+                    <label style="font-weight:600;font-size:13px;margin-bottom:6px;display:block;">Interval (Days)</label>
+                    <input type="number" name="interval_days" id="advIntervalDays" class="form-control" value="14" min="1" max="365">
                 </div>
 
                 <div class="form-group mb-3">
@@ -192,11 +198,20 @@ $(function() {
     });
 });
 
+function toggleAdvFreqUI() {
+    var freq = document.getElementById('advFrequency').value;
+    var wrap = document.getElementById('wrapAdvIntervalDays');
+    if (wrap) {
+        wrap.style.display = (freq === 'every_x_days') ? 'block' : 'none';
+    }
+}
+
 function openAdvRuleModal() {
     document.getElementById('modalAdvTitle').innerText = 'Add Advertiser Billing Rule';
     document.getElementById('formAdvRule').reset();
     document.getElementById('advRuleId').value = '';
     if (advSelectInstance) advSelectInstance.clear();
+    toggleAdvFreqUI();
     document.getElementById('modalAdvRule').style.display = 'flex';
 }
 
@@ -214,7 +229,15 @@ function editAdvRule(rule) {
     document.getElementById('advPaymentTerms').value = rule.payment_terms || 'net30';
     document.getElementById('advMinPayout').value = rule.minimum_payout || '50.00';
     document.getElementById('advMinConvs').value = rule.minimum_conversions || 0;
-    document.getElementById('advFrequency').value = rule.frequency || 'monthly';
+    
+    var f = rule.frequency || 'monthly';
+    if (f === 'every_x_days' && parseInt(rule.interval_days) === 14) {
+        f = 'every_14_days';
+    }
+    document.getElementById('advFrequency').value = f;
+    document.getElementById('advIntervalDays').value = rule.interval_days || 14;
+    toggleAdvFreqUI();
+
     document.getElementById('advEnabled').checked = (rule.enabled == 1);
     document.getElementById('modalAdvRule').style.display = 'flex';
 }

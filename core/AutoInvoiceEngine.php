@@ -622,14 +622,22 @@ class AutoInvoiceEngine
             throw new InvalidArgumentException('Invalid advertiser ID');
         }
 
+        $rawFreq = $data['frequency'] ?? 'monthly';
+        $freq = in_array($rawFreq, ['monthly', 'every_x_days', 'every_14_days', 'weekly', 'custom']) ? $rawFreq : 'monthly';
+        $intervalDays = max(1, min(365, (int)($data['interval_days'] ?? 15)));
+        if ($freq === 'every_14_days') {
+            $freq = 'every_x_days';
+            $intervalDays = 14;
+        }
+
         $ruleData = [
             'advertiser_id'       => $advertiserId,
             'payment_terms'       => trim($data['payment_terms'] ?? 'net30'),
             'minimum_payout'      => max(0, (float)($data['minimum_payout'] ?? 50.00)),
             'minimum_conversions' => max(0, (int)($data['minimum_conversions'] ?? 0)),
-            'frequency'           => in_array($data['frequency'] ?? '', ['monthly', 'every_x_days', 'weekly', 'custom']) ? $data['frequency'] : 'monthly',
+            'frequency'           => $freq,
             'monthly_day'         => max(1, min(31, (int)($data['monthly_day'] ?? 1))),
-            'interval_days'       => max(1, min(365, (int)($data['interval_days'] ?? 15))),
+            'interval_days'       => $intervalDays,
             'currency'            => strtoupper(trim($data['currency'] ?? 'USD')),
             'enabled'             => !empty($data['enabled']) ? 1 : 0,
             'notes'               => trim($data['notes'] ?? ''),
