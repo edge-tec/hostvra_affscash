@@ -678,6 +678,22 @@ class AutoInvoiceEngine
                 $end = clone $thisMonth;
                 $end->setDate((int)$thisMonth->format('Y'), (int)$thisMonth->format('m'), min($eDay, (int)$thisMonth->format('t')));
             }
+        } elseif ($periodType === 'bi_weekly_14') {
+            if ($dayOfMonth <= 14) {
+                $start = new DateTime('first day of this month');
+                $end = clone $start;
+                $end->modify('+13 days'); // 14th
+            } else {
+                $start = new DateTime('first day of this month');
+                $start->modify('+14 days'); // 15th
+                $end = clone $start;
+                $end->modify('+13 days'); // 28th
+            }
+        } elseif ($periodType === 'last_14_days') {
+            $end = clone $today;
+            $end->modify('-1 day');
+            $start = clone $end;
+            $start->modify('-13 days');
         } elseif ($periodType === 'rolling_days') {
             $days = max(1, $intervalDays);
             $end = clone $today;
@@ -693,7 +709,12 @@ class AutoInvoiceEngine
 
                 case 'every_x_days':
                     $days = max(1, $intervalDays);
-                    if ($days == 15) {
+                    if ($days == 14) {
+                        $end = clone $today;
+                        $end->modify('-1 day');
+                        $start = clone $end;
+                        $start->modify('-13 days');
+                    } elseif ($days == 15) {
                         if ($dayOfMonth <= 15) {
                             $start = new DateTime('first day of last month');
                             $start->modify('+15 days');
@@ -729,16 +750,26 @@ class AutoInvoiceEngine
         // Calculate Due Date based on payment terms
         $due = clone $today;
         $termLower = strtolower(str_replace([' ', '-', '_'], '', $paymentTerms));
-        if (str_contains($termLower, 'net30')) {
+        if (str_contains($termLower, 'net60')) {
+            $due->modify('+60 days');
+        } elseif (str_contains($termLower, 'net45')) {
+            $due->modify('+45 days');
+        } elseif (str_contains($termLower, 'net30')) {
             $due->modify('+30 days');
         } elseif (str_contains($termLower, 'net15')) {
             $due->modify('+15 days');
+        } elseif (str_contains($termLower, 'net14') || str_contains($termLower, '14days') || str_contains($termLower, 'every14')) {
+            $due->modify('+14 days');
         } elseif (str_contains($termLower, 'net7')) {
             $due->modify('+7 days');
+        } elseif (str_contains($termLower, 'biweekly')) {
+            $due->modify('+14 days');
         } elseif (str_contains($termLower, 'weekly')) {
             $due->modify('+3 days');
+        } elseif (str_contains($termLower, 'immediate')) {
+            // Immediate
         } else {
-            $due->modify('+15 days');
+            $due->modify('+14 days');
         }
 
         return [

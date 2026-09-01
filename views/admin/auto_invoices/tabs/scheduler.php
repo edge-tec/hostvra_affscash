@@ -89,6 +89,8 @@ $customPeriodEnd = $schedule['custom_period_end'] ?? '';
                             <option value="current_month" <?= $periodType === 'current_month' ? 'selected' : '' ?>>Current Month to Date (1st of this month to Execution Date)</option>
                             <option value="bi_monthly_1_15" <?= $periodType === 'bi_monthly_1_15' ? 'selected' : '' ?>>1st to 15th of the Month (First Half)</option>
                             <option value="bi_monthly_16_end" <?= $periodType === 'bi_monthly_16_end' ? 'selected' : '' ?>>16th to End of the Month (Second Half)</option>
+                            <option value="bi_weekly_14" <?= $periodType === 'bi_weekly_14' ? 'selected' : '' ?>>Every 14 Days Cycle (1st-14th &amp; 15th-28th)</option>
+                            <option value="last_14_days" <?= $periodType === 'last_14_days' ? 'selected' : '' ?>>Last 14 Days (Rolling 2 Weeks)</option>
                             <option value="custom_days" <?= $periodType === 'custom_days' ? 'selected' : '' ?>>Specific Day Range Every Month (Custom Days X to Y)</option>
                             <option value="custom_dates" <?= $periodType === 'custom_dates' ? 'selected' : '' ?>>Fixed Custom Date Range (Exact Start &amp; End Dates)</option>
                             <option value="rolling_days" <?= $periodType === 'rolling_days' ? 'selected' : '' ?>>Rolling Last X Days</option>
@@ -184,10 +186,15 @@ $customPeriodEnd = $schedule['custom_period_end'] ?? '';
                         <div class="form-group mb-3">
                             <label style="font-weight:600;font-size:13px;margin-bottom:6px;display:block;">Default Payment Terms</label>
                             <select name="payment_terms" class="form-control">
+                                <option value="net14" <?= ($schedule['payment_terms'] ?? '') === 'net14' ? 'selected' : '' ?>>Every 14 Days / Net 14 (+14 Days)</option>
                                 <option value="net15" <?= ($schedule['payment_terms'] ?? '') === 'net15' ? 'selected' : '' ?>>Net 15 (+15 Days)</option>
                                 <option value="net30" <?= ($schedule['payment_terms'] ?? '') === 'net30' ? 'selected' : '' ?>>Net 30 (+30 Days)</option>
                                 <option value="net7" <?= ($schedule['payment_terms'] ?? '') === 'net7' ? 'selected' : '' ?>>Net 7 (+7 Days)</option>
+                                <option value="net45" <?= ($schedule['payment_terms'] ?? '') === 'net45' ? 'selected' : '' ?>>Net 45 (+45 Days)</option>
+                                <option value="net60" <?= ($schedule['payment_terms'] ?? '') === 'net60' ? 'selected' : '' ?>>Net 60 (+60 Days)</option>
                                 <option value="weekly" <?= ($schedule['payment_terms'] ?? '') === 'weekly' ? 'selected' : '' ?>>Weekly (+3 Days)</option>
+                                <option value="biweekly" <?= ($schedule['payment_terms'] ?? '') === 'biweekly' ? 'selected' : '' ?>>Bi-weekly (+7 Days)</option>
+                                <option value="immediate" <?= ($schedule['payment_terms'] ?? '') === 'immediate' ? 'selected' : '' ?>>Immediate (Upon Generation)</option>
                             </select>
                         </div>
                     </div>

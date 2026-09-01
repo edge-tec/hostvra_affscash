@@ -216,6 +216,7 @@
                     <div class="form-group mb-3">
                         <label style="font-weight:600;font-size:13px;margin-bottom:6px;display:block;">Payment Terms</label>
                         <select name="payment_terms" id="affPaymentTerms" class="form-control">
+                            <option value="net14">Every 14 Days / Net 14 (+14 Days)</option>
                             <option value="net15">Net 15 (+15 Days)</option>
                             <option value="net30">Net 30 (+30 Days)</option>
                             <option value="net7">Net 7 (+7 Days)</option>
