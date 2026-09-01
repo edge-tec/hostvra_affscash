@@ -1281,7 +1281,7 @@ class AutoInvoiceEngine
                 $availBalance = (float)$aff['balance'];
                 $minRequired  = isset($payload['min_threshold']) ? (float)$payload['min_threshold'] : (float)($rule['minimum_amount'] ?? 50.00);
 
-                if ($availBalance >= $minRequired && ($rule['offer_scope'] ?? 'all') === 'all') {
+                if ($availBalance >= $minRequired && $availBalance > 0) {
                     $items = [[
                         'offer_id'         => 0,
                         'offer_name'       => 'Affiliate Commission Balance',
@@ -1300,10 +1300,16 @@ class AutoInvoiceEngine
                     $rawItems = [];
                     $dbIds    = [];
                     $subtotal = $availBalance;
+                } elseif ($availBalance > 0) {
+                    return [
+                        'success' => false,
+                        'error'   => "Account balance (\$" . number_format($availBalance, 2) . ") is below the minimum payable threshold (\$" . number_format($minRequired, 2) . ").",
+                        'skipped' => true,
+                    ];
                 } else {
                     return [
                         'success' => false,
-                        'error'   => 'No unbilled approved conversions found in period (already invoiced manually or 0 conversions).',
+                        'error'   => 'Account balance is $0.00 and no unbilled approved conversions found in period.',
                         'skipped' => true,
                     ];
                 }
