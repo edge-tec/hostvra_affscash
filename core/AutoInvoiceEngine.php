@@ -335,46 +335,26 @@ class AutoInvoiceEngine
                 break;
             case 'every_14_days':
             case 'bi_weekly_14':
-                $curDay = (int)$now->format('j');
-                $curDaysInMonth = (int)$now->format('t');
-                if ($curDay < 15) {
-                    $target->setDate((int)$now->format('Y'), (int)$now->format('m'), 15);
-                } elseif ($curDay < $curDaysInMonth) {
-                    if ($curDaysInMonth === 31) {
-                        $target->setDate((int)$now->format('Y'), (int)$now->format('m'), 31);
-                    } else {
-                        $nextM = (clone $now)->modify('first day of next month');
-                        $target->setDate((int)$nextM->format('Y'), (int)$nextM->format('m'), 1);
-                    }
-                } else {
-                    $nextM = (clone $now)->modify('first day of next month');
-                    $target->setDate((int)$nextM->format('Y'), (int)$nextM->format('m'), 15);
+                $anchor = new DateTime('2026-09-01 ' . $timeStr, $tz);
+                $diffDays = (int)$anchor->diff($now)->format('%r%a');
+                $k = (int)floor($diffDays / 14);
+                $nextExec = (clone $anchor)->modify("+ " . (($k + 1) * 14) . " days");
+                if ($nextExec <= $now) {
+                    $nextExec = (clone $anchor)->modify("+ " . (($k + 2) * 14) . " days");
                 }
-                if ($target <= $now) {
-                    $target->modify('+1 day');
-                }
+                $target = $nextExec;
                 break;
             case 'every_x_days':
                 $days = max(1, $intervalDays);
                 if ($days === 14) {
-                    $curDay = (int)$now->format('j');
-                    $curDaysInMonth = (int)$now->format('t');
-                    if ($curDay < 15) {
-                        $target->setDate((int)$now->format('Y'), (int)$now->format('m'), 15);
-                    } elseif ($curDay < $curDaysInMonth) {
-                        if ($curDaysInMonth === 31) {
-                            $target->setDate((int)$now->format('Y'), (int)$now->format('m'), 31);
-                        } else {
-                            $nextM = (clone $now)->modify('first day of next month');
-                            $target->setDate((int)$nextM->format('Y'), (int)$nextM->format('m'), 1);
-                        }
-                    } else {
-                        $nextM = (clone $now)->modify('first day of next month');
-                        $target->setDate((int)$nextM->format('Y'), (int)$nextM->format('m'), 15);
+                    $anchor = new DateTime('2026-09-01 ' . $timeStr, $tz);
+                    $diffDays = (int)$anchor->diff($now)->format('%r%a');
+                    $k = (int)floor($diffDays / 14);
+                    $nextExec = (clone $anchor)->modify("+ " . (($k + 1) * 14) . " days");
+                    if ($nextExec <= $now) {
+                        $nextExec = (clone $anchor)->modify("+ " . (($k + 2) * 14) . " days");
                     }
-                    if ($target <= $now) {
-                        $target->modify('+1 day');
-                    }
+                    $target = $nextExec;
                 } else {
                     $target->modify("+{$days} days");
                 }
@@ -837,50 +817,57 @@ class AutoInvoiceEngine
     }
 
     /**
-     * Compute strict 14-Day Cycle billing period:
-     * 1. First Billing Period: 1st -> 14th (or 31st of prev month -> 14th if prev month had 31 days)
-     * 2. Second Billing Period: 15th -> 30th (or 28th/29th for Feb)
-     * 3. For Months with 31 days: 31st is NOT a separate period, but carried forward into next period (31st -> 14th of following month).
+     * Compute strict continuous 14-Day Cycle billing period:
+     * - Pure continuous 14-day rolling cycle (period_start = previous_period_end + 1 day, period_end = period_start + 13 days).
+     * - Absolutely NO calendar month reset or month length logic.
      * 
      * @param string|DateTimeInterface|null $refDate
+     * @param string|DateTimeInterface|null $anchorDateStr
      * @return array ['start' => 'YYYY-MM-DD', 'end' => 'YYYY-MM-DD']
      */
-    public static function compute14DayCyclePeriod($refDate = null): array
+    public static function compute14DayCyclePeriod($refDate = null, $anchorDateStr = '2026-09-01'): array
     {
         $dt = $refDate instanceof DateTimeInterface ? clone $refDate : new DateTime($refDate ?: 'now');
-        $day = (int)$dt->format('j');
-        $year = (int)$dt->format('Y');
-        $month = (int)$dt->format('m');
+        $anchor = $anchorDateStr instanceof DateTimeInterface ? clone $anchorDateStr : new DateTime($anchorDateStr ?: '2026-09-01');
 
-        if ($day >= 15 && $day <= 30) {
-            // Mid-month trigger (e.g. 15th..30th): bills Period 1 (1st/31st -> 14th)
-            $prevMonth = (clone $dt)->modify('first day of last month');
-            $prevDays = (int)$prevMonth->format('t');
-            if ($prevDays === 31) {
-                $start = (clone $prevMonth)->setDate((int)$prevMonth->format('Y'), (int)$prevMonth->format('m'), 31);
-            } else {
-                $start = (clone $dt)->setDate($year, $month, 1);
-            }
-            $end = (clone $dt)->setDate($year, $month, 14);
+        $dt->setTime(0, 0, 0);
+        $anchor->setTime(0, 0, 0);
+
+        // Days elapsed since anchor date
+        $diffSeconds = $dt->getTimestamp() - $anchor->getTimestamp();
+        $diffDays = (int)floor($diffSeconds / 86400);
+
+        // Each cycle k spans [anchor + k*14, anchor + k*14 + 13] (exactly 14 calendar days)
+        $k = (int)floor($diffDays / 14);
+
+        $cycleStart = (clone $anchor)->modify(($k >= 0 ? "+ " : "- ") . abs($k * 14) . " days");
+        $cycleEnd   = (clone $cycleStart)->modify("+ 13 days");
+
+        // When evaluating on or during cycle k, the completed billing period is cycle k-1
+        if ($dt <= $cycleEnd) {
+            $prevK = $k - 1;
+            $billStart = (clone $anchor)->modify(($prevK >= 0 ? "+ " : "- ") . abs($prevK * 14) . " days");
+            $billEnd   = (clone $billStart)->modify("+ 13 days");
         } else {
-            // Month-end / Month-start trigger (days 31, 1..14): bills Period 2 (15th -> 30th / Feb end)
-            if ($day === 31) {
-                // Day 31: bills 15th -> 30th of current month
-                $start = (clone $dt)->setDate($year, $month, 15);
-                $end   = (clone $dt)->setDate($year, $month, 30);
-            } else {
-                // Days 1..14: bills 15th -> 30th (or 28th/29th) of PREVIOUS month
-                $prevMonth = (clone $dt)->modify('first day of last month');
-                $pYear = (int)$prevMonth->format('Y');
-                $pMonth = (int)$prevMonth->format('m');
-                $pDays = (int)$prevMonth->format('t');
-                
-                $start = (clone $prevMonth)->setDate($pYear, $pMonth, 15);
-                $endDay = min(30, $pDays);
-                $end = (clone $prevMonth)->setDate($pYear, $pMonth, $endDay);
-            }
+            $billStart = clone $cycleStart;
+            $billEnd   = clone $cycleEnd;
         }
 
+        return [
+            'start' => $billStart->format('Y-m-d'),
+            'end'   => $billEnd->format('Y-m-d'),
+        ];
+    }
+
+    /**
+     * Get specific continuous 14-day cycle by index k from anchor date.
+     */
+    public static function get14DayCycleByIndex(int $k, $anchorDateStr = '2026-09-01'): array
+    {
+        $anchor = new DateTime($anchorDateStr);
+        $anchor->setTime(0, 0, 0);
+        $start = (clone $anchor)->modify(($k >= 0 ? "+ " : "- ") . abs($k * 14) . " days");
+        $end   = (clone $start)->modify("+ 13 days");
         return [
             'start' => $start->format('Y-m-d'),
             'end'   => $end->format('Y-m-d'),

@@ -1,6 +1,6 @@
 <?php
 /**
- * Test14DayCycleBilling — Automated test suite for strict 14-Day Cycle billing period logic.
+ * Test14DayCycleBilling — Automated test suite for strict Continuous 14-Day Cycle billing logic (No Calendar Month).
  */
 
 require_once __DIR__ . '/../core/Database.php';
@@ -16,103 +16,88 @@ function runTest(string $name, callable $fn) {
     }
 }
 
-echo "=== Running 14-Day Cycle Rule Automated Tests ===\n\n";
+echo "=== Running Continuous 14-Day Cycle (No Calendar Month) Automated Tests ===\n\n";
 
-// 1. Test 31-day month (August 2026 - 31 days)
-runTest("August 15 mid-month trigger (July has 31 days -> start on Jul 31)", function() {
-    $res = AutoInvoiceEngine::compute14DayCyclePeriod('2026-08-15');
-    if ($res['start'] !== '2026-07-31' || $res['end'] !== '2026-08-14') {
-        throw new Exception("Expected 2026-07-31 to 2026-08-14, got {$res['start']} to {$res['end']}");
+// 1. Test Continuous Sequence Starting on September 1, 2026
+$expectedSep1Cycles = [
+    0 => ['start' => '2026-09-01', 'end' => '2026-09-14'],
+    1 => ['start' => '2026-09-15', 'end' => '2026-09-28'],
+    2 => ['start' => '2026-09-29', 'end' => '2026-10-12'],
+    3 => ['start' => '2026-10-13', 'end' => '2026-10-26'],
+    4 => ['start' => '2026-10-27', 'end' => '2026-11-09'],
+    5 => ['start' => '2026-11-10', 'end' => '2026-11-23'],
+    6 => ['start' => '2026-11-24', 'end' => '2026-12-07'],
+    7 => ['start' => '2026-12-08', 'end' => '2026-12-21'],
+    8 => ['start' => '2026-12-22', 'end' => '2027-01-04'],
+    9 => ['start' => '2027-01-05', 'end' => '2027-01-18'],
+];
+
+foreach ($expectedSep1Cycles as $idx => $exp) {
+    runTest("Period " . ($idx + 1) . " (Anchor: Sep 1): {$exp['start']} -> {$exp['end']}", function() use ($idx, $exp) {
+        $cycle = AutoInvoiceEngine::get14DayCycleByIndex($idx, '2026-09-01');
+        if ($cycle['start'] !== $exp['start'] || $cycle['end'] !== $exp['end']) {
+            throw new Exception("Expected {$exp['start']} -> {$exp['end']}, got {$cycle['start']} -> {$cycle['end']}");
+        }
+
+        // Verify exact 14 calendar days
+        $d1 = new DateTime($cycle['start']);
+        $d2 = new DateTime($cycle['end']);
+        $days = (int)$d1->diff($d2)->format('%a') + 1;
+        if ($days !== 14) {
+            throw new Exception("Period must have exactly 14 days, got {$days} days");
+        }
+    });
+}
+
+// 2. Test Trigger Days evaluating previous completed period (Anchor: Sep 1)
+$triggerTests = [
+    '2026-09-15' => ['start' => '2026-09-01', 'end' => '2026-09-14'],
+    '2026-09-29' => ['start' => '2026-09-15', 'end' => '2026-09-28'],
+    '2026-10-13' => ['start' => '2026-09-29', 'end' => '2026-10-12'],
+    '2026-10-27' => ['start' => '2026-10-13', 'end' => '2026-10-26'],
+    '2026-11-10' => ['start' => '2026-10-27', 'end' => '2026-11-09'],
+    '2026-11-24' => ['start' => '2026-11-10', 'end' => '2026-11-23'],
+    '2026-12-08' => ['start' => '2026-11-24', 'end' => '2026-12-07'],
+    '2026-12-22' => ['start' => '2026-12-08', 'end' => '2026-12-21'],
+    '2027-01-05' => ['start' => '2026-12-22', 'end' => '2027-01-04'],
+    '2027-01-19' => ['start' => '2027-01-05', 'end' => '2027-01-18'],
+];
+
+foreach ($triggerTests as $trigDate => $exp) {
+    runTest("Trigger on {$trigDate} -> Bills completed period {$exp['start']} -> {$exp['end']}", function() use ($trigDate, $exp) {
+        $res = AutoInvoiceEngine::compute14DayCyclePeriod($trigDate, '2026-09-01');
+        if ($res['start'] !== $exp['start'] || $res['end'] !== $exp['end']) {
+            throw new Exception("Expected {$exp['start']} -> {$exp['end']}, got {$res['start']} -> {$res['end']}");
+        }
+    });
+}
+
+// 3. Test Example with Anchor Starting on January 10
+$expectedJan10Cycles = [
+    0 => ['start' => '2026-01-10', 'end' => '2026-01-23'],
+    1 => ['start' => '2026-01-24', 'end' => '2026-02-06'],
+    2 => ['start' => '2026-02-07', 'end' => '2026-02-20'],
+    3 => ['start' => '2026-02-21', 'end' => '2026-03-06'],
+    4 => ['start' => '2026-03-07', 'end' => '2026-03-20'],
+    5 => ['start' => '2026-03-21', 'end' => '2026-04-03'],
+    6 => ['start' => '2026-04-04', 'end' => '2026-04-17'],
+];
+
+foreach ($expectedJan10Cycles as $idx => $exp) {
+    runTest("Period " . ($idx + 1) . " (Anchor: Jan 10): {$exp['start']} -> {$exp['end']}", function() use ($idx, $exp) {
+        $cycle = AutoInvoiceEngine::get14DayCycleByIndex($idx, '2026-01-10');
+        if ($cycle['start'] !== $exp['start'] || $cycle['end'] !== $exp['end']) {
+            throw new Exception("Expected {$exp['start']} -> {$exp['end']}, got {$cycle['start']} -> {$cycle['end']}");
+        }
+    });
+}
+
+// 4. Test computePeriod integration
+runTest("computePeriod integration for continuous 14-day cycle on 2026-10-13", function() {
+    $res = AutoInvoiceEngine::computePeriod('every_14_days', 1, 14, 'net14', '2026-10-13');
+    if ($res['start_date'] !== '2026-09-29' || $res['end_date'] !== '2026-10-12') {
+        throw new Exception("Expected 2026-09-29 -> 2026-10-12, got {$res['start_date']} -> {$res['end_date']}");
     }
 });
 
-runTest("August 31 month-end trigger (bills Aug 15..30, carries Aug 31 forward)", function() {
-    $res = AutoInvoiceEngine::compute14DayCyclePeriod('2026-08-31');
-    if ($res['start'] !== '2026-08-15' || $res['end'] !== '2026-08-30') {
-        throw new Exception("Expected 2026-08-15 to 2026-08-30, got {$res['start']} to {$res['end']}");
-    }
-});
-
-runTest("September 01 trigger (bills previous month Period 2: Aug 15..30)", function() {
-    $res = AutoInvoiceEngine::compute14DayCyclePeriod('2026-09-01');
-    if ($res['start'] !== '2026-08-15' || $res['end'] !== '2026-08-30') {
-        throw new Exception("Expected 2026-08-15 to 2026-08-30, got {$res['start']} to {$res['end']}");
-    }
-});
-
-runTest("September 15 trigger (August had 31 days -> bills Aug 31 to Sep 14)", function() {
-    $res = AutoInvoiceEngine::compute14DayCyclePeriod('2026-09-15');
-    if ($res['start'] !== '2026-08-31' || $res['end'] !== '2026-09-14') {
-        throw new Exception("Expected 2026-08-31 to 2026-09-14, got {$res['start']} to {$res['end']}");
-    }
-});
-
-// 2. Test 30-day month (September 2026 - 30 days)
-runTest("October 01 trigger (bills September Period 2: Sep 15..30)", function() {
-    $res = AutoInvoiceEngine::compute14DayCyclePeriod('2026-10-01');
-    if ($res['start'] !== '2026-09-15' || $res['end'] !== '2026-09-30') {
-        throw new Exception("Expected 2026-09-15 to 2026-09-30, got {$res['start']} to {$res['end']}");
-    }
-});
-
-runTest("October 15 trigger (September had 30 days -> bills Oct 01 to Oct 14)", function() {
-    $res = AutoInvoiceEngine::compute14DayCyclePeriod('2026-10-15');
-    if ($res['start'] !== '2026-10-01' || $res['end'] !== '2026-10-14') {
-        throw new Exception("Expected 2026-10-01 to 2026-10-14, got {$res['start']} to {$res['end']}");
-    }
-});
-
-// 3. Test 28-day February (February 2026)
-runTest("February 15 trigger (January had 31 days -> bills Jan 31 to Feb 14)", function() {
-    $res = AutoInvoiceEngine::compute14DayCyclePeriod('2026-02-15');
-    if ($res['start'] !== '2026-01-31' || $res['end'] !== '2026-02-14') {
-        throw new Exception("Expected 2026-01-31 to 2026-02-14, got {$res['start']} to {$res['end']}");
-    }
-});
-
-runTest("March 01 trigger (bills February Period 2: Feb 15..28)", function() {
-    $res = AutoInvoiceEngine::compute14DayCyclePeriod('2026-03-01');
-    if ($res['start'] !== '2026-02-15' || $res['end'] !== '2026-02-28') {
-        throw new Exception("Expected 2026-02-15 to 2026-02-28, got {$res['start']} to {$res['end']}");
-    }
-});
-
-runTest("March 15 trigger (February had 28 days -> bills Mar 01 to Mar 14)", function() {
-    $res = AutoInvoiceEngine::compute14DayCyclePeriod('2026-03-15');
-    if ($res['start'] !== '2026-03-01' || $res['end'] !== '2026-03-14') {
-        throw new Exception("Expected 2026-03-01 to 2026-03-14, got {$res['start']} to {$res['end']}");
-    }
-});
-
-// 4. Test 29-day Leap Year February (February 2028)
-runTest("March 01 leap year trigger (bills Feb 15..29 in leap year 2028)", function() {
-    $res = AutoInvoiceEngine::compute14DayCyclePeriod('2028-03-01');
-    if ($res['start'] !== '2028-02-15' || $res['end'] !== '2028-02-29') {
-        throw new Exception("Expected 2028-02-15 to 2028-02-29, got {$res['start']} to {$res['end']}");
-    }
-});
-
-// 5. Test Year Transitions (December 31 -> January)
-runTest("December 31 month-end trigger (bills Dec 15..30, carries Dec 31 forward)", function() {
-    $res = AutoInvoiceEngine::compute14DayCyclePeriod('2026-12-31');
-    if ($res['start'] !== '2026-12-15' || $res['end'] !== '2026-12-30') {
-        throw new Exception("Expected 2026-12-15 to 2026-12-30, got {$res['start']} to {$res['end']}");
-    }
-});
-
-runTest("January 15 new year trigger (December had 31 days -> bills Dec 31, 2026 to Jan 14, 2027)", function() {
-    $res = AutoInvoiceEngine::compute14DayCyclePeriod('2027-01-15');
-    if ($res['start'] !== '2026-12-31' || $res['end'] !== '2027-01-14') {
-        throw new Exception("Expected 2026-12-31 to 2027-01-14, got {$res['start']} to {$res['end']}");
-    }
-});
-
-// 6. Test computePeriod with frequency='every_14_days'
-runTest("computePeriod with frequency='every_14_days' and refDate='2026-09-15'", function() {
-    $res = AutoInvoiceEngine::computePeriod('every_14_days', 1, 14, 'net14', '2026-09-15');
-    if ($res['start_date'] !== '2026-08-31' || $res['end_date'] !== '2026-09-14') {
-        throw new Exception("Expected 2026-08-31 to 2026-09-14, got {$res['start_date']} to {$res['end_date']}");
-    }
-});
-
-echo "\nALL 14-DAY CYCLE TESTS PASSED PERFECTLY!\n";
+echo "\nALL CONTINUOUS 14-DAY CYCLE TESTS PASSED PERFECTLY!\n";
