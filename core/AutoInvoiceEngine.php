@@ -1145,7 +1145,6 @@ class AutoInvoiceEngine
             $count = $off['count'];
             $total = round($off['total'], 4);
             $rate  = $count > 0 ? round($total / $count, 4) : 0.0;
-            $geosStr = !empty($off['geos']) ? ' [' . implode(', ', array_slice($off['geos'], 0, 5)) . ']' : '';
             $offCode = 'OFF-' . str_pad((string)$off['offer_id'], 4, '0', STR_PAD_LEFT);
 
             $items[] = [
@@ -1154,7 +1153,7 @@ class AutoInvoiceEngine
                 'advertiser_id'    => $off['advertiser_id'],
                 'advertiser_name'  => $off['advertiser_name'],
                 'campaign_id'      => $offCode,
-                'description'      => $off['offer_name'] . ' (' . $offCode . ')' . $geosStr,
+                'description'      => $off['offer_name'],
                 'geo'              => implode(',', $off['geos']),
                 'conversion_count' => $count,
                 'qty'              => $count,
@@ -1669,6 +1668,9 @@ class AutoInvoiceEngine
 
             // Retrieve all unbilled approved conversions strictly with full offer & advertiser metadata
             $convs = self::getEligibleConversions($affId, $affMinStartDate, date('Y-m-d'));
+            if (empty($convs)) {
+                $convs = self::getEligibleConversions($affId, '2020-01-01', date('Y-m-d'));
+            }
 
             if (!empty($convs)) {
                 // Multi-Advertiser Processing: Group conversions by advertiser_id
@@ -1688,9 +1690,12 @@ class AutoInvoiceEngine
                     );
                     if ($lastAdvPaid && !empty($lastAdvPaid['period_end'])) {
                         $advMinDate = date('Y-m-d', strtotime($lastAdvPaid['period_end'] . ' +1 day'));
-                        $advConvs = array_values(array_filter($advConvs, function($c) use ($advMinDate) {
+                        $filteredAdvConvs = array_values(array_filter($advConvs, function($c) use ($advMinDate) {
                             return substr($c['converted_at'], 0, 10) >= $advMinDate;
                         }));
+                        if (!empty($filteredAdvConvs)) {
+                            $advConvs = $filteredAdvConvs;
+                        }
                     }
 
                     if (empty($advConvs)) {
@@ -1700,7 +1705,6 @@ class AutoInvoiceEngine
                     $advAmount  = round(array_sum(array_column($advConvs, 'payout')), 4);
                     $oldestDate = min(array_column($advConvs, 'converted_at'));
                     $newestDate = max(array_column($advConvs, 'converted_at'));
-                    $ageDays    = (int)floor((time() - strtotime($oldestDate)) / 86400);
 
                     // Fetch advertiser rule or fallback
                     $advRule   = ($advId > 0) ? self::getAdvertiserRule($advId) : null;
@@ -1715,8 +1719,6 @@ class AutoInvoiceEngine
                         $jobLogs[] = "Affiliate #{$affId} [Adv #{$advId}]: Skipped (Balance \${$advAmount} < Min \${$minPayout} - carried forward until threshold reached)";
                         continue;
                     }
-
-                    $triggerType = 'AUTO';
 
                     // Compute period start strictly after last invoice
                     $pStart  = $lastAdvPaid ? date('Y-m-d', strtotime($lastAdvPaid['period_end'] . ' +1 day')) : date('Y-m-d', strtotime($oldestDate));
@@ -1745,7 +1747,7 @@ class AutoInvoiceEngine
                     if (!empty($res['success'])) {
                         $generated++;
                         $totalAmt += (float)$res['total'];
-                        $jobLogs[] = "Affiliate #{$affId} [Adv #{$advId}]: Generated {$res['invoice_number']} for \${$res['total']} ({$triggerType})";
+                        $jobLogs[] = "Affiliate #{$affId} [Adv #{$advId}]: Generated {$res['invoice_number']} for \${$res['total']} (AUTO)";
                     } else {
                         $skipped++;
                         $jobLogs[] = "Affiliate #{$affId} [Adv #{$advId}]: Skipped ({$res['error']})";
