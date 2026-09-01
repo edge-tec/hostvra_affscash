@@ -774,7 +774,10 @@ class AutoInvoiceEngine
         $dayOfMonth = (int)$today->format('j');
 
         // Check if explicit custom start/end dates are provided
-        if ($periodType === 'custom_dates' && !empty($customStartDate) && !empty($customEndDate)) {
+        if ($periodType === 'all_unbilled') {
+            $start = new DateTime('2020-01-01');
+            $end   = clone $today;
+        } elseif ($periodType === 'custom_dates' && !empty($customStartDate) && !empty($customEndDate)) {
             $start = new DateTime($customStartDate);
             $end   = new DateTime($customEndDate);
         } elseif ($periodType === 'current_month') {

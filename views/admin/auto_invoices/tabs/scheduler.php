@@ -85,6 +85,7 @@ $customPeriodEnd = $schedule['custom_period_end'] ?? '';
                             <span style="color:#4f46e5;">&#128197;</span> Invoiced Conversion Period (Calculation Range)
                         </label>
                         <select name="period_type" id="globalPeriodType" class="form-control" onchange="updateSchedulerUI()">
+                            <option value="all_unbilled" <?= $periodType === 'all_unbilled' ? 'selected' : '' ?>>All Unbilled Lifetime Conversions (All Time Up to Today)</option>
                             <option value="prev_month" <?= $periodType === 'prev_month' ? 'selected' : '' ?>>Previous Full Month (1st to Last Day of Preceding Month)</option>
                             <option value="current_month" <?= $periodType === 'current_month' ? 'selected' : '' ?>>Current Month to Date (1st of this month to Execution Date)</option>
                             <option value="bi_monthly_1_15" <?= $periodType === 'bi_monthly_1_15' ? 'selected' : '' ?>>1st to 15th of the Month (First Half)</option>
