@@ -333,9 +333,51 @@ class AutoInvoiceEngine
             case 'weekly':
                 $target->modify('next monday');
                 break;
+            case 'every_14_days':
+            case 'bi_weekly_14':
+                $curDay = (int)$now->format('j');
+                $curDaysInMonth = (int)$now->format('t');
+                if ($curDay < 15) {
+                    $target->setDate((int)$now->format('Y'), (int)$now->format('m'), 15);
+                } elseif ($curDay < $curDaysInMonth) {
+                    if ($curDaysInMonth === 31) {
+                        $target->setDate((int)$now->format('Y'), (int)$now->format('m'), 31);
+                    } else {
+                        $nextM = (clone $now)->modify('first day of next month');
+                        $target->setDate((int)$nextM->format('Y'), (int)$nextM->format('m'), 1);
+                    }
+                } else {
+                    $nextM = (clone $now)->modify('first day of next month');
+                    $target->setDate((int)$nextM->format('Y'), (int)$nextM->format('m'), 15);
+                }
+                if ($target <= $now) {
+                    $target->modify('+1 day');
+                }
+                break;
             case 'every_x_days':
                 $days = max(1, $intervalDays);
-                $target->modify("+{$days} days");
+                if ($days === 14) {
+                    $curDay = (int)$now->format('j');
+                    $curDaysInMonth = (int)$now->format('t');
+                    if ($curDay < 15) {
+                        $target->setDate((int)$now->format('Y'), (int)$now->format('m'), 15);
+                    } elseif ($curDay < $curDaysInMonth) {
+                        if ($curDaysInMonth === 31) {
+                            $target->setDate((int)$now->format('Y'), (int)$now->format('m'), 31);
+                        } else {
+                            $nextM = (clone $now)->modify('first day of next month');
+                            $target->setDate((int)$nextM->format('Y'), (int)$nextM->format('m'), 1);
+                        }
+                    } else {
+                        $nextM = (clone $now)->modify('first day of next month');
+                        $target->setDate((int)$nextM->format('Y'), (int)$nextM->format('m'), 15);
+                    }
+                    if ($target <= $now) {
+                        $target->modify('+1 day');
+                    }
+                } else {
+                    $target->modify("+{$days} days");
+                }
                 break;
             default:
                 $target->modify('+1 day');
@@ -774,6 +816,57 @@ class AutoInvoiceEngine
     }
 
     /**
+     * Compute strict 14-Day Cycle billing period:
+     * 1. First Billing Period: 1st -> 14th (or 31st of prev month -> 14th if prev month had 31 days)
+     * 2. Second Billing Period: 15th -> 30th (or 28th/29th for Feb)
+     * 3. For Months with 31 days: 31st is NOT a separate period, but carried forward into next period (31st -> 14th of following month).
+     * 
+     * @param string|DateTimeInterface|null $refDate
+     * @return array ['start' => 'YYYY-MM-DD', 'end' => 'YYYY-MM-DD']
+     */
+    public static function compute14DayCyclePeriod($refDate = null): array
+    {
+        $dt = $refDate instanceof DateTimeInterface ? clone $refDate : new DateTime($refDate ?: 'now');
+        $day = (int)$dt->format('j');
+        $year = (int)$dt->format('Y');
+        $month = (int)$dt->format('m');
+
+        if ($day >= 15 && $day <= 30) {
+            // Mid-month trigger (e.g. 15th..30th): bills Period 1 (1st/31st -> 14th)
+            $prevMonth = (clone $dt)->modify('first day of last month');
+            $prevDays = (int)$prevMonth->format('t');
+            if ($prevDays === 31) {
+                $start = (clone $prevMonth)->setDate((int)$prevMonth->format('Y'), (int)$prevMonth->format('m'), 31);
+            } else {
+                $start = (clone $dt)->setDate($year, $month, 1);
+            }
+            $end = (clone $dt)->setDate($year, $month, 14);
+        } else {
+            // Month-end / Month-start trigger (days 31, 1..14): bills Period 2 (15th -> 30th / Feb end)
+            if ($day === 31) {
+                // Day 31: bills 15th -> 30th of current month
+                $start = (clone $dt)->setDate($year, $month, 15);
+                $end   = (clone $dt)->setDate($year, $month, 30);
+            } else {
+                // Days 1..14: bills 15th -> 30th (or 28th/29th) of PREVIOUS month
+                $prevMonth = (clone $dt)->modify('first day of last month');
+                $pYear = (int)$prevMonth->format('Y');
+                $pMonth = (int)$prevMonth->format('m');
+                $pDays = (int)$prevMonth->format('t');
+                
+                $start = (clone $prevMonth)->setDate($pYear, $pMonth, 15);
+                $endDay = min(30, $pDays);
+                $end = (clone $prevMonth)->setDate($pYear, $pMonth, $endDay);
+            }
+        }
+
+        return [
+            'start' => $start->format('Y-m-d'),
+            'end'   => $end->format('Y-m-d'),
+        ];
+    }
+
+    /**
      * Compute billing period [start_date, end_date, due_date] given frequency, terms, and custom period configuration.
      */
     public static function computePeriod(
@@ -791,8 +884,12 @@ class AutoInvoiceEngine
         $today = $refDateStr ? new DateTime($refDateStr) : new DateTime();
         $dayOfMonth = (int)$today->format('j');
 
-        // Check if explicit custom start/end dates are provided
-        if ($periodType === 'all_unbilled') {
+        // Check if strict 14-day cycle applies
+        if ($periodType === 'bi_weekly_14' || $frequency === 'every_14_days' || ($frequency === 'every_x_days' && $intervalDays === 14)) {
+            $p14 = self::compute14DayCyclePeriod($today);
+            $start = new DateTime($p14['start']);
+            $end   = new DateTime($p14['end']);
+        } elseif ($periodType === 'all_unbilled') {
             $start = new DateTime('2020-01-01');
             $end   = clone $today;
         } elseif ($periodType === 'custom_dates' && !empty($customStartDate) && !empty($customEndDate)) {
@@ -827,17 +924,6 @@ class AutoInvoiceEngine
                 $end = clone $thisMonth;
                 $end->setDate((int)$thisMonth->format('Y'), (int)$thisMonth->format('m'), min($eDay, (int)$thisMonth->format('t')));
             }
-        } elseif ($periodType === 'bi_weekly_14') {
-            if ($dayOfMonth <= 14) {
-                $start = new DateTime('first day of this month');
-                $end = clone $start;
-                $end->modify('+13 days'); // 14th
-            } else {
-                $start = new DateTime('first day of this month');
-                $start->modify('+14 days'); // 15th
-                $end = clone $start;
-                $end->modify('+13 days'); // 28th
-            }
         } elseif ($periodType === 'last_14_days') {
             $end = clone $today;
             $end->modify('-1 day');
@@ -858,11 +944,10 @@ class AutoInvoiceEngine
 
                 case 'every_x_days':
                     $days = max(1, $intervalDays);
-                    if ($days == 14) {
-                        $end = clone $today;
-                        $end->modify('-1 day');
-                        $start = clone $end;
-                        $start->modify('-13 days');
+                    if ($days === 14) {
+                        $p14 = self::compute14DayCyclePeriod($today);
+                        $start = new DateTime($p14['start']);
+                        $end   = new DateTime($p14['end']);
                     } elseif ($days == 15) {
                         if ($dayOfMonth <= 15) {
                             $start = new DateTime('first day of last month');
@@ -923,9 +1008,15 @@ class AutoInvoiceEngine
         }
 
         return [
-            $start->format('Y-m-d'),
-            $end->format('Y-m-d'),
-            $due->format('Y-m-d'),
+            0            => $start->format('Y-m-d'),
+            1            => $end->format('Y-m-d'),
+            2            => $due->format('Y-m-d'),
+            'start_date' => $start->format('Y-m-d'),
+            'end_date'   => $end->format('Y-m-d'),
+            'due_date'   => $due->format('Y-m-d'),
+            'start'      => $start->format('Y-m-d'),
+            'end'        => $end->format('Y-m-d'),
+            'due'        => $due->format('Y-m-d'),
         ];
     }
 

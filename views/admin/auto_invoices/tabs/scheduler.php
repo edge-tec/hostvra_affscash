@@ -90,7 +90,7 @@ $customPeriodEnd = $schedule['custom_period_end'] ?? '';
                             <option value="current_month" <?= $periodType === 'current_month' ? 'selected' : '' ?>>Current Month to Date (1st of this month to Execution Date)</option>
                             <option value="bi_monthly_1_15" <?= $periodType === 'bi_monthly_1_15' ? 'selected' : '' ?>>1st to 15th of the Month (First Half)</option>
                             <option value="bi_monthly_16_end" <?= $periodType === 'bi_monthly_16_end' ? 'selected' : '' ?>>16th to End of the Month (Second Half)</option>
-                            <option value="bi_weekly_14" <?= $periodType === 'bi_weekly_14' ? 'selected' : '' ?>>Every 14 Days Cycle (1st-14th &amp; 15th-28th)</option>
+                            <option value="bi_weekly_14" <?= $periodType === 'bi_weekly_14' ? 'selected' : '' ?>>Every 14 Days Cycle (1-14 / 15-30 / 31-14 Next Month)</option>
                             <option value="last_14_days" <?= $periodType === 'last_14_days' ? 'selected' : '' ?>>Last 14 Days (Rolling 2 Weeks)</option>
                             <option value="custom_days" <?= $periodType === 'custom_days' ? 'selected' : '' ?>>Specific Day Range Every Month (Custom Days X to Y)</option>
                             <option value="custom_dates" <?= $periodType === 'custom_dates' ? 'selected' : '' ?>>Fixed Custom Date Range (Exact Start &amp; End Dates)</option>
@@ -283,6 +283,8 @@ function updateSchedulerUI() {
         periodText = '1st to 15th of the month';
     } else if (periodType === 'bi_monthly_16_end') {
         periodText = '16th to End of the month';
+    } else if (periodType === 'bi_weekly_14') {
+        periodText = '14-Day Cycle (1-14 / 15-30 / 31-14 next month, 31st carried forward)';
     } else if (periodType === 'custom_days') {
         const sDay = document.getElementById('globalCustomStartDay').value || '1';
         const eDay = document.getElementById('globalCustomEndDay').value || '31';
