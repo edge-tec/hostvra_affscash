@@ -4,7 +4,7 @@
     <div><h1>Invoices</h1><p>Affiliate payouts and advertiser billing</p></div>
     <div class="d-flex gap-2">
         <a href="/admin/invoices?export=csv" class="btn btn-secondary">&#8595; Export CSV</a>
-        <a href="/admin/invoices/auto-generate" class="btn btn-secondary">&#9881; Auto-Generate</a>
+        <a href="/admin/auto-invoices" class="btn btn-secondary" style="background:#EEF2FF;color:#4F46E5;border-color:#C7D2FE;font-weight:600">&#9881; Automatic Invoices</a>
         <a href="/admin/invoices/create" class="btn btn-primary">+ Create Invoice</a>
     </div>
 </div>

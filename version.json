@@ -1,7 +1,7 @@
 {
-    "version": "1.5.0",
-    "build": "20260325",
-    "schema_version": 5,
+    "version": "2.6.0",
+    "build": "20260901",
+    "schema_version": 26,
     "min_php": "7.4",
-    "release_notes": "Advanced payout management, fraud detection, tracking domain management, smartlink custom payouts, auto-migration system"
+    "release_notes": "Automatic Affiliate Invoice Generator & Billing Scheduler, priority rule engine, automated PDF generation, email delivery, and audit logging."
 }

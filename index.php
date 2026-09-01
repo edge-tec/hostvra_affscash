@@ -36,6 +36,7 @@ require BASE_PATH . '/core/Router.php';
 require BASE_PATH . '/core/FraudIQ.php';
 require BASE_PATH . '/core/Mailer.php';
 require BASE_PATH . '/core/InvoicePDF.php';
+require BASE_PATH . '/core/AutoInvoiceEngine.php';
 require BASE_PATH . '/core/Referral.php';
 require BASE_PATH . '/core/Turnstile.php';
 require BASE_PATH . '/core/RecaptchaService.php';
@@ -531,7 +532,7 @@ Router::any('/admin/traffic-source-override', function() { require BASE_PATH . '
 Router::any('/admin/email', function() { require BASE_PATH . '/controllers/admin/EmailController.php'; });
 Router::any('/admin/autohide', function() { require BASE_PATH . '/controllers/admin/AutoHideController.php'; });
 Router::any('/admin/database', function() { require BASE_PATH . '/controllers/admin/DatabaseController.php'; });
-Router::any('/admin/invoices/auto-generate', function() { require BASE_PATH . '/controllers/admin/AutoInvoiceController.php'; });
+Router::any('/admin/invoices/auto-generate', function() { require BASE_PATH . '/controllers/admin/AutoInvoiceGeneratorController.php'; });
 Router::any('/admin/profile', function() { require BASE_PATH . '/controllers/admin/ProfileController.php'; });
 Router::any('/admin/2fa', function() { Auth::check('admin'); require BASE_PATH . '/controllers/shared/TwoFactorSettingsController.php'; });
 Router::post('/admin/users/2fa-reset', function() { require BASE_PATH . '/controllers/admin/Reset2FAController.php'; });
@@ -565,6 +566,7 @@ Router::any('/admin/affiliate-managers/invoice-requests', function() { $_GET['ac
 Router::any('/admin/affiliate-managers/{id}', function($id) { $_GET['id']=$id; require BASE_PATH . '/controllers/admin/AffiliateManagerController.php'; });
 
 // Admin — Invoices
+Router::any('/admin/auto-invoices', function() { require BASE_PATH . '/controllers/admin/AutoInvoiceGeneratorController.php'; });
 Router::any('/admin/invoices', function() { require BASE_PATH . '/controllers/admin/InvoiceController.php'; });
 Router::any('/admin/invoices/create', function() { $_GET['action']='create'; require BASE_PATH . '/controllers/admin/InvoiceController.php'; });
 Router::any('/admin/invoices/{id}', function($id) { $_GET['id']=$id; require BASE_PATH . '/controllers/admin/InvoiceController.php'; });
@@ -734,6 +736,7 @@ Router::any('/cron/affiliate-inactivity', function() { require BASE_PATH . '/con
 // gated pattern; admin can paste the URL into cPanel → Cron Jobs.
 Router::any('/cron/fraud-scan',    function() { require BASE_PATH . '/controllers/cron/FraudScanController.php'; });
 Router::any('/cron/fraud-reports', function() { require BASE_PATH . '/controllers/cron/FraudReportsCronController.php'; });
+Router::any('/cron/auto-invoices', function() { require BASE_PATH . '/controllers/cron/AutoInvoicesCronController.php'; });
 Router::any('/api/affiliate-analytics', function() { require BASE_PATH . '/controllers/api/AffiliateAnalyticsController.php'; });
 Router::any('/api/admin-analytics', function() { require BASE_PATH . '/controllers/api/AdminAnalyticsController.php'; });
 Router::any('/api/activity', function() { require BASE_PATH . '/controllers/api/ActivityController.php'; });
