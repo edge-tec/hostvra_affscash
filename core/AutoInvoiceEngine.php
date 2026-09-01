@@ -826,6 +826,8 @@ class AutoInvoiceEngine
               AND c.converted_at BETWEEN ? AND ?
               AND c.status = 'approved'
               AND COALESCE(c.is_hidden, 0) = 0
+              AND COALESCE(c.is_fraud, 0) = 0
+              AND (c.fraud_score IS NULL OR c.fraud_score < 80)
               AND (c.invoice_id IS NULL OR c.invoice_id = 0)
         ";
         $params = [$affiliateId, $pStart . ' 00:00:00', $pEnd . ' 23:59:59'];
@@ -1644,11 +1646,15 @@ class AutoInvoiceEngine
         foreach ($affs as $af) {
             $aId = (int)$af['id'];
             
-            // 1. Total Approved Conversions
+            // 1. Total Approved Conversions (Excluding Hidden, Fraud, Rejected, Declined, Blocked)
             $convRow = Database::fetchOne(
                 "SELECT COALESCE(SUM(payout), 0) AS total_earned
                  FROM `conversions`
-                 WHERE `affiliate_id` = ? AND `status` = 'approved' AND COALESCE(`is_hidden`, 0) = 0",
+                 WHERE `affiliate_id` = ? 
+                   AND `status` = 'approved' 
+                   AND COALESCE(`is_hidden`, 0) = 0
+                   AND COALESCE(`is_fraud`, 0) = 0
+                   AND (`fraud_score` IS NULL OR `fraud_score` < 80)",
                 [$aId]
             );
             $totalEarned = (float)($convRow['total_earned'] ?? 0);
