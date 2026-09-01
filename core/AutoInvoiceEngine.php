@@ -1128,11 +1128,15 @@ class AutoInvoiceEngine
         array $filters = []
     ): array {
         self::ensureSchema();
+        $aff = Database::fetchOne("SELECT id, user_id FROM `affiliates` WHERE `id` = ? OR `user_id` = ?", [$affiliateId, $affiliateId]);
+        $targetAffId = $aff ? (int)$aff['id'] : $affiliateId;
+        $targetUserId = $aff ? (int)$aff['user_id'] : $affiliateId;
+
         $dateCondition = "c.converted_at BETWEEN ? AND ?";
-        $params = [$affiliateId, $pStart . ' 00:00:00', $pEnd . ' 23:59:59'];
+        $params = [$targetAffId, $targetUserId, $pStart . ' 00:00:00', $pEnd . ' 23:59:59'];
         if ($pStart === '2020-01-01' || $pStart <= '2020-01-01') {
             $dateCondition = "c.converted_at <= ?";
-            $params = [$affiliateId, $pEnd . ' 23:59:59'];
+            $params = [$targetAffId, $targetUserId, $pEnd . ' 23:59:59'];
         }
 
         $sql = "
@@ -1145,7 +1149,7 @@ class AutoInvoiceEngine
             JOIN `offers` o ON o.id = c.offer_id
             LEFT JOIN `advertisers` adv ON (adv.id = o.advertiser_id OR adv.user_id = o.advertiser_id)
             LEFT JOIN `users` adv_u ON (adv_u.id = adv.user_id OR adv_u.id = o.advertiser_id)
-            WHERE c.affiliate_id = ?
+            WHERE (c.affiliate_id = ? OR c.affiliate_id = ?)
               AND {$dateCondition}
               AND c.status = 'approved'
               AND COALESCE(c.is_hidden, 0) = 0
@@ -1959,24 +1963,63 @@ class AutoInvoiceEngine
             } else {
                 // If conversions table has no unlinked rows, check available account balance
                 $availBalance = (float)$cand['balance'];
-                $minPayout    = (float)($rule['minimum_amount'] ?? 50.00);
+
+                // Find advertiser associations for this affiliate to check advertiser threshold
+                $affAdv = Database::fetchOne("
+                    SELECT COALESCE(adv.id, o.advertiser_id, 0) AS advertiser_id
+                    FROM `conversions` c
+                    JOIN `offers` o ON o.id = c.offer_id
+                    LEFT JOIN `advertisers` adv ON (adv.id = o.advertiser_id OR adv.user_id = o.advertiser_id)
+                    WHERE (c.affiliate_id = ? OR c.affiliate_id = ?)
+                    ORDER BY c.id DESC LIMIT 1
+                ", [$affId, (int)($cand['user_id'] ?? $affId)]);
+
+                $advId   = (int)($affAdv['advertiser_id'] ?? 0);
+                $advRule = ($advId > 0) ? self::getAdvertiserRule($advId) : null;
+
+                // Strict Advertiser / Global Minimum Threshold:
+                $schedMin  = (float)($global['min_payout_threshold'] ?? 100.00);
+                $ruleMin   = !empty($rule['minimum_amount']) ? (float)$rule['minimum_amount'] : $schedMin;
+                $minPayout = ($advRule && !empty($advRule['enabled']) && (float)$advRule['minimum_payout'] > 0)
+                    ? (float)$advRule['minimum_payout']
+                    : $ruleMin;
+
+                $advTerms  = ($advRule && !empty($advRule['payment_terms'])) ? $advRule['payment_terms'] : ($rule['payment_terms'] ?? 'net14');
 
                 if ($availBalance >= $minPayout && $availBalance > 0) {
-                    $lastInv = self::getLastInvoicePeriod($affId);
-                    $pStart  = $lastInv ? date('Y-m-d', strtotime($lastInv['period_end'] . ' +1 day')) : '2020-01-01';
-                    $pEnd    = date('Y-m-d');
-                    if ($pStart > $pEnd) $pStart = '2020-01-01';
+                    $schedPeriodType = $rule['period_type'] ?? ($global['period_type'] ?? 'bi_weekly_14');
+                    $schedFreq       = $rule['frequency'] ?? ($global['frequency'] ?? 'every_x_days');
+                    $schedInterval   = (int)($rule['interval_days'] ?? ($global['interval_days'] ?? 14));
 
-                    $dueDate = self::computeDueDate($rule['payment_terms'] ?? 'net15');
+                    if ($schedPeriodType === 'bi_weekly_14' || $schedFreq === 'every_14_days' || ($schedFreq === 'every_x_days' && $schedInterval === 14)) {
+                        $c14    = self::compute14DayCyclePeriod(date('Y-m-d'));
+                        $pStart = $c14['start'];
+                        $pEnd   = $c14['end'];
+                    } else {
+                        $computed = self::computePeriod(
+                            $schedFreq,
+                            (int)($rule['monthly_day'] ?? ($global['monthly_day'] ?? 1)),
+                            $schedInterval,
+                            $advTerms,
+                            date('Y-m-d'),
+                            $schedPeriodType
+                        );
+                        $pStart = $computed['start_date'];
+                        $pEnd   = $computed['end_date'];
+                    }
+
+                    $dueDate = self::computeDueDate($advTerms);
 
                     $res = self::createInvoice([
                         'affiliate_id'           => $affId,
+                        'advertiser_id'          => ($advId > 0 ? $advId : null),
                         'period_start'           => $pStart,
                         'period_end'             => $pEnd,
                         'due_date'               => $dueDate,
-                        'payment_terms'          => $rule['payment_terms'] ?? 'net15',
-                        'payment_terms_snapshot' => $rule['payment_terms'] ?? 'net15',
+                        'payment_terms'          => $advTerms,
+                        'payment_terms_snapshot' => $advTerms,
                         'trigger_type'           => 'AUTO',
+                        'min_threshold'          => $minPayout,
                     ], $adminId, true);
 
                     if (!empty($res['success'])) {
@@ -1989,7 +2032,8 @@ class AutoInvoiceEngine
                     }
                 } elseif ($availBalance > 0) {
                     $skipped++;
-                    $jobLogs[] = "Affiliate #{$affId}: Skipped (Account balance \${$availBalance} < Min threshold \${$minPayout})";
+                    $advDisplayName = $advRule ? " [Adv #{$advId}]" : "";
+                    $jobLogs[] = "Affiliate #{$affId}{$advDisplayName}: Skipped (Account balance \${$availBalance} < Min threshold \${$minPayout} - carried forward until threshold reached)";
                 } else {
                     $skipped++;
                     $jobLogs[] = "Affiliate #{$affId}: Skipped (0 unbilled approved conversions found & \$0.00 balance)";
