@@ -1277,11 +1277,36 @@ class AutoInvoiceEngine
                     ];
                 }
             } else {
-                return [
-                    'success' => false,
-                    'error'   => 'No unbilled approved conversions found in period (already invoiced manually or 0 conversions).',
-                    'skipped' => true,
-                ];
+                // Fallback: If affiliate has available account balance >= minimum threshold
+                $availBalance = (float)$aff['balance'];
+                $minRequired  = isset($payload['min_threshold']) ? (float)$payload['min_threshold'] : (float)($rule['minimum_amount'] ?? 50.00);
+
+                if ($availBalance >= $minRequired && ($rule['offer_scope'] ?? 'all') === 'all') {
+                    $items = [[
+                        'offer_id'         => 0,
+                        'offer_name'       => 'Affiliate Commission Balance',
+                        'advertiser_id'    => 0,
+                        'advertiser_name'  => 'Network Payout',
+                        'campaign_id'      => 'AFF-BALANCE',
+                        'description'      => "Affiliate Approved Commission Balance ({$periodStart} to {$periodEnd})",
+                        'geo'              => 'ALL',
+                        'conversion_count' => 1,
+                        'qty'              => 1,
+                        'rate'             => $availBalance,
+                        'amount'           => $availBalance,
+                        'conversion_ids'   => [],
+                        'db_ids'           => [],
+                    ]];
+                    $rawItems = [];
+                    $dbIds    = [];
+                    $subtotal = $availBalance;
+                } else {
+                    return [
+                        'success' => false,
+                        'error'   => 'No unbilled approved conversions found in period (already invoiced manually or 0 conversions).',
+                        'skipped' => true,
+                    ];
+                }
             }
         }
 
