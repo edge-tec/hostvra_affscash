@@ -1888,13 +1888,12 @@ class AutoInvoiceEngine
                     }
 
                     // Strict Advertiser Minimum Payout Calculation:
-                    $minPayout = 50.00;
-                    if ($advRule && !empty($advRule['enabled'])) {
-                        $minPayout = (float)($advRule['minimum_payout'] ?? 50.00);
-                    } elseif (!empty($rule['minimum_amount'])) {
-                        $minPayout = (float)$rule['minimum_amount'];
-                    }
-                    $advTerms  = ($advRule && !empty($advRule['payment_terms'])) ? $advRule['payment_terms'] : ($rule['payment_terms'] ?? 'net15');
+                    $schedMin  = (float)($global['min_payout_threshold'] ?? 100.00);
+                    $ruleMin   = !empty($rule['minimum_amount']) ? (float)$rule['minimum_amount'] : $schedMin;
+                    $minPayout = ($advRule && !empty($advRule['enabled']) && (float)$advRule['minimum_payout'] > 0) 
+                        ? (float)$advRule['minimum_payout'] 
+                        : $ruleMin;
+                    $advTerms  = ($advRule && !empty($advRule['payment_terms'])) ? $advRule['payment_terms'] : ($rule['payment_terms'] ?? 'net14');
 
                     // Check Qualification: Strictly match Advertiser / Affiliate minimum payout threshold
                     $isMinMet = ($advAmount >= $minPayout);
@@ -1906,11 +1905,29 @@ class AutoInvoiceEngine
                         continue;
                     }
 
-                    // Compute period start strictly after last invoice
-                    $pStart  = $lastAdvPaid ? date('Y-m-d', strtotime($lastAdvPaid['period_end'] . ' +1 day')) : date('Y-m-d', strtotime($oldestDate));
-                    $pEnd    = date('Y-m-d', strtotime($newestDate));
-                    if ($pStart > $pEnd) {
-                        $pStart = date('Y-m-d', strtotime($oldestDate));
+                    // Compute period start and end based on configured schedule period
+                    $schedPeriodType = $rule['period_type'] ?? ($global['period_type'] ?? 'bi_weekly_14');
+                    $schedFreq       = $rule['frequency'] ?? ($global['frequency'] ?? 'every_x_days');
+                    $schedInterval   = (int)($rule['interval_days'] ?? ($global['interval_days'] ?? 14));
+
+                    if ($schedPeriodType === 'bi_weekly_14' || $schedFreq === 'every_14_days' || ($schedFreq === 'every_x_days' && $schedInterval === 14)) {
+                        $c14    = self::compute14DayCyclePeriod(date('Y-m-d'));
+                        $pStart = $c14['start'];
+                        $pEnd   = $c14['end'];
+                    } elseif ($schedPeriodType === 'all_unbilled') {
+                        $pStart = $lastAdvPaid ? date('Y-m-d', strtotime($lastAdvPaid['period_end'] . ' +1 day')) : date('Y-m-d', strtotime($oldestDate));
+                        $pEnd   = date('Y-m-d', strtotime($newestDate));
+                    } else {
+                        $computed = self::computePeriod(
+                            $schedFreq,
+                            (int)($rule['monthly_day'] ?? ($global['monthly_day'] ?? 1)),
+                            $schedInterval,
+                            $advTerms,
+                            date('Y-m-d'),
+                            $schedPeriodType
+                        );
+                        $pStart = $computed['start_date'];
+                        $pEnd   = $computed['end_date'];
                     }
 
                     // Compute due date from terms
