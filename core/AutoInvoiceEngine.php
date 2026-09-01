@@ -654,8 +654,29 @@ class AutoInvoiceEngine
     public static function getAdvertiserRule(int $advertiserId): ?array
     {
         self::ensureSchema();
+        if ($advertiserId <= 0) {
+            return null;
+        }
         try {
-            return Database::fetchOne("SELECT * FROM `advertiser_invoice_rules` WHERE `advertiser_id` = ?", [$advertiserId]);
+            // 1. Direct match by advertiser_id in advertiser_invoice_rules
+            $rule = Database::fetchOne("SELECT * FROM `advertiser_invoice_rules` WHERE `advertiser_id` = ?", [$advertiserId]);
+            if ($rule) return $rule;
+
+            // 2. Check if advertiserId corresponds to advertisers.id -> query by user_id
+            $adv = Database::fetchOne("SELECT user_id FROM `advertisers` WHERE `id` = ?", [$advertiserId]);
+            if ($adv && !empty($adv['user_id'])) {
+                $rule = Database::fetchOne("SELECT * FROM `advertiser_invoice_rules` WHERE `advertiser_id` = ?", [(int)$adv['user_id']]);
+                if ($rule) return $rule;
+            }
+
+            // 3. Check if advertiserId corresponds to users.id -> query by advertisers.id
+            $advByUid = Database::fetchOne("SELECT id FROM `advertisers` WHERE `user_id` = ?", [$advertiserId]);
+            if ($advByUid && !empty($advByUid['id'])) {
+                $rule = Database::fetchOne("SELECT * FROM `advertiser_invoice_rules` WHERE `advertiser_id` = ?", [(int)$advByUid['id']]);
+                if ($rule) return $rule;
+            }
+
+            return null;
         } catch (\Throwable $e) {
             return null;
         }
@@ -1129,13 +1150,14 @@ class AutoInvoiceEngine
 
         $sql = "
             SELECT c.id AS db_id, c.conversion_id, c.payout, c.country,
-                   c.offer_id, o.name AS offer_name, o.advertiser_id,
+                   c.offer_id, o.name AS offer_name,
+                   COALESCE(adv.id, o.advertiser_id, 0) AS advertiser_id,
                    COALESCE(adv_u.company, CONCAT(adv_u.first_name, ' ', adv_u.last_name), 'Direct') AS advertiser_name,
                    c.converted_at, c.status
             FROM `conversions` c
             JOIN `offers` o ON o.id = c.offer_id
-            LEFT JOIN `advertisers` adv ON adv.id = o.advertiser_id
-            LEFT JOIN `users` adv_u ON adv_u.id = adv.user_id
+            LEFT JOIN `advertisers` adv ON (adv.id = o.advertiser_id OR adv.user_id = o.advertiser_id)
+            LEFT JOIN `users` adv_u ON (adv_u.id = adv.user_id OR adv_u.id = o.advertiser_id)
             WHERE c.affiliate_id = ?
               AND {$dateCondition}
               AND c.status = 'approved'
@@ -1344,6 +1366,22 @@ class AutoInvoiceEngine
             $rawItems = $built['raw_items'];
             $dbIds    = array_column($built['raw_items'], 'conversion_db_id');
             $subtotal = round(array_sum(array_column($items, 'amount')), 4);
+
+            // Enforce advertiser minimum payout if advertiser_id or target_conversions specify advertiser
+            $targetAdvId = (int)($payload['advertiser_id'] ?? ($built['items'][0]['advertiser_id'] ?? 0));
+            if ($targetAdvId > 0) {
+                $targetAdvRule = self::getAdvertiserRule($targetAdvId);
+                if ($targetAdvRule && !empty($targetAdvRule['enabled'])) {
+                    $targetMinPayout = (float)($targetAdvRule['minimum_payout'] ?? 50.00);
+                    if ($subtotal < $targetMinPayout) {
+                        return [
+                            'success' => false,
+                            'error'   => "Advertiser subtotal (\$" . number_format($subtotal, 2) . ") is below the advertiser minimum payout threshold (\$" . number_format($targetMinPayout, 2) . ").",
+                            'skipped' => true,
+                        ];
+                    }
+                }
+            }
         } else {
             // Apply specific offers scope if configured in affiliate rule
             $offerFilter = !empty($payload['offer_ids']) ? $payload['offer_ids'] : null;
@@ -1846,9 +1884,29 @@ class AutoInvoiceEngine
                     $oldestDate = min(array_column($advConvs, 'converted_at'));
                     $newestDate = max(array_column($advConvs, 'converted_at'));
 
-                    // Fetch advertiser rule or fallback
-                    $advRule   = ($advId > 0) ? self::getAdvertiserRule($advId) : null;
-                    $minPayout = ($advRule && !empty($advRule['enabled'])) ? (float)($advRule['minimum_payout'] ?? 50.00) : (float)($rule['minimum_amount'] ?? 50.00);
+                    // Robust Advertiser Rule Lookup:
+                    $advRule = null;
+                    if ($advId > 0) {
+                        $advRule = self::getAdvertiserRule($advId);
+                    }
+                    if (!$advRule && !empty($advConvs[0]['offer_id'])) {
+                        $sampleOfferId = (int)$advConvs[0]['offer_id'];
+                        $offerAdv = Database::fetchOne("SELECT advertiser_id FROM `offers` WHERE `id` = ?", [$sampleOfferId]);
+                        if ($offerAdv && !empty($offerAdv['advertiser_id'])) {
+                            $advRule = self::getAdvertiserRule((int)$offerAdv['advertiser_id']);
+                            if ($advRule && empty($advId)) {
+                                $advId = (int)($advRule['advertiser_id'] ?? $offerAdv['advertiser_id']);
+                            }
+                        }
+                    }
+
+                    // Strict Advertiser Minimum Payout Calculation:
+                    $minPayout = 50.00;
+                    if ($advRule && !empty($advRule['enabled'])) {
+                        $minPayout = (float)($advRule['minimum_payout'] ?? 50.00);
+                    } elseif (!empty($rule['minimum_amount'])) {
+                        $minPayout = (float)$rule['minimum_amount'];
+                    }
                     $advTerms  = ($advRule && !empty($advRule['payment_terms'])) ? $advRule['payment_terms'] : ($rule['payment_terms'] ?? 'net15');
 
                     // Check Qualification: Strictly match Advertiser / Affiliate minimum payout threshold
@@ -1856,7 +1914,8 @@ class AutoInvoiceEngine
 
                     if (!$isMinMet) {
                         $skipped++;
-                        $jobLogs[] = "Affiliate #{$affId} [Adv #{$advId}]: Skipped (Balance \${$advAmount} < Min \${$minPayout} - carried forward until threshold reached)";
+                        $advDisplayName = $advRule ? ($advConvs[0]['advertiser_name'] ?? "Adv #{$advId}") : "Adv #{$advId}";
+                        $jobLogs[] = "Affiliate #{$affId} [{$advDisplayName}]: Skipped (Balance \${$advAmount} < Min \${$minPayout} - carried forward until threshold reached)";
                         continue;
                     }
 
