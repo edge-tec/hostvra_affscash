@@ -1020,8 +1020,14 @@ class AutoInvoiceEngine
             $dbIds     = $payload['manual_db_ids'] ?? [];
             $subtotal  = (float)($payload['subtotal'] ?? array_sum(array_column($items, 'amount')));
         } else {
+            // Apply specific offers scope if configured in affiliate rule
+            $offerFilter = !empty($payload['offer_ids']) ? $payload['offer_ids'] : null;
+            if (empty($offerFilter) && ($rule['offer_scope'] ?? '') === 'specific' && !empty($rule['specific_offers'])) {
+                $offerFilter = json_decode($rule['specific_offers'], true);
+            }
+
             $convs = self::getEligibleConversions($affiliateId, $periodStart, $periodEnd, [
-                'offer_id' => $payload['offer_ids'] ?? null,
+                'offer_id' => $offerFilter,
                 'country'  => $payload['country'] ?? null,
             ]);
             $built = self::buildInvoiceItemsFromConversions($convs);
@@ -1031,6 +1037,31 @@ class AutoInvoiceEngine
                 $rawItems = $built['raw_items'];
                 $dbIds    = $built['db_ids'];
                 $subtotal = $built['total'];
+
+                // Validate Offer-specific rules (if any offer has individual minimum revenue or conversions)
+                foreach ($items as $itemKey => $item) {
+                    $itemOfferId = (int)$item['offer_id'];
+                    $offerRule = self::getOfferRule($itemOfferId);
+                    if ($offerRule && !empty($offerRule['enabled'])) {
+                        $minRev   = (float)($offerRule['minimum_revenue'] ?? 0);
+                        $minConvs = (int)($offerRule['minimum_conversions'] ?? 0);
+
+                        if ($minRev > 0 && (float)$item['amount'] < $minRev) {
+                            return [
+                                'success' => false,
+                                'error'   => "Offer #{$itemOfferId} ({$item['offer_name']}) total amount (\${$item['amount']}) is below required offer minimum revenue (\${$minRev}).",
+                                'skipped' => true,
+                            ];
+                        }
+                        if ($minConvs > 0 && (int)$item['conversion_count'] < $minConvs) {
+                            return [
+                                'success' => false,
+                                'error'   => "Offer #{$itemOfferId} ({$item['offer_name']}) conversion count ({$item['conversion_count']}) is below required offer minimum conversions ({$minConvs}).",
+                                'skipped' => true,
+                            ];
+                        }
+                    }
+                }
             } else {
                 return [
                     'success' => false,
@@ -1040,8 +1071,8 @@ class AutoInvoiceEngine
             }
         }
 
-        // Minimum threshold check
-        $minThreshold = isset($payload['min_threshold']) ? (float)$payload['min_threshold'] : (float)$rule['minimum_amount'];
+        // Minimum threshold check (Affiliate Rule / Global Schedule)
+        $minThreshold = isset($payload['min_threshold']) ? (float)$payload['min_threshold'] : (float)($rule['minimum_amount'] ?? 50.00);
         if ($subtotal < $minThreshold) {
             return [
                 'success' => false,
