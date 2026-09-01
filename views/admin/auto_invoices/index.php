@@ -280,6 +280,10 @@ input:checked + .aig-slider:before {
         <p>Configure automated affiliate billing cycles, custom priority rules, live previews &amp; cron delivery.</p>
     </div>
     <div style="display:flex;gap:10px;">
+        <button type="button" class="btn btn-secondary" onclick="triggerSyncBalances()" style="display:flex;align-items:center;gap:6px" title="Recalculate affiliate balances strictly based on approved conversions after last paid invoice">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            Reconcile Balances
+        </button>
         <button type="button" class="btn btn-secondary" onclick="triggerRunNow()" style="display:flex;align-items:center;gap:6px">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
             Run Scheduler Now
@@ -450,6 +454,37 @@ function triggerRunNow() {
             btn.disabled = false;
             btn.innerHTML = origText;
         }
+    });
+}
+
+function triggerSyncBalances() {
+    if (!confirm('Reconcile all affiliate account balances? This strictly recalculates each affiliate balance based ONLY on approved unbilled conversions converted AFTER their latest paid invoice.')) return;
+    
+    var tokenMeta = document.querySelector('meta[name="csrf-token"]');
+    var token = tokenMeta ? tokenMeta.getAttribute('content') : '';
+    var fd = new FormData();
+    fd.append('_token', token);
+    fd.append('action', 'recalculate_balances');
+
+    fetch('/admin/auto-invoices', {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        },
+        body: fd
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+        if (d.success) {
+            alert(d.message || 'Balances reconciled successfully!');
+            window.location.reload();
+        } else {
+            alert('Notice: ' + (d.error || 'Failed to reconcile balances'));
+        }
+    })
+    .catch(function(err){
+        alert('Sync error: ' + (err.message || err));
     });
 }
 </script>

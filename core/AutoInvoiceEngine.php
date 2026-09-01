@@ -2083,38 +2083,38 @@ class AutoInvoiceEngine
         foreach ($affs as $af) {
             $aId = (int)$af['id'];
             
-            // 1. Total Approved Conversions (Excluding Hidden, Fraud, Rejected, Declined, Blocked)
+            // 1. Find latest paid invoice period end (Rule #2 & #3: Paid invoices are 100% settled)
+            $lastPaidInv = Database::fetchOne(
+                "SELECT period_end FROM `invoices` 
+                 WHERE `affiliate_id` = ? AND `status` = 'paid' 
+                 ORDER BY `period_end` DESC, `id` DESC LIMIT 1",
+                [$aId]
+            );
+            $minDate = ($lastPaidInv && !empty($lastPaidInv['period_end'])) 
+                ? date('Y-m-d H:i:s', strtotime($lastPaidInv['period_end'] . ' 23:59:59')) 
+                : '2020-01-01 00:00:00';
+
+            // 2. Available Balance = Approved, Non-Hidden, Non-Fraud conversions strictly AFTER latest paid invoice AND not currently attached to any active invoice
             $convRow = Database::fetchOne(
-                "SELECT COALESCE(SUM(payout), 0) AS total_earned
+                "SELECT COALESCE(SUM(payout), 0) AS available_balance
                  FROM `conversions`
                  WHERE `affiliate_id` = ? 
                    AND `status` = 'approved' 
                    AND COALESCE(`is_hidden`, 0) = 0
                    AND COALESCE(`is_fraud`, 0) = 0
-                   AND (`fraud_score` IS NULL OR `fraud_score` < 80)",
-                [$aId]
+                   AND (`fraud_score` IS NULL OR `fraud_score` < 80)
+                   AND `converted_at` > ?
+                   AND (`invoice_id` IS NULL OR `invoice_id` = 0)",
+                [$aId, $minDate]
             );
-            $totalEarned = (float)($convRow['total_earned'] ?? 0);
-
-            // 2. Total Paid Invoices
-            $paidRow = Database::fetchOne(
-                "SELECT COALESCE(SUM(total), 0) AS total_paid
-                 FROM `invoices`
-                 WHERE `affiliate_id` = ? AND `status` = 'paid'",
-                [$aId]
-            );
-            $totalPaid = (float)($paidRow['total_paid'] ?? 0);
-
-            // 3. Exact Current Balance
-            $exactBalance = max(0.00, round($totalEarned - $totalPaid, 4));
+            $exactBalance = max(0.00, round((float)($convRow['available_balance'] ?? 0), 4));
 
             Database::query("UPDATE `affiliates` SET `balance` = ? WHERE `id` = ?", [$exactBalance, $aId]);
             $updated++;
             $results[$aId] = [
-                'affiliate_id' => $aId,
-                'total_earned' => $totalEarned,
-                'total_paid'   => $totalPaid,
-                'new_balance'  => $exactBalance,
+                'affiliate_id'      => $aId,
+                'last_paid_cutoff'  => $minDate,
+                'available_balance' => $exactBalance,
             ];
         }
 
