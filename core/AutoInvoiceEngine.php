@@ -911,22 +911,24 @@ class AutoInvoiceEngine
     }
 
     /**
-     * Check if an active invoice (manual or auto) already exists for the given affiliate and period (Duplicate Protection).
+     * Check if an active invoice already exists for the given affiliate and exact period (Duplicate Protection).
      */
     public static function isDuplicate(int $affiliateId, string $periodStart, string $periodEnd, ?int $excludeInvoiceId = null): bool
     {
         self::ensureSchema();
+        if ($periodStart === '2020-01-01') {
+            // Lifetime unbilled calculation relies on conversion level (c.invoice_id IS NULL) check
+            return false;
+        }
+
         $sql = "
             SELECT id, invoice_number, is_auto FROM `invoices`
             WHERE `affiliate_id` = ?
+              AND `period_start` = ?
+              AND `period_end` = ?
               AND `status` NOT IN ('void', 'cancelled')
-              AND (
-                  (`period_start` = ? AND `period_end` = ?)
-                  OR (`period_start` <= ? AND `period_end` >= ?)
-                  OR (`period_start` >= ? AND `period_end` <= ?)
-              )
         ";
-        $params = [$affiliateId, $periodStart, $periodEnd, $periodStart, $periodEnd, $periodStart, $periodEnd];
+        $params = [$affiliateId, $periodStart, $periodEnd];
         if ($excludeInvoiceId) {
             $sql .= " AND `id` != ?";
             $params[] = $excludeInvoiceId;
