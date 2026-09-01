@@ -204,6 +204,68 @@ input:checked + .aig-slider:before {
     justify-content: flex-end;
     gap: 12px;
 }
+
+/* ── TomSelect Dropdown Fix (Opaque Background & High Contrast) ── */
+.ts-wrapper {
+    position: relative;
+    z-index: 20;
+}
+.ts-control {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    min-height: 42px !important;
+    padding: 6px 12px !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+    font-size: 13.5px !important;
+}
+.ts-dropdown {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    border: 1px solid #94a3b8 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22), 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+    z-index: 99999 !important;
+    max-height: 250px !important;
+    overflow-y: auto !important;
+    margin-top: 4px !important;
+    opacity: 1 !important;
+}
+.ts-dropdown .ts-dropdown-content {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+}
+.ts-dropdown .option {
+    padding: 10px 14px !important;
+    color: #0f172a !important;
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    font-size: 13px !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    cursor: pointer !important;
+    opacity: 1 !important;
+}
+.ts-dropdown .option:hover,
+.ts-dropdown .active {
+    background-color: #eef2ff !important;
+    background: #eef2ff !important;
+    color: #4338ca !important;
+    font-weight: 600 !important;
+}
+.ts-dropdown .selected {
+    background-color: #f8fafc !important;
+    color: #64748b !important;
+}
+.ts-control .item {
+    background: #e0e7ff !important;
+    color: #3730a3 !important;
+    border: 1px solid #c7d2fe !important;
+    border-radius: 6px !important;
+    padding: 2px 8px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
 </style>
 
 <!-- Module Header -->
