@@ -1656,8 +1656,12 @@ class AutoInvoiceEngine
             // Priority rule resolution
             $rule = self::resolveEffectiveRule($affId);
 
-            // Retrieve all unbilled approved conversions for this affiliate
-            $convs = self::getEligibleConversions($affId, '2020-01-01', date('Y-m-d'));
+            // Determine latest invoice period across all non-void invoices for this affiliate (Rule #3 & #6)
+            $lastGeneralInv = self::getLastInvoicePeriod($affId);
+            $affMinStartDate = $lastGeneralInv ? date('Y-m-d', strtotime($lastGeneralInv['period_end'] . ' +1 day')) : '2020-01-01';
+
+            // Retrieve only unbilled approved conversions strictly AFTER the last invoice period end
+            $convs = self::getEligibleConversions($affId, $affMinStartDate, date('Y-m-d'));
 
             if (!empty($convs)) {
                 // Multi-Advertiser Processing: Group conversions by advertiser_id
@@ -1668,6 +1672,19 @@ class AutoInvoiceEngine
                 }
 
                 foreach ($byAdv as $advId => $advConvs) {
+                    // Check advertiser-specific last invoice as well
+                    $lastAdvInv = self::getLastInvoicePeriod($affId, $advId);
+                    if ($lastAdvInv && !empty($lastAdvInv['period_end'])) {
+                        $advMinDate = date('Y-m-d', strtotime($lastAdvInv['period_end'] . ' +1 day'));
+                        $advConvs = array_values(array_filter($advConvs, function($c) use ($advMinDate) {
+                            return substr($c['converted_at'], 0, 10) >= $advMinDate;
+                        }));
+                    }
+
+                    if (empty($advConvs)) {
+                        continue;
+                    }
+
                     $advAmount  = round(array_sum(array_column($advConvs, 'payout')), 4);
                     $oldestDate = min(array_column($advConvs, 'converted_at'));
                     $newestDate = max(array_column($advConvs, 'converted_at'));
@@ -1692,9 +1709,8 @@ class AutoInvoiceEngine
 
                     $triggerType = $isForce90 ? 'OLD_BALANCE_FORCE_PAYMENT' : 'AUTO';
 
-                    // Compute period start from last invoice for this affiliate + advertiser
-                    $lastInv = self::getLastInvoicePeriod($affId, $advId);
-                    $pStart  = $lastInv ? date('Y-m-d', strtotime($lastInv['period_end'] . ' +1 day')) : date('Y-m-d', strtotime($oldestDate));
+                    // Compute period start strictly after last invoice
+                    $pStart  = $lastAdvInv ? date('Y-m-d', strtotime($lastAdvInv['period_end'] . ' +1 day')) : date('Y-m-d', strtotime($oldestDate));
                     $pEnd    = date('Y-m-d', strtotime($newestDate));
                     if ($pStart > $pEnd) {
                         $pStart = date('Y-m-d', strtotime($oldestDate));
