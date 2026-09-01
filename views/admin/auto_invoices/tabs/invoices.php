@@ -12,7 +12,11 @@
                 Track generated invoices, payment status, PDF downloads, and email logs.
             </p>
         </div>
-        <div style="display:flex;gap:8px;">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="recalculateBalances()" style="display:flex;align-items:center;gap:5px;background:#f1f5f9;color:#0f172a;font-weight:600;" title="Restore exact balance from approved conversions">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                Sync / Restore Balances
+            </button>
             <a href="/admin/invoices?export=csv" class="btn btn-secondary btn-sm" style="display:flex;align-items:center;gap:4px">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                 Export CSV
@@ -174,12 +178,15 @@
                                     &#128424; Print View
                                 </a>
 
-                                <?php if (!in_array($inv['status'], ['void', 'cancelled'])): ?>
                                 <hr style="margin:4px 0;border:0;border-top:1px solid #f1f5f9;">
-                                <button type="button" onclick="cancelInvoice(<?= $inv['id'] ?>)" style="display:block;width:100%;padding:6px 14px;border:none;background:none;text-align:left;font-size:12.5px;color:#dc2626;cursor:pointer;">
+                                <?php if (!in_array($inv['status'], ['void', 'cancelled'])): ?>
+                                <button type="button" onclick="cancelInvoice(<?= $inv['id'] ?>)" style="display:block;width:100%;padding:6px 14px;border:none;background:none;text-align:left;font-size:12.5px;color:#d97706;cursor:pointer;">
                                     &#10005; Void &amp; Refund
                                 </button>
                                 <?php endif; ?>
+                                <button type="button" onclick="deleteInvoice(<?= $inv['id'] ?>)" style="display:block;width:100%;padding:6px 14px;border:none;background:none;text-align:left;font-size:12.5px;color:#dc2626;cursor:pointer;">
+                                    &#128465; Delete &amp; Restore
+                                </button>
                             </div>
                         </div>
                     </td>
@@ -220,6 +227,28 @@ document.addEventListener('click', function(e) {
 function getCsrfToken() {
     var meta = document.querySelector('meta[name="csrf-token"]');
     return meta ? (meta.getAttribute('content') || '') : '';
+}
+
+function recalculateBalances() {
+    if (!confirm('Recalculate & restore exact balance for all affiliates based on approved conversions? (No extra balance will be added)')) return;
+    var fd = new FormData();
+    fd.append('_token', getCsrfToken());
+    fd.append('action', 'recalculate_balances');
+
+    fetch('/admin/auto-invoices?tab=invoices', {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        body: fd
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+        alert(d && d.message ? d.message : 'Balances synchronized successfully.');
+        window.location.reload();
+    })
+    .catch(function(err){
+        console.error(err);
+        window.location.reload();
+    });
 }
 
 function updateInvStatus(id, status) {
@@ -290,7 +319,7 @@ function cancelInvoice(id) {
     .then(function(r){ return r.json(); })
     .then(function(d){
         if (d && d.success) {
-            alert('Invoice cancelled and balance refunded.');
+            alert('Invoice cancelled and balance restored.');
             window.location.reload();
         } else {
             alert(d && d.error ? d.error : 'Error cancelling invoice');
@@ -299,6 +328,33 @@ function cancelInvoice(id) {
     .catch(function(err){
         console.error(err);
         alert('Network or server error cancelling invoice.');
+    });
+}
+
+function deleteInvoice(id) {
+    if (!confirm('Permanently delete this invoice? The conversions will be unlinked and the affiliate balance will be restored exactly to its pre-invoice state.')) return;
+    var fd = new FormData();
+    fd.append('_token', getCsrfToken());
+    fd.append('action', 'delete_invoice');
+    fd.append('invoice_id', id);
+
+    fetch('/admin/auto-invoices?tab=invoices', {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        body: fd
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+        if (d && d.success) {
+            alert(d.message || 'Invoice deleted and balance reconciled.');
+            window.location.reload();
+        } else {
+            alert(d && d.error ? d.error : 'Failed to delete invoice.');
+        }
+    })
+    .catch(function(err){
+        console.error(err);
+        alert('Network or server error deleting invoice.');
     });
 }
 </script>

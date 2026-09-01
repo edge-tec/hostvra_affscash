@@ -1570,6 +1570,114 @@ class AutoInvoiceEngine
         }
     }
 
+    /**
+     * Delete an invoice permanently, unlink conversions, and sync balance.
+     */
+    public static function deleteInvoice(int $invoiceId, ?int $adminId = null): bool
+    {
+        self::ensureSchema();
+        $inv = Database::fetchOne("SELECT * FROM `invoices` WHERE `id` = ?", [$invoiceId]);
+        if (!$inv) return false;
+
+        $pdo = Database::getInstance();
+        $pdo->beginTransaction();
+        try {
+            // 1. Unlink conversions
+            Database::query("UPDATE `conversions` SET `invoice_id` = NULL WHERE `invoice_id` = ?", [$invoiceId]);
+
+            // 2. Delete invoice items
+            Database::query("DELETE FROM `invoice_items` WHERE `invoice_id` = ?", [$invoiceId]);
+
+            // 3. Delete invoice file if exists
+            if (!empty($inv['pdf_path'])) {
+                $abs = BASE_PATH . '/' . ltrim($inv['pdf_path'], '/');
+                if (file_exists($abs)) @unlink($abs);
+            }
+
+            // 4. Delete invoice record
+            Database::query("DELETE FROM `invoices` WHERE `id` = ?", [$invoiceId]);
+
+            $pdo->commit();
+
+            // 5. Safely recalculate and restore affiliate balance
+            if (!empty($inv['affiliate_id'])) {
+                self::recalculateAffiliateBalance((int)$inv['affiliate_id']);
+            }
+
+            self::logAction(
+                $invoiceId,
+                $inv['affiliate_id'],
+                'invoice_deleted',
+                0,
+                (float)$inv['total'],
+                0,
+                $adminId,
+                "Deleted invoice {$inv['invoice_number']} and safely reconciled affiliate balance."
+            );
+
+            return true;
+        } catch (\Throwable $e) {
+            $pdo->rollBack();
+            error_log('[AutoInvoiceEngine] deleteInvoice error: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Recalculate & restore exact affiliate balance based strictly on
+     * (Total Approved Conversions - Total Paid Invoices).
+     * Prevents any balance discrepancies, double-deductions, or artificial inflation.
+     */
+    public static function recalculateAffiliateBalance(?int $affiliateId = null): array
+    {
+        self::ensureSchema();
+        $sql = "SELECT id FROM `affiliates`";
+        $params = [];
+        if ($affiliateId) {
+            $sql .= " WHERE `id` = ?";
+            $params[] = $affiliateId;
+        }
+        $affs = Database::fetchAll($sql, $params);
+        $updated = 0;
+        $results = [];
+
+        foreach ($affs as $af) {
+            $aId = (int)$af['id'];
+            
+            // 1. Total Approved Conversions
+            $convRow = Database::fetchOne(
+                "SELECT COALESCE(SUM(payout), 0) AS total_earned
+                 FROM `conversions`
+                 WHERE `affiliate_id` = ? AND `status` = 'approved' AND COALESCE(`is_hidden`, 0) = 0",
+                [$aId]
+            );
+            $totalEarned = (float)($convRow['total_earned'] ?? 0);
+
+            // 2. Total Paid Invoices
+            $paidRow = Database::fetchOne(
+                "SELECT COALESCE(SUM(total), 0) AS total_paid
+                 FROM `invoices`
+                 WHERE `affiliate_id` = ? AND `status` = 'paid'",
+                [$aId]
+            );
+            $totalPaid = (float)($paidRow['total_paid'] ?? 0);
+
+            // 3. Exact Current Balance
+            $exactBalance = max(0.00, round($totalEarned - $totalPaid, 4));
+
+            Database::query("UPDATE `affiliates` SET `balance` = ? WHERE `id` = ?", [$exactBalance, $aId]);
+            $updated++;
+            $results[$aId] = [
+                'affiliate_id' => $aId,
+                'total_earned' => $totalEarned,
+                'total_paid'   => $totalPaid,
+                'new_balance'  => $exactBalance,
+            ];
+        }
+
+        return ['updated_count' => $updated, 'results' => $results];
+    }
+
     // ──────────────────────────────────────────────────────────────────────────
     // 10. AUDIT LOGGING
     // ──────────────────────────────────────────────────────────────────────────

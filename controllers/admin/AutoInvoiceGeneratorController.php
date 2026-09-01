@@ -207,6 +207,28 @@ if (Helpers::isPost()) {
             Helpers::flash($sent ? 'success' : 'error', $sent ? 'Email notification sent.' : 'Email sending failed.');
             Helpers::redirect('/admin/auto-invoices?tab=invoices');
             break;
+
+        // ── 11. Delete Invoice & Sync Balance ──
+        case 'delete_invoice':
+            $id = (int)($_POST['invoice_id'] ?? 0);
+            $res = AutoInvoiceEngine::deleteInvoice($id, $adminId);
+            if (Helpers::isAjax()) {
+                Helpers::jsonResponse(['success' => $res, 'message' => $res ? 'Invoice deleted and affiliate balance reconciled.' : 'Failed to delete invoice.']);
+            }
+            Helpers::flash($res ? 'success' : 'error', $res ? 'Invoice deleted and affiliate balance reconciled.' : 'Failed to delete invoice.');
+            Helpers::redirect('/admin/auto-invoices?tab=invoices');
+            break;
+
+        // ── 12. Recalculate & Restore Affiliate Balances ──
+        case 'recalculate_balances':
+            $affId = !empty($_POST['affiliate_id']) ? (int)$_POST['affiliate_id'] : null;
+            $res = AutoInvoiceEngine::recalculateAffiliateBalance($affId);
+            if (Helpers::isAjax()) {
+                Helpers::jsonResponse(['success' => true, 'message' => "Successfully synchronized exact balance for {$res['updated_count']} affiliate(s).", 'data' => $res]);
+            }
+            Helpers::flash('success', "Synchronized exact balance for {$res['updated_count']} affiliate(s) based on approved conversions.");
+            Helpers::redirect('/admin/auto-invoices?tab=' . urlencode($tab));
+            break;
     }
 }
 
