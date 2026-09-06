@@ -535,43 +535,12 @@ class PostbackFirer
 
     public static function ensurePostbackSentColumn(): void
     {
-        self::ensureConversionColumns();
+        // Columns are safely handled via migrations (apply_migrations.php)
     }
 
     private static function ensureConversionColumns(): void
     {
-        if (self::$convColumnChecked) return;
-        if (!self::columnExists('conversions', 'postback_sent')) {
-            try {
-                Database::query("ALTER TABLE `conversions` ADD COLUMN `postback_sent` TINYINT(1) NOT NULL DEFAULT 0");
-            } catch (\Throwable $e) {
-                self::log("[PostbackFirer] Could not ensure postback_sent column: " . $e->getMessage());
-            }
-        }
-        if (!self::columnExists('conversions', 'postback_sent_at')) {
-            try {
-                Database::query("ALTER TABLE `conversions` ADD COLUMN `postback_sent_at` DATETIME DEFAULT NULL");
-            } catch (\Throwable $e) {
-                self::log("[PostbackFirer] Could not ensure postback_sent_at column: " . $e->getMessage());
-            }
-        }
-        if (!self::columnExists('conversions', 'is_hidden')) {
-            try {
-                Database::query("ALTER TABLE `conversions` ADD COLUMN `is_hidden` TINYINT(1) NOT NULL DEFAULT 0");
-            } catch (\Throwable $e) {}
-        }
-        if (!self::columnExists('conversions', 'hide_reason')) {
-            try {
-                Database::query("ALTER TABLE `conversions` ADD COLUMN `hide_reason` VARCHAR(255) NOT NULL DEFAULT ''");
-            } catch (\Throwable $e) {}
-        }
-        if (!self::columnExists('conversions', 'fraud_score')) {
-            try {
-                Database::query("ALTER TABLE `conversions` ADD COLUMN `fraud_score` TINYINT UNSIGNED NOT NULL DEFAULT 0");
-                Database::query("ALTER TABLE `conversions` ADD INDEX `idx_fraud_score` (`fraud_score`)");
-            } catch (\Throwable $e) {}
-        }
-        self::$convColumnChecked = true;
+        // Columns are safely handled via migrations (apply_migrations.php)
     }
 
     /**

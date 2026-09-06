@@ -18,6 +18,12 @@ class AiSeoEngine
         self::$schemaChecked = true;
 
         try {
+            // Fast-path: check if settings table exists without acquiring DDL metadata lock
+            $row = Database::fetchOne("SELECT 1 FROM `ai_seo_settings` LIMIT 1");
+            if ($row) return;
+        } catch (\Throwable $_) {}
+
+        try {
             // 1. Pages metadata & AI analysis
             Database::query("CREATE TABLE IF NOT EXISTS `ai_seo_pages` (
                 `id` INT AUTO_INCREMENT PRIMARY KEY,

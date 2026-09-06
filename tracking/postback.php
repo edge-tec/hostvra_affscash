@@ -76,24 +76,7 @@ register_shutdown_function(function() use (&$_advPbLog) {
     // Skip logging if click_id is empty (bot/scanner noise with no params)
     if (empty($_advPbLog['click_id'])) return;
     try {
-        // Auto-create table if needed (runs once then becomes a fast no-op)
-        Database::query("CREATE TABLE IF NOT EXISTS `advertiser_postback_logs` (
-            `id`            BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            `advertiser_id` INT UNSIGNED DEFAULT NULL,
-            `offer_id`      INT UNSIGNED DEFAULT NULL,
-            `click_id`      VARCHAR(255) DEFAULT NULL,
-            `conversion_id` CHAR(36) DEFAULT NULL,
-            `payout`        DECIMAL(10,4) DEFAULT 0.0000,
-            `status`        VARCHAR(30) NOT NULL DEFAULT 'error',
-            `reject_reason` VARCHAR(500) DEFAULT NULL,
-            `request_ip`    VARCHAR(45) DEFAULT NULL,
-            `request_url`   TEXT DEFAULT NULL,
-            `response_body` TEXT DEFAULT NULL,
-            `created_at`    DATETIME DEFAULT CURRENT_TIMESTAMP,
-            INDEX `idx_adv_id`   (`advertiser_id`),
-            INDEX `idx_click_id` (`click_id`),
-            INDEX `idx_created`  (`created_at`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
     } catch (\Throwable $e) {}
     try {
         Database::insert('advertiser_postback_logs', array_filter([
@@ -547,64 +530,7 @@ if (!$isAutoHidden) {
 }
 
 // ── Record conversion ─────────────────────────────────────────────────────
-// Ensure required columns exist BEFORE INSERT (safe repeated execution).
-PostbackFirer::ensurePostbackSentColumn();
-// Allow NULL advertiser_id so in-house offers (is_inhouse=1, no external advertiser) can record conversions.
-// Without this MODIFY, the INSERT below fails with NOT NULL constraint for in-house postbacks.
-try {
-    Database::query("CREATE TABLE IF NOT EXISTS `offer_conversion_history` (
-        `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-        `affiliate_id` INT UNSIGNED NOT NULL,
-        `offer_id` INT UNSIGNED NOT NULL,
-        `visitor_ip` VARCHAR(45) NOT NULL,
-        `conversion_time` DATETIME NOT NULL,
-        `conversion_status` VARCHAR(20) DEFAULT 'approved',
-        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        INDEX (`affiliate_id`, `offer_id`, `visitor_ip`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
-    Database::query("ALTER TABLE `offer_conversion_history` ADD COLUMN `conversion_status` VARCHAR(20) DEFAULT 'approved'");
-} catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` MODIFY COLUMN `advertiser_id` INT UNSIGNED NULL DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `hide_reason` VARCHAR(500) NOT NULL DEFAULT ''"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `fraud_score`      TINYINT UNSIGNED DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `fraud_checked_at` DATETIME         DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `fraud_reasons`    TEXT             DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `conv_ip`            VARCHAR(45)      DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `user_agent`         VARCHAR(512)     DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_risk_score`  TINYINT UNSIGNED DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_risk_level`  VARCHAR(10)      DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_vpn`         TINYINT(1)       DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_proxy`       TINYINT(1)       DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_tor`         TINYINT(1)       DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_datacenter`  TINYINT(1)       DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_mobile`      TINYINT(1)       DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_country`     VARCHAR(60)      DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_country_code` CHAR(2)         DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_city`        VARCHAR(100)     DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_state`       VARCHAR(100)     DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_isp`         VARCHAR(200)     DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_org`         VARCHAR(200)     DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `ipquery_asn`         VARCHAR(30)      DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `scamalytics_score`     TINYINT UNSIGNED DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `scamalytics_status`    VARCHAR(10)      DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `scamalytics_mode`      VARCHAR(15)      DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `proxycheck_score`      TINYINT UNSIGNED DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `proxycheck_is_proxy`   TINYINT(1)       DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `proxycheck_is_vpn`     TINYINT(1)       DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `proxycheck_status`     VARCHAR(10)      DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `botscout_is_bot`       TINYINT(1)       DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `botscout_count`        SMALLINT UNSIGNED DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `botscout_status`       VARCHAR(10)      DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `frauddefense_score`      TINYINT UNSIGNED DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `frauddefense_status`     VARCHAR(10)      DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `fraudlabspro_score`      TINYINT UNSIGNED DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `fraudlabspro_status`     VARCHAR(10)      DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `fraudlabspro_flp_status` VARCHAR(10)      DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `device_brand`            VARCHAR(60)      DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `device_model`          VARCHAR(120)     DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `os_version`            VARCHAR(40)      DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `landing_page`          VARCHAR(2000)    DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `referrer`              VARCHAR(2000)    DEFAULT NULL"); } catch (\Throwable $_e) {}
+
 
 // ── Extract visit metadata from the originating click ────────────────────
 $_ua = substr($click['user_agent'] ?? '', 0, 512);

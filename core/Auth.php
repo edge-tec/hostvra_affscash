@@ -34,11 +34,19 @@ class Auth {
 
         // Database-backed IP rate limiting to prevent session bypass brute-force
         try {
-            Database::query("CREATE TABLE IF NOT EXISTS `login_failures` (
-                `ip_address` VARCHAR(45) PRIMARY KEY,
-                `attempts` INT NOT NULL DEFAULT 0,
-                `last_attempt` DATETIME NOT NULL
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+            if (!self::$banTableReady) {
+                try {
+                    Database::fetchOne("SELECT 1 FROM `login_failures` LIMIT 1");
+                    self::$banTableReady = true;
+                } catch (\Throwable $_) {
+                    Database::query("CREATE TABLE IF NOT EXISTS `login_failures` (
+                        `ip_address` VARCHAR(45) PRIMARY KEY,
+                        `attempts` INT NOT NULL DEFAULT 0,
+                        `last_attempt` DATETIME NOT NULL
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+                    self::$banTableReady = true;
+                }
+            }
         } catch (\Throwable $e) {}
 
         try {

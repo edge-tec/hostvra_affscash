@@ -23,6 +23,13 @@ class Blocklist {
     private static function ensureTable(): void {
         if (self::$tableReady) return;
         self::$tableReady = true;
+
+        try {
+            // Fast-path: check if table is already readable without acquiring DDL metadata lock
+            Database::fetchOne("SELECT 1 FROM `fraud_blocklist` LIMIT 1");
+            return;
+        } catch (\Throwable $_) {}
+
         try {
             Database::query("CREATE TABLE IF NOT EXISTS `fraud_blocklist` (
                 `id`         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

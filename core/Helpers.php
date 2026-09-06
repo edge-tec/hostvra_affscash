@@ -253,19 +253,18 @@ class Helpers {
     }
 
     /**
-     * Robust HTTP fetcher using cURL with proper timeout, redirect handling,
-     * and HTTP status code extraction. Falls back to file_get_contents.
+     * Robust HTTP fetcher using cURL with fast timeout to prevent PHP-FPM pool exhaustion.
      *
      * @return array{body: string|false, http_code: int}
      */
-    private static function geoHttpGet(string $url, int $timeout = 4, array $headers = []): array {
+    private static function geoHttpGet(string $url, int $timeout = 2, array $headers = []): array {
         if (function_exists('curl_init')) {
             $ch = curl_init();
             curl_setopt_array($ch, [
                 CURLOPT_URL            => $url,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_TIMEOUT        => $timeout,
-                CURLOPT_CONNECTTIMEOUT => 3,
+                CURLOPT_CONNECTTIMEOUT => 1,
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_MAXREDIRS      => 2,
                 CURLOPT_USERAGENT      => 'AffsCash/2.0',
@@ -278,22 +277,23 @@ class Helpers {
             curl_close($ch);
 
             if ($body === false || $httpCode === 0) {
-                error_log("GeoIP cURL error for $url: $err (HTTP $httpCode)");
                 return ['body' => false, 'http_code' => $httpCode];
             }
             return ['body' => $body, 'http_code' => $httpCode];
         }
 
-        // Fallback to file_get_contents
+        // Fallback to file_get_contents with fast timeout
         $ctx = stream_context_create(['http' => [
             'timeout'       => $timeout,
             'ignore_errors' => true,
             'header'        => implode("\r\n", array_merge(["User-Agent: AffsCash/2.0"], $headers)) . "\r\n",
         ]]);
         $body = @file_get_contents($url, false, $ctx);
-        $httpCode = 0;
-        if (isset($http_response_header) && is_array($http_response_header)) {
-            foreach ($http_response_header as $h) {
+        $headers = function_exists('http_get_last_response_headers')
+            ? (http_get_last_response_headers() ?? [])
+            : ($http_response_header ?? []);
+        if (is_array($headers)) {
+            foreach ($headers as $h) {
                 if (preg_match('/^HTTP\/[\d.]+ (\d{3})/', $h, $m)) {
                     $httpCode = (int)$m[1];
                 }
@@ -303,54 +303,25 @@ class Helpers {
     }
 
     /**
-     * Ensure ip_geo_cache schema has all required columns.
-     * Runs ALTER TABLE only once per PHP process.
+     * Geo schema is maintained via migrations (apply_migrations.php).
+     * No runtime DDL executed here to eliminate table metadata locks.
      */
     private static function ensureGeoCacheSchema(): void {
-        if (self::$geoSchemaReady) return;
-        self::$geoSchemaReady = true;
-
-        // Create table if missing
-        try {
-            Database::query("CREATE TABLE IF NOT EXISTS ip_geo_cache (
-                ip_address   VARCHAR(45) PRIMARY KEY,
-                country_code VARCHAR(5)   DEFAULT NULL,
-                country      VARCHAR(100) DEFAULT NULL,
-                region       VARCHAR(100) DEFAULT NULL,
-                city         VARCHAR(100) DEFAULT NULL,
-                isp          VARCHAR(255) DEFAULT NULL,
-                proxy        TINYINT(1)   DEFAULT 0,
-                hosting      TINYINT(1)   DEFAULT 0,
-                lookup_ok    TINYINT(1)   DEFAULT 1,
-                cached_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                INDEX idx_gc_cached (cached_at)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
-        } catch (\Throwable $_) {}
-
-        // Idempotent column additions for existing tables
-        $cols = [
-            'isp'       => "ADD COLUMN `isp` VARCHAR(255) DEFAULT NULL",
-            'proxy'     => "ADD COLUMN `proxy` TINYINT(1) DEFAULT 0",
-            'hosting'   => "ADD COLUMN `hosting` TINYINT(1) DEFAULT 0",
-            'lookup_ok' => "ADD COLUMN `lookup_ok` TINYINT(1) DEFAULT 1",
-            'region'    => "ADD COLUMN `region` VARCHAR(100) DEFAULT NULL",
-        ];
-        foreach ($cols as $col => $ddl) {
-            try { Database::query("ALTER TABLE `ip_geo_cache` $ddl"); } catch (\Throwable $_) {}
-        }
-
-        // One-time purge: delete legacy poison entries where country_code is blank
-        // but lookup_ok defaulted to 1 (success). These were cached with 7-day TTL
-        // before the fix, preventing any re-lookup attempt.
-        try {
-            Database::query(
-                "DELETE FROM ip_geo_cache WHERE (country_code IS NULL OR country_code = '') AND cached_at < DATE_SUB(NOW(), INTERVAL 2 MINUTE)"
-            );
-        } catch (\Throwable $_) {}
+        // Schema is safely handled via apply_migrations.php
     }
 
     public static function getGeoInfo(string $ip): array {
         $default = ['country' => '', 'region' => '', 'city' => '', 'isp' => '', 'proxy' => false, 'hosting' => false];
+
+        // ── Fast-path: Cloudflare HTTP_CF_IPCOUNTRY Header (0ms latency) ────────
+        $cfCountry = '';
+        if (!empty($_SERVER['HTTP_CF_IPCOUNTRY'])) {
+            $rawCf = strtoupper(trim((string)$_SERVER['HTTP_CF_IPCOUNTRY']));
+            if (strlen($rawCf) === 2 && $rawCf !== 'XX' && $rawCf !== 'T1') {
+                $cfCountry = $rawCf;
+                $default['country'] = $cfCountry;
+            }
+        }
 
         // ── 1. Input Validation ─────────────────────────────────────────────────
         // Trim whitespace and null bytes that could silently break lookups
@@ -441,7 +412,7 @@ class Helpers {
                 self::ipApiRecordRequest();
                 $url = "http://ip-api.com/json/" . urlencode($ip)
                      . "?fields=status,message,country,countryCode,regionName,city,isp,proxy,hosting";
-                $resp = self::geoHttpGet($url, 4);
+                $resp = self::geoHttpGet($url, 2);
 
                 if ($resp['http_code'] === 429) {
                     // Rate limited — skip to fallback, do NOT cache this failure
@@ -450,7 +421,7 @@ class Helpers {
                     $data = json_decode($resp['body'], true);
                     if ($data && ($data['status'] ?? '') === 'success') {
                         $result = [
-                            'country' => $data['countryCode']  ?? '',
+                            'country' => $data['countryCode']  ?? ($cfCountry ?: ''),
                             'region'  => $data['regionName']   ?? '',
                             'city'    => $data['city']         ?? '',
                             'isp'     => $data['isp']          ?? '',
@@ -458,25 +429,24 @@ class Helpers {
                             'hosting' => (bool)($data['hosting'] ?? false),
                         ];
                         $success = true;
-                    } else {
-                        error_log("GeoIP [ip-api.com] API error for IP $ip: " . ($data['message'] ?? json_encode($data)));
                     }
-                } else {
-                    error_log("GeoIP [ip-api.com] HTTP {$resp['http_code']} for IP $ip");
                 }
-            } catch (\Throwable $e) {
-                error_log("GeoIP [ip-api.com] exception for IP $ip: " . $e->getMessage());
-            }
+            } catch (\Throwable $e) {}
         }
 
-        // --- Provider 2: ipwho.is (no hard rate limit, supports IPv4 + IPv6) ---
+        // If Cloudflare already provided the country and Provider 1 didn't succeed,
+        // we can avoid hanging on slow secondary/tertiary external providers!
+        if (!$success && !empty($cfCountry)) {
+            $result['country'] = $cfCountry;
+            $success = true;
+        }
+
+        // --- Provider 2: ipwho.is (fallback) ---
         if (!$success) {
             try {
-                $resp2 = self::geoHttpGet("https://ipwho.is/" . urlencode($ip), 5);
+                $resp2 = self::geoHttpGet("https://ipwho.is/" . urlencode($ip), 2);
 
-                if ($resp2['http_code'] === 429) {
-                    error_log("GeoIP [ipwho.is] RATE LIMITED (HTTP 429) for IP $ip");
-                } elseif ($resp2['body'] !== false && $resp2['http_code'] === 200) {
+                if ($resp2['body'] !== false && $resp2['http_code'] === 200) {
                     $data2 = json_decode($resp2['body'], true);
                     if ($data2 && ($data2['success'] ?? false) === true) {
                         $result = [
@@ -488,24 +458,15 @@ class Helpers {
                             'hosting' => false,
                         ];
                         $success = true;
-                    } else {
-                        error_log("GeoIP [ipwho.is] API error for IP $ip: " . json_encode($data2));
                     }
-                } else {
-                    error_log("GeoIP [ipwho.is] HTTP {$resp2['http_code']} for IP $ip");
                 }
-            } catch (\Throwable $e) {
-                error_log("GeoIP [ipwho.is] exception for IP $ip: " . $e->getMessage());
-            }
+            } catch (\Throwable $e) {}
         }
 
-        // --- Provider 3: ipapi.co (1000/day free tier) ---
+        // --- Provider 3: ipapi.co (fallback) ---
         if (!$success) {
             try {
-                $resp3 = self::geoHttpGet(
-                    "https://ipapi.co/" . urlencode($ip) . "/json/",
-                    5
-                );
+                $resp3 = self::geoHttpGet("https://ipapi.co/" . urlencode($ip) . "/json/", 2);
 
                 if ($resp3['http_code'] === 429) {
                     error_log("GeoIP [ipapi.co] RATE LIMITED (HTTP 429) for IP $ip");

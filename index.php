@@ -88,16 +88,16 @@ if (Config::get('config', 'app.auto_migrate') !== false) {
     }
 }
 
-// Ensure required directories exist
-foreach (['/uploads/invoices', '/uploads/support', '/storage/backups/code', '/storage/update_staging'] as $_d) {
-    if (!is_dir(__DIR__ . $_d)) @mkdir(__DIR__ . $_d, 0755, true);
+// Ensure required directories exist (fast existence check)
+if (!is_dir(__DIR__ . '/uploads/invoices')) {
+    foreach (['/uploads/invoices', '/uploads/support', '/storage/backups/code', '/storage/update_staging'] as $_d) {
+        if (!is_dir(__DIR__ . $_d)) @mkdir(__DIR__ . $_d, 0755, true);
+    }
+    if (is_dir(__DIR__ . '/uploads/support') && !is_file(__DIR__ . '/uploads/support/index.html')) {
+        @file_put_contents(__DIR__ . '/uploads/support/index.html', '');
+    }
+    unset($_d);
 }
-// Drop an empty index.html into /uploads/support so even a misconfigured web
-// server can't list the directory contents directly.
-if (is_dir(__DIR__ . '/uploads/support') && !is_file(__DIR__ . '/uploads/support/index.html')) {
-    @file_put_contents(__DIR__ . '/uploads/support/index.html', '');
-}
-unset($_d);
 
 // Set timezone
 date_default_timezone_set(Config::get('config', 'app.timezone') ?? 'UTC');

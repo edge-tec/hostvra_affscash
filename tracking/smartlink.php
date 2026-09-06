@@ -78,24 +78,7 @@ if ((Config::get('config', 'vpn_detection.enabled') ?? '0') === '1' && !$_vpnSki
     if (($geo['proxy'] ?? false) || ($geo['hosting'] ?? false)) {
         // Log the blocked attempt using the same table as click.php
         try {
-            Database::query("CREATE TABLE IF NOT EXISTS `vpn_blocked_log` (
-                `id`             INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                `affiliate_id`   INT UNSIGNED NULL,
-                `offer_id`       INT UNSIGNED NULL,
-                `offer_name`     VARCHAR(255) NULL,
-                `smartlink_id`   INT UNSIGNED NULL,
-                `smartlink_name` VARCHAR(255) NULL,
-                `ip_address`     VARCHAR(45) NOT NULL,
-                `detection_type` VARCHAR(50) NOT NULL DEFAULT 'VPN',
-                `user_agent`     VARCHAR(1000) NULL,
-                `country`        VARCHAR(4) NOT NULL DEFAULT '',
-                `blocked_at`     DATETIME DEFAULT CURRENT_TIMESTAMP,
-                INDEX `idx_blocked_at` (`blocked_at`),
-                INDEX `idx_aff` (`affiliate_id`),
-                INDEX `idx_smartlink` (`smartlink_id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
-            try { Database::query("ALTER TABLE `vpn_blocked_log` ADD COLUMN `smartlink_id` INT UNSIGNED NULL AFTER `offer_name`"); } catch (\Throwable $_e) {}
-            try { Database::query("ALTER TABLE `vpn_blocked_log` ADD COLUMN `smartlink_name` VARCHAR(255) NULL AFTER `smartlink_id`"); } catch (\Throwable $_e) {}
+
 
             Database::insert('vpn_blocked_log', [
                 'affiliate_id'   => $_slAffId,
@@ -194,12 +177,7 @@ if ($isCustomEntry) {
     $redirectUrl = $directUrl ?: '/';
 
     if ($affiliate) {
-        // Ensure offer_id is nullable so custom-URL clicks can be stored without an offer
-        try { Database::query("ALTER TABLE `clicks` MODIFY COLUMN `offer_id` INT UNSIGNED NULL DEFAULT NULL"); } catch (\Throwable $_e) {}
-        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `sub6`          VARCHAR(500) DEFAULT NULL AFTER `sub5`");        } catch (\Throwable $_e) {}
-        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `smartlink_id`  INT UNSIGNED DEFAULT NULL AFTER `affiliate_id`"); } catch (\Throwable $_e) {}
-        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `fraud_reasons` TEXT         DEFAULT NULL");                      } catch (\Throwable $_e) {}
-        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `source`        VARCHAR(255) DEFAULT ''");                        } catch (\Throwable $_e) {}
+
 
         $clickId = Helpers::uuid();
         $sub1    = Helpers::get('sub1') ?? '';
@@ -253,14 +231,7 @@ if ($isCustomEntry) {
             }
         } catch (\Throwable $e) {}
 
-        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `traffic_source`      VARCHAR(50)  DEFAULT 'Unknown'"); } catch (\Throwable $_e) {}
-        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `traffic_source_type` VARCHAR(50)  DEFAULT 'Unknown'"); } catch (\Throwable $_e) {}
-        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `detected_by`         VARCHAR(100) DEFAULT NULL"); } catch (\Throwable $_e) {}
-        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `utm_source`          VARCHAR(255) DEFAULT NULL"); } catch (\Throwable $_e) {}
-        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `utm_medium`          VARCHAR(255) DEFAULT NULL"); } catch (\Throwable $_e) {}
-        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `utm_campaign`        VARCHAR(255) DEFAULT NULL"); } catch (\Throwable $_e) {}
-        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `utm_content`         VARCHAR(255) DEFAULT NULL"); } catch (\Throwable $_e) {}
-        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `utm_term`            VARCHAR(255) DEFAULT NULL"); } catch (\Throwable $_e) {}
+
 
         try {
             Database::insert('clicks', [

@@ -590,12 +590,8 @@ $geo       = Helpers::getGeoInfo($ip);
 
 // (IP Conversion Protection System relocated early in the script)
 
-// Idempotent schema migration — extended UA columns for Advertiser Reporting.
-// Each ALTER is wrapped individually so partial migrations stay correct.
-try { Database::query("ALTER TABLE `clicks` ADD COLUMN `browser_version` VARCHAR(64) DEFAULT '' AFTER `browser`"); } catch (\Throwable $_) {}
-try { Database::query("ALTER TABLE `clicks` ADD COLUMN `os_version`      VARCHAR(64) DEFAULT '' AFTER `os`"); }      catch (\Throwable $_) {}
-try { Database::query("ALTER TABLE `clicks` ADD COLUMN `device_brand`    VARCHAR(64) DEFAULT '' AFTER `device_type`"); } catch (\Throwable $_) {}
-try { Database::query("ALTER TABLE `clicks` ADD COLUMN `device_model`    VARCHAR(128) DEFAULT '' AFTER `device_brand`"); } catch (\Throwable $_) {}
+// Extended UA columns are migrated via database migrations (apply_migrations.php).
+
 
 // ── Fraud Blocklist Enforcement ─────────────────────────────────────────────
 // Centralised check via Blocklist::enforceClick(). Covers IP, CIDR, UA, ASN,
@@ -758,24 +754,7 @@ if ($isVpnSignal) {
         $clickStatus  = 'blocked';
         // Log the blocked attempt to vpn_blocked_log table
         try {
-            Database::query("CREATE TABLE IF NOT EXISTS `vpn_blocked_log` (
-                `id`             INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                `affiliate_id`   INT UNSIGNED NULL,
-                `offer_id`       INT UNSIGNED NULL,
-                `offer_name`     VARCHAR(255) NULL,
-                `smartlink_id`   INT UNSIGNED NULL,
-                `smartlink_name` VARCHAR(255) NULL,
-                `ip_address`     VARCHAR(45) NOT NULL,
-                `detection_type` VARCHAR(50) NOT NULL DEFAULT 'VPN',
-                `user_agent`     VARCHAR(1000) NULL,
-                `country`        VARCHAR(4) NOT NULL DEFAULT '',
-                `blocked_at`     DATETIME DEFAULT CURRENT_TIMESTAMP,
-                INDEX `idx_blocked_at` (`blocked_at`),
-                INDEX `idx_aff` (`affiliate_id`),
-                INDEX `idx_smartlink` (`smartlink_id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
-            try { Database::query("ALTER TABLE `vpn_blocked_log` ADD COLUMN `smartlink_id` INT UNSIGNED NULL AFTER `offer_name`"); } catch (\Throwable $_e) {}
-            try { Database::query("ALTER TABLE `vpn_blocked_log` ADD COLUMN `smartlink_name` VARCHAR(255) NULL AFTER `smartlink_id`"); } catch (\Throwable $_e) {}
+
 
             $slId = $GLOBALS['_sl_id'] ?? (int)($_GET['sl'] ?? $_GET['smartlink_id'] ?? 0) ?: null;
             $slName = $GLOBALS['_sl_name'] ?? null;
@@ -918,21 +897,7 @@ $offerUrl = str_replace(
     $offerUrl
 );
 
-// Ensure all late-added columns exist (auto-migration — each ALTER is a no-op if the column is already present)
-try { Database::query("ALTER TABLE `clicks` ADD COLUMN `sub6`          VARCHAR(500)  DEFAULT NULL          AFTER `sub5`");        } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `clicks` ADD COLUMN `smartlink_id`  INT UNSIGNED  DEFAULT NULL          AFTER `affiliate_id`"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `clicks` ADD COLUMN `fraud_reasons` TEXT          DEFAULT NULL");                               } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `clicks` ADD COLUMN `source`        VARCHAR(255)  DEFAULT ''");                                 } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `clicks` ADD COLUMN `original_source` VARCHAR(255) DEFAULT NULL");                              } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `clicks` ADD COLUMN `source_override_applied` TINYINT(1) DEFAULT 0");                           } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `clicks` ADD COLUMN `traffic_source`      VARCHAR(50)  DEFAULT 'Unknown'"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `clicks` ADD COLUMN `traffic_source_type` VARCHAR(50)  DEFAULT 'Unknown'"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `clicks` ADD COLUMN `detected_by`         VARCHAR(100) DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `clicks` ADD COLUMN `utm_source`          VARCHAR(255) DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `clicks` ADD COLUMN `utm_medium`          VARCHAR(255) DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `clicks` ADD COLUMN `utm_campaign`        VARCHAR(255) DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `clicks` ADD COLUMN `utm_content`         VARCHAR(255) DEFAULT NULL"); } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `clicks` ADD COLUMN `utm_term`            VARCHAR(255) DEFAULT NULL"); } catch (\Throwable $_e) {}
+
 
 // ── Auto-Block: fraud score threshold check ───────────────────────────────
 // Controlled by admin setting: fraud.auto_block.enabled / fraud.auto_block.threshold
