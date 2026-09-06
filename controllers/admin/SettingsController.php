@@ -160,8 +160,16 @@ function handleUpload(string $field, string $prefix, array &$err = []): ?string 
         return null;
     }
 
-    $ext  = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION) ?: 'png');
-    if (!preg_match('/^[a-z0-9]{1,5}$/', $ext)) $ext = 'png';
+    $mimeMap = [
+        'image/png'     => 'png',
+        'image/jpeg'    => 'jpg',
+        'image/gif'     => 'gif',
+        'image/svg+xml' => 'svg',
+        'image/x-icon'  => 'ico',
+        'image/vnd.microsoft.icon' => 'ico',
+        'image/webp'    => 'webp',
+    ];
+    $ext  = $mimeMap[$mime] ?? 'png';
     $name = $prefix . '_' . time() . '_' . bin2hex(random_bytes(3)) . '.' . $ext;
     $dest = $uploadsDir . $name;
 
@@ -180,14 +188,16 @@ function handleBgVideoUpload(string $field, string $prefix): ?string {
     $file = $_FILES[$field];
     if ($file['error'] !== UPLOAD_ERR_OK) return null;
 
-    $allowedMime = ['video/mp4','video/webm','video/quicktime'];
-    $allowedExt  = ['mp4','webm','mov'];
+    $allowedMime = [
+        'video/mp4'       => 'mp4',
+        'video/webm'      => 'webm',
+        'video/quicktime' => 'mov',
+    ];
     $mime = mime_content_type($file['tmp_name']);
-    if (!in_array($mime, $allowedMime, true)) return null;
+    if (!isset($allowedMime[$mime])) return null;
     if ($file['size'] > 15 * 1024 * 1024) return null;
 
-    $ext  = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION) ?: 'mp4');
-    if (!in_array($ext, $allowedExt, true)) $ext = 'mp4';
+    $ext  = $allowedMime[$mime];
     $name = $prefix . '_' . time() . '.' . $ext;
     $dest = BASE_PATH . '/assets/uploads/' . $name;
 
@@ -209,13 +219,17 @@ function handleBgUpload(string $field, string $prefix): ?string {
     $file = $_FILES[$field];
     if ($file['error'] !== UPLOAD_ERR_OK) return null;
 
-    $allowed = ['image/png','image/jpeg','image/webp','image/gif'];
+    $allowed = [
+        'image/png'  => 'png',
+        'image/jpeg' => 'jpg',
+        'image/webp' => 'webp',
+        'image/gif'  => 'gif',
+    ];
     $mime    = mime_content_type($file['tmp_name']);
-    if (!in_array($mime, $allowed, true)) return null;
+    if (!isset($allowed[$mime])) return null;
     if ($file['size'] > 5 * 1024 * 1024) return null; // 5 MB cap
 
-    $ext  = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION) ?: 'jpg');
-    if (!in_array($ext, ['png','jpg','jpeg','webp','gif'], true)) $ext = 'jpg';
+    $ext  = $allowed[$mime];
     $name = $prefix . '_' . time() . '.' . $ext;
     $dest = BASE_PATH . '/assets/uploads/' . $name;
 

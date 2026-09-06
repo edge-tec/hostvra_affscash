@@ -6,6 +6,16 @@
 require_once __DIR__ . '/core/Config.php';
 require_once __DIR__ . '/core/Database.php';
 
+if (php_sapi_name() !== 'cli') {
+    require_once __DIR__ . '/core/Auth.php';
+    require_once __DIR__ . '/core/Session.php';
+    Session::start();
+    if (!Auth::check() || Auth::role() !== 'admin') {
+        http_response_code(403);
+        die("Access denied: Admin login or CLI execution required.");
+    }
+}
+
 Config::init(__DIR__ . '/config');
 
 echo "<pre>\n";

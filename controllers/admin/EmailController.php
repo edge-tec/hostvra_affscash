@@ -67,11 +67,16 @@ elseif ($action === 'blast') {
             $finfo    = finfo_open(FILEINFO_MIME_TYPE);
             $mimeType = finfo_file($finfo, $_FILES['blast_image']['tmp_name']);
             finfo_close($finfo);
-            $allowedMimes = ['image/jpeg','image/png','image/gif','image/webp'];
+            $mimeMap = [
+                'image/jpeg' => 'jpg',
+                'image/png'  => 'png',
+                'image/gif'  => 'gif',
+                'image/webp' => 'webp',
+            ];
             $fileSize = $_FILES['blast_image']['size'];
 
-            if (in_array($mimeType, $allowedMimes) && $fileSize <= 2 * 1024 * 1024) {
-                $ext      = pathinfo($_FILES['blast_image']['name'], PATHINFO_EXTENSION);
+            if (isset($mimeMap[$mimeType]) && $fileSize <= 2 * 1024 * 1024) {
+                $ext      = $mimeMap[$mimeType];
                 $filename = 'blast_' . date('YmdHis') . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
                 if (move_uploaded_file($_FILES['blast_image']['tmp_name'], $uploadDir . $filename)) {
                     $appUrlBase = rtrim(Config::get('config', 'app.url') ?? '', '/');

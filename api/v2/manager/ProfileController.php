@@ -82,13 +82,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $profilePic = $mgr['profile_pic'];
         if (isset($_FILES['profile_pic']) && $_FILES['profile_pic']['error'] === UPLOAD_ERR_OK) {
             $file = $_FILES['profile_pic'];
-            $allowed = ['image/png','image/jpeg','image/gif','image/webp'];
+            $mimeMap = [
+                'image/png'  => 'png',
+                'image/jpeg' => 'jpg',
+                'image/gif'  => 'gif',
+                'image/webp' => 'webp',
+            ];
             $mime = mime_content_type($file['tmp_name']);
-            if (in_array($mime, $allowed) && $file['size'] <= 2 * 1024 * 1024) {
-                $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION) ?: 'jpg');
-                $name = 'mgr_avatar_' . $userId . '_' . time() . '.' . $ext;
+            if (isset($mimeMap[$mime]) && $file['size'] <= 2 * 1024 * 1024) {
+                $ext = $mimeMap[$mime];
+                $name = 'mgr_avatar_' . $userId . '_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
                 $dest = BASE_PATH . '/assets/uploads/' . $name;
-                if (!is_dir(BASE_PATH . '/assets/uploads')) @mkdir(BASE_PATH . '/assets/uploads', 0777, true);
+                if (!is_dir(BASE_PATH . '/assets/uploads')) @mkdir(BASE_PATH . '/assets/uploads', 0775, true);
                 if (move_uploaded_file($file['tmp_name'], $dest)) {
                     $profilePic = '/assets/uploads/' . $name;
                 }

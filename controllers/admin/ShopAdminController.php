@@ -15,13 +15,18 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         // Image upload
         $imgPath = null;
         if (!empty($_FILES['image']['tmp_name'])) {
-            $allowed = ['image/png','image/jpeg','image/gif','image/webp'];
+            $mimeMap = [
+                'image/png'  => 'png',
+                'image/jpeg' => 'jpg',
+                'image/gif'  => 'gif',
+                'image/webp' => 'webp',
+            ];
             $mime = @mime_content_type($_FILES['image']['tmp_name']);
-            if (in_array($mime, $allowed, true) && (int)$_FILES['image']['size'] <= 4 * 1024 * 1024) {
+            if (isset($mimeMap[$mime]) && (int)$_FILES['image']['size'] <= 4 * 1024 * 1024) {
                 $dir = BASE_PATH . '/assets/uploads/shop/';
                 if (!is_dir($dir)) @mkdir($dir, 0775, true);
-                $ext  = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION) ?: 'jpg');
-                $safe = 'p_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . preg_replace('/[^a-z0-9]/','',$ext);
+                $ext  = $mimeMap[$mime];
+                $safe = 'p_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
                 if (@move_uploaded_file($_FILES['image']['tmp_name'], $dir . $safe)) {
                     $imgPath = '/assets/uploads/shop/' . $safe;
                 }

@@ -58,15 +58,20 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         $profilePic = $mgr['profile_pic'];
         if (!empty($_FILES['profile_pic']['tmp_name']) && $_FILES['profile_pic']['error'] === UPLOAD_ERR_OK) {
             $file    = $_FILES['profile_pic'];
-            $allowed = ['image/png','image/jpeg','image/gif','image/webp'];
+            $mimeMap = [
+                'image/png'  => 'png',
+                'image/jpeg' => 'jpg',
+                'image/gif'  => 'gif',
+                'image/webp' => 'webp',
+            ];
             $mime    = mime_content_type($file['tmp_name']);
-            if (!in_array($mime, $allowed)) {
+            if (!isset($mimeMap[$mime])) {
                 $errors[] = 'Profile picture must be PNG, JPG, GIF or WebP.';
             } elseif ($file['size'] > 2 * 1024 * 1024) {
                 $errors[] = 'Profile picture must be under 2 MB.';
             } else {
-                $ext  = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION) ?: 'jpg');
-                $name = 'mgr_avatar_' . $userId . '_' . time() . '.' . $ext;
+                $ext  = $mimeMap[$mime];
+                $name = 'mgr_avatar_' . $userId . '_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
                 $dest = BASE_PATH . '/assets/uploads/' . $name;
                 if (move_uploaded_file($file['tmp_name'], $dest)) {
                     $profilePic = '/assets/uploads/' . $name;

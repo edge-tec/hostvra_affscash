@@ -11,8 +11,14 @@
  * ─────────────────────────────────────────────────────────
  */
 
+// ── Security check: CLI execution only ────────────────────────────────────────
+if (php_sapi_name() !== 'cli') {
+    http_response_code(403);
+    die("Access denied: For security, this admin utility can only be run via CLI command line (e.g. php tests/create_admin.php).\n");
+}
+
 // ── Minimal bootstrap ─────────────────────────────────────────────────────────
-define('BASE_PATH', __DIR__);
+define('BASE_PATH', dirname(__DIR__));
 define('CONFIG_PATH', BASE_PATH . '/config');
 
 $error   = '';

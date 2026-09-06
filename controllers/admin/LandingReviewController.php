@@ -86,17 +86,22 @@ if ($action === 'approve') {
         // Avatar upload
         $avatar = $review['avatar'] ?? null;
         if (!empty($_FILES['avatar']['tmp_name'])) {
-            $allowed = ['image/jpeg','image/png','image/gif','image/webp'];
+            $mimeMap = [
+                'image/jpeg' => 'jpg',
+                'image/png'  => 'png',
+                'image/gif'  => 'gif',
+                'image/webp' => 'webp',
+            ];
             $finfo   = finfo_open(FILEINFO_MIME_TYPE);
             $mime    = finfo_file($finfo, $_FILES['avatar']['tmp_name']);
             finfo_close($finfo);
-            if (!in_array($mime, $allowed)) {
+            if (!isset($mimeMap[$mime])) {
                 $errors[] = 'Avatar must be JPEG, PNG, GIF or WEBP.';
             } else {
                 $dir = BASE_PATH . '/assets/uploads/landing/';
                 if (!is_dir($dir)) mkdir($dir, 0755, true);
-                $ext   = pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION);
-                $fname = 'avatar_' . time() . '_' . rand(1000,9999) . '.' . strtolower($ext);
+                $ext   = $mimeMap[$mime];
+                $fname = 'avatar_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
                 if (move_uploaded_file($_FILES['avatar']['tmp_name'], $dir . $fname)) {
                     $avatar = '/assets/uploads/landing/' . $fname;
                 }

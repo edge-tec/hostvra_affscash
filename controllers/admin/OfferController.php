@@ -190,15 +190,20 @@ elseif ($action === 'create') {
         // Offer image upload
         $offerImage = null;
         if (!empty($_FILES['offer_image']['tmp_name'])) {
-            $allowed = ['image/jpeg','image/png','image/gif','image/webp'];
+            $mimeMap = [
+                'image/jpeg' => 'jpg',
+                'image/png'  => 'png',
+                'image/gif'  => 'gif',
+                'image/webp' => 'webp',
+            ];
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
             $mime = finfo_file($finfo, $_FILES['offer_image']['tmp_name']);
             finfo_close($finfo);
-            if (in_array($mime, $allowed)) {
+            if (isset($mimeMap[$mime])) {
                 $uploadDir = BASE_PATH . '/assets/uploads/offers/';
                 if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-                $ext = pathinfo($_FILES['offer_image']['name'], PATHINFO_EXTENSION);
-                $filename = 'offer_' . time() . '_' . rand(1000,9999) . '.' . strtolower($ext);
+                $ext = $mimeMap[$mime];
+                $filename = 'offer_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
                 if (move_uploaded_file($_FILES['offer_image']['tmp_name'], $uploadDir . $filename)) {
                     $offerImage = '/assets/uploads/offers/' . $filename;
                 }
@@ -363,15 +368,20 @@ elseif ($action === 'edit' && isset($_GET['id'])) {
             // Offer image upload (keep existing image if no new one uploaded)
             $offerImage = $offer['offer_image'] ?? null;
             if (!empty($_FILES['offer_image']['tmp_name'])) {
-                $allowed = ['image/jpeg','image/png','image/gif','image/webp'];
+                $mimeMap = [
+                    'image/jpeg' => 'jpg',
+                    'image/png'  => 'png',
+                    'image/gif'  => 'gif',
+                    'image/webp' => 'webp',
+                ];
                 $finfo = finfo_open(FILEINFO_MIME_TYPE);
                 $mime = finfo_file($finfo, $_FILES['offer_image']['tmp_name']);
                 finfo_close($finfo);
-                if (in_array($mime, $allowed)) {
+                if (isset($mimeMap[$mime])) {
                     $uploadDir = BASE_PATH . '/assets/uploads/offers/';
                     if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-                    $ext = pathinfo($_FILES['offer_image']['name'], PATHINFO_EXTENSION);
-                    $filename = 'offer_' . time() . '_' . rand(1000,9999) . '.' . strtolower($ext);
+                    $ext = $mimeMap[$mime];
+                    $filename = 'offer_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
                     if (move_uploaded_file($_FILES['offer_image']['tmp_name'], $uploadDir . $filename)) {
                         $offerImage = '/assets/uploads/offers/' . $filename;
                     }

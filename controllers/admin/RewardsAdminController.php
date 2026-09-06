@@ -24,14 +24,19 @@ if (Helpers::isPost() && Auth::verifyCsrf(Helpers::postRaw('_token'))) {
         $newImagePath   = null;
         $imageProvided  = false;
         if (!empty($_FILES['image']['tmp_name'])) {
-            $allowed = ['image/png','image/jpeg','image/gif','image/webp'];
-            $mime    = @mime_content_type($_FILES['image']['tmp_name']);
-            $size    = (int)$_FILES['image']['size'];
-            if (in_array($mime, $allowed, true) && $size <= 4 * 1024 * 1024) {
+            $mimeMap = [
+                'image/png'  => 'png',
+                'image/jpeg' => 'jpg',
+                'image/gif'  => 'gif',
+                'image/webp' => 'webp',
+            ];
+            $mime = @mime_content_type($_FILES['image']['tmp_name']);
+            $size = (int)$_FILES['image']['size'];
+            if (isset($mimeMap[$mime]) && $size <= 4 * 1024 * 1024) {
                 $dir = BASE_PATH . '/assets/uploads/rewards/';
                 if (!is_dir($dir)) @mkdir($dir, 0775, true);
-                $ext  = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION) ?: 'jpg');
-                $safe = 'rw_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . preg_replace('/[^a-z0-9]/', '', $ext);
+                $ext  = $mimeMap[$mime];
+                $safe = 'rw_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
                 if (@move_uploaded_file($_FILES['image']['tmp_name'], $dir . $safe)) {
                     $newImagePath = '/assets/uploads/rewards/' . $safe;
                     $imageProvided = true;

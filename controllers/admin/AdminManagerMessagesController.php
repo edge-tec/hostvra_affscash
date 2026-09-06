@@ -28,13 +28,19 @@ if (Helpers::isPost() && Helpers::post('action') === 'send' && Auth::verifyCsrf(
     if ($targetMgr > 0 && $body !== '') {
         if (!empty($_FILES['attachment']['tmp_name']) && $_FILES['attachment']['error'] === UPLOAD_ERR_OK) {
             $size = (int)$_FILES['attachment']['size'];
-            $mime = @mime_content_type($_FILES['attachment']['tmp_name']);
-            $allowed = ['image/png','image/jpeg','image/gif','image/webp','application/pdf','text/plain'];
-            if ($size <= 5 * 1024 * 1024 && in_array($mime, $allowed, true)) {
+            $mimeMap = [
+                'image/png'       => 'png',
+                'image/jpeg'      => 'jpg',
+                'image/gif'       => 'gif',
+                'image/webp'      => 'webp',
+                'application/pdf' => 'pdf',
+                'text/plain'      => 'txt',
+            ];
+            if ($size <= 5 * 1024 * 1024 && isset($mimeMap[$mime])) {
                 $dir = BASE_PATH . '/assets/uploads/manager_messages/';
                 if (!is_dir($dir)) { @mkdir($dir, 0775, true); }
-                $ext  = strtolower(pathinfo($_FILES['attachment']['name'], PATHINFO_EXTENSION) ?: 'bin');
-                $safe = 'msg_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . preg_replace('/[^a-z0-9]/','', $ext);
+                $ext  = $mimeMap[$mime];
+                $safe = 'msg_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
                 if (@move_uploaded_file($_FILES['attachment']['tmp_name'], $dir . $safe)) {
                     $attachPath = '/assets/uploads/manager_messages/' . $safe;
                     $attachName = (string)$_FILES['attachment']['name'];

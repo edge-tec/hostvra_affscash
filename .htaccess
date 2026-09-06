@@ -15,6 +15,9 @@ RewriteRule ^(.*)$ https://affscash.net/$1 [R=301,L]
 
 RewriteRule ^index\.html$ https://affscash.net/ [R=301,L]
 
+# ── Prevent script execution in uploads ─────────────────────────────────────────
+RewriteRule ^(assets/uploads|uploads)/.*\.php$ - [F,L]
+
 # ── Block sensitive directories ───────────────────────────────────────────────
 RewriteRule ^config/ - [F,L]
 RewriteRule ^core/ - [F,L]
@@ -23,10 +26,12 @@ RewriteRule ^controllers/ - [F,L]
 RewriteRule ^logs/ - [F,L]
 RewriteRule ^storage/ - [F,L]
 RewriteRule ^data/ - [F,L]
+RewriteRule ^tests/ - [F,L]
 
 # ── Block .git directory and related files ────────────────────────────────────
 RewriteRule ^\.git - [F,L]
 RewriteRule ^\.gitignore$ - [F,L]
+RewriteRule ^\.env.*$ - [F,L]
 
 # ── Block sensitive install files ─────────────────────────────────────────────
 RewriteRule ^install/schema\.sql$ - [F,L]
