@@ -26,12 +26,79 @@ if (!file_exists($_installLock) && is_dir(BASE_PATH . '/install')) {
 }
 unset($_installLock);
 
-// Load core classes
+// ── Core Infrastructure Essentials ──────────────────────────────────────────
 require BASE_PATH . '/core/Config.php';
 require BASE_PATH . '/core/Database.php';
+require BASE_PATH . '/core/Helpers.php';
+require BASE_PATH . '/core/Cache.php';
+
+// Initialize config
+Config::init(CONFIG_PATH);
+
+// Set timezone
+date_default_timezone_set(Config::get('config', 'app.timezone') ?? 'UTC');
+
+// ── High-Throughput Tracking Fast-Path ────────────────────────────────────────
+// Bypasses session initialization (Auth::start), AI SEO redirect checks,
+// auto-migration checks, and 200+ route registrations for tracking hits.
+$fastUri = $_SERVER['REQUEST_URI'] ?? '/';
+$fastPath = parse_url($fastUri, PHP_URL_PATH) ?? '/';
+
+if (
+    preg_match('#^/click/(\d+)#', $fastPath, $fastM) ||
+    $fastPath === '/postback' ||
+    preg_match('#^/offer/(\d+)#', $fastPath, $fastM) ||
+    preg_match('#^/s/([a-zA-Z0-9_-]+)#', $fastPath, $fastM) ||
+    $fastPath === '/pixel' ||
+    $fastPath === '/impression' ||
+    preg_match('#^/smartlink/([a-zA-Z0-9_-]+)#', $fastPath, $fastM) ||
+    $fastPath === '/test-postback-click'
+) {
+    require_once BASE_PATH . '/core/Blocklist.php';
+    require_once BASE_PATH . '/core/FraudIQ.php';
+    require_once BASE_PATH . '/core/RiskEngine.php';
+    require_once BASE_PATH . '/core/VpnSkipList.php';
+    require_once BASE_PATH . '/core/TrafficSourceDetector.php';
+    require_once BASE_PATH . '/core/TrafficSourceOverride.php';
+    require_once BASE_PATH . '/core/AdvancedTrafficSourceOverride.php';
+
+    Blocklist::guard();
+
+    if (preg_match('#^/click/(\d+)#', $fastPath, $fastM)) {
+        $_GET['offer_id'] = (int)$fastM[1];
+        require BASE_PATH . '/tracking/click.php';
+        exit;
+    } elseif ($fastPath === '/postback') {
+        require BASE_PATH . '/tracking/postback.php';
+        exit;
+    } elseif (preg_match('#^/offer/(\d+)#', $fastPath, $fastM)) {
+        $_GET['offer_id'] = (int)$fastM[1];
+        require BASE_PATH . '/tracking/inhouse_click.php';
+        exit;
+    } elseif (preg_match('#^/s/([a-zA-Z0-9_-]+)#', $fastPath, $fastM)) {
+        $_GET['code'] = $fastM[1];
+        require BASE_PATH . '/tracking/short_link.php';
+        exit;
+    } elseif ($fastPath === '/pixel') {
+        require BASE_PATH . '/tracking/pixel.php';
+        exit;
+    } elseif ($fastPath === '/impression') {
+        $_GET['type'] = 'imp';
+        require BASE_PATH . '/tracking/pixel.php';
+        exit;
+    } elseif (preg_match('#^/smartlink/([a-zA-Z0-9_-]+)#', $fastPath, $fastM)) {
+        $_GET['slug'] = $fastM[1];
+        require BASE_PATH . '/tracking/smartlink.php';
+        exit;
+    } elseif ($fastPath === '/test-postback-click') {
+        require BASE_PATH . '/tracking/test_postback_click.php';
+        exit;
+    }
+}
+
+// ── Application & UI Classes (Loaded only for non-tracking requests) ─────────
 require BASE_PATH . '/core/Activity.php';
 require BASE_PATH . '/core/Auth.php';
-require BASE_PATH . '/core/Helpers.php';
 require BASE_PATH . '/core/Router.php';
 require BASE_PATH . '/core/FraudIQ.php';
 require BASE_PATH . '/core/Mailer.php';
@@ -72,17 +139,11 @@ require BASE_PATH . '/core/XmlSitemapGenerator.php';
 require BASE_PATH . '/core/PerformanceOptimizer.php';
 require BASE_PATH . '/core/SeoKeywordModule.php';
 
-// Initialize config
-Config::init(CONFIG_PATH);
-
 // ── Auto-migrate ─────────────────────────────────────────────────────────────
-// Checks a lock file first (O(1) — no DB query when up to date).
-// When new migration files are deployed, the lock hash changes, pending
-// migrations are applied automatically on the very next request.
 if (Config::get('config', 'app.auto_migrate') !== false) {
     if (!Migrator::isUpToDate()) {
         Migrator::init();
-        Migrator::backupBeforeMigrate(); // snapshot DB before any schema changes
+        Migrator::backupBeforeMigrate();
         Migrator::runAll();
         Migrator::syncConfig();
     }
@@ -99,10 +160,7 @@ if (!is_dir(__DIR__ . '/uploads/invoices')) {
     unset($_d);
 }
 
-// Set timezone
-date_default_timezone_set(Config::get('config', 'app.timezone') ?? 'UTC');
-
-// Start auth session
+// Start auth session for UI
 Auth::start();
 
 // ── Global Blocklist Guard ───────────────────────────────────────────────────

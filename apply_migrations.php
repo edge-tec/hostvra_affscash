@@ -267,4 +267,45 @@ addColumnIfMissing('vpn_blocked_log', 'smartlink_id', "INT UNSIGNED NULL AFTER `
 addColumnIfMissing('vpn_blocked_log', 'smartlink_name', "VARCHAR(255) NULL AFTER `smartlink_id`");
 addColumnIfMissing('offer_conversion_history', 'conversion_status', "VARCHAR(20) DEFAULT 'approved'");
 
+// 5. Phase 1 Performance Indexes (High-throughput tracking & cap lookups)
+safeQuery("ALTER TABLE `clicks` ADD INDEX `idx_offer_clicked_status` (`offer_id`, `clicked_at`, `status`)", "Index clicks(offer_id, clicked_at, status)");
+safeQuery("ALTER TABLE `clicks` ADD INDEX `idx_ip_offer_aff_time` (`ip_address`, `offer_id`, `affiliate_id`, `clicked_at`)", "Index clicks(ip, offer, aff, time)");
+safeQuery("ALTER TABLE `clicks` ADD INDEX `idx_aff_offer_time` (`affiliate_id`, `offer_id`, `clicked_at`)", "Index clicks(affiliate_id, offer_id, clicked_at)");
+
+safeQuery("ALTER TABLE `conversions` ADD INDEX `idx_offer_status_date` (`offer_id`, `status`, `converted_at`)", "Index conversions(offer_id, status, converted_at)");
+safeQuery("ALTER TABLE `conversions` ADD INDEX `idx_aff_offer_status_date` (`affiliate_id`, `offer_id`, `status`, `converted_at`)", "Index conversions(aff, offer, status, date)");
+
+safeQuery("ALTER TABLE `stats_daily` ADD INDEX `idx_offer_date` (`offer_id`, `stat_date`)", "Index stats_daily(offer_id, stat_date)");
+
+// 6. Phase 2 & 3: CTIT, Postback Security & Budget Protections
+safeQuery("CREATE TABLE IF NOT EXISTS `advertiser_payment_requests` (
+    `id`              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `advertiser_id`   INT UNSIGNED NOT NULL,
+    `user_id`         INT UNSIGNED NOT NULL,
+    `method`          VARCHAR(40) NOT NULL,
+    `amount`          DECIMAL(12,2) NOT NULL,
+    `txn_id`          VARCHAR(120) NOT NULL,
+    `screenshot_path` VARCHAR(300) NULL,
+    `status`          ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+    `admin_note`      TEXT NULL,
+    `created_at`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `reviewed_at`     DATETIME NULL,
+    `reviewed_by`     INT UNSIGNED NULL,
+    INDEX `idx_adv` (`advertiser_id`),
+    INDEX `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", "Table advertiser_payment_requests");
+
+addColumnIfMissing('conversions', 'ctit_seconds', "INT UNSIGNED NULL DEFAULT NULL");
+addColumnIfMissing('advertisers', 'postback_token', "VARCHAR(64) NULL DEFAULT NULL");
+addColumnIfMissing('advertisers', 'postback_ips', "TEXT NULL DEFAULT NULL");
+addColumnIfMissing('advertisers', 'budget_exempt', "TINYINT(1) NOT NULL DEFAULT 0");
+addColumnIfMissing('offers', 'postback_token', "VARCHAR(64) NULL DEFAULT NULL");
+addColumnIfMissing('offers', 'min_ctit_seconds', "INT UNSIGNED NULL DEFAULT NULL");
+addColumnIfMissing('offers', 'attribution_window_days', "INT UNSIGNED NULL DEFAULT NULL");
+addColumnIfMissing('offers', 'budget_total', "DECIMAL(12,2) DEFAULT NULL");
+addColumnIfMissing('offers', 'budget_spent', "DECIMAL(12,2) NOT NULL DEFAULT 0");
+addColumnIfMissing('offers', 'budget_paused', "TINYINT(1) NOT NULL DEFAULT 0");
+
+safeQuery("ALTER TABLE `conversions` ADD INDEX `idx_ctit` (`ctit_seconds`)", "Index conversions(ctit_seconds)");
+
 echo "\nConsolidated migration completed successfully!\n";

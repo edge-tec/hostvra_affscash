@@ -39,6 +39,10 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 require_once BASE_PATH . '/core/PostbackFirer.php';
 require_once BASE_PATH . '/core/ManagerCommissionService.php';
 require_once BASE_PATH . '/core/RiskEngine.php';
+require_once BASE_PATH . '/core/Referral.php';
+require_once BASE_PATH . '/core/AdvBudget.php';
+require_once BASE_PATH . '/core/PointsService.php';
+require_once BASE_PATH . '/core/NotificationHelper.php';
 
 header('Content-Type: application/json');
 
@@ -94,28 +98,6 @@ register_shutdown_function(function() use (&$_advPbLog) {
     } catch (\Throwable $e) {
         PostbackFirer::log('[postback.php] AdvPbLog write failed: ' . $e->getMessage());
     }
-    
-    // Auto-Sync Points Inline
-    try {
-        if (!class_exists('PointsService')) require_once BASE_PATH . '/core/PointsService.php';
-        if (class_exists('PointsService')) {
-            $cfg = PointsService::config();
-            if ($cfg['enabled']) {
-                $usdPerPt = max(0.01, (float)$cfg['usd_per_point']);
-                $missingConvs = Database::fetchAll(
-                    "SELECT c.id, c.affiliate_id, c.payout 
-                     FROM conversions c 
-                     WHERE c.status = 'approved' AND COALESCE(c.is_hidden, 0) = 0 
-                       AND c.payout > 0 AND c.converted_at > DATE_SUB(NOW(), INTERVAL 7 DAY)
-                       AND NOT EXISTS (SELECT 1 FROM points_transactions pt WHERE pt.ref_type = 'conversion' AND pt.ref_id = CAST(c.id AS CHAR))"
-                );
-                foreach ($missingConvs as $mc) {
-                    $pts = (int)floor((float)$mc['payout'] / $usdPerPt);
-                    if ($pts > 0) PointsService::credit((int)$mc['affiliate_id'], $pts, sprintf('Earnings $%.2f × rule', $mc['payout']), 'conversion', (string)$mc['id']);
-                }
-            }
-        }
-    } catch (\Throwable $e) {}
 });
 
 // ── Validate click_id (must be a UUID v4) ─────────────────────────────────
@@ -202,13 +184,60 @@ if (!$click) {
 $_advPbLog['advertiser_id'] = $click['advertiser_id'] ?? null;
 $_advPbLog['offer_id']      = $click['offer_id']      ?? null;
 
+// ── Advertiser Postback Authorization (Secret Token & IP Whitelist) ─────────
+$advSecurity = null;
+try {
+    $advSecurity = Database::fetchOne(
+        "SELECT a.postback_token as adv_token, a.postback_ips, o.postback_token as offer_token, o.min_ctit_seconds, o.attribution_window_days
+         FROM `advertisers` a
+         LEFT JOIN `offers` o ON o.id = ?
+         WHERE a.id = ? LIMIT 1",
+        [$click['offer_id'], $click['advertiser_id']]
+    );
+} catch (\Throwable $e) {}
+
+// 1. Postback Token Verification
+$expectedToken = !empty($advSecurity['offer_token']) ? $advSecurity['offer_token'] : ($advSecurity['adv_token'] ?? null);
+if (!empty($expectedToken)) {
+    $suppliedToken = trim($_GET['token'] ?? ($_GET['key'] ?? ($_GET['sec'] ?? '')));
+    if (!hash_equals($expectedToken, $suppliedToken)) {
+        $_advPbLog['status'] = 'unauthorized';
+        $_advPbLog['reject_reason'] = 'Invalid postback security token';
+        $_advPbLog['response_body'] = json_encode(['status' => 'error', 'message' => 'Unauthorized: Invalid postback security token']);
+        http_response_code(403);
+        echo $_advPbLog['response_body'];
+        exit;
+    }
+}
+
+// 2. Server IP Whitelist Verification
+if (!empty($advSecurity['postback_ips'])) {
+    $allowedIps = array_filter(array_map('trim', preg_split('/[\r\n,]+/', $advSecurity['postback_ips'])));
+    $remoteIp = $_SERVER['REMOTE_ADDR'] ?? '';
+    if (!empty($allowedIps) && !in_array($remoteIp, $allowedIps, true)) {
+        $_advPbLog['status'] = 'unauthorized';
+        $_advPbLog['reject_reason'] = "Unauthorized postback server IP: {$remoteIp}";
+        $_advPbLog['response_body'] = json_encode(['status' => 'error', 'message' => 'Unauthorized postback server IP']);
+        http_response_code(403);
+        echo $_advPbLog['response_body'];
+        exit;
+    }
+}
+
+// ── Calculate CTIT (Click-to-Action Time) ──────────────────────────────────
+$clickedTime = !empty($click['clicked_at']) ? strtotime($click['clicked_at']) : 0;
+$ctitSeconds = $clickedTime > 0 ? max(0, time() - $clickedTime) : 0;
+
 // ── In-House Real-Time Risk Engine ──────────────────────────────────────
 $riskEngineResult = RiskEngine::evaluateConversion(
     [
         'ip' => $click['ip_address'] ?? '',
         'affiliate_id' => $click['affiliate_id'] ?? 0,
         'offer_id' => $click['offer_id'] ?? 0,
-        'click_id' => $clickId
+        'click_id' => $clickId,
+        'ctit_seconds' => $ctitSeconds,
+        'min_ctit_seconds' => $advSecurity['min_ctit_seconds'] ?? null,
+        'attribution_window_days' => $advSecurity['attribution_window_days'] ?? null,
     ],
     [
         'ip' => $click['ip_address'] ?? '',
@@ -597,20 +626,6 @@ if ($_convCountry === '' || $_convCity === '') {
     } catch (\Throwable $_geoEx) {}
 }
 
-// ── Ensure traffic-source columns exist on conversions table ──────────
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `traffic_source`      VARCHAR(50)   DEFAULT 'Unknown'");  } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `traffic_source_type` VARCHAR(30)   DEFAULT 'Unknown'");  } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `override_source`     VARCHAR(50)   DEFAULT NULL");       } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `override_rule_id`    INT UNSIGNED  DEFAULT NULL");       } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `referrer_url`        VARCHAR(2000) DEFAULT NULL");       } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `utm_source`          VARCHAR(255)  DEFAULT NULL");       } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `utm_medium`          VARCHAR(255)  DEFAULT NULL");       } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `utm_campaign`        VARCHAR(255)  DEFAULT NULL");       } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `utm_content`         VARCHAR(255)  DEFAULT NULL");       } catch (\Throwable $_e) {}
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `utm_term`            VARCHAR(255)  DEFAULT NULL");       } catch (\Throwable $_e) {}
-
-try { Database::query("ALTER TABLE `conversions` ADD COLUMN `smartlink_id` INT UNSIGNED DEFAULT NULL AFTER `affiliate_id`"); } catch (\Throwable $_e) {}
-
 Database::begin();
 try {
     $newConvDbId = Database::insert('conversions', [
@@ -626,6 +641,7 @@ try {
         'status'         => $convStatus,
         'transaction_id' => $txnId,
         'goal_name'      => $goalName,
+        'ctit_seconds'   => $ctitSeconds,
         'ip_address'     => $click['ip_address'],
         'country'        => $_convCountry ?: null,
         'ipquery_country_code' => $_convCountry ?: null,
@@ -706,6 +722,23 @@ try {
         } catch (\Throwable $e) {
             PostbackFirer::log('[postback.php] IP Conversion Protection History insertion failed: ' . $e->getMessage());
         }
+
+        // ── Auto-Credit Points for this approved conversion (O(1) fast credit) ──
+        try {
+            if (!class_exists('PointsService')) require_once BASE_PATH . '/core/PointsService.php';
+            if (class_exists('PointsService') && $payout > 0) {
+                $ptsCfg = PointsService::config();
+                if (!empty($ptsCfg['enabled'])) {
+                    $usdPerPt = max(0.01, (float)($ptsCfg['usd_per_point'] ?? 1.0));
+                    $pts = (int)floor($payout / $usdPerPt);
+                    if ($pts > 0) {
+                        PointsService::credit((int)$click['affiliate_id'], $pts, sprintf('Earnings $%.2f × rule', $payout), 'conversion', (string)$newConvDbId);
+                    }
+                }
+            }
+        } catch (\Throwable $e) {
+            PostbackFirer::log('[postback.php] Points award failed: ' . $e->getMessage());
+        }
     }
 
     Database::commit();
@@ -714,6 +747,32 @@ try {
     $_advPbLog['conversion_id'] = $convId;
     $_advPbLog['payout']        = $payout;
     if ($isAutoHidden) $_advPbLog['reject_reason'] = 'Auto-hidden: ' . $hideReason;
+
+    // ── Send success response to advertiser immediately ───────────────────────
+    // Close the FastCGI connection so the advertiser gets HTTP 200 in ~20ms,
+    // while PHP-FPM continues running notifications, FraudIQ, and affiliate cURL in background.
+    $responseBody = json_encode([
+        'status'        => 'success',
+        'message'       => 'Conversion recorded',
+        'conversion_id' => $convId,
+        'payout'        => $payout,
+    ]);
+    $_advPbLog['response_body'] = $responseBody;
+    if (!headers_sent()) {
+        header('Content-Type: application/json');
+        header('Content-Length: ' . strlen($responseBody));
+        header('Connection: close');
+    }
+    echo $responseBody;
+
+    if (ob_get_level() > 0) {
+        ob_end_flush();
+    }
+    flush();
+
+    if (function_exists('fastcgi_finish_request')) {
+        fastcgi_finish_request();
+    }
 
     // Send Push Notification
     if (!$isAutoHidden && !$isPending && $convStatus === 'approved') {
@@ -1241,31 +1300,7 @@ if ($newConvDbId > 0) {
     }
 }
 
-// ── Send success response to advertiser ───────────────────────────────────
-$responseBody = json_encode([
-    'status'        => 'success',
-    'message'       => 'Conversion recorded',
-    'conversion_id' => $convId,
-    'payout'        => $payout,
-]);
-$_advPbLog['status']        = 'accepted';
-$_advPbLog['response_body'] = $responseBody;
-header('Content-Type: application/json');
-header('Content-Length: ' . strlen($responseBody));
-header('Connection: close');
-echo $responseBody;
-
-// Flush output to network — works for both PHP-FPM and mod_php
-if (ob_get_level() > 0) {
-    ob_end_flush();
-}
-flush();
-
-// PHP-FPM: close the FastCGI connection so the client gets the response now
-// while the PHP process continues running below for non-critical tasks.
-if (function_exists('fastcgi_finish_request')) {
-    fastcgi_finish_request();
-}
+// ── Success response already flushed to advertiser above via fastcgi_finish_request() ────
 
 // ── Auto-pause offer if CR drops below threshold ──────────────────────────
 try {

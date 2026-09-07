@@ -88,9 +88,12 @@ CREATE TABLE IF NOT EXISTS `advertisers` (
     `vat_number`        VARCHAR(64) DEFAULT '',
     `credit_limit`      DECIMAL(12,2) DEFAULT 0.00,
     `balance`           DECIMAL(12,4) DEFAULT 0.0000,
+    `postback_token`    VARCHAR(64) NULL DEFAULT NULL,
+    `postback_ips`      TEXT NULL,
     `notes`             TEXT,
     `created_at`        DATETIME DEFAULT CURRENT_TIMESTAMP,
-    INDEX `idx_user_id` (`user_id`)
+    INDEX `idx_user_id` (`user_id`),
+    INDEX `idx_postback_token` (`postback_token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Offers
@@ -124,6 +127,9 @@ CREATE TABLE IF NOT EXISTS `offers` (
     `tracking_domain`   VARCHAR(255) DEFAULT '',
     `expiry_date`       DATE NULL,
     `require_approval`  TINYINT(1) DEFAULT 0,
+    `postback_token`    VARCHAR(64) NULL DEFAULT NULL,
+    `min_ctit_seconds`  INT UNSIGNED NULL DEFAULT NULL,
+    `attribution_window_days` INT UNSIGNED NULL DEFAULT NULL,
     `thumbnail`         VARCHAR(255) DEFAULT '',
     `terms`             TEXT,
     `created_by`        INT UNSIGNED NULL,
@@ -225,7 +231,10 @@ CREATE TABLE IF NOT EXISTS `clicks` (
     INDEX `idx_offer_affiliate` (`offer_id`,`affiliate_id`),
     INDEX `idx_clicked_at` (`clicked_at`),
     INDEX `idx_ip` (`ip_address`),
-    INDEX `idx_affiliate_id` (`affiliate_id`)
+    INDEX `idx_affiliate_id` (`affiliate_id`),
+    INDEX `idx_offer_clicked_status` (`offer_id`, `clicked_at`, `status`),
+    INDEX `idx_ip_offer_aff_time` (`ip_address`, `offer_id`, `affiliate_id`, `clicked_at`),
+    INDEX `idx_aff_offer_time` (`affiliate_id`, `offer_id`, `clicked_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Conversions
@@ -250,6 +259,7 @@ CREATE TABLE IF NOT EXISTS `conversions` (
     `ip_address`        VARCHAR(45) DEFAULT '',
     `converted_at`      DATETIME DEFAULT CURRENT_TIMESTAMP,
     `approved_at`       DATETIME NULL,
+    `ctit_seconds`      INT UNSIGNED NULL DEFAULT NULL,
     INDEX `idx_click_id` (`click_id`),
     INDEX `idx_affiliate_offer` (`affiliate_id`,`offer_id`),
     INDEX `idx_status` (`status`),
@@ -257,7 +267,10 @@ CREATE TABLE IF NOT EXISTS `conversions` (
     INDEX `idx_offer_id` (`offer_id`),
     INDEX `idx_smartlink_id` (`smartlink_id`),
     INDEX `idx_aff_converted` (`affiliate_id`,`converted_at`),
-    INDEX `idx_offer_converted` (`offer_id`,`converted_at`)
+    INDEX `idx_offer_converted` (`offer_id`,`converted_at`),
+    INDEX `idx_offer_status_date` (`offer_id`, `status`, `converted_at`),
+    INDEX `idx_aff_offer_status_date` (`affiliate_id`, `offer_id`, `status`, `converted_at`),
+    INDEX `idx_ctit` (`ctit_seconds`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Manager commission ledger (one row per approved conversion)
@@ -418,7 +431,8 @@ CREATE TABLE IF NOT EXISTS `stats_daily` (
     `impressions`   INT UNSIGNED DEFAULT 0,
     UNIQUE KEY `uq_daily` (`stat_date`,`affiliate_id`,`offer_id`),
     INDEX `idx_stat_date` (`stat_date`),
-    INDEX `idx_affiliate` (`affiliate_id`)
+    INDEX `idx_affiliate` (`affiliate_id`),
+    INDEX `idx_offer_date` (`offer_id`, `stat_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Payments

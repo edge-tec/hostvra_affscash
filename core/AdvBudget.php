@@ -17,47 +17,14 @@ final class AdvBudget
     /** Threshold (USD) below which we fire the low-balance warning. */
     public const LOW_BALANCE_THRESHOLD = 25.00;
 
-    /** Static schema-ensure guard so a request only pays the ALTER cost once. */
+    /** Static schema-ensure guard */
     private static bool $schemaReady = false;
 
     public static function ensureSchema(): void
     {
-        if (self::$schemaReady) return;
+        // Schema is consolidated via apply_migrations.php and install/schema.sql.
+        // No runtime DDL locking during live conversions.
         self::$schemaReady = true;
-
-        // ── offers: budget tracking columns ──────────────────────────────────
-        try { Database::query("ALTER TABLE offers ADD COLUMN budget_total  DECIMAL(12,2) DEFAULT NULL"); } catch(\Throwable $e) {}
-        try { Database::query("ALTER TABLE offers ADD COLUMN budget_spent  DECIMAL(12,2) NOT NULL DEFAULT 0"); } catch(\Throwable $e) {}
-        try { Database::query("ALTER TABLE offers ADD COLUMN budget_paused TINYINT(1) NOT NULL DEFAULT 0"); } catch(\Throwable $e) {}
-
-        // ── advertisers: USD balance ─────────────────────────────────────────
-        // Most installs already have `balance`; the ALTER is a no-op if so.
-        try { Database::query("ALTER TABLE advertisers ADD COLUMN balance DECIMAL(12,2) NOT NULL DEFAULT 0"); } catch(\Throwable $e) {}
-
-        // ── advertisers: budget exemption flag ───────────────────────────────
-        // When set to 1, this advertiser is exempt from the global budget
-        // requirement and can create offers without adding any balance.
-        try { Database::query("ALTER TABLE advertisers ADD COLUMN budget_exempt TINYINT(1) NOT NULL DEFAULT 0"); } catch(\Throwable $e) {}
-
-        // ── advertiser_payment_requests: top-up queue ────────────────────────
-        try {
-            Database::query("CREATE TABLE IF NOT EXISTS advertiser_payment_requests (
-                id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                advertiser_id   INT UNSIGNED NOT NULL,
-                user_id         INT UNSIGNED NOT NULL,
-                method          VARCHAR(40) NOT NULL,
-                amount          DECIMAL(12,2) NOT NULL,
-                txn_id          VARCHAR(120) NOT NULL,
-                screenshot_path VARCHAR(300) NULL,
-                status          ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
-                admin_note      TEXT NULL,
-                created_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                reviewed_at     DATETIME NULL,
-                reviewed_by     INT UNSIGNED NULL,
-                INDEX idx_adv (advertiser_id),
-                INDEX idx_status (status)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
-        } catch(\Throwable $e) {}
     }
 
     /** Admin toggle — when true, budget field becomes mandatory on offer create. */
@@ -162,21 +129,37 @@ final class AdvBudget
                 if ($fresh && (float)$fresh['budget_spent'] >= (float)$fresh['budget_total']) {
                     if ($fresh['status'] === 'active') {
                         Database::query("UPDATE offers SET status = 'paused', budget_paused = 1 WHERE id = ? AND status = 'active'", [$offerId]);
+                        if (class_exists('Cache')) {
+                            Cache::invalidateOffer($offerId);
+                        }
                         self::notifyOfferAutoPaused($offerId, $advertiserId);
                     }
                 }
             } catch (\Throwable $e) {}
         }
 
-        // ── Decrement advertisers.balance ────────────────────────────────
+        // ── Decrement advertisers.balance & Auto-Pause on Zero Balance ───
         if ($advertiserId > 0) {
             try {
                 Database::query("UPDATE advertisers SET balance = balance - ? WHERE id = ?", [$revenue, $advertiserId]);
-                $advRow = Database::fetchOne("SELECT a.id, a.balance, u.id AS user_id, u.email, u.first_name, u.last_name
+                $advRow = Database::fetchOne("SELECT a.id, a.balance, a.credit_limit, a.budget_exempt, u.id AS user_id, u.email, u.first_name, u.last_name
                                               FROM advertisers a JOIN users u ON u.id = a.user_id WHERE a.id = ?", [$advertiserId]);
                 if ($advRow) {
                     $bal = (float)$advRow['balance'];
-                    if ($bal <= 0) {
+                    $creditLimit = (float)($advRow['credit_limit'] ?? 0);
+                    $isExempt = (int)($advRow['budget_exempt'] ?? 0) === 1;
+
+                    // Enterprise Wallet Protection: Auto-pause ALL active offers if funds depleted
+                    if (($bal + $creditLimit) <= 0 && !$isExempt) {
+                        $activeOffers = Database::fetchAll("SELECT id FROM offers WHERE advertiser_id = ? AND status = 'active'", [$advertiserId]);
+                        if (!empty($activeOffers)) {
+                            Database::query("UPDATE offers SET status = 'paused', budget_paused = 1 WHERE advertiser_id = ? AND status = 'active'", [$advertiserId]);
+                            foreach ($activeOffers as $actOff) {
+                                if (class_exists('Cache')) {
+                                    Cache::invalidateOffer((int)$actOff['id']);
+                                }
+                            }
+                        }
                         self::notifyLowBalance($advRow, 'empty');
                     } elseif ($bal < self::LOW_BALANCE_THRESHOLD) {
                         self::notifyLowBalance($advRow, 'low');

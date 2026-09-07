@@ -87,7 +87,44 @@ class RiskEngine {
      */
     public static function evaluateConversion(array $conversionData, array $clickData): array {
         $result = ['action' => 'allow', 'reasons' => [], 'block_reason' => null];
-        
+
+        // ── 1. Enterprise CTIT (Click-to-Action Time) Analysis ───────────────
+        try {
+            $clickedTime = !empty($clickData['clicked_at']) ? strtotime($clickData['clicked_at']) : 0;
+            $ctitSeconds = (int)($conversionData['ctit_seconds'] ?? ($clickedTime > 0 ? (time() - $clickedTime) : 0));
+
+            if ($clickedTime > 0) {
+                // Minimum CTIT (Fast Bot Defense)
+                $minCtit = isset($conversionData['min_ctit_seconds']) && $conversionData['min_ctit_seconds'] !== null
+                    ? (int)$conversionData['min_ctit_seconds']
+                    : (int)(Config::get('config', 'security.min_ctit_seconds') ?? 3);
+
+                if ($minCtit > 0 && $ctitSeconds < $minCtit) {
+                    $result['action'] = 'block';
+                    $result['block_reason'] = "Fast bot conversion (CTIT: {$ctitSeconds}s < {$minCtit}s minimum threshold)";
+                    $result['reasons'][] = "[CTIT Anti-Fraud] {$result['block_reason']}";
+                    return $result;
+                }
+
+                // Maximum Attribution Window (e.g. 30 days)
+                $attrDays = isset($conversionData['attribution_window_days']) && $conversionData['attribution_window_days'] !== null
+                    ? (int)$conversionData['attribution_window_days']
+                    : (int)(Config::get('config', 'security.max_attribution_days') ?? 30);
+
+                if ($attrDays > 0) {
+                    $maxSeconds = $attrDays * 86400;
+                    if ($ctitSeconds > $maxSeconds) {
+                        $result['action'] = 'block';
+                        $result['block_reason'] = "Attribution window expired ({$ctitSeconds}s > {$attrDays} days)";
+                        $result['reasons'][] = "[CTIT Anti-Fraud] {$result['block_reason']}";
+                        return $result;
+                    }
+                }
+            }
+        } catch (\Throwable $e) {
+            error_log('[RiskEngine CTIT] ' . $e->getMessage());
+        }
+
         try {
             $rules = Database::fetchAll("SELECT * FROM fraud_rules WHERE is_active=1 AND rule_type IN ('conversion_time', 'geo_mismatch', 'duplicate_ip', 'low_cvr', 'high_cvr')");
             if (!$rules) return $result;

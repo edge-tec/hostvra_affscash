@@ -24,6 +24,14 @@ if (session_status() === PHP_SESSION_ACTIVE) {
     session_write_close();
 }
 
+require_once BASE_PATH . '/core/Cache.php';
+require_once BASE_PATH . '/core/Blocklist.php';
+require_once BASE_PATH . '/core/RiskEngine.php';
+require_once BASE_PATH . '/core/FraudIQ.php';
+require_once BASE_PATH . '/core/VpnSkipList.php';
+require_once BASE_PATH . '/core/TrafficSourceDetector.php';
+require_once BASE_PATH . '/core/AdvancedTrafficSourceOverride.php';
+
 $offerId = (int)($_GET['offer_id'] ?? 0);
 
 // ── Affiliate identification ───────────────────────────────────────────────
@@ -159,20 +167,24 @@ if (!$offerId || !$affCode) {
     trafficBack('Invalid tracking link.', 400, true);
 }
 
-// Validate offer
-$offer = Database::fetchOne(
-    "SELECT o.*, COALESCE(a.id, 0) as advertiser_uid FROM `offers` o LEFT JOIN `advertisers` a ON a.id=o.advertiser_id WHERE o.id=? AND o.status='active'",
-    [$offerId]
-);
+// Validate offer (in-memory cached)
+$offer = Cache::remember("offer:active:{$offerId}", 30, function() use ($offerId) {
+    return Database::fetchOne(
+        "SELECT o.*, COALESCE(a.id, 0) as advertiser_uid FROM `offers` o LEFT JOIN `advertisers` a ON a.id=o.advertiser_id WHERE o.id=? AND o.status='active'",
+        [$offerId]
+    );
+});
 if (!$offer) {
     trafficBack('Offer not found or inactive.', 404, true);
 }
 
-// Validate affiliate
-$affiliate = Database::fetchOne(
-    "SELECT af.*, u.status FROM `affiliates` af JOIN `users` u ON u.id=af.user_id WHERE (af.affiliate_code=? OR CAST(af.id AS CHAR)=? OR CAST(af.user_id AS CHAR)=?) AND u.status='active'",
-    [$affCode, $affCode, $affCode]
-);
+// Validate affiliate (in-memory cached)
+$affiliate = Cache::remember("aff:code:{$affCode}", 30, function() use ($affCode) {
+    return Database::fetchOne(
+        "SELECT af.*, u.status FROM `affiliates` af JOIN `users` u ON u.id=af.user_id WHERE (af.affiliate_code=? OR CAST(af.id AS CHAR)=? OR CAST(af.user_id AS CHAR)=?) AND u.status='active'",
+        [$affCode, $affCode, $affCode]
+    );
+});
 if (!$affiliate) {
     trafficBack('Invalid affiliate.', 403, true);
 }
@@ -524,24 +536,40 @@ if ($offer['require_approval'] && !$access && empty($GLOBALS['_sl_id'])) {
     trafficBack('Access denied to this offer.', 403, true);
 }
 
-// Check daily conversion cap (offer-level)
+// ── Advertiser Wallet / Balance Protection ────────────────────────────────
+if (!empty($offer['advertiser_id'])) {
+    $advAccount = Cache::remember("adv:wallet:{$offer['advertiser_id']}", 30, function() use ($offer) {
+        return Database::fetchOne(
+            "SELECT balance, credit_limit, budget_exempt FROM advertisers WHERE id = ? LIMIT 1",
+            [(int)$offer['advertiser_id']]
+        );
+    });
+    if ($advAccount && (int)($advAccount['budget_exempt'] ?? 0) === 0) {
+        $avail = (float)($advAccount['balance'] ?? 0) + (float)($advAccount['credit_limit'] ?? 0);
+        if ($avail <= 0) {
+            trafficBack('Offer temporarily unavailable.');
+        }
+    }
+}
+
+// Check daily conversion cap (offer-level) via stats_daily (O(1) indexed lookup)
 if ($offer['daily_cap'] > 0) {
     $todayConvs = Database::fetchOne(
-        "SELECT COUNT(*) as cnt FROM `conversions` WHERE offer_id=? AND DATE(converted_at)=CURDATE() AND status IN ('pending','approved')",
+        "SELECT COALESCE(SUM(conversions), 0) as cnt FROM `stats_daily` WHERE offer_id=? AND stat_date=CURDATE()",
         [$offerId]
     );
-    if (($todayConvs['cnt'] ?? 0) >= $offer['daily_cap']) {
+    if ((int)($todayConvs['cnt'] ?? 0) >= $offer['daily_cap']) {
         trafficBack('Offer capacity reached for today.');
     }
 }
 
-// Check daily click cap (offer-level)
+// Check daily click cap (offer-level) via stats_daily (O(1) indexed lookup)
 if ($offer['daily_click_cap'] > 0) {
     $todayClicks = Database::fetchOne(
-        "SELECT COUNT(*) as cnt FROM `clicks` WHERE offer_id=? AND DATE(clicked_at)=CURDATE() AND status='valid'",
+        "SELECT COALESCE(SUM(clicks), 0) as cnt FROM `stats_daily` WHERE offer_id=? AND stat_date=CURDATE()",
         [$offerId]
     );
-    if (($todayClicks['cnt'] ?? 0) >= $offer['daily_click_cap']) {
+    if ((int)($todayClicks['cnt'] ?? 0) >= $offer['daily_click_cap']) {
         trafficBack('Click cap reached for today.');
     }
 }
@@ -557,7 +585,7 @@ try {
         );
         if ($affCapOffer && (int)$affCapOffer['daily_cap'] > 0) {
             $todayAffConvsOffer = Database::fetchOne(
-                "SELECT COUNT(*) as cnt FROM `conversions` WHERE affiliate_id=? AND offer_id=? AND DATE(converted_at)=CURDATE() AND status IN ('pending','approved')",
+                "SELECT COALESCE(conversions, 0) as cnt FROM `stats_daily` WHERE affiliate_id=? AND offer_id=? AND stat_date=CURDATE() LIMIT 1",
                 [$affiliate['id'], $offerId]
             );
             if ((int)($todayAffConvsOffer['cnt'] ?? 0) >= (int)$affCapOffer['daily_cap']) {
@@ -571,7 +599,7 @@ try {
         );
         if ($affCapGlobal && (int)$affCapGlobal['daily_cap'] > 0) {
             $todayAffConvsAll = Database::fetchOne(
-                "SELECT COUNT(*) as cnt FROM `conversions` WHERE affiliate_id=? AND DATE(converted_at)=CURDATE() AND status IN ('pending','approved')",
+                "SELECT COALESCE(SUM(conversions), 0) as cnt FROM `stats_daily` WHERE affiliate_id=? AND stat_date=CURDATE()",
                 [$affiliate['id']]
             );
             if ((int)($todayAffConvsAll['cnt'] ?? 0) >= (int)$affCapGlobal['daily_cap']) {
