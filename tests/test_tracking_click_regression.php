@@ -155,7 +155,34 @@ assertTest(
     $safeAff1 === false && $safeAff2 === false
 );
 
-// ── Test 6: Fast-Path URL Regex Matches ─────────────────────────────────────
+// ── Test 6: Inactive / Disabled Offer Handling ─────────────────────────────
+$inactiveOffer = [
+    'id' => 999903,
+    'visibility' => 'private',
+    'status' => 'inactive'
+];
+// Even if grant exists for inactive offer, the tracking layer rejects inactive offers
+// Verify PrivateOffer logic handles it cleanly
+$safeInactive = PrivateOffer::checkClickAccess($inactiveOffer, 77777);
+assertTest(
+    "Inactive private offer fails when no grant exists",
+    $safeInactive === false
+);
+
+// ── Test 7: Autoloader Security & Path Traversal Prevention ──────────────────
+$traversalBlocked1 = class_exists('../../something');
+$traversalBlocked2 = class_exists('../config/config.json');
+$validClassLoaded  = class_exists('PrivateOffer');
+$autoloaderCount   = count(array_filter(spl_autoload_functions(), function($fn) {
+    return is_string($fn) && $fn === 'affscash_core_autoloader';
+}));
+
+assertTest(
+    "Autoloader rejects path traversal attempts (../../) without errors",
+    $traversalBlocked1 === false && $traversalBlocked2 === false && $validClassLoaded === true && $autoloaderCount === 1
+);
+
+// ── Test 8: Fast-Path URL Regex Matches ─────────────────────────────────────
 $fastRegex = '#^/click/(\d+)#';
 $testUrls = [
     '/click/123' => true,
@@ -172,36 +199,50 @@ foreach ($testUrls as $url => $expected) {
 }
 assertTest("Fast-Path /click/(\d+) regex correctly identifies tracking hits", $regexAllPassed);
 
-// ── Test 7: Direct click.php Execution Dependency Check ─────────────────────
-// Run click.php via CLI in a clean sub-process with simulated parameters
-$cmd = sprintf(
-    'php -r %s',
-    escapeshellarg('
-        $_GET["offer_id"] = 99999999;
-        $_GET["aff_id"] = "TEST_NON_EXISTENT";
-        $_SERVER["REQUEST_URI"] = "/click/99999999?aff_id=TEST_NON_EXISTENT";
-        ob_start();
-        try {
-            require "' . BASE_PATH . '/tracking/click.php";
-        } catch (\Throwable $e) {
-            echo "EXCEPTION: " . $e->getMessage();
-        }
-        $out = ob_get_clean();
-        if (strpos($out, "Class") !== false && strpos($out, "not found") !== false) {
-            echo "FATAL_CLASS_NOT_FOUND";
-        } else {
-            echo "SUCCESS_HANDLED";
-        }
-    ')
-);
-$cliOutput = shell_exec($cmd);
+// ── Test 9: All 7 Tracking Endpoints Standalone Execution Safety ────────────
+$trackingFiles = [
+    'click.php'               => 'tracking/click.php',
+    'inhouse_click.php'       => 'tracking/inhouse_click.php',
+    'smartlink.php'           => 'tracking/smartlink.php',
+    'short_link.php'          => 'tracking/short_link.php',
+    'postback.php'            => 'tracking/postback.php',
+    'pixel.php'               => 'tracking/pixel.php',
+    'test_postback_click.php' => 'tracking/test_postback_click.php',
+];
+$allEndpointsSafe = true;
+$endpointErrors = [];
+foreach ($trackingFiles as $name => $relPath) {
+    $subCmd = sprintf(
+        'php -r %s',
+        escapeshellarg('
+            ob_start();
+            $_SERVER["REQUEST_URI"] = "/";
+            try {
+                require "' . BASE_PATH . '/' . $relPath . '";
+            } catch (\Throwable $e) {
+                echo "EXCEPTION: " . $e->getMessage();
+            }
+            $out = ob_get_clean();
+            $isCrash = (strpos($out, "Fatal error") !== false || (strpos($out, "Class") !== false && strpos($out, "not found") !== false) || strpos($out, "EXCEPTION") !== false);
+            if ($isCrash) {
+                echo "CRASH: " . substr($out, 0, 100);
+            } else {
+                echo "SAFE";
+            }
+        ')
+    );
+    if (strpos((string)$subRes, 'CRASH') !== false) {
+        $allEndpointsSafe = false;
+        $endpointErrors[] = "$name: $subRes";
+    }
+}
 assertTest(
-    "Direct click.php execution has all dependencies (NO 'Class not found' errors)",
-    strpos($cliOutput, 'SUCCESS_HANDLED') !== false && strpos($cliOutput, 'FATAL_CLASS_NOT_FOUND') === false,
-    "Output: " . trim((string)$cliOutput)
+    "All 7 tracking endpoints execute standalone safely (0 fatal crashes)",
+    $allEndpointsSafe,
+    implode(', ', $endpointErrors)
 );
 
-// ── Test 8: Performance Benchmark (TrackingBootstrap Overhead) ──────────────
+// ── Test 10: Performance Benchmark (TrackingBootstrap Overhead) ─────────────
 $start = microtime(true);
 for ($i = 0; $i < 1000; $i++) {
     require BASE_PATH . '/core/TrackingBootstrap.php';

@@ -79,13 +79,22 @@ register_shutdown_function(function () {
 // ── 3. Universal Class Autoloader ───────────────────────────────────────────
 // Automatically resolves ANY class located in core/ to guarantee that no
 // "Class 'X' not found" fatal error can ever take down a tracking hit.
-spl_autoload_register(function ($class) {
-    $classPath = str_replace('\\', '/', $class);
-    $coreFile  = BASE_PATH . '/core/' . $classPath . '.php';
-    if (is_file($coreFile)) {
-        require_once $coreFile;
+// Hardened with strict regex to prevent any possibility of path traversal.
+if (!function_exists('affscash_core_autoloader')) {
+    function affscash_core_autoloader(string $class): void {
+        if (!preg_match('/^[a-zA-Z0-9_\\\\]+$/', $class)) {
+            return;
+        }
+        $classPath = str_replace('\\', '/', $class);
+        $coreFile  = BASE_PATH . '/core/' . $classPath . '.php';
+        if (is_file($coreFile)) {
+            require_once $coreFile;
+        }
     }
-});
+}
+if (!in_array('affscash_core_autoloader', spl_autoload_functions() ?: [], true)) {
+    spl_autoload_register('affscash_core_autoloader');
+}
 
 // ── 4. Core Infrastructure Essentials ───────────────────────────────────────
 require_once BASE_PATH . '/core/Config.php';

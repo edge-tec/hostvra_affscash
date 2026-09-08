@@ -33,15 +33,22 @@ require BASE_PATH . '/core/Helpers.php';
 require BASE_PATH . '/core/Cache.php';
 
 // ── Universal Class Autoloader ──────────────────────────────────────────────
-// Automatically loads any core class on demand so missing explicit requires never
-// result in a fatal "Class not found" error during tracking or web requests.
-spl_autoload_register(function ($class) {
-    $classPath = str_replace('\\', '/', $class);
-    $coreFile = BASE_PATH . '/core/' . $classPath . '.php';
-    if (is_file($coreFile)) {
-        require_once $coreFile;
+// Automatically loads any core class on demand with regex path traversal protection.
+if (!function_exists('affscash_core_autoloader')) {
+    function affscash_core_autoloader(string $class): void {
+        if (!preg_match('/^[a-zA-Z0-9_\\\\]+$/', $class)) {
+            return;
+        }
+        $classPath = str_replace('\\', '/', $class);
+        $coreFile  = BASE_PATH . '/core/' . $classPath . '.php';
+        if (is_file($coreFile)) {
+            require_once $coreFile;
+        }
     }
-});
+}
+if (!in_array('affscash_core_autoloader', spl_autoload_functions() ?: [], true)) {
+    spl_autoload_register('affscash_core_autoloader');
+}
 
 // Initialize config
 Config::init(CONFIG_PATH);
