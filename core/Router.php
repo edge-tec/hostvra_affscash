@@ -25,8 +25,13 @@ class Router {
         $uri = strtok($uri, '?');
         $uri = rtrim($uri, '/') ?: '/';
 
+        $methodUpper = strtoupper($method);
+
         foreach (self::$routes as $route) {
-            if ($route['method'] !== 'ANY' && $route['method'] !== strtoupper($method)) continue;
+            $matchesMethod = ($route['method'] === 'ANY')
+                || ($route['method'] === $methodUpper)
+                || ($route['method'] === 'GET' && $methodUpper === 'HEAD');
+            if (!$matchesMethod) continue;
 
             $pattern = preg_replace('/\{(\w+)\}/', '([^/]+)', $route['pattern']);
             $pattern = '#^' . $pattern . '$#';
