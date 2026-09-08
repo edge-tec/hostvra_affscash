@@ -1,3 +1,10 @@
 {
-    "global_secret": "e9287aff82e39eadba42b8f28cd64a1b"
+    "global_secret": "e9287aff82e39eadba42b8f28cd64a1b",
+    "timeout_seconds": 10,
+    "connect_timeout_seconds": 5,
+    "max_retries": 3,
+    "retry_backoff_minutes": [5, 20, 60],
+    "allowed_ips": [],
+    "log_response_body": true,
+    "max_response_body_length": 2048
 }
