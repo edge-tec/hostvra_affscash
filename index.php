@@ -32,6 +32,17 @@ require BASE_PATH . '/core/Database.php';
 require BASE_PATH . '/core/Helpers.php';
 require BASE_PATH . '/core/Cache.php';
 
+// ── Universal Class Autoloader ──────────────────────────────────────────────
+// Automatically loads any core class on demand so missing explicit requires never
+// result in a fatal "Class not found" error during tracking or web requests.
+spl_autoload_register(function ($class) {
+    $classPath = str_replace('\\', '/', $class);
+    $coreFile = BASE_PATH . '/core/' . $classPath . '.php';
+    if (is_file($coreFile)) {
+        require_once $coreFile;
+    }
+});
+
 // Initialize config
 Config::init(CONFIG_PATH);
 
@@ -61,6 +72,7 @@ if (
     require_once BASE_PATH . '/core/TrafficSourceDetector.php';
     require_once BASE_PATH . '/core/TrafficSourceOverride.php';
     require_once BASE_PATH . '/core/AdvancedTrafficSourceOverride.php';
+    require_once BASE_PATH . '/core/PrivateOffer.php';
 
     Blocklist::guard();
 
