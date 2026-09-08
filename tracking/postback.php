@@ -26,6 +26,8 @@
 set_time_limit(0);
 ignore_user_abort(true);
 
+require_once dirname(__DIR__) . '/core/TrackingBootstrap.php';
+
 // ── Release the PHP session lock immediately ──────────────────────────────
 // index.php calls session_start() before routing. The open session file lock
 // prevents fastcgi_finish_request() / flush() from properly pushing the HTTP

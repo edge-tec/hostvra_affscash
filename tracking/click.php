@@ -18,20 +18,13 @@
  * tracker can record the click against the correct affiliate.
  */
 
+require_once dirname(__DIR__) . '/core/TrackingBootstrap.php';
+
 // Release session lock immediately — tracking endpoints don't need the session
 // and holding it blocks concurrent requests from the same browser session.
 if (session_status() === PHP_SESSION_ACTIVE) {
     session_write_close();
 }
-
-require_once BASE_PATH . '/core/Cache.php';
-require_once BASE_PATH . '/core/Blocklist.php';
-require_once BASE_PATH . '/core/RiskEngine.php';
-require_once BASE_PATH . '/core/FraudIQ.php';
-require_once BASE_PATH . '/core/VpnSkipList.php';
-require_once BASE_PATH . '/core/TrafficSourceDetector.php';
-require_once BASE_PATH . '/core/AdvancedTrafficSourceOverride.php';
-require_once BASE_PATH . '/core/PrivateOffer.php';
 
 $offerId = (int)($_GET['offer_id'] ?? 0);
 
@@ -365,7 +358,13 @@ if ($blockedRecord) {
 // for this offer can generate tracking. Every attempt — allowed or denied —
 // is logged. The check runs on every request, so admin grant/revoke takes
 // effect on the very next click with no cache or restart.
-if (empty($GLOBALS['_sl_id']) && !PrivateOffer::checkClickAccess($offer, (int)$affiliate['id'])) {
+try {
+    $hasClickAccess = !empty($GLOBALS['_sl_id']) || PrivateOffer::checkClickAccess($offer, (int)$affiliate['id']);
+} catch (\Throwable $e) {
+    @file_put_contents(BASE_PATH . '/storage/logs/private_offer_err.log', date('Y-m-d H:i:s') . ' - ' . $e->getMessage() . PHP_EOL, FILE_APPEND);
+    $hasClickAccess = false;
+}
+if (!$hasClickAccess) {
     trafficBack('Access denied to this offer.', 403, true);
 }
 

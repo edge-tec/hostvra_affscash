@@ -13,6 +13,7 @@
  *
  * Requires: global_postback_test.enabled = '1' in config
  */
+require_once dirname(__DIR__) . '/core/TrackingBootstrap.php';
 
 header('Content-Type: text/html; charset=utf-8');
 

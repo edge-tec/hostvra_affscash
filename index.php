@@ -65,45 +65,58 @@ if (
     preg_match('#^/smartlink/([a-zA-Z0-9_-]+)#', $fastPath, $fastM) ||
     $fastPath === '/test-postback-click'
 ) {
-    require_once BASE_PATH . '/core/Blocklist.php';
-    require_once BASE_PATH . '/core/FraudIQ.php';
-    require_once BASE_PATH . '/core/RiskEngine.php';
-    require_once BASE_PATH . '/core/VpnSkipList.php';
-    require_once BASE_PATH . '/core/TrafficSourceDetector.php';
-    require_once BASE_PATH . '/core/TrafficSourceOverride.php';
-    require_once BASE_PATH . '/core/AdvancedTrafficSourceOverride.php';
-    require_once BASE_PATH . '/core/PrivateOffer.php';
+    require_once BASE_PATH . '/core/TrackingBootstrap.php';
 
     Blocklist::guard();
 
-    if (preg_match('#^/click/(\d+)#', $fastPath, $fastM)) {
-        $_GET['offer_id'] = (int)$fastM[1];
-        require BASE_PATH . '/tracking/click.php';
-        exit;
-    } elseif ($fastPath === '/postback') {
-        require BASE_PATH . '/tracking/postback.php';
-        exit;
-    } elseif (preg_match('#^/offer/(\d+)#', $fastPath, $fastM)) {
-        $_GET['offer_id'] = (int)$fastM[1];
-        require BASE_PATH . '/tracking/inhouse_click.php';
-        exit;
-    } elseif (preg_match('#^/s/([a-zA-Z0-9_-]+)#', $fastPath, $fastM)) {
-        $_GET['code'] = $fastM[1];
-        require BASE_PATH . '/tracking/short_link.php';
-        exit;
-    } elseif ($fastPath === '/pixel') {
-        require BASE_PATH . '/tracking/pixel.php';
-        exit;
-    } elseif ($fastPath === '/impression') {
-        $_GET['type'] = 'imp';
-        require BASE_PATH . '/tracking/pixel.php';
-        exit;
-    } elseif (preg_match('#^/smartlink/([a-zA-Z0-9_-]+)#', $fastPath, $fastM)) {
-        $_GET['slug'] = $fastM[1];
-        require BASE_PATH . '/tracking/smartlink.php';
-        exit;
-    } elseif ($fastPath === '/test-postback-click') {
-        require BASE_PATH . '/tracking/test_postback_click.php';
+    try {
+        if (preg_match('#^/click/(\d+)#', $fastPath, $fastM)) {
+            $_GET['offer_id'] = (int)$fastM[1];
+            require BASE_PATH . '/tracking/click.php';
+            exit;
+        } elseif ($fastPath === '/postback') {
+            require BASE_PATH . '/tracking/postback.php';
+            exit;
+        } elseif (preg_match('#^/offer/(\d+)#', $fastPath, $fastM)) {
+            $_GET['offer_id'] = (int)$fastM[1];
+            require BASE_PATH . '/tracking/inhouse_click.php';
+            exit;
+        } elseif (preg_match('#^/s/([a-zA-Z0-9_-]+)#', $fastPath, $fastM)) {
+            $_GET['code'] = $fastM[1];
+            require BASE_PATH . '/tracking/short_link.php';
+            exit;
+        } elseif ($fastPath === '/pixel') {
+            require BASE_PATH . '/tracking/pixel.php';
+            exit;
+        } elseif ($fastPath === '/impression') {
+            $_GET['type'] = 'imp';
+            require BASE_PATH . '/tracking/pixel.php';
+            exit;
+        } elseif (preg_match('#^/smartlink/([a-zA-Z0-9_-]+)#', $fastPath, $fastM)) {
+            $_GET['slug'] = $fastM[1];
+            require BASE_PATH . '/tracking/smartlink.php';
+            exit;
+        } elseif ($fastPath === '/test-postback-click') {
+            require BASE_PATH . '/tracking/test_postback_click.php';
+            exit;
+        }
+    } catch (\Throwable $e) {
+        $logMsg = sprintf(
+            "[%s] Tracking Fast-Path Exception: %s in %s:%d\nStack trace:\n%s\n",
+            date('Y-m-d H:i:s'),
+            $e->getMessage(),
+            $e->getFile(),
+            $e->getLine(),
+            $e->getTraceAsString()
+        );
+        @file_put_contents(BASE_PATH . '/storage/logs/tracking_error.log', $logMsg, FILE_APPEND | LOCK_EX);
+
+        if (!headers_sent()) {
+            http_response_code(500);
+            header('Content-Type: text/plain; charset=utf-8');
+            header('Cache-Control: no-store');
+        }
+        echo "Service temporarily unavailable.";
         exit;
     }
 }

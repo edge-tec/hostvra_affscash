@@ -12,6 +12,8 @@
  * through the existing click.php — this file just normalises the parameters.
  */
 
+require_once dirname(__DIR__) . '/core/TrackingBootstrap.php';
+
 // Resolve offer ID from route or GET
 $offerId = (int)($_GET['offer_id'] ?? 0);
 if (!$offerId) {

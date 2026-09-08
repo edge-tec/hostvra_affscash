@@ -4,6 +4,7 @@
  * Impression: /pixel?type=imp&offer_id=X&aff=AFFCODE
  * Conversion: /pixel?click_id=X&payout=Y   (legacy - delegates to postback)
  */
+require_once dirname(__DIR__) . '/core/TrackingBootstrap.php';
 
 // Output 1x1 GIF immediately (non-blocking)
 if (!headers_sent()) {

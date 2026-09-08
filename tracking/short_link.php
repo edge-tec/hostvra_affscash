@@ -8,6 +8,7 @@
  * into the destination URL before redirecting, preserving click_id,
  * sub_id, etc.
  */
+require_once dirname(__DIR__) . '/core/TrackingBootstrap.php';
 
 $code = trim($_GET['code'] ?? '');
 if (!$code) {

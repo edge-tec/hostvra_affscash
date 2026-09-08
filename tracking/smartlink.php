@@ -4,6 +4,8 @@
  * Routes visitor to best matching offer based on device + geo targeting,
  * then delegates to click.php for full tracking.
  */
+require_once dirname(__DIR__) . '/core/TrackingBootstrap.php';
+
 $slug = Helpers::get('slug');
 if (!$slug) { http_response_code(404); exit('Not found.'); }
 
