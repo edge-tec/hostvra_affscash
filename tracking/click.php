@@ -31,6 +31,7 @@ require_once BASE_PATH . '/core/FraudIQ.php';
 require_once BASE_PATH . '/core/VpnSkipList.php';
 require_once BASE_PATH . '/core/TrafficSourceDetector.php';
 require_once BASE_PATH . '/core/AdvancedTrafficSourceOverride.php';
+require_once BASE_PATH . '/core/PrivateOffer.php';
 
 $offerId = (int)($_GET['offer_id'] ?? 0);
 
