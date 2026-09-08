@@ -115,9 +115,14 @@ assertTest(
 
 // ── Test 4: Authorized Private Offer ────────────────────────────────────────
 // Grant access to affiliate 77777
-$pdo = Database::getInstance();
-$pdo->prepare("INSERT OR REPLACE INTO `private_offer_access` (offer_id, affiliate_id, granted_by, notes) VALUES (?, ?, ?, ?)")
-    ->execute([999902, 77777, 1, 'Automated test grant']);
+$driver = Database::getInstance()->getAttribute(PDO::ATTR_DRIVER_NAME);
+if ($driver === 'sqlite') {
+    $pdo = Database::getInstance();
+    $pdo->prepare("INSERT OR REPLACE INTO `private_offer_access` (offer_id, affiliate_id, granted_by, notes) VALUES (?, ?, ?, ?)")
+        ->execute([999902, 77777, 1, 'Automated test grant']);
+} else {
+    PrivateOffer::grant(999902, 77777, 1, 'Automated test grant');
+}
 
 $canAccessAuthorized = PrivateOffer::checkClickAccess($privateOffer, 77777);
 assertTest(
@@ -126,8 +131,7 @@ assertTest(
 );
 
 // Cleanup test grant & verify instant revocation
-$pdo->prepare("DELETE FROM `private_offer_access` WHERE offer_id=? AND affiliate_id=?")
-    ->execute([999902, 77777]);
+PrivateOffer::revoke(999902, 77777, 1);
 $revokedCheck = PrivateOffer::checkClickAccess($privateOffer, 77777);
 assertTest(
     "Private offer: Revoking access immediately blocks affiliate",
