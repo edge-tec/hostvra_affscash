@@ -1,8 +1,15 @@
 <?php
 Auth::check('admin');
 $pageTitle = 'Advertisers';
-// Ensure 'deleted' is a valid status value in the users ENUM
+// Ensure required schema columns exist
 try { Database::query("ALTER TABLE users MODIFY COLUMN status ENUM('active','pending','suspended','rejected','deleted') NOT NULL DEFAULT 'pending'"); } catch(\Throwable $_e) {}
+try { Database::query("ALTER TABLE advertisers ADD COLUMN budget_exempt TINYINT(1) NOT NULL DEFAULT 0"); } catch(\Throwable $_e) {}
+try { Database::query("ALTER TABLE advertisers ADD COLUMN registration_answers TEXT NULL"); } catch(\Throwable $_e) {}
+try { Database::query("ALTER TABLE advertisers ADD COLUMN postback_token VARCHAR(64) NULL DEFAULT NULL"); } catch(\Throwable $_e) {}
+try { Database::query("ALTER TABLE advertisers ADD COLUMN postback_ips TEXT NULL DEFAULT NULL"); } catch(\Throwable $_e) {}
+try { Database::query("ALTER TABLE users ADD COLUMN telegram VARCHAR(200) DEFAULT NULL"); } catch(\Throwable $_e) {}
+try { Database::query("ALTER TABLE users ADD COLUMN skype VARCHAR(200) DEFAULT NULL"); } catch(\Throwable $_e) {}
+try { Database::query("ALTER TABLE users ADD COLUMN discord VARCHAR(200) DEFAULT NULL"); } catch(\Throwable $_e) {}
 AdvBudget::ensureSchema();
 
 $action = Helpers::get('action') ?: ($_POST['action'] ?? '') ?: (isset($_GET['id']) ? 'view' : 'index');

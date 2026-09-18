@@ -22,8 +22,12 @@ final class AdvBudget
 
     public static function ensureSchema(): void
     {
-        // Schema is consolidated via apply_migrations.php and install/schema.sql.
-        // No runtime DDL locking during live conversions.
+        if (self::$schemaReady) {
+            return;
+        }
+        try {
+            Database::query("ALTER TABLE `advertisers` ADD COLUMN `budget_exempt` TINYINT(1) NOT NULL DEFAULT 0");
+        } catch (\Throwable $_e) {}
         self::$schemaReady = true;
     }
 

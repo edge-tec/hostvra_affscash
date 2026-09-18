@@ -90,6 +90,8 @@ CREATE TABLE IF NOT EXISTS `advertisers` (
     `balance`           DECIMAL(12,4) DEFAULT 0.0000,
     `postback_token`    VARCHAR(64) NULL DEFAULT NULL,
     `postback_ips`      TEXT NULL,
+    `budget_exempt`     TINYINT(1) NOT NULL DEFAULT 0,
+    `registration_answers` TEXT NULL,
     `notes`             TEXT,
     `created_at`        DATETIME DEFAULT CURRENT_TIMESTAMP,
     INDEX `idx_user_id` (`user_id`),

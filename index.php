@@ -877,7 +877,8 @@ try {
     }
     Router::dispatch($requestUri, $_SERVER['REQUEST_METHOD']);
 } catch (\Throwable $e) {
-    @file_put_contents(BASE_PATH . '/api_error.log', date('Y-m-d H:i:s') . ' ' . $_SERVER['REQUEST_URI'] . "\n" . $e->getMessage() . "\n" . $e->getTraceAsString() . "\n\n", FILE_APPEND);
+    @file_put_contents(BASE_PATH . '/storage/logs/error.log', date('Y-m-d H:i:s') . ' ' . ($_SERVER['REQUEST_URI'] ?? '/') . "\n" . $e->getMessage() . "\n" . $e->getTraceAsString() . "\n\n", FILE_APPEND);
+    @file_put_contents(BASE_PATH . '/api_error.log', date('Y-m-d H:i:s') . ' ' . ($_SERVER['REQUEST_URI'] ?? '/') . "\n" . $e->getMessage() . "\n" . $e->getTraceAsString() . "\n\n", FILE_APPEND);
     if (strpos($_SERVER['REQUEST_URI'] ?? '', '/api/') === 0) {
         http_response_code(200);
         header('Content-Type: application/json');
@@ -886,6 +887,18 @@ try {
             'error' => 'Server Error: ' . $e->getMessage()
         ]);
     } else {
-        throw $e;
+        $isDebug = Config::get('config', 'app.debug') ?? false;
+        if ($isDebug) {
+            http_response_code(500);
+            echo "<div style='font-family:-apple-system,BlinkMacSystemFont,sans-serif;padding:30px;max-width:800px;margin:40px auto;background:#fff;border-radius:12px;border:1px solid #FECACA;box-shadow:0 10px 25px rgba(0,0,0,0.05);'>";
+            echo "<h2 style='color:#DC2626;margin-top:0;font-size:20px;'>Application Error</h2>";
+            echo "<div style='background:#FEF2F2;padding:12px 16px;border-radius:8px;color:#991B1B;font-weight:600;font-size:14px;margin-bottom:16px;'>" . htmlspecialchars($e->getMessage()) . "</div>";
+            echo "<div style='font-size:12px;color:#64748B;margin-bottom:8px;'>File: <code>" . htmlspecialchars($e->getFile()) . ":" . $e->getLine() . "</code></div>";
+            echo "<pre style='background:#0F172A;color:#F8FAFC;padding:16px;border-radius:8px;font-size:12px;overflow:auto;line-height:1.6;'>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
+            echo "</div>";
+        } else {
+            http_response_code(500);
+            echo "<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Something went wrong</title></head><body style='font-family:-apple-system,BlinkMacSystemFont,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#F8FAFC;'><div style='text-align:center;max-width:480px;padding:40px 30px;background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.06);'><div style='font-size:48px;margin-bottom:16px;'>⚠️</div><h2 style='color:#1E293B;font-size:20px;margin:0 0 10px;'>Something went wrong</h2><p style='color:#64748B;font-size:14px;line-height:1.6;margin:0 0 24px;'>A temporary error occurred while processing this request. The error has been logged.</p><a href='/admin/dashboard' style='display:inline-block;padding:10px 20px;background:#4F46E5;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:14px;'>Back to Dashboard</a></div></body></html>";
+        }
     }
 }
