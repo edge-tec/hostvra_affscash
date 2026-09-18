@@ -539,10 +539,26 @@ if ($offer['require_approval'] && !$access && empty($GLOBALS['_sl_id'])) {
 // ── Advertiser Wallet / Balance Protection ────────────────────────────────
 if (!empty($offer['advertiser_id'])) {
     $advAccount = Cache::remember("adv:wallet:{$offer['advertiser_id']}", 30, function() use ($offer) {
-        return Database::fetchOne(
-            "SELECT balance, credit_limit, budget_exempt FROM advertisers WHERE id = ? LIMIT 1",
-            [(int)$offer['advertiser_id']]
-        );
+        try {
+            return Database::fetchOne(
+                "SELECT balance, credit_limit, budget_exempt FROM advertisers WHERE id = ? LIMIT 1",
+                [(int)$offer['advertiser_id']]
+            );
+        } catch (\Throwable $e) {
+            // Self-heal: ensure budget_exempt column exists
+            try { Database::query("ALTER TABLE advertisers ADD COLUMN budget_exempt TINYINT(1) NOT NULL DEFAULT 0"); } catch (\Throwable $_) {}
+            try {
+                return Database::fetchOne(
+                    "SELECT balance, credit_limit, budget_exempt FROM advertisers WHERE id = ? LIMIT 1",
+                    [(int)$offer['advertiser_id']]
+                );
+            } catch (\Throwable $_) {
+                return Database::fetchOne(
+                    "SELECT balance, credit_limit, 0 AS budget_exempt FROM advertisers WHERE id = ? LIMIT 1",
+                    [(int)$offer['advertiser_id']]
+                );
+            }
+        }
     });
     if ($advAccount && (int)($advAccount['budget_exempt'] ?? 0) === 0) {
         $avail = (float)($advAccount['balance'] ?? 0) + (float)($advAccount['credit_limit'] ?? 0);
@@ -940,7 +956,7 @@ if ($clickStatus === 'valid') {
 }
 
 // Record click
-Database::insert('clicks', [
+$clickData = [
     'click_id'         => $clickId,
     'offer_id'         => $offerId,
     'affiliate_id'     => $affiliate['id'],
@@ -986,7 +1002,28 @@ Database::insert('clicks', [
     'payout'           => $payout,
     'revenue'          => $revenue,
     'status'           => $clickStatus,
-]);
+];
+
+try {
+    Database::insert('clicks', $clickData);
+} catch (\Throwable $e) {
+    if (strpos($e->getMessage(), 'Unknown column') !== false) {
+        // Self-heal: ensure missing columns exist and re-try
+        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `device_brand` VARCHAR(64) DEFAULT ''"); } catch (\Throwable $_) {}
+        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `device_model` VARCHAR(128) DEFAULT ''"); } catch (\Throwable $_) {}
+        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `os_version` VARCHAR(64) DEFAULT ''"); } catch (\Throwable $_) {}
+        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `browser_version` VARCHAR(64) DEFAULT ''"); } catch (\Throwable $_) {}
+        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `sub6` VARCHAR(500) DEFAULT NULL"); } catch (\Throwable $_) {}
+        try { Database::query("ALTER TABLE `clicks` ADD COLUMN `fraud_reasons` TEXT NULL"); } catch (\Throwable $_) {}
+        try {
+            Database::insert('clicks', $clickData);
+        } catch (\Throwable $e2) {
+            @file_put_contents(BASE_PATH . '/storage/logs/click_insert_err.log', date('Y-m-d H:i:s') . ' - ' . $e2->getMessage() . PHP_EOL, FILE_APPEND);
+        }
+    } else {
+        @file_put_contents(BASE_PATH . '/storage/logs/click_insert_err.log', date('Y-m-d H:i:s') . ' - ' . $e->getMessage() . PHP_EOL, FILE_APPEND);
+    }
+}
 
 // Update daily stats (clicks only)
 if ($clickStatus === 'valid' || $clickStatus === 'duplicate') {
