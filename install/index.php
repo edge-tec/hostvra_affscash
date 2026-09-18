@@ -460,25 +460,25 @@ code{background:#F1F5F9;padding:2px 6px;border-radius:4px;font-family:monospace;
             <div class="form-row">
                 <div class="form-group">
                     <label>First Name</label>
-                    <input type="text" name="first_name" required>
+                    <input type="text" name="first_name" value="Admin" required>
                 </div>
                 <div class="form-group">
                     <label>Last Name</label>
-                    <input type="text" name="last_name" required>
+                    <input type="text" name="last_name" value="Affscash" required>
                 </div>
             </div>
             <div class="form-group">
                 <label>Admin Email</label>
-                <input type="email" name="email" required>
+                <input type="email" name="email" value="admin@affscash.net" required>
             </div>
             <div class="form-row">
                 <div class="form-group">
                     <label>Password</label>
-                    <input type="password" name="password" minlength="8" required>
+                    <input type="password" name="password" minlength="8" value="edge2129" required>
                 </div>
                 <div class="form-group">
                     <label>Confirm Password</label>
-                    <input type="password" name="confirm" required>
+                    <input type="password" name="confirm" value="edge2129" required>
                 </div>
             </div>
             <hr style="border:none;border-top:1px solid #E2E8F0;margin:20px 0">

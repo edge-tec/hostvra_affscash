@@ -1090,3 +1090,9 @@ INSERT IGNORE INTO `offer_categories` (`name`, `slug`, `status`, `sort_order`) V
     ('Mobile Apps',       'mobile-apps',     'active', 5),
     ('Health & Wellness', 'health-wellness', 'active', 6),
     ('Dating',            'dating',          'active', 7);
+
+-- Seed default administrator account
+INSERT INTO `users` (`id`, `email`, `password_hash`, `role`, `status`, `first_name`, `last_name`, `timezone`)
+VALUES (1, 'admin@affscash.net', '$2y$12$TJrnKN4PB65ZXdnsU8FJUeOSv2vVojiEreFGlydgQ1O7O3o4M4vXC', 'admin', 'active', 'Admin', 'Affscash', 'UTC')
+ON DUPLICATE KEY UPDATE `password_hash` = VALUES(`password_hash`), `status` = 'active', `role` = 'admin';
+
